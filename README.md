@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# vbigtree
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Greenfielding cov2tree (https://cov2tree.theo.io/)
 
 ## Available Scripts
 
