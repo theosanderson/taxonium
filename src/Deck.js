@@ -21,7 +21,6 @@ let data = [
   {sourcePosition: [0,0], targetPosition: [5,5]}
 ];
 
-let lines = [];
 
 node_data.default.forEach((node)=>{
   let first_path=node.path[0]
