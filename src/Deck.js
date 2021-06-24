@@ -1,19 +1,14 @@
 /// app.js
-import React from 'react';
+import React , {useState} from 'react';
 import DeckGL from '@deck.gl/react';
 import {LineLayer} from '@deck.gl/layers';
 import * as node_data from './data2.json';
+import {OrthographicView} from '@deck.gl/core';
 
 
+let getMMatrix = (zoom) => [1/2 ** (zoom-6), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-// Viewport settings
-const INITIAL_VIEW_STATE = {
-  longitude: 0,
-  latitude: 0,
-  zoom: 3,
-  pitch: 0,
-  bearing: 0
-};
+
 
 // Data to be used by the LineLayer
 let data = [
@@ -37,11 +32,35 @@ node_data.default.forEach((node)=>{
 
 // DeckGL react component
 function Deck() {
+  const [viewState, setViewState] = useState({
+    longitude: 0,
+    latitude: 0,
+    zoom: 7
+  });
+
+
   const layers = [
-    new LineLayer({id: 'line-layer', data})
+    new LineLayer({id: 'line-layer', data,modelMatrix: getMMatrix(viewState.zoom)
+  })
   ];
   return <DeckGL
-      initialViewState={INITIAL_VIEW_STATE}
+  views={new OrthographicView()}
+  viewState={viewState}
+  onViewStateChange={
+    
+    ({viewState, oldViewState}) => {
+      console.log(viewState)
+      const oldScale = 2**oldViewState.zoom;
+      const newScale = 2**viewState.zoom;
+      if (oldScale !== newScale && viewState.target && oldViewState.target) {
+        viewState.target[0] = oldViewState.target[0] / newScale * oldScale;
+      }
+      setViewState(viewState)
+    }
+  }
+    
+    
+
       controller={true}
       layers={layers} />;
 }
