@@ -1,7 +1,7 @@
 /// app.js
 import React , {useState} from 'react';
 import DeckGL from '@deck.gl/react';
-import {LineLayer} from '@deck.gl/layers';
+import {LineLayer,ScatterplotLayer} from '@deck.gl/layers';
 import * as node_data from './data2.json';
 import {OrthographicView} from '@deck.gl/core';
 
@@ -38,10 +38,23 @@ function Deck() {
     zoom: 7
   });
 
+  const scatter = new ScatterplotLayer({
+    id: 'scatterplot-layer',
+    data,
+    opacity:0.7,
+    radiusMinPixels: 1,
+    radiusMaxPixels: 3,
+    getRadius:0.2,
+    getPosition: d => d.sourcePosition,
+    getFillColor:[233,50,233],
+    modelMatrix: getMMatrix(viewState.zoom)
+  });
+
 
   const layers = [
     new LineLayer({id: 'line-layer', data,modelMatrix: getMMatrix(viewState.zoom)
-  })
+  }),scatter
+  
   ];
   return <DeckGL
   views={new OrthographicView()}
@@ -49,7 +62,7 @@ function Deck() {
   onViewStateChange={
     
     ({viewState, oldViewState}) => {
-      console.log(viewState)
+      
       const oldScale = 2**oldViewState.zoom;
       const newScale = 2**viewState.zoom;
       if (oldScale !== newScale && viewState.target && oldViewState.target) {
