@@ -1,6 +1,6 @@
 # vbigtree
 
-Greenfielding cov2tree (https://cov2tree.theo.io/)
+Greenfielding cov2tree here.
 
 ## Available Scripts
 
