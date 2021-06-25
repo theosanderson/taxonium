@@ -74,7 +74,7 @@ node_data.default.forEach((node) => {
     });
   }
 });
-const getXval = (viewState) => 3 / 2 ** (viewState.zoom - 6);
+const getXval = (viewState) => 4 / 2 ** (viewState.zoom - 6);
 // DeckGL react component
 function Deck() {
   const [viewState, setViewState] = useState({
@@ -90,7 +90,7 @@ function Deck() {
         return;
       }
 
-      viewState["minimap"] = { zoom: 4, target: [2, 8] };
+      viewState["minimap"] = { zoom: 4, target: [4, 8] };
       viewState.target[0] = getXval(viewState);
 
       if (deckRef.current.viewports.length) {
@@ -147,7 +147,7 @@ function Deck() {
         lineWidthMinPixels: 1,
         getPolygon: (d) => d.contour,
 
-        getFillColor: (d) => [200, 200, 200],
+        getFillColor: (d) => [240, 240, 240],
         getLineColor: [80, 80, 80],
         getLineWidth: 1,
       }),
@@ -263,10 +263,10 @@ function Deck() {
           new OrthographicView({ id: "main", controller: true }),
           new OrthographicView({
             id: "minimap",
-            x: 10,
-            y: 10,
+            x: "79%",
+            y: "1%",
             width: "20%",
-            height: "43%",
+            height: "35%",
             controller: true,
           }),
         ]}
