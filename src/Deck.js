@@ -116,12 +116,13 @@ function Deck() {
       }
 
       const pickInfo = deckRef.current.pickObject({
-        x: event.clientX,
-        y: event.clientY,
+        x: event.nativeEvent.offsetX,
+        y: event.nativeEvent.offsetY,
         radius: 1,
       });
       //console.log(viewState);
-      if (pickInfo) {
+
+      if (pickInfo && pickInfo.viewport.id === "minimap") {
         //viewState.target=pickInfo.coordinate
         //console.log(pickInfo)
         const newViewState = {
