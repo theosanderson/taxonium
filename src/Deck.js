@@ -12,8 +12,7 @@ let getMMatrix = (zoom) => [1 / 2 ** (zoom - 6), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0
 
 // Data to be used by the LineLayer
 let data = [
-  { sourcePosition: [0, 5], targetPosition: [5, 5] },
-  { sourcePosition: [0, 0], targetPosition: [5, 5] }
+ 
 ];
 
 
@@ -25,6 +24,11 @@ node_data.default.forEach((node) => {
 
     data.push({
       sourcePosition: [node.x, node.y],
+      targetPosition: [first_node.x, node.y]
+    })
+
+    data.push({
+      sourcePosition:[first_node.x, node.y],
       targetPosition: [first_node.x, first_node.y]
     })
   }
@@ -45,12 +49,14 @@ function Deck() {
 
   const scatter_layer_main = new ScatterplotLayer({
     id: 'main-scatter',
-    data,
+    data:node_data.default.filter(x=> x.name!=null),
     opacity: 0.7,
     radiusMinPixels: 1,
     radiusMaxPixels: 3,
     getRadius: 0.2,
-    getPosition: d => d.sourcePosition,
+    getPosition: d => {
+      return([d.x,d.y] )
+    } ,
     getFillColor: [233, 50, 233],
     modelMatrix: getMMatrix(viewState.zoom)
   });
