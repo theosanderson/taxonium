@@ -99,7 +99,7 @@ function Deck() {
     onViewStateChange={
 
       ({ viewId, viewState, oldViewState }) => {
-        if (viewId == "minimap") {
+        if (viewId === "minimap") {
           return
         }
 
@@ -107,13 +107,15 @@ function Deck() {
         viewState['minimap'] = { zoom: 2, target: [10, 15] }
         viewState.target[0] = 3 / 2 ** (viewState.zoom - 6)
 
-        console.log(viewState)
+
+       
         setViewState(viewState)
+
       }
     }
 
     layerFilter={({ layer, viewport }) => {
-      return ((layer.id.startsWith("main") && viewport.id == "main") || (layer.id.startsWith("mini") && viewport.id == "minimap"))
+      return ((layer.id.startsWith("main") && viewport.id === "main") || (layer.id.startsWith("mini") && viewport.id === "minimap"))
 
 
     }}
