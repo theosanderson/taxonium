@@ -1,16 +1,9 @@
 /// app.js
-import React, {
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import * as node_data from "./data2.json";
 import { OrthographicView } from "@deck.gl/core";
-import useQueryAsState from "./hooks/useQueryAsState";
 
 const dummy_polygons = [
   {
