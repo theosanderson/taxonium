@@ -71,8 +71,36 @@ function Deck() {
 
   );
   const deckRef = useRef(null);
- 
-  const onClick = useCallback(event => {
+  const onViewStateChange = useCallback(
+
+    ({ viewId, viewState, oldViewState }) => {
+      if (viewId === "minimap") {
+        return
+      }
+
+
+      viewState['minimap'] = { zoom: 4, target: [2, 8] }
+      viewState.target[0] = getXval(viewState)
+
+      const main_vp= deckRef.current.viewports[0]
+      const nw = main_vp.unproject([0,0,0])
+      const se = main_vp.unproject([main_vp.width,main_vp.height,0])
+      se[0]=se[0]*2**(viewState.zoom-6)
+      nw[0]=nw[0]*2**(viewState.zoom-6)
+      viewState = {...viewState, nw:nw, se:se}
+      nw[0]=-500
+      se[0]=500
+
+
+     
+      setViewState(viewState)
+
+    },[deckRef])
+  const onClickOrMouseMove = useCallback(event => {
+    if (event.buttons===0 && event._reactName==="onMouseMove"){
+      return false
+    }
+    
    
     const pickInfo = deckRef.current.pickObject({
       x: event.clientX,
@@ -83,9 +111,10 @@ function Deck() {
     if(pickInfo){
     //viewState.target=pickInfo.coordinate
     //console.log(pickInfo)
-    setViewState({...viewState,target:[getXval(viewState),  pickInfo.coordinate[1]]})
+    const newViewState = {...viewState,target:[getXval(viewState),  pickInfo.coordinate[1]]}
+    onViewStateChange({viewState:newViewState})
   }
-  }, [viewState])
+  }, [viewState,onViewStateChange])
   
 
 
@@ -127,15 +156,25 @@ function Deck() {
   }),[viewState])
 
 
-  const pos_layer_mini = useMemo(() =>new ScatterplotLayer({
+  const pos_layer_mini = useMemo(() =>new PolygonLayer({
     id: 'mini-pos',
     data: [viewState],
-    opacity: 1,
+    opacity: 0.2,
     radiusMinPixels: 4,
     radiusMaxPixels: 4,
     getRadius: 4,
-    getPosition: d => [0, d.target[1]],
-    getFillColor: [255, 0, 0]
+    getLineWidth:0.1,
+    getPolygon: d =>[
+      
+      [d.nw[0],d.nw[1]],
+      [d.se[0],d.nw[1]],
+      [d.se[0],d.se[1]],
+      [d.nw[0],d.se[1]]
+    
+    
+    
+    ],
+    getFillColor: [255, 255, 255]
   }),[viewState])
 
   const scatter_layer_mini = useMemo(() => new ScatterplotLayer({id: 'mini-scatter',  ...scatterplot_config}),[scatterplot_config])
@@ -152,27 +191,17 @@ function Deck() {
     poly_layer,line_layer_main, scatter_layer_main, line_layer_mini, scatter_layer_mini, pos_layer_mini
   ])
 
+  window.deck=deckRef
 
-  return<div onClick={onClick}> <DeckGL ref={deckRef}
+  
+
+    
+
+  return<div onClick={onClickOrMouseMove} onMouseMove={onClickOrMouseMove}> <DeckGL ref={deckRef}
     views={[new OrthographicView({ id: 'main', controller: true }),
     new OrthographicView({ id: 'minimap', x: 10, y: 10, width: '20%', height: '43%', controller: true })]}
     viewState={viewState}
-    onViewStateChange={useCallback(
-
-      ({ viewId, viewState, oldViewState }) => {
-        if (viewId === "minimap") {
-          return
-        }
-
-
-        viewState['minimap'] = { zoom: 4, target: [2, 8] }
-        viewState.target[0] = getXval(viewState)
-
-
-       
-        setViewState(viewState)
-
-      },[])
+    onViewStateChange={onViewStateChange
     }
 
     layerFilter={useCallback(({ layer, viewport }) => {
