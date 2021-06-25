@@ -19,6 +19,10 @@ const dummy_polygons = [
   },
 ];
 function toRGB(string) {
+  if (string === "unknown") {
+    return [200, 200, 200];
+  }
+  string = string.split("").reverse().join("");
   var hash = 0;
   if (string.length === 0) return hash;
   for (var i = 0; i < string.length; i++) {
@@ -65,11 +69,11 @@ node_data.default.forEach((node) => {
   if (first_node) {
     data.push({
       sourcePosition: [node.x, node.y],
-      targetPosition: [first_node.x, node.y],
+      targetPosition: [node.x, first_node.y],
     });
 
     data.push({
-      sourcePosition: [first_node.x, node.y],
+      sourcePosition: [node.x, first_node.y],
       targetPosition: [first_node.x, first_node.y],
     });
   }
@@ -77,6 +81,8 @@ node_data.default.forEach((node) => {
 const getXval = (viewState) => 4 / 2 ** (viewState.zoom - 6);
 // DeckGL react component
 function Deck() {
+  const [hoverInfo, setHoverInfo] = useState();
+
   const [viewState, setViewState] = useState({
     longitude: 0,
     latitude: 10,
@@ -90,7 +96,7 @@ function Deck() {
         return;
       }
 
-      viewState["minimap"] = { zoom: 4, target: [4, 8] };
+      viewState["minimap"] = { zoom: 3.4, target: [4, 9] };
       viewState.target[0] = getXval(viewState);
 
       if (deckRef.current.viewports.length) {
@@ -175,6 +181,7 @@ function Deck() {
         id: "main-scatter",
         modelMatrix: getMMatrix(viewState.zoom),
         pickable: true,
+        onHover: (info) => setHoverInfo(info),
         ...scatterplot_config,
       }),
     [viewState, scatterplot_config]
@@ -281,10 +288,24 @@ function Deck() {
         }, [])}
         controller={true}
         layers={layers}
-        getTooltip={({ object }) =>
-          object && object.name + ": " + object.lineage
-        }
-      />
+      >
+        {hoverInfo && hoverInfo.object && (
+          <div
+            className="bg-gray-200 p-3 opacity-80 text-sm"
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              pointerEvents: "none",
+              left: hoverInfo.x,
+              top: hoverInfo.y,
+            }}
+          >
+            <h2 className="font-bold">{hoverInfo.object.name}</h2>
+            <div>{hoverInfo.object.lineage}</div>
+            <div className="italic">{hoverInfo.object.date}</div>
+          </div>
+        )}
+      </DeckGL>
     </div>
   );
 }
