@@ -5,6 +5,21 @@ import { LineLayer, ScatterplotLayer } from '@deck.gl/layers';
 import * as node_data from './data2.json';
 import { OrthographicView } from '@deck.gl/core';
 
+ function toRGB(string) {
+  var hash = 0;
+  if (string.length === 0) return hash;
+  for (var i = 0; i < string.length; i++) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+      hash = hash & hash;
+  }
+  var rgb = [0, 0, 0];
+  for (var i = 0; i < 3; i++) {
+      var value = (hash >> (i * 8)) & 255;
+      rgb[i] = value;
+  }
+  return rgb;
+}
+
 
 let getMMatrix = (zoom) => [1 / 2 ** (zoom - 6), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
@@ -57,7 +72,7 @@ function Deck() {
     getPosition: d => {
       return([d.x,d.y] )
     } ,
-    getFillColor: [233, 50, 233],
+    getFillColor: d=>toRGB(d.lineage),
   
   }},[]);
 
