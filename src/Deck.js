@@ -1,5 +1,5 @@
 /// app.js
-import React, { useState } from 'react';
+import React, { useState , useMemo,useCallback} from 'react';
 import DeckGL from '@deck.gl/react';
 import { LineLayer, ScatterplotLayer } from '@deck.gl/layers';
 import * as node_data from './data2.json';
@@ -37,6 +37,7 @@ node_data.default.forEach((node) => {
 
 // DeckGL react component
 function Deck() {
+ 
 
   const [viewState, setViewState] = useState({
     longitude: 0,
@@ -46,7 +47,7 @@ function Deck() {
 
   );
 
-  const scatterplot_config = {
+  const scatterplot_config = useMemo(() => { return {
     
     data:node_data.default.filter(x=> x.name!=null),
     opacity: 0.7,
@@ -58,17 +59,17 @@ function Deck() {
     } ,
     getFillColor: [233, 50, 233],
   
-  }
+  }},[]);
 
-  const scatter_layer_main = new ScatterplotLayer({id: 'main-scatter',  modelMatrix: getMMatrix(viewState.zoom),...scatterplot_config});
+  const scatter_layer_main =  useMemo(() => new ScatterplotLayer({id: 'main-scatter',  modelMatrix: getMMatrix(viewState.zoom),...scatterplot_config}),[viewState,scatterplot_config])
 
-  const line_layer_main = new LineLayer({
+  const line_layer_main = useMemo(() => new LineLayer({
     id: 'main-lines', data, modelMatrix: getMMatrix(viewState.zoom)
 
-  })
+  }),[viewState])
 
 
-  const pos_layer_mini = new ScatterplotLayer({
+  const pos_layer_mini = useMemo(() =>new ScatterplotLayer({
     id: 'mini-pos',
     data: [viewState],
     opacity: 1,
@@ -77,14 +78,14 @@ function Deck() {
     getRadius: 4,
     getPosition: d => [0, d.target[1]],
     getFillColor: [255, 0, 0]
-  });
+  }),[viewState])
 
-  const scatter_layer_mini = new ScatterplotLayer({id: 'mini-scatter',  ...scatterplot_config});
+  const scatter_layer_mini = useMemo(() => new ScatterplotLayer({id: 'mini-scatter',  ...scatterplot_config}),[scatterplot_config])
 
-  const line_layer_mini = new LineLayer({
+  const line_layer_mini = useMemo(() =>new LineLayer({
     id: 'mini-lines', data
 
-  })
+  }),[])
 
 
   const layers = [
@@ -94,9 +95,9 @@ function Deck() {
 
   return <DeckGL
     views={[new OrthographicView({ id: 'main', controller: true }),
-    new OrthographicView({ id: 'minimap', x: 10, y: 10, width: '20%', height: '20%', controller: true })]}
+    new OrthographicView({ id: 'minimap', x: 10, y: 10, width: '20%', height: '43%', controller: true })]}
     viewState={viewState}
-    onViewStateChange={
+    onViewStateChange={useCallback(
 
       ({ viewId, viewState, oldViewState }) => {
         if (viewId === "minimap") {
@@ -104,21 +105,21 @@ function Deck() {
         }
 
 
-        viewState['minimap'] = { zoom: 2, target: [10, 15] }
+        viewState['minimap'] = { zoom: 3, target: [10, 15] }
         viewState.target[0] = 3 / 2 ** (viewState.zoom - 6)
 
 
        
         setViewState(viewState)
 
-      }
+      },[])
     }
 
-    layerFilter={({ layer, viewport }) => {
+    layerFilter={useCallback(({ layer, viewport }) => {
       return ((layer.id.startsWith("main") && viewport.id === "main") || (layer.id.startsWith("mini") && viewport.id === "minimap"))
 
 
-    }}
+    },[])}
 
     controller={true}
     layers={layers}
