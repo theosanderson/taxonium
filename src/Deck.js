@@ -46,9 +46,8 @@ function Deck() {
 
   );
 
-
-  const scatter_layer_main = new ScatterplotLayer({
-    id: 'main-scatter',
+  const scatterplot_config = {
+    
     data:node_data.default.filter(x=> x.name!=null),
     opacity: 0.7,
     radiusMinPixels: 1,
@@ -58,8 +57,10 @@ function Deck() {
       return([d.x,d.y] )
     } ,
     getFillColor: [233, 50, 233],
-    modelMatrix: getMMatrix(viewState.zoom)
-  });
+  
+  }
+
+  const scatter_layer_main = new ScatterplotLayer({id: 'main-scatter',  modelMatrix: getMMatrix(viewState.zoom),...scatterplot_config});
 
   const line_layer_main = new LineLayer({
     id: 'main-lines', data, modelMatrix: getMMatrix(viewState.zoom)
@@ -78,16 +79,7 @@ function Deck() {
     getFillColor: [255, 0, 0]
   });
 
-  const scatter_layer_mini = new ScatterplotLayer({
-    id: 'mini-scatter',
-    data,
-    opacity: 0.7,
-    radiusMinPixels: 1,
-    radiusMaxPixels: 3,
-    getRadius: 0.2,
-    getPosition: d => d.sourcePosition,
-    getFillColor: [233, 50, 233]
-  });
+  const scatter_layer_mini = new ScatterplotLayer({id: 'mini-scatter',  ...scatterplot_config});
 
   const line_layer_mini = new LineLayer({
     id: 'mini-lines', data
