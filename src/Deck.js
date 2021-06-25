@@ -1,10 +1,18 @@
 /// app.js
-import React, { useState , useMemo,useCallback} from 'react';
+import React, { useState , useMemo,useCallback,useRef} from 'react';
 import DeckGL from '@deck.gl/react';
-import { LineLayer, ScatterplotLayer } from '@deck.gl/layers';
+import { LineLayer, ScatterplotLayer ,PolygonLayer} from '@deck.gl/layers';
 import * as node_data from './data2.json';
 import { OrthographicView } from '@deck.gl/core';
 
+
+
+const dummy_polygons = [{
+       contour: [[-100,-100],[-100,100],[100,100],[100,-100]],
+       zipcode: 94107,
+       population: 26599,
+      area: 6.11
+     }]
  function toRGB(string) {
   var hash = 0;
   if (string.length === 0) return hash;
@@ -55,8 +63,6 @@ node_data.default.forEach((node) => {
 
 // DeckGL react component
 function Deck() {
- 
-
   const [viewState, setViewState] = useState({
     longitude: 0,
     latitude: 10,
@@ -64,6 +70,40 @@ function Deck() {
   }
 
   );
+  const deckRef = useRef(null);
+ 
+  const onClick = useCallback(event => {
+   
+    const pickInfo = deckRef.current.pickObject({
+      x: event.clientX,
+      y: event.clientY,
+      radius: 1
+    });
+    console.log(viewState);
+    if(pickInfo){
+    //viewState.target=pickInfo.coordinate
+    console.log(pickInfo)
+    setViewState({...viewState,target:pickInfo.coordinate})
+  }
+  }, [viewState])
+  
+
+
+  const poly_layer = new PolygonLayer({
+    id: 'mini-poly-layer',
+    data:dummy_polygons,
+    pickable: true,
+    stroked: true,
+    filled: true,
+    wireframe: true,
+    lineWidthMinPixels: 1,
+    getPolygon: d => d.contour,
+
+    getFillColor: d => [40,80,80],
+    getLineColor: [80, 80, 80],
+    getLineWidth: 1
+  });
+
 
   const scatterplot_config = useMemo(() => { return {
     
@@ -79,7 +119,7 @@ function Deck() {
   
   }},[]);
 
-  const scatter_layer_main =  useMemo(() => new ScatterplotLayer({id: 'main-scatter',  modelMatrix: getMMatrix(viewState.zoom),...scatterplot_config}),[viewState,scatterplot_config])
+  const scatter_layer_main =  useMemo(() => new ScatterplotLayer({id: 'main-scatter',  modelMatrix: getMMatrix(viewState.zoom),pickable:true,...scatterplot_config}),[viewState,scatterplot_config])
 
   const line_layer_main = useMemo(() => new LineLayer({
     id: 'main-lines', data, modelMatrix: getMMatrix(viewState.zoom)
@@ -107,11 +147,11 @@ function Deck() {
 
 
   const layers = [
-    line_layer_main, scatter_layer_main, line_layer_mini, scatter_layer_mini, pos_layer_mini
+    poly_layer,line_layer_main, scatter_layer_main, line_layer_mini, scatter_layer_mini, pos_layer_mini
   ];
 
 
-  return <DeckGL
+  return<div onClick={onClick}> <DeckGL ref={deckRef}
     views={[new OrthographicView({ id: 'main', controller: true }),
     new OrthographicView({ id: 'minimap', x: 10, y: 10, width: '20%', height: '43%', controller: true })]}
     viewState={viewState}
@@ -141,8 +181,9 @@ function Deck() {
 
     controller={true}
     layers={layers}
+    getTooltip={({object}) => object && (object.name+": "+object.lineage) }
 
-  />;
+  /></div>
 }
 
 export default Deck
