@@ -17,6 +17,9 @@ import { OrthographicView } from '@deck.gl/core';
       var value = (hash >> (i * 8)) & 255;
       rgb[i] = value;
   }
+  if ((rgb[0]+rgb[1]+rgb[2])<50 || (rgb[0]+rgb[1]+rgb[2])>500){
+    return toRGB(string+"_")
+  }
   return rgb;
 }
 
