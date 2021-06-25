@@ -60,7 +60,7 @@ node_data.default.forEach((node) => {
   }
 
 })
-
+const getXval = viewState => 3 / 2 ** (viewState.zoom - 6) 
 // DeckGL react component
 function Deck() {
   const [viewState, setViewState] = useState({
@@ -79,17 +79,17 @@ function Deck() {
       y: event.clientY,
       radius: 1
     });
-    console.log(viewState);
+    //console.log(viewState);
     if(pickInfo){
     //viewState.target=pickInfo.coordinate
-    console.log(pickInfo)
-    setViewState({...viewState,target:pickInfo.coordinate})
+    //console.log(pickInfo)
+    setViewState({...viewState,target:[getXval(viewState),  pickInfo.coordinate[1]]})
   }
   }, [viewState])
   
 
 
-  const poly_layer = new PolygonLayer({
+  const poly_layer = useMemo( () => new PolygonLayer({ //This dummy layer provides a gray background, but more importantly, it means that a picking event is always generated on clicks, allowing us to make pressing on the minimap change the view
     id: 'mini-poly-layer',
     data:dummy_polygons,
     pickable: true,
@@ -99,10 +99,10 @@ function Deck() {
     lineWidthMinPixels: 1,
     getPolygon: d => d.contour,
 
-    getFillColor: d => [40,80,80],
+    getFillColor: d => [200,200,200],
     getLineColor: [80, 80, 80],
     getLineWidth: 1
-  });
+  }) ,[]);
 
 
   const scatterplot_config = useMemo(() => { return {
@@ -139,16 +139,18 @@ function Deck() {
   }),[viewState])
 
   const scatter_layer_mini = useMemo(() => new ScatterplotLayer({id: 'mini-scatter',  ...scatterplot_config}),[scatterplot_config])
-
+  
   const line_layer_mini = useMemo(() =>new LineLayer({
     id: 'mini-lines', data
 
   }),[])
 
 
-  const layers = [
+  const layers = useMemo(()=>[
     poly_layer,line_layer_main, scatter_layer_main, line_layer_mini, scatter_layer_mini, pos_layer_mini
-  ];
+  ],[
+    poly_layer,line_layer_main, scatter_layer_main, line_layer_mini, scatter_layer_mini, pos_layer_mini
+  ])
 
 
   return<div onClick={onClick}> <DeckGL ref={deckRef}
@@ -163,8 +165,8 @@ function Deck() {
         }
 
 
-        viewState['minimap'] = { zoom: 3, target: [10, 15] }
-        viewState.target[0] = 3 / 2 ** (viewState.zoom - 6)
+        viewState['minimap'] = { zoom: 4, target: [2, 8] }
+        viewState.target[0] = getXval(viewState)
 
 
        
