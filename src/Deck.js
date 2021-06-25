@@ -13,7 +13,7 @@ import { OrthographicView } from '@deck.gl/core';
       hash = hash & hash;
   }
   var rgb = [0, 0, 0];
-  for (var i = 0; i < 3; i++) {
+  for ( i = 0; i < 3; i++) {
       var value = (hash >> (i * 8)) & 255;
       rgb[i] = value;
   }
