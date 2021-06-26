@@ -2,7 +2,6 @@
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
-import * as node_data from "./data2.json";
 import { OrthographicView } from "@deck.gl/core";
 
 const dummy_polygons = [
@@ -63,12 +62,20 @@ let getMMatrix = (zoom) => [
   1,
 ];
 
-// Data to be used by the LineLayer
-let data = [];
 
-node_data.default.forEach((node) => {
+const getXval = (viewState) => 4 / 2 ** (viewState.zoom - 6);
+// DeckGL react component
+function Deck({nodeData}) {
+
+
+  // Data to be used by the LineLayer
+  const lineData = useMemo(()=>{
+
+    let data = [];
+
+nodeData.forEach((node) => {
   let first_path = node.path[0];
-  let first_node = node_data.default[first_path];
+  let first_node = nodeData[first_path];
 
   if (first_node) {
     data.push({
@@ -82,9 +89,11 @@ node_data.default.forEach((node) => {
     });
   }
 });
-const getXval = (viewState) => 4 / 2 ** (viewState.zoom - 6);
-// DeckGL react component
-function Deck() {
+return data;
+  },[nodeData]);
+
+
+
   const [hoverInfo, setHoverInfo] = useState();
 
   const [viewState, setViewState] = useState({
@@ -167,7 +176,7 @@ function Deck() {
 
   const scatterplot_config = useMemo(() => {
     return {
-      data: node_data.default.filter((x) => x.name != null),
+      data: nodeData.filter((x) => x.name != null),
       opacity: 0.7,
       radiusMinPixels: 1,
       radiusMaxPixels:2,
@@ -178,7 +187,7 @@ function Deck() {
       },
       getFillColor: (d) => toRGB(d.lineage),
     };
-  }, []);
+  }, [nodeData]);
 
   const scatter_layer_main = useMemo(
     () =>
@@ -205,10 +214,10 @@ function Deck() {
     () =>
       new LineLayer({
         id: "main-lines",
-        data,
+        data:lineData,
         modelMatrix: getMMatrix(viewState.zoom),
       }),
-    [viewState]
+    [viewState,lineData]
   );
 
   const pos_layer_mini = useMemo(
@@ -241,9 +250,9 @@ function Deck() {
     () =>
       new LineLayer({
         id: "mini-lines",
-        data,
+        data:lineData,
       }),
-    []
+    [lineData]
   );
 
   const layers = useMemo(
