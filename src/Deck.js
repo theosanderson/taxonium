@@ -166,8 +166,9 @@ function Deck() {
       data: node_data.default.filter((x) => x.name != null),
       opacity: 0.7,
       radiusMinPixels: 1,
-      radiusMaxPixels: 3,
-      getRadius: 0.2,
+      radiusMaxPixels:2,
+      getRadius: 4,
+      radiusUnits:'pixels',
       getPosition: (d) => {
         return [d.x, d.y];
       },
@@ -178,11 +179,20 @@ function Deck() {
   const scatter_layer_main = useMemo(
     () =>
       new ScatterplotLayer({
+        ...scatterplot_config,
+        radiusMinPixels: 1,
+      radiusMaxPixels: 4,
+      getRadius: 4,
+      opacity: viewState.zoom>15?0.8 : 0.6,
         id: "main-scatter",
         modelMatrix: getMMatrix(viewState.zoom),
         pickable: true,
-        onHover: (info) => setHoverInfo(info),
-        ...scatterplot_config,
+        getLineColor: d => [100,100, 100],
+        stroked: viewState.zoom>15,
+        lineWidthUnits:'pixels',
+        lineWidthScale:1,
+        onHover: (info) => setHoverInfo(info)
+        
       }),
     [viewState, scatterplot_config]
   );
