@@ -3,17 +3,21 @@ import React, {  useState } from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
 import GISAIDLoader from "./components/GISAIDLoader"
+import AboutOverlay from "./components/AboutOverlay"
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 import { RiFolderUploadLine } from "react-icons/ri";
+import {BsInfoSquare}  from "react-icons/bs";
 
 function App() {
   const [gisaid,setGisaid] = useState();
   const [gisaidLoaderEnabled,setGisaidLoaderEnabled] = useState(false);
+  const [aboutEnabled,setAboutEnabled] = useState(false);
   window.gs=gisaid
   
   return (
     <Router>
+      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
       <GISAIDLoader setGisaid={setGisaid} enabled={gisaidLoaderEnabled} setGisaidLoaderEnabled={setGisaidLoaderEnabled}/>
       <div className="h-screen w-screen">
         <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
@@ -22,7 +26,7 @@ function App() {
             <CgListTree className="inline-block h-8 w-8 pr-2 " />
             <span className="font-bold">Cov2Tree</span>: <span className="font-light">interactive SARS-CoV2 phylogeny </span>
           </h1>
-          <button onClick={()=>setGisaidLoaderEnabled(true)} className="mr-10 text-white font-bold hover:underline"><RiFolderUploadLine className="inline-block h-8 w-8" /> Import GISAID metadata</button>
+          <div className="inline-block p-4"><button onClick={()=>setGisaidLoaderEnabled(true)} className="mr-10 text-white font-bold hover:underline"><RiFolderUploadLine className="inline-block h-8 w-8" /> Import GISAID metadata</button>  <button onClick={()=>setAboutEnabled(true)} className="mr-10 text-white font-bold hover:underline"><BsInfoSquare className="inline-block h-7 w-8" /> About this site</button></div>
         </div>
         </div>
         <div className="main_content">
