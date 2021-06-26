@@ -1,13 +1,11 @@
 import "./App.css";
-import React, { useCallback, useRef, useState } from "react";
+import React, {  useState } from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
 import GISAIDLoader from "./components/GISAIDLoader"
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 import { RiFolderUploadLine } from "react-icons/ri";
-window.lookup = {};
-//const pako = require("pako");
 
 function App() {
   const [gisaid,setGisaid] = useState();
