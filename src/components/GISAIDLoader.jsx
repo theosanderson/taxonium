@@ -1,5 +1,5 @@
-import React, {useRef, useCallback, useState} from "react";
-import { FaSearch } from "react-icons/fa";
+import React, {useRef, useCallback} from "react";
+
 function GISAIDLoader({setGisaid,enabled,setGisaidLoaderEnabled}) {
 
     let chunk_count, chunk_size, file
