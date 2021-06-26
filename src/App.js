@@ -1,5 +1,5 @@
 import "./App.css";
-import React, {  useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
 import GISAIDLoader from "./components/GISAIDLoader"
@@ -9,11 +9,22 @@ import { CgListTree } from "react-icons/cg";
 import { RiFolderUploadLine } from "react-icons/ri";
 import {BsInfoSquare}  from "react-icons/bs";
 
+
 function App() {
+  const [nodeData,setNodeData] = useState([]);
   const [gisaid,setGisaid] = useState();
   const [gisaidLoaderEnabled,setGisaidLoaderEnabled] = useState(false);
   const [aboutEnabled,setAboutEnabled] = useState(false);
   window.gs=gisaid
+
+  useEffect(()=>{
+
+    if(!nodeData.length){
+      fetch('/data2.json')
+      .then(response => response.json())
+      .then(data => setNodeData(data));
+  }
+})
   
   return (
     <Router>
@@ -32,7 +43,7 @@ function App() {
         <div className="main_content">
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-full w-full">
-              <Deck />
+              <Deck nodeData={nodeData}/>
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel />
