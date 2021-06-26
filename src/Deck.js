@@ -3,6 +3,7 @@ import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
+import Spinner from "./components/Spinner"
 
 const dummy_polygons = [
   {
@@ -329,6 +330,7 @@ return data;
           </div>
         )}
       </DeckGL>
+      <Spinner isShown={nodeData.length===0}/>
     </div>
   );
 }
