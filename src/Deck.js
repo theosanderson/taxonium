@@ -39,6 +39,10 @@ function toRGB(string) {
   }
   return rgb;
 }
+function toRGBCSS(string){
+  const output = toRGB(string)
+  return(`rgb(${output[0]},${output[1]},${output[2]})`)
+}
 
 let getMMatrix = (zoom) => [
   1 / 2 ** (zoom - 6),
@@ -301,7 +305,7 @@ function Deck() {
       >
         {hoverInfo && hoverInfo.object && (
           <div
-            className="bg-gray-200 p-3 opacity-80 text-sm"
+            className="bg-gray-100 p-3 opacity-90 text-sm"
             style={{
               position: "absolute",
               zIndex: 1,
@@ -311,7 +315,7 @@ function Deck() {
             }}
           >
             <h2 className="font-bold">{hoverInfo.object.name}</h2>
-            <div>{hoverInfo.object.lineage}</div>
+            <div style={{color:toRGBCSS(hoverInfo.object.lineage)}}>{hoverInfo.object.lineage}</div>
             <div className="italic">{hoverInfo.object.date}</div>
           </div>
         )}
