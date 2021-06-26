@@ -16,11 +16,11 @@ function App() {
     <Router>
       <GISAIDLoader setGisaid={setGisaid} enabled={gisaidLoaderEnabled} setGisaidLoaderEnabled={setGisaidLoaderEnabled}/>
       <div className="h-screen w-screen">
-        <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15">
+        <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
           <div className="flex justify-between">
-          <h1 className="text-xl p-4 font-bold pb-5 text-white">
+          <h1 className="text-xl p-4  pb-5 text-white ">
             <CgListTree className="inline-block h-8 w-8 pr-2 " />
-            Cov2Tree: interactive SARS-CoV2 phylogeny 
+            <span className="font-bold">Cov2Tree</span>: <span className="font-light">interactive SARS-CoV2 phylogeny </span>
           </h1>
           <button onClick={()=>setGisaidLoaderEnabled(true)} className="mr-10 text-white font-bold hover:underline"><RiFolderUploadLine className="inline-block h-8 w-8" /> Import GISAID metadata</button>
         </div>
