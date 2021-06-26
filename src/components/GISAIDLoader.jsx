@@ -2,15 +2,15 @@ import React, {useRef, useCallback} from "react";
 
 function GISAIDLoader({setGisaid,enabled,setGisaidLoaderEnabled}) {
 
-    let chunk_count, chunk_size, file
-    let lookup = {}
+    
 
     const fileSelector = useRef();
     const bar = useRef();
-    window.bar=bar
+
 
     const supplyGISAIDdata = useCallback(() => {
-      console.log("hi");
+        let lookup = {}
+    
       const theFile = fileSelector.current.files[0];
       let reader = new FileReader();
       reader.addEventListener("load", function (e) {
@@ -26,21 +26,17 @@ function GISAIDLoader({setGisaid,enabled,setGisaidLoaderEnabled}) {
         chunk_count += 1;
 
 
-        const prop = 100*chunk_count*chunk_size/file.size
+        const prop = 100*chunk_count*chunk_size/theFile.size
         bar.current.style.width=""+prop+"%"
   
-        if (chunk_size * chunk_count > file.size) {
+        if (chunk_size * chunk_count > theFile.size) {
           setGisaid(lookup)
           setGisaidLoaderEnabled(false)
           return;
         }
-        console.log(
-          chunk_count,
-         chunk_size * chunk_count,
-          chunk_size * (chunk_count + 1) + 2000
-        );
+    
         e.target.readAsText(
-          file.slice(
+            theFile.slice(
             chunk_size * chunk_count,
             chunk_size * (chunk_count + 1) + 2000
           )
@@ -52,16 +48,15 @@ function GISAIDLoader({setGisaid,enabled,setGisaidLoaderEnabled}) {
         //window.out = out;
         //console.log("dpme", out.length);
       });
-      file = theFile;
-      chunk_size = 1000000;
-      chunk_count = 0;
+      const chunk_size = 1000000;
+      let  chunk_count = 0;
       reader.readAsText(
-        file.slice(
+        theFile.slice(
           chunk_size * chunk_count,
           chunk_size * chunk_count + 2000
         )
       );
-    }, [fileSelector]);
+    }, [fileSelector, setGisaidLoaderEnabled, setGisaid]);
 
 
   return (<div className={`${enabled ? "" : "hidden"}`}>
