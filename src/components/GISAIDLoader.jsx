@@ -68,7 +68,7 @@ function GISAIDLoader({setGisaid,enabled,setGisaidLoaderEnabled}) {
           The GISAID database licence does not allow us to redistribute of metadata on sequences contained within it. Therefore, to add GISAID metadata to this visualisation, you will need to download it and then add it yourself. The metadata file will remain on your computer: it will not be uploaded to any server.
       </p>
       <p className="mb-5 mt-10">Step 1: If you have not already, <a className="text-blue-800 underline" href="https://www.gisaid.org/registration/register/">Register for a GISAID account</a> and wait for approval.</p>
-      <p className="mb-5">Step 2: Once approved, sign in and go to EpiCov -&gt; Downloads -&gt; Genomic epidemiology -&gt; metadata </p>
+      <p className="mb-5">Step 2: Once approved, <a className="text-blue-800 underline"  href="https://www.epicov.org/epi3/frontend#2218a6">sign in</a> and download from: EpiCov -&gt; Downloads -&gt; Genomic epidemiology -&gt; metadata </p>
       <p className="mb-5">Step 3: Unzip the metadata_yyyy_mm_dd.tsv.gz file</p>
       <p className="mb-5">Step 4: Select the unzipped metadata.tsv file:  <input
               type="file"
