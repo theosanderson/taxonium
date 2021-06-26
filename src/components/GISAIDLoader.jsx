@@ -65,10 +65,10 @@ function GISAIDLoader({setGisaid,enabled,setGisaidLoaderEnabled}) {
         <button className="absolute top-5 right-5 text-xl font-bold" onClick={()=> setGisaidLoaderEnabled(false)}>X</button>
       <h1 className="font-bold mb-5 text-xl">Import GISAID metadata</h1>
       <p>
-          The GISAID database licence does not allow redistribution of metadata on sequences contained within it. To add GISAID metadata to this visualisation, you will need to download it from GISAID and then add it below.
+          The GISAID database licence does not allow redistribution of metadata on sequences contained within it. To add GISAID metadata to this visualisation, you will need to download it from GISAID and then add it below. This file will remain on your computer: it will not be uploaded to any server.
       </p>
       <p className="mb-5 mt-10">Step 1: If you have not already, <a className="text-blue-800 underline" href="https://www.gisaid.org/registration/register/">Register for a GISAID account</a> and wait for approval.</p>
-      <p className="mb-5">Step 2: Once approved, sign in and go to EpiCov -> Downloads -> Genomic epidemiology -> metadata </p>
+      <p className="mb-5">Step 2: Once approved, sign in and go to EpiCov -&gt; Downloads -&gt; Genomic epidemiology -&gt; metadata </p>
       <p className="mb-5">Step 3: Unzip the metadata_yyyy_mm_dd.tsv.gz file</p>
       <p className="mb-5">Step 4: Select the unzipped metadata.tsv file:  <input
               type="file"
