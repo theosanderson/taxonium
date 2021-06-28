@@ -3,6 +3,7 @@ import numpy as np
 import tqdm as tqdm
 import random
 import pandas as pd
+import math
 from collections import defaultdict
 
 
@@ -64,9 +65,36 @@ def add_paths(tree_by_level):
 root.path_list = []
 add_paths(by_level)
 
-all_nodes_to_export = [{'name':x.name,'x':5000*x.x,'y':x.y/20000,'lineage':lineage_lookup[x.name],'date':date_lookup[x.name],'path':x.path_list[::-1]} for x in tqdm.tqdm(all_nodes)]
+all_nodes_to_export = [{'num':i,'name':x.name,'x':5000*x.x,'y':x.y/20000,'path':x.path_list[::-1]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
+
+metadata = [{'name':x.name,'lineage':lineage_lookup[x.name],'date':date_lookup[x.name]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
+
+def shard_array(inlist, shard_size):
+    # inlist = 150-element list
+    # shard_size = 40
+    num_shards = math.ceil(len(inlist) / shard_size)
+    # num_shards == 3
+
+    shards = []
+    for i in range(num_shards):
+        # i == 0
+        start = shard_size * i  # start == 0, then 40, then 80...
+        end = shard_size * (i + 1)   # end == 39, then 79, then 119...
+        shards.append(inlist[start:end])
+
+    return shards
+
+shard_size = 200000
+sharded = shard_array(all_nodes_to_export,shard_size)
 
 import json
-shard_size = 100
-with open('../src/data2.json', 'w') as f:
-    json.dump(all_nodes_to_export,f, separators=(',', ':'))
+
+with open('../public/data/config.json', 'w') as f:
+    json.dump({"num_tree_shards":len(sharded),"shard_size":shard_size,"num_elements":len(all_nodes_to_export)},f)
+
+for i, shard in enumerate(sharded):
+    with open(f'../public/data/tree_shards/{i}.json', 'w') as f:
+        json.dump(sharded[i],f, separators=(',', ':'))
+
+with open(f'../public/data/metadata.json', 'w') as f:
+        json.dump(metadata,f, separators=(',', ':'))

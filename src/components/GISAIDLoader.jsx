@@ -21,7 +21,8 @@ function GISAIDLoader({ setGisaid, enabled, setGisaidLoaderEnabled }) {
       lines.pop();
       lines.forEach((x) => {
         const entries = x.split("\t");
-        lookup[GISAID_ID_COLUMN] = {
+        lookup[entries[GISAID_ID_COLUMN].slice(8, 500)] = {
+          // above removes "hCoV-19/"
           lineage: entries[GISAID_PANGO_COLUMN],
           aa_subs: entries[GISAID_AA_SUBS_COLUMN],
         };
@@ -29,6 +30,10 @@ function GISAIDLoader({ setGisaid, enabled, setGisaidLoaderEnabled }) {
       chunk_count += 1;
 
       const prop = (100 * chunk_count * chunk_size) / theFile.size;
+
+      if (prop > 98) {
+        bar.current.innerHTML = "Finalising, please wait..";
+      }
       bar.current.style.width = "" + prop + "%";
 
       if (chunk_size * chunk_count > theFile.size) {
@@ -110,7 +115,10 @@ function GISAIDLoader({ setGisaid, enabled, setGisaidLoaderEnabled }) {
         </p>
 
         <div className="mx-auto h-7 w-4/5 bg-gray-200 mt-5">
-          <div className=" h-7 bg-green-700 w-0 inline-block" ref={bar}></div>
+          <div
+            className=" h-7 bg-green-700 w-0 inline-block text-white"
+            ref={bar}
+          ></div>
         </div>
       </div>
     </div>
