@@ -66,7 +66,7 @@ let getMMatrix = (zoom) => [
   1,
 ];
 
-const getXval = (viewState) => 4 / 2 ** (viewState.zoom - 6);
+const getXval = (viewState) => 5 / 2 ** (viewState.zoom - 6);
 
 // DeckGL react component
 function Deck({ nodeData, metadata, colourBy, searchItems }) {
@@ -101,7 +101,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
     longitude: 0,
     latitude: 10,
     zoom: 7,
-    target: [5, 5],
+    target: [6, 5],
   });
   const deckRef = useRef(null);
   const onViewStateChange = useCallback(
@@ -163,6 +163,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         data: dummy_polygons,
         pickable: true,
         stroked: true,
+        opacity: 0.5,
         filled: true,
         wireframe: true,
         lineWidthMinPixels: 1,
