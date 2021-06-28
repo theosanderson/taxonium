@@ -416,7 +416,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
             >
               {metadata[hoverInfo.object.name].lineage}
             </div>
-            <div className="italic">{hoverInfo.object.date}</div>
+            <div className="italic">{metadata[hoverInfo.object.name].date}</div>
             <div>
               {
                 metadata[hoverInfo.object.name].aa_subs &&
