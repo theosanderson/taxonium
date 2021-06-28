@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
 import GISAIDLoader from "./components/GISAIDLoader";
@@ -18,20 +18,82 @@ function App() {
     },
   ]);
 
+  const [cogMetadata, setCogMetadata] = useState(null);
+
   const [colourBy, setColourBy] = useState("lineage");
-  const [nodeData, setNodeData] = useState([]);
+  const [nodeData, setNodeData] = useState({
+    status: "not_attempted",
+    data: [],
+  });
   const [gisaid, setGisaid] = useState();
+
+  const combinedMetadata = useMemo(() => {
+    if (cogMetadata === "loading") {
+      return "loading";
+    }
+    return { ...cogMetadata, ...gisaid };
+  }, [cogMetadata, gisaid]);
+
+  window.combined = combinedMetadata;
+  window.gisaid = gisaid;
+  window.cogmetadata = cogMetadata;
+
   const [gisaidLoaderEnabled, setGisaidLoaderEnabled] = useState(false);
   const [aboutEnabled, setAboutEnabled] = useState(false);
   window.gs = gisaid;
 
   useEffect(() => {
-    if (!nodeData.length) {
-      fetch("/data2.json")
+    if (nodeData.status === "not_attempted") {
+      let shards = {};
+      fetch("/data/config.json")
         .then((response) => response.json())
-        .then((data) => setNodeData(data));
+        .then((data) => {
+          const num_shards = data.num_tree_shards;
+
+          setNodeData({ status: "loading" });
+          console.log(num_shards, "shards");
+          const shard_indices = Array.from(new Array(num_shards), (x, i) => {
+            return i;
+          });
+          shard_indices.forEach((i) => {
+            fetch(`/data/tree_shards/${i}.json`)
+              .then((response) => response.json())
+              .then((data) => {
+                const new_shards = { ...shards, [i]: data };
+
+                const new_shards_length = Object.keys(new_shards).length;
+
+                if (new_shards_length === num_shards) {
+                  const list_of_lists = Object.keys(new_shards)
+                    .sort()
+                    .map((x) => new_shards[x]);
+                  const concatted = [].concat(...list_of_lists);
+                  setNodeData({ status: "loaded", data: concatted });
+                  window.concatted = concatted;
+                  console.log("shard complete");
+                } else {
+                  shards = new_shards;
+                }
+              });
+            return i;
+          });
+        });
     }
-  });
+  }, [nodeData.status]);
+
+  useEffect(() => {
+    if (cogMetadata === null) {
+      console.log("fetch");
+      fetch("/data/metadata.json")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("meta complete");
+          const as_dict = Object.fromEntries(data.map((x) => [x.name, x]));
+          setCogMetadata(as_dict);
+        });
+      setCogMetadata("loading");
+    }
+  }, [cogMetadata]);
 
   return (
     <Router>
@@ -72,7 +134,14 @@ function App() {
         <div className="main_content">
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-full w-full">
-              <Deck nodeData={nodeData} />
+              <Deck
+                metadata={
+                  combinedMetadata && combinedMetadata !== "loading"
+                    ? combinedMetadata
+                    : {}
+                }
+                nodeData={nodeData.status === "loaded" ? nodeData.data : []}
+              />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel

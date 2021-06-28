@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
-import Spinner from "./components/Spinner"
+import Spinner from "./components/Spinner";
 
 const dummy_polygons = [
   {
@@ -19,6 +19,9 @@ const dummy_polygons = [
   },
 ];
 function toRGB(string) {
+  if (string === undefined) {
+    return [200, 200, 200];
+  }
   if (string === "unknown") {
     return [200, 200, 200];
   }
@@ -39,9 +42,9 @@ function toRGB(string) {
   }
   return rgb;
 }
-function toRGBCSS(string){
-  const output = toRGB(string)
-  return(`rgb(${output[0]},${output[1]},${output[2]})`)
+function toRGBCSS(string) {
+  const output = toRGB(string);
+  return `rgb(${output[0]},${output[1]},${output[2]})`;
 }
 
 let getMMatrix = (zoom) => [
@@ -63,37 +66,38 @@ let getMMatrix = (zoom) => [
   1,
 ];
 
-
 const getXval = (viewState) => 4 / 2 ** (viewState.zoom - 6);
 // DeckGL react component
-function Deck({nodeData}) {
-
-
+function Deck({ nodeData, metadata }) {
+  const scatterData = useMemo(
+    () =>
+      nodeData.map((x) => {
+        return { ...x, ...metadata[x.name] };
+      }),
+    [nodeData, metadata]
+  );
   // Data to be used by the LineLayer
-  const lineData = useMemo(()=>{
-
+  const lineData = useMemo(() => {
     let data = [];
 
-nodeData.forEach((node) => {
-  let first_path = node.path[0];
-  let first_node = nodeData[first_path];
+    nodeData.forEach((node) => {
+      let first_path = node.path[0];
+      let first_node = nodeData[first_path];
 
-  if (first_node) {
-    data.push({
-      sourcePosition: [node.x, node.y],
-      targetPosition: [node.x, first_node.y],
+      if (first_node) {
+        data.push({
+          sourcePosition: [node.x, node.y],
+          targetPosition: [node.x, first_node.y],
+        });
+
+        data.push({
+          sourcePosition: [node.x, first_node.y],
+          targetPosition: [first_node.x, first_node.y],
+        });
+      }
     });
-
-    data.push({
-      sourcePosition: [node.x, first_node.y],
-      targetPosition: [first_node.x, first_node.y],
-    });
-  }
-});
-return data;
-  },[nodeData]);
-
-
+    return data;
+  }, [nodeData]);
 
   const [hoverInfo, setHoverInfo] = useState();
 
@@ -177,36 +181,35 @@ return data;
 
   const scatterplot_config = useMemo(() => {
     return {
-      data: nodeData.filter((x) => x.name != null),
+      data: scatterData.filter((x) => x.name != null),
       opacity: 0.7,
       radiusMinPixels: 1,
-      radiusMaxPixels:2,
+      radiusMaxPixels: 2,
       getRadius: 4,
-      radiusUnits:'pixels',
+      radiusUnits: "pixels",
       getPosition: (d) => {
         return [d.x, d.y];
       },
       getFillColor: (d) => toRGB(d.lineage),
     };
-  }, [nodeData]);
+  }, [scatterData]);
 
   const scatter_layer_main = useMemo(
     () =>
       new ScatterplotLayer({
         ...scatterplot_config,
         radiusMinPixels: 1,
-      radiusMaxPixels: 4,
-      getRadius: 4,
-      opacity: viewState.zoom>15?0.8 : 0.6,
+        radiusMaxPixels: 4,
+        getRadius: 4,
+        opacity: viewState.zoom > 15 ? 0.8 : 0.6,
         id: "main-scatter",
         modelMatrix: getMMatrix(viewState.zoom),
         pickable: true,
-        getLineColor: d => [100,100, 100],
-        stroked: viewState.zoom>15,
-        lineWidthUnits:'pixels',
-        lineWidthScale:1,
-        onHover: (info) => setHoverInfo(info)
-        
+        getLineColor: (d) => [100, 100, 100],
+        stroked: viewState.zoom > 15,
+        lineWidthUnits: "pixels",
+        lineWidthScale: 1,
+        onHover: (info) => setHoverInfo(info),
       }),
     [viewState, scatterplot_config]
   );
@@ -215,10 +218,10 @@ return data;
     () =>
       new LineLayer({
         id: "main-lines",
-        data:lineData,
+        data: lineData,
         modelMatrix: getMMatrix(viewState.zoom),
       }),
-    [viewState,lineData]
+    [viewState, lineData]
   );
 
   const pos_layer_mini = useMemo(
@@ -231,12 +234,18 @@ return data;
         radiusMaxPixels: 4,
         getRadius: 4,
         getLineWidth: 0.1,
-        getPolygon: (d) => [
-          [d.nw[0], d.nw[1]],
-          [d.se[0], d.nw[1]],
-          [d.se[0], d.se[1]],
-          [d.nw[0], d.se[1]],
-        ],
+        getPolygon: (d) => {
+          if (d.nw !== undefined) {
+            return [
+              [d.nw[0], d.nw[1]],
+              [d.se[0], d.nw[1]],
+              [d.se[0], d.se[1]],
+              [d.nw[0], d.se[1]],
+            ];
+          } else {
+            return [];
+          }
+        },
         getFillColor: [255, 255, 255],
       }),
     [viewState]
@@ -251,7 +260,7 @@ return data;
     () =>
       new LineLayer({
         id: "mini-lines",
-        data:lineData,
+        data: lineData,
       }),
     [lineData]
   );
@@ -277,6 +286,21 @@ return data;
 
   window.deck = deckRef;
 
+  const views = useMemo(
+    () => [
+      new OrthographicView({ id: "main", controller: true }),
+      new OrthographicView({
+        id: "minimap",
+        x: "79%",
+        y: "1%",
+        width: "20%",
+        height: "35%",
+        controller: true,
+      }),
+    ],
+    []
+  );
+
   return (
     <div
       className="w-full h-full relative"
@@ -291,17 +315,7 @@ return data;
           }
         }}
         ref={deckRef}
-        views={[
-          new OrthographicView({ id: "main", controller: true }),
-          new OrthographicView({
-            id: "minimap",
-            x: "79%",
-            y: "1%",
-            width: "20%",
-            height: "35%",
-            controller: true,
-          }),
-        ]}
+        views={views}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         layerFilter={useCallback(({ layer, viewport }) => {
@@ -325,12 +339,14 @@ return data;
             }}
           >
             <h2 className="font-bold">{hoverInfo.object.name}</h2>
-            <div style={{color:toRGBCSS(hoverInfo.object.lineage)}}>{hoverInfo.object.lineage}</div>
+            <div style={{ color: toRGBCSS(hoverInfo.object.lineage) }}>
+              {hoverInfo.object.lineage}
+            </div>
             <div className="italic">{hoverInfo.object.date}</div>
           </div>
         )}
       </DeckGL>
-      <Spinner isShown={nodeData.length===0}/>
+      <Spinner isShown={nodeData.length === 0} />
     </div>
   );
 }
