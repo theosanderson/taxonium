@@ -67,5 +67,6 @@ add_paths(by_level)
 all_nodes_to_export = [{'name':x.name,'x':5000*x.x,'y':x.y/20000,'lineage':lineage_lookup[x.name],'date':date_lookup[x.name],'path':x.path_list[::-1]} for x in tqdm.tqdm(all_nodes)]
 
 import json
+shard_size = 100
 with open('../src/data2.json', 'w') as f:
     json.dump(all_nodes_to_export,f, separators=(',', ':'))
