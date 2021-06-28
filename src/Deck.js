@@ -67,15 +67,11 @@ let getMMatrix = (zoom) => [
 ];
 
 const getXval = (viewState) => 4 / 2 ** (viewState.zoom - 6);
+
 // DeckGL react component
-function Deck({ nodeData, metadata }) {
-  const scatterData = useMemo(
-    () =>
-      nodeData.map((x) => {
-        return { ...x, ...metadata[x.name] };
-      }),
-    [nodeData, metadata]
-  );
+function Deck({ nodeData, metadata, colourBy, searchItems }) {
+  window.searchItems = searchItems;
+  const scatterData = useMemo(() => nodeData, [nodeData]);
   // Data to be used by the LineLayer
   const lineData = useMemo(() => {
     let data = [];
@@ -190,9 +186,77 @@ function Deck({ nodeData, metadata }) {
       getPosition: (d) => {
         return [d.x, d.y];
       },
-      getFillColor: (d) => toRGB(d.lineage),
+      getFillColor: (d) => toRGB(metadata[d.name][colourBy]),
     };
-  }, [scatterData]);
+  }, [scatterData, metadata, colourBy]);
+
+  const search_configs_initial = useMemo(() => {
+    const colors = [
+      [255, 0, 0],
+      [0, 0, 255],
+      [0, 255, 255],
+    ];
+    const configs = searchItems
+      .map((item, counter) => {
+        const filter_function =
+          item.category === "mutation"
+            ? (x) =>
+                metadata[x.name]["aa_subs"] &&
+                metadata[x.name]["aa_subs"].includes(item.value)
+            : item.category === "name"
+            ? (x) => x.name === item.value
+            : (x) => metadata[x.name][item.category] === item.value;
+        const enabled =
+          item.value !== null && item.value !== "" && item.enabled;
+        return {
+          enabled: enabled,
+          data: enabled ? scatterData.filter(filter_function) : [],
+          opacity: 0.7,
+          radiusMinPixels: 10 + counter * 2,
+          filled: false,
+          stroked: true,
+          radiusMaxPixels: 10 + counter * 2,
+          getRadius: 8,
+          radiusUnits: "pixels",
+          lineWidthUnits: "pixels",
+          lineWidthScale: 1,
+
+          getPosition: (d) => {
+            return [d.x, d.y];
+          },
+          getFillColor: (d) => [0, 0, 0],
+          getLineColor: (d) => colors[counter % colors.length],
+        };
+      })
+      .filter((item) => item.enabled);
+    return configs;
+  }, [metadata, scatterData, searchItems]);
+
+  const search_layers_main = useMemo(() => {
+    console.log("main");
+    const mains = search_configs_initial.map(
+      (x, i) =>
+        new ScatterplotLayer({
+          ...x,
+          id: "main-search" + i,
+          modelMatrix: getMMatrix(viewState.zoom),
+        })
+    );
+    return mains;
+  }, [search_configs_initial, viewState.zoom]);
+
+  const search_layers_mini = useMemo(() => {
+    console.log("mini");
+    const minis = search_configs_initial.map(
+      (x, i) =>
+        new ScatterplotLayer({
+          ...x,
+          id: "mini-search" + i,
+        })
+    );
+
+    return minis;
+  }, [search_configs_initial]);
 
   const scatter_layer_main = useMemo(
     () =>
@@ -273,6 +337,8 @@ function Deck({ nodeData, metadata }) {
       line_layer_mini,
       scatter_layer_mini,
       pos_layer_mini,
+      ...search_layers_main,
+      ...search_layers_mini,
     ],
     [
       poly_layer,
@@ -281,6 +347,8 @@ function Deck({ nodeData, metadata }) {
       line_layer_mini,
       scatter_layer_mini,
       pos_layer_mini,
+      search_layers_main,
+      search_layers_mini,
     ]
   );
 
@@ -321,7 +389,9 @@ function Deck({ nodeData, metadata }) {
         layerFilter={useCallback(({ layer, viewport }) => {
           return (
             (layer.id.startsWith("main") && viewport.id === "main") ||
-            (layer.id.startsWith("mini") && viewport.id === "minimap")
+            (layer.id.startsWith("mini") &&
+              viewport.id === "minimap" &&
+              window.hidemini !== true)
           );
         }, [])}
         controller={true}
@@ -339,10 +409,20 @@ function Deck({ nodeData, metadata }) {
             }}
           >
             <h2 className="font-bold">{hoverInfo.object.name}</h2>
-            <div style={{ color: toRGBCSS(hoverInfo.object.lineage) }}>
-              {hoverInfo.object.lineage}
+            <div
+              style={{
+                color: toRGBCSS(metadata[hoverInfo.object.name].lineage),
+              }}
+            >
+              {metadata[hoverInfo.object.name].lineage}
             </div>
             <div className="italic">{hoverInfo.object.date}</div>
+            <div>
+              {
+                metadata[hoverInfo.object.name].aa_subs &&
+                  metadata[hoverInfo.object.name].aa_subs.join(", ") //TODO assign the top thing to a constant and use it again
+              }
+            </div>
           </div>
         )}
       </DeckGL>

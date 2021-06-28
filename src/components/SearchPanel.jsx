@@ -3,6 +3,7 @@ import SearchItem from "./SearchItem";
 import { FaSearch } from "react-icons/fa";
 import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
+
 function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy }) {
   return (
     <div>
@@ -26,6 +27,7 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy }) {
                 console.log("remove", id);
                 setSearchItems(searchItems.filter((x) => x.id !== id));
               }}
+              enabled={item.enabled}
             ></SearchItem>
           );
         })}
@@ -35,7 +37,12 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy }) {
           onClick={() =>
             setSearchItems([
               ...searchItems,
-              { id: Math.random(), category: "name", value: null },
+              {
+                id: Math.random(),
+                category: "name",
+                value: null,
+                enabled: true,
+              },
             ])
           }
         >
