@@ -110,7 +110,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         return;
       }
 
-      viewState["minimap"] = { zoom: 3.4, target: [4, 9] };
+      viewState["minimap"] = { zoom: 3.15, target: [4, 10] };
       viewState.target[0] = getXval(viewState);
 
       if (deckRef.current.viewports.length) {
