@@ -284,6 +284,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       new LineLayer({
         id: "main-lines",
         data: lineData,
+        getColor: (d) => [70, 70, 70],
         modelMatrix: getMMatrix(viewState.zoom),
       }),
     [viewState, lineData]
