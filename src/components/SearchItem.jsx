@@ -16,7 +16,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
       <input
         name="isGoing"
         type="checkbox"
-        className="w-5 h-5 mr-2"
+        className="w-5 h-5 mr-2 border-gray-400 border"
         checked={enabled}
         onChange={(event) => setThis({ enabled: !enabled })}
       />
