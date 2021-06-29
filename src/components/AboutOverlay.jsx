@@ -60,6 +60,8 @@ function AboutOverlay({ enabled, setEnabled }) {
           You can also explore large phylogenies using{" "}
           <a className="text-blue-700 underline" href="https://pando.tools">
             Pando
+          </a>, <a className="text-blue-700 underline" href="https://microreact.org/">
+            Microreact
           </a>
           , and sampled phylogenies on{" "}
           <a className="text-blue-700 underline" href="https://nextstrain.org/">
