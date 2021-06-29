@@ -48,7 +48,7 @@ function toRGBCSS(string) {
 }
 
 let getMMatrix = (zoom) => [
-  1 / 2 ** (zoom - 6),
+  1 / 2 ** (zoom - 5.6),
   0,
   0,
   0,
@@ -66,7 +66,7 @@ let getMMatrix = (zoom) => [
   1,
 ];
 
-const getXval = (viewState) => 5 / 2 ** (viewState.zoom - 6);
+const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
 function Deck({ nodeData, metadata, colourBy, searchItems }) {
@@ -110,7 +110,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         return;
       }
 
-      viewState["minimap"] = { zoom: 3.15, target: [4, 10] };
+      viewState["minimap"] = { zoom: 3.0, target: [5, 13] };
       viewState.target[0] = getXval(viewState);
 
       if (deckRef.current.viewports.length) {
@@ -371,6 +371,48 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
     []
   );
 
+  const hoverStuff = useMemo(() => {
+    if (hoverInfo && hoverInfo.object) {
+      return (
+        <div
+          className="bg-gray-100 p-3 opacity-90 text-sm"
+          style={{
+            position: "absolute",
+            zIndex: 1,
+            pointerEvents: "none",
+            left: hoverInfo.x,
+            top: hoverInfo.y,
+          }}
+        >
+          <h2 className="font-bold">{hoverInfo.object.name}</h2>
+          {metadata[hoverInfo.object.name].lineage !== "unknown" && (
+            <div
+              style={{
+                color: toRGBCSS(metadata[hoverInfo.object.name].lineage),
+              }}
+            >
+              {metadata[hoverInfo.object.name].lineage}
+            </div>
+          )}
+          {metadata[hoverInfo.object.name].date !== "unknown" && (
+            <div className="italic">{metadata[hoverInfo.object.name].date}</div>
+          )}
+          {metadata[hoverInfo.object.name].date === "unknown" && (
+            <div className="italic text-sm">
+              Import GISAID data for lineage info outside the UK
+            </div>
+          )}
+          <div className="text-xs">
+            {
+              metadata[hoverInfo.object.name].aa_subs &&
+                metadata[hoverInfo.object.name].aa_subs.join(", ") //TODO assign the top thing to a constant and use it again
+            }
+          </div>
+        </div>
+      );
+    }
+  }, [metadata, hoverInfo]);
+
   return (
     <div
       className="w-full h-full relative"
@@ -399,34 +441,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         controller={true}
         layers={layers}
       >
-        {hoverInfo && hoverInfo.object && (
-          <div
-            className="bg-gray-100 p-3 opacity-90 text-sm"
-            style={{
-              position: "absolute",
-              zIndex: 1,
-              pointerEvents: "none",
-              left: hoverInfo.x,
-              top: hoverInfo.y,
-            }}
-          >
-            <h2 className="font-bold">{hoverInfo.object.name}</h2>
-            <div
-              style={{
-                color: toRGBCSS(metadata[hoverInfo.object.name].lineage),
-              }}
-            >
-              {metadata[hoverInfo.object.name].lineage}
-            </div>
-            <div className="italic">{metadata[hoverInfo.object.name].date}</div>
-            <div>
-              {
-                metadata[hoverInfo.object.name].aa_subs &&
-                  metadata[hoverInfo.object.name].aa_subs.join(", ") //TODO assign the top thing to a constant and use it again
-              }
-            </div>
-          </div>
-        )}
+        {hoverStuff}
       </DeckGL>
       <Spinner
         isShown={nodeData.length === 0 || !Object.keys(metadata).length}

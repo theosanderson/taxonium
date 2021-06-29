@@ -35,7 +35,7 @@ function App() {
   );
   const [cogMetadata, setCogMetadata] = useState(null);
 
-  const [colourBy, setColourBy] = useState("lineage");
+  const [colourBy, setColourBy] = useState("country");
   const setColourByWithCheck = useCallback(
     (x) => {
       if ((x === "country") & (gisaid === null)) {
