@@ -125,7 +125,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
   }, [nodeData]);
 
   const [hoverInfo, setHoverInfo] = useState();
-  const zoomThreshold = 7;
+  const zoomThreshold = 8;
   const [viewState, setViewState] = useState({
     longitude: 0,
     latitude: 10,
@@ -357,7 +357,6 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       }),
     [viewState]
   );
-  console.log(viewState.zoom, "z");
 
   const scatter_layer_mini = useMemo(
     () =>
@@ -365,6 +364,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         id: "mini-scatter",
         ...scatterplot_config,
         data: minimapScatterData,
+        visible: true,
       }),
     [scatterplot_config, minimapScatterData]
   );
