@@ -412,6 +412,10 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       );
     }
   }, [metadata, hoverInfo]);
+  const spinnerShown = useMemo(
+    () => nodeData.length === 0 || !Object.keys(metadata).length,
+    [metadata, nodeData]
+  );
 
   return (
     <div
@@ -443,9 +447,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       >
         {hoverStuff}
       </DeckGL>
-      <Spinner
-        isShown={nodeData.length === 0 || !Object.keys(metadata).length}
-      />
+      {spinnerShown && <Spinner isShown={true} />}
     </div>
   );
 }
