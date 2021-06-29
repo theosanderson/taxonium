@@ -15,4 +15,4 @@ Look at the `data_processing` directory. We construct two protobuffer files, `tr
 
 
 ### Old version
-This is a greenfielded version of the legacy project, which can be found at https://github.com/theosanderson/cov2tree
+This is a greenfielded version of the legacy project, which can be found at https://github.com/theosanderson/cov2tree_legacy
