@@ -175,11 +175,12 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         const newViewState = {
           ...viewState,
           target: [getXval(viewState), pickInfo.coordinate[1]],
+          nw:undefined
         };
-        onViewStateChange({ viewState: newViewState });
+        setViewState(newViewState );
       }
     },
-    [viewState, onViewStateChange]
+    [viewState]
   );
 
   const poly_layer = useMemo(
