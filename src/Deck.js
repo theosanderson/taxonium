@@ -363,7 +363,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       new ScatterplotLayer({
         id: "mini-scatter",
         ...scatterplot_config,
-        data: minimapScatterData,
+        data: minimapScatterData.filter(() => true),
         visible: true,
       }),
     [scatterplot_config, minimapScatterData]
@@ -374,7 +374,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       new ScatterplotLayer({
         ...scatterplot_config,
         id: "main-scatter-coarse",
-        data: coarseScatterData,
+        data: coarseScatterData.filter(() => true),
         radiusMinPixels: 1,
         radiusMaxPixels: 4,
         getRadius: 4,
