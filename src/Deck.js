@@ -5,6 +5,33 @@ import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 
+function reduceOverPlotting(dataset) {
+  const number = 10;
+  const included_points = {};
+  const rounded_dataset = dataset.map((node) => {
+    const new_node = { ...node };
+    new_node.x = Math.round(node.x * number) / number;
+    new_node.y = Math.round(node.y * number) / number;
+    return new_node;
+  });
+
+  const filtered = rounded_dataset.filter((node) => {
+    if (included_points[node.x]) {
+      if (included_points[node.x][node.y]) {
+        return false;
+      } else {
+        included_points[node.x][node.y] = 1;
+        return true;
+      }
+    } else {
+      included_points[node.x] = { [node.y]: 1 };
+      return true;
+    }
+  });
+
+  console.log(filtered.length, ":");
+  return filtered;
+}
 const dummy_polygons = [
   {
     contour: [
@@ -176,6 +203,11 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
     []
   );
 
+  const minimapScatterData = useMemo(
+    () => reduceOverPlotting(scatterData).filter((x) => x.name != null),
+    [scatterData]
+  );
+
   const scatterplot_config = useMemo(() => {
     return {
       data: scatterData.filter((x) => x.name != null),
@@ -318,8 +350,13 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
   );
 
   const scatter_layer_mini = useMemo(
-    () => new ScatterplotLayer({ id: "mini-scatter", ...scatterplot_config }),
-    [scatterplot_config]
+    () =>
+      new ScatterplotLayer({
+        id: "mini-scatter",
+        ...scatterplot_config,
+        data: minimapScatterData,
+      }),
+    [scatterplot_config, minimapScatterData]
   );
 
   const line_layer_mini = useMemo(
