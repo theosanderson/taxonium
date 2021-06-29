@@ -217,7 +217,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
 
   const scatterplot_config = useMemo(() => {
     return {
-      data: scatterData,
+      data: scatterData.filter(() => true),
       visble: true,
       opacity: 0.7,
       radiusMinPixels: 1,
