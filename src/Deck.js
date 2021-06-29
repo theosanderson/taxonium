@@ -127,8 +127,6 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
   const [hoverInfo, setHoverInfo] = useState();
   const zoomThreshold = 8;
   const [viewState, setViewState] = useState({
-    longitude: 0,
-    latitude: 10,
     zoom: 7,
     target: [6, 5],
   });
