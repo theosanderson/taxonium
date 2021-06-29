@@ -34,7 +34,7 @@ function AboutOverlay({ enabled, setEnabled }) {
             className="text-blue-700 underline"
             href="https://www.cogconsortium.uk/tools-analysis/public-data-analysis-2/"
           >
-            COG UK
+            COG-UK
           </a>{" "}
           . The tree-specific pipeline was written by Rachel Colquhoun et al.
         </p>
