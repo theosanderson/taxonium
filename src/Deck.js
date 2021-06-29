@@ -215,8 +215,6 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
     [scatterData]
   );
 
-  const integerZoom = Math.round(viewState.zoom);
-
   const scatterplot_config = useMemo(() => {
     return {
       data: scatterData,
