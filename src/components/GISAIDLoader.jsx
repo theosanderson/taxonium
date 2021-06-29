@@ -116,7 +116,7 @@ function GISAIDLoader({
           >
             sign in
           </a>{" "}
-          and download from: EpiCov -&gt; Downloads -&gt; Genomic packages{" "}
+          and download from: EpiCov -&gt; Downloads -&gt; Download Packages{" "}
           <i>(not Genomic Epidemiology)</i>
           -&gt; metadata{" "}
         </p>
