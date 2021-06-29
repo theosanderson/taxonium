@@ -91,7 +91,12 @@ function App() {
                   const list_of_lists = Object.keys(new_shards)
                     .sort()
                     .map((x) => new_shards[x]);
-                  const concatted = [].concat(...list_of_lists);
+                  const concatted = [];
+                  list_of_lists.forEach((this_list) => {
+                    this_list.forEach((item) => {
+                      concatted.push(item);
+                    });
+                  });
                   setNodeData({ status: "loaded", data: concatted });
                   window.concatted = concatted;
                   console.log("shard complete");
