@@ -106,7 +106,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
     let data = [];
 
     nodeData.forEach((node) => {
-      let first_path = node.path[0];
+      let first_path = node.parent;
       let first_node = nodeData[first_path];
 
       if (first_node) {

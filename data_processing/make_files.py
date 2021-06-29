@@ -5,7 +5,7 @@ import random
 import pandas as pd
 import math
 from collections import defaultdict
-
+import tree_pb2
 
 metadata = pd.read_csv('./cog_metadata.csv')
 lineage_lookup = defaultdict(lambda: "unknown")
@@ -66,6 +66,20 @@ root.path_list = []
 add_paths(by_level)
 
 all_nodes_to_export = [{'num':i,'name':x.name,'x':5000*x.x,'y':x.y/20000,'path':x.path_list[::-1]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
+def make_node(x):
+    parents = x.path_list[::-1]
+    if len(parents)>0:
+        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/20000,parent=parents[0])
+    else:
+        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/20000)
+
+pb_list = [make_node(x) for i,x in tqdm.tqdm(enumerate(all_nodes))]
+node_list = tree_pb2.NodeList(nodes=pb_list)
+node_list.SerializeToString()
+
+f = open("../public/nodelist.pb", "wb")
+f.write(node_list.SerializeToString())
+f.close()
 
 metadata = [{'name':x.name,'lineage':lineage_lookup[x.name],'date':date_lookup[x.name]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
 

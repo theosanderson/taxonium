@@ -1,0 +1,14 @@
+package vbigtree;
+syntax = "proto3";
+
+message Node {
+ string name = 1;
+  float x = 2;
+  float y = 3;
+   int32 parent = 4;
+}
+
+
+message NodeList {
+ repeated Node nodes=1;
+}
