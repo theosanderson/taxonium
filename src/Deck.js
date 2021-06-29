@@ -428,7 +428,9 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
           </div>
         )}
       </DeckGL>
-      <Spinner isShown={nodeData.length === 0} />
+      <Spinner
+        isShown={nodeData.length === 0 || !Object.keys(metadata).length}
+      />
     </div>
   );
 }
