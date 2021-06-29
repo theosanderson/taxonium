@@ -57,7 +57,7 @@ function AboutOverlay({ enabled, setEnabled }) {
         </p>
         <h1 className="font-bold mb-5 text-xl mt-10">Similar tools</h1>
         <p>
-          You can also explore large phylogenies like these on{" "}
+          You can also explore large phylogenies like this one on{" "}
           <a className="text-blue-700 underline" href="https://pando.tools">
             Pando
           </a>
