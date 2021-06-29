@@ -83,11 +83,11 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       if (first_node) {
         data.push({
           sourcePosition: [node.x, node.y],
-          targetPosition: [node.x, first_node.y],
+          targetPosition: [first_node.x, node.y],
         });
 
         data.push({
-          sourcePosition: [node.x, first_node.y],
+          sourcePosition: [first_node.x, node.y],
           targetPosition: [first_node.x, first_node.y],
         });
       }
