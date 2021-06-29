@@ -5,13 +5,12 @@ import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 
-function reduceOverPlotting(dataset) {
-  const number = 10;
+function reduceOverPlotting(dataset, precision = 10) {
   const included_points = {};
   const rounded_dataset = dataset.map((node) => {
     const new_node = { ...node };
-    new_node.x = Math.round(node.x * number) / number;
-    new_node.y = Math.round(node.y * number) / number;
+    new_node.x = Math.round(node.x * precision) / precision;
+    new_node.y = Math.round(node.y * precision) / precision;
     return new_node;
   });
 
@@ -98,7 +97,10 @@ const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 // DeckGL react component
 function Deck({ nodeData, metadata, colourBy, searchItems }) {
   window.searchItems = searchItems;
-  const scatterData = useMemo(() => nodeData, [nodeData]);
+  const scatterData = useMemo(
+    () => nodeData.filter((x) => x.name !== null),
+    [nodeData]
+  );
   // Data to be used by the LineLayer
   const lineData = useMemo(() => {
     let data = [];
@@ -123,7 +125,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
   }, [nodeData]);
 
   const [hoverInfo, setHoverInfo] = useState();
-
+  const zoomThreshold = 8;
   const [viewState, setViewState] = useState({
     longitude: 0,
     latitude: 10,
@@ -204,13 +206,19 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
   );
 
   const minimapScatterData = useMemo(
-    () => reduceOverPlotting(scatterData).filter((x) => x.name != null),
+    () => reduceOverPlotting(scatterData),
+    [scatterData]
+  );
+
+  const coarseScatterData = useMemo(
+    () => reduceOverPlotting(scatterData, 100),
     [scatterData]
   );
 
   const scatterplot_config = useMemo(() => {
     return {
-      data: scatterData.filter((x) => x.name != null),
+      data: scatterData,
+      visble: true,
       opacity: 0.7,
       radiusMinPixels: 1,
       radiusMaxPixels: 2,
@@ -306,6 +314,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         stroked: viewState.zoom > 15,
         lineWidthUnits: "pixels",
         lineWidthScale: 1,
+        visible: viewState.zoom > zoomThreshold,
         onHover: (info) => setHoverInfo(info),
       }),
     [viewState, scatterplot_config]
@@ -354,9 +363,33 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       new ScatterplotLayer({
         id: "mini-scatter",
         ...scatterplot_config,
-        data: minimapScatterData,
+        data: minimapScatterData.filter(() => true),
+        visible: true,
       }),
     [scatterplot_config, minimapScatterData]
+  );
+
+  const scatter_layer_coarse = useMemo(
+    () =>
+      new ScatterplotLayer({
+        ...scatterplot_config,
+        id: "main-scatter-coarse",
+        data: coarseScatterData.filter(() => true),
+        radiusMinPixels: 1,
+        radiusMaxPixels: 4,
+        getRadius: 4,
+        opacity: viewState.zoom > 15 ? 0.8 : 0.6,
+
+        modelMatrix: getMMatrix(viewState.zoom),
+        pickable: true,
+        getLineColor: (d) => [100, 100, 100],
+        stroked: viewState.zoom > 15,
+        lineWidthUnits: "pixels",
+        lineWidthScale: 1,
+        visible: viewState.zoom < zoomThreshold,
+        onHover: (info) => setHoverInfo(info),
+      }),
+    [scatterplot_config, coarseScatterData, viewState.zoom]
   );
 
   const line_layer_mini = useMemo(
@@ -373,6 +406,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       poly_layer,
       line_layer_main,
       scatter_layer_main,
+      scatter_layer_coarse,
       line_layer_mini,
       scatter_layer_mini,
       pos_layer_mini,
@@ -383,6 +417,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       poly_layer,
       line_layer_main,
       scatter_layer_main,
+      scatter_layer_coarse,
       line_layer_mini,
       scatter_layer_mini,
       pos_layer_mini,
