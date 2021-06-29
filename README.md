@@ -4,7 +4,7 @@ A client-side JS component for exploring extremely large trees.
 
 ## Development
 
-Dev
+
 
 ### `yarn start`
 
