@@ -55,11 +55,17 @@ function AboutOverlay({ enabled, setEnabled }) {
           diplomacy: GISAID’s innovative contribution to global health. Global
           Challenges, 1:33-46. DOI: 10.1002/gch2.1018 PMCID: 31565258
         </p>
-        <h1 className="font-bold mb-5 text-xl mt-10">Other resources</h1>
+        <h1 className="font-bold mb-5 text-xl mt-10">Similar tools</h1>
         <p>
           You can also explore large phylogenies like these on{" "}
-          <a href="https://pando.tools">Pando</a>, and sampled phylogenies on{" "}
-          <a href="https://nextstrain.org/">NextStrain</a>.
+          <a className="text-blue-700 underline" href="https://pando.tools">
+            Pando
+          </a>
+          , and sampled phylogenies on{" "}
+          <a className="text-blue-700 underline" href="https://nextstrain.org/">
+            NextStrain
+          </a>
+          .
         </p>
       </div>
     </div>
