@@ -8,7 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 import { RiFolderUploadLine } from "react-icons/ri";
 import { BsInfoSquare } from "react-icons/bs";
-
+var protobuf = require("protobufjs");
 function App() {
   const [searchItems, setSearchItemsBasic] = useState([
     {
@@ -68,47 +68,34 @@ function App() {
 
   useEffect(() => {
     if (nodeData.status === "not_attempted") {
-      let shards = {};
-      fetch("/data/config.json")
-        .then((response) => response.json())
-        .then((data) => {
-          const num_shards = data.num_tree_shards;
+      protobuf.load("./tree.proto")
+    .then(function(root) {
 
-          setNodeData({ status: "loading" });
-          console.log(num_shards, "shards");
-          const shard_indices = Array.from(new Array(num_shards), (x, i) => {
-            return i;
-          });
-          shard_indices.forEach((i) => {
-            fetch(`/data/tree_shards/${i}.json`)
-              .then((response) => response.json())
-              .then((data) => {
-                const new_shards = { ...shards, [i]: data };
 
-                const new_shards_length = Object.keys(new_shards).length;
-
-                if (new_shards_length === num_shards) {
-                  const list_of_lists = Object.keys(new_shards)
-                    .sort()
-                    .map((x) => new_shards[x]);
-                  const concatted = [];
-                  list_of_lists.forEach((this_list) => {
-                    this_list.forEach((item) => {
-                      concatted.push(item);
-                    });
-                  });
-                  setNodeData({ status: "loaded", data: concatted });
-                  window.concatted = concatted;
-                  console.log("shard complete");
-                } else {
-                  shards = new_shards;
-                }
-              });
-            return i;
-          });
+      fetch('/nodelist.pb')
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error("HTTP error, status = " + response.status);
+        }
+        return response.arrayBuffer();
+      })
+      .then(function(buffer) {
+        console.log(buffer)
+        var NodeList = root.lookupType("vbigtree.NodeList");
+        window.buffer= buffer
+        window.NodeList = NodeList
+      var message = NodeList.decode(new Uint8Array(buffer));
+      var result = NodeList.toObject(message);
+      window.result = result
+    setNodeData({status:'loaded',data:result.nodes.map((x)=>{return {name:null,...x}})})
         });
+      });
+  
+
+     
     }
-  }, [nodeData.status]);
+    }
+  , [nodeData.status]);
 
   useEffect(() => {
     if (cogMetadata === null) {
