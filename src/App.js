@@ -159,7 +159,7 @@ function App() {
         </div>
         <div className="main_content">
           <div className="md:grid md:grid-cols-12 h-full">
-            <div className="md:col-span-8 h-full w-full">
+            <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
                 searchItems={searchItems}
                 metadata={
