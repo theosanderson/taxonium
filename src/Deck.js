@@ -180,6 +180,8 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
     },
     [deckRef]
   );
+  
+  const [mouseDownIsMinimap,setMouseDownIsMinimap] = useState(false)
 
   const onClickOrMouseMove = useCallback(
     (event) => {
@@ -187,6 +189,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         return false;
       }
 
+    
       const pickInfo = deckRef.current.pickObject({
         x: event.nativeEvent.offsetX,
         y: event.nativeEvent.offsetY,
@@ -194,7 +197,17 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       });
       //console.log(viewState);
 
-      if (pickInfo && pickInfo.viewport.id === "minimap") {
+      if ( event._reactName === "onMouseDown") {
+        if (pickInfo && pickInfo.viewport.id === "minimap") {
+          setMouseDownIsMinimap(true)
+        }
+        else{
+          setMouseDownIsMinimap(false)
+        }
+      }
+
+
+      if (pickInfo && pickInfo.viewport.id === "minimap" && mouseDownIsMinimap) {
         //viewState.target=pickInfo.coordinate
         //console.log(pickInfo)
         const newViewState = {
@@ -205,7 +218,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         setViewState(newViewState );
       }
     },
-    [viewState]
+    [viewState,mouseDownIsMinimap]
   );
 
   const poly_layer = useMemo(
@@ -518,6 +531,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       className="w-full h-full relative"
       onClick={onClickOrMouseMove}
       onMouseMove={onClickOrMouseMove}
+      onMouseDown={onClickOrMouseMove}
     >
       {" "}
       <DeckGL
