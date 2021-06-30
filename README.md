@@ -11,8 +11,3 @@ Look at the `data_processing` directory. We construct two protobuffer files, `tr
 `nvm use 14`
 `yarn install`
 `yarn start`
-
-
-
-### Old version
-This is a greenfielded version of the legacy project, which can be found at https://github.com/theosanderson/cov2tree_legacy
