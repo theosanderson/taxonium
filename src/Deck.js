@@ -51,6 +51,9 @@ function toRGB(string) {
   if (string === "unknown") {
     return [200, 200, 200];
   }
+  if (string === "USA") {
+    return [95, 158, 245]; //This is just because the default is ugly
+  }
   string = string.split("").reverse().join("");
   var hash = 0;
   if (string.length === 0) return hash;
