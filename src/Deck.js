@@ -75,6 +75,10 @@ function toRGB(string) {
   if (string === "India") {
     return [  61, 173, 166]; // diff to UK
   }
+  if (string === "Denmark") {
+    return [  24, 112, 32]; // diff to UK
+  }
+  
   
   string = string.split("").reverse().join("");
   var hash = 0;
@@ -270,6 +274,8 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
 
   const search_configs_initial = useMemo(() => {
     const colors = [
+      [255, 213, 0],
+      [183, 0, 255],
       [255, 0, 0],
       [0, 0, 255],
       [0, 255, 255],
