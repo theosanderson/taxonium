@@ -54,6 +54,28 @@ function toRGB(string) {
   if (string === "USA") {
     return [95, 158, 245]; //This is just because the default is ugly
   }
+  if (string === "England") {
+    return [214, 58, 15]; // UK all brick
+  }
+  if (string === "Scotland") {
+    return [255, 130, 82]; // UK all brick
+  }
+  if (string === "Wales") {
+    return [148, 49, 22]; // UK all brick
+  }
+  if (string === "Northern Ireland") {
+    return [140, 42, 15]; // UK all brick
+  }
+  if (string === "France") {
+    return [140, 28, 120]; // diff to UK
+  }
+  if (string === "Germany") {
+    return [  106, 140, 28]; // diff to UK
+  }
+  if (string === "India") {
+    return [  61, 173, 166]; // diff to UK
+  }
+  
   string = string.split("").reverse().join("");
   var hash = 0;
   if (string.length === 0) return hash;
@@ -149,7 +171,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         const se = main_vp.unproject([main_vp.width, main_vp.height, 0]);
         se[0] = se[0] * 2 ** (viewState.zoom - 6);
         nw[0] = nw[0] * 2 ** (viewState.zoom - 6);
-        viewState = { ...viewState, nw: nw, se: se };
+        viewState = { ...viewState, nw: nw, se: se, needs_update:false };
         nw[0] = -500;
         se[0] = 500;
 
@@ -178,7 +200,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         const newViewState = {
           ...viewState,
           target: [getXval(viewState), pickInfo.coordinate[1]],
-          nw:undefined
+          needs_update:true
         };
         setViewState(newViewState );
       }
@@ -500,7 +522,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       {" "}
       <DeckGL
         onAfterRender={() => {
-          if (viewState.nw === undefined) {
+          if (viewState.nw === undefined||viewState.needs_update) {
             onViewStateChange({ viewState });
           }
         }}
