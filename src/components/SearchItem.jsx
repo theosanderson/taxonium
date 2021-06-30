@@ -1,8 +1,8 @@
 import React from "react";
 import { BsTrash } from "react-icons/bs";
-
+import {DebounceInput} from 'react-debounce-input';
 function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
-  const delayedSet = setThis;
+  
   const explanations = {
     name: "Enter a GISAID name like South_Korea/KCDC2006/2020 . EPI_ISL ids are not supported.",
     lineage:
@@ -31,11 +31,12 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
         <option value="mutation">AA mutation</option>
       </select>
       &nbsp;
-      <input
+      <DebounceInput
         className="border py-2 px-3 text-grey-darkest"
         value={value}
-        onChange={(event) => delayedSet({ value: event.target.value })}
-      ></input>
+        onChange={(event) => setThis({ value: event.target.value })}
+        debounceTimeout={300}
+     />
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
       <button
         className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
