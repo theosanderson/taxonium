@@ -15,7 +15,7 @@ for i,row in metadata.iterrows():
     date_lookup[row['sequence_name']] = row['sample_date']
     
 
-tree = Phylo.read("./cog_global_tree.newick", "newick")
+tree = Phylo.read("./pruned_tree.newick", "newick")
 tree.ladderize()
 root=tree.clade
 from collections import defaultdict
