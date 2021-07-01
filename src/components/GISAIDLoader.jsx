@@ -6,6 +6,7 @@ function GISAIDLoader({
   setGisaidLoaderEnabled,
   validNames,
 }) {
+  
   const GISAID_ID_COLUMN = 0;
   const GISAID_PANGO_COLUMN = 11;
   const GISAID_AA_SUBS_COLUMN = 14;

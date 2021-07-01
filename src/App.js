@@ -24,7 +24,7 @@ function App() {
       console.log(x);
       if (gisaid === null) {
         const subset = x.filter((x) => x.category === "mutation");
-        if (subset.length) {
+        if (false & subset.length) {
           window.alert("Please import GISAID metadata to use this feature");
           return false;
         }
@@ -140,13 +140,7 @@ function App() {
               </span>
             </h1>
             <div className="inline-block p-4">
-              <button
-                onClick={() => setGisaidLoaderEnabled(true)}
-                className="mr-10 text-white font-bold hover:underline"
-              >
-                <RiFolderUploadLine className="inline-block h-8 w-8" /> Import
-                GISAID metadata
-              </button>{" "}
+              
               <button
                 onClick={() => setAboutEnabled(true)}
                 className="mr-10 text-white font-bold hover:underline"

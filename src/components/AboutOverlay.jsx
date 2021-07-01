@@ -39,22 +39,9 @@ function AboutOverlay({ enabled, setEnabled }) {
           . The tree-specific pipeline was written by Rachel Colquhoun et al.
         </p>
         <p>
-          This tree includes COG-UK data, and also background sequences from
-          contributors around the world, collated on the GISAID database.
+          For this version of the site we have pruned the tree to remove any GISAID nodes from this COG-UK public tree.
         </p>
-        <h1 className="font-bold mb-5 text-xl mt-10">GISAID</h1>
-        <p>
-          We gratefully acknowledge all data contributors, i.e. the Authors and
-          their Originating laboratories responsible for obtaining the
-          specimens, and their Submitting laboratories for generating the
-          genetic sequence and metadata and sharing via the GISAID Initiative1
-          on which this research is based.
-        </p>
-        <p>
-          1. Elbe, S., and Buckland-Merrett, G. (2017) Data, disease and
-          diplomacy: GISAID’s innovative contribution to global health. Global
-          Challenges, 1:33-46. DOI: 10.1002/gch2.1018 PMCID: 31565258
-        </p>
+        
         <h1 className="font-bold mb-5 text-xl mt-10">Similar tools</h1>
         <p>
           You can also explore large phylogenies using{" "}
