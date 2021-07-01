@@ -156,9 +156,10 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
   const [hoverInfo, setHoverInfo] = useState();
   const zoomThreshold = 8;
   const [viewState, setViewState] = useState({
-    zoom: 7,
-    target: [6, 5],
+    zoom: 4.5,
+    target: [6, 15],
   });
+
   const deckRef = useRef(null);
   const onViewStateChange = useCallback(
     ({ viewId, viewState, oldViewState }) => {
@@ -312,7 +313,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
           getLineColor: (d) => colors[counter % colors.length],
         };
       })
-      .filter((item) => item.enabled);
+      
     return configs;
   }, [metadata, scatterData, searchItems]);
 

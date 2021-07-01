@@ -7,12 +7,15 @@ import math
 from collections import defaultdict
 import tree_pb2
 
-metadata = pd.read_csv('./cog_metadata.csv')
+metadata = pd.read_csv('./cog_metadata.csv', low_memory=False)
 lineage_lookup = defaultdict(lambda: "unknown")
 date_lookup = defaultdict(lambda: "unknown")
+aa_lookup = defaultdict(lambda: [])
+
 for i,row in metadata.iterrows():
     lineage_lookup[row['sequence_name']] = row['lineage']
     date_lookup[row['sequence_name']] = row['sample_date']
+    aa_lookup[row['sequence_name']] = sorted([x for x in str(row['mutations']).split("|") if not "synSNP" in x])
     
 
 tree = Phylo.read("./pruned_tree.newick", "newick")
@@ -65,13 +68,13 @@ def add_paths(tree_by_level):
 root.path_list = []
 add_paths(by_level)
 
-all_nodes_to_export = [{'num':i,'name':x.name,'x':5000*x.x,'y':x.y/20000,'path':x.path_list[::-1]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
+all_nodes_to_export = [{'num':i,'name':x.name,'x':5000*x.x,'y':x.y/5000,'path':x.path_list[::-1]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
 def make_node(x):
     parents = x.path_list[::-1]
     if len(parents)>0:
-        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/20000,parent=parents[0])
+        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/5000,parent=parents[0])
     else:
-        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/20000)
+        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/5000)
 
 pb_list = [make_node(x) for i,x in tqdm.tqdm(enumerate(all_nodes))]
 node_list = tree_pb2.NodeList(nodes=pb_list)
@@ -81,7 +84,7 @@ f = open("../public/nodelist.pb", "wb")
 f.write(node_list.SerializeToString())
 f.close()
 
-metadata = [{'name':x.name,'lineage':lineage_lookup[x.name],'date':date_lookup[x.name]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
+metadata = [{'aa_subs':aa_lookup[x.name],'name':x.name,'lineage':lineage_lookup[x.name],'date':date_lookup[x.name]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
 
 def shard_array(inlist, shard_size):
     # inlist = 150-element list
