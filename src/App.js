@@ -6,7 +6,7 @@ import GISAIDLoader from "./components/GISAIDLoader";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
-import { RiFolderUploadLine } from "react-icons/ri";
+
 import { BsInfoSquare } from "react-icons/bs";
 var protobuf = require("protobufjs");
 function App() {
