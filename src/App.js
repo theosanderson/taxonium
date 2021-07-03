@@ -9,6 +9,7 @@ import { CgListTree } from "react-icons/cg";
 import { RiFolderUploadLine } from "react-icons/ri";
 import { BsInfoSquare } from "react-icons/bs";
 var protobuf = require("protobufjs");
+protobuf.parse.defaults.keepCase = true;
 function App() {
   const [searchItems, setSearchItemsBasic] = useState([
     {
@@ -66,7 +67,8 @@ function App() {
   const [aboutEnabled, setAboutEnabled] = useState(false);
   window.gs = gisaid;
 
-  useEffect(() => {
+
+     useEffect(() => {
     if (nodeData.status === "not_attempted") {
       protobuf.load("./tree.proto")
     .then(function(root) {
@@ -81,7 +83,7 @@ function App() {
       })
       .then(function(buffer) {
         console.log(buffer)
-        var NodeList = root.lookupType("vbigtree.NodeList");
+        var NodeList = root.lookupType("NodeList");
         window.buffer= buffer
         window.NodeList = NodeList
       var message = NodeList.decode(new Uint8Array(buffer));
@@ -97,24 +99,49 @@ function App() {
     }
   , [nodeData.status]);
 
+
   useEffect(() => {
     if (cogMetadata === null) {
-      console.log("fetch");
-      fetch("/data/metadata.json")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("meta complete");
-          const as_dict = Object.fromEntries(
-            data.map((x) => [
-              x.name,
-              { ...x, country: x.name ? x.name.split("/")[0] : null },
-            ])
-          );
-          setCogMetadata(as_dict);
+      protobuf.load("./tree.proto")
+    .then(function(root) {
+
+
+      fetch('/metadata.pb')
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error("HTTP error, status = " + response.status);
+        }
+        return response.arrayBuffer();
+      })
+      .then(function(buffer) {
+        console.log(buffer)
+        var MetadataList = root.lookupType("MetadataList");
+        window.buffer= buffer
+ 
+      var message = MetadataList.decode(new Uint8Array(buffer));
+      var result = MetadataList.toObject(message);
+      window.result = result
+
+      const as_dict = Object.fromEntries(
+        result.items.map((x) => [
+          x.name,
+          { ...x },
+        ])
+      );
+      window.dict= as_dict;
+      setCogMetadata(as_dict);
+   
         });
-      setCogMetadata("loading");
+      });
+  
+
+     
     }
-  }, [cogMetadata]);
+    }
+  , [cogMetadata]);
+
+
+ 
 
   return (
     <Router>

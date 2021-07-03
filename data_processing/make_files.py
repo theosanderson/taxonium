@@ -6,16 +6,11 @@ import pandas as pd
 import math
 from collections import defaultdict
 import tree_pb2
+import gzip
 
-metadata = pd.read_csv('./cog_metadata.csv')
-lineage_lookup = defaultdict(lambda: "unknown")
-date_lookup = defaultdict(lambda: "unknown")
-for i,row in metadata.iterrows():
-    lineage_lookup[row['sequence_name']] = row['lineage']
-    date_lookup[row['sequence_name']] = row['sample_date']
-    
 
-tree = Phylo.read("./pruned_tree.newick", "newick")
+
+tree = Phylo.read(gzip.open("public-latest.all.nwk.gz","rt"), "newick")
 tree.ladderize()
 root=tree.clade
 from collections import defaultdict
@@ -65,13 +60,53 @@ def add_paths(tree_by_level):
 root.path_list = []
 add_paths(by_level)
 
-all_nodes_to_export = [{'num':i,'name':x.name,'x':5000*x.x,'y':x.y/20000,'path':x.path_list[::-1]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
+
+
+
+
+genotypes = defaultdict(list)
+
+for line in tqdm.tqdm(open("out.txt")):
+    cols = line.split("\t")
+    cols[4]=cols[4].strip()
+    name = cols[0]#.split("|")[0]
+    if(cols[4]):
+        genotypes[name].append(cols[4])
+
+
+metadata = pd.read_csv("public-latest.metadata.tsv.gz",sep="\t")
+lineage_lookup = defaultdict(lambda: "unknown")
+date_lookup = defaultdict(lambda: "unknown")
+country_lookup = defaultdict(lambda: "unknown")
+for i,row in  tqdm.tqdm(metadata.iterrows()):
+    name = row['strain']#.split("|")[0]
+    lineage_lookup[name] = row['pangolin_lineage']
+    date_lookup[name] = row['date']
+    row['country']=str(row['country'])
+    if row['country']=="UK":
+        country_lookup[name] = row['strain'].split("/")[0]
+    elif "Germany" in row['country']:
+        country_lookup[name] = "Germany"
+    elif "Austria" in row['country']:
+        country_lookup[name] = "Austria"
+    elif "USA" in row['country']:
+        country_lookup[name] = "USA"
+    else:
+        country_lookup[name] = row['country']
+    
+
+def make_mapping(list_of_strings):
+    sorted_by_value_counts = pd.Series(list_of_strings).value_counts(sort=True).index.tolist()
+    return sorted_by_value_counts, {x:i for i,x in enumerate(sorted_by_value_counts)}
+
+
+
 def make_node(x):
     parents = x.path_list[::-1]
     if len(parents)>0:
-        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/20000,parent=parents[0])
+        return tree_pb2.Node(name=x.name,x=0.2*x.x,y=x.y/40000,parent=parents[0])
     else:
-        return tree_pb2.Node(name=x.name,x=5000*x.x,y=x.y/20000)
+        return tree_pb2.Node(name=x.name,x=0.2*x.x,y=x.y/40000)
 
 pb_list = [make_node(x) for i,x in tqdm.tqdm(enumerate(all_nodes))]
 node_list = tree_pb2.NodeList(nodes=pb_list)
@@ -81,34 +116,11 @@ f = open("../public/nodelist.pb", "wb")
 f.write(node_list.SerializeToString())
 f.close()
 
-metadata = [{'name':x.name,'lineage':lineage_lookup[x.name],'date':date_lookup[x.name]} for i,x in tqdm.tqdm(enumerate(all_nodes))]
 
-def shard_array(inlist, shard_size):
-    # inlist = 150-element list
-    # shard_size = 40
-    num_shards = math.ceil(len(inlist) / shard_size)
-    # num_shards == 3
+metadata = [tree_pb2.MetadataItem(name=str(x.name),lineage=str(lineage_lookup[x.name]),date=str(date_lookup[x.name]),country=str(country_lookup[x.name]),aa_subs=genotypes[x.name])  for i,x in tqdm.tqdm(enumerate(all_nodes))]
 
-    shards = []
-    for i in range(num_shards):
-        # i == 0
-        start = shard_size * i  # start == 0, then 40, then 80...
-        end = shard_size * (i + 1)   # end == 39, then 79, then 119...
-        shards.append(inlist[start:end])
+metadata =tree_pb2.MetadataList(items=metadata)
 
-    return shards
-
-shard_size = 200000
-sharded = shard_array(all_nodes_to_export,shard_size)
-
-import json
-
-with open('../public/data/config.json', 'w') as f:
-    json.dump({"num_tree_shards":len(sharded),"shard_size":shard_size,"num_elements":len(all_nodes_to_export)},f)
-
-for i, shard in enumerate(sharded):
-    with open(f'../public/data/tree_shards/{i}.json', 'w') as f:
-        json.dump(sharded[i],f, separators=(',', ':'))
-
-with open(f'../public/data/metadata.json', 'w') as f:
-        json.dump(metadata,f, separators=(',', ':'))
+f = open("../public/metadata.pb", "wb")
+f.write(metadata.SerializeToString())
+f.close()
