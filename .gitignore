@@ -22,3 +22,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 data_processing/cog_metadata.csv
+data_processing/public-latest.all.masked.vcf.gz
+data_processing/public-latest.all.nwk.gz
+data_processing/public-latest.metadata.tsv.gz
+public/metadata.pb
+public/nodelist.pb
+data_processing/out.txt
