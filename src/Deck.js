@@ -508,7 +508,10 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
             >
               {metadata[hoverInfo.object.name].lineage}
             </div>
+          
           )}
+            <div> {metadata[hoverInfo.object.name].country}
+              </div>
           {metadata[hoverInfo.object.name].date !== "unknown" && (
             <div className="italic">{metadata[hoverInfo.object.name].date}</div>
           )}

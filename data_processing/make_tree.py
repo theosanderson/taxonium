@@ -7,9 +7,6 @@ import math
 from collections import defaultdict
 import tree_pb2
 import gzip
-
-
-
 tree = Phylo.read(gzip.open("public-latest.all.nwk.gz","rt"), "newick")
 tree.ladderize()
 root=tree.clade
@@ -60,47 +57,6 @@ def add_paths(tree_by_level):
 root.path_list = []
 add_paths(by_level)
 
-
-
-
-
-genotypes = defaultdict(list)
-
-for line in tqdm.tqdm(open("out.txt")):
-    cols = line.split("\t")
-    cols[4]=cols[4].strip()
-    name = cols[0]#.split("|")[0]
-    if(cols[4]):
-        genotypes[name].append(cols[4])
-
-
-metadata = pd.read_csv("public-latest.metadata.tsv.gz",sep="\t")
-lineage_lookup = defaultdict(lambda: "unknown")
-date_lookup = defaultdict(lambda: "unknown")
-country_lookup = defaultdict(lambda: "unknown")
-for i,row in  tqdm.tqdm(metadata.iterrows()):
-    name = row['strain']#.split("|")[0]
-    lineage_lookup[name] = row['pangolin_lineage']
-    date_lookup[name] = row['date']
-    row['country']=str(row['country'])
-    if row['country']=="UK":
-        country_lookup[name] = row['strain'].split("/")[0]
-    elif "Germany" in row['country']:
-        country_lookup[name] = "Germany"
-    elif "Austria" in row['country']:
-        country_lookup[name] = "Austria"
-    elif "USA" in row['country']:
-        country_lookup[name] = "USA"
-    else:
-        country_lookup[name] = row['country']
-    
-
-def make_mapping(list_of_strings):
-    sorted_by_value_counts = pd.Series(list_of_strings).value_counts(sort=True).index.tolist()
-    return sorted_by_value_counts, {x:i for i,x in enumerate(sorted_by_value_counts)}
-
-
-
 def make_node(x):
     parents = x.path_list[::-1]
     if len(parents)>0:
@@ -114,13 +70,4 @@ node_list.SerializeToString()
 
 f = open("../public/nodelist.pb", "wb")
 f.write(node_list.SerializeToString())
-f.close()
-
-
-metadata = [tree_pb2.MetadataItem(name=str(x.name),lineage=str(lineage_lookup[x.name]),date=str(date_lookup[x.name]),country=str(country_lookup[x.name]),aa_subs=genotypes[x.name])  for i,x in tqdm.tqdm(enumerate(all_nodes))]
-
-metadata =tree_pb2.MetadataList(items=metadata)
-
-f = open("../public/metadata.pb", "wb")
-f.write(metadata.SerializeToString())
 f.close()
