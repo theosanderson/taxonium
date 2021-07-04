@@ -65,6 +65,7 @@ function App() {
         window.NodeList = NodeList
       var message = NodeList.decode(new Uint8Array(buffer));
       var result = NodeList.toObject(message);
+      
       result.node_data.ids = [...Array(result.node_data.x.length).keys()]
       console.log("hi")
       console.log(result)
