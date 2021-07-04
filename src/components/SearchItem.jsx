@@ -4,7 +4,7 @@ import {DebounceInput} from 'react-debounce-input';
 function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
   
   const explanations = {
-    name: "Enter a GISAID name like South_Korea/KCDC2006/2020 . EPI_ISL ids are not supported.",
+    name: "Enter a sequence name like QEUH-13ADA01 . EPI_ISL ids are not supported.",
     lineage:
       "Enter a PANGO lineage like B.1.1.7. Note that sub-lineages will not be found by this method.",
     country: "Enter a country like 'India' ",
@@ -25,7 +25,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
         value={category}
         onChange={(event) => setThis({ category: event.target.value })}
       >
-        <option value="name">GISAID Name</option>
+        <option value="name">Sequence name</option>
         <option value="lineage">Lineage</option>
         <option value="country">Country</option>
         <option value="mutation">AA mutation</option>
