@@ -4,13 +4,30 @@ import DeckGL from "@deck.gl/react";
 import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
+const zoomThreshold = 8;
+function coarse_and_fine_configs(config, node_data,precision){
+ 
+  const coarse = {...config,data:reduceOverPlotting(config.data,node_data,precision), visible:
+    true,id:config.id+"_coarse"}
+  
+  const mini =  make_minimap_version(coarse)
+  const fine = {...config, visible:
+    true,id:config.id+"_fine"}
+  return [coarse,fine, mini
+]
 
-function reduceOverPlotting(dataset, precision = 10) {
+}
+
+function make_minimap_version(config){
+  return {...config, id:config.id.replace("main","mini"), radiusMaxPixels:2}
+}
+
+function reduceOverPlotting(nodeIds, node_data, precision = 10) {
   const included_points = {};
-  const rounded_dataset = dataset.map((node) => {
-    const new_node = { ...node };
-    new_node.x = Math.round(node.x * precision) / precision;
-    new_node.y = Math.round(node.y * precision) / precision;
+  const rounded_dataset = nodeIds.map((node) => {
+    const new_node = { id:node };
+    new_node.x = Math.round(node_data.x[node] * precision) / precision;
+    new_node.y = Math.round(node_data.y[node] * precision) / precision;
     return new_node;
   });
 
@@ -26,9 +43,9 @@ function reduceOverPlotting(dataset, precision = 10) {
       included_points[node.x] = { [node.y]: 1 };
       return true;
     }
-  });
+  }).map(x=>x.id);
 
-  console.log(filtered.length, ":");
+ 
   return filtered;
 }
 const dummy_polygons = [
@@ -124,42 +141,50 @@ let getMMatrix = (zoom) => [
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
-function Deck({ nodeData, metadata, colourBy, searchItems }) {
+function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
+
+  const node_data = data.node_data
+
   window.searchItems = searchItems;
-  const scatterData = useMemo(
-    () => nodeData.filter((x) => x.name !== null),
-    [nodeData]
+  const scatterIds = useMemo(
+    () => node_data.ids.filter((x) => node_data.names[x] !== ""),
+    [node_data]
   );
+  
+/*
   // Data to be used by the LineLayer
   const lineData = useMemo(() => {
     let data = [];
 
-    nodeData.forEach((node) => {
-      let first_path = node.parent;
-      let first_node = nodeData[first_path];
+    node_data.ids.forEach((node) => {
+      let first_path = node_data.parents[node];
 
-      if (first_node) {
+      if (first_path!==node) {
         data.push({
-          sourcePosition: [node.x, node.y],
-          targetPosition: [first_node.x, node.y],
+          sourcePosition: [node_data.x[node],node_data.y[node]],
+          targetPosition: [node_data.x[first_path], node_data.y[node]],
         });
 
         data.push({
-          sourcePosition: [first_node.x, node.y],
-          targetPosition: [first_node.x, first_node.y],
+          sourcePosition: [node_data.x[first_path], node_data.y[node]],
+          targetPosition: [node_data.x[first_path], node_data.y[first_path]],
         });
       }
     });
     return data;
-  }, [nodeData]);
+  }, [node_data]);
+*/
+
 
   const [hoverInfo, setHoverInfo] = useState();
-  const zoomThreshold = 8;
+
   const [viewState, setViewState] = useState({
-    zoom: 7,
-    target: [6, 5],
+    zoom: 4.7,
+    target: [6, 13],
   });
+
   const deckRef = useRef(null);
+
   const onViewStateChange = useCallback(
     ({ viewId, viewState, oldViewState }) => {
       if (viewId === "minimap") {
@@ -209,7 +234,15 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
           setMouseDownIsMinimap(false)
         }
       }
+      if (pickInfo && pickInfo.viewport.id === "main" && event._reactName === "onClick") {
+        setSelectedNode(pickInfo.object)
 
+      }
+
+      if (!pickInfo  && event._reactName === "onClick") {
+        setSelectedNode(null)
+
+      }
 
       if (pickInfo && pickInfo.viewport.id === "minimap" && mouseDownIsMinimap) {
         //viewState.target=pickInfo.coordinate
@@ -222,7 +255,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         setViewState(newViewState );
       }
     },
-    [viewState,mouseDownIsMinimap]
+    [viewState,mouseDownIsMinimap,setSelectedNode]
   );
 
   const poly_layer = useMemo(
@@ -245,56 +278,102 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       }),
     []
   );
-
+/*
   const minimapScatterData = useMemo(
     () => reduceOverPlotting(scatterData),
-    [scatterData]
+    [scatter]
   );
 
   const coarseScatterData = useMemo(
     () => reduceOverPlotting(scatterData, 100),
     [scatterData]
-  );
+  );*/
 
   const scatterplot_config = useMemo(() => {
+    
     return {
-      data: scatterData.filter(() => true),
-      visble: true,
-      opacity: 0.7,
-      radiusMinPixels: 1,
-      radiusMaxPixels: 2,
-      getRadius: 4,
+      data: scatterIds.filter(x=>true),
+      visible: true,
+      opacity:0.6,
+      
+      radiusMinPixels: 3,
+      radiusMaxPixels: 3,
+      getRadius: 200,
       radiusUnits: "pixels",
+    
+
+      id: "main-scatter",
+      
+      pickable: true,
+      getLineColor: (d) => [100, 100, 100],
+     
+      lineWidthUnits: "pixels",
+      lineWidthScale: 1,
+      
+      onHover: (info) => setHoverInfo(info),
       getPosition: (d) => {
-        return [d.x, d.y];
+        
+        return [node_data.x[d], node_data.y[d]];
       },
-      getFillColor: (d) => toRGB(metadata[d.name][colourBy]),
-    };
-  }, [scatterData, metadata, colourBy]);
+      getFillColor: (d) => {
+        if(colourBy==="lineage") { return toRGB(
+        data.lineage_mapping[node_data.lineages[d]]
+      )}
+      else if(colourBy==="country") { 
+        
+        return toRGB(
+        data.country_mapping[node_data.countries[d]]
+      )}
+      else{
+        return [200,200,200]
+      }
+
+    }}
+    
+    
+    ;
+  }, [scatterIds, node_data,data, colourBy]);
+
+  const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,1000) ,[scatterplot_config,node_data])
+  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 10,radiusMaxPixels: viewState.zoom > 15?viewState.zoom/5:3})) ,[scatter_configs,viewState.zoom])
+  const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
+
 
   const search_configs_initial = useMemo(() => {
     const colors = [
-      [255, 213, 0],
+     
       [183, 0, 255],
+      [255, 213, 0],
       [255, 0, 0],
       [0, 0, 255],
       [0, 255, 255],
     ];
     const configs = searchItems
       .map((item, counter) => {
-        const filter_function =
-          item.category === "mutation"
-            ? (x) =>
-                metadata[x.name]["aa_subs"] &&
-                metadata[x.name]["aa_subs"].includes(item.value)
-            : item.category === "name"
-            ? (x) => x.name === item.value
-            : (x) => metadata[x.name][item.category] === item.value;
+        let filter_function
+        
+           if (item.category === "mutation"){
+            const the_index = data.mutation_mapping.indexOf(item.value)
+            filter_function=(x) =>
+            node_data.mutations[x].mutation && node_data.mutations[x].mutation.includes(the_index)
+           }
+
+           if (item.category === "name"){
+            filter_function=(x) => node_data.names[x].includes( item.value)
+           }
+
+           if (item.category === "country"){
+            filter_function=(x) => data.country_mapping[node_data.countries[x]] === item.value
+           }
+           if (item.category === "lineage"){
+            filter_function=(x) => data.lineage_mapping[node_data.lineages[x]] === item.value
+           }
         const enabled =
           item.value !== null && item.value !== "" && item.enabled;
         return {
+          id:'main-search-'+counter,
           enabled: enabled,
-          data: enabled ? scatterData.filter(filter_function) : [],
+          data: enabled ? scatterIds.filter(filter_function) : [],
           opacity: 0.7,
           radiusMinPixels: 10 + counter * 2,
           filled: false,
@@ -303,10 +382,11 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
           getRadius: 8,
           radiusUnits: "pixels",
           lineWidthUnits: "pixels",
-          lineWidthScale: 1,
+          lineWidthScale: 2,
 
           getPosition: (d) => {
-            return [d.x, d.y];
+        
+            return [node_data.x[d], node_data.y[d]];
           },
           getFillColor: (d) => [0, 0, 0],
           getLineColor: (d) => colors[counter % colors.length],
@@ -314,65 +394,43 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       })
       .filter((item) => item.enabled);
     return configs;
-  }, [metadata, scatterData, searchItems]);
+  }, [data,node_data,searchItems,scatterIds]);
 
-  const search_layers_main = useMemo(() => {
-    console.log("main");
-    const mains = search_configs_initial.map(
-      (x, i) =>
-        new ScatterplotLayer({
-          ...x,
-          id: "main-search" + i,
-          modelMatrix: getMMatrix(viewState.zoom),
-        })
-    );
-    return mains;
-  }, [search_configs_initial, viewState.zoom]);
+  const search_configs = useMemo( ()=> [].concat(...search_configs_initial.map(x=>coarse_and_fine_configs(x, node_data,1000))) ,[search_configs_initial,node_data])
 
-  const search_layers_mini = useMemo(() => {
-    console.log("mini");
-    const minis = search_configs_initial.map(
-      (x, i) =>
-        new ScatterplotLayer({
-          ...x,
-          id: "mini-search" + i,
-        })
-    );
+  window.sc = search_configs
+  const search_configs2 = useMemo( ()=>search_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[search_configs,viewState.zoom])
+  const search_layers =  useMemo( ()=>search_configs2.map(x=>new ScatterplotLayer(x)),[search_configs2])
+  
 
-    return minis;
-  }, [search_configs_initial]);
 
-  const scatter_layer_main = useMemo(
-    () =>
-      new ScatterplotLayer({
-        ...scatterplot_config,
-        radiusMinPixels: 1,
-        radiusMaxPixels: 4,
-        getRadius: 4,
-        opacity: viewState.zoom > 15 ? 0.8 : 0.6,
-        id: "main-scatter",
-        modelMatrix: getMMatrix(viewState.zoom),
-        pickable: true,
-        getLineColor: (d) => [100, 100, 100],
-        stroked: viewState.zoom > 15,
-        lineWidthUnits: "pixels",
-        lineWidthScale: 1,
-        visible: viewState.zoom > zoomThreshold,
-        onHover: (info) => setHoverInfo(info),
-      }),
-    [viewState, scatterplot_config]
-  );
 
-  const line_layer_main = useMemo(
-    () =>
-      new LineLayer({
-        id: "main-lines",
-        data: lineData,
-        getColor: (d) => [70, 70, 70],
-        modelMatrix: getMMatrix(viewState.zoom),
-      }),
-    [viewState, lineData]
-  );
+const line_layer_2_config = useMemo(()=>({
+  id: 'main-line',
+  data: node_data.ids,
+  pickable: false,
+  getWidth: 1,
+  getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]] ,
+  getSourcePosition: d => [node_data.x[d], node_data.y[d]] ,
+ getColor: ()=>[150,150,150]
+}),[node_data]);
+const line_layer_2_config2 = useMemo( ()=>({...line_layer_2_config,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,}) ,[line_layer_2_config,viewState.zoom])
+const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[line_layer_2_config2]);
+
+const line_layer_3_config = useMemo(()=>({
+  id: 'main-line-2',
+  data: node_data.ids,
+  pickable: false,
+  getWidth: 1,
+  getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]] ,
+  getSourcePosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]],
+ getColor: ()=>[150,150,150]
+}),[node_data]);
+const line_layer_3_config2 = useMemo( ()=>({...line_layer_3_config,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,}) ,[line_layer_3_config,viewState.zoom])
+const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[line_layer_3_config2]);
+
+
+
 
   const pos_layer_mini = useMemo(
     () =>
@@ -401,71 +459,39 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
     [viewState]
   );
 
-  const scatter_layer_mini = useMemo(
-    () =>
-      new ScatterplotLayer({
-        id: "mini-scatter",
-        ...scatterplot_config,
-        data: minimapScatterData.filter(() => true),
-        visible: true,
-      }),
-    [scatterplot_config, minimapScatterData]
-  );
-
-  const scatter_layer_coarse = useMemo(
-    () =>
-      new ScatterplotLayer({
-        ...scatterplot_config,
-        id: "main-scatter-coarse",
-        data: coarseScatterData.filter(() => true),
-        radiusMinPixels: 1,
-        radiusMaxPixels: 4,
-        getRadius: 4,
-        opacity: viewState.zoom > 15 ? 0.8 : 0.6,
-
-        modelMatrix: getMMatrix(viewState.zoom),
-        pickable: true,
-        getLineColor: (d) => [100, 100, 100],
-        stroked: viewState.zoom > 15,
-        lineWidthUnits: "pixels",
-        lineWidthScale: 1,
-        visible: viewState.zoom < zoomThreshold,
-        onHover: (info) => setHoverInfo(info),
-      }),
-    [scatterplot_config, coarseScatterData, viewState.zoom]
-  );
-
-  const line_layer_mini = useMemo(
-    () =>
-      new LineLayer({
-        id: "mini-lines",
-        data: lineData,
-      }),
-    [lineData]
-  );
-
   const layers = useMemo(
     () => [
       poly_layer,
-      line_layer_main,
-      scatter_layer_main,
-      scatter_layer_coarse,
+      
+      line_layer_2_layer,
+      line_layer_3_layer,
+      
+ 
+      ...scatter_layers,
+     // line_layer_main,
+    // ...scatter_layers,
+      /*scatter_layer_coarse,
       line_layer_mini,
-      scatter_layer_mini,
+      scatter_layer_mini,*/
       pos_layer_mini,
-      ...search_layers_main,
-      ...search_layers_mini,
+     // ...search_layers_main,
+     // ...search_layers_mini,
+     ...search_layers,
     ],
     [
       poly_layer,
-      line_layer_main,
-      scatter_layer_main,
-      scatter_layer_coarse,
-      line_layer_mini,
-      scatter_layer_mini,
-      pos_layer_mini,
-      search_layers_main,
-      search_layers_mini,
+      // line_layer_main,
+      
+      line_layer_2_layer,
+      line_layer_3_layer,
+      scatter_layers,
+       /*scatter_layer_coarse,
+       line_layer_mini,
+       scatter_layer_mini,*/
+       pos_layer_mini
+       ,search_layers
+      // ...search_layers_main,
+      // ...search_layers_mini,
     ]
   );
 
@@ -488,6 +514,9 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
 
   const hoverStuff = useMemo(() => {
     if (hoverInfo && hoverInfo.object) {
+      const lineage = data.lineage_mapping[node_data.lineages[hoverInfo.object]]
+      const country = data.country_mapping[node_data.countries[hoverInfo.object]]
+      const date = data.date_mapping[node_data.dates[hoverInfo.object]]
       return (
         <div
           className="bg-gray-100 p-3 opacity-90 text-sm"
@@ -499,37 +528,33 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
             top: hoverInfo.y,
           }}
         >
-          <h2 className="font-bold">{hoverInfo.object.name}</h2>
-          {metadata[hoverInfo.object.name].lineage !== "unknown" && (
+          <h2 className="font-bold">{node_data.names[hoverInfo.object]}</h2>
+          
             <div
               style={{
-                color: toRGBCSS(metadata[hoverInfo.object.name].lineage),
+                color: toRGBCSS(lineage),
               }}
             >
-              {metadata[hoverInfo.object.name].lineage}
+             {lineage}
             </div>
-          )}
-          {metadata[hoverInfo.object.name].date !== "unknown" && (
-            <div className="italic">{metadata[hoverInfo.object.name].date}</div>
-          )}
-          {metadata[hoverInfo.object.name].date === "unknown" && (
-            <div className="italic text-sm">
-              Import GISAID data for lineage info outside the UK
-            </div>
-          )}
+          
+            <div> {country}
+              </div>
+          {date}
+         
           <div className="text-xs">
             {
-              metadata[hoverInfo.object.name].aa_subs &&
-                metadata[hoverInfo.object.name].aa_subs.join(", ") //TODO assign the top thing to a constant and use it again
+              
+                node_data.mutations[hoverInfo.object].mutation.map(x=>data.mutation_mapping[x]).join(", ") //TODO assign the top thing to a constant and use it again
             }
           </div>
         </div>
       );
     }
-  }, [metadata, hoverInfo]);
+  }, [data, node_data, hoverInfo]);
   const spinnerShown = useMemo(
-    () => nodeData.length === 0 || !Object.keys(metadata).length,
-    [metadata, nodeData]
+    () => node_data.ids.length === 0 ,
+    [ node_data]
   );
 
   return (
@@ -551,19 +576,22 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         layerFilter={useCallback(({ layer, viewport }) => {
-          return (
-            (layer.id.startsWith("main") && viewport.id === "main") ||
-            (layer.id.startsWith("mini") &&
-              viewport.id === "minimap" &&
-              window.hidemini !== true)
-          );
-        }, [])}
+          const first_bit= 
+          (layer.id.startsWith("main") && viewport.id === "main") ||
+          (layer.id.startsWith("mini") &&
+            viewport.id === "minimap" &&
+            window.hidemini !== true)
+          const second_bit=(viewState.zoom<zoomThreshold | !layer.id.includes("fine")) |(viewState.zoom>zoomThreshold | !layer.id.includes("coarse")) 
+
+        
+          return (first_bit & second_bit);
+        }, [viewState.zoom])}
         controller={true}
         layers={layers}
       >
         {hoverStuff}
       </DeckGL>
-      {spinnerShown && <Spinner isShown={true} />}
+      {spinnerShown && <Spinner isShown={true} progress={progress} />}
     </div>
   );
 }
