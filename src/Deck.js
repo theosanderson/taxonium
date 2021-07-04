@@ -179,8 +179,8 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
   const [hoverInfo, setHoverInfo] = useState();
 
   const [viewState, setViewState] = useState({
-    zoom: 7,
-    target: [6, 5],
+    zoom: 4.7,
+    target: [6, 13],
   });
 
   const deckRef = useRef(null);
@@ -284,12 +284,12 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
   const scatterplot_config = useMemo(() => {
     
     return {
-      data: scatterIds,
+      data: scatterIds.filter(x=>true),
       visible: true,
       
       radiusMinPixels: 3,
       radiusMaxPixels: 3,
-      getRadius: 4,
+      getRadius: 200,
       radiusUnits: "pixels",
     
 
@@ -326,14 +326,15 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
   }, [scatterIds, node_data,data, colourBy]);
 
   const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,1000) ,[scatterplot_config,node_data])
-  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,})) ,[scatter_configs,viewState.zoom])
+  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 10,radiusMaxPixels: viewState.zoom > 15?viewState.zoom/5:3})) ,[scatter_configs,viewState.zoom])
   const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
 
 
   const search_configs_initial = useMemo(() => {
     const colors = [
-      [255, 213, 0],
+     
       [183, 0, 255],
+      [255, 213, 0],
       [255, 0, 0],
       [0, 0, 255],
       [0, 255, 255],
