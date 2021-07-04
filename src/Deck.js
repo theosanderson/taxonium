@@ -141,7 +141,7 @@ let getMMatrix = (zoom) => [
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
-function Deck({ data, metadata, colourBy, searchItems ,progress}) {
+function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
 
   const node_data = data.node_data
 
@@ -234,7 +234,15 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
           setMouseDownIsMinimap(false)
         }
       }
+      if (pickInfo && pickInfo.viewport.id === "main" && event._reactName === "onClick") {
+        setSelectedNode(pickInfo.object)
 
+      }
+
+      if (!pickInfo  && event._reactName === "onClick") {
+        setSelectedNode(null)
+
+      }
 
       if (pickInfo && pickInfo.viewport.id === "minimap" && mouseDownIsMinimap) {
         //viewState.target=pickInfo.coordinate
@@ -247,7 +255,7 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
         setViewState(newViewState );
       }
     },
-    [viewState,mouseDownIsMinimap]
+    [viewState,mouseDownIsMinimap,setSelectedNode]
   );
 
   const poly_layer = useMemo(
@@ -286,6 +294,7 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
     return {
       data: scatterIds.filter(x=>true),
       visible: true,
+      opacity:0.6,
       
       radiusMinPixels: 3,
       radiusMaxPixels: 3,
@@ -373,7 +382,7 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
           getRadius: 8,
           radiusUnits: "pixels",
           lineWidthUnits: "pixels",
-          lineWidthScale: 1,
+          lineWidthScale: 2,
 
           getPosition: (d) => {
         
@@ -399,7 +408,7 @@ function Deck({ data, metadata, colourBy, searchItems ,progress}) {
 const line_layer_2_config = useMemo(()=>({
   id: 'main-line',
   data: node_data.ids,
-  pickable: true,
+  pickable: false,
   getWidth: 1,
   getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]] ,
   getSourcePosition: d => [node_data.x[d], node_data.y[d]] ,
@@ -411,7 +420,7 @@ const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[li
 const line_layer_3_config = useMemo(()=>({
   id: 'main-line-2',
   data: node_data.ids,
-  pickable: true,
+  pickable: false,
   getWidth: 1,
   getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]] ,
   getSourcePosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]],
