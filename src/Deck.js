@@ -528,7 +528,6 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
              {lineage}
             </div>
           
-          )
             <div> {country}
               </div>
           {date}
