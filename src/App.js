@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useEffect, useState, useCallback } from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
-
+import axios from 'axios'
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -47,16 +47,30 @@ function App() {
 
      useEffect(() => {
     if (nodeData.status === "not_attempted") {
+      console.log("starting dl")
+      setNodeData({
+        status: "loading",
+        progress:0,
+        data: {node_data:{ids:[]}},
+      })
+
+
       protobuf.load("./tree.proto")
     .then(function(root) {
 
 
-      fetch('/nodelist.pb')
+      axios.get('/nodelist.pb', {responseType: 'arraybuffer', onDownloadProgress: progressEvent => {
+         let percentCompleted = Math.floor(1*(progressEvent.loaded / progressEvent.total) * 100)
+         setNodeData({
+          status: "loading",
+          progress:percentCompleted,
+          data: {node_data:{ids:[]}},
+        })
+      }
+    })
       .then(function(response) {
-        if (!response.ok) {
-          throw new Error("HTTP error, status = " + response.status);
-        }
-        return response.arrayBuffer();
+      
+        return response.data;
       })
       .then(function(buffer) {
         console.log("buffer loaded")
@@ -65,7 +79,6 @@ function App() {
         window.NodeList = NodeList
       var message = NodeList.decode(new Uint8Array(buffer));
       var result = NodeList.toObject(message);
-      
       result.node_data.ids = [...Array(result.node_data.x.length).keys()]
       console.log("hi")
       console.log(result)
@@ -117,6 +130,7 @@ function App() {
                 searchItems={searchItems}
                 
                 data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
+                progress={nodeData.progress}
                 colourBy={colourBy}
               />
             </div>

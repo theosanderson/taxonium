@@ -141,7 +141,7 @@ let getMMatrix = (zoom) => [
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
-function Deck({ data, metadata, colourBy, searchItems }) {
+function Deck({ data, metadata, colourBy, searchItems ,progress}) {
 
   const node_data = data.node_data
 
@@ -582,7 +582,7 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
       >
         {hoverStuff}
       </DeckGL>
-      {spinnerShown && <Spinner isShown={true} />}
+      {spinnerShown && <Spinner isShown={true} progress={progress} />}
     </div>
   );
 }
