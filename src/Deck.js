@@ -142,39 +142,16 @@ const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
 function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
+  console.log("R")
 
   const node_data = data.node_data
 
-  window.searchItems = searchItems;
+
   const scatterIds = useMemo(
     () => node_data.ids.filter((x) => node_data.names[x] !== ""),
     [node_data]
   );
   
-/*
-  // Data to be used by the LineLayer
-  const lineData = useMemo(() => {
-    let data = [];
-
-    node_data.ids.forEach((node) => {
-      let first_path = node_data.parents[node];
-
-      if (first_path!==node) {
-        data.push({
-          sourcePosition: [node_data.x[node],node_data.y[node]],
-          targetPosition: [node_data.x[first_path], node_data.y[node]],
-        });
-
-        data.push({
-          sourcePosition: [node_data.x[first_path], node_data.y[node]],
-          targetPosition: [node_data.x[first_path], node_data.y[first_path]],
-        });
-      }
-    });
-    return data;
-  }, [node_data]);
-*/
-
 
   const [hoverInfo, setHoverInfo] = useState();
 
@@ -427,16 +404,15 @@ const line_layer_3_config = useMemo(()=>({
  getColor: ()=>[150,150,150]
 }),[node_data]);
 
-const line_configs = useMemo( ()=> [].concat(...[line_layer_2_config,line_layer_3_config].map(x=>coarse_and_fine_configs(x, node_data,100))) ,[line_layer_2_config,line_layer_3_config,node_data])
+const line_configs = useMemo(()=>[line_layer_2_config,line_layer_3_config] ,[line_layer_2_config,line_layer_3_config])
 
-window.sc = search_configs
 const line_configs2 = useMemo( ()=>line_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[line_configs,viewState.zoom])
 const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_configs2])
 
 
 const text_config = useMemo( ()=> ({
   id: 'main-text-layer',
-  data:scatterIds.filter(x=>true),
+  data:scatterIds,
   getPosition: d => [node_data.x[d]+.3,node_data.y[d]],
   getText: d => node_data.names[d],
   getColor:[180,180,180],
