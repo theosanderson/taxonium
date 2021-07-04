@@ -410,7 +410,7 @@ const line_layer_2_config = useMemo(()=>({
   data: node_data.ids,
   pickable: false,
   getWidth: 1,
-  getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]] ,
+  getTargetPosition: d => [node_data.x[d], node_data.y[node_data.parents[d]]] ,
   getSourcePosition: d => [node_data.x[d], node_data.y[d]] ,
  getColor: ()=>[150,150,150]
 }),[node_data]);
@@ -423,7 +423,7 @@ const line_layer_3_config = useMemo(()=>({
   pickable: false,
   getWidth: 1,
   getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]] ,
-  getSourcePosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]],
+  getSourcePosition: d => [node_data.x[d], node_data.y[node_data.parents[d]]],
  getColor: ()=>[150,150,150]
 }),[node_data]);
 
