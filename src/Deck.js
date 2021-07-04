@@ -6,8 +6,7 @@ import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 const zoomThreshold = 8;
 function coarse_and_fine_configs(config, node_data,precision){
-  console.log("coarse")
-
+ 
   const coarse = {...config,data:reduceOverPlotting(config.data,node_data,precision), visible:
     true,id:config.id+"_coarse"}
   
@@ -329,10 +328,8 @@ function Deck({ data, metadata, colourBy, searchItems }) {
   const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,1000) ,[scatterplot_config,node_data])
   const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,})) ,[scatter_configs,viewState.zoom])
   const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
-  console.log(scatter_configs)
 
 
-  /*
   const search_configs_initial = useMemo(() => {
     const colors = [
       [255, 213, 0],
@@ -343,19 +340,30 @@ function Deck({ data, metadata, colourBy, searchItems }) {
     ];
     const configs = searchItems
       .map((item, counter) => {
-        const filter_function =
-          item.category === "mutation"
-            ? (x) =>
-                metadata[x.name]["aa_subs"] &&
-                metadata[x.name]["aa_subs"].includes(item.value)
-            : item.category === "name"
-            ? (x) => x.name === item.value
-            : (x) => metadata[x.name][item.category] === item.value;
+        let filter_function
+        
+           if (item.category === "mutation"){
+            const the_index = data.mutation_mapping.indexOf(item.value)
+            filter_function=(x) =>
+            node_data.mutations[x].mutation && node_data.mutations[x].mutation.includes(the_index)
+           }
+
+           if (item.category === "name"){
+            filter_function=(x) => data.names[x] === item.value
+           }
+
+           if (item.category === "country"){
+            filter_function=(x) => data.country_mapping[node_data.countries[x]] === item.value
+           }
+           if (item.category === "lineage"){
+            filter_function=(x) => data.lineage_mapping[node_data.lineages[x]] === item.value
+           }
         const enabled =
           item.value !== null && item.value !== "" && item.enabled;
         return {
+          id:'main-search-'+counter,
           enabled: enabled,
-          data: enabled ? scatterData.filter(filter_function) : [],
+          data: enabled ? scatterIds.filter(filter_function) : [],
           opacity: 0.7,
           radiusMinPixels: 10 + counter * 2,
           filled: false,
@@ -367,7 +375,8 @@ function Deck({ data, metadata, colourBy, searchItems }) {
           lineWidthScale: 1,
 
           getPosition: (d) => {
-            return [d.x, d.y];
+        
+            return [node_data.x[d], node_data.y[d]];
           },
           getFillColor: (d) => [0, 0, 0],
           getLineColor: (d) => colors[counter % colors.length],
@@ -375,36 +384,14 @@ function Deck({ data, metadata, colourBy, searchItems }) {
       })
       .filter((item) => item.enabled);
     return configs;
-  }, [metadata, scatterData, searchItems]);
+  }, [data,node_data,searchItems,scatterIds]);
 
-  const search_layers_main = useMemo(() => {
-    console.log("main");
-    const mains = search_configs_initial.map(
-      (x, i) =>
-        new ScatterplotLayer({
-          ...x,
-          id: "main-search" + i,
-          modelMatrix: getMMatrix(viewState.zoom),
-        })
-    );
-    return mains;
-  }, [search_configs_initial, viewState.zoom]);
+  const search_configs = useMemo( ()=> [].concat(...search_configs_initial.map(x=>coarse_and_fine_configs(x, node_data,1000))) ,[search_configs_initial,node_data])
 
-  const search_layers_mini = useMemo(() => {
-    console.log("mini");
-    const minis = search_configs_initial.map(
-      (x, i) =>
-        new ScatterplotLayer({
-          ...x,
-          id: "mini-search" + i,
-        })
-    );
-
-    return minis;
-  }, [search_configs_initial]);
-*/
- 
-
+  window.sc = search_configs
+  const search_configs2 = useMemo( ()=>search_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[search_configs,viewState.zoom])
+  const search_layers =  useMemo( ()=>search_configs2.map(x=>new ScatterplotLayer(x)),[search_configs2])
+  
 
 
 
@@ -468,6 +455,7 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
       
       line_layer_2_layer,
       line_layer_3_layer,
+      
  
       ...scatter_layers,
      // line_layer_main,
@@ -478,6 +466,7 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
       pos_layer_mini,
      // ...search_layers_main,
      // ...search_layers_mini,
+     ...search_layers,
     ],
     [
       poly_layer,
@@ -490,6 +479,7 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
        line_layer_mini,
        scatter_layer_mini,*/
        pos_layer_mini
+       ,search_layers
       // ...search_layers_main,
       // ...search_layers_mini,
     ]
