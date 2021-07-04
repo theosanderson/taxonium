@@ -74,12 +74,16 @@ for line in tqdm.tqdm(open("out.txt")):
         genotypes[name].append(cols[4])
 
 
+
 metadata = pd.read_csv("public-latest.metadata.tsv.gz",sep="\t")
 lineage_lookup = defaultdict(lambda: "unknown")
 date_lookup = defaultdict(lambda: "unknown")
 country_lookup = defaultdict(lambda: "unknown")
+genbank_lookup = defaultdict(lambda: "unknown")
 for i,row in  tqdm.tqdm(metadata.iterrows()):
+
     name = row['strain']#.split("|")[0]
+    genbank_lookup[name] = str(row['genbank_accession'])
     lineage_lookup[name] = str(row['pangolin_lineage'])
     date_lookup[name] = str(row['date'])
     row['country']=str(row['country'])
@@ -97,14 +101,6 @@ for i,row in  tqdm.tqdm(metadata.iterrows()):
 print("B")
 
 
-def make_node(x):
-    parents = x.path_list[::-1]
-    if len(parents)>0:
-        return tree_pb2.Node(name=x.name,x=0.2*x.x,y=x.y/40000,parent=parents[0])
-    else:
-        return tree_pb2.Node(name=x.name,x=0.2*x.x,y=x.y/40000)
-
-pb_list = [make_node(x) for i,x in tqdm.tqdm(enumerate(all_nodes))]
 
 
 def make_mapping(list_of_strings):
@@ -136,6 +132,8 @@ dates = []
 mutations = []
 countries = []
 lineages = []
+genbanks = []
+
 
 print("C")
 for i,x in tqdm.tqdm(enumerate(all_nodes)):
@@ -150,6 +148,7 @@ for i,x in tqdm.tqdm(enumerate(all_nodes)):
         names.append(x.name.split("|")[0])
     else:
         names.append("")
+    genbanks.append(genbank_lookup[x.name])
     the_date = date_lookup[x.name]
 
     dates.append(date_mapping_lookup[the_date])
@@ -162,7 +161,7 @@ for i,x in tqdm.tqdm(enumerate(all_nodes)):
     mutations.append([mutation_mapping_lookup[x] for x in genotypes[x.name]])
 
 
-all_node_data = tree_pb2.AllNodeData(names=names,x=xes,y=yes, countries= countries, lineages=lineages,dates=dates, mutations=[tree_pb2.MutationList(mutation=x) for x in mutations],parents=parents )
+all_node_data = tree_pb2.AllNodeData(genbanks=genbanks,names=names,x=xes,y=yes, countries= countries, lineages=lineages,dates=dates, mutations=[tree_pb2.MutationList(mutation=x) for x in mutations],parents=parents )
 
 all_data = tree_pb2.AllData(node_data=all_node_data, country_mapping=country_mapping_list,
 lineage_mapping=lineage_mapping_list, mutation_mapping=mutation_mapping_list,

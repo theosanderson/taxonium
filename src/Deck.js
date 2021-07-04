@@ -19,7 +19,7 @@ function coarse_and_fine_configs(config, node_data,precision){
 }
 
 function make_minimap_version(config){
-  return {...config, id:config.id.replace("main","mini"), radiusMaxPixels:2}
+  return {...config, id:config.id.replace("main","mini"),lineWidthScale:1}
 }
 
 function reduceOverPlotting(nodeIds, node_data, precision = 10) {
@@ -335,7 +335,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
   }, [scatterIds, node_data,data, colourBy]);
 
   const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,100) ,[scatterplot_config,node_data])
-  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 15,radiusMaxPixels: viewState.zoom > 15?viewState.zoom/5:3})) ,[scatter_configs,viewState.zoom])
+  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 15,radiusMaxPixels: x.id.includes("mini")? 2 :viewState.zoom > 15?viewState.zoom/5: 3 })) ,[scatter_configs,viewState.zoom])
   const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
 
 
@@ -379,10 +379,10 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
           filled: false,
           stroked: true,
           radiusMaxPixels: 10 + counter * 2,
-          getRadius: 8,
+          getRadius: 200,
           radiusUnits: "pixels",
           lineWidthUnits: "pixels",
-          lineWidthScale: 2,
+          lineWidthScale: 1,
 
           getPosition: (d) => {
         
@@ -441,7 +441,7 @@ const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_c
       new PolygonLayer({
         id: "mini-pos",
         data: [viewState],
-        opacity: 0.2,
+        opacity: 0.1,
         radiusMinPixels: 4,
         radiusMaxPixels: 4,
         getRadius: 4,
@@ -449,6 +449,7 @@ const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_c
         getPolygon: (d) => {
           if (d.nw !== undefined) {
             return [
+              
               [d.nw[0], d.nw[1]],
               [d.se[0], d.nw[1]],
               [d.se[0], d.se[1]],
