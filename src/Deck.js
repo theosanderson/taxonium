@@ -1,7 +1,7 @@
 /// app.js
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
-import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
+import { LineLayer, ScatterplotLayer, PolygonLayer,TextLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 const zoomThreshold = 8;
@@ -434,6 +434,20 @@ const line_configs2 = useMemo( ()=>line_configs.map(x=>({...x,modelMatrix: x.id.
 const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_configs2])
 
 
+const text_config = useMemo( ()=> ({
+  id: 'main-text-layer',
+  data:scatterIds.filter(x=>true),
+  getPosition: d => [node_data.x[d]+.3,node_data.y[d]],
+  getText: d => node_data.names[d],
+  getColor:[180,180,180],
+  getAngle: 0,
+ 
+  billboard:true,
+  getTextAnchor: 'start',
+  getAlignmentBaseline: 'center'
+}),[node_data,scatterIds])
+const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState.zoom>18.5,getSize:viewState.zoom>19? 12:9.5,modelMatrix:getMMatrix(viewState.zoom)})
+,[text_config,viewState]);
 
 
   const pos_layer_mini = useMemo(
@@ -469,13 +483,15 @@ const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_c
       poly_layer,
       
      ...line_layers,
-      
+     text_layer,
  
       ...scatter_layers,
   
-      pos_layer_mini,
+      
      
      ...search_layers,
+     
+     pos_layer_mini,
     ],
     [
       poly_layer,
@@ -485,7 +501,8 @@ const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_c
       line_layers,
      
        pos_layer_mini
-       ,search_layers
+       ,search_layers,
+       text_layer
     
     ]
   );
