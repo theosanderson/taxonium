@@ -19,183 +19,10 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\ntree.proto\":\n\x04Node\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\t\n\x01x\x18\x02 \x01(\x02\x12\t\n\x01y\x18\x03 \x01(\x02\x12\x0e\n\x06parent\x18\x04 \x01(\x05\" \n\x08NodeList\x12\x14\n\x05nodes\x18\x01 \x03(\x0b\x32\x05.Node\"]\n\x0cMetadataItem\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07lineage\x18\x02 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x03 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x04 \x01(\t\x12\x0f\n\x07\x61\x61_subs\x18\x05 \x03(\t\",\n\x0cMetadataList\x12\x1c\n\x05items\x18\x01 \x03(\x0b\x32\r.MetadataItem\" \n\x0cMutationList\x12\x10\n\x08mutation\x18\x01 \x03(\x05\"\x99\x01\n\x0b\x41llNodeData\x12\r\n\x05names\x18\x01 \x03(\t\x12\t\n\x01x\x18\x02 \x03(\x02\x12\t\n\x01y\x18\x03 \x03(\x02\x12\x11\n\tcountries\x18\x04 \x03(\x05\x12\x10\n\x08lineages\x18\x05 \x03(\x05\x12 \n\tmutations\x18\x06 \x03(\x0b\x32\r.MutationList\x12\r\n\x05\x64\x61tes\x18\x07 \x03(\x05\x12\x0f\n\x07parents\x18\x08 \x03(\x05\"\x8c\x01\n\x07\x41llData\x12\x1f\n\tnode_data\x18\x01 \x01(\x0b\x32\x0c.AllNodeData\x12\x17\n\x0f\x63ountry_mapping\x18\x02 \x03(\t\x12\x17\n\x0flineage_mapping\x18\x03 \x03(\t\x12\x18\n\x10mutation_mapping\x18\x04 \x03(\t\x12\x14\n\x0c\x64\x61te_mapping\x18\x05 \x03(\tb\x06proto3')
+  serialized_pb=_b('\n\ntree.proto\" \n\x0cMutationList\x12\x10\n\x08mutation\x18\x01 \x03(\x05\"\xab\x01\n\x0b\x41llNodeData\x12\r\n\x05names\x18\x01 \x03(\t\x12\t\n\x01x\x18\x02 \x03(\x02\x12\t\n\x01y\x18\x03 \x03(\x02\x12\x11\n\tcountries\x18\x04 \x03(\x05\x12\x10\n\x08lineages\x18\x05 \x03(\x05\x12 \n\tmutations\x18\x06 \x03(\x0b\x32\r.MutationList\x12\r\n\x05\x64\x61tes\x18\x07 \x03(\x05\x12\x0f\n\x07parents\x18\x08 \x03(\x05\x12\x10\n\x08genbanks\x18\t \x03(\t\"\x8c\x01\n\x07\x41llData\x12\x1f\n\tnode_data\x18\x01 \x01(\x0b\x32\x0c.AllNodeData\x12\x17\n\x0f\x63ountry_mapping\x18\x02 \x03(\t\x12\x17\n\x0flineage_mapping\x18\x03 \x03(\t\x12\x18\n\x10mutation_mapping\x18\x04 \x03(\t\x12\x14\n\x0c\x64\x61te_mapping\x18\x05 \x03(\tb\x06proto3')
 )
 
 
-
-
-_NODE = _descriptor.Descriptor(
-  name='Node',
-  full_name='Node',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='name', full_name='Node.name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='x', full_name='Node.x', index=1,
-      number=2, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='y', full_name='Node.y', index=2,
-      number=3, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='parent', full_name='Node.parent', index=3,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=14,
-  serialized_end=72,
-)
-
-
-_NODELIST = _descriptor.Descriptor(
-  name='NodeList',
-  full_name='NodeList',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='nodes', full_name='NodeList.nodes', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=74,
-  serialized_end=106,
-)
-
-
-_METADATAITEM = _descriptor.Descriptor(
-  name='MetadataItem',
-  full_name='MetadataItem',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='name', full_name='MetadataItem.name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='lineage', full_name='MetadataItem.lineage', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='date', full_name='MetadataItem.date', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='country', full_name='MetadataItem.country', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='aa_subs', full_name='MetadataItem.aa_subs', index=4,
-      number=5, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=108,
-  serialized_end=201,
-)
-
-
-_METADATALIST = _descriptor.Descriptor(
-  name='MetadataList',
-  full_name='MetadataList',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='items', full_name='MetadataList.items', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=203,
-  serialized_end=247,
-)
 
 
 _MUTATIONLIST = _descriptor.Descriptor(
@@ -224,8 +51,8 @@ _MUTATIONLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=249,
-  serialized_end=281,
+  serialized_start=14,
+  serialized_end=46,
 )
 
 
@@ -292,6 +119,13 @@ _ALLNODEDATA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='genbanks', full_name='AllNodeData.genbanks', index=8,
+      number=9, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -304,8 +138,8 @@ _ALLNODEDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=284,
-  serialized_end=437,
+  serialized_start=49,
+  serialized_end=220,
 )
 
 
@@ -363,50 +197,16 @@ _ALLDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=440,
-  serialized_end=580,
+  serialized_start=223,
+  serialized_end=363,
 )
 
-_NODELIST.fields_by_name['nodes'].message_type = _NODE
-_METADATALIST.fields_by_name['items'].message_type = _METADATAITEM
 _ALLNODEDATA.fields_by_name['mutations'].message_type = _MUTATIONLIST
 _ALLDATA.fields_by_name['node_data'].message_type = _ALLNODEDATA
-DESCRIPTOR.message_types_by_name['Node'] = _NODE
-DESCRIPTOR.message_types_by_name['NodeList'] = _NODELIST
-DESCRIPTOR.message_types_by_name['MetadataItem'] = _METADATAITEM
-DESCRIPTOR.message_types_by_name['MetadataList'] = _METADATALIST
 DESCRIPTOR.message_types_by_name['MutationList'] = _MUTATIONLIST
 DESCRIPTOR.message_types_by_name['AllNodeData'] = _ALLNODEDATA
 DESCRIPTOR.message_types_by_name['AllData'] = _ALLDATA
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
-Node = _reflection.GeneratedProtocolMessageType('Node', (_message.Message,), dict(
-  DESCRIPTOR = _NODE,
-  __module__ = 'tree_pb2'
-  # @@protoc_insertion_point(class_scope:Node)
-  ))
-_sym_db.RegisterMessage(Node)
-
-NodeList = _reflection.GeneratedProtocolMessageType('NodeList', (_message.Message,), dict(
-  DESCRIPTOR = _NODELIST,
-  __module__ = 'tree_pb2'
-  # @@protoc_insertion_point(class_scope:NodeList)
-  ))
-_sym_db.RegisterMessage(NodeList)
-
-MetadataItem = _reflection.GeneratedProtocolMessageType('MetadataItem', (_message.Message,), dict(
-  DESCRIPTOR = _METADATAITEM,
-  __module__ = 'tree_pb2'
-  # @@protoc_insertion_point(class_scope:MetadataItem)
-  ))
-_sym_db.RegisterMessage(MetadataItem)
-
-MetadataList = _reflection.GeneratedProtocolMessageType('MetadataList', (_message.Message,), dict(
-  DESCRIPTOR = _METADATALIST,
-  __module__ = 'tree_pb2'
-  # @@protoc_insertion_point(class_scope:MetadataList)
-  ))
-_sym_db.RegisterMessage(MetadataList)
 
 MutationList = _reflection.GeneratedProtocolMessageType('MutationList', (_message.Message,), dict(
   DESCRIPTOR = _MUTATIONLIST,

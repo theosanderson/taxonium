@@ -71,7 +71,7 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
       </div>
       <div>
         
-        {selectedNode&& <div className="text-gray-500"><h2 className="text-xl mt-5 mb-4 text-gray-700">
+        {selectedNode&& <div className="text-gray-500 mr-3"><h2 className="text-xl mt-5 mb-4 text-gray-700">
           <BsInfoCircle className="inline-block mr-2" />
           Node info
         </h2>
@@ -79,15 +79,19 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
         <div className="font-bold">
         {node_data.names[selectedNode]}
         </div>
+        {node_data.genbanks[selectedNode] && node_data.genbanks[selectedNode] !=="unknown"&& node_data.genbanks[selectedNode] !=="nan" &&<div>
+        <span className="font-semibold">Genbank:</span> <a target="_blank" rel="noreferrer" className="underline" href={"https://www.ncbi.nlm.nih.gov/nuccore/"+node_data.genbanks[selectedNode]}>{node_data.genbanks[selectedNode]}</a>
+        </div>}
         <div>
-        {data.date_mapping[node_data.dates[selectedNode]]}
+        <span className="font-semibold">Date:</span> {data.date_mapping[node_data.dates[selectedNode]]}
         </div>
         <div>
-        {data.lineage_mapping[node_data.lineages[selectedNode]]}
+        <span className="font-semibold">Lineage:</span> <a className="underline" target="_blank" rel="noreferrer" href={"https://outbreak.info/situation-reports?pango="+data.lineage_mapping[node_data.lineages[selectedNode]]}>{data.lineage_mapping[node_data.lineages[selectedNode]]}</a>
         </div>
         <div>
-        {data.country_mapping[node_data.countries[selectedNode]]}
+        <span className="font-semibold">Country:</span> {data.country_mapping[node_data.countries[selectedNode]]}
         </div>
+        <span className="font-semibold">Mutations:</span>
         <div className="text-xs mr-5">
             {
               
