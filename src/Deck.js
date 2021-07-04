@@ -20,7 +20,7 @@ function coarse_and_fine_configs(config, node_data,precision){
 }
 
 function make_minimap_version(config){
-  return {...config, id:config.id.replace("main","mini")}
+  return {...config, id:config.id.replace("main","mini"), radiusMaxPixels:2}
 }
 
 function reduceOverPlotting(nodeIds, node_data, precision = 10) {
@@ -288,8 +288,8 @@ function Deck({ data, metadata, colourBy, searchItems }) {
       data: scatterIds,
       visible: true,
       
-      radiusMinPixels: 1,
-      radiusMaxPixels: 2,
+      radiusMinPixels: 3,
+      radiusMaxPixels: 3,
       getRadius: 4,
       radiusUnits: "pixels",
     
@@ -404,18 +404,7 @@ function Deck({ data, metadata, colourBy, searchItems }) {
   }, [search_configs_initial]);
 */
  
-/*
-  const line_layer_main = useMemo(
-    () =>
-      new LineLayer({
-        id: "main-lines",
-        data: lineData,
-        getColor: (d) => [70, 70, 70],
-        modelMatrix: getMMatrix(viewState.zoom),
-      }),
-    [viewState, lineData]
-  );
-*/
+
 
 
 
@@ -472,50 +461,7 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
       }),
     [viewState]
   );
-/*
-  const scatter_layer_mini = useMemo(
-    () =>
-      new ScatterplotLayer({
-        id: "mini-scatter",
-        ...scatterplot_config,
-        data: minimapScatterData.filter(() => true),
-        visible: true,
-      }),
-    [scatterplot_config, minimapScatterData]
-  );
 
-  const scatter_layer_coarse = useMemo(
-    () =>
-      new ScatterplotLayer({
-        ...scatterplot_config,
-        id: "main-scatter-coarse",
-        data: coarseScatterData.filter(() => true),
-        radiusMinPixels: 1,
-        radiusMaxPixels: 4,
-        getRadius: 4,
-        opacity: viewState.zoom > 15 ? 0.8 : 0.6,
-
-        modelMatrix: getMMatrix(viewState.zoom),
-        pickable: true,
-        getLineColor: (d) => [100, 100, 100],
-        stroked: viewState.zoom > 15,
-        lineWidthUnits: "pixels",
-        lineWidthScale: 1,
-        visible: viewState.zoom < zoomThreshold,
-        onHover: (info) => setHoverInfo(info),
-      }),
-    [scatterplot_config, coarseScatterData, viewState.zoom]
-  );
-
-  const line_layer_mini = useMemo(
-    () =>
-      new LineLayer({
-        id: "mini-lines",
-        data: lineData,
-      }),
-    [lineData]
-  );
-*/
   const layers = useMemo(
     () => [
       poly_layer,
