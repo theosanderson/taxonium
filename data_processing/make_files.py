@@ -80,8 +80,8 @@ date_lookup = defaultdict(lambda: "unknown")
 country_lookup = defaultdict(lambda: "unknown")
 for i,row in  tqdm.tqdm(metadata.iterrows()):
     name = row['strain']#.split("|")[0]
-    lineage_lookup[name] = row['pangolin_lineage']
-    date_lookup[name] = row['date']
+    lineage_lookup[name] = str(row['pangolin_lineage'])
+    date_lookup[name] = str(row['date'])
     row['country']=str(row['country'])
     if row['country']=="UK":
         country_lookup[name] = row['strain'].split("/")[0]
@@ -94,11 +94,7 @@ for i,row in  tqdm.tqdm(metadata.iterrows()):
     else:
         country_lookup[name] = row['country']
     
-
-def make_mapping(list_of_strings):
-    sorted_by_value_counts = pd.Series(list_of_strings).value_counts(sort=True).index.tolist()
-    return sorted_by_value_counts, {x:i for i,x in enumerate(sorted_by_value_counts)}
-
+print("B")
 
 
 def make_node(x):
@@ -109,18 +105,72 @@ def make_node(x):
         return tree_pb2.Node(name=x.name,x=0.2*x.x,y=x.y/40000)
 
 pb_list = [make_node(x) for i,x in tqdm.tqdm(enumerate(all_nodes))]
-node_list = tree_pb2.NodeList(nodes=pb_list)
-node_list.SerializeToString()
+
+
+def make_mapping(list_of_strings):
+    sorted_by_value_counts = ["unknown"]+pd.Series(list_of_strings).value_counts(sort=True).index.tolist()
+    return sorted_by_value_counts, {x:i for i,x in enumerate(sorted_by_value_counts)}
+
+
+all_lineages = [x for i,x in lineage_lookup.items()]
+lineage_mapping_list, lineage_mapping_lookup = make_mapping(all_lineages)
+
+
+all_dates = [x for i,x in date_lookup.items()]
+date_mapping_list, date_mapping_lookup = make_mapping(all_dates)
+
+all_countries = [x for i,x in country_lookup.items()]
+country_mapping_list, country_mapping_lookup = make_mapping(all_countries)
+
+all_genotypes = []
+for i,x in genotypes.items():
+    all_genotypes.extend(x)
+mutation_mapping_list, mutation_mapping_lookup = make_mapping(all_genotypes)
+
+
+xes = []
+yes = []
+parents = []
+names = []
+dates = []
+mutations = []
+countries = []
+lineages = []
+
+print("C")
+for i,x in tqdm.tqdm(enumerate(all_nodes)):
+    xes.append(x.x*0.2)
+    yes.append(x.y/40000)
+    path_list_rev = x.path_list[::-1]
+    if len(path_list_rev)>0:
+        parents.append(path_list_rev[0])
+    else:
+        parents.append(i)
+    if x.name:
+        names.append(x.name.split("|")[0])
+    else:
+        names.append("")
+    the_date = date_lookup[x.name]
+
+    dates.append(date_mapping_lookup[the_date])
+
+    the_country = country_lookup[x.name]
+    countries.append(country_mapping_lookup[the_country])
+
+    the_lineage = lineage_lookup[x.name]
+    lineages.append(lineage_mapping_lookup[the_lineage])
+    mutations.append([mutation_mapping_lookup[x] for x in genotypes[x.name]])
+
+
+all_node_data = tree_pb2.AllNodeData(names=names,x=xes,y=yes, countries= countries, lineages=lineages,dates=dates, mutations=[tree_pb2.MutationList(mutation=x) for x in mutations],parents=parents )
+
+all_data = tree_pb2.AllData(node_data=all_node_data, country_mapping=country_mapping_list,
+lineage_mapping=lineage_mapping_list, mutation_mapping=mutation_mapping_list,
+date_mapping=date_mapping_list)
+
+
 
 f = open("../public/nodelist.pb", "wb")
-f.write(node_list.SerializeToString())
+f.write(all_data.SerializeToString())
 f.close()
 
-
-metadata = [tree_pb2.MetadataItem(name=str(x.name),lineage=str(lineage_lookup[x.name]),date=str(date_lookup[x.name]),country=str(country_lookup[x.name]),aa_subs=genotypes[x.name])  for i,x in tqdm.tqdm(enumerate(all_nodes))]
-
-metadata =tree_pb2.MetadataList(items=metadata)
-
-f = open("../public/metadata.pb", "wb")
-f.write(metadata.SerializeToString())
-f.close()

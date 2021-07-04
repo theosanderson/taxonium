@@ -1,16 +1,26 @@
 /// app.js
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
-import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
+import { PathLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
+const zoomThreshold = 8;
+function coarse_and_fine_configs(config, node_data,precision){
+  console.log("coarse")
+  return [{...config, visible:
+    true,id:config.id+"_fine"},
+  {...config,data:reduceOverPlotting(config.data,node_data,precision), visible:
+    true,id:config.id+"_coarse"}
+]
 
-function reduceOverPlotting(dataset, precision = 10) {
+}
+
+function reduceOverPlotting(nodeIds, node_data, precision = 10) {
   const included_points = {};
-  const rounded_dataset = dataset.map((node) => {
-    const new_node = { ...node };
-    new_node.x = Math.round(node.x * precision) / precision;
-    new_node.y = Math.round(node.y * precision) / precision;
+  const rounded_dataset = nodeIds.map((node) => {
+    const new_node = { id:node };
+    new_node.x = Math.round(node_data.x[node] * precision) / precision;
+    new_node.y = Math.round(node_data.y[node] * precision) / precision;
     return new_node;
   });
 
@@ -26,9 +36,9 @@ function reduceOverPlotting(dataset, precision = 10) {
       included_points[node.x] = { [node.y]: 1 };
       return true;
     }
-  });
+  }).map(x=>x.id);
 
-  console.log(filtered.length, ":");
+ 
   return filtered;
 }
 const dummy_polygons = [
@@ -124,42 +134,50 @@ let getMMatrix = (zoom) => [
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
-function Deck({ nodeData, metadata, colourBy, searchItems }) {
+function Deck({ data, metadata, colourBy, searchItems }) {
+
+  const node_data = data.node_data
+
   window.searchItems = searchItems;
-  const scatterData = useMemo(
-    () => nodeData.filter((x) => x.name !== null),
-    [nodeData]
+  const scatterIds = useMemo(
+    () => node_data.ids.filter((x) => node_data.names[x] !== ""),
+    [node_data]
   );
+  
+/*
   // Data to be used by the LineLayer
   const lineData = useMemo(() => {
     let data = [];
 
-    nodeData.forEach((node) => {
-      let first_path = node.parent;
-      let first_node = nodeData[first_path];
+    node_data.ids.forEach((node) => {
+      let first_path = node_data.parents[node];
 
-      if (first_node) {
+      if (first_path!==node) {
         data.push({
-          sourcePosition: [node.x, node.y],
-          targetPosition: [first_node.x, node.y],
+          sourcePosition: [node_data.x[node],node_data.y[node]],
+          targetPosition: [node_data.x[first_path], node_data.y[node]],
         });
 
         data.push({
-          sourcePosition: [first_node.x, node.y],
-          targetPosition: [first_node.x, first_node.y],
+          sourcePosition: [node_data.x[first_path], node_data.y[node]],
+          targetPosition: [node_data.x[first_path], node_data.y[first_path]],
         });
       }
     });
     return data;
-  }, [nodeData]);
+  }, [node_data]);
+*/
+
 
   const [hoverInfo, setHoverInfo] = useState();
-  const zoomThreshold = 8;
+
   const [viewState, setViewState] = useState({
     zoom: 7,
     target: [6, 5],
   });
+
   const deckRef = useRef(null);
+
   const onViewStateChange = useCallback(
     ({ viewId, viewState, oldViewState }) => {
       if (viewId === "minimap") {
@@ -245,33 +263,65 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       }),
     []
   );
-
+/*
   const minimapScatterData = useMemo(
     () => reduceOverPlotting(scatterData),
-    [scatterData]
+    [scatter]
   );
 
   const coarseScatterData = useMemo(
     () => reduceOverPlotting(scatterData, 100),
     [scatterData]
-  );
+  );*/
 
   const scatterplot_config = useMemo(() => {
+    
     return {
-      data: scatterData.filter(() => true),
-      visble: true,
-      opacity: 0.7,
+      data: scatterIds,
+      visible: true,
+      
       radiusMinPixels: 1,
       radiusMaxPixels: 2,
       getRadius: 4,
       radiusUnits: "pixels",
-      getPosition: (d) => {
-        return [d.x, d.y];
-      },
-      getFillColor: (d) => toRGB(metadata[d.name][colourBy]),
-    };
-  }, [scatterData, metadata, colourBy]);
+    
 
+      id: "main-scatter",
+      
+      pickable: true,
+      getLineColor: (d) => [100, 100, 100],
+     
+      lineWidthUnits: "pixels",
+      lineWidthScale: 1,
+      
+      onHover: (info) => setHoverInfo(info),
+      getPosition: (d) => {
+        
+        return [node_data.x[d], node_data.y[d]];
+      },
+      getFillColor: (d) => {
+        if(colourBy==="lineage") { return toRGB(
+        data.lineage_mapping[node_data.lineages[d]]
+      )}
+      if(colourBy==="country") { 
+        
+        return toRGB(
+        data.country_mapping[node_data.countries[d]]
+      )}
+
+    }}
+    
+    
+    ;
+  }, [scatterIds, node_data,data, colourBy]);
+
+  const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,1000) ,[scatterplot_config,node_data])
+  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,})) ,[scatter_configs,viewState.zoom])
+  const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
+  console.log(scatter_configs)
+
+
+  /*
   const search_configs_initial = useMemo(() => {
     const colors = [
       [255, 213, 0],
@@ -341,28 +391,9 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
 
     return minis;
   }, [search_configs_initial]);
-
-  const scatter_layer_main = useMemo(
-    () =>
-      new ScatterplotLayer({
-        ...scatterplot_config,
-        radiusMinPixels: 1,
-        radiusMaxPixels: 4,
-        getRadius: 4,
-        opacity: viewState.zoom > 15 ? 0.8 : 0.6,
-        id: "main-scatter",
-        modelMatrix: getMMatrix(viewState.zoom),
-        pickable: true,
-        getLineColor: (d) => [100, 100, 100],
-        stroked: viewState.zoom > 15,
-        lineWidthUnits: "pixels",
-        lineWidthScale: 1,
-        visible: viewState.zoom > zoomThreshold,
-        onHover: (info) => setHoverInfo(info),
-      }),
-    [viewState, scatterplot_config]
-  );
-
+*/
+ 
+/*
   const line_layer_main = useMemo(
     () =>
       new LineLayer({
@@ -373,7 +404,46 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       }),
     [viewState, lineData]
   );
+*/
 
+const line_layer_1_config = useMemo(()=>({
+  id: 'main-line',
+  widthMinPixels: 2,
+  data: node_data,
+
+  getPath: d => {
+    const original_location = [node_data.x[d], node_data.y[d]]
+    const final_location =   [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]]
+    console.log(original_location)
+    return [original_location,[original_location[0],final_location[1]] , 
+      final_location]
+    
+    
+  },
+  getWidth: d => 5,
+   getColor: ()=>[150,150,150],
+   getSourceColor: d => [150,150,150],
+   getTargetColor: d => [150,150,150],
+}),[node_data]);
+const line_layer_1_config2 = useMemo( ()=>({...line_layer_1_config,modelMatrix: getMMatrix(viewState.zoom)}) ,[line_layer_1_config,viewState.zoom])
+const line_layer_1_layer = useMemo(()=>(new PathLayer(line_layer_1_config2)),[line_layer_1_config2]);
+
+/*
+
+const line_layer_2_config = useMemo(()=>({
+  id: 'main-line',
+  data: node_data.ids,
+  pickable: true,
+  getWidth: 1,
+  getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]] ,
+  getSourcePosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]],
+  getColor: ()=>[150,150,150]
+}),[node_data]);
+const line_layer_2_config2 = useMemo( ()=>({...line_layer_2_config,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,}) ,[line_layer_2_config,viewState.zoom])
+const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[line_layer_2_config2]);
+
+
+*/
   const pos_layer_mini = useMemo(
     () =>
       new PolygonLayer({
@@ -400,7 +470,7 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       }),
     [viewState]
   );
-
+/*
   const scatter_layer_mini = useMemo(
     () =>
       new ScatterplotLayer({
@@ -443,29 +513,34 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
       }),
     [lineData]
   );
-
+*/
   const layers = useMemo(
     () => [
       poly_layer,
-      line_layer_main,
-      scatter_layer_main,
-      scatter_layer_coarse,
+      ...scatter_layers,
+      line_layer_1_layer,
+ 
+     
+     // line_layer_main,
+    // ...scatter_layers,
+      /*scatter_layer_coarse,
       line_layer_mini,
-      scatter_layer_mini,
+      scatter_layer_mini,*/
       pos_layer_mini,
-      ...search_layers_main,
-      ...search_layers_mini,
+     // ...search_layers_main,
+     // ...search_layers_mini,
     ],
     [
       poly_layer,
-      line_layer_main,
-      scatter_layer_main,
-      scatter_layer_coarse,
-      line_layer_mini,
-      scatter_layer_mini,
-      pos_layer_mini,
-      search_layers_main,
-      search_layers_mini,
+      // line_layer_main,
+      scatter_layers,
+      line_layer_1_layer,
+       /*scatter_layer_coarse,
+       line_layer_mini,
+       scatter_layer_mini,*/
+       pos_layer_mini
+      // ...search_layers_main,
+      // ...search_layers_mini,
     ]
   );
 
@@ -488,6 +563,9 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
 
   const hoverStuff = useMemo(() => {
     if (hoverInfo && hoverInfo.object) {
+      const lineage = data.lineage_mapping[node_data.lineages[hoverInfo.object]]
+      const country = data.country_mapping[node_data.countries[hoverInfo.object]]
+      const date = data.date_mapping[node_data.dates[hoverInfo.object]]
       return (
         <div
           className="bg-gray-100 p-3 opacity-90 text-sm"
@@ -499,40 +577,34 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
             top: hoverInfo.y,
           }}
         >
-          <h2 className="font-bold">{hoverInfo.object.name}</h2>
-          {metadata[hoverInfo.object.name].lineage !== "unknown" && (
+          <h2 className="font-bold">{node_data.names[hoverInfo.object]}</h2>
+          
             <div
               style={{
-                color: toRGBCSS(metadata[hoverInfo.object.name].lineage),
+                color: toRGBCSS(lineage),
               }}
             >
-              {metadata[hoverInfo.object.name].lineage}
+             {lineage}
             </div>
           
-          )}
-            <div> {metadata[hoverInfo.object.name].country}
+          )
+            <div> {country}
               </div>
-          {metadata[hoverInfo.object.name].date !== "unknown" && (
-            <div className="italic">{metadata[hoverInfo.object.name].date}</div>
-          )}
-          {metadata[hoverInfo.object.name].date === "unknown" && (
-            <div className="italic text-sm">
-              Import GISAID data for lineage info outside the UK
-            </div>
-          )}
+          {date}
+         
           <div className="text-xs">
             {
-              metadata[hoverInfo.object.name].aa_subs &&
+              false && metadata[hoverInfo.object.name].aa_subs &&
                 metadata[hoverInfo.object.name].aa_subs.join(", ") //TODO assign the top thing to a constant and use it again
             }
           </div>
         </div>
       );
     }
-  }, [metadata, hoverInfo]);
+  }, [data, node_data, hoverInfo,metadata]);
   const spinnerShown = useMemo(
-    () => nodeData.length === 0 || !Object.keys(metadata).length,
-    [metadata, nodeData]
+    () => node_data.ids.length === 0 ,
+    [ node_data]
   );
 
   return (
@@ -554,13 +626,16 @@ function Deck({ nodeData, metadata, colourBy, searchItems }) {
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         layerFilter={useCallback(({ layer, viewport }) => {
-          return (
-            (layer.id.startsWith("main") && viewport.id === "main") ||
-            (layer.id.startsWith("mini") &&
-              viewport.id === "minimap" &&
-              window.hidemini !== true)
-          );
-        }, [])}
+          const first_bit= 
+          (layer.id.startsWith("main") && viewport.id === "main") ||
+          (layer.id.startsWith("mini") &&
+            viewport.id === "minimap" &&
+            window.hidemini !== true)
+          const second_bit=(viewState.zoom<zoomThreshold | !layer.id.includes("fine")) |(viewState.zoom>zoomThreshold | !layer.id.includes("coarse")) 
+
+        
+          return (first_bit & second_bit);
+        }, [viewState.zoom])}
         controller={true}
         layers={layers}
       >

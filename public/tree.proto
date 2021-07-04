@@ -32,12 +32,15 @@ message MutationList{
 }
 
 message AllNodeData {
-  repeated string ids = 1;
- repeated int32 x = 2;
- repeated int32 y = 3;
+  repeated string names = 1;
+ repeated float x = 2;
+ repeated float y = 3;
  repeated int32 countries = 4;
  repeated int32 lineages = 5;
+
  repeated MutationList mutations = 6;
+ repeated int32 dates = 7;
+ repeated int32 parents = 8;
 
 }
 
@@ -47,4 +50,5 @@ message AllData{
   repeated string country_mapping = 2;
   repeated string lineage_mapping = 3;
   repeated string mutation_mapping = 4;
+  repeated string date_mapping = 5;
 }
