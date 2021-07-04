@@ -17,8 +17,7 @@ function AboutOverlay({ enabled, setEnabled }) {
           X
         </button>
         <h1 className="font-bold mb-5 text-xl">About Cov2Tree</h1>
-        This website allows you to explore phylogenetic trees for hundreds of
-        thousands of SARS-Cov-2 sequences, sequenced by researchers around the
+        This website allows you to explore phylogenetic trees for more than a million SARS-Cov-2 sequences, sequenced by researchers around the
         world. The interface was made by Theo Sanderson and is{" "}
         <a
           href="http://github.com/theosanderson/vbigtree"
