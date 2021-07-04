@@ -1,7 +1,7 @@
 /// app.js
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
-import { PathLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
+import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 const zoomThreshold = 8;
@@ -406,44 +406,35 @@ function Deck({ data, metadata, colourBy, searchItems }) {
   );
 */
 
-const line_layer_1_config = useMemo(()=>({
-  id: 'main-line',
-  widthMinPixels: 2,
-  data: node_data,
 
-  getPath: d => {
-    const original_location = [node_data.x[d], node_data.y[d]]
-    const final_location =   [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]]
-    console.log(original_location)
-    return [original_location,[original_location[0],final_location[1]] , 
-      final_location]
-    
-    
-  },
-  getWidth: d => 5,
-   getColor: ()=>[150,150,150],
-   getSourceColor: d => [150,150,150],
-   getTargetColor: d => [150,150,150],
-}),[node_data]);
-const line_layer_1_config2 = useMemo( ()=>({...line_layer_1_config,modelMatrix: getMMatrix(viewState.zoom)}) ,[line_layer_1_config,viewState.zoom])
-const line_layer_1_layer = useMemo(()=>(new PathLayer(line_layer_1_config2)),[line_layer_1_config2]);
-
-/*
 
 const line_layer_2_config = useMemo(()=>({
   id: 'main-line',
   data: node_data.ids,
   pickable: true,
   getWidth: 1,
-  getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]] ,
-  getSourcePosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]],
-  getColor: ()=>[150,150,150]
+  getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]] ,
+  getSourcePosition: d => [node_data.x[d], node_data.y[d]] ,
+ getColor: ()=>[150,150,150]
 }),[node_data]);
 const line_layer_2_config2 = useMemo( ()=>({...line_layer_2_config,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,}) ,[line_layer_2_config,viewState.zoom])
 const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[line_layer_2_config2]);
 
+const line_layer_3_config = useMemo(()=>({
+  id: 'main-line-2',
+  data: node_data.ids,
+  pickable: true,
+  getWidth: 1,
+  getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]] ,
+  getSourcePosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]],
+ getColor: ()=>[150,150,150]
+}),[node_data]);
+const line_layer_3_config2 = useMemo( ()=>({...line_layer_3_config,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,}) ,[line_layer_3_config,viewState.zoom])
+const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[line_layer_3_config2]);
 
-*/
+
+
+
   const pos_layer_mini = useMemo(
     () =>
       new PolygonLayer({
@@ -517,10 +508,11 @@ const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[li
   const layers = useMemo(
     () => [
       poly_layer,
-      ...scatter_layers,
-      line_layer_1_layer,
+      
+      line_layer_2_layer,
+      line_layer_3_layer,
  
-     
+      ...scatter_layers,
      // line_layer_main,
     // ...scatter_layers,
       /*scatter_layer_coarse,
@@ -533,8 +525,10 @@ const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[li
     [
       poly_layer,
       // line_layer_main,
+      
+      line_layer_2_layer,
+      line_layer_3_layer,
       scatter_layers,
-      line_layer_1_layer,
        /*scatter_layer_coarse,
        line_layer_mini,
        scatter_layer_mini,*/
@@ -594,14 +588,14 @@ const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[li
          
           <div className="text-xs">
             {
-              false && metadata[hoverInfo.object.name].aa_subs &&
-                metadata[hoverInfo.object.name].aa_subs.join(", ") //TODO assign the top thing to a constant and use it again
+              
+                node_data.mutations[hoverInfo.object].mutation.map(x=>data.mutation_mapping[x]).join(", ") //TODO assign the top thing to a constant and use it again
             }
           </div>
         </div>
       );
     }
-  }, [data, node_data, hoverInfo,metadata]);
+  }, [data, node_data, hoverInfo]);
   const spinnerShown = useMemo(
     () => node_data.ids.length === 0 ,
     [ node_data]
