@@ -19,7 +19,7 @@ function coarse_and_fine_configs(config, node_data,precision){
 }
 
 function make_minimap_version(config){
-  return {...config, id:config.id.replace("main","mini"),lineWidthScale:1}
+  return {...config, id:config.id.replace("main","mini"),lineWidthScale:1,pickable:false}
 }
 
 function reduceOverPlotting(nodeIds, node_data, precision = 10) {
