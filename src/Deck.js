@@ -471,30 +471,21 @@ const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_c
       
  
       ...scatter_layers,
-     // line_layer_main,
-    // ...scatter_layers,
-      /*scatter_layer_coarse,
-      line_layer_mini,
-      scatter_layer_mini,*/
+  
       pos_layer_mini,
-     // ...search_layers_main,
-     // ...search_layers_mini,
+     
      ...search_layers,
     ],
     [
       poly_layer,
-      // line_layer_main,
-      
+  
      
       scatter_layers,
       line_layers,
-       /*scatter_layer_coarse,
-       line_layer_mini,
-       scatter_layer_mini,*/
+     
        pos_layer_mini
        ,search_layers
-      // ...search_layers_main,
-      // ...search_layers_mini,
+    
     ]
   );
 
