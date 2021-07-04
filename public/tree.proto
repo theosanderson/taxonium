@@ -1,31 +1,5 @@
 syntax = "proto3";
 
-message Node {
- string name = 1;
-  float x = 2;
-  float y = 3;
-   int32 parent = 4;
-}
-
-
-message NodeList {
- repeated Node nodes=1;
-}
-
-
-message MetadataItem {
- string name = 1;
-  string lineage = 2;
-  string date = 3;
-  string country = 4;
-  repeated string aa_subs = 5;
-}
-
-message MetadataList {
- repeated MetadataItem items = 1;
-
-}
-
 
 message MutationList{
   repeated int32 mutation = 1;
@@ -41,6 +15,8 @@ message AllNodeData {
  repeated MutationList mutations = 6;
  repeated int32 dates = 7;
  repeated int32 parents = 8;
+ repeated string genbanks = 9;
+repeated int32 epi_isl_numbers = 10;
 
 }
 
