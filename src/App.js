@@ -61,7 +61,7 @@ function App() {
 
 
       axios.get('/nodelist.pb', {responseType: 'arraybuffer', onDownloadProgress: progressEvent => {
-         let percentCompleted = Math.floor(1*(progressEvent.loaded / progressEvent.total) * 100)
+         let percentCompleted = Math.floor(1*(progressEvent.loaded / 20000000) * 100)
          setNodeData({
           status: "loading",
           progress:percentCompleted,
