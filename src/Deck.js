@@ -7,12 +7,20 @@ import Spinner from "./components/Spinner";
 const zoomThreshold = 8;
 function coarse_and_fine_configs(config, node_data,precision){
   console.log("coarse")
-  return [{...config, visible:
-    true,id:config.id+"_fine"},
-  {...config,data:reduceOverPlotting(config.data,node_data,precision), visible:
+
+  const coarse = {...config,data:reduceOverPlotting(config.data,node_data,precision), visible:
     true,id:config.id+"_coarse"}
+  
+  const mini =  make_minimap_version(coarse)
+  const fine = {...config, visible:
+    true,id:config.id+"_fine"}
+  return [coarse,fine, mini
 ]
 
+}
+
+function make_minimap_version(config){
+  return {...config, id:config.id.replace("main","mini")}
 }
 
 function reduceOverPlotting(nodeIds, node_data, precision = 10) {
@@ -303,11 +311,14 @@ function Deck({ data, metadata, colourBy, searchItems }) {
         if(colourBy==="lineage") { return toRGB(
         data.lineage_mapping[node_data.lineages[d]]
       )}
-      if(colourBy==="country") { 
+      else if(colourBy==="country") { 
         
         return toRGB(
         data.country_mapping[node_data.countries[d]]
       )}
+      else{
+        return [200,200,200]
+      }
 
     }}
     
@@ -316,7 +327,7 @@ function Deck({ data, metadata, colourBy, searchItems }) {
   }, [scatterIds, node_data,data, colourBy]);
 
   const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,1000) ,[scatterplot_config,node_data])
-  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,})) ,[scatter_configs,viewState.zoom])
+  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,})) ,[scatter_configs,viewState.zoom])
   const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
   console.log(scatter_configs)
 
