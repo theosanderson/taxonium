@@ -335,7 +335,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
   }, [scatterIds, node_data,data, colourBy]);
 
   const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,1000) ,[scatterplot_config,node_data])
-  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 10,radiusMaxPixels: viewState.zoom > 15?viewState.zoom/5:3})) ,[scatter_configs,viewState.zoom])
+  const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 15,radiusMaxPixels: viewState.zoom > 15?viewState.zoom/5:3})) ,[scatter_configs,viewState.zoom])
   const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
 
 
