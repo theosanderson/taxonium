@@ -42,6 +42,7 @@ function App() {
     data: {node_data:{ids:[]}},
   });
 
+  const [selectedNode,setSelectedNode]=useState(null);
  
   const [aboutEnabled, setAboutEnabled] = useState(false);
 
@@ -127,6 +128,7 @@ function App() {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+              setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
                 
                 data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
@@ -136,8 +138,9 @@ function App() {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              selectedNode ={selectedNode}
                 searchItems={searchItems}
-               
+                data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
                 setSearchItems={setSearchItems}
                 colourBy={colourBy}
                 setColourBy={setColourByWithCheck}
