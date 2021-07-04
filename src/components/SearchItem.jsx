@@ -4,7 +4,7 @@ import {DebounceInput} from 'react-debounce-input';
 function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
   
   const explanations = {
-    name: "Enter a sequence name like QEUH-13ADA01 . EPI_ISL ids are not supported.",
+    name: "Enter a sequence name like QEUH-13ADA01",
     lineage:
       "Enter a PANGO lineage like B.1.1.7. Note that sub-lineages will not be found by this method.",
     country: "Enter a country like 'India' ",
