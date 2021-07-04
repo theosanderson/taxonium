@@ -1,14 +1,15 @@
 import "./App.css";
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
-import GISAIDLoader from "./components/GISAIDLoader";
+import axios from 'axios'
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
-import { RiFolderUploadLine } from "react-icons/ri";
+
 import { BsInfoSquare } from "react-icons/bs";
 var protobuf = require("protobufjs");
+protobuf.parse.defaults.keepCase = true;
 function App() {
   const [searchItems, setSearchItemsBasic] = useState([
     {
@@ -18,76 +19,72 @@ function App() {
       enabled: true,
     },
   ]);
-  const [gisaid, setGisaid] = useState(null);
+
   const setSearchItems = useCallback(
     (x) => {
-      console.log(x);
-      if (gisaid === null) {
-        const subset = x.filter((x) => x.category === "mutation");
-        if (subset.length) {
-          window.alert("Please import GISAID metadata to use this feature");
-          return false;
-        }
-      }
+   
       setSearchItemsBasic(x);
     },
-    [gisaid]
+    []
   );
-  const [cogMetadata, setCogMetadata] = useState(null);
+
 
   const [colourBy, setColourBy] = useState("lineage");
   const setColourByWithCheck = useCallback(
     (x) => {
-      if ((x === "country") & (gisaid === null)) {
-        // window.alert("Please import GISAID metadata to use this feature");
-        // return false;
-      }
+    
       setColourBy(x);
     },
-    [gisaid]
+    []
   );
   const [nodeData, setNodeData] = useState({
     status: "not_attempted",
-    data: [],
+    data: {node_data:{ids:[]}},
   });
 
-  const combinedMetadata = useMemo(() => {
-    if (cogMetadata === "loading") {
-      return "loading";
-    }
-    return { ...cogMetadata, ...gisaid };
-  }, [cogMetadata, gisaid]);
-
-  window.combined = combinedMetadata;
-  window.gisaid = gisaid;
-  window.cogmetadata = cogMetadata;
-
-  const [gisaidLoaderEnabled, setGisaidLoaderEnabled] = useState(false);
+  const [selectedNode,setSelectedNode]=useState(null);
+ 
   const [aboutEnabled, setAboutEnabled] = useState(false);
-  window.gs = gisaid;
 
-  useEffect(() => {
+     useEffect(() => {
     if (nodeData.status === "not_attempted") {
+      console.log("starting dl")
+      setNodeData({
+        status: "loading",
+        progress:0,
+        data: {node_data:{ids:[]}},
+      })
+
+
       protobuf.load("./tree.proto")
     .then(function(root) {
 
 
-      fetch('/nodelist.pb')
+      axios.get('/nodelist.pb', {responseType: 'arraybuffer', onDownloadProgress: progressEvent => {
+         let percentCompleted = Math.floor(1*(progressEvent.loaded / progressEvent.total) * 100)
+         setNodeData({
+          status: "loading",
+          progress:percentCompleted,
+          data: {node_data:{ids:[]}},
+        })
+      }
+    })
       .then(function(response) {
-        if (!response.ok) {
-          throw new Error("HTTP error, status = " + response.status);
-        }
-        return response.arrayBuffer();
+      
+        return response.data;
       })
       .then(function(buffer) {
-        console.log(buffer)
-        var NodeList = root.lookupType("vbigtree.NodeList");
+        console.log("buffer loaded")
+        var NodeList = root.lookupType("AllData");
         window.buffer= buffer
         window.NodeList = NodeList
       var message = NodeList.decode(new Uint8Array(buffer));
       var result = NodeList.toObject(message);
-      window.result = result
-    setNodeData({status:'loaded',data:result.nodes.map((x)=>{return {name:null,...x}})})
+      result.node_data.ids = [...Array(result.node_data.x.length).keys()]
+      console.log("hi")
+      console.log(result)
+      window.b=result
+      setNodeData({status:'loaded',data:result})
         });
       });
   
@@ -97,38 +94,14 @@ function App() {
     }
   , [nodeData.status]);
 
-  useEffect(() => {
-    if (cogMetadata === null) {
-      console.log("fetch");
-      fetch("/data/metadata.json")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("meta complete");
-          const as_dict = Object.fromEntries(
-            data.map((x) => [
-              x.name,
-              { ...x, country: x.name ? x.name.split("/")[0] : null },
-            ])
-          );
-          setCogMetadata(as_dict);
-        });
-      setCogMetadata("loading");
-    }
-  }, [cogMetadata]);
+
+
+ 
 
   return (
     <Router>
       <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
-      <GISAIDLoader
-        validNames={
-          nodeData.status === "loaded"
-            ? new Set(nodeData.data.map((x) => x.name))
-            : null
-        }
-        setGisaid={setGisaid}
-        enabled={gisaidLoaderEnabled}
-        setGisaidLoaderEnabled={setGisaidLoaderEnabled}
-      />
+      
       <div className="h-screen w-screen">
         <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
           <div className="flex justify-between">
@@ -140,13 +113,7 @@ function App() {
               </span>
             </h1>
             <div className="inline-block p-4">
-              <button
-                onClick={() => setGisaidLoaderEnabled(true)}
-                className="mr-10 text-white font-bold hover:underline"
-              >
-                <RiFolderUploadLine className="inline-block h-8 w-8" /> Import
-                GISAID metadata
-              </button>{" "}
+          
               <button
                 onClick={() => setAboutEnabled(true)}
                 className="mr-10 text-white font-bold hover:underline"
@@ -161,20 +128,19 @@ function App() {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+              setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
-                metadata={
-                  combinedMetadata && combinedMetadata !== "loading"
-                    ? combinedMetadata
-                    : {}
-                }
-                nodeData={nodeData.status === "loaded" ? nodeData.data : []}
+                
+                data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
+                progress={nodeData.progress}
                 colourBy={colourBy}
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              selectedNode ={selectedNode}
                 searchItems={searchItems}
-                gisaidExists={gisaid !== null}
+                data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
                 setSearchItems={setSearchItems}
                 colourBy={colourBy}
                 setColourBy={setColourByWithCheck}
