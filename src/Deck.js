@@ -414,8 +414,8 @@ const line_layer_2_config = useMemo(()=>({
   getSourcePosition: d => [node_data.x[d], node_data.y[d]] ,
  getColor: ()=>[150,150,150]
 }),[node_data]);
-const line_layer_2_config2 = useMemo( ()=>({...line_layer_2_config,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,}) ,[line_layer_2_config,viewState.zoom])
-const line_layer_2_layer = useMemo(()=>(new LineLayer(line_layer_2_config2)),[line_layer_2_config2]);
+
+
 
 const line_layer_3_config = useMemo(()=>({
   id: 'main-line-2',
@@ -426,8 +426,12 @@ const line_layer_3_config = useMemo(()=>({
   getSourcePosition: d => [node_data.x[node_data.parents[d]], node_data.y[d]],
  getColor: ()=>[150,150,150]
 }),[node_data]);
-const line_layer_3_config2 = useMemo( ()=>({...line_layer_3_config,modelMatrix: getMMatrix(viewState.zoom),stroked: viewState.zoom > 15,}) ,[line_layer_3_config,viewState.zoom])
-const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[line_layer_3_config2]);
+
+const line_configs = useMemo( ()=> [].concat(...[line_layer_2_config,line_layer_3_config].map(x=>coarse_and_fine_configs(x, node_data,100))) ,[line_layer_2_config,line_layer_3_config,node_data])
+
+window.sc = search_configs
+const line_configs2 = useMemo( ()=>line_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[line_configs,viewState.zoom])
+const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_configs2])
 
 
 
@@ -463,8 +467,7 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
     () => [
       poly_layer,
       
-      line_layer_2_layer,
-      line_layer_3_layer,
+     ...line_layers,
       
  
       ...scatter_layers,
@@ -482,9 +485,9 @@ const line_layer_3_layer = useMemo(()=>(new LineLayer(line_layer_3_config2)),[li
       poly_layer,
       // line_layer_main,
       
-      line_layer_2_layer,
-      line_layer_3_layer,
+     
       scatter_layers,
+      line_layers,
        /*scatter_layer_coarse,
        line_layer_mini,
        scatter_layer_mini,*/
