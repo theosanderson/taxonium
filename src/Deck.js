@@ -349,7 +349,7 @@ function Deck({ data, metadata, colourBy, searchItems }) {
            }
 
            if (item.category === "name"){
-            filter_function=(x) => data.names[x] === item.value
+            filter_function=(x) => node_data.names[x].includes( item.value)
            }
 
            if (item.category === "country"){
