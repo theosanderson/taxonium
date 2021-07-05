@@ -1,7 +1,7 @@
 import React from "react";
 import "./Spinner.css";
 
-function Spinner({ isShown , progress}) {
+function Spinner({ isShown, progress }) {
   if (isShown) {
     return (
       <div className="w-full h-full fixed bg-white text-center">
