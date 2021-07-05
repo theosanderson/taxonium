@@ -22,7 +22,7 @@ function App() {
 
   const setSearchItems = useCallback(
     (x) => {
-   
+
       setSearchItemsBasic(x);
     },
     []
@@ -32,77 +32,78 @@ function App() {
   const [colourBy, setColourBy] = useState("lineage");
   const setColourByWithCheck = useCallback(
     (x) => {
-    
+
       setColourBy(x);
     },
     []
   );
   const [nodeData, setNodeData] = useState({
     status: "not_attempted",
-    data: {node_data:{ids:[]}},
+    data: { node_data: { ids: [] } },
   });
 
-  const [selectedNode,setSelectedNode]=useState(null);
+  const [selectedNode, setSelectedNode] = useState(null);
 
- 
+
   const [aboutEnabled, setAboutEnabled] = useState(false);
 
-     useEffect(() => {
+  useEffect(() => {
     if (nodeData.status === "not_attempted") {
       console.log("starting dl")
       setNodeData({
         status: "loading",
-        progress:0,
-        data: {node_data:{ids:[]}},
+        progress: 0,
+        data: { node_data: { ids: [] } },
       })
 
 
       protobuf.load("./tree.proto")
-    .then(function(root) {
+        .then(function (root) {
 
 
-      axios.get('/nodelist.pb', {responseType: 'arraybuffer', onDownloadProgress: progressEvent => {
-         let percentCompleted = Math.floor(1*(progressEvent.loaded / 100000000) * 100)
-         setNodeData({
-          status: "loading",
-          progress:percentCompleted,
-          data: {node_data:{ids:[]}},
-        })
-      }
-    })
-      .then(function(response) {
-      
-        return response.data;
-      })
-      .then(function(buffer) {
-        console.log("buffer loaded")
-        var NodeList = root.lookupType("AllData");
-        window.buffer= buffer
-        window.NodeList = NodeList
-      var message = NodeList.decode(new Uint8Array(buffer));
-      var result = NodeList.toObject(message);
-      result.node_data.ids = [...Array(result.node_data.x.length).keys()]
-      console.log("hi")
-      console.log(result)
-      window.b=result
-      setNodeData({status:'loaded',data:result})
+          axios.get('/nodelist.pb', {
+            responseType: 'arraybuffer', onDownloadProgress: progressEvent => {
+              let percentCompleted = Math.floor(1 * (progressEvent.loaded / 100000000) * 100)
+              setNodeData({
+                status: "loading",
+                progress: percentCompleted,
+                data: { node_data: { ids: [] } },
+              })
+            }
+          })
+            .then(function (response) {
+
+              return response.data;
+            })
+            .then(function (buffer) {
+              console.log("buffer loaded")
+              var NodeList = root.lookupType("AllData");
+              window.buffer = buffer
+              window.NodeList = NodeList
+              var message = NodeList.decode(new Uint8Array(buffer));
+              var result = NodeList.toObject(message);
+              result.node_data.ids = [...Array(result.node_data.x.length).keys()]
+              console.log("hi")
+              console.log(result)
+              window.b = result
+              setNodeData({ status: 'loaded', data: result })
+            });
         });
-      });
-  
 
-     
+
+
     }
-    }
-  , [nodeData.status]);
+  }
+    , [nodeData.status]);
 
 
 
- 
+
 
   return (
     <Router>
       <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
-      
+
       <div className="h-screen w-screen">
         <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
           <div className="flex justify-between">
@@ -114,15 +115,14 @@ function App() {
               </span>
             </h1>
             <div className="inline-block p-4">
-          
+
               <button
                 onClick={() => setAboutEnabled(true)}
                 className="mr-10 text-white font-bold hover:underline"
               >
-                <BsInfoSquare className="inline-block h-7 w-8" /> About this
-                site
+                <BsInfoSquare className="inline-block h-7 w-8" /> About / Acknowledgements
               </button>
-{/*<a className="text-white" href="https://github.com/theosanderson/taxodium">
+              {/*<a className="text-white" href="https://github.com/theosanderson/taxodium">
               <FaGithub className="inline-block text-white h-7 w-8" />
   </a>*/}
             </div>
@@ -132,21 +132,21 @@ function App() {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
-              setSelectedNode={setSelectedNode}
+                setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
-               
-                data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
+
+                data={nodeData.status === "loaded" ? nodeData.data : { node_data: { ids: [] } }}
                 progress={nodeData.progress}
                 colourBy={colourBy}
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
-              
-             
-              selectedNode ={selectedNode}
+
+
+                selectedNode={selectedNode}
                 searchItems={searchItems}
-                data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
+                data={nodeData.status === "loaded" ? nodeData.data : { node_data: { ids: [] } }}
                 setSearchItems={setSearchItems}
                 colourBy={colourBy}
                 setColourBy={setColourByWithCheck}
