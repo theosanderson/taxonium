@@ -141,8 +141,10 @@ let getMMatrix = (zoom) => [
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
-function Deck({ data, colourBy, searchItems ,progress, setSelectedNode,showLabels}) {
-  console.log("R")
+function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
+
+  const [textInfo, setTextInfo] = useState({ids:[],top:0, bottom:0})
+ 
 
   const node_data = data.node_data
 
@@ -408,14 +410,34 @@ const line_layer_3_config = useMemo(()=>({
 
 const line_configs = useMemo( ()=> [].concat.apply([],[line_layer_2_config,line_layer_3_config].map(x=>coarse_and_fine_configs(x, node_data,100))) ,[line_layer_2_config,line_layer_3_config,node_data])
 
-console.log(line_configs)
+//console.log(line_configs)
 const line_configs2 = useMemo( ()=>line_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[line_configs,viewState.zoom])
 const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_configs2])
 
 
+if(viewState.zoom>17){
+  console.log(viewState)
+  if (viewState.nw[1]>textInfo.top & viewState.se[1] < textInfo.bottom){
+    console.log("still within", viewState.nw[1] , textInfo.top)
+    
+  }
+  else{
+    const cur_top = viewState.nw[1] 
+    const cur_bot = viewState.se[1] 
+    const height = cur_bot-cur_top
+    const new_top = cur_top-height*4
+    const new_bot = cur_bot+height*4
+    const textIds = scatterIds.filter(x=> node_data.y[x] > new_top & node_data.y[x] < new_bot)
+    console.log("recalculating text")
+    setTextInfo({top:new_top, bottom:new_bot, ids: textIds})
+  }
+
+
+}
+
 const text_config = useMemo( ()=> ({
   id: 'main-text-layer',
-  data:scatterIds,
+  data:textInfo.ids,
   getPosition: d => [node_data.x[d]+.3,node_data.y[d]],
   getText: d => node_data.names[d],
   getColor:[180,180,180],
@@ -424,12 +446,12 @@ const text_config = useMemo( ()=> ({
   billboard:true,
   getTextAnchor: 'start',
   getAlignmentBaseline: 'center'
-}),[node_data,scatterIds])
+}),[node_data, textInfo])
 
 
 
 const text_layers = useMemo( () =>{
-  if(showLabels){
+  if(true){
     return [new TextLayer({...text_config,visible:viewState.zoom>18.5,getSize:viewState.zoom>19? 12:9.5,modelMatrix:getMMatrix(viewState.zoom)})]
   }
   else{
@@ -440,7 +462,7 @@ const text_layers = useMemo( () =>{
    }
 
 
-,[text_config,viewState,showLabels]);
+,[text_config,viewState]);
 
 
   const pos_layer_mini = useMemo(
