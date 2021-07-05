@@ -409,7 +409,7 @@ const line_configs = useMemo(()=>[line_layer_2_config,line_layer_3_config] ,[lin
 const line_configs2 = useMemo( ()=>line_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[line_configs,viewState.zoom])
 const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_configs2])
 
-
+/*
 const text_config = useMemo( ()=> ({
   id: 'main-text-layer',
   data:scatterIds,
@@ -424,7 +424,7 @@ const text_config = useMemo( ()=> ({
 }),[node_data,scatterIds])
 const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState.zoom>18.5,getSize:viewState.zoom>19? 12:9.5,modelMatrix:getMMatrix(viewState.zoom)})
 ,[text_config,viewState]);
-
+*/
 
   const pos_layer_mini = useMemo(
     () =>
