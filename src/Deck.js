@@ -572,7 +572,7 @@ const text_layers = useMemo( () =>{
          
           <div className="text-xs">
             {
-              
+              node_data.mutations[hoverInfo.object] && node_data.mutations[hoverInfo.object].mutation &&
                 node_data.mutations[hoverInfo.object].mutation.map(x=>data.mutation_mapping[x]).join(", ") //TODO assign the top thing to a constant and use it again
             }
           </div>
