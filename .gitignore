@@ -27,3 +27,4 @@ data_processing/public-latest.all.nwk.gz
 data_processing/public-latest.metadata.tsv.gz
 public/metadata.pb
 data_processing/out.txt
+data_processing/__pycache__/*
