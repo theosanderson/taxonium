@@ -1,4 +1,4 @@
-# Taxodium
+# TaxodiumTest2
 
 Taxodium is a client-side Javascript tool for exploring extremely large trees. It is currently used for Cov2Tree, a display of the global SARS-CoV-2 phylogeny. 
 
