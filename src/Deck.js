@@ -330,7 +330,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
     const configs = searchItems
       .map((item, counter) => {
         let filter_function
-        
+        const lowercase_query = item.value.toLowerCase().trim()
            if (item.category === "mutation"){
             const the_index = data.mutation_mapping.indexOf(item.value)
             filter_function=(x) =>
@@ -338,14 +338,15 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
            }
 
            if (item.category === "name"){
-            filter_function=(x) => node_data.names[x].includes( item.value)
+             
+            filter_function=(x) => node_data.names[x].toLowerCase().includes(lowercase_query ) //TODO precomputer lowercase mapping for perf?
            }
 
            if (item.category === "country"){
-            filter_function=(x) => data.country_mapping[node_data.countries[x]] === item.value
+            filter_function=(x) => data.country_mapping[node_data.countries[x]].toLowerCase() === lowercase_query //TODO precomputer lowercase mapping for perf
            }
            if (item.category === "lineage"){
-            filter_function=(x) => data.lineage_mapping[node_data.lineages[x]] === item.value
+            filter_function=(x) => data.lineage_mapping[node_data.lineages[x]].toLowerCase() === lowercase_query //TODO precomputer lowercase mapping for perf
            }
         const enabled =
           item.value !== null && item.value !== "" && item.enabled;
