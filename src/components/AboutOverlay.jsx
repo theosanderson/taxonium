@@ -18,13 +18,13 @@ function AboutOverlay({ enabled, setEnabled }) {
         </button>
         <h1 className="font-bold mb-5 text-xl">About Cov2Tree</h1>
         This website allows you to explore a phylogenetic tree with more than a million SARS-Cov-2 sequences, sequenced by researchers around the
-        world. The interface was made by Theo Sanderson and is{" "}
+        world. The interface was made by <a  className="text-blue-700 underline" href="http://theo.io/">Theo Sanderson</a> using a custom-developed open-source library called {" "}
         <a
-          href="http://github.com/theosanderson/vbigtree"
+          href="http://github.com/theosanderson/taxodium"
           className="text-blue-700 underline"
         >
           {" "}
-          open source
+          Taxodium
         </a>
         .
         <h1 className="font-bold mb-5 text-xl mt-10">The sequences</h1>
