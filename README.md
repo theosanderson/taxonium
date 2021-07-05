@@ -1,6 +1,6 @@
 # Taxodium
 
-Taxodium is a client-side Javascript tool for exploring extremely large trees. It is currently used for Cov2Tree, a display of the global SARS-CoV-2 phylogeny.
+Taxodium is a client-side Javascript tool for exploring extremely large trees. It is currently used for Cov2Tree, a display of the global SARS-CoV-2 phylogeny: 🌳 http://cov2tree.org
 
 The data and tree displayed in Cov2Tree are taken from the source collated UCSC and Angie Hinrichs: http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2// . And they represent the work of thousands of researchers across the world.
 
