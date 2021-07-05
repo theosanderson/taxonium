@@ -10,7 +10,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
     country: "Enter a country like 'India' ",
     mutation: "Enter an amino acid mutation like S:E484K",
   };
-  console.log("key", id);
+  //console.log("key", id);
   return (
     <div className="border-gray-100 border-b mb-3 pb-3">
       <input
