@@ -1,7 +1,7 @@
 /// app.js
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
-import { LineLayer, ScatterplotLayer, PolygonLayer } from "@deck.gl/layers";
+import { LineLayer, ScatterplotLayer, PolygonLayer, TextLayer } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 const zoomThreshold = 8;
@@ -141,7 +141,7 @@ let getMMatrix = (zoom) => [
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 // DeckGL react component
-function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
+function Deck({ data, colourBy, searchItems ,progress, setSelectedNode,showLabels}) {
   console.log("R")
 
   const node_data = data.node_data
@@ -412,7 +412,7 @@ console.log(line_configs)
 const line_configs2 = useMemo( ()=>line_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[line_configs,viewState.zoom])
 const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_configs2])
 
-/*
+
 const text_config = useMemo( ()=> ({
   id: 'main-text-layer',
   data:scatterIds,
@@ -425,9 +425,23 @@ const text_config = useMemo( ()=> ({
   getTextAnchor: 'start',
   getAlignmentBaseline: 'center'
 }),[node_data,scatterIds])
-const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState.zoom>18.5,getSize:viewState.zoom>19? 12:9.5,modelMatrix:getMMatrix(viewState.zoom)})
-,[text_config,viewState]);
-*/
+
+
+
+const text_layers = useMemo( () =>{
+  if(showLabels){
+    return [new TextLayer({...text_config,visible:viewState.zoom>18.5,getSize:viewState.zoom>19? 12:9.5,modelMatrix:getMMatrix(viewState.zoom)})]
+  }
+  else{
+    return []
+
+  }
+  
+   }
+
+
+,[text_config,viewState,showLabels]);
+
 
   const pos_layer_mini = useMemo(
     () =>
@@ -460,11 +474,12 @@ const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState
   const layers = useMemo(
     () => [
       poly_layer,
-      
+      ...text_layers,
      ...line_layers,
     // text_layer,
- 
+   
       ...scatter_layers,
+     
   
       
      
@@ -474,7 +489,7 @@ const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState
     ],
     [
       poly_layer,
-  
+  text_layers,
      
       scatter_layers,
       line_layers,

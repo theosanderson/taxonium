@@ -43,6 +43,7 @@ function App() {
   });
 
   const [selectedNode,setSelectedNode]=useState(null);
+  const [showLabels, setShowLabels] = useState(false);
  
   const [aboutEnabled, setAboutEnabled] = useState(false);
 
@@ -130,7 +131,7 @@ function App() {
               <Deck
               setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
-                
+                showLabels = {showLabels}
                 data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }
                 progress={nodeData.progress}
                 colourBy={colourBy}
@@ -138,6 +139,8 @@ function App() {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              showLabels = {showLabels}
+              setShowLabels={setShowLabels}
               selectedNode ={selectedNode}
                 searchItems={searchItems}
                 data={nodeData.status === "loaded" ? nodeData.data :  {node_data:{ids:[]}} }

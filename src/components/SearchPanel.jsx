@@ -6,7 +6,7 @@ import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 
 
-function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selectedNode,data}) {
+function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selectedNode,data, showLabels, setShowLabels}) {
  const node_data = data.node_data
   return (
     <div>
@@ -56,9 +56,9 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
       <div className="border-b border-gray-300 pb-3">
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <BiPalette className="inline-block mr-2" />
-          Colour by
+          Settings
         </h2>
-
+          Colour by: 
         <select
           className="border py-2 px-3 text-grey-darkest"
           value={colourBy}
@@ -69,6 +69,10 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
           <option value="none">None</option>
         </select>
       </div>
+      {/*<div>
+        Show labels (when zoomed): <input type="checkbox" value={showLabels} onChange={(event) => setShowLabels( !showLabels )} />
+      </div>*/}
+
       <div>
         
         {selectedNode&& <div className="text-gray-500 mr-3"><h2 className="text-xl mt-5 mb-4 text-gray-700">
