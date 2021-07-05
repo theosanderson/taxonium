@@ -5,9 +5,15 @@ import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 
-
-function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selectedNode,data}) {
- const node_data = data.node_data
+function SearchPanel({
+  searchItems,
+  setSearchItems,
+  colourBy,
+  setColourBy,
+  selectedNode,
+  data,
+}) {
+  const node_data = data.node_data;
   return (
     <div>
       <div className="border-b border-gray-300">
@@ -27,7 +33,7 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
                 setSearchItems([...searchItems]);
               }}
               removeItem={(id) => {
-               // console.log("remove", id);
+                // console.log("remove", id);
                 setSearchItems(searchItems.filter((x) => x.id !== id));
               }}
               enabled={item.enabled}
@@ -58,7 +64,7 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
           <BiPalette className="inline-block mr-2" />
           Colour by
         </h2>
-         
+
         <select
           className="border py-2 px-3 text-grey-darkest"
           value={colourBy}
@@ -69,39 +75,68 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
           <option value="none">None</option>
         </select>
       </div>
-      
 
       <div>
-        
-        {selectedNode&& <div className="text-gray-500 mr-3"><h2 className="text-xl mt-5 mb-4 text-gray-700">
-          <BsInfoCircle className="inline-block mr-2" />
-          Node info
-        </h2>
-       
-        <div className="font-bold">
-        {node_data.names[selectedNode]}
-        </div>
-        {node_data.genbanks[selectedNode] && node_data.genbanks[selectedNode] !=="unknown"&& node_data.genbanks[selectedNode] !=="nan" &&<div>
-        <span className="font-semibold">Genbank:</span> <a target="_blank" rel="noreferrer" className="underline" href={"https://www.ncbi.nlm.nih.gov/nuccore/"+node_data.genbanks[selectedNode]}>{node_data.genbanks[selectedNode]}</a>
-        </div>}
-        <div>
-        <span className="font-semibold">Date:</span> {data.date_mapping[node_data.dates[selectedNode]]}
-        </div>
-        <div>
-        <span className="font-semibold">Lineage:</span> <a className="underline" target="_blank" rel="noreferrer" href={"https://outbreak.info/situation-reports?pango="+data.lineage_mapping[node_data.lineages[selectedNode]]}>{data.lineage_mapping[node_data.lineages[selectedNode]]}</a>
-        </div>
-        <div>
-        <span className="font-semibold">Country:</span> {data.country_mapping[node_data.countries[selectedNode]]}
-        </div>
-        <span className="font-semibold">Mutations:</span>
-        <div className="text-xs mr-5">
-            {
-              
-              node_data.mutations[selectedNode].mutation&&node_data.mutations[selectedNode].mutation.map(x=>data.mutation_mapping[x]).join(", ") //TODO assign the top thing to a constant and use it again
-            }
-          </div></div>
-          }
-        </div>
+        {selectedNode && (
+          <div className="text-gray-500 mr-3">
+            <h2 className="text-xl mt-5 mb-4 text-gray-700">
+              <BsInfoCircle className="inline-block mr-2" />
+              Node info
+            </h2>
+
+            <div className="font-bold">{node_data.names[selectedNode]}</div>
+            {node_data.genbanks[selectedNode] &&
+              node_data.genbanks[selectedNode] !== "unknown" &&
+              node_data.genbanks[selectedNode] !== "nan" && (
+                <div>
+                  <span className="font-semibold">Genbank:</span>{" "}
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline"
+                    href={
+                      "https://www.ncbi.nlm.nih.gov/nuccore/" +
+                      node_data.genbanks[selectedNode]
+                    }
+                  >
+                    {node_data.genbanks[selectedNode]}
+                  </a>
+                </div>
+              )}
+            <div>
+              <span className="font-semibold">Date:</span>{" "}
+              {data.date_mapping[node_data.dates[selectedNode]]}
+            </div>
+            <div>
+              <span className="font-semibold">Lineage:</span>{" "}
+              <a
+                className="underline"
+                target="_blank"
+                rel="noreferrer"
+                href={
+                  "https://outbreak.info/situation-reports?pango=" +
+                  data.lineage_mapping[node_data.lineages[selectedNode]]
+                }
+              >
+                {data.lineage_mapping[node_data.lineages[selectedNode]]}
+              </a>
+            </div>
+            <div>
+              <span className="font-semibold">Country:</span>{" "}
+              {data.country_mapping[node_data.countries[selectedNode]]}
+            </div>
+            <span className="font-semibold">Mutations:</span>
+            <div className="text-xs mr-5">
+              {
+                node_data.mutations[selectedNode].mutation &&
+                  node_data.mutations[selectedNode].mutation
+                    .map((x) => data.mutation_mapping[x])
+                    .join(", ") //TODO assign the top thing to a constant and use it again
+              }
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

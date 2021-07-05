@@ -1,8 +1,7 @@
 import React from "react";
 import { BsTrash } from "react-icons/bs";
-import {DebounceInput} from 'react-debounce-input';
+import { DebounceInput } from "react-debounce-input";
 function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
-  
   const explanations = {
     name: "Enter a sequence name like QEUH-13ADA01",
     lineage:
@@ -36,7 +35,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
         value={value}
         onChange={(event) => setThis({ value: event.target.value })}
         debounceTimeout={300}
-     />
+      />
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
       <button
         className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
