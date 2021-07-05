@@ -39,7 +39,7 @@ to include only public sequences aggregated from GenBank, COG-UK, and the
 China National Center for Bioinformation.  The tree has  been re-rooted to
 Wuhan/Hu-1 (GenBank MN908947.3, RefSeq NC_045512.2), and nodes with no
 associated mutations have been collapsed.  Sequences released after the final
-sarscov2phylo release (Nov. 13, 2020) have been added to the tree using UShER. This work was carried out by the UCSC team and is described here only for completeness. They also provide metadata with the sequences, including lineages called by <a   className="text-blue-700 underline" href="https://www.pango.network/">Pangolin</a>.
+sarscov2phylo release (Nov. 13, 2020) have been added to the tree using <a  className="text-blue-700 underline" href="https://github.com/yatisht/usher">UShER</a>, developed by Yatish Turakhia. UShER development and tree inference was done in Russ Corbett-Detig and David Haussler's groups at the UCSC Genomics Institute. It is described here only for completeness. UCSC provide metadata with the sequences, including lineages called by <a className="text-blue-700 underline" href="https://www.pango.network/">Pangolin</a>.
         </p>
         <h1 className="font-bold mb-5 text-xl mt-10">Citations</h1>
         <p>Lanfear, Rob (2020). A global phylogeny of SARS-CoV-2 sequences from GISAID.
