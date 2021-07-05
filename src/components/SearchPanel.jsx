@@ -27,7 +27,7 @@ function SearchPanel({ searchItems, setSearchItems, colourBy, setColourBy ,selec
                 setSearchItems([...searchItems]);
               }}
               removeItem={(id) => {
-                console.log("remove", id);
+               // console.log("remove", id);
                 setSearchItems(searchItems.filter((x) => x.id !== id));
               }}
               enabled={item.enabled}
