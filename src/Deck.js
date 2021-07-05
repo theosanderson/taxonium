@@ -569,7 +569,7 @@ const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState
           (layer.id.startsWith("mini") &&
             viewport.id === "minimap" &&
             window.hidemini !== true)
-          const second_bit=(viewState.zoom<zoomThreshold | !layer.id.includes("fine")) |(viewState.zoom>zoomThreshold | !layer.id.includes("coarse")) 
+          const second_bit=layer.id.includes("mini")|(viewState.zoom<zoomThreshold & !layer.id.includes("fine")) |(viewState.zoom>zoomThreshold & !layer.id.includes("coarse")) 
 
         
           return (first_bit & second_bit);
