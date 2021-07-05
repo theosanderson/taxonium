@@ -111,7 +111,7 @@ function App() {
               <CgListTree className="inline-block h-8 w-8 pr-2 " />
               <span className="font-bold">Cov2Tree</span>:{" "}
               <span className="font-light">
-                interactive SARS-CoV2 phylogeny{" "}
+                interactive SARS-CoV-2 phylogeny{" "}
               </span>
             </h1>
             <div className="inline-block p-4">
