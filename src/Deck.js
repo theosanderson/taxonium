@@ -311,7 +311,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
     ;
   }, [scatterIds, node_data,data, colourBy]);
 
-  const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,10) ,[scatterplot_config,node_data])
+  const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,50) ,[scatterplot_config,node_data])
   const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 15,radiusMaxPixels: x.id.includes("mini")? 2 :viewState.zoom > 15?viewState.zoom/5: 3 })) ,[scatter_configs,viewState.zoom])
   const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
 
@@ -373,7 +373,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
     return configs;
   }, [data,node_data,searchItems,scatterIds]);
 
-  const search_configs = useMemo( ()=> [].concat(...search_configs_initial.map(x=>coarse_and_fine_configs(x, node_data,10))) ,[search_configs_initial,node_data])
+  const search_configs = useMemo( ()=> [].concat(...search_configs_initial.map(x=>coarse_and_fine_configs(x, node_data,50))) ,[search_configs_initial,node_data])
 
   window.sc = search_configs
   const search_configs2 = useMemo( ()=>search_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[search_configs,viewState.zoom])
@@ -404,8 +404,11 @@ const line_layer_3_config = useMemo(()=>({
  getColor: [150,150,150]
 }),[node_data]);
 
-const line_configs = useMemo(()=>[line_layer_2_config,line_layer_3_config] ,[line_layer_2_config,line_layer_3_config])
 
+
+const line_configs = useMemo( ()=> [].concat.apply([],[line_layer_2_config,line_layer_3_config].map(x=>coarse_and_fine_configs(x, node_data,50))) ,[line_layer_2_config,line_layer_3_config,node_data])
+
+console.log(line_configs)
 const line_configs2 = useMemo( ()=>line_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[line_configs,viewState.zoom])
 const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_configs2])
 
