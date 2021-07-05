@@ -6,7 +6,7 @@ import axios from 'axios'
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
-
+//import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
 var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
@@ -122,6 +122,9 @@ function App() {
                 <BsInfoSquare className="inline-block h-7 w-8" /> About this
                 site
               </button>
+{/*<a className="text-white" href="https://github.com/theosanderson/taxodium">
+              <FaGithub className="inline-block text-white h-7 w-8" />
+  </a>*/}
             </div>
           </div>
         </div>
