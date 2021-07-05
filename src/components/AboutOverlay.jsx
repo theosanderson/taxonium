@@ -36,8 +36,7 @@ function AboutOverlay({ enabled, setEnabled }) {
           The tree shown here is produced by the UCSC team, and made available <a  className="text-blue-700 underline" href="http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//">here</a>. It is derived from releases of
 Rob Lanfear's <a  className="text-blue-700 underline" href="https://github.com/roblanf/sarscov2phylo">sarscov2phylo</a>, pruned
 to include only public sequences aggregated from GenBank, COG-UK, and the
-China National Center for Bioinformation, mapped to GISAID EPI_ISL_* IDs used
-in the sarscov2phylo tree files.  The tree has  been re-rooted to
+China National Center for Bioinformation.  The tree has  been re-rooted to
 Wuhan/Hu-1 (GenBank MN908947.3, RefSeq NC_045512.2), and nodes with no
 associated mutations have been collapsed.  Sequences released after the final
 sarscov2phylo release (Nov. 13, 2020) have been added to the tree using UShER. This work was carried out by the UCSC team and is described here only for completeness. They also provide metadata with the sequences, including lineages called by <a   className="text-blue-700 underline" href="https://www.pango.network/">Pangolin</a>.
