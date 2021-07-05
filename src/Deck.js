@@ -269,7 +269,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
   const scatterplot_config = useMemo(() => {
     
     return {
-      data: scatterIds.filter(x=>true),
+      data: scatterIds,
       visible: true,
       opacity:0.6,
       
@@ -282,7 +282,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
       id: "main-scatter",
       
       pickable: true,
-      getLineColor: (d) => [100, 100, 100],
+      getLineColor:  [100, 100, 100],
      
       lineWidthUnits: "pixels",
       lineWidthScale: 1,
@@ -389,7 +389,7 @@ const line_layer_2_config = useMemo(()=>({
   getWidth: 1,
   getTargetPosition: d => [node_data.x[d], node_data.y[node_data.parents[d]]] ,
   getSourcePosition: d => [node_data.x[d], node_data.y[d]] ,
- getColor: ()=>[150,150,150]
+ getColor: [150,150,150]
 }),[node_data]);
 
 
@@ -401,7 +401,7 @@ const line_layer_3_config = useMemo(()=>({
   getWidth: 1,
   getTargetPosition: d => [node_data.x[node_data.parents[d]], node_data.y[node_data.parents[d]]] ,
   getSourcePosition: d => [node_data.x[d], node_data.y[node_data.parents[d]]],
- getColor: ()=>[150,150,150]
+ getColor: [150,150,150]
 }),[node_data]);
 
 const line_configs = useMemo(()=>[line_layer_2_config,line_layer_3_config] ,[line_layer_2_config,line_layer_3_config])
@@ -459,7 +459,7 @@ const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState
       poly_layer,
       
      ...line_layers,
-     text_layer,
+    // text_layer,
  
       ...scatter_layers,
   
@@ -478,7 +478,7 @@ const text_layer = useMemo( () =>new TextLayer({...text_config,visible:viewState
      
        pos_layer_mini
        ,search_layers,
-       text_layer
+      // text_layer
     
     ]
   );
