@@ -311,7 +311,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
     ;
   }, [scatterIds, node_data,data, colourBy]);
 
-  const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,100) ,[scatterplot_config,node_data])
+  const scatter_configs = useMemo( ()=>coarse_and_fine_configs(scatterplot_config, node_data,10) ,[scatterplot_config,node_data])
   const scatter_configs2 = useMemo( ()=>scatter_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),stroked:  x.id.includes("mini")?undefined:viewState.zoom > 15,radiusMaxPixels: x.id.includes("mini")? 2 :viewState.zoom > 15?viewState.zoom/5: 3 })) ,[scatter_configs,viewState.zoom])
   const scatter_layers =  useMemo( ()=>scatter_configs2.map(x=>new ScatterplotLayer(x)),[scatter_configs2])
 
@@ -373,7 +373,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
     return configs;
   }, [data,node_data,searchItems,scatterIds]);
 
-  const search_configs = useMemo( ()=> [].concat(...search_configs_initial.map(x=>coarse_and_fine_configs(x, node_data,100))) ,[search_configs_initial,node_data])
+  const search_configs = useMemo( ()=> [].concat(...search_configs_initial.map(x=>coarse_and_fine_configs(x, node_data,10))) ,[search_configs_initial,node_data])
 
   window.sc = search_configs
   const search_configs2 = useMemo( ()=>search_configs.map(x=>({...x,modelMatrix: x.id.includes("mini")?undefined:getMMatrix(viewState.zoom),})) ,[search_configs,viewState.zoom])
