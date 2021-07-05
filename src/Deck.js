@@ -416,9 +416,9 @@ const line_layers =  useMemo( ()=>line_configs2.map(x=>new LineLayer(x)),[line_c
 
 
 if(viewState.zoom>17){
-  console.log(viewState)
+ // console.log(viewState)
   if (viewState.nw[1]>textInfo.top & viewState.se[1] < textInfo.bottom){
-    console.log("still within", viewState.nw[1] , textInfo.top)
+   // console.log("still within", viewState.nw[1] , textInfo.top)
     
   }
   else{
@@ -428,7 +428,7 @@ if(viewState.zoom>17){
     const new_top = cur_top-height*4
     const new_bot = cur_bot+height*4
     const textIds = scatterIds.filter(x=> node_data.y[x] > new_top & node_data.y[x] < new_bot)
-    console.log("recalculating text")
+    //console.log("recalculating text")
     setTextInfo({top:new_top, bottom:new_bot, ids: textIds})
   }
 
