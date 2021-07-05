@@ -86,9 +86,9 @@ for i,row in  tqdm.tqdm(metadata.iterrows()):
     genbank_lookup[name] = str(row['genbank_accession'])
     lineage_lookup[name] = str(row['pangolin_lineage'])
     date_lookup[name] = str(row['date'])
-    row['country']=str(row['country'])
+    row['country']=str(row['country']).replace("_"," ")
     if row['country']=="UK":
-        country_lookup[name] = row['strain'].split("/")[0]
+        country_lookup[name] = row['strain'].split("/")[0].replace("_"," ")
     elif "Germany" in row['country']:
         country_lookup[name] = "Germany"
     elif "Austria" in row['country']:
@@ -96,7 +96,7 @@ for i,row in  tqdm.tqdm(metadata.iterrows()):
     elif "USA" in row['country']:
         country_lookup[name] = "USA"
     else:
-        country_lookup[name] = row['country']
+        country_lookup[name] = str(row['country'])
     
 print("B")
 
