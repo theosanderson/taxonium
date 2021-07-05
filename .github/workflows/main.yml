@@ -33,6 +33,9 @@ jobs:
       - name: Download accessions
         run: wget https://raw.githubusercontent.com/nextstrain/ncov-ingest/master/source-data/accessions.tsv
         working-directory: ./data_processing/
+      - name: List files
+        run: ls -l
+        working-directory: ./data_processing/
       - name: Deal with VCF
         run: python deal_with_vcf.py > out.txt
         working-directory: ./data_processing/
