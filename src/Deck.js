@@ -271,7 +271,7 @@ function Deck({ data, colourBy, searchItems ,progress, setSelectedNode}) {
   const scatterplot_config = useMemo(() => {
     
     return {
-      data: scatterIds,
+      data: scatterIds.filter(()=>true),
       visible: true,
       opacity:0.6,
       
