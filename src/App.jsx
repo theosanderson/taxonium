@@ -72,9 +72,7 @@ function App() {
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
             result.node_data.ids = [...Array(result.node_data.x.length).keys()];
-            console.log("hi");
-            console.log(result);
-            window.b = result;
+
             setNodeData({ status: "loaded", data: result });
           });
       });
