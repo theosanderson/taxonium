@@ -22,16 +22,16 @@ jobs:
       - name: Install dependencies
         run: pip install pandas tqdm numpy Bio
       - name: Download tree
-        run: wget -q -f http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//public-latest.all.nwk.gz
+        run: wget -q -N http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//public-latest.all.nwk.gz
         working-directory: ./data_processing/
       - name: Download VCF
-        run: wget  -q -f http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//public-latest.all.masked.vcf.gz
+        run: wget  -q  -N http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//public-latest.all.masked.vcf.gz
         working-directory: ./data_processing/
       - name: Download metadata
-        run: wget  -q -f http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//public-latest.metadata.tsv.gz
+        run: wget  -q -N http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//public-latest.metadata.tsv.gz
         working-directory: ./data_processing/
       - name: Download accessions
-        run: wget  -q -f https://raw.githubusercontent.com/nextstrain/ncov-ingest/master/source-data/accessions.tsv
+        run: wget  -q -N https://raw.githubusercontent.com/nextstrain/ncov-ingest/master/source-data/accessions.tsv
         working-directory: ./data_processing/
       - name: Deal with VCF
         run: python deal_with_vcf.py > out.txt
