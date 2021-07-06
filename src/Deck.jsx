@@ -9,6 +9,9 @@ import {
 } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
+import {BiZoomIn,BiZoomOut} from "react-icons/bi"
+
+
 const zoomThreshold = 8;
 function coarse_and_fine_configs(config, node_data, precision) {
   const coarse = {
@@ -636,6 +639,23 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
   }, [data, node_data, hoverInfo]);
   const spinnerShown = useMemo(() => node_data.ids.length === 0, [node_data]);
 
+
+  const zoomIncrement=useCallback( (increment)=>{
+    
+    const newViewState = {
+      ...viewState,
+      zoom:viewState.zoom+increment,
+      
+      needs_update: true,
+    };
+    const newViewState2 = {
+      ...newViewState,
+      target: [getXval(newViewState), newViewState.target[1]],
+    };
+    
+    setViewState(newViewState2);
+  },[viewState])
+
   return (
     <div
       className="w-full h-full relative"
@@ -674,6 +694,18 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
         layers={layers}
       >
         {hoverStuff}
+        <div style={{position:"absolute",
+              right: "0.2em",
+              bottom: "0.2em",
+             }}>
+        <button
+               className=" w-15 h-15 bg-gray-100  p-1 rounded border-gray-300"
+               onClick={()=>{zoomIncrement(0.6)}}
+        ><BiZoomIn /></button>
+        <button
+               className=" w-15 h-15 bg-gray-100 ml-1 p-1 rounded border-gray-300" onClick={()=>{zoomIncrement(-0.6)}}
+        ><BiZoomOut /></button></div>
+        
       </DeckGL>
       {spinnerShown && <Spinner isShown={true} progress={progress} />}
     </div>
