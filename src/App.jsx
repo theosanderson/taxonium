@@ -10,6 +10,17 @@ import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
+
+const searchColors = [
+  [183, 0, 255],
+  [255, 213, 0],
+  [255, 0, 0],
+  [0, 0, 255],
+  [0, 255, 255],
+];
+
+
+
 function App() {
   const [searchItems, setSearchItemsBasic] = useState([
     {
@@ -110,6 +121,7 @@ function App() {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+              searchColors={searchColors}
                 setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
                 data={
@@ -123,6 +135,7 @@ function App() {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              searchColors={searchColors}
                 selectedNode={selectedNode}
                 searchItems={searchItems}
                 data={
