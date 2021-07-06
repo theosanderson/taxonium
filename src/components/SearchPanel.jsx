@@ -5,6 +5,8 @@ import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 
+
+
 function SearchPanel({
   searchItems,
   setSearchItems,
@@ -12,6 +14,7 @@ function SearchPanel({
   setColourBy,
   selectedNode,
   data,
+  searchColors
 }) {
   const node_data = data.node_data;
   return (
@@ -24,6 +27,8 @@ function SearchPanel({
         {searchItems.map(function (item, index) {
           return (
             <SearchItem
+            searchColors={searchColors}
+            index= {index}
               key={item.id}
               id={item.id}
               category={item.category}
