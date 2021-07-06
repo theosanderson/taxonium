@@ -150,7 +150,6 @@ let getMMatrix = (zoom) => [
 
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
-// DeckGL react component
 function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
 
@@ -208,7 +207,6 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
         y: event.nativeEvent.offsetY,
         radius: 1,
       });
-      //console.log(viewState);
 
       if (event._reactName === "onMouseDown") {
         if (pickInfo && pickInfo.viewport.id === "minimap") {
@@ -234,8 +232,6 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
         pickInfo.viewport.id === "minimap" &&
         mouseDownIsMinimap
       ) {
-        //viewState.target=pickInfo.coordinate
-        //console.log(pickInfo)
         const newViewState = {
           ...viewState,
           target: [getXval(viewState), pickInfo.coordinate[1]],
@@ -267,16 +263,6 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
       }),
     []
   );
-  /*
-  const minimapScatterData = useMemo(
-    () => reduceOverPlotting(scatterData),
-    [scatter]
-  );
-
-  const coarseScatterData = useMemo(
-    () => reduceOverPlotting(scatterData, 100),
-    [scatterData]
-  );*/
 
   const scatterplot_config = useMemo(() => {
     return {
@@ -359,18 +345,18 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
 
         if (item.category === "name") {
           filter_function = (x) =>
-            node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precomputer lowercase mapping for perf?
+            node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
         }
 
         if (item.category === "country") {
           filter_function = (x) =>
             data.country_mapping[node_data.countries[x]].toLowerCase() ===
-            lowercase_query; //TODO precomputer lowercase mapping for perf
+            lowercase_query; //TODO precompute lowercase mapping for perf
         }
         if (item.category === "lineage") {
           filter_function = (x) =>
             data.lineage_mapping[node_data.lineages[x]].toLowerCase() ===
-            lowercase_query; //TODO precomputer lowercase mapping for perf
+            lowercase_query; //TODO precompute lowercase mapping for perf
         }
         const enabled =
           item.value !== null && item.value !== "" && item.enabled;
@@ -409,7 +395,6 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
     [search_configs_initial, node_data]
   );
 
-  window.sc = search_configs;
   const search_configs2 = useMemo(
     () =>
       search_configs.map((x) => ({
@@ -471,7 +456,6 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
     [line_layer_2_config, line_layer_3_config, node_data]
   );
 
-  //console.log(line_configs)
   const line_configs2 = useMemo(
     () =>
       line_configs.map((x) => ({
@@ -488,7 +472,17 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
   );
 
   if (viewState.zoom > 17) {
-    // console.log(viewState)
+    /*
+    Creating a text layer with every node takes a *long* time, even if it's not visible until zoomed, so we don't do that.
+
+    Instead, this section of code runs every render. It checks whether the zoom is sufficient to start thinking about text. If not, it does nothing.
+
+    If text will be displayed soon, we check whether the area of text that we have precomputed contains the current viewport. If so, we do nothing.
+
+    If not we set textIds to the ids within a certain range (9* the height) of the current viewport. This will be used later on to make a layer by the memoised function.
+
+    We also record the location for which we did the precomputation.
+    */
     if (
       (viewState.nw[1] > textInfo.top) &
       (viewState.se[1] < textInfo.bottom)
