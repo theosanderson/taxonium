@@ -370,7 +370,7 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
       })
       .filter((item) => item.enabled);
     return configs;
-  }, [data, node_data, searchItems, scatterIds]);
+  }, [data, node_data, searchItems, scatterIds,searchColors]);
 
   const search_configs = useMemo(
     () =>
