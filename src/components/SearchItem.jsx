@@ -28,7 +28,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,
         onChange={(event) => setThis({ enabled: !enabled })}
       />
       <select
-        className=" w-36 border py-2 px-1 text-grey-darkest text-sm"
+        className=" w-36 border py-2 px-1 text-grey-darkest text-sm h-10"
         value={category}
         onChange={(event) => setThis({ category: event.target.value })}
       >
@@ -39,19 +39,16 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,
       </select>
       &nbsp;
       <DebounceInput
-        className=" w-32 border py-2 px-3 text-grey-darkest"
+        className=" w-32 border py-2 px-3 text-grey-darkest h-10"
         value={value}
         onChange={(event) => setThis({ value: event.target.value })}
         debounceTimeout={300}
-      />
+      /><button
+      className=" bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-2 h-8"
+      onClick={() => removeItem(id)}
+    ><BsTrash className="inline-block " /></button>
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
-      <button
-        className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
-        onClick={() => removeItem(id)}
-      >
-        <BsTrash className="inline-block mr-2" />
-        Remove this search
-      </button>
+      
     </div>
   );
 }
