@@ -19,7 +19,7 @@ function SearchPanel({
   const node_data = data.node_data;
   return (
     <div>
-      <div className="border-b border-gray-300">
+      <div className=" border-t md:border-t-0 border-b border-gray-300">
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <FaSearch className="inline-block mr-2" />
           Search
