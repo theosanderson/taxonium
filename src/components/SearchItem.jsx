@@ -1,7 +1,7 @@
 import React from "react";
 import { BsTrash } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
-function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
+function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,searchColors}) {
   const explanations = {
     name: "Enter a sequence name like QEUH-13ADA01",
     lineage:
@@ -9,13 +9,21 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem }) {
     country: "Enter a country like 'India' ",
     mutation: "Enter an amino acid mutation like S:E484K",
   };
+
+  const thecolor = searchColors[index % searchColors.length]
   //console.log("key", id);
   return (
     <div className="border-gray-100 border-b mb-3 pb-3">
       <input
         name="isGoing"
         type="checkbox"
-        className="  h-5 mr-2 border-gray-400 border"
+        style={{
+        
+         
+          "outline": (enabled && value.length>0)?`1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`:"0px",
+          "outlineOffset":"2px"
+        }}
+        className="w-3 h-3 m-3"
         checked={enabled}
         onChange={(event) => setThis({ enabled: !enabled })}
       />
