@@ -20,11 +20,11 @@ by_level = defaultdict(list)
 def assign_x(tree, current_branch_length=0, current_level=0):
     
     by_level[current_level].append(tree)
-    tree.x = current_branch_length
+    
     if tree.branch_length :
         current_branch_length = current_branch_length + tree.branch_length
     current_level+=1
-    
+    tree.x = current_branch_length
     for clade in tree.clades:
         assign_x(clade,current_branch_length,current_level)
 
