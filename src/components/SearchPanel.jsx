@@ -49,7 +49,7 @@ function SearchPanel({
               {
                 id: Math.random(),
                 category: "name",
-                value: null,
+                value: "",
                 enabled: true,
               },
             ])
