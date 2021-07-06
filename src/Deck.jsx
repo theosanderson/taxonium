@@ -34,28 +34,25 @@ function make_minimap_version(config) {
 
 function reduceOverPlotting(nodeIds, node_data, precision = 10) {
   const included_points = {};
-  const rounded_dataset = nodeIds.map((node) => {
-    const new_node = { id: node };
-    new_node.x = Math.round(node_data.x[node] * precision) / precision;
-    new_node.y = Math.round(node_data.y[node] * precision) / precision;
-    return new_node;
-  });
+ 
 
-  const filtered = rounded_dataset
+  const filtered = nodeIds
     .filter((node) => {
-      if (included_points[node.x]) {
-        if (included_points[node.x][node.y]) {
+    const rounded_x = Math.round(node_data.x[node] * precision) / precision;
+    const rounded_y  = Math.round(node_data.y[node] * precision) / precision;
+      if (included_points[rounded_x]) {
+        if (included_points[rounded_x][rounded_y]) {
           return false;
         } else {
-          included_points[node.x][node.y] = 1;
+          included_points[rounded_x][rounded_y] = 1;
           return true;
         }
       } else {
-        included_points[node.x] = { [node.y]: 1 };
+        included_points[rounded_x] = { [rounded_y]: 1 };
         return true;
       }
     })
-    .map((x) => x.id);
+    
 
   return filtered;
 }
