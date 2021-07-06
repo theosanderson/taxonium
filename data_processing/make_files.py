@@ -10,7 +10,7 @@ import gzip
 
 
 
-tree = Phylo.read(gzip.open("public-latest.all.nwk.gz","rt"), "newick")
+tree = Phylo.read(gzip.open("time_tree2.nwk.gz","rt"), "newick")
 tree.ladderize()
 root=tree.clade
 from collections import defaultdict
