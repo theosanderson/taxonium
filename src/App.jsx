@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback ,useMemo} from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
 import axios from "axios";
@@ -30,6 +30,9 @@ function App() {
       enabled: true,
     },
   ]);
+
+
+
 
   const setSearchItems = useCallback((x) => {
     setSearchItemsBasic(x);
@@ -89,6 +92,74 @@ function App() {
     }
   }, [nodeData.status]);
 
+const data =  useMemo( ()=>nodeData.status === "loaded"
+? nodeData.data
+: { node_data: { ids: [] } },[nodeData])
+
+
+
+const scatterIds = useMemo(
+  () => data.node_data.ids.filter((x) => data.node_data.names[x] !== ""),
+  [data]
+);
+
+  
+  const [search_configs_initial, numSearchResults] = useMemo(() => {
+  
+    const configs = searchItems
+      .map((item, counter) => {
+        let filter_function;
+        const lowercase_query = item.value.toLowerCase().trim();
+        if (item.category === "mutation") {
+          const the_index = data.mutation_mapping.indexOf(item.value);
+          filter_function = (x) =>
+            data.node_data.mutations[x].mutation &&
+            data.node_data.mutations[x].mutation.includes(the_index);
+        }
+
+        if (item.category === "name") {
+          filter_function = (x) =>
+            data.node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
+        }
+
+        if (item.category === "country") {
+          filter_function = (x) =>
+            data.country_mapping[data.node_data.countries[x]].toLowerCase() ===
+            lowercase_query; //TODO precompute lowercase mapping for perf
+        }
+        if (item.category === "lineage") {
+          filter_function = (x) =>
+            data.lineage_mapping[data.node_data.lineages[x]].toLowerCase() ===
+            lowercase_query; //TODO precompute lowercase mapping for perf
+        }
+        const enabled =
+          item.value !== null && item.value !== "" && item.enabled;
+        return {
+          id: "main-search-" + counter,
+          enabled: enabled,
+          data: item.value !== "" ? scatterIds.filter(filter_function) : [],
+          opacity: 0.7,
+          getRadius: 7 + counter * 2,
+          filled: false,
+          stroked: true,
+          radiusUnits: "pixels",
+          lineWidthUnits: "pixels",
+          lineWidthScale: 1,
+
+          getPosition: (d) => {
+            return [data.node_data.x[d], data.node_data.y[d]];
+          },
+          getFillColor: (d) => [0, 0, 0],
+          getLineColor: (d) => searchColors[counter % searchColors.length],
+        };
+      })
+    const num_results = configs.map(x=>x.data.length)
+    const filtered_configs = configs.filter((item) => item.enabled);
+    return [filtered_configs, num_results];
+  }, [data, searchItems, scatterIds]);
+  
+
+
   return (
     <Router>
       <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
@@ -121,28 +192,24 @@ function App() {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+             
+             search_configs_initial={search_configs_initial}
+             scatterIds={scatterIds}
               searchColors={searchColors}
                 setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
-                data={
-                  nodeData.status === "loaded"
-                    ? nodeData.data
-                    : { node_data: { ids: [] } }
-                }
+                data={data}
                 progress={nodeData.progress}
                 colourBy={colourBy}
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              numSearchResults = {numSearchResults}
               searchColors={searchColors}
                 selectedNode={selectedNode}
                 searchItems={searchItems}
-                data={
-                  nodeData.status === "loaded"
-                    ? nodeData.data
-                    : { node_data: { ids: [] } }
-                }
+                data={data}
                 setSearchItems={setSearchItems}
                 colourBy={colourBy}
                 setColourBy={setColourByWithCheck}
