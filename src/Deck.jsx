@@ -29,6 +29,7 @@ function make_minimap_version(config) {
     id: config.id.replace("main", "mini"),
     lineWidthScale: 1,
     pickable: false,
+    getRadius: config.id.includes("search") ? config.getRadius*0.5 : config.getRadius
   };
 }
 
@@ -147,7 +148,7 @@ let getMMatrix = (zoom) => [
 
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
-function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
+function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchColors }) {
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
 
   const node_data = data.node_data;
@@ -251,12 +252,12 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
         opacity: 0.5,
         filled: true,
         wireframe: true,
-        lineWidthMinPixels: 1,
         getPolygon: (d) => d.contour,
 
         getFillColor: (d) => [240, 240, 240],
         getLineColor: [80, 80, 80],
         getLineWidth: 1,
+        lineWidthUnits: 'pixels'
       }),
     []
   );
@@ -266,10 +267,7 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
       data: scatterIds.filter(() => true),
       visible: true,
       opacity: 0.6,
-
-      radiusMinPixels: 3,
-      radiusMaxPixels: 3,
-      getRadius: 200,
+      getRadius: 3,
       radiusUnits: "pixels",
 
       id: "main-scatter",
@@ -322,13 +320,7 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
   );
 
   const search_configs_initial = useMemo(() => {
-    const colors = [
-      [183, 0, 255],
-      [255, 213, 0],
-      [255, 0, 0],
-      [0, 0, 255],
-      [0, 255, 255],
-    ];
+  
     const configs = searchItems
       .map((item, counter) => {
         let filter_function;
@@ -362,11 +354,9 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
           enabled: enabled,
           data: enabled ? scatterIds.filter(filter_function) : [],
           opacity: 0.7,
-          radiusMinPixels: 10 + counter * 2,
+          getRadius: 7 + counter * 2,
           filled: false,
           stroked: true,
-          radiusMaxPixels: 10 + counter * 2,
-          getRadius: 200,
           radiusUnits: "pixels",
           lineWidthUnits: "pixels",
           lineWidthScale: 1,
@@ -375,7 +365,7 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
             return [node_data.x[d], node_data.y[d]];
           },
           getFillColor: (d) => [0, 0, 0],
-          getLineColor: (d) => colors[counter % colors.length],
+          getLineColor: (d) => searchColors[counter % searchColors.length],
         };
       })
       .filter((item) => item.enabled);
