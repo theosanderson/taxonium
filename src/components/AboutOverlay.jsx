@@ -7,9 +7,13 @@ function AboutOverlay({ enabled, setEnabled }) {
         onClick={() => setEnabled(false)}
         className="fixed w-full h-full bg-black opacity-80 z-40"
       >
-        {" "}
-      </div>
-      <div className="fixed m-10 p-5 bg-white shadow-md z-50 w-4/5 ">
+        </div>
+        <div
+        onClick={() => setEnabled(false)}
+        className="fixed w-full h-full  opacity-100 z-40"
+      >
+       
+      <div className="mx-auto mt-5 p-5 bg-white shadow-md z-100 w-4/5 opacity-100 ">
         <button
           className="absolute top-5 right-5 text-xl font-bold"
           onClick={() => setEnabled(false)}
@@ -119,6 +123,8 @@ function AboutOverlay({ enabled, setEnabled }) {
           </a>
           .
         </p>
+      </div>
+       {" "}
       </div>
     </div>
   );
