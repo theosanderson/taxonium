@@ -14,7 +14,8 @@ function SearchPanel({
   setColourBy,
   selectedNode,
   data,
-  searchColors
+  searchColors,
+  numSearchResults
 }) {
   const node_data = data.node_data;
   return (
@@ -27,6 +28,7 @@ function SearchPanel({
         {searchItems.map(function (item, index) {
           return (
             <SearchItem
+            numResultsHere = {numSearchResults[index]}
             searchColors={searchColors}
             index= {index}
               key={item.id}

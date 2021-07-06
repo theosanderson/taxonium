@@ -1,7 +1,13 @@
 import React from "react";
 import { BsTrash } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
-function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,searchColors}) {
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
+function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,searchColors,numResultsHere}) {
   const explanations = {
     name: "Enter a sequence name like QEUH-13ADA01",
     lineage:
@@ -48,6 +54,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,
       onClick={() => removeItem(id)}
     ><BsTrash className="inline-block " /></button>
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
+      <div className="text-sm text-gray-900 px-3"> {value.length>0 &&<> {numberWithCommas(numResultsHere)} results</>}</div>
       
     </div>
   );
