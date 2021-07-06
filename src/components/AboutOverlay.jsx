@@ -13,7 +13,7 @@ function AboutOverlay({ enabled, setEnabled }) {
         className="fixed w-full h-full  opacity-100 z-40"
       >
        
-      <div className="mx-auto mt-5 p-5 bg-white shadow-md z-100 w-4/5 overflow-y-auto opacity-100 " style={{height:"90vh"}}>
+      <div className=" relative mx-auto mt-5 p-5 bg-white shadow-md z-100 w-4/5 overflow-y-auto opacity-100 " style={{height:"90vh"}}>
         <button
           className="absolute top-5 right-5 text-xl font-bold"
           onClick={() => setEnabled(false)}
