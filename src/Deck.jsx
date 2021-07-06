@@ -199,7 +199,7 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
 
   const onClickOrMouseMove = useCallback(
     (event) => {
-      if (event.buttons === 0 && event._reactName === "onMouseMove") {
+      if (event.buttons === 0 && event._reactName === "onPointerMove") {
         return false;
       }
 
@@ -209,7 +209,7 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
         radius: 1,
       });
 
-      if (event._reactName === "onMouseDown") {
+      if (event._reactName === "onPointerDown") {
         if (pickInfo && pickInfo.viewport.id === "minimap") {
           setMouseDownIsMinimap(true);
         } else {
@@ -660,8 +660,8 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
     <div
       className="w-full h-full relative"
       onClick={onClickOrMouseMove}
-      onMouseMove={onClickOrMouseMove}
-      onMouseDown={onClickOrMouseMove}
+      onPointerMove={onClickOrMouseMove}
+      onPointerDown={onClickOrMouseMove}
     >
       {" "}
       <DeckGL
