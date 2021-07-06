@@ -417,8 +417,8 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
       pickable: false,
       getWidth: 1,
       getTargetPosition: (d) => [
-        node_data.x[d],
-        node_data.y[node_data.parents[d]],
+        node_data.x[node_data.parents[d]],
+        node_data.y[d],
       ],
       getSourcePosition: (d) => [node_data.x[d], node_data.y[d]],
       getColor: [150, 150, 150],
@@ -437,8 +437,8 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode }) {
         node_data.y[node_data.parents[d]],
       ],
       getSourcePosition: (d) => [
-        node_data.x[d],
-        node_data.y[node_data.parents[d]],
+        node_data.x[node_data.parents[d]],
+        node_data.y[d],
       ],
       getColor: [150, 150, 150],
     }),
