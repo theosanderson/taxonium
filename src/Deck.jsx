@@ -699,12 +699,12 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
               bottom: "0.2em",
              }}>
         <button
-               className=" w-15 h-15 bg-gray-100  p-1 rounded border-gray-300"
+               className=" w-12 h-10 bg-gray-100  p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
                onClick={()=>{zoomIncrement(0.6)}}
-        ><BiZoomIn /></button>
+        ><BiZoomIn className="mx-auto  w-5 h-5 " /></button>
         <button
-               className=" w-15 h-15 bg-gray-100 ml-1 p-1 rounded border-gray-300" onClick={()=>{zoomIncrement(-0.6)}}
-        ><BiZoomOut /></button></div>
+               className=" w-12 h-10 bg-gray-100 ml-1 p-1 rounded border-gray-300 text-gray-700  opacity-60  hover:opacity-100" onClick={()=>{zoomIncrement(-0.6)}}
+        ><BiZoomOut  className="mx-auto w-5 h-5 "  /></button></div>
         
       </DeckGL>
       {spinnerShown && <Spinner isShown={true} progress={progress} />}
