@@ -151,16 +151,12 @@ let getMMatrix = (zoom) => [
 
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
-function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchColors }) {
+function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_configs_initial}) {
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
 
   const node_data = data.node_data;
 
-  const scatterIds = useMemo(
-    () => node_data.ids.filter((x) => node_data.names[x] !== ""),
-    [node_data]
-  );
-
+  
   const [hoverInfo, setHoverInfo] = useState();
 
   const [viewState, setViewState] = useState({
@@ -322,58 +318,7 @@ function Deck({ data, colourBy, searchItems, progress, setSelectedNode,searchCol
     [scatter_configs2]
   );
 
-  const search_configs_initial = useMemo(() => {
   
-    const configs = searchItems
-      .map((item, counter) => {
-        let filter_function;
-        const lowercase_query = item.value.toLowerCase().trim();
-        if (item.category === "mutation") {
-          const the_index = data.mutation_mapping.indexOf(item.value);
-          filter_function = (x) =>
-            node_data.mutations[x].mutation &&
-            node_data.mutations[x].mutation.includes(the_index);
-        }
-
-        if (item.category === "name") {
-          filter_function = (x) =>
-            node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
-        }
-
-        if (item.category === "country") {
-          filter_function = (x) =>
-            data.country_mapping[node_data.countries[x]].toLowerCase() ===
-            lowercase_query; //TODO precompute lowercase mapping for perf
-        }
-        if (item.category === "lineage") {
-          filter_function = (x) =>
-            data.lineage_mapping[node_data.lineages[x]].toLowerCase() ===
-            lowercase_query; //TODO precompute lowercase mapping for perf
-        }
-        const enabled =
-          item.value !== null && item.value !== "" && item.enabled;
-        return {
-          id: "main-search-" + counter,
-          enabled: enabled,
-          data: enabled ? scatterIds.filter(filter_function) : [],
-          opacity: 0.7,
-          getRadius: 7 + counter * 2,
-          filled: false,
-          stroked: true,
-          radiusUnits: "pixels",
-          lineWidthUnits: "pixels",
-          lineWidthScale: 1,
-
-          getPosition: (d) => {
-            return [node_data.x[d], node_data.y[d]];
-          },
-          getFillColor: (d) => [0, 0, 0],
-          getLineColor: (d) => searchColors[counter % searchColors.length],
-        };
-      })
-      .filter((item) => item.enabled);
-    return configs;
-  }, [data, node_data, searchItems, scatterIds,searchColors]);
 
   const search_configs = useMemo(
     () =>
