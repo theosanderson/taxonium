@@ -1,6 +1,6 @@
 # Data source:
 
-Public data from UCSC and Angie Hinrichs: http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//
+Public data from Angie Hinrichs at UCSC: http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2//
 
 
 ```
