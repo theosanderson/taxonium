@@ -26,7 +26,7 @@ Here we store all the data for the individual nodes. We do this in a series of l
 7. dates: list of ints, which are entries in the date_mapping lookup table
 8. parents: list of ints which are the numeric identifiers (i.e. positions in these lists) of each node's parental node
 9. genbanks: list of string for genbank identifiers
-10.epi_isl_numbers (unused at present)
+10. epi_isl_numbers (unused at present)
 
 ### mutations
 Here we have a list of ints for each node, representing mutations which can be looked up in the table.
