@@ -12,9 +12,10 @@ var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
 
 const searchColors = [
+  [255, 0, 0],
   [183, 0, 255],
   [255, 213, 0],
-  [255, 0, 0],
+
   [0, 0, 255],
   [0, 255, 255],
 ];
