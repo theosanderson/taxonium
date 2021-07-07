@@ -104,7 +104,7 @@ const scatterIds = useMemo(
 );
 
   
-  const [search_configs_initial, numSearchResults] = useMemo(() => {
+  const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
   
     const configs = searchItems
       .map((item, counter) => {
@@ -155,7 +155,7 @@ const scatterIds = useMemo(
       })
     const num_results = configs.map(x=>x.data.length)
     const filtered_configs = configs.filter((item) => item.enabled);
-    return [filtered_configs, num_results];
+    return [filtered_configs, num_results, scatterIds.length];
   }, [data, searchItems, scatterIds]);
   
 
@@ -205,6 +205,7 @@ const scatterIds = useMemo(
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              totalSeqs={totalSeqs}
               numSearchResults = {numSearchResults}
               searchColors={searchColors}
                 selectedNode={selectedNode}
