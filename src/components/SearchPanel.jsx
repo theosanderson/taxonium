@@ -6,6 +6,10 @@ import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+}
+
 
 function SearchPanel({
   searchItems,
@@ -15,12 +19,14 @@ function SearchPanel({
   selectedNode,
   data,
   searchColors,
-  numSearchResults
+  numSearchResults,
+  totalSeqs
 }) {
   const node_data = data.node_data;
   return (
     <div>
       <div className=" border-t md:border-t-0 border-b border-gray-300">
+        <div className="mt-3 mb-3 text-gray-500 text-sm">Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK and CNCB</div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <FaSearch className="inline-block mr-2" />
           Search
