@@ -7,7 +7,7 @@ import { BsInfoCircle } from "react-icons/bs";
 
 
 function numberWithCommas(x) {
-  internationalNumberFormat = new Intl.NumberFormat('en-US')
+  const internationalNumberFormat = new Intl.NumberFormat('en-US')
   return internationalNumberFormat.format(x)
 }
 
