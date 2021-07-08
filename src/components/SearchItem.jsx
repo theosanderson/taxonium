@@ -3,7 +3,7 @@ import { BsTrash } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
 
 function numberWithCommas(x) {
-  internationalNumberFormat = new Intl.NumberFormat('en-US')
+  const internationalNumberFormat = new Intl.NumberFormat('en-US')
   return internationalNumberFormat.format(x)
 }
 
