@@ -3,7 +3,8 @@ import { BsTrash } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
 
 function numberWithCommas(x) {
-  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  internationalNumberFormat = new Intl.NumberFormat('en-US')
+  return internationalNumberFormat.format(x)
 }
 
 
