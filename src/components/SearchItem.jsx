@@ -59,7 +59,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
       <div className="text-sm text-gray-900 px-3"> {value.length>0 &&<> {numberWithCommas(numResultsHere)} result{numResultsHere!==1 && <>s</>}</>}
       {
-        numResultsHere===1 && <> <button onClick={zoomToMe} className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"><BiZoomIn className="inline-block mr-1"/>locate</button></>
+        numResultsHere===1 && enabled && <> <button onClick={zoomToMe} className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"><BiZoomIn className="inline-block mr-1"/>locate</button></>
       }</div>
       
     </div>
