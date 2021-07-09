@@ -13,7 +13,7 @@ import {BiZoomIn,BiZoomOut} from "react-icons/bi"
 
 
 const zoomThreshold = 8;
-function coarse_and_fine_configs(config, node_data, precision, line_mode = False) {
+function coarse_and_fine_configs(config, node_data, precision, line_mode ) {
   const coarse = {
     ...config,
     data: reduceOverPlotting(config.data, node_data, precision, line_mode),
@@ -36,16 +36,17 @@ function make_minimap_version(config) {
   };
 }
 
-function reduceOverPlotting(nodeIds, node_data, precision = 10 ,line_mode = False) {
+function reduceOverPlotting(nodeIds, node_data, precision  ,line_mode ) {
   const included_points = {};
  
 
   const filtered = nodeIds
     .filter((node) => {
     if(line_mode){
-      if( (Math.abs(node_data.x[node]-node_data.x[node_data.parents[node]])>0.5) |(Math.abs(node_data.y[node]-node_data.y[node_data.parents[node]])>0.5) ){
+      if( (Math.abs(node_data.x[node]-node_data.x[node_data.parents[node]] )>0.2) |(Math.abs(node_data.y[node]-node_data.y[node_data.parents[node]] )>0.2) ){
         return true
       }
+    }
     const rounded_x = Math.round(node_data.x[node] * precision) / precision;
     const rounded_y  = Math.round(node_data.y[node] * precision) / precision;
       if (included_points[rounded_x]) {
@@ -389,7 +390,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
       [].concat.apply(
         [],
         [line_layer_2_config, line_layer_3_config].map((x) =>
-          coarse_and_fine_configs(x, node_data, 100,True)
+          coarse_and_fine_configs(x, node_data, 100,true)
         )
       ),
     [line_layer_2_config, line_layer_3_config, node_data]
