@@ -414,7 +414,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
     [line_configs2]
   );
 
-  if (viewState.zoom > 17) {
+  if (viewState.zoom > 17 && viewState.needs_update!==true) {
     /*
     Creating a text layer with every node takes a *long* time, even if it's not visible until zoomed, so we don't do that.
 
@@ -614,7 +614,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
       console.log(zoomToSearch)
     const newViewState = {
       ...viewState,
-      zoom:16.5,
+      zoom:19,
       
       needs_update: true,
     };
