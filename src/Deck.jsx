@@ -476,30 +476,45 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
     }
   }, [text_config, viewState]);
 
+
+
   const pos_layer_mini = useMemo(
-    () =>
-      new PolygonLayer({
+    () =>{
+      console.log(viewState)
+      let data
+      if (viewState.nw!==undefined){
+       data= [{contour:[[-100, -100],
+      [100, -100],
+      [100, viewState.nw[1]],
+      [-100, viewState.nw[1] ]]   ,color:[100, 100, 100]},
+      {contour:[[-100, viewState.nw[1]],
+        [100, viewState.nw[1]],
+        [100, viewState.se[1]],
+        [-100,viewState.se[1] ]]  ,color:[255, 255, 255] },
+      
+      {contour:[[-100, viewState.se[1]],
+        [100, viewState.se[1]],
+        [100, 300],
+        [-100,300 ]]  ,color:[150, 150, 150] }
+      ]
+      }
+      else{
+        data = []
+      }
+
+      return new PolygonLayer({
         id: "mini-pos",
-        data: [viewState],
-        opacity: 0.1,
+        data: data,
+        opacity: 0.05,
         radiusMinPixels: 4,
         radiusMaxPixels: 4,
         getRadius: 4,
         getLineWidth: 0.1,
-        getPolygon: (d) => {
-          if (d.nw !== undefined) {
-            return [
-              [d.nw[0], d.nw[1]],
-              [d.se[0], d.nw[1]],
-              [d.se[0], d.se[1]],
-              [d.nw[0], d.se[1]],
-            ];
-          } else {
-            return [];
-          }
+        getPolygon: (d) => { return d.contour
         },
-        getFillColor: [255, 255, 255],
-      }),
+        getFillColor:(d)=>d.color,
+      })
+    },
     [viewState]
   );
 
@@ -540,6 +555,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
         y: "1%",
         width: "20%",
         height: "35%",
+        borderWidth:"1px",
         controller: true,
       }),
     ],
