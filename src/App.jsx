@@ -87,8 +87,7 @@ function App() {
           .then(function (buffer) {
             console.log("buffer loaded");
             var NodeList = root.lookupType("AllData");
-            window.buffer = buffer;
-            window.NodeList = NodeList;
+
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
             result.node_data.ids = [...Array(result.node_data.x.length).keys()];
