@@ -43,7 +43,7 @@ function reduceOverPlotting(nodeIds, node_data, precision  ,line_mode ) {
   const filtered = nodeIds
     .filter((node) => {
     if(line_mode){
-      if( (Math.abs(node_data.x[node]-node_data.x[node_data.parents[node]] )>0.2) |(Math.abs(node_data.y[node]-node_data.y[node_data.parents[node]] )>0.2) ){
+      if( (Math.abs(node_data.x[node]-node_data.x[node_data.parents[node]] )>1) |(Math.abs(node_data.y[node]-node_data.y[node_data.parents[node]] )>0.2) ){
         return true
       }
     }
