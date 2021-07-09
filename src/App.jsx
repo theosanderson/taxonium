@@ -141,6 +141,7 @@ const scatterIds = useMemo(
         const enabled =
           item.value !== null && item.value !== "" && item.enabled;
         return {
+          original_index:counter,
           id: "main-search-" + counter,
           enabled: enabled,
           data: item.value !== "" ? scatterIds.filter(filter_function) : [],
