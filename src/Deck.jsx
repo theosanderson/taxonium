@@ -42,11 +42,12 @@ function reduceOverPlotting(nodeIds, node_data, precision  ,line_mode ) {
 
   const filtered = nodeIds
     .filter((node) => {
-    if(line_mode){
+    /*if(line_mode){
       if( (Math.abs(node_data.x[node]-node_data.x[node_data.parents[node]] )>1) |(Math.abs(node_data.y[node]-node_data.y[node_data.parents[node]] )>0.2) ){
         return true
       }
-    }
+    }*/
+    
     const rounded_x = Math.round(node_data.x[node] * precision) / precision;
     const rounded_y  = Math.round(node_data.y[node] * precision) / precision;
       if (included_points[rounded_x]) {
