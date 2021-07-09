@@ -1,6 +1,8 @@
 import React from "react";
 import { BsTrash } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
+import {BiZoomIn} from "react-icons/bi"
+
 
 function numberWithCommas(x) {
   const internationalNumberFormat = new Intl.NumberFormat('en-US')
@@ -8,7 +10,7 @@ function numberWithCommas(x) {
 }
 
 
-function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,searchColors,numResultsHere}) {
+function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,searchColors,numResultsHere, zoomToMe}) {
   const explanations = {
     name: "Enter a sequence name like QEUH-13ADA01",
     lineage:
@@ -55,7 +57,10 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,
       onClick={() => removeItem(id)}
     ><BsTrash className="inline-block " /></button>
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
-      <div className="text-sm text-gray-900 px-3"> {value.length>0 &&<> {numberWithCommas(numResultsHere)} results</>}</div>
+      <div className="text-sm text-gray-900 px-3"> {value.length>0 &&<> {numberWithCommas(numResultsHere)} result{numResultsHere!==1 && <>s</>}</>}
+      {
+        numResultsHere===1 && <> <button onClick={zoomToMe} className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"><BiZoomIn className="inline-block mr-1"/>locate</button></>
+      }</div>
       
     </div>
   );

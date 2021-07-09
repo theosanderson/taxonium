@@ -1,5 +1,5 @@
 /// app.js
-import React, { useState, useMemo, useCallback, useRef } from "react";
+import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import DeckGL from "@deck.gl/react";
 import {
   LineLayer,
@@ -13,10 +13,10 @@ import {BiZoomIn,BiZoomOut} from "react-icons/bi"
 
 
 const zoomThreshold = 8;
-function coarse_and_fine_configs(config, node_data, precision) {
+function coarse_and_fine_configs(config, node_data, precision, line_mode ) {
   const coarse = {
     ...config,
-    data: reduceOverPlotting(config.data, node_data, precision),
+    data: reduceOverPlotting(config.data, node_data, precision, line_mode),
     visible: true,
     id: config.id + "_coarse",
   };
@@ -36,12 +36,18 @@ function make_minimap_version(config) {
   };
 }
 
-function reduceOverPlotting(nodeIds, node_data, precision = 10) {
+function reduceOverPlotting(nodeIds, node_data, precision  ,line_mode ) {
   const included_points = {};
  
 
   const filtered = nodeIds
     .filter((node) => {
+    if(line_mode){
+      if( (Math.abs(node_data.x[node]-node_data.x[node_data.parents[node]] )>1) |(Math.abs(node_data.y[node]-node_data.y[node_data.parents[node]] )>0.5) ){
+        return true
+      }
+    }
+
     const rounded_x = Math.round(node_data.x[node] * precision) / precision;
     const rounded_y  = Math.round(node_data.y[node] * precision) / precision;
       if (included_points[rounded_x]) {
@@ -151,7 +157,9 @@ let getMMatrix = (zoom) => [
 
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
-function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_configs_initial}) {
+function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_configs_initial, zoomToSearch}) {
+
+
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
 
   const node_data = data.node_data;
@@ -385,7 +393,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
       [].concat.apply(
         [],
         [line_layer_2_config, line_layer_3_config].map((x) =>
-          coarse_and_fine_configs(x, node_data, 100)
+          coarse_and_fine_configs(x, node_data, 100,true)
         )
       ),
     [line_layer_2_config, line_layer_3_config, node_data]
@@ -406,7 +414,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
     [line_configs2]
   );
 
-  if (viewState.zoom > 17) {
+  if (viewState.zoom > 17 && viewState.needs_update!==true) {
     /*
     Creating a text layer with every node takes a *long* time, even if it's not visible until zoomed, so we don't do that.
 
@@ -600,6 +608,26 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
     
     setViewState(newViewState2);
   },[viewState])
+
+  useEffect(()=>{
+    if(zoomToSearch.index!==null){
+      console.log(zoomToSearch)
+    const newViewState = {
+      ...viewState,
+      zoom:19,
+      
+      needs_update: true,
+    };
+    const newViewState2 = {
+      ...newViewState,
+      target: [getXval(newViewState), node_data.y[search_configs_initial[zoomToSearch.index].data ] ] ,
+    };
+    
+    setViewState(newViewState2);
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[zoomToSearch])
 
   return (
     <div
