@@ -8,6 +8,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
+
+
 var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
 
@@ -23,6 +25,9 @@ const searchColors = [
 
 
 function App() {
+
+  const [zoomToSearch, setZoomToSearch] = useState({index:null});
+
   const [searchItems, setSearchItemsBasic] = useState([
     {
       id: 0.123,
@@ -202,10 +207,12 @@ const scatterIds = useMemo(
                 data={data}
                 progress={nodeData.progress}
                 colourBy={colourBy}
+                zoomToSearch={zoomToSearch}
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              setZoomToSearch={setZoomToSearch}
               totalSeqs={totalSeqs}
               numSearchResults = {numSearchResults}
               searchColors={searchColors}

@@ -1,5 +1,5 @@
 /// app.js
-import React, { useState, useMemo, useCallback, useRef } from "react";
+import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import DeckGL from "@deck.gl/react";
 import {
   LineLayer,
@@ -156,7 +156,9 @@ let getMMatrix = (zoom) => [
 
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
-function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_configs_initial}) {
+function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_configs_initial, zoomToSearch}) {
+
+
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
 
   const node_data = data.node_data;
@@ -605,6 +607,26 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
     
     setViewState(newViewState2);
   },[viewState])
+
+  useEffect(()=>{
+    if(zoomToSearch.index!==null){
+      console.log(zoomToSearch)
+    const newViewState = {
+      ...viewState,
+      zoom:19,
+      
+      needs_update: true,
+    };
+    const newViewState2 = {
+      ...newViewState,
+      target: [getXval(newViewState), node_data.y[search_configs_initial[zoomToSearch.index].data ] ] ,
+    };
+    
+    setViewState(newViewState2);
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[zoomToSearch])
 
   return (
     <div
