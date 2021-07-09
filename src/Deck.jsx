@@ -613,7 +613,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
       console.log(zoomToSearch)
     const newViewState = {
       ...viewState,
-      zoom:19,
+      zoom:16.5,
       
       needs_update: true,
     };
