@@ -620,7 +620,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
     };
     const newViewState2 = {
       ...newViewState,
-      target: [getXval(newViewState), node_data.y[search_configs_initial[zoomToSearch.index].data ] ] ,
+      target: [getXval(newViewState), node_data.y[search_configs_initial.filter((x)=>x.original_index ===zoomToSearch.index)[0].data[0] ] ] ,
     };
     
     setViewState(newViewState2);
