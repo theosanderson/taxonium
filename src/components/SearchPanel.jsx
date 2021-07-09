@@ -21,7 +21,7 @@ function SearchPanel({
   data,
   searchColors,
   numSearchResults,
-  totalSeqs
+  totalSeqs,setZoomToSearch
 }) {
   const node_data = data.node_data;
   return (
@@ -46,6 +46,11 @@ function SearchPanel({
                 searchItems[index] = { ...searchItems[index], ...mapping };
                 setSearchItems([...searchItems]);
               }}
+              zoomToMe={() => {
+                console.log(index)
+                setZoomToSearch({index})
+              }}
+              
               removeItem={(id) => {
                 // console.log("remove", id);
                 setSearchItems(searchItems.filter((x) => x.id !== id));
