@@ -20,10 +20,15 @@ function coarse_and_fine_configs(config, node_data, precision) {
     visible: true,
     id: config.id + "_coarse",
   };
-
   const mini = make_minimap_version(coarse);
+  if(config.id.includes("line")){
+    return [config,mini];
+  }
+  else{
+  
   const fine = { ...config, visible: true, id: config.id + "_fine" };
   return [coarse, fine, mini];
+  }
 }
 
 function make_minimap_version(config) {
