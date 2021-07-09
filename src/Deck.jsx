@@ -21,12 +21,13 @@ function coarse_and_fine_configs(config, node_data, precision) {
     id: config.id + "_coarse",
   };
   const mini = make_minimap_version(coarse);
+  const fine = { ...config, visible: true, id: config.id + "_fine" };
   if(config.id.includes("line")){
     return [config,mini];
   }
   else{
   
-  const fine = { ...config, visible: true, id: config.id + "_fine" };
+  
   return [coarse, fine, mini];
   }
 }
