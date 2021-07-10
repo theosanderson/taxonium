@@ -8,7 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
-
+import "./helpers/tree.js"
 
 var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
@@ -58,43 +58,13 @@ function App() {
   const [aboutEnabled, setAboutEnabled] = useState(false);
 
   useEffect(() => {
-    if (nodeData.status === "not_attempted") {
-      console.log("starting dl");
-      setNodeData({
-        status: "loading",
-        progress: 0,
-        data: { node_data: { ids: [] } },
-      });
-
-      protobuf.load("./tree.proto").then(function (root) {
-        axios
-          .get("/nodelist.pb", {
-            responseType: "arraybuffer",
-            onDownloadProgress: (progressEvent) => {
-              let percentCompleted = Math.floor(
-                1 * (progressEvent.loaded / 100000000) * 100
-              );
-              setNodeData({
-                status: "loading",
-                progress: percentCompleted,
-                data: { node_data: { ids: [] } },
-              });
-            },
-          })
-          .then(function (response) {
-            return response.data;
-          })
-          .then(function (buffer) {
-            console.log("buffer loaded");
-            var NodeList = root.lookupType("AllData");
-
-            var message = NodeList.decode(new Uint8Array(buffer));
-            var result = NodeList.toObject(message);
-            result.node_data.ids = [...Array(result.node_data.x.length).keys()];
-            setNodeData({ status: "loaded", data: result });
-          });
-      });
-    }
+    const tree = window.kn_parse(window.newick)
+    window.kn_calxy(tree,true)
+    tree.ids = [...Array(tree.x.length).keys()];
+    tree.x=tree.x.map(x=>10*(x+0.1))
+    tree.y=tree.y.map(x=>10*(x+0.1))
+    window.tree=tree
+    setNodeData({ status: "loaded", data: {node_data:tree} });
   }, [nodeData.status]);
 
 const data =  useMemo( ()=>nodeData.status === "loaded"
