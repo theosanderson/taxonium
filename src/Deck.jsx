@@ -131,10 +131,10 @@ function toRGB(string) {
   }
   return rgb;
 }
-function toRGBCSS(string) {
+/*function toRGBCSS(string) {
   const output = toRGB(string);
   return `rgb(${output[0]},${output[1]},${output[2]})`;
-}
+}*/
 
 let getMMatrix = (zoom) => [
   1 / 2 ** (zoom - 5.6),
@@ -564,7 +564,8 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
 
   const hoverStuff = useMemo(() => {
     if (hoverInfo && hoverInfo.object) {
-      const lineage =
+      return <>{hoverInfo.object}</>
+      /*const lineage =
         data.lineage_mapping[node_data.lineages[hoverInfo.object]];
       const country =
         data.country_mapping[node_data.countries[hoverInfo.object]];
@@ -604,8 +605,8 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
           </div>
         </div>
       );
-    }
-  }, [data, node_data, hoverInfo]);
+    */}
+  }, [hoverInfo]);
   const spinnerShown = useMemo(() => node_data.ids.length === 0, [node_data]);
 
 

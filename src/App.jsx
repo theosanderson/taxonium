@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useEffect, useState, useCallback ,useMemo} from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
-import axios from "axios";
+//import axios from "axios";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -59,11 +59,17 @@ function App() {
 
   useEffect(() => {
     const tree = window.kn_parse(window.newick)
+    
+    window.kn_reorder(tree,tree.root)
+    tree.node_order = window.kn_expand_node(tree,tree.root)
     window.kn_calxy(tree,true)
-    tree.ids = [...Array(tree.x.length).keys()];
-    tree.x=tree.x.map(x=>10*(x+0.1))
-    tree.y=tree.y.map(x=>10*(x+0.1))
     window.tree=tree
+    
+    tree.x=tree.x.map(a=>15*(a+0.1))
+    tree.y=tree.y.map(a=>30*(a+0.1))
+    //tree.names=tree.node.map(a=>a.name)
+    tree.ids = [...Array(tree.names.length).keys()];
+    //tree.parents=tree.node.map(a=>tree.node.findIndex(x=>x===a))
     setNodeData({ status: "loaded", data: {node_data:tree} });
   }, [nodeData.status]);
 
