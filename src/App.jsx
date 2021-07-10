@@ -2,13 +2,13 @@ import "./App.css";
 import React, { useEffect, useState, useCallback ,useMemo} from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
-//import axios from "axios";
+import axios from "axios";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
-import "./helpers/tree.js"
+import {kn_expand_node,kn_reorder,kn_parse,kn_calxy} from "./helpers/tree.js";
 
 var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
@@ -57,21 +57,33 @@ function App() {
 
   const [aboutEnabled, setAboutEnabled] = useState(false);
 
-  useEffect(() => {
-    const tree = window.kn_parse(window.newick)
-    
-    window.kn_reorder(tree,tree.root)
-    tree.node_order = window.kn_expand_node(tree,tree.root)
-    window.kn_calxy(tree,true)
-    window.tree=tree
-    
+useEffect(() => {
+    axios.get('/cog_global_tree.newick')
+  .then(function (response) {
+    // handle success
+    console.log(response)
+    console.log("start")
+    const tree = kn_parse(response.data)
+    console.log("order")
+   kn_reorder(tree,tree.root)
+    console.log("expand")
+    tree.node_order = kn_expand_node(tree,tree.root)
+    tree.parents[tree.root]=tree.root
+    console.log("xy")
+kn_calxy(tree,true)
+    console.log("done")
     tree.x=tree.x.map(a=>15*(a+0.1))
     tree.y=tree.y.map(a=>30*(a+0.1))
-    //tree.names=tree.node.map(a=>a.name)
     tree.ids = [...Array(tree.names.length).keys()];
-    //tree.parents=tree.node.map(a=>tree.node.findIndex(x=>x===a))
-    setNodeData({ status: "loaded", data: {node_data:tree} });
-  }, [nodeData.status]);
+    setNodeData( { status: "loaded", data: {node_data:tree}})
+  })
+    
+
+  },[])
+
+    
+   
+
 
 const data =  useMemo( ()=>nodeData.status === "loaded"
 ? nodeData.data
