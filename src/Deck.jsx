@@ -450,7 +450,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
       id: "main-text-layer",
       data: textInfo.ids,
       getPosition: (d) => [node_data.x[d] + 0.3, node_data.y[d]],
-      getText: (d) => node_data.names[d],
+      getText: (d) => node_data.genbanks[d],
       getColor: [180, 180, 180],
       getAngle: 0,
 
@@ -580,7 +580,7 @@ function Deck({ data, colourBy, progress, setSelectedNode,scatterIds,search_conf
             top: hoverInfo.y,
           }}
         >
-          <h2 className="font-bold">{node_data.names[hoverInfo.object]}</h2>
+          <h2 className="font-bold">{node_data.genbanks[hoverInfo.object]}</h2>
 
           <div
             style={{

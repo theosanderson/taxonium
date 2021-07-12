@@ -91,6 +91,10 @@ function App() {
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
             result.node_data.ids = [...Array(result.node_data.x.length).keys()];
+            result.node_data.x =result.node_data.x.map(x=>x*40000)
+            result.node_data.y =result.node_data.y.map(x=>x*0.16)
+            window.nd=result.node_data
+            result.mutation_mapping = result.mutation_mapping.map(x=>x.replace("Spike","S"))
             setNodeData({ status: "loaded", data: result });
           });
       });

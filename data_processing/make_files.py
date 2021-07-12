@@ -7,18 +7,23 @@ import math
 from collections import defaultdict
 import tree_pb2
 import gzip
+import sys
+sys.setrecursionlimit(15000)
 
 
 
-tree = Phylo.read(gzip.open("public-latest.all.nwk.gz","rt"), "newick")
-tree.ladderize()
+
+
+tree = Phylo.read(open("./GISAID-hCoV-19-phylogeny-2021-07-05/global_lad.tree","rt"), "newick")
+#tree.ladderize()
 root=tree.clade
 from collections import defaultdict
 by_level = defaultdict(list)
 
+the_names = {}
 
 def assign_x(tree, current_branch_length=0, current_level=0):
-    
+    the_names[tree.name]=1
     by_level[current_level].append(tree)
     
     if tree.branch_length :
@@ -41,10 +46,14 @@ def align_parents(tree_by_level):
             if len(childrens_y):
                 node.y=np.mean(childrens_y)
 
+print("1")
 assign_x(root)
+print("2")
 terminals = root.get_terminals()
+print("3")
 assign_terminal_y(terminals)
 align_parents(by_level)
+print("4")
 
 all_nodes= terminals
 all_nodes.extend(root.get_nonterminals())
@@ -64,43 +73,39 @@ add_paths(by_level)
 
 
 
+    
+print("B")
+
+
+
+
+
 genotypes = defaultdict(list)
 
-for line in tqdm.tqdm(open("out.txt")):
-    cols = line.split("\t")
-    cols[4]=cols[4].strip()
-    name = cols[0]#.split("|")[0]
-    if(cols[4]):
-        genotypes[name].append(cols[4])
 
 
 
-metadata = pd.read_csv("public-latest.metadata.tsv.gz",sep="\t")
+
+metadata = pd.read_csv("metadata.tsv",sep="\t")
 lineage_lookup = defaultdict(lambda: "unknown")
 date_lookup = defaultdict(lambda: "unknown")
 country_lookup = defaultdict(lambda: "unknown")
 genbank_lookup = defaultdict(lambda: "unknown")
 for i,row in  tqdm.tqdm(metadata.iterrows()):
-
-    name = row['strain']#.split("|")[0]
-    genbank_lookup[name] = str(row['genbank_accession'])
-    lineage_lookup[name] = str(row['pangolin_lineage'])
-    date_lookup[name] = str(row['date'])
-    row['country']=str(row['country']).replace("_"," ")
-    if row['country']=="UK":
-        country_lookup[name] = row['strain'].split("/")[0].replace("_"," ")
-    elif "Germany" in row['country']:
-        country_lookup[name] = "Germany"
-    elif "Austria" in row['country']:
-        country_lookup[name] = "Austria"
-    elif "USA" in row['country']:
-        country_lookup[name] = "USA"
-    else:
-        country_lookup[name] = str(row['country'])
     
-print("B")
 
+    name = row['Accession ID']#.split("|")[0]
+    if name not in the_names:
+        continue
 
+    genbank_lookup[name] = str(row['Virus name'])
+ 
+    lineage_lookup[name] = str(row['Pango lineage'])
+    date_lookup[name] = str(row['Collection date'])
+    row['country']=str(row['Location']).split("/")[1].strip()
+    country_lookup[name]=row['country']
+    genotypes[name]=str(row['AA Substitutions']).replace("(","").replace(")","").replace("_",":").split(",")
+    #print(genotypes[name])
 
 
 def make_mapping(list_of_strings):
@@ -138,7 +143,7 @@ genbanks = []
 print("C")
 for i,x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x*0.2)
-    yes.append(x.y/40000)
+    yes.append(x.y/4000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev)>0:
         parents.append(path_list_rev[0])
@@ -147,7 +152,7 @@ for i,x in tqdm.tqdm(enumerate(all_nodes)):
     if x.name:
         names.append(x.name.split("|")[0])
     else:
-        names.append("")
+        names.append("")   
     genbanks.append(genbank_lookup[x.name])
     the_date = date_lookup[x.name]
 

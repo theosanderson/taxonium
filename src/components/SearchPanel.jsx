@@ -27,7 +27,7 @@ function SearchPanel({
   return (
     <div>
       <div className=" border-t md:border-t-0 border-b border-gray-300">
-        <div className="mt-3 mb-3 text-gray-500 text-sm">Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK and CNCB</div>
+        <div className="mt-3 mb-3 text-gray-500 text-sm">Displaying {numberWithCommas(totalSeqs)} sequences from GISAID</div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <FaSearch className="inline-block mr-2" />
           Search
@@ -103,23 +103,15 @@ function SearchPanel({
               Node info
             </h2>
 
-            <div className="font-bold">{node_data.names[selectedNode]}</div>
+            <div className="font-bold">{node_data.genbanks[selectedNode]}</div>
             {node_data.genbanks[selectedNode] &&
               node_data.genbanks[selectedNode] !== "unknown" &&
               node_data.genbanks[selectedNode] !== "nan" && (
                 <div>
-                  <span className="font-semibold">Genbank:</span>{" "}
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline"
-                    href={
-                      "https://www.ncbi.nlm.nih.gov/nuccore/" +
-                      node_data.genbanks[selectedNode]
-                    }
-                  >
-                    {node_data.genbanks[selectedNode]}
-                  </a>
+                  <span className="font-semibold"></span>{" "}
+                 
+                    {node_data.names[selectedNode]}
+                  
                 </div>
               )}
             <div>

@@ -30,3 +30,13 @@ data_processing/out.txt
 data_processing/__pycache__/*
 data_processing/__pycache__/tree_pb2.cpython-38.pyc
 data_processing/__pycache__/tree_pb2.cpython-38.pyc
+data_processing/GISAID-hCoV-19-phylogeny-2021-07-05.zip
+data_processing/GISAID-hCoV-19-phylogeny-2021-07-05/GISAID-Database-Access-Agreement.html
+data_processing/metadata.tsv
+data_processing/GISAID-hCoV-19-phylogeny-2021-07-05/global_lad.tree
+data_processing/GISAID-hCoV-19-phylogeny-2021-07-05/global.tree
+data_processing/metadata_tsv_2021_07_12.tar.xz
+data_processing/GISAID-hCoV-19-phylogeny-2021-07-05/metadata.csv
+data_processing/readme.txt
+data_processing/GISAID-hCoV-19-phylogeny-2021-07-05/README.txt
+data_processing/GISAID-hCoV-19-phylogeny-2021-07-05/methods.txt
