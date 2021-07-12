@@ -128,7 +128,7 @@ const scatterIds = useMemo(
 
         if (item.category === "name") {
           filter_function = (x) =>
-            data.node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
+            data.node_data.genbanks[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
         }
 
         if (item.category === "country") {
