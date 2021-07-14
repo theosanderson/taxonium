@@ -174,25 +174,6 @@ function toRGBCSS(string) {
   return `rgb(${output[0]},${output[1]},${output[2]})`;
 }
 
-let getMMatrix = (zoom) => [
-  1 / 2 ** (zoom - 5.6),
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  0,
-  1,
-];
-
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 function Deck({
@@ -214,18 +195,60 @@ function Deck({
     zoom: 4.7,
     target: [6, 13],
   });
-
+  const [xZoom, setXZoom] = useState(0);
+  const MMatrix = useMemo(
+    () => [
+      1 / 2 ** (viewState.zoom - xZoom - 5.6),
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+    ],
+    [viewState.zoom, xZoom]
+  );
   const deckRef = useRef(null);
 
   const onViewStateChange = useCallback(
     ({ viewId, viewState, oldViewState }) => {
+      const zoom_in_x = false;
+      if (zoom_in_x && oldViewState) {
+        if (viewState.zoom !== oldViewState.zoom) {
+          const diff = viewState.zoom - oldViewState.zoom;
+          const newxzoom = xZoom + diff;
+          console.log(
+            "change",
+            viewState.zoom,
+            oldViewState.zoom,
+            diff,
+            newxzoom
+          );
+          setXZoom(newxzoom);
+          viewState.zoom = oldViewState.zoom;
+        }
+      }
       if (viewId === "minimap") {
         return;
       }
 
       viewState["minimap"] = { zoom: 3.0, target: [5, 13] };
-      viewState.target[0] = getXval(viewState);
-
+      if (zoom_in_x) {
+        if (oldViewState) {
+          viewState.target[1] = oldViewState.target[1];
+        }
+      } else {
+        viewState.target[0] = getXval(viewState);
+      }
       if (deckRef.current.viewports.length) {
         const main_vp = deckRef.current.viewports[0];
         const nw = main_vp.unproject([0, 0, 0]);
@@ -239,7 +262,7 @@ function Deck({
         setViewState(viewState);
       }
     },
-    [deckRef]
+    [deckRef, xZoom]
   );
 
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
@@ -381,9 +404,7 @@ function Deck({
     () =>
       scatter_configs.map((x) => ({
         ...x,
-        modelMatrix: x.id.includes("mini")
-          ? undefined
-          : getMMatrix(viewState.zoom),
+        modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
         stroked: x.id.includes("mini") ? undefined : viewState.zoom > 15,
         radiusMaxPixels: x.id.includes("mini")
           ? 2
@@ -391,7 +412,7 @@ function Deck({
           ? viewState.zoom / 5
           : 3,
       })),
-    [scatter_configs, viewState.zoom]
+    [scatter_configs, viewState]
   );
   const scatter_layers = useMemo(
     () => scatter_configs2.map((x) => new ScatterplotLayer(x)),
@@ -412,11 +433,9 @@ function Deck({
     () =>
       search_configs.map((x) => ({
         ...x,
-        modelMatrix: x.id.includes("mini")
-          ? undefined
-          : getMMatrix(viewState.zoom),
+        modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
       })),
-    [search_configs, viewState.zoom]
+    [search_configs, viewState]
   );
   const search_layers = useMemo(
     () => search_configs2.map((x) => new ScatterplotLayer(x)),
@@ -427,8 +446,10 @@ function Deck({
     () => ({
       id: "main-line",
       data: node_data.ids,
-      pickable: false,
+
       getWidth: 1,
+      pickable: true,
+      onHover: (info) => setHoverInfo(info),
       getTargetPosition: (d) => [
         node_data.x[node_data.parents[d]],
         node_data.y[d],
@@ -473,11 +494,9 @@ function Deck({
     () =>
       line_configs.map((x) => ({
         ...x,
-        modelMatrix: x.id.includes("mini")
-          ? undefined
-          : getMMatrix(viewState.zoom),
+        modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
       })),
-    [line_configs, viewState.zoom]
+    [line_configs, viewState]
   );
   const line_layers = useMemo(
     () => line_configs2.map((x) => new LineLayer(x)),
@@ -538,7 +557,7 @@ function Deck({
           ...text_config,
           visible: viewState.zoom > 18.5,
           getSize: viewState.zoom > 19 ? 12 : 9.5,
-          modelMatrix: getMMatrix(viewState.zoom),
+          modelMatrix: MMatrix,
         }),
       ];
     } else {
@@ -547,7 +566,6 @@ function Deck({
   }, [text_config, viewState]);
 
   const pos_layer_mini = useMemo(() => {
-    console.log(viewState);
     let data;
     if (viewState.nw !== undefined) {
       data = [
@@ -679,11 +697,11 @@ function Deck({
               node_data.mutations[hoverInfo.object] &&
                 node_data.mutations[hoverInfo.object].mutation &&
                 node_data.mutations[hoverInfo.object].mutation
-                  .map(
-                    (x) =>
-                      Object.entries(data.mutation_mapping[x])[0][0] +
-                      Object.entries(data.mutation_mapping[x])[0][1]
-                  )
+                  .map((y) => {
+                    const x = data.mutation_mapping[y];
+
+                    return x.gene + ":" + x.orig_res + x.position + x.final_res;
+                  })
                   .join(", ") //TODO assign the top thing to a constant and use it again
             }
           </div>
@@ -710,7 +728,7 @@ function Deck({
     },
     [viewState]
   );
-
+  window.nd = node_data;
   useEffect(() => {
     if (zoomToSearch.index !== null) {
       console.log(zoomToSearch);
@@ -747,6 +765,7 @@ function Deck({
     >
       {" "}
       <DeckGL
+        pickingRadius={10}
         onAfterRender={() => {
           if (viewState.nw === undefined || viewState.needs_update) {
             onViewStateChange({ viewState });
