@@ -16,7 +16,7 @@ function SearchItem({ id, category, enabled, value, setThis, removeItem, index ,
     lineage:
       "Enter a PANGO lineage like B.1.1.7. Note that sub-lineages will not be found by this method.",
     country: "Enter a country like 'India' ",
-    mutation: "Enter an amino acid mutation like S:E484K",
+    mutation: "Enter an amino acid mutation like S:484_K",
   };
 
   const thecolor = searchColors[index % searchColors.length]
