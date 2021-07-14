@@ -37,7 +37,7 @@ function App() {
     setSearchItemsBasic(x);
   }, []);
 
-  const [colourBy, setColourBy] = useState("lineage");
+  const [colourBy, setColourBy] = useState({ variable: "lineage" });
   const setColourByWithCheck = useCallback((x) => {
     setColourBy(x);
   }, []);
@@ -85,6 +85,7 @@ function App() {
             var result = NodeList.toObject(message);
             result.node_data.ids = [...Array(result.node_data.x.length).keys()];
             console.log(result.mutation_mapping);
+            const all_genes = new Set();
             result.mutation_mapping = result.mutation_mapping.map((x, i) => {
               const mutation_array = {};
 
@@ -95,11 +96,13 @@ function App() {
                 mutation_array.position = position;
                 mutation_array.orig_res = orig_res;
                 mutation_array.final_res = final_res;
+                all_genes.add(gene);
               }
               mutation_array.id = i;
               return mutation_array;
             });
             console.log(result.mutation_mapping);
+            result.all_genes = all_genes;
             setNodeData({ status: "loaded", data: result });
           });
       });
