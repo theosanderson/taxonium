@@ -109,13 +109,14 @@ function SearchPanel({
                 setColourBy({ ...colourBy, gene: event.target.value })
               }
             >
-              {Array.from(data.all_genes).map((x) => (
+              {data.all_genes.map((x) => (
                 <option value={x}>{x}</option>
               ))}
             </select>
             <div>
               Residue{" "}
               <DebounceInput
+                debounceTimeout={300}
                 type="number"
                 value={colourBy.residue}
                 onChange={(event) =>
@@ -123,6 +124,16 @@ function SearchPanel({
                 }
                 className="border py-2 px-3 text-grey-darkest"
               />
+            </div>
+            <div>
+              Colour lines{" "}
+              <input
+                type="checkbox"
+                value={colourBy.colourLines}
+                onChange={(event) =>
+                  setColourBy({ ...colourBy, colourLines: event.target.value })
+                }
+              ></input>
             </div>
           </div>
         )}

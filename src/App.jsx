@@ -37,7 +37,12 @@ function App() {
     setSearchItemsBasic(x);
   }, []);
 
-  const [colourBy, setColourBy] = useState({ variable: "lineage", gene: "S" });
+  const [colourBy, setColourBy] = useState({
+    variable: "lineage",
+    gene: "S",
+    colourLines: false,
+    residue: "484",
+  });
   const setColourByWithCheck = useCallback((x) => {
     setColourBy(x);
   }, []);
