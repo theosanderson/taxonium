@@ -8,7 +8,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
-import { flushSync } from "react-dom";
 
 var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
