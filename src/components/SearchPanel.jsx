@@ -91,6 +91,7 @@ function SearchPanel({
         >
           <option value="lineage">Lineage</option>
           <option value="country">Country</option>
+          <option value="aa_484">AA 484</option>
           <option value="none">None</option>
         </select>
       </div>
