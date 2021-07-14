@@ -23,6 +23,18 @@ codon_table = get_codon_table()
 # In[12]:
 
 
+def get_aa_ref(pos):
+
+    for gene_name, gene_range in cov2_genome.genes.items():
+        if pos >= gene_range[0] and pos <= gene_range[1]:
+            aa_loc = math.floor((pos - gene_range[0]) / 3) + 1
+            frame = (int(pos - gene_range[0])) % 3
+
+            original_codon = seq[pos - 1 - frame:pos - 1 + 3 - frame]
+            return f"{gene_name}:X_{aa_loc}_{codon_table[original_codon]}"
+    return None
+
+
 def get_aa_sub(pos, par, alt):
 
     for gene_name, gene_range in cov2_genome.genes.items():
@@ -115,6 +127,10 @@ f = open("./public-latest.all.masked.pb", "rb")
 
 mat = UsherMutationAnnotatedTree(f)
 mat.tree.ladderize()
+
+all_ref_muts = set(get_aa_ref(x) for x in range(len(cov2_genome.seq)))
+all_ref_muts = [x for x in all_ref_muts if x is not None]
+mat.tree.seed_node.aa_subs = all_ref_muts
 
 # In[14]:
 

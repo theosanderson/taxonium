@@ -95,20 +95,23 @@ function toRGB(string) {
     N: [255, 225, 25],
     D: [67, 99, 216],
     C: [245, 130, 49],
-    Q: [145, 30, 180],
-    E: [70, 240, 240],
+    Q: [70, 240, 240],
+    E: [145, 30, 180],
+
     G: [240, 50, 230],
     H: [188, 246, 12],
     I: [250, 190, 190],
-    L: [0, 128, 128],
-    K: [230, 0, 255],
+
+    L: [230, 0, 255],
+    K: [0, 128, 128],
     M: [154, 99, 36],
     F: [255, 250, 200],
     P: [128, 0, 0],
     T: [170, 255, 195],
     W: [128, 128, 0],
-    Y: [255, 216, 177],
-    V: [0, 0, 117],
+
+    Y: [0, 0, 117],
+    V: [255, 216, 177],
     X: [128, 128, 128],
     O: [255, 255, 255],
     Z: [0, 0, 0],
@@ -360,11 +363,11 @@ function Deck({
 
           if (interesting_mutations && interesting_mutations.length === 1) {
             console.log(residue);
-            window.bla.push(residue);
+
             return_val =
               data.mutation_mapping[interesting_mutations[0]].final_res;
           }
-          if (node_data.parents[cur_node] === cur_node) {
+          if (node_data.parents[cur_node] === cur_node && return_val == null) {
             return_val = "X";
           }
         }
@@ -463,7 +466,7 @@ function Deck({
   const line_layer_2_config = useMemo(
     () => ({
       id: "main-line",
-      data: node_data.ids,
+      data: node_data.ids.filter((x) => true),
 
       getWidth: 1,
       pickable: true,
@@ -473,15 +476,18 @@ function Deck({
         node_data.y[d],
       ],
       getSourcePosition: (d) => [node_data.x[d], node_data.y[d]],
-      getColor: [150, 150, 150],
+      getColor:
+        colourBy.variable === "aa" && colourBy.colourLines
+          ? (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue))
+          : [150, 150, 150],
     }),
-    [node_data]
+    [node_data, colourBy, getResidue]
   );
 
   const line_layer_3_config = useMemo(
     () => ({
       id: "main-line-2",
-      data: node_data.ids,
+      data: node_data.ids.filter((x) => true),
       pickable: false,
       getWidth: 1,
       getTargetPosition: (d) => [
@@ -492,9 +498,12 @@ function Deck({
         node_data.x[node_data.parents[d]],
         node_data.y[d],
       ],
-      getColor: [150, 150, 150],
+      getColor:
+        colourBy.variable === "aa" && colourBy.colourLines
+          ? (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue))
+          : [150, 150, 150],
     }),
-    [node_data]
+    [node_data, colourBy, getResidue]
   );
 
   const line_configs = useMemo(
@@ -686,6 +695,11 @@ function Deck({
       const country =
         data.country_mapping[node_data.countries[hoverInfo.object]];
       const date = data.date_mapping[node_data.dates[hoverInfo.object]];
+      let aa, aa_col;
+      if (colourBy.variable === "aa") {
+        aa = getResidue(hoverInfo.object, colourBy.gene, colourBy.residue);
+        aa_col = toRGBCSS(aa);
+      }
       return (
         <div
           className="bg-gray-100 p-3 opacity-90 text-sm"
@@ -698,16 +712,36 @@ function Deck({
           }}
         >
           <h2 className="font-bold">{node_data.names[hoverInfo.object]}</h2>
-
+          {aa && (
+            <div>
+              {colourBy.gene}:{colourBy.residue}
+              <span
+                className="font-bold"
+                style={{
+                  color: aa_col,
+                }}
+              >
+                {aa}
+              </span>
+            </div>
+          )}
           <div
             style={{
-              color: toRGBCSS(lineage),
+              color:
+                colourBy.variable === "lineage" ? toRGBCSS(lineage) : "inherit",
             }}
           >
             {lineage}
           </div>
 
-          <div> {country}</div>
+          <div
+            style={{
+              color:
+                colourBy.variable === "country" ? toRGBCSS(country) : "inherit",
+            }}
+          >
+            {country}
+          </div>
           {date}
 
           <div className="text-xs">
@@ -726,7 +760,7 @@ function Deck({
         </div>
       );
     }
-  }, [data, node_data, hoverInfo]);
+  }, [data, node_data, hoverInfo, colourBy, getResidue]);
   const spinnerShown = useMemo(() => node_data.ids.length === 0, [node_data]);
 
   const zoomIncrement = useCallback(
@@ -746,7 +780,7 @@ function Deck({
     },
     [viewState, onViewStateChange]
   );
-  window.nd = node_data;
+
   useEffect(() => {
     if (zoomToSearch.index !== null) {
       console.log(zoomToSearch);
@@ -797,9 +831,7 @@ function Deck({
           ({ layer, viewport }) => {
             const first_bit =
               (layer.id.startsWith("main") && viewport.id === "main") ||
-              (layer.id.startsWith("mini") &&
-                viewport.id === "minimap" &&
-                window.hidemini !== true);
+              (layer.id.startsWith("mini") && viewport.id === "minimap");
             const second_bit =
               layer.id.includes("mini") |
               ((viewState.zoom < zoomThreshold) & !layer.id.includes("fine")) |
