@@ -37,7 +37,7 @@ function App() {
     setSearchItemsBasic(x);
   }, []);
 
-  const [colourBy, setColourBy] = useState({ variable: "lineage" });
+  const [colourBy, setColourBy] = useState({ variable: "lineage", gene: "S" });
   const setColourByWithCheck = useCallback((x) => {
     setColourBy(x);
   }, []);
@@ -102,7 +102,7 @@ function App() {
               return mutation_array;
             });
             console.log(result.mutation_mapping);
-            result.all_genes = all_genes;
+            result.all_genes = Array.from(all_genes).sort();
             setNodeData({ status: "loaded", data: result });
           });
       });
@@ -119,7 +119,7 @@ function App() {
     () => data.node_data.ids.filter((x) => data.node_data.names[x] !== ""),
     [data]
   );
-  window.bla = [];
+
   const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
     const configs = searchItems.map((item, counter) => {
       window.nd = data.node_data;
