@@ -30,3 +30,4 @@ data_processing/out.txt
 data_processing/__pycache__/*
 data_processing/__pycache__/tree_pb2.cpython-38.pyc
 data_processing/__pycache__/tree_pb2.cpython-38.pyc
+data_processing/public-latest.all.masked.pb
