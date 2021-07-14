@@ -308,10 +308,10 @@ function Deck({
           target: [getXval(viewState), pickInfo.coordinate[1]],
           needs_update: true,
         };
-        setViewState(newViewState);
+        onViewStateChange({ viewState: newViewState, oldViewState: viewState });
       }
     },
-    [viewState, mouseDownIsMinimap, setSelectedNode]
+    [viewState, mouseDownIsMinimap, setSelectedNode, onViewStateChange]
   );
 
   const poly_layer = useMemo(
@@ -412,7 +412,7 @@ function Deck({
           ? viewState.zoom / 5
           : 3,
       })),
-    [scatter_configs, viewState]
+    [scatter_configs, viewState, MMatrix]
   );
   const scatter_layers = useMemo(
     () => scatter_configs2.map((x) => new ScatterplotLayer(x)),
@@ -435,7 +435,7 @@ function Deck({
         ...x,
         modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
       })),
-    [search_configs, viewState]
+    [search_configs, MMatrix]
   );
   const search_layers = useMemo(
     () => search_configs2.map((x) => new ScatterplotLayer(x)),
@@ -496,7 +496,7 @@ function Deck({
         ...x,
         modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
       })),
-    [line_configs, viewState]
+    [line_configs, MMatrix]
   );
   const line_layers = useMemo(
     () => line_configs2.map((x) => new LineLayer(x)),
@@ -563,7 +563,7 @@ function Deck({
     } else {
       return [];
     }
-  }, [text_config, viewState]);
+  }, [text_config, MMatrix, viewState]);
 
   const pos_layer_mini = useMemo(() => {
     let data;
@@ -724,9 +724,9 @@ function Deck({
         target: [getXval(newViewState), newViewState.target[1]],
       };
 
-      setViewState(newViewState2);
+      onViewStateChange({ viewState: newViewState2, oldViewState: viewState });
     },
-    [viewState]
+    [viewState, onViewStateChange]
   );
   window.nd = node_data;
   useEffect(() => {
