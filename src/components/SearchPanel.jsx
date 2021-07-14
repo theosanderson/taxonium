@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
+import { DebounceInput } from "react-debounce-input";
 
 function numberWithCommas(x) {
   const internationalNumberFormat = new Intl.NumberFormat("en-US");
@@ -87,14 +88,44 @@ function SearchPanel({
 
         <select
           className="border py-2 px-3 text-grey-darkest"
-          value={colourBy}
-          onChange={(event) => setColourBy(event.target.value)}
+          value={colourBy.variable}
+          onChange={(event) =>
+            setColourBy({ ...colourBy, variable: event.target.value })
+          }
         >
           <option value="lineage">Lineage</option>
           <option value="country">Country</option>
-          <option value="aa_484">AA 484</option>
+          <option value="aa">Amino acid at site</option>
           <option value="none">None</option>
         </select>
+        {colourBy.variable === "aa" && (
+          <div>
+            {" "}
+            Gene
+            <select
+              className="border py-2 px-3 text-grey-darkest"
+              value={colourBy.gene}
+              onChange={(event) =>
+                setColourBy({ ...colourBy, gene: event.target.value })
+              }
+            >
+              {Array.from(data.all_genes).map((x) => (
+                <option value={x}>{x}</option>
+              ))}
+            </select>
+            <div>
+              Residue{" "}
+              <DebounceInput
+                type="number"
+                value={colourBy.residue}
+                onChange={(event) =>
+                  setColourBy({ ...colourBy, residue: event.target.value })
+                }
+                className="border py-2 px-3 text-grey-darkest"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <div>

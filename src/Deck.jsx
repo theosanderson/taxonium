@@ -335,32 +335,50 @@ function Deck({
     []
   );
 
-  const getResidue = useCallback(
-    (node, gene, position) => {
+  const getResidue = useMemo(() => {
+    let cache = {};
+    console.log(colourBy);
+    const the_function = (node, gene, position) => {
       let residue = null;
       let cur_node = node;
+
+      let path = [];
       while (residue == null) {
-        const interesting_mutations =
-          node_data.mutations[cur_node].mutation &&
-          node_data.mutations[cur_node].mutation.filter(
-            (x) =>
-              data.mutation_mapping[x].gene === gene &&
-              data.mutation_mapping[x].position === position
-          );
-        if (interesting_mutations && interesting_mutations.length === 1) {
-          console.log(residue);
-          window.bla.push(residue);
-          return data.mutation_mapping[interesting_mutations[0]].final_res;
-        }
-        if (node_data.parents[cur_node] === cur_node) {
-          return "X";
+        let return_val = null;
+        path.push(cur_node);
+        let interesting_mutations;
+        if (cache[cur_node]) {
+          return_val = cache[cur_node];
         } else {
-          cur_node = node_data.parents[cur_node];
+          interesting_mutations =
+            node_data.mutations[cur_node].mutation &&
+            node_data.mutations[cur_node].mutation.filter(
+              (x) =>
+                data.mutation_mapping[x].gene === gene &&
+                data.mutation_mapping[x].position === position
+            );
+
+          if (interesting_mutations && interesting_mutations.length === 1) {
+            console.log(residue);
+            window.bla.push(residue);
+            return_val =
+              data.mutation_mapping[interesting_mutations[0]].final_res;
+          }
+          if (node_data.parents[cur_node] === cur_node) {
+            return_val = "X";
+          }
         }
+        if (return_val) {
+          path.forEach((x) => {
+            cache[x] = return_val;
+          });
+          return return_val;
+        }
+        cur_node = node_data.parents[cur_node];
       }
-    },
-    [node_data, data]
-  );
+    };
+    return the_function;
+  }, [node_data, data, colourBy]);
 
   const scatterplot_config = useMemo(() => {
     return {
@@ -383,12 +401,12 @@ function Deck({
         return [node_data.x[d], node_data.y[d]];
       },
       getFillColor: (d) => {
-        if (colourBy === "lineage") {
+        if (colourBy.variable === "lineage") {
           return toRGB(data.lineage_mapping[node_data.lineages[d]]);
-        } else if (colourBy === "country") {
+        } else if (colourBy.variable === "country") {
           return toRGB(data.country_mapping[node_data.countries[d]]);
-        } else if (colourBy === "aa_484") {
-          return toRGB(getResidue(d, "S", "484"));
+        } else if (colourBy.variable === "aa") {
+          return toRGB(getResidue(d, colourBy.gene, colourBy.residue));
         } else {
           return [200, 200, 200];
         }
