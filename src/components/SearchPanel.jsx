@@ -5,12 +5,10 @@ import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 
-
 function numberWithCommas(x) {
-  const internationalNumberFormat = new Intl.NumberFormat('en-US')
-  return internationalNumberFormat.format(x)
+  const internationalNumberFormat = new Intl.NumberFormat("en-US");
+  return internationalNumberFormat.format(x);
 }
-
 
 function SearchPanel({
   searchItems,
@@ -21,13 +19,17 @@ function SearchPanel({
   data,
   searchColors,
   numSearchResults,
-  totalSeqs,setZoomToSearch
+  totalSeqs,
+  setZoomToSearch,
 }) {
   const node_data = data.node_data;
   return (
     <div>
       <div className=" border-t md:border-t-0 border-b border-gray-300">
-        <div className="mt-3 mb-3 text-gray-500 text-sm">Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK and CNCB</div>
+        <div className="mt-3 mb-3 text-gray-500 text-sm">
+          Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK
+          and CNCB
+        </div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <FaSearch className="inline-block mr-2" />
           Search
@@ -35,9 +37,9 @@ function SearchPanel({
         {searchItems.map(function (item, index) {
           return (
             <SearchItem
-            numResultsHere = {numSearchResults[index]}
-            searchColors={searchColors}
-            index= {index}
+              numResultsHere={numSearchResults[index]}
+              searchColors={searchColors}
+              index={index}
               key={item.id}
               id={item.id}
               category={item.category}
@@ -47,10 +49,9 @@ function SearchPanel({
                 setSearchItems([...searchItems]);
               }}
               zoomToMe={() => {
-                console.log(index)
-                setZoomToSearch({index})
+                console.log(index);
+                setZoomToSearch({ index });
               }}
-              
               removeItem={(id) => {
                 // console.log("remove", id);
                 setSearchItems(searchItems.filter((x) => x.id !== id));
@@ -150,7 +151,13 @@ function SearchPanel({
               {
                 node_data.mutations[selectedNode].mutation &&
                   node_data.mutations[selectedNode].mutation
-                    .map((x) => data.mutation_mapping[x])
+                    .map((y) => {
+                      const x = data.mutation_mapping[y];
+
+                      return (
+                        x.gene + ":" + x.orig_res + x.position + x.final_res
+                      );
+                    })
                     .join(", ") //TODO assign the top thing to a constant and use it again
               }
             </div>
