@@ -256,6 +256,7 @@ function App() {
                 search_configs_initial={search_configs_initial}
                 scatterIds={scatterIds}
                 searchColors={searchColors}
+                selectedNode={selectedNode}
                 setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
                 data={data}

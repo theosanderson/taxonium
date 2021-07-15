@@ -136,6 +136,9 @@ function toRGB_uncached(string) {
   if (string === undefined) {
     return [200, 200, 200];
   }
+  if (string === "") {
+    return [200, 200, 200];
+  }
   if (string === "unknown") {
     return [200, 200, 200];
   }
@@ -199,6 +202,7 @@ function Deck({
   scatterIds,
   search_configs_initial,
   zoomToSearch,
+  selectedNode,
 }) {
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
 
@@ -452,6 +456,30 @@ function Deck({
     [scatter_configs2]
   );
 
+  const selected_node_layer = useMemo(
+    () =>
+      new ScatterplotLayer({
+        data: selectedNode ? [selectedNode] : [],
+        visible: true,
+        opacity: 1,
+        getRadius: 6,
+        radiusUnits: "pixels",
+
+        id: "main-selected",
+        filled: false,
+        stroked: true,
+        modelMatrix: MMatrix,
+
+        getLineColor: [0, 0, 0],
+        getPosition: (d) => {
+          return [node_data.x[d], node_data.y[d]];
+        },
+        lineWidthUnits: "pixels",
+        lineWidthScale: 2,
+      }),
+    [selectedNode, node_data, MMatrix]
+  );
+
   const search_configs = useMemo(
     () =>
       [].concat(
@@ -668,6 +696,7 @@ function Deck({
       ...search_layers,
 
       pos_layer_mini,
+      selected_node_layer,
     ],
     [
       poly_layer,
@@ -679,6 +708,7 @@ function Deck({
       pos_layer_mini,
       search_layers,
       // text_layer
+      selected_node_layer,
     ]
   );
 
