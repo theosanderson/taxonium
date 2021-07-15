@@ -133,11 +133,14 @@ function SearchPanel({
           <option value="none">None</option>
         </select>
         {colourBy.variable === "aa" && (
-          <div>
+          <div
+            className="
+     p-2 m-1 ml-0  text-gray-700"
+          >
             {" "}
-            Gene
+            <label className="text-sm">Gene</label>
             <select
-              className="border py-2 px-3 text-grey-darkest"
+              className="border py-1 px-1 text-grey-darkest text-sm h-7 w-16 m-3 my-1"
               value={colourBy.gene}
               onChange={(event) =>
                 setColourBy({ ...colourBy, gene: event.target.value })
@@ -150,7 +153,7 @@ function SearchPanel({
               ))}
             </select>
             <div>
-              Residue{" "}
+              <label className="text-sm">Residue</label>{" "}
               <DebounceInput
                 debounceTimeout={300}
                 type="number"
@@ -158,7 +161,7 @@ function SearchPanel({
                 onChange={(event) =>
                   setColourBy({ ...colourBy, residue: event.target.value })
                 }
-                className="border py-2 px-3 text-grey-darkest"
+                className="border py-1 px-1 text-grey-darkest text-sm h-7 w-16 m-3 my-1"
               />
             </div>
             <div className="hidden">
