@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\ntree.proto\" \n\x0cMutationList\x12\x10\n\x08mutation\x18\x01 \x03(\x05\"\xc4\x01\n\x0b\x41llNodeData\x12\r\n\x05names\x18\x01 \x03(\t\x12\t\n\x01x\x18\x02 \x03(\x02\x12\t\n\x01y\x18\x03 \x03(\x02\x12\x11\n\tcountries\x18\x04 \x03(\x05\x12\x10\n\x08lineages\x18\x05 \x03(\x05\x12 \n\tmutations\x18\x06 \x03(\x0b\x32\r.MutationList\x12\r\n\x05\x64\x61tes\x18\x07 \x03(\x05\x12\x0f\n\x07parents\x18\x08 \x03(\x05\x12\x10\n\x08genbanks\x18\t \x03(\t\x12\x17\n\x0f\x65pi_isl_numbers\x18\n \x03(\x05\"\x8c\x01\n\x07\x41llData\x12\x1f\n\tnode_data\x18\x01 \x01(\x0b\x32\x0c.AllNodeData\x12\x17\n\x0f\x63ountry_mapping\x18\x02 \x03(\t\x12\x17\n\x0flineage_mapping\x18\x03 \x03(\t\x12\x18\n\x10mutation_mapping\x18\x04 \x03(\t\x12\x14\n\x0c\x64\x61te_mapping\x18\x05 \x03(\tb\x06proto3')
+  serialized_pb=_b('\n\ntree.proto\" \n\x0cMutationList\x12\x10\n\x08mutation\x18\x01 \x03(\x05\"\xd6\x01\n\x0b\x41llNodeData\x12\r\n\x05names\x18\x01 \x03(\t\x12\t\n\x01x\x18\x02 \x03(\x02\x12\t\n\x01y\x18\x03 \x03(\x02\x12\x11\n\tcountries\x18\x04 \x03(\x05\x12\x10\n\x08lineages\x18\x05 \x03(\x05\x12 \n\tmutations\x18\x06 \x03(\x0b\x32\r.MutationList\x12\r\n\x05\x64\x61tes\x18\x07 \x03(\x05\x12\x0f\n\x07parents\x18\x08 \x03(\x05\x12\x10\n\x08genbanks\x18\t \x03(\t\x12\x17\n\x0f\x65pi_isl_numbers\x18\n \x03(\x05\x12\x10\n\x08num_tips\x18\x0b \x03(\x05\"\x8c\x01\n\x07\x41llData\x12\x1f\n\tnode_data\x18\x01 \x01(\x0b\x32\x0c.AllNodeData\x12\x17\n\x0f\x63ountry_mapping\x18\x02 \x03(\t\x12\x17\n\x0flineage_mapping\x18\x03 \x03(\t\x12\x18\n\x10mutation_mapping\x18\x04 \x03(\t\x12\x14\n\x0c\x64\x61te_mapping\x18\x05 \x03(\tb\x06proto3')
 )
 
 
@@ -133,6 +133,13 @@ _ALLNODEDATA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='num_tips', full_name='AllNodeData.num_tips', index=10,
+      number=11, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -146,7 +153,7 @@ _ALLNODEDATA = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=49,
-  serialized_end=245,
+  serialized_end=263,
 )
 
 
@@ -204,8 +211,8 @@ _ALLDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=248,
-  serialized_end=388,
+  serialized_start=266,
+  serialized_end=406,
 )
 
 _ALLNODEDATA.fields_by_name['mutations'].message_type = _MUTATIONLIST

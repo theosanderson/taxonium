@@ -30,6 +30,9 @@ function App() {
       category: "lineage",
       value: "",
       enabled: true,
+      aa_final: "any",
+      min_tips: 1,
+      aa_gene: "S",
     },
   ]);
 
@@ -41,7 +44,7 @@ function App() {
     variable: "lineage",
     gene: "S",
     colourLines: false,
-    residue: "484",
+    residue: "681",
   });
   const setColourByWithCheck = useCallback((x) => {
     setColourBy(x);
@@ -124,6 +127,7 @@ function App() {
     () => data.node_data.ids.filter((x) => data.node_data.names[x] !== ""),
     [data]
   );
+  console.log(searchItems);
 
   const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
     const configs = searchItems.map((item, counter) => {
@@ -131,14 +135,13 @@ function App() {
       let filter_function;
       const lowercase_query = item.value.toLowerCase().trim();
       if (item.category === "mutation") {
-        const [gene, rest] = item.value.split(":");
-        const [position, residue] = rest ? rest.split("_") : [null, null];
         window.mm = data.mutation_mapping;
         const subset = data.mutation_mapping
           .filter(
             (x) =>
-              (x.gene === gene) & (x.position === position) &&
-              x.final_res === residue
+              x.gene === item.aa_gene &&
+              x.position === item.aa_pos &&
+              (x.final_res === item.aa_final) | (item.aa_final === "any")
           )
           .map((x) => x.id);
         console.log(subset);
@@ -147,7 +150,9 @@ function App() {
           data.node_data.mutations[x] &&
           data.node_data.mutations[x].mutation &&
           subset.filter((i) => data.node_data.mutations[x].mutation.includes(i))
-            .length > 0;
+            .length > 0 &&
+          data.node_data.num_tips[x] >= item.min_tips &&
+          data.node_data.parents[x] !== x;
       }
 
       if (item.category === "name") {
@@ -165,13 +170,17 @@ function App() {
           data.lineage_mapping[data.node_data.lineages[x]].toLowerCase() ===
           lowercase_query; //TODO precompute lowercase mapping for perf
       }
-      const enabled = item.value !== null && item.value !== "" && item.enabled;
+      const enabled =
+        (item.category === "mutation") |
+          (item.value !== null && item.value !== "") && item.enabled;
       return {
         original_index: counter,
         id: "main-search-" + counter,
         enabled: enabled,
         data:
-          item.value !== "" ? data.node_data.ids.filter(filter_function) : [],
+          (item.value !== "") | (item.category === "mutation")
+            ? data.node_data.ids.filter(filter_function)
+            : [],
         opacity: 0.7,
         getRadius: 7 + counter * 2,
         filled: false,
@@ -187,11 +196,12 @@ function App() {
         getLineColor: (d) => searchColors[counter % searchColors.length],
       };
     });
+
     const num_results = configs.map((x) => x.data.length);
     const filtered_configs = configs.filter((item) => item.enabled);
     return [filtered_configs, num_results, scatterIds.length];
   }, [data, searchItems, scatterIds]);
-
+  console.log("cfg", search_configs_initial);
   return (
     <Router>
       <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />

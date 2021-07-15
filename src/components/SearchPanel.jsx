@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import SearchItem from "./SearchItem";
 import { FaSearch } from "react-icons/fa";
 import { RiAddCircleLine } from "react-icons/ri";
@@ -24,8 +24,34 @@ function SearchPanel({
   setZoomToSearch,
 }) {
   const node_data = data.node_data;
+
+  const selected_muts = useMemo(() => {
+    if (!selectedNode) {
+      return [];
+    }
+    let cur_node = selectedNode;
+    let mutations = {};
+    while (cur_node !== node_data.parents[cur_node]) {
+      const these_muts = node_data.mutations[cur_node].mutation
+        ? Object.fromEntries(
+            node_data.mutations[cur_node].mutation.map((x) => {
+              const this_mut = data.mutation_mapping[x];
+              return [
+                this_mut.gene + ":" + this_mut.position,
+                this_mut.final_res,
+              ];
+            })
+          )
+        : {};
+      mutations = { ...these_muts, ...mutations };
+      cur_node = node_data.parents[cur_node];
+    }
+    return Object.entries(mutations)
+      .map((x) => x[0] + x[1])
+      .sort();
+  }, [data, node_data, selectedNode]);
   return (
-    <div>
+    <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className=" border-t md:border-t-0 border-b border-gray-300">
         <div className="mt-3 mb-3 text-gray-500 text-sm">
           Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK
@@ -44,6 +70,11 @@ function SearchPanel({
               key={item.id}
               id={item.id}
               category={item.category}
+              aa_gene={item.aa_gene}
+              aa_pos={item.aa_pos}
+              aa_final={item.aa_final}
+              all_genes={data.all_genes}
+              min_tips={item.min_tips}
               value={item.value}
               setThis={(mapping) => {
                 searchItems[index] = { ...searchItems[index], ...mapping };
@@ -72,6 +103,9 @@ function SearchPanel({
                 category: "name",
                 value: "",
                 enabled: true,
+                aa_final: "any",
+                min_tips: 1,
+                aa_gene: "S",
               },
             ])
           }
@@ -110,7 +144,9 @@ function SearchPanel({
               }
             >
               {data.all_genes.map((x) => (
-                <option value={x}>{x}</option>
+                <option key={x} value={x}>
+                  {x}
+                </option>
               ))}
             </select>
             <div>
@@ -125,7 +161,7 @@ function SearchPanel({
                 className="border py-2 px-3 text-grey-darkest"
               />
             </div>
-            <div>
+            <div className="hidden">
               Colour lines{" "}
               <input
                 type="checkbox"
@@ -188,19 +224,10 @@ function SearchPanel({
               <span className="font-semibold">Country:</span>{" "}
               {data.country_mapping[node_data.countries[selectedNode]]}
             </div>
-            <span className="font-semibold">Mutations:</span>
+            <span className="font-semibold">Mutations from root:</span>
             <div className="text-xs mr-5">
               {
-                node_data.mutations[selectedNode].mutation &&
-                  node_data.mutations[selectedNode].mutation
-                    .map((y) => {
-                      const x = data.mutation_mapping[y];
-
-                      return (
-                        x.gene + ":" + x.orig_res + x.position + x.final_res
-                      );
-                    })
-                    .join(", ") //TODO assign the top thing to a constant and use it again
+                selected_muts && selected_muts.join(", ") //TODO assign the top thing to a constant and use it again
               }
             </div>
           </div>

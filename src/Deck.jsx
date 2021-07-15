@@ -88,7 +88,19 @@ const dummy_polygons = [
     area: 6.11,
   },
 ];
+const rgb_cache = {};
+
 function toRGB(string) {
+  if (rgb_cache[string]) {
+    return rgb_cache[string];
+  } else {
+    const result = toRGB_uncached(string);
+    rgb_cache[string] = result;
+    return result;
+  }
+}
+
+function toRGB_uncached(string) {
   const amino_acids = {
     A: [230, 25, 75],
     R: [60, 180, 75],
@@ -279,7 +291,7 @@ function Deck({
       const pickInfo = deckRef.current.pickObject({
         x: event.nativeEvent.offsetX,
         y: event.nativeEvent.offsetY,
-        radius: 1,
+        radius: 10,
       });
 
       if (event._reactName === "onPointerDown") {
@@ -713,7 +725,7 @@ function Deck({
         >
           <h2 className="font-bold">{node_data.names[hoverInfo.object]}</h2>
           {aa && (
-            <div>
+            <div className="bg-white p-1 inline-block">
               {colourBy.gene}:{colourBy.residue}
               <span
                 className="font-bold"
@@ -754,6 +766,7 @@ function Deck({
 
                     return x.gene + ":" + x.orig_res + x.position + x.final_res;
                   })
+                  .sort()
                   .join(", ") //TODO assign the top thing to a constant and use it again
             }
           </div>
