@@ -35,6 +35,7 @@ function App() {
         aa_final: "any",
         min_tips: 1,
         aa_gene: "S",
+        search_for_ids: "",
       },
     ]),
     colourBy: JSON.stringify({
@@ -111,7 +112,7 @@ function App() {
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
             result.node_data.ids = [...Array(result.node_data.x.length).keys()];
-            console.log(result.mutation_mapping);
+
             const all_genes = new Set();
             result.mutation_mapping = result.mutation_mapping.map((x, i) => {
               const mutation_array = {};
@@ -128,7 +129,7 @@ function App() {
               mutation_array.id = i;
               return mutation_array;
             });
-            console.log(result.mutation_mapping);
+
             result.all_genes = Array.from(all_genes).sort();
             setNodeData({ status: "loaded", data: result });
           });
@@ -146,7 +147,6 @@ function App() {
     () => data.node_data.ids.filter((x) => data.node_data.names[x] !== ""),
     [data]
   );
-  console.log(searchItems);
 
   const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
     const configs = searchItems.map((item, counter) => {
@@ -189,15 +189,51 @@ function App() {
           data.lineage_mapping[data.node_data.lineages[x]].toLowerCase() ===
           lowercase_query; //TODO precompute lowercase mapping for perf
       }
+
+      if (item.category === "epis") {
+        console.log("EPI");
+        if (!item.search_for_ids) {
+          filter_function = (x) => false;
+        } else {
+          const the_list = item.search_for_ids
+            .split("\n")
+            .map((x) => parseInt(x.trim().replace("EPI_ISL_", "")))
+            .filter((x) => x !== 0);
+
+          filter_function = (x) =>
+            the_list.includes(data.node_data.epi_isl_numbers[x]);
+        }
+      }
+
+      if (item.category === "genbanks") {
+        if (!item.search_for_ids) {
+          filter_function = (x) => false;
+        } else {
+          const the_list = item.search_for_ids
+            .split("\n")
+            .map((x) => x.trim())
+            .filter((x) => x !== "");
+
+          filter_function = (x) =>
+            the_list.includes(data.node_data.genbanks[x]);
+        }
+      }
+
       const enabled =
-        (item.category === "mutation") |
-          (item.value !== null && item.value !== "") && item.enabled;
+        (item.category === "mutation" ||
+          item.category === "epis" ||
+          item.category === "genbanks" ||
+          (item.value !== null && item.value !== "")) &&
+        item.enabled;
       return {
         original_index: counter,
         id: "main-search-" + counter,
         enabled: enabled,
         data:
-          (item.value !== "") | (item.category === "mutation")
+          (item.value !== "") |
+          (item.category === "mutation" ||
+            item.category === "epis" ||
+            item.category === "genbanks")
             ? data.node_data.ids.filter(filter_function)
             : [],
         opacity: 0.7,
@@ -220,7 +256,7 @@ function App() {
     const filtered_configs = configs.filter((item) => item.enabled);
     return [filtered_configs, num_results, scatterIds.length];
   }, [data, searchItems, scatterIds]);
-  console.log("cfg", search_configs_initial);
+
   return (
     <>
       <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
