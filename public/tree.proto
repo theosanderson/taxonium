@@ -17,6 +17,7 @@ message AllNodeData {
  repeated int32 parents = 8;
  repeated string genbanks = 9;
 repeated int32 epi_isl_numbers = 10;
+repeated int32 num_tips = 11;
 
 }
 
