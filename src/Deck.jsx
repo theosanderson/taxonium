@@ -123,7 +123,7 @@ function toRGB_uncached(string) {
     W: [128, 128, 0],
 
     Y: [0, 0, 117],
-    V: [255, 216, 177],
+    V: [0, 100, 177],
     X: [128, 128, 128],
     O: [255, 255, 255],
     Z: [0, 0, 0],
@@ -712,6 +712,17 @@ function Deck({
         aa = getResidue(hoverInfo.object, colourBy.gene, colourBy.residue);
         aa_col = toRGBCSS(aa);
       }
+
+      const mutations =
+        node_data.mutations[hoverInfo.object] &&
+        node_data.mutations[hoverInfo.object].mutation &&
+        node_data.mutations[hoverInfo.object].mutation
+          .map((y) => {
+            const x = data.mutation_mapping[y];
+
+            return x.gene + ":" + x.orig_res + x.position + x.final_res;
+          })
+          .sort();
       return (
         <div
           className="bg-gray-100 p-3 opacity-90 text-sm"
@@ -757,18 +768,7 @@ function Deck({
           {date}
 
           <div className="text-xs">
-            {
-              node_data.mutations[hoverInfo.object] &&
-                node_data.mutations[hoverInfo.object].mutation &&
-                node_data.mutations[hoverInfo.object].mutation
-                  .map((y) => {
-                    const x = data.mutation_mapping[y];
-
-                    return x.gene + ":" + x.orig_res + x.position + x.final_res;
-                  })
-                  .sort()
-                  .join(", ") //TODO assign the top thing to a constant and use it again
-            }
+            {mutations ? mutations.join(", ") : <i>No coding mutations</i>}
           </div>
         </div>
       );

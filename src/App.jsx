@@ -4,9 +4,10 @@ import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
 import axios from "axios";
 import AboutOverlay from "./components/AboutOverlay";
-import { BrowserRouter as Router } from "react-router-dom";
+
 import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
+import useQueryAsState from "./hooks/useQueryAsState";
 import { BsInfoSquare } from "react-icons/bs";
 
 var protobuf = require("protobufjs");
@@ -24,31 +25,49 @@ const searchColors = [
 function App() {
   const [zoomToSearch, setZoomToSearch] = useState({ index: null });
 
-  const [searchItems, setSearchItemsBasic] = useState([
-    {
-      id: 0.123,
-      category: "lineage",
-      value: "",
-      enabled: true,
-      aa_final: "any",
-      min_tips: 1,
-      aa_gene: "S",
-    },
-  ]);
-
-  const setSearchItems = useCallback((x) => {
-    setSearchItemsBasic(x);
-  }, []);
-
-  const [colourBy, setColourBy] = useState({
-    variable: "lineage",
-    gene: "S",
-    colourLines: false,
-    residue: "681",
+  const [query, setQuery] = useQueryAsState({
+    search: JSON.stringify([
+      {
+        id: 0.123,
+        category: "lineage",
+        value: "",
+        enabled: true,
+        aa_final: "any",
+        min_tips: 1,
+        aa_gene: "S",
+      },
+    ]),
+    colourBy: JSON.stringify({
+      variable: "lineage",
+      gene: "S",
+      colourLines: false,
+      residue: "681",
+    }),
   });
-  const setColourByWithCheck = useCallback((x) => {
-    setColourBy(x);
-  }, []);
+
+  const searchItems = useMemo(() => JSON.parse(query.search), [query.search]);
+
+  const setSearchItems = useCallback(
+    (search) => {
+      setQuery({ ...query, search: JSON.stringify(search) });
+    },
+    [setQuery, query]
+  );
+
+  const setColourBy = useCallback(
+    (colourBy) => {
+      setQuery({ ...query, colourBy: JSON.stringify(colourBy) });
+    },
+    [setQuery, query]
+  );
+  const colourBy = useMemo(() => JSON.parse(query.colourBy), [query.colourBy]);
+
+  const setColourByWithCheck = useCallback(
+    (x) => {
+      setColourBy(x);
+    },
+    [setColourBy]
+  );
   const [nodeData, setNodeData] = useState({
     status: "not_attempted",
     data: { node_data: { ids: [] } },
@@ -203,7 +222,7 @@ function App() {
   }, [data, searchItems, scatterIds]);
   console.log("cfg", search_configs_initial);
   return (
-    <Router>
+    <>
       <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
 
       <div className="h-screen w-screen">
@@ -262,7 +281,7 @@ function App() {
           </div>
         </div>
       </div>
-    </Router>
+    </>
   );
 }
 
