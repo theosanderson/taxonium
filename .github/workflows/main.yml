@@ -20,7 +20,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
-        run: pip install pandas tqdm numpy Bio google
+        run: pip install pandas tqdm numpy Bio google dendropy
       - name: Download protobuf
         run: wget -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.pb
         working-directory: ./data_processing/
