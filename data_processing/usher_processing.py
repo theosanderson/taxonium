@@ -261,6 +261,7 @@ mutations = []
 countries = []
 lineages = []
 genbanks = []
+num_tips = []
 
 print("C")
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
@@ -288,6 +289,7 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
     the_lineage = lineage_lookup[name]
     lineages.append(lineage_mapping_lookup[the_lineage])
     mutations.append([mutation_mapping_lookup[y] for y in x.aa_subs])
+    num_tips.append(len(x.leaf_nodes()))
 
 all_node_data = tree_pb2.AllNodeData(
     genbanks=genbanks,
@@ -298,7 +300,8 @@ all_node_data = tree_pb2.AllNodeData(
     lineages=lineages,
     dates=dates,
     mutations=[tree_pb2.MutationList(mutation=x) for x in mutations],
-    parents=parents)
+    parents=parents,
+    num_tips=num_tips)
 
 all_data = tree_pb2.AllData(node_data=all_node_data,
                             country_mapping=country_mapping_list,
