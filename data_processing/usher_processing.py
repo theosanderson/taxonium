@@ -202,11 +202,13 @@ def add_paths(tree_by_level):
 root.path_list = []
 add_paths(by_level)
 
-metadata = pd.read_csv("public-latest.metadata.tsv.gz", sep="\t")
-lineage_lookup = defaultdict(lambda: "unknown")
-date_lookup = defaultdict(lambda: "unknown")
-country_lookup = defaultdict(lambda: "unknown")
-genbank_lookup = defaultdict(lambda: "unknown")
+metadata = pd.read_csv("public-latest.metadata.tsv.gz",
+                       sep="\t",
+                       low_memory=False)
+lineage_lookup = defaultdict(lambda: "")
+date_lookup = defaultdict(lambda: "")
+country_lookup = defaultdict(lambda: "")
+genbank_lookup = defaultdict(lambda: "")
 for i, row in tqdm.tqdm(metadata.iterrows()):
 
     name = row['strain']  #.split("|")[0]
@@ -229,9 +231,8 @@ print("B")
 
 
 def make_mapping(list_of_strings):
-    sorted_by_value_counts = [
-        "unknown"
-    ] + pd.Series(list_of_strings).value_counts(sort=True).index.tolist()
+    sorted_by_value_counts = [""] + pd.Series(list_of_strings).value_counts(
+        sort=True).index.tolist()
     return sorted_by_value_counts, {
         x: i
         for i, x in enumerate(sorted_by_value_counts)

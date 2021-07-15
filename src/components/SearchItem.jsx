@@ -62,16 +62,23 @@ function SearchItem({
         <option value="country">Country</option>
         <option value="mutation">AA mutation</option>
       </select>
-      &nbsp;
+      {category === "mutation" && (
+        <button
+          className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8"
+          onClick={() => removeItem(id)}
+        >
+          <BsTrash className="inline-block " />
+        </button>
+      )}
       {category === "mutation" && (
         <div
-          className="ml-2 
-       p-2 m-2 ml-8  text-gray-700"
+          className="
+       p-2 m-2 ml-2  text-gray-700"
         >
           {" "}
           <label className="text-sm">Gene:</label>
           <select
-            className="border py-1 px-1 text-grey-darkest text-sm h-7 w-16 m-3 my-1"
+            className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
             value={aa_gene}
             onChange={(event) => setThis({ aa_gene: event.target.value })}
           >
@@ -149,12 +156,16 @@ function SearchItem({
           debounceTimeout={300}
         />
       )}
-      <button
-        className=" bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-2 h-8"
-        onClick={() => removeItem(id)}
-      >
-        <BsTrash className="inline-block " />
-      </button>
+      {category === "mutation" ? (
+        <></>
+      ) : (
+        <button
+          className=" bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-2 h-8"
+          onClick={() => removeItem(id)}
+        >
+          <BsTrash className="inline-block " />
+        </button>
+      )}
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
       <div className="text-sm text-gray-900 px-3">
         {" "}

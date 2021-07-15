@@ -140,7 +140,7 @@ function SearchPanel({
             {" "}
             <label className="text-sm">Gene</label>
             <select
-              className="border py-1 px-1 text-grey-darkest text-sm h-7 w-16 m-3 my-1"
+              className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
               value={colourBy.gene}
               onChange={(event) =>
                 setColourBy({ ...colourBy, gene: event.target.value })
@@ -186,7 +186,13 @@ function SearchPanel({
               Node info
             </h2>
 
-            <div className="font-bold">{node_data.names[selectedNode]}</div>
+            <div className="font-bold">
+              {node_data.names[selectedNode] ? (
+                node_data.names[selectedNode]
+              ) : (
+                <>Un-named internal node</>
+              )}
+            </div>
             {node_data.genbanks[selectedNode] &&
               node_data.genbanks[selectedNode] !== "unknown" &&
               node_data.genbanks[selectedNode] !== "nan" && (
