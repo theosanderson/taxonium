@@ -8,6 +8,8 @@ wget -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.
 wget  -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.metadata.tsv.gz
 wget  -q -N https://data.nextstrain.org/files/ncov/open/metadata.tsv.gz
 wget  -q -N https://github.com/CDCgov/SARS-CoV-2_Sequencing/raw/master/files/epiToPublic.tsv.gz
+pip install pandas tqdm numpy Bio google dendropy
+python usher_processing.py
 ```
 
 (The NextStrain meta is a temporary solution to fill in missing COG-UK Genbank ids)
