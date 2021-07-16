@@ -264,7 +264,7 @@ function SearchPanel({
               </div>
             )}
             <div>
-              {cur_epi_isl && (
+              {false && cur_epi_isl && (
                 <>
                   <span className="font-semibold">GISAID:</span> {cur_epi_isl}
                 </>
