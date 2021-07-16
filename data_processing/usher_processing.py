@@ -252,6 +252,15 @@ for i, row in tqdm.tqdm(metadata.iterrows()):
 
 print("B")
 
+alt_metadata = pd.read_csv("metadata.tsv.gz",
+                       sep="\t",
+                       low_memory=False)
+
+alt_genbank_lookup = {}
+for i, row in tqdm.tqdm(alt_metadata.iterrows()):
+
+    name = row['strain']  #.split("|")[0]
+    alt_genbank_lookup[name] = str(row['genbank_accession'])
 
 def make_mapping(list_of_strings):
     sorted_by_value_counts = [""] + pd.Series(list_of_strings).value_counts(
@@ -306,7 +315,11 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
     else:
         final_name = ""
     names.append(final_name)
-    genbanks.append(genbank_lookup[name])
+    
+    genbank =genbank_lookup[name]
+    if not genbank and final_name in alt_genbank_lookup and alt_genbank_lookup[final_name]!="?":
+        genbank = alt_genbank_lookup[final_name]
+    genbanks.append(genbank)
     the_date = date_lookup[name]
 
     dates.append(date_mapping_lookup[the_date])

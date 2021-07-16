@@ -195,6 +195,7 @@ function toRGBCSS(string) {
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 function Deck({
+  showMutText,
   data,
   colourBy,
   progress,
@@ -204,6 +205,7 @@ function Deck({
   zoomToSearch,
   selectedNode,
 }) {
+  console.log("M", showMutText);
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
 
   const node_data = data.node_data;
@@ -594,11 +596,28 @@ function Deck({
       const textIds = scatterIds.filter(
         (x) => (node_data.y[x] > new_top) & (node_data.y[x] < new_bot)
       );
+
       //console.log("recalculating text")
-      setTextInfo({ top: new_top, bottom: new_bot, ids: textIds });
+      setTextInfo({
+        top: new_top,
+        bottom: new_bot,
+        ids: textIds,
+      });
     }
   }
 
+  const mutTextIds = useMemo(
+    () =>
+      showMutText
+        ? node_data.ids.filter(
+            (x) =>
+              /* node_data.y[x] > new_top &&
+      node_data.y[x] < new_bot &&*/
+              node_data.num_tips[x] > 10 && node_data.mutations[x]
+          )
+        : [],
+    [node_data.ids, node_data.mutations, node_data.num_tips, showMutText]
+  );
   const text_config = useMemo(
     () => ({
       id: "main-text-layer",
@@ -615,6 +634,38 @@ function Deck({
     [node_data, textInfo]
   );
 
+  const text_config_muts = useMemo(
+    () => ({
+      id: "main-text-muts-layer",
+      data: mutTextIds.filter(() => true),
+      getPosition: (d) => [node_data.x[d], node_data.y[d]],
+      getText: (d) =>
+        node_data.mutations[d].mutation
+          ? node_data.mutations[d].mutation
+              .map((y) => {
+                const x = data.mutation_mapping[y];
+
+                return x.gene + ":" + x.orig_res + x.position + x.final_res;
+              })
+              .sort()
+              .join(", ")
+          : "",
+      getColor: [180, 180, 180],
+      getAngle: 0,
+
+      billboard: true,
+      getTextAnchor: "start",
+      getAlignmentBaseline: "center",
+    }),
+    [
+      data.mutation_mapping,
+      mutTextIds,
+      node_data.mutations,
+      node_data.x,
+      node_data.y,
+    ]
+  );
+
   const text_layers = useMemo(() => {
     if (true) {
       return [
@@ -629,6 +680,21 @@ function Deck({
       return [];
     }
   }, [text_config, MMatrix, viewState]);
+
+  const text_layer_muts = useMemo(() => {
+    if (!showMutText) {
+      return [];
+    }
+    return [
+      new TextLayer({
+        ...text_config_muts,
+        visible: true,
+        getSize: viewState.zoom > 19 ? 12 : 9.5,
+        modelMatrix: MMatrix,
+        getColor: [0, 0, 0],
+      }),
+    ];
+  }, [text_config_muts, viewState, MMatrix, showMutText]);
 
   const pos_layer_mini = useMemo(() => {
     let data;
@@ -695,6 +761,7 @@ function Deck({
 
       pos_layer_mini,
       selected_node_layer,
+      ...text_layer_muts,
     ],
     [
       poly_layer,
@@ -707,6 +774,7 @@ function Deck({
       search_layers,
       // text_layer
       selected_node_layer,
+      text_layer_muts,
     ]
   );
 
