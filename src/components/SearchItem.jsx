@@ -2,7 +2,7 @@ import React from "react";
 import { BsTrash } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
 import { BiZoomIn } from "react-icons/bi";
-
+import { GiRobotGrab } from "react-icons/gi";
 function numberWithCommas(x) {
   const internationalNumberFormat = new Intl.NumberFormat("en-US");
   return internationalNumberFormat.format(x);
@@ -24,6 +24,8 @@ function SearchItem({
   aa_gene,
   all_genes,
   min_tips,
+  search_for_ids,
+  current_accession,
 }) {
   const explanations = {
     name: "Enter a sequence name like QEUH-13ADA01",
@@ -31,7 +33,7 @@ function SearchItem({
       "Enter a PANGO lineage like B.1.1.7. Note that sub-lineages will not be found by this method.",
     country: "Enter a country like 'India' ",
     mutation:
-      "Enter an amino acid mutation like a mutation in gene S at position 681 to R. Note that this will identify the internal node at which the mutation occurred, rather than all the leaf nodes with the mutation.",
+      "Enter an amino acid mutation. E.g. gene S, position 681, to R. Note that this will identify the internal node at which the mutation occurred, rather than all the leaf nodes with the mutation.",
   };
 
   const thecolor = searchColors[index % searchColors.length];
@@ -43,7 +45,9 @@ function SearchItem({
         type="checkbox"
         style={{
           outline:
-            enabled && value.length > 0
+            enabled &&
+            (value.length > 0 ||
+              !["name", "lineage", "country"].includes(category))
               ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
               : "0px",
           outlineOffset: "2px",
@@ -61,14 +65,49 @@ function SearchItem({
         <option value="lineage">Lineage</option>
         <option value="country">Country</option>
         <option value="mutation">AA mutation</option>
+        <option value="epis">EPI_ISL ids</option>
+        <option value="genbanks">GenBank ids</option>
       </select>
-      {category === "mutation" && (
+
+      {["mutation", "epis", "genbanks"].includes(category) && (
         <button
           className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8"
           onClick={() => removeItem(id)}
         >
           <BsTrash className="inline-block " />
         </button>
+      )}
+
+      {(category === "epis" || category === "genbanks") && (
+        <div>
+          <DebounceInput
+            className="w-48 h-32 border p-1 m-1"
+            element="textarea"
+            value={search_for_ids}
+            onChange={(event) =>
+              setThis({ search_for_ids: event.target.value })
+            }
+          />
+          <br />
+          <div className="h-10">
+            {current_accession && (
+              <button
+                onClick={(event) =>
+                  setThis({
+                    search_for_ids:
+                      search_for_ids === ""
+                        ? current_accession
+                        : search_for_ids + "\n" + current_accession,
+                  })
+                }
+                className=" bg-gray-100  mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-2 h-6 text-xs"
+              >
+                <GiRobotGrab className="inline mr-2 " />
+                Add selected node
+              </button>
+            )}{" "}
+          </div>
+        </div>
       )}
       {category === "mutation" && (
         <div
@@ -82,11 +121,12 @@ function SearchItem({
             value={aa_gene}
             onChange={(event) => setThis({ aa_gene: event.target.value })}
           >
-            {all_genes.map((x) => (
-              <option key={x} value={x}>
-                {x}
-              </option>
-            ))}
+            {all_genes &&
+              all_genes.map((x) => (
+                <option key={x} value={x}>
+                  {x}
+                </option>
+              ))}
           </select>
           <div>
             <label className="text-sm">Mutation at residue:</label>{" "}
@@ -148,7 +188,7 @@ function SearchItem({
           </div>
         </div>
       )}
-      {category !== "mutation" && (
+      {["name", "lineage", "country"].includes(category) && (
         <DebounceInput
           className=" w-32 border py-2 px-3 text-grey-darkest h-10"
           value={value}
@@ -156,7 +196,7 @@ function SearchItem({
           debounceTimeout={300}
         />
       )}
-      {category === "mutation" ? (
+      {["mutation", "epis", "genbanks"].includes(category) ? (
         <></>
       ) : (
         <button
@@ -169,7 +209,10 @@ function SearchItem({
       <div className="text-sm text-gray-600 px-3">{explanations[category]}</div>
       <div className="text-sm text-gray-900 px-3">
         {" "}
-        {(value.length > 0 || category === "mutation") && (
+        {(value.length > 0 ||
+          category === "mutation" ||
+          category === "epis" ||
+          category === "genbanks") && (
           <>
             {" "}
             {numberWithCommas(numResultsHere)} result

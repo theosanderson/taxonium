@@ -156,13 +156,15 @@ function App() {
       if (item.category === "mutation") {
         window.mm = data.mutation_mapping;
         const subset = data.mutation_mapping
-          .filter(
-            (x) =>
-              x.gene === item.aa_gene &&
-              x.position === item.aa_pos &&
-              (x.final_res === item.aa_final) | (item.aa_final === "any")
-          )
-          .map((x) => x.id);
+          ? data.mutation_mapping
+              .filter(
+                (x) =>
+                  x.gene === item.aa_gene &&
+                  x.position === item.aa_pos &&
+                  (x.final_res === item.aa_final) | (item.aa_final === "any")
+              )
+              .map((x) => x.id)
+          : [];
         console.log(subset);
 
         filter_function = (x) =>
@@ -271,10 +273,10 @@ function App() {
                 interactive SARS-CoV-2 phylogeny{" "}
               </span>
             </h1>
-            <div className="inline-block p-4">
+            <div className="inline-block p-4 pr-0">
               <button
                 onClick={() => setAboutEnabled(true)}
-                className="mr-10 text-white font-bold hover:underline"
+                className="mr-5 text-white font-bold hover:underline"
               >
                 <BsInfoSquare className="inline-block h-7 w-8" /> About /
                 Acknowledgements
