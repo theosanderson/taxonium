@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SearchItem from "./SearchItem";
 import { FaSearch } from "react-icons/fa";
 import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
+import { IoMdSettings } from "react-icons/io";
 
 function get_epi_isl_url(epi_isl) {
   if (epi_isl.length > 4) {
@@ -36,10 +37,14 @@ function SearchPanel({
   numSearchResults,
   totalSeqs,
   setZoomToSearch,
+  showMutText,
+  setShowMutText,
 }) {
   //const [acknowledgements, setAcknowledgements] = useState({});
   const acknowledgements = null;
   const node_data = data.node_data;
+
+  const [configMode, setConfigMode] = useState("colour");
 
   const cur_genbank = useMemo(() => {
     if (selectedNode) {
@@ -170,70 +175,108 @@ function SearchPanel({
           Add a new search
         </button>
       </div>
-      <div className="border-b border-gray-300 pb-3">
-        <h2 className="text-xl mt-5 mb-4 text-gray-700">
-          <BiPalette className="inline-block mr-2" />
-          Colour by
-        </h2>
-
-        <select
-          className="border py-2 px-3 text-grey-darkest"
-          value={colourBy.variable}
-          onChange={(event) =>
-            setColourBy({ ...colourBy, variable: event.target.value })
-          }
-        >
-          <option value="lineage">Lineage</option>
-          <option value="country">Country</option>
-          <option value="aa">Amino acid at site</option>
-          <option value="none">None</option>
-        </select>
-        {colourBy.variable === "aa" && (
-          <div
-            className="
-     p-2 m-1 ml-0  text-gray-700"
-          >
-            {" "}
-            <label className="text-sm">Gene</label>
-            <select
-              className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
-              value={colourBy.gene}
-              onChange={(event) =>
-                setColourBy({ ...colourBy, gene: event.target.value })
-              }
+      {configMode === "other" && (
+        <div className="border-b border-gray-300 pb-3">
+          <h2 className="text-xl mt-5 mb-4 text-gray-700">
+            <button
+              onClick={() => setConfigMode("colour")}
+              className="float-right mr-5 block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
             >
-              {data.all_genes &&
-                data.all_genes.map((x) => (
-                  <option key={x} value={x}>
-                    {x}
-                  </option>
-                ))}
-            </select>
-            <div>
-              <label className="text-sm">Residue</label>{" "}
-              <DebounceInput
-                debounceTimeout={300}
-                type="number"
-                value={colourBy.residue}
-                onChange={(event) =>
-                  setColourBy({ ...colourBy, residue: event.target.value })
-                }
-                className="border py-1 px-1 text-grey-darkest text-sm h-7 w-16 m-3 my-1"
-              />
-            </div>
-            <div className="hidden">
-              Colour lines{" "}
-              <input
-                type="checkbox"
-                value={colourBy.colourLines}
-                onChange={(event) =>
-                  setColourBy({ ...colourBy, colourLines: event.target.value })
-                }
-              ></input>
-            </div>
+              <BiPalette className="inline-block mr-1 ml-1" />
+            </button>
+            <IoMdSettings className="inline-block mr-2" />
+            Other settings{" "}
+          </h2>
+          Show mutation text{" "}
+          <input
+            type="checkbox"
+            checked={showMutText}
+            onChange={(event) => {
+              console.log(showMutText);
+              setShowMutText(!showMutText);
+            }}
+          />
+          <div className="text-sm text-gray-500 p-5">
+            Mutations are only shown at nodes with at least 10 descendant
+            genomes
           </div>
-        )}
-      </div>
+        </div>
+      )}
+      {configMode === "colour" && (
+        <div className="border-b border-gray-300 pb-3">
+          <h2 className="text-xl mt-5 mb-4 text-gray-700">
+            <button
+              onClick={() => setConfigMode("other")}
+              className="float-right mr-5 block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+            >
+              <IoMdSettings className="inline-block mr-1 ml-1" />
+            </button>
+            <BiPalette className="inline-block mr-2" />
+            Colour by{" "}
+          </h2>
+
+          <select
+            className="border py-2 px-3 text-grey-darkest"
+            value={colourBy.variable}
+            onChange={(event) =>
+              setColourBy({ ...colourBy, variable: event.target.value })
+            }
+          >
+            <option value="lineage">Lineage</option>
+            <option value="country">Country</option>
+            <option value="aa">Amino acid at site</option>
+            <option value="none">None</option>
+          </select>
+          {colourBy.variable === "aa" && (
+            <div
+              className="
+     p-2 m-1 ml-0  text-gray-700"
+            >
+              {" "}
+              <label className="text-sm">Gene</label>
+              <select
+                className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
+                value={colourBy.gene}
+                onChange={(event) =>
+                  setColourBy({ ...colourBy, gene: event.target.value })
+                }
+              >
+                {data.all_genes &&
+                  data.all_genes.map((x) => (
+                    <option key={x} value={x}>
+                      {x}
+                    </option>
+                  ))}
+              </select>
+              <div>
+                <label className="text-sm">Residue</label>{" "}
+                <DebounceInput
+                  debounceTimeout={300}
+                  type="number"
+                  value={colourBy.residue}
+                  onChange={(event) =>
+                    setColourBy({ ...colourBy, residue: event.target.value })
+                  }
+                  className="border py-1 px-1 text-grey-darkest text-sm h-7 w-16 m-3 my-1"
+                />
+              </div>
+              <div className="hidden">
+                Colour lines{" "}
+                <input
+                  type="checkbox"
+                  value={colourBy.colourLines}
+                  onChange={(event) =>
+                    setColourBy({
+                      ...colourBy,
+                      colourLines: event.target.value,
+                    })
+                  }
+                ></input>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div>
         {selectedNode && (

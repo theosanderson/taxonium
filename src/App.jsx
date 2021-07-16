@@ -24,7 +24,8 @@ const searchColors = [
 
 function App() {
   const [zoomToSearch, setZoomToSearch] = useState({ index: null });
-
+  const [showMutText, setShowMutText] = useState(false);
+  console.log("M2", showMutText);
   const [query, setQuery] = useQueryAsState({
     search: JSON.stringify([
       {
@@ -291,6 +292,7 @@ function App() {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+                showMutText={showMutText}
                 search_configs_initial={search_configs_initial}
                 scatterIds={scatterIds}
                 searchColors={searchColors}
@@ -305,6 +307,8 @@ function App() {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+                showMutText={showMutText}
+                setShowMutText={setShowMutText}
                 setZoomToSearch={setZoomToSearch}
                 totalSeqs={totalSeqs}
                 numSearchResults={numSearchResults}

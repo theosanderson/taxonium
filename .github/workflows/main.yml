@@ -30,6 +30,9 @@ jobs:
       - name: Download accessions
         run: wget  -q -N https://github.com/CDCgov/SARS-CoV-2_Sequencing/raw/master/files/epiToPublic.tsv.gz
         working-directory: ./data_processing/
+      - name: Download accessions
+        run: wget  -q -N https://data.nextstrain.org/files/ncov/open/metadata.tsv.gz
+        working-directory: ./data_processing/
       - name: Run
         run: python usher_processing.py
         working-directory: ./data_processing/
