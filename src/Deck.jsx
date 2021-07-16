@@ -795,7 +795,11 @@ function Deck({
           </div>
           {date}
 
-          <div className="text-xs">
+          <div className="text-xs text-gray-600">
+            <div className="mt-1">
+              <b>Node mutations</b>
+            </div>
+
             {mutations ? mutations.join(", ") : <i>No coding mutations</i>}
           </div>
         </div>
