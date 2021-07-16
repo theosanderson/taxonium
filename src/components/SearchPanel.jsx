@@ -61,13 +61,14 @@ function SearchPanel({
   }, [node_data, selectedNode]);
 
   useEffect(() => {
+    /*
     if (cur_epi_isl) {
       fetch(get_epi_isl_url(cur_epi_isl))
         .then((response) => response.json())
         .then((data) => setAcknowledgements(data));
     } else {
       setAcknowledgements(null);
-    }
+    }*/
   }, [cur_epi_isl]);
 
   const selected_muts = useMemo(() => {
@@ -296,18 +297,18 @@ function SearchPanel({
                 selected_muts && selected_muts.join(", ") //TODO assign the top thing to a constant and use it again
               }
             </div>
-            {acknowledgements && (
-              <>
+            {false && acknowledgements && (
+              <div>
                 {" "}
                 <span className="font-semibold">Acknowledgements</span>
-                <div className="text-xs mr-5">
+                <div className="text-xs mr-5 ">
                   <b>Originating lab:</b> {acknowledgements.covv_orig_lab}
                   <br />
                   <b>Submitting lab:</b> {acknowledgements.covv_subm_lab}
                   <br />
                   <b>Authors:</b> {acknowledgements.covv_authors}
                 </div>
-              </>
+              </div>
             )}
           </div>
         )}
