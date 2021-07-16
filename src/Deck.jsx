@@ -378,8 +378,6 @@ function Deck({
             );
 
           if (interesting_mutations && interesting_mutations.length === 1) {
-            console.log(residue);
-
             return_val =
               data.mutation_mapping[interesting_mutations[0]].final_res;
           }
