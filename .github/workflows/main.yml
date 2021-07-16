@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 5 * * *'
+    - cron: "0 5 * * *"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -18,28 +18,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} 
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
-        run: pip install pandas tqdm numpy Bio
-      - name: Download tree
-        run: wget -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.nwk.gz
-        working-directory: ./data_processing/
-      - name: Download VCF
-        run: wget  -q  -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.vcf.gz
+        run: pip install pandas tqdm numpy Bio google dendropy
+      - name: Download protobuf
+        run: wget -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.pb
         working-directory: ./data_processing/
       - name: Download metadata
         run: wget  -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.metadata.tsv.gz
         working-directory: ./data_processing/
       - name: Download accessions
-        run: wget  -q -N https://raw.githubusercontent.com/nextstrain/ncov-ingest/master/source-data/accessions.tsv
+        run: wget  -q -N https://github.com/CDCgov/SARS-CoV-2_Sequencing/raw/master/files/epiToPublic.tsv.gz
         working-directory: ./data_processing/
-      - name: Deal with VCF
-        run: python deal_with_vcf.py > out.txt
-        working-directory: ./data_processing/
-      - name: Make protos
-        run: python make_files.py
+      - name: Run
+        run: python usher_processing.py
         working-directory: ./data_processing/
       - uses: EndBug/add-and-commit@v7
         with:
           default_author: github_actions
- 
