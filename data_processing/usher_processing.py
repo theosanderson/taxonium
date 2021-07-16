@@ -1,4 +1,32 @@
 #!/usr/bin/env python
+
+# THIS SCRIPT NEEDS REFACTORING, IT'S GOT BODGED TOGETHER AND ONLY PARTIALLY CONVERTED TO DENDROPY
+# SO DOESN'T MAKE BEST USE OF ITS FEATURES
+
+from collections import defaultdict
+import numpy as np
+import pandas as pd
+import tree_pb2
+import tqdm
+
+accessions = pd.read_table("epiToPublic.tsv.gz",
+                           names=["epi_isl", "genbank", "alternative", "date"],
+                           low_memory=False)
+
+epi_isl_lookup = defaultdict(lambda: 0)
+
+for i, row in tqdm.tqdm(accessions.iterrows()):
+    epi_int = int(row['epi_isl'].replace("EPI_ISL_", ""))
+    epi_isl_lookup[row['genbank']] = epi_int
+
+
+def get_epi_isl(genbank, alternative, date):
+    if (genbank and epi_isl_lookup[genbank]):
+        return epi_isl_lookup[genbank]
+    else:
+        return epi_isl_lookup[alternative]
+
+
 import parsimony_pb2
 import cov2_genome
 import math
@@ -144,11 +172,6 @@ def get_label_from_node(node):
 
 # In[16]:
 
-from collections import defaultdict
-import numpy as np
-import pandas as pd
-import tree_pb2
-
 by_level = defaultdict(list)
 
 
@@ -263,6 +286,7 @@ countries = []
 lineages = []
 genbanks = []
 num_tips = []
+epi_isls = []
 
 print("C")
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
@@ -275,10 +299,13 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
         parents.append(i)
 
     name = get_label_from_node(x)
+
     if name:
-        names.append(name.split("|")[0])
+        final_name = name.split("|")[0]
+
     else:
-        names.append("")
+        final_name = ""
+    names.append(final_name)
     genbanks.append(genbank_lookup[name])
     the_date = date_lookup[name]
 
@@ -292,6 +319,9 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
     mutations.append([mutation_mapping_lookup[y] for y in x.aa_subs])
     num_tips.append(len(x.leaf_nodes()))
 
+    epi_isls.append(
+        get_epi_isl(genbank_lookup[name], final_name, date_lookup[name]))
+
 all_node_data = tree_pb2.AllNodeData(
     genbanks=genbanks,
     names=names,
@@ -302,7 +332,8 @@ all_node_data = tree_pb2.AllNodeData(
     dates=dates,
     mutations=[tree_pb2.MutationList(mutation=x) for x in mutations],
     parents=parents,
-    num_tips=num_tips)
+    num_tips=num_tips,
+    epi_isl_numbers=epi_isls)
 
 all_data = tree_pb2.AllData(node_data=all_node_data,
                             country_mapping=country_mapping_list,
