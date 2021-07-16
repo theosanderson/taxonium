@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import SearchItem from "./SearchItem";
 import { FaSearch } from "react-icons/fa";
 import { RiAddCircleLine } from "react-icons/ri";
@@ -19,7 +19,7 @@ function get_epi_isl_url(epi_isl) {
     );
   }
 }
-
+get_epi_isl_url("");
 function numberWithCommas(x) {
   const internationalNumberFormat = new Intl.NumberFormat("en-US");
   return internationalNumberFormat.format(x);
@@ -37,7 +37,8 @@ function SearchPanel({
   totalSeqs,
   setZoomToSearch,
 }) {
-  const [acknowledgements, setAcknowledgements] = useState({});
+  //const [acknowledgements, setAcknowledgements] = useState({});
+  const acknowledgements = null;
   const node_data = data.node_data;
 
   const cur_genbank = useMemo(() => {
