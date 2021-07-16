@@ -18,10 +18,18 @@ import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut } from "react-icons/bi";
 
 const zoomThreshold = 8;
-function coarse_and_fine_configs(config, node_data, precision, line_mode) {
+function coarse_and_fine_configs(
+  config,
+  node_data,
+  precision,
+  line_mode,
+  pre_reduced_data
+) {
   const coarse = {
     ...config,
-    data: reduceOverPlotting(config.data, node_data, precision, line_mode),
+    data: pre_reduced_data
+      ? pre_reduced_data
+      : reduceOverPlotting(config.data, node_data, precision, line_mode),
     visible: true,
     id: config.id + "_coarse",
   };
@@ -399,62 +407,67 @@ function Deck({
     return the_function;
   }, [node_data, data, colourBy]);
 
-  const scatterplot_config = useMemo(() => {
-    return {
-      data: scatterIds.filter(() => true),
-      visible: true,
-      opacity: 0.6,
-      getRadius: 3,
-      radiusUnits: "pixels",
+  const scatterFillFunction = useMemo(() => {
+    if (colourBy.variable === "lineage") {
+      return (d) => toRGB(data.lineage_mapping[node_data.lineages[d]]);
+    } else if (colourBy.variable === "country") {
+      return (d) => toRGB(data.country_mapping[node_data.countries[d]]);
+    } else if (colourBy.variable === "aa") {
+      return (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue));
+    } else {
+      return [200, 200, 200];
+    }
+  }, [colourBy, node_data, data, getResidue]);
 
-      id: "main-scatter",
-
-      pickable: true,
-      getLineColor: [100, 100, 100],
-
-      lineWidthUnits: "pixels",
-      lineWidthScale: 1,
-
-      onHover: (info) => setHoverInfo(info),
-      getPosition: (d) => {
-        return [node_data.x[d], node_data.y[d]];
-      },
-      getFillColor: (d) => {
-        if (colourBy.variable === "lineage") {
-          return toRGB(data.lineage_mapping[node_data.lineages[d]]);
-        } else if (colourBy.variable === "country") {
-          return toRGB(data.country_mapping[node_data.countries[d]]);
-        } else if (colourBy.variable === "aa") {
-          return toRGB(getResidue(d, colourBy.gene, colourBy.residue));
-        } else {
-          return [200, 200, 200];
-        }
-      },
-    };
-  }, [scatterIds, node_data, data, colourBy, getResidue]);
-
-  const scatter_configs = useMemo(
-    () => coarse_and_fine_configs(scatterplot_config, node_data, 100),
-    [scatterplot_config, node_data]
+  const coarseScatterIds = useMemo(
+    () => reduceOverPlotting(scatterIds, node_data, 100, false),
+    [scatterIds, node_data]
   );
-  const scatter_configs2 = useMemo(
-    () =>
-      scatter_configs.map((x) => ({
-        ...x,
-        modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
-        stroked: x.id.includes("mini") ? undefined : viewState.zoom > 15,
-        radiusMaxPixels: x.id.includes("mini")
-          ? 2
-          : viewState.zoom > 15
-          ? viewState.zoom / 5
-          : 3,
-      })),
-    [scatter_configs, viewState, MMatrix]
+  const scatterplot_config = {
+    data: scatterIds,
+    visible: true,
+    opacity: 0.6,
+    getRadius: 3,
+    radiusUnits: "pixels",
+
+    id: "main-scatter",
+
+    pickable: true,
+    getLineColor: [100, 100, 100],
+
+    lineWidthUnits: "pixels",
+    lineWidthScale: 1,
+
+    onHover: (info) => setHoverInfo(info),
+    getPosition: (d) => {
+      return [node_data.x[d], node_data.y[d]];
+    },
+    updateTriggers: {
+      // This tells deck.gl to recalculat radius when `currentYear` changes
+      getFillColor: scatterFillFunction,
+    },
+    getFillColor: scatterFillFunction,
+  };
+
+  const scatter_configs = coarse_and_fine_configs(
+    scatterplot_config,
+    node_data,
+    100,
+    false,
+    coarseScatterIds
   );
-  const scatter_layers = useMemo(
-    () => scatter_configs2.map((x) => new ScatterplotLayer(x)),
-    [scatter_configs2]
-  );
+
+  const scatter_configs2 = scatter_configs.map((x) => ({
+    ...x,
+    modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
+    stroked: x.id.includes("mini") ? undefined : viewState.zoom > 15,
+    radiusMaxPixels: x.id.includes("mini")
+      ? 2
+      : viewState.zoom > 15
+      ? viewState.zoom / 5
+      : 3,
+  }));
+  const scatter_layers = scatter_configs2.map((x) => new ScatterplotLayer(x));
 
   const selected_node_layer = useMemo(
     () =>
