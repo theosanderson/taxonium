@@ -65,7 +65,7 @@ function SearchItem({
         <option value="lineage">Lineage</option>
         <option value="country">Country</option>
         <option value="mutation">AA mutation</option>
-        <option value="epis">EPI_ISL ids</option>
+        {/*<option value="epis">EPI_ISL ids</option>*/}
         <option value="genbanks">GenBank ids</option>
       </select>
 
