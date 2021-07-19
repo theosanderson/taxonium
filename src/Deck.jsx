@@ -26,6 +26,7 @@ function coarse_and_fine_configs(
   optionalFineIds,
   optionalCoarseIds
 ) {
+  console.log(config.id, "fine", optionalFineIds, "coarse", optionalCoarseIds);
   const coarse = {
     ...config,
     data: optionalCoarseIds
@@ -542,12 +543,9 @@ function Deck({
         node_data.y[d],
       ],
       getSourcePosition: (d) => [node_data.x[d], node_data.y[d]],
-      getColor:
-        colourBy.variable === "aa" && colourBy.colourLines
-          ? (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue))
-          : [150, 150, 150],
+      getColor: [150, 150, 150],
     }),
-    [node_data, colourBy, getResidue]
+    [node_data]
   );
 
   const line_layer_3_config = useMemo(
@@ -564,12 +562,9 @@ function Deck({
         node_data.x[node_data.parents[d]],
         node_data.y[d],
       ],
-      getColor:
-        colourBy.variable === "aa" && colourBy.colourLines
-          ? (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue))
-          : [150, 150, 150],
+      getColor: [150, 150, 150],
     }),
-    [node_data, colourBy, getResidue]
+    [node_data]
   );
 
   const line_configs = useMemo(
