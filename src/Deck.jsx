@@ -26,7 +26,6 @@ function coarse_and_fine_configs(
   optionalFineIds,
   optionalCoarseIds
 ) {
-  console.log(config.id, "fine", optionalFineIds, "coarse", optionalCoarseIds);
   const coarse = {
     ...config,
     data: optionalCoarseIds
@@ -221,7 +220,6 @@ function Deck({
   zoomToSearch,
   selectedNode,
 }) {
-  console.log("M", showMutText);
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
   const [fineScatterInfo, setFineScatterInfo] = useState({
     ids: [],
@@ -268,13 +266,6 @@ function Deck({
         if (viewState.zoom !== oldViewState.zoom) {
           const diff = viewState.zoom - oldViewState.zoom;
           const newxzoom = xZoom + diff;
-          console.log(
-            "change",
-            viewState.zoom,
-            oldViewState.zoom,
-            diff,
-            newxzoom
-          );
           setXZoom(newxzoom);
           viewState.zoom = oldViewState.zoom;
         }
@@ -379,7 +370,7 @@ function Deck({
 
   const getResidue = useMemo(() => {
     let cache = {};
-    console.log(colourBy);
+
     const the_function = (node, gene, position) => {
       let residue = null;
       let cur_node = node;
@@ -418,7 +409,7 @@ function Deck({
       }
     };
     return the_function;
-  }, [node_data, data, colourBy]);
+  }, [node_data, data]);
 
   const coarseScatterIds = useMemo(() => {
     return reduceOverPlotting(node_data.ids, node_data, 100, false);
@@ -633,7 +624,7 @@ function Deck({
       (viewState.nw[1] > fineScatterInfo.top) &
       (viewState.se[1] < fineScatterInfo.bottom)
     ) {
-      console.log("still within", viewState.nw[1], textInfo.top);
+      // still within
     } else {
       const cur_top = viewState.nw[1];
       const cur_bot = viewState.se[1];
@@ -943,7 +934,6 @@ function Deck({
 
   useEffect(() => {
     if (zoomToSearch.index !== null) {
-      console.log(zoomToSearch);
       const newViewState = {
         ...viewState,
         zoom: 19,

@@ -25,7 +25,6 @@ const searchColors = [
 function App() {
   const [zoomToSearch, setZoomToSearch] = useState({ index: null });
   const [showMutText, setShowMutText] = useState(false);
-  console.log("M2", showMutText);
   const [query, setQuery] = useQueryAsState({
     search: JSON.stringify([
       {
@@ -166,7 +165,6 @@ function App() {
               )
               .map((x) => x.id)
           : [];
-        console.log(subset);
 
         filter_function = (x) =>
           data.node_data.mutations[x] &&
@@ -194,7 +192,6 @@ function App() {
       }
 
       if (item.category === "epis") {
-        console.log("EPI");
         if (!item.search_for_ids) {
           filter_function = (x) => false;
         } else {
