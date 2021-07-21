@@ -409,7 +409,8 @@ function Deck({
       }
     };
     return the_function;
-  }, [node_data, data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [node_data, data, colourBy]);
 
   const coarseScatterIds = useMemo(() => {
     return reduceOverPlotting(node_data.ids, node_data, 100, false);
