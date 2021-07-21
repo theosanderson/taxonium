@@ -18,16 +18,31 @@ import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut } from "react-icons/bi";
 
 const zoomThreshold = 8;
-function coarse_and_fine_configs(config, node_data, precision, line_mode) {
+function coarse_and_fine_configs(
+  config,
+  node_data,
+  precision,
+  line_mode,
+  optionalFineIds,
+  optionalCoarseIds
+) {
   const coarse = {
     ...config,
-    data: reduceOverPlotting(config.data, node_data, precision, line_mode),
+    data: optionalCoarseIds
+      ? optionalCoarseIds
+      : reduceOverPlotting(config.data, node_data, precision, line_mode),
     visible: true,
     id: config.id + "_coarse",
   };
 
   const mini = make_minimap_version(coarse);
-  const fine = { ...config, visible: true, id: config.id + "_fine" };
+  const fineIdsToSet = optionalFineIds ? optionalFineIds : config.data;
+  const fine = {
+    ...config,
+    visible: true,
+    id: config.id + "_fine",
+    data: fineIdsToSet,
+  };
   return [coarse, fine, mini];
 }
 
@@ -205,8 +220,12 @@ function Deck({
   zoomToSearch,
   selectedNode,
 }) {
-  console.log("M", showMutText);
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
+  const [fineScatterInfo, setFineScatterInfo] = useState({
+    ids: [],
+    top: 0,
+    bottom: 0,
+  });
 
   const node_data = data.node_data;
 
@@ -247,13 +266,6 @@ function Deck({
         if (viewState.zoom !== oldViewState.zoom) {
           const diff = viewState.zoom - oldViewState.zoom;
           const newxzoom = xZoom + diff;
-          console.log(
-            "change",
-            viewState.zoom,
-            oldViewState.zoom,
-            diff,
-            newxzoom
-          );
           setXZoom(newxzoom);
           viewState.zoom = oldViewState.zoom;
         }
@@ -358,7 +370,7 @@ function Deck({
 
   const getResidue = useMemo(() => {
     let cache = {};
-    console.log(colourBy);
+
     const the_function = (node, gene, position) => {
       let residue = null;
       let cur_node = node;
@@ -397,64 +409,70 @@ function Deck({
       }
     };
     return the_function;
-  }, [node_data, data, colourBy]);
+  }, [node_data, data]);
 
-  const scatterplot_config = useMemo(() => {
-    return {
-      data: scatterIds.filter(() => true),
-      visible: true,
-      opacity: 0.6,
-      getRadius: 3,
-      radiusUnits: "pixels",
+  const coarseScatterIds = useMemo(() => {
+    return reduceOverPlotting(node_data.ids, node_data, 100, false);
+  }, [node_data]);
 
-      id: "main-scatter",
+  const scatterFillFunction = useMemo(() => {
+    if (colourBy.variable === "lineage") {
+      return (d) => toRGB(data.lineage_mapping[node_data.lineages[d]]);
+    } else if (colourBy.variable === "country") {
+      return (d) => toRGB(data.country_mapping[node_data.countries[d]]);
+    } else if (colourBy.variable === "aa") {
+      return (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue));
+    } else {
+      return [200, 200, 200];
+    }
+  }, [colourBy, node_data, data, getResidue]);
 
-      pickable: true,
-      getLineColor: [100, 100, 100],
+  const scatterplot_config = {
+    data: scatterIds,
+    visible: true,
+    opacity: 0.6,
+    getRadius: 3,
+    radiusUnits: "pixels",
 
-      lineWidthUnits: "pixels",
-      lineWidthScale: 1,
+    id: "main-scatter",
 
-      onHover: (info) => setHoverInfo(info),
-      getPosition: (d) => {
-        return [node_data.x[d], node_data.y[d]];
-      },
-      getFillColor: (d) => {
-        if (colourBy.variable === "lineage") {
-          return toRGB(data.lineage_mapping[node_data.lineages[d]]);
-        } else if (colourBy.variable === "country") {
-          return toRGB(data.country_mapping[node_data.countries[d]]);
-        } else if (colourBy.variable === "aa") {
-          return toRGB(getResidue(d, colourBy.gene, colourBy.residue));
-        } else {
-          return [200, 200, 200];
-        }
-      },
-    };
-  }, [scatterIds, node_data, data, colourBy, getResidue]);
+    pickable: true,
+    getLineColor: [100, 100, 100],
 
-  const scatter_configs = useMemo(
-    () => coarse_and_fine_configs(scatterplot_config, node_data, 100),
-    [scatterplot_config, node_data]
+    lineWidthUnits: "pixels",
+    lineWidthScale: 1,
+
+    onHover: (info) => setHoverInfo(info),
+    getPosition: (d) => {
+      return [node_data.x[d], node_data.y[d]];
+    },
+    updateTriggers: {
+      // This tells deck.gl to recalculat radius when `currentYear` changes
+      getFillColor: scatterFillFunction,
+    },
+    getFillColor: scatterFillFunction,
+  };
+
+  const scatter_configs = coarse_and_fine_configs(
+    scatterplot_config,
+    node_data,
+    100,
+    false,
+    fineScatterInfo.ids,
+    coarseScatterIds
   );
-  const scatter_configs2 = useMemo(
-    () =>
-      scatter_configs.map((x) => ({
-        ...x,
-        modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
-        stroked: x.id.includes("mini") ? undefined : viewState.zoom > 15,
-        radiusMaxPixels: x.id.includes("mini")
-          ? 2
-          : viewState.zoom > 15
-          ? viewState.zoom / 5
-          : 3,
-      })),
-    [scatter_configs, viewState, MMatrix]
-  );
-  const scatter_layers = useMemo(
-    () => scatter_configs2.map((x) => new ScatterplotLayer(x)),
-    [scatter_configs2]
-  );
+
+  const scatter_configs2 = scatter_configs.map((x) => ({
+    ...x,
+    modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
+    stroked: x.id.includes("mini") ? undefined : viewState.zoom > 15,
+    radiusMaxPixels: x.id.includes("mini")
+      ? 2
+      : viewState.zoom > 15
+      ? viewState.zoom / 5
+      : 3,
+  }));
+  const scatter_layers = scatter_configs2.map((x) => new ScatterplotLayer(x));
 
   const selected_node_layer = useMemo(
     () =>
@@ -516,12 +534,9 @@ function Deck({
         node_data.y[d],
       ],
       getSourcePosition: (d) => [node_data.x[d], node_data.y[d]],
-      getColor:
-        colourBy.variable === "aa" && colourBy.colourLines
-          ? (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue))
-          : [150, 150, 150],
+      getColor: [150, 150, 150],
     }),
-    [node_data, colourBy, getResidue]
+    [node_data]
   );
 
   const line_layer_3_config = useMemo(
@@ -538,12 +553,9 @@ function Deck({
         node_data.x[node_data.parents[d]],
         node_data.y[d],
       ],
-      getColor:
-        colourBy.variable === "aa" && colourBy.colourLines
-          ? (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue))
-          : [150, 150, 150],
+      getColor: [150, 150, 150],
     }),
-    [node_data, colourBy, getResidue]
+    [node_data]
   );
 
   const line_configs = useMemo(
@@ -602,6 +614,32 @@ function Deck({
         top: new_top,
         bottom: new_bot,
         ids: textIds,
+      });
+    }
+  }
+
+  if (viewState.zoom > zoomThreshold - 1 && viewState.needs_update !== true) {
+    // Fine coarse
+    if (
+      (viewState.nw[1] > fineScatterInfo.top) &
+      (viewState.se[1] < fineScatterInfo.bottom)
+    ) {
+      // still within
+    } else {
+      const cur_top = viewState.nw[1];
+      const cur_bot = viewState.se[1];
+      const height = cur_bot - cur_top;
+      const new_top = cur_top - height * 2;
+      const new_bot = cur_bot + height * 2;
+      const fineScatterIds = scatterIds.filter(
+        (x) => (node_data.y[x] > new_top) & (node_data.y[x] < new_bot)
+      );
+
+      //console.log("recalculating text")
+      setFineScatterInfo({
+        top: new_top,
+        bottom: new_bot,
+        ids: fineScatterIds,
       });
     }
   }
@@ -896,7 +934,6 @@ function Deck({
 
   useEffect(() => {
     if (zoomToSearch.index !== null) {
-      console.log(zoomToSearch);
       const newViewState = {
         ...viewState,
         zoom: 19,
