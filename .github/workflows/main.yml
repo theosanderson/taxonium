@@ -15,12 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-
-
-    wget  -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.metadata.tsv.gz
-wget  -q -N https://github.com/CDCgov/SARS-CoV-2_Sequencing/raw/master/files/epiToPublic.tsv.gz
-wget  -q -N https://data.nextstrain.org/files/ncov/open/metadata.tsv.gz
-
     steps:
       - uses: actions/checkout@v2
         with:
