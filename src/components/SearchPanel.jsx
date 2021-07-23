@@ -37,6 +37,7 @@ function SearchPanel({
   numSearchResults,
   totalSeqs,
   setZoomToSearch,
+  zoomToSearch,
   showMutText,
   setShowMutText,
 }) {
@@ -129,17 +130,21 @@ function SearchPanel({
               all_genes={data.all_genes}
               min_tips={item.min_tips}
               value={item.value}
+              is_permalinked={zoomToSearch.index === index}
               setThis={(mapping) => {
                 searchItems[index] = { ...searchItems[index], ...mapping };
                 setSearchItems([...searchItems]);
+                setZoomToSearch({ index: null });
               }}
               zoomToMe={() => {
                 console.log(index);
-                setZoomToSearch({ index });
+                const random = Math.random();
+                setZoomToSearch({ index, random });
               }}
               removeItem={(id) => {
                 // console.log("remove", id);
                 setSearchItems(searchItems.filter((x) => x.id !== id));
+                setZoomToSearch({ index: null });
               }}
               enabled={item.enabled}
               current_accession={

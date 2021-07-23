@@ -10,6 +10,7 @@ function numberWithCommas(x) {
 
 function SearchItem({
   id,
+  is_permalinked,
   category,
   enabled,
   value,
@@ -228,7 +229,10 @@ function SearchItem({
             >
               <BiZoomIn className="inline-block mr-1" />
               locate
-            </button>
+            </button>{" "}
+            {is_permalinked && (
+              <span className="text-gray-700">(currently permalinked)</span>
+            )}
           </>
         )}
       </div>

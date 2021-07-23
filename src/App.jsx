@@ -23,7 +23,6 @@ const searchColors = [
 ];
 
 function App() {
-  const [zoomToSearch, setZoomToSearch] = useState({ index: null });
   const [showMutText, setShowMutText] = useState(false);
   const [query, setQuery] = useQueryAsState({
     search: JSON.stringify([
@@ -44,7 +43,22 @@ function App() {
       colourLines: false,
       residue: "681",
     }),
+    zoomToSearch: JSON.stringify({
+      index: null,
+    }),
   });
+
+  const zoomToSearch = useMemo(
+    () => JSON.parse(query.zoomToSearch),
+    [query.zoomToSearch]
+  );
+
+  const setZoomToSearch = useCallback(
+    (x) => {
+      setQuery({ ...query, zoomToSearch: JSON.stringify(x) });
+    },
+    [setQuery, query]
+  );
 
   const searchItems = useMemo(() => JSON.parse(query.search), [query.search]);
 
@@ -304,6 +318,7 @@ function App() {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+                zoomToSearch={zoomToSearch}
                 showMutText={showMutText}
                 setShowMutText={setShowMutText}
                 setZoomToSearch={setZoomToSearch}
