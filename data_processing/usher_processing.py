@@ -139,6 +139,12 @@ class UsherMutationAnnotatedTree:
                     new_node.aa_subs = node.aa_subs
                     node.parent_node.add_child(new_node)
                 node.parent_node.remove_child(node)
+    def rename_nodes_to_numbers(self, lookup):
+        for i, node in tqdm.tqdm(enumerate(self.tree.leaf_nodes()),
+                                 desc="Renaming nodes"):
+
+            if node.taxon and node.taxon.label:
+                node.taxon.label = lookup[node]
 
     def get_condensed_nodes_dict(self, condensed_nodes_dict):
         output_dict = {}
@@ -357,3 +363,7 @@ all_data = tree_pb2.AllData(node_data=all_node_data,
 f = open("../public/nodelist.pb", "wb")
 f.write(all_data.SerializeToString())
 f.close()
+
+mat.rename_nodes_to_numbers(lookup)
+
+mat.tree.write(path="output.tre", schema="newick")
