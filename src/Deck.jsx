@@ -934,7 +934,8 @@ function Deck({
   );
 
   useEffect(() => {
-    if (zoomToSearch.index !== null) {
+    if (zoomToSearch.index !== null && node_data.y) {
+      console.log(zoomToSearch);
       const newViewState = {
         ...viewState,
         zoom: 19,
@@ -957,7 +958,7 @@ function Deck({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoomToSearch]);
+  }, [zoomToSearch, node_data.y]);
 
   return (
     <div
