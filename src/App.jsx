@@ -10,6 +10,13 @@ import { CgListTree } from "react-icons/cg";
 import useQueryAsState from "./hooks/useQueryAsState";
 import { BsInfoSquare } from "react-icons/bs";
 
+import {
+  kn_expand_node,
+  kn_reorder,
+  kn_parse,
+  kn_calxy,
+} from "./helpers/tree.js";
+
 var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
 
@@ -25,6 +32,7 @@ const searchColors = [
 function App() {
   const [zoomToSearch, setZoomToSearch] = useState({ index: null });
   const [showMutText, setShowMutText] = useState(false);
+  const [tree,setTree] = useState(null);
   const [query, setQuery] = useQueryAsState({
     search: JSON.stringify([
       {
@@ -86,6 +94,16 @@ function App() {
         progress: 0,
         data: { node_data: { ids: [] } },
       });
+      axios
+          .get("/output.tre").then(function (response) {
+               // handle success
+      const tree = kn_parse(response.data);
+      tree.node_order = kn_expand_node(tree, tree.root);
+      tree.parents[tree.root] = tree.root;
+      window.t = tree
+      setTree(tree);
+          })
+          .then(function () {
 
       protobuf.load("./tree.proto").then(function (root) {
         axios
@@ -134,13 +152,27 @@ function App() {
             setNodeData({ status: "loaded", data: result });
           });
       });
+    })
     }
   }, [nodeData.status]);
 
+  const tree2 = useMemo(() => {
+    if (!tree){return {};}
+    kn_calxy(tree, true);
+      console.log("done");
+      tree.x = tree.x.map((a) => 15 * (a + 0.1));
+      tree.y = tree.y.map((a) => 30 * (a + 0.1));
+      tree.ids = [...Array(tree.names.length).keys()];
+      window.t2=tree
+      return tree
+  }, [tree]);
+  window.t2=tree2
+
   const data = useMemo(
     () =>
-      nodeData.status === "loaded" ? nodeData.data : { node_data: { ids: [] } },
-    [nodeData]
+
+      nodeData.status === "loaded" ? {...nodeData.data,node_data:{...nodeData.data.node_data,...tree2}} : { node_data: { ids: [] } },
+    [nodeData,tree2]
   );
 
   const scatterIds = useMemo(
