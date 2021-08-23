@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
 import axios from "axios";
+import pako from "pako";
 import AboutOverlay from "./components/AboutOverlay";
 
 import { CgListTree } from "react-icons/cg";
@@ -10,7 +11,13 @@ import { CgListTree } from "react-icons/cg";
 import useQueryAsState from "./hooks/useQueryAsState";
 import { BsInfoSquare } from "react-icons/bs";
 
+
+
 var protobuf = require("protobufjs");
+
+const default_proto_url = "https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.taxodium.pb.gz"
+
+
 protobuf.parse.defaults.keepCase = true;
 
 const searchColors = [
@@ -44,6 +51,7 @@ function App() {
       colourLines: false,
       residue: "681",
     }),
+    protoUrl:default_proto_url
   });
 
   const searchItems = useMemo(() => JSON.parse(query.search), [query.search]);
@@ -89,7 +97,7 @@ function App() {
 
       protobuf.load("./tree.proto").then(function (root) {
         axios
-          .get("/nodelist.pb", {
+          .get(query.protoUrl, {
             responseType: "arraybuffer",
             onDownloadProgress: (progressEvent) => {
               let percentCompleted = Math.floor(
@@ -103,7 +111,8 @@ function App() {
             },
           })
           .then(function (response) {
-            return response.data;
+            window.bb=response.data;
+            return pako.ungzip(response.data);
           })
           .then(function (buffer) {
             console.log("buffer loaded");
@@ -135,7 +144,7 @@ function App() {
           });
       });
     }
-  }, [nodeData.status]);
+  }, [nodeData.status, query.protoUrl]);
 
   const data = useMemo(
     () =>
