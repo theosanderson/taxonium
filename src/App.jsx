@@ -111,7 +111,6 @@ function App() {
             },
           })
           .then(function (response) {
-            window.bb=response.data;
             return pako.ungzip(response.data);
           })
           .then(function (buffer) {
@@ -159,11 +158,11 @@ function App() {
 
   const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
     const configs = searchItems.map((item, counter) => {
-      window.nd = data.node_data;
+    
       let filter_function;
       const lowercase_query = item.value.toLowerCase().trim();
       if (item.category === "mutation") {
-        window.mm = data.mutation_mapping;
+        
         const subset = data.mutation_mapping
           ? data.mutation_mapping
               .filter(
