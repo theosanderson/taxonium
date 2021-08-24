@@ -29,4 +29,5 @@ message AllData{
   repeated string mutation_mapping = 4;
   repeated string date_mapping = 5;
   string tree_description = 6;
+  string tree_title = 7;
 }
