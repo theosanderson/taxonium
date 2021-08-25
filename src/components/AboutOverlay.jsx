@@ -111,6 +111,10 @@ function AboutOverlay({ enabled, setEnabled }) {
               Rambaut et al. (2020). A dynamic nomenclature proposal for
               SARS-CoV-2 lineages to assist genomic epidemiology.
             </p>
+            <p>
+            McBroome et al. (2020). <a className="text-blue-700 underline" href="https://www.biorxiv.org/content/10.1101/2021.04.03.438321v2/">A daily-updated database and tools for comprehensive SARS-CoV-2 mutation-annotated trees</a>
+            </p>
+            
           </div>
           <h1 className="font-bold mb-3 text-xl mt-4">Related tools</h1>
           <div className="text-sm">
