@@ -160,6 +160,10 @@ function toRGB_uncached(string) {
   if (string === "USA") {
     return [95, 158, 245]; //This is just because the default is ugly
   }
+  
+   if (string === "B.1.2") {
+    return [95, 158, 245]; //This is near B.1.617.2
+  }
   if (string === "England") {
     return [214, 58, 15]; // UK all brick
   }
