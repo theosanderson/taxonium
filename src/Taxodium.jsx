@@ -129,7 +129,7 @@ function getRawfile(protoUrl, uploadedData) {
           });
       });
     }
-  }, [nodeData.status, protoUrl]);
+  }, [nodeData.status, query.protoUrl, uploadedData]);
 
   const data = useMemo(
     () =>
