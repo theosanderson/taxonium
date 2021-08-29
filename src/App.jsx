@@ -10,9 +10,14 @@ import useQueryAsState from "./hooks/useQueryAsState";
 const Taxodium = React.lazy(() => import("./Taxodium"));
 const TaxodiumUploader = React.lazy(() => import("./components/TaxodiumUploader"));
 
-
-
 function App() {
+    function readFile(file){
+        const reader = new FileReader();
+      reader.onload = () => {
+        setUploadedData(reader.result);
+      };
+      reader.readAsArrayBuffer(file);
+    }
     const [query, setQuery] = useQueryAsState({
         search: JSON.stringify([
           {
@@ -33,6 +38,46 @@ function App() {
           residue: "681",
         })
       });
+      const [beingDragged,setBeingDragged] = useState(false);
+
+
+function onDrop(ev) {
+    console.log('File(s) dropped');
+  
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+  
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+        // If dropped items aren't files, reject them
+        if (ev.dataTransfer.items[i].kind === 'file') {
+          var file = ev.dataTransfer.items[i].getAsFile();
+          readFile(file)
+          setBeingDragged(false);
+        }
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      readFile(ev.dataTransfer.files[0])
+      setBeingDragged(false);
+    }
+  }
+
+  function onDragOver(ev) {
+    console.log('File(s) in drop zone');
+    setBeingDragged(true);
+  
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+  }
+
+  function onDragLeave(ev){
+      setBeingDragged(false);
+      ev.preventDefault();
+  }
+
+
     const [uploadedData, setUploadedData] = useState(null);
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
@@ -40,7 +85,8 @@ function App() {
     <Router>
      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
 
-<div className="h-screen w-screen">
+<div className="h-screen w-screen" onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}>
+    {beingDragged && <div>Drop file to upload</div>}
   <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
     <div className="flex justify-between">
       <h1 className="text-xl p-4  pb-5 text-white ">
@@ -70,7 +116,7 @@ function App() {
     <div className="grid grid-cols-2  divide-x divide-gray-300">
     <div className="p-5">
     <h3 className="text-md text-gray-700 font-semibold mb-2">Upload a Taxodium protobuf file</h3>
-         <TaxodiumUploader setUploadedData={setUploadedData} protoUrl={query.protoUrl} /></div>
+         <TaxodiumUploader readFile={readFile} protoUrl={query.protoUrl} /></div>
          <div className="p-5">
          <h3 className="text-md text-gray-700 font-semibold mb-2">Provide a URL to a Taxodium protobuf file</h3>
          URL: <input type="text" className="border-gray-300 p-1 w-60 border" value={currentUrl} onChange={(event)=>setCurrentUrl(event.target.value)}></input><br/>
