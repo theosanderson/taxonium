@@ -1,0 +1,2 @@
+(this.webpackJsonptaxodium=this.webpackJsonptaxodium||[]).push([[5],{271:function(e,t,a){"use strict";a.r(t);var i=a(1),n=a(2);t.default=function(e){var t=e.setUploadedData,a=Object(i.useRef)(),r=Object(i.useCallback)((function(){var e=a.current.files[0];if(e){var i=new FileReader;i.onload=function(){t(i.result)},i.readAsArrayBuffer(e)}}),[t]);return Object(n.jsx)("div",{children:Object(n.jsx)("input",{type:"file",id:"files",ref:a,onChange:r})})}}}]);
+//# sourceMappingURL=5.e1266594.chunk.js.map
