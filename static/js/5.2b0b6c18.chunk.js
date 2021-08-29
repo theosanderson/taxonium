@@ -1,0 +1,2 @@
+(this.webpackJsonptaxodium=this.webpackJsonptaxodium||[]).push([[5],{271:function(e,t,i){"use strict";i.r(t);var n=i(1),c=i(2);t.default=function(e){var t=e.readFile,i=Object(n.useRef)(),s=Object(n.useCallback)((function(){var e=i.current.files[0];e&&t(e)}),[t]);return Object(c.jsx)("div",{children:Object(c.jsx)("input",{type:"file",id:"files",ref:i,onChange:s})})}}}]);
+//# sourceMappingURL=5.2b0b6c18.chunk.js.map
