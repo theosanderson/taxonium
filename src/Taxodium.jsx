@@ -6,8 +6,6 @@ import axios from "axios";
 import pako from "pako";
 
 //import {FaGithub} from  "react-icons/fa";
-import useQueryAsState from "./hooks/useQueryAsState";
-
 
 
 var protobuf = require("protobufjs");
@@ -26,29 +24,9 @@ const searchColors = [
   [0, 255, 255],
 ];
 
-function Taxodium({protoUrl}) {
+function Taxodium({protoUrl,uploadedData, query,setQuery}) {
   const [zoomToSearch, setZoomToSearch] = useState({ index: null });
   const [showMutText, setShowMutText] = useState(false);
-  const [query, setQuery] = useQueryAsState({
-    search: JSON.stringify([
-      {
-        id: 0.123,
-        category: "lineage",
-        value: "",
-        enabled: true,
-        aa_final: "any",
-        min_tips: 1,
-        aa_gene: "S",
-        search_for_ids: "",
-      },
-    ]),
-    colourBy: JSON.stringify({
-      variable: "lineage",
-      gene: "S",
-      colourLines: false,
-      residue: "681",
-    })
-  });
 
   const searchItems = useMemo(() => JSON.parse(query.search), [query.search]);
 
@@ -81,18 +59,13 @@ function Taxodium({protoUrl}) {
   const [selectedNode, setSelectedNode] = useState(null);
 
 
-  useEffect(() => {
-    if (nodeData.status === "not_attempted") {
-      console.log("starting dl");
-      setNodeData({
-        status: "loading",
-        progress: 0,
-        data: { node_data: { ids: [] } },
-      });
+function getRawfile(protoUrl, uploadedData) {
+  if(uploadedData){
+    return new Promise((resolve, reject) => {resolve(uploadedData)} )
+      }    else{
+        console.log("aaaa",protoUrl)
 
-      protobuf.load("./tree.proto").then(function (root) {
-        axios
-          .get(protoUrl, {
+  return axios.get(protoUrl, {
             responseType: "arraybuffer",
             onDownloadProgress: (progressEvent) => {
               let percentCompleted = Math.floor(
@@ -113,7 +86,20 @@ function Taxodium({protoUrl}) {
               return response.data;
             
           }})
-          .then(function (buffer) {
+        }
+      }
+
+  useEffect(() => {
+    if (nodeData.status === "not_attempted") {
+      console.log("starting dl");
+      setNodeData({
+        status: "loading",
+        progress: 0,
+        data: { node_data: { ids: [] } },
+      });
+
+      protobuf.load("./tree.proto").then(function (root) {
+        getRawfile(query.protoUrl,uploadedData).then(function (buffer) {
             console.log("buffer loaded");
             var NodeList = root.lookupType("AllData");
 
@@ -265,9 +251,7 @@ function Taxodium({protoUrl}) {
     return [filtered_configs, num_results, scatterIds.length];
   }, [data, searchItems, scatterIds]);
 
-  if(!protoUrl){
-    return <>Specify URL</>
-  }
+  
 
   return (
         <div className="main_content">
