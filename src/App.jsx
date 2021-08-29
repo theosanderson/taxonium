@@ -123,7 +123,7 @@ function onDrop(ev) {
          <button 
          
          className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8 mt-5"
-         onClick={()=>setQuery({...query,protoUrl:currentUrl})}>Load</button>
+         onClick={()=>setQuery({...query,protoUrl:currentUrl.replace("http://","https://")})}>Load</button>
          </div>
 
     </div>
