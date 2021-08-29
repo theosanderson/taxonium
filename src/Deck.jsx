@@ -417,8 +417,8 @@ function Deck({
   }, [node_data, data, colourBy]);
 
   const coarseScatterIds = useMemo(() => {
-    return reduceOverPlotting(node_data.ids, node_data, 100, false);
-  }, [node_data]);
+    return reduceOverPlotting(scatterIds, node_data, 100, false);
+  }, [scatterIds, node_data]);
 
   const scatterFillFunction = useMemo(() => {
     if (colourBy.variable === "lineage") {
@@ -452,7 +452,6 @@ function Deck({
       return [node_data.x[d], node_data.y[d]];
     },
     updateTriggers: {
-      // This tells deck.gl to recalculat radius when `currentYear` changes
       getFillColor: scatterFillFunction,
     },
     getFillColor: scatterFillFunction,
