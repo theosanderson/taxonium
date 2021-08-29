@@ -37,7 +37,7 @@ function App() {
     </div>
   </div>
         <Suspense fallback={<div>Loading...</div>}>
-          <Taxodium />
+          <Taxodium protoUrl="/nodelist.pb" />
         </Suspense>
       </div>
     </Router>
