@@ -15,7 +15,7 @@ import { BsInfoSquare } from "react-icons/bs";
 
 var protobuf = require("protobufjs");
 
-const default_proto_url = "https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.taxodium.pb.gz"
+const default_proto_url = "/nodelist.pb"
 
 
 protobuf.parse.defaults.keepCase = true;
@@ -111,8 +111,13 @@ function App() {
             },
           })
           .then(function (response) {
-            return pako.ungzip(response.data);
-          })
+            if(query.protoUrl.endsWith(".gz")){
+              return pako.ungzip(response.data);
+            }
+            else{
+              return response.data;
+            
+          }})
           .then(function (buffer) {
             console.log("buffer loaded");
             var NodeList = root.lookupType("AllData");
