@@ -5,9 +5,37 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
+import useQueryAsState from "./hooks/useQueryAsState";
+
 const Taxodium = React.lazy(() => import("./Taxodium"));
+const TaxodiumUploader = React.lazy(() => import("./components/TaxodiumUploader"));
+
+
+
 function App() {
+    const [query, setQuery] = useQueryAsState({
+        search: JSON.stringify([
+          {
+            id: 0.123,
+            category: "lineage",
+            value: "",
+            enabled: true,
+            aa_final: "any",
+            min_tips: 1,
+            aa_gene: "S",
+            search_for_ids: "",
+          },
+        ]),
+        colourBy: JSON.stringify({
+          variable: "lineage",
+          gene: "S",
+          colourLines: false,
+          residue: "681",
+        })
+      });
+    const [uploadedData, setUploadedData] = useState(null);
   const [aboutEnabled, setAboutEnabled] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState("");
   return (
     <Router>
      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
@@ -17,10 +45,7 @@ function App() {
     <div className="flex justify-between">
       <h1 className="text-xl p-4  pb-5 text-white ">
         <CgListTree className="inline-block h-8 w-8 pr-2 " />
-        <span className="font-bold">Cov2Tree</span>:{" "}
-        <span className="font-light">
-          interactive SARS-CoV-2 phylogeny{" "}
-        </span>
+        <span className="font-bold">Taxodium</span>
       </h1>
       <div className="inline-block p-4 pr-0">
         <button
@@ -37,7 +62,29 @@ function App() {
     </div>
   </div>
         <Suspense fallback={<div>Loading...</div>}>
-          <Taxodium protoUrl="/nodelist.pb" />
+          {(uploadedData||query.protoUrl) ? 
+          <Taxodium uploadedData={uploadedData} query={query} setQuery={setQuery}/>
+: 
+<div className="m-10">
+    <p className="text-lg text-gray-700 mb-5">Welcome to Taxodium, a tool for exploring large trees</p>
+    <div className="grid grid-cols-2  divide-x divide-gray-300">
+    <div className="p-5">
+    <h3 className="text-md text-gray-700 font-semibold mb-2">Upload a Taxodium protobuf file</h3>
+         <TaxodiumUploader setUploadedData={setUploadedData} protoUrl={query.protoUrl} /></div>
+         <div className="p-5">
+         <h3 className="text-md text-gray-700 font-semibold mb-2">Provide a URL to a Taxodium protobuf file</h3>
+         URL: <input type="text" className="border-gray-300 p-1 w-60 border" value={currentUrl} onChange={(event)=>setCurrentUrl(event.target.value)}></input><br/>
+         <button 
+         
+         className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8 mt-5"
+         onClick={()=>setQuery({...query,protoUrl:currentUrl})}>Load</button>
+         </div>
+
+    </div>
+    <p className="text-md text-gray-700 font-semibold mb-2">
+    or <a className="text-blue-500" href="/?protoUrl=https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.taxodium.pb.gz">load the public SARS-CoV-2 tree</a>.
+    </p> </div>
+}
         </Suspense>
       </div>
     </Router>
