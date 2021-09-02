@@ -98,13 +98,26 @@ function getRawfile(protoUrl, uploadedData) {
         data: { node_data: { ids: [] } },
       });
 
-      protobuf.load("./tree.proto").then(function (root) {
+      protobuf.load("./taxodium.proto").then(function (root) {
         getRawfile(query.protoUrl,uploadedData).then(function (buffer) {
             console.log("buffer loaded");
             var NodeList = root.lookupType("AllData");
 
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
+            if(result.node_data.metadata_singles){
+
+              const country_data = result.node_data.metadata_singles.filter(x=>x.metadata_name==="Country")[0]
+              result.country_mapping=country_data.mapping
+              result.node_data.countries = country_data.node_values
+
+              const lineage_data = result.node_data.metadata_singles.filter(x=>x.metadata_name==="Lineage")[0]
+              result.lineage_mapping=lineage_data.mapping
+              result.node_data.lineages = lineage_data.node_values
+
+            }
+
+
             result.node_data.ids = [...Array(result.node_data.x.length).keys()];
 
             const all_genes = new Set();
