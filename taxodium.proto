@@ -16,11 +16,11 @@ message AllNodeData {
   repeated string names = 1;
  repeated float x = 2;
  repeated float y = 3;
- repeated int32 countries = 4;
+ repeated int32 countries = 4;//Deprecated: DO NOT USE (use metadata_singles)
+ repeated int32 dates = 7;
  repeated int32 lineages = 5;//Deprecated: DO NOT USE (use metadata_singles)
 
- repeated MutationList mutations = 6; //Deprecated: DO NOT USE (use metadata_singles)
- repeated int32 dates = 7;
+ repeated MutationList mutations = 6; 
  repeated int32 parents = 8;
  repeated string genbanks = 9;
 repeated int32 epi_isl_numbers = 10;
