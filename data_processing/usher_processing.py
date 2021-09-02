@@ -6,7 +6,7 @@
 from collections import defaultdict
 import numpy as np
 import pandas as pd
-import tree_pb2
+import taxodium_pb2
 import tqdm
 
 accessions = pd.read_table("epiToPublic.tsv.gz",
@@ -335,22 +335,34 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
     epi_isls.append(
         get_epi_isl(genbank_lookup[name], final_name, date_lookup[name]))
 
-all_node_data = tree_pb2.AllNodeData(
+country_metadata_obj = taxodium_pb2.MetadataSingleValuePerNode(
+    metadata_name = "Country",
+    mapping = country_mapping_list,
+    node_values = countries
+)
+
+
+lineage_metadata_obj = taxodium_pb2.MetadataSingleValuePerNode(
+    metadata_name = "Lineage",
+    mapping = lineage_mapping_list,
+    node_values = lineages
+)
+
+
+all_node_data = taxodium_pb2.AllNodeData(
     genbanks=genbanks,
     names=names,
     x=xes,
     y=yes,
-    countries=countries,
-    lineages=lineages,
     dates=dates,
-    mutations=[tree_pb2.MutationList(mutation=x) for x in mutations],
+    mutations=[taxodium_pb2.MutationList(mutation=x) for x in mutations],
     parents=parents,
     num_tips=num_tips,
-    epi_isl_numbers=epi_isls)
+    epi_isl_numbers=epi_isls,
+    metadata_singles = [country_metadata_obj, lineage_metadata_obj]
+    )
 
-all_data = tree_pb2.AllData(node_data=all_node_data,
-                            country_mapping=country_mapping_list,
-                            lineage_mapping=lineage_mapping_list,
+all_data = taxodium_pb2.AllData(node_data=all_node_data,
                             mutation_mapping=mutation_mapping_list,
                             date_mapping=date_mapping_list)
 
