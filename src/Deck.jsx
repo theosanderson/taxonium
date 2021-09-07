@@ -944,6 +944,7 @@ function Deck({
 
   useEffect(() => {
     if (zoomToSearch.index !== null) {
+
       console.log("zoomToSearch", zoomToSearch);
 
       const valid_search = search_configs_initial.filter(
@@ -964,6 +965,7 @@ function Deck({
 
       }
       
+
       const max_y_val = getMaxOfArrayUsingReduce(y_values)
       const min_y_val = getMinOfArrayUsingReduce(y_values)
   
