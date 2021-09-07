@@ -219,7 +219,7 @@ function SearchItem({
             {numResultsHere !== 1 && <>s</>}
           </>
         )}
-        {numResultsHere === 1 && enabled && (
+        {numResultsHere >= 1 && enabled && (
           <>
             {" "}
             <button
