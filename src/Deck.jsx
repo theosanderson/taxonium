@@ -965,7 +965,7 @@ function Deck({
         ...newViewState,
         target: [
           getXval(newViewState),
-          (min_y_val + max_y_val) / 2,
+          (min_y_val + max_y_val) / 2
           
             
           ,
