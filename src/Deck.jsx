@@ -936,23 +936,39 @@ function Deck({
     [viewState, onViewStateChange]
   );
 
+  const getMaxOfArrayUsingReduce = (array) =>
+    array.reduce((max, b) => (b > max ? b : max), array[0]);
+
+  const getMinOfArrayUsingReduce = (array) =>
+    array.reduce((min, b) => (b < min ? b : min), array[0]);
+
   useEffect(() => {
     if (zoomToSearch.index !== null) {
+      
+
+      const y_values = search_configs_initial.filter(
+        (x) => x.original_index === zoomToSearch.index
+      )[0].data.map(x=>node_data.y[x])
+      const max_y_val = getMaxOfArrayUsingReduce(y_values)
+      const min_y_val = getMinOfArrayUsingReduce(y_values)
+  
+      
       const newViewState = {
         ...viewState,
-        zoom: 19,
+        zoom: 9-Math.log2(max_y_val-min_y_val+.001),
 
         needs_update: true,
       };
+
+
       const newViewState2 = {
         ...newViewState,
         target: [
           getXval(newViewState),
-          node_data.y[
-            search_configs_initial.filter(
-              (x) => x.original_index === zoomToSearch.index
-            )[0].data[0]
-          ],
+          (min_y_val + max_y_val) / 2,
+          
+            
+          ,
         ],
       };
 
@@ -989,7 +1005,7 @@ function Deck({
             const second_bit =
               layer.id.includes("mini") |
               ((viewState.zoom < zoomThreshold) & !layer.id.includes("fine")) |
-              ((viewState.zoom > zoomThreshold) & !layer.id.includes("coarse"));
+              ((viewState.zoom >= zoomThreshold) & !layer.id.includes("coarse"));
 
             return first_bit & second_bit;
           },
