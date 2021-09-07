@@ -298,6 +298,10 @@ num_tips = []
 epi_isls = []
 
 print("C")
+
+del metadata
+del alt_metadata
+
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
     yes.append(x.y / 40000)
