@@ -944,11 +944,26 @@ function Deck({
 
   useEffect(() => {
     if (zoomToSearch.index !== null) {
+      console.log("zoomToSearch", zoomToSearch);
+
+      const valid_search = search_configs_initial.filter(
+        (x) => x.original_index === zoomToSearch.index
+      )
+
+      if(valid_search.length === 0){
+        return
+
+      }
       
 
-      const y_values = search_configs_initial.filter(
-        (x) => x.original_index === zoomToSearch.index
-      )[0].data.map(x=>node_data.y[x])
+      const y_values = valid_search[0].data.map(x=>node_data.y[x])
+
+
+      if(y_values.length === 0){
+        return
+
+      }
+      
       const max_y_val = getMaxOfArrayUsingReduce(y_values)
       const min_y_val = getMinOfArrayUsingReduce(y_values)
   
@@ -976,7 +991,7 @@ function Deck({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoomToSearch]);
+  }, [zoomToSearch,node_data]);
 
   return (
     <div

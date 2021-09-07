@@ -24,8 +24,17 @@ const searchColors = [
   [0, 255, 255],
 ];
 
+
+
 function Taxodium({protoUrl,uploadedData, query,setQuery}) {
-  const [zoomToSearch, setZoomToSearch] = useState({ index: null });
+  const [zoomToSearch, setZoomToSearchOrig] = useState({ index: null });
+  const setZoomToSearch = useCallback( (info) => {
+    let newQuery = {...query}
+    delete newQuery.zoomToSearch
+    setQuery(newQuery);
+    setZoomToSearchOrig(info);
+  }
+  , [setZoomToSearchOrig,query,setQuery]);
   const [showMutText, setShowMutText] = useState(false);
 
   const searchItems = useMemo(() => JSON.parse(query.search), [query.search]);
@@ -281,7 +290,7 @@ function getRawfile(protoUrl, uploadedData) {
                 data={data}
                 progress={nodeData.progress}
                 colourBy={colourBy}
-                zoomToSearch={zoomToSearch}
+                zoomToSearch={ query.zoomToSearch? {index:parseInt(query.zoomToSearch)} : zoomToSearch }
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
