@@ -7,9 +7,12 @@ The data and tree displayed in Cov2Tree are collated by the UShER team: http://h
 Most of this repository is a client side React app that displays the tree. It loads the `public/nodelist.pb` file, which contains a pre-processed form of the data. The Python scripts that build this file are in `data_processing`, along with a little documentation.
 
 ## Using it for your own data
-Right now you would need to create your own `data_processing` directory, which is adapted to produce the `nodelist.pb` file from your own datasets. We will try to streamline this. Feel free to raise an Issue requesting help!
 
 You can now generate Taxodium format files from [UShER](https://github.com/yatisht/usher/pull/134).
+
+
+Right now you would need to create your own `data_processing` directory, which is adapted to produce the `nodelist.pb` file from your own datasets. We will try to streamline this. Feel free to raise an Issue requesting help!
+
 
 
 ## Development instructions
