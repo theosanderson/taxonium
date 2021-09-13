@@ -307,6 +307,8 @@ function getRawfile(protoUrl, uploadedData) {
                 setSearchItems={setSearchItems}
                 colourBy={colourBy}
                 setColourBy={setColourByWithCheck}
+                query={query}
+                setQuery={setQuery}
               />
             </div>
           </div>
