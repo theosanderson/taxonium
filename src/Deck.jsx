@@ -943,12 +943,16 @@ function Deck({
     array.reduce((min, b) => (b < min ? b : min), array[0]);
 
   useEffect(() => {
-    if (zoomToSearch.index !== null) {
+    if (zoomToSearch.index !== null | zoomToSearch>0) {
+      
+      let zoom_val
+      if(!zoomToSearch.index){zoom_val=zoomToSearch}else{zoom_val=zoomToSearch.index}
+      
 
-      console.log("zoomToSearch", zoomToSearch);
+      console.log("zoomToSearch", zoom_val);
 
       const valid_search = search_configs_initial.filter(
-        (x) => x.original_index === zoomToSearch.index
+        (x) => x.original_index === zoom_val
       )
 
       if(valid_search.length === 0){
