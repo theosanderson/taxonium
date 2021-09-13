@@ -290,7 +290,7 @@ function getRawfile(protoUrl, uploadedData) {
                 data={data}
                 progress={nodeData.progress}
                 colourBy={colourBy}
-                zoomToSearch={ query.zoomToSearch? {index:parseInt(query.zoomToSearch)} : zoomToSearch }
+                zoomToSearch={ query.zoomToSearch? parseInt(query.zoomToSearch) : zoomToSearch }
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
