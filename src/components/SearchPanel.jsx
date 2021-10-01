@@ -27,6 +27,7 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  metadataItemList,
   getMetadataItem,
   searchItems,
   setSearchItems,
@@ -104,14 +105,7 @@ function SearchPanel({
       .sort();
   }, [data, node_data, selectedNode]);
 
-  const lineageInfo= useMemo(()=>{
-    return getMetadataItem("Lineage")
-  },[getMetadataItem])
 
-
-  const countryInfo= useMemo(()=>{
-    return getMetadataItem("Country")
-  },[getMetadataItem])
 
 
   return (
@@ -128,6 +122,7 @@ function SearchPanel({
         {searchItems.map(function (item, index) {
           return (
             <SearchItem
+            metadataItemList = {metadataItemList}
               numResultsHere={numSearchResults[index]}
               searchColors={searchColors}
               index={index}
@@ -329,24 +324,20 @@ function SearchPanel({
               <span className="font-semibold">Date:</span>{" "}
               {data.date_mapping[node_data.dates[selectedNode]]}
             </div>
-            <div>
-              <span className="font-semibold">Lineage:</span>{" "}
-              <a
-                className="underline"
-                target="_blank"
-                rel="noreferrer"
-                href={
-                  "https://outbreak.info/situation-reports?pango=" +
-                  lineageInfo.mapping[lineageInfo.node_values[selectedNode]]
-                }
-              >
-                { lineageInfo.mapping[lineageInfo.node_values[selectedNode]] }
-              </a>
-            </div>
-            <div>
-              <span className="font-semibold">Country:</span>{" "}
-              {countryInfo.mapping[countryInfo.node_values[selectedNode]]}
-            </div>
+           
+
+            {metadataItemList.map(x=>{
+            const info =getMetadataItem(x)
+            const value = info.mapping[info.node_values[selectedNode]]
+            return  <div
+          
+          >
+            <span className="font-semibold">{x}:</span>{" "} {value}
+          </div>
+
+          })
+
+    }
             <span className="font-semibold">Mutations from root:</span>
             <div className="text-xs mr-5 mb-3">
               {
