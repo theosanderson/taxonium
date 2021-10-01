@@ -47,7 +47,7 @@ function SearchItem({
           outline:
             enabled &&
             (value.length > 0 ||
-              !["name", "lineage", "country"].includes(category))
+              !["name", "Lineage", "Country"].includes(category))
               ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
               : "0px",
           outlineOffset: "2px",
@@ -62,8 +62,8 @@ function SearchItem({
         onChange={(event) => setThis({ category: event.target.value })}
       >
         <option value="name">Sequence name</option>
-        <option value="lineage">Lineage</option>
-        <option value="country">Country</option>
+        <option value="Lineage">Lineage</option>
+        <option value="Country">Country</option>
         <option value="mutation">AA mutation</option>
         {/*<option value="epis">EPI_ISL ids</option>*/}
         <option value="genbanks">GenBank ids</option>
@@ -188,7 +188,7 @@ function SearchItem({
           </div>
         </div>
       )}
-      {["name", "lineage", "country"].includes(category) && (
+      {["name", "Lineage", "Country"].includes(category) && (
         <DebounceInput
           className=" w-32 border py-2 px-3 text-grey-darkest h-10"
           value={value}

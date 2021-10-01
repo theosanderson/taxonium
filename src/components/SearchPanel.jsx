@@ -222,8 +222,8 @@ function SearchPanel({
               setColourBy({ ...colourBy, variable: event.target.value })
             }
           >
-            <option value="lineage">Lineage</option>
-            <option value="country">Country</option>
+            <option value="Lineage">Lineage</option>
+            <option value="Country">Country</option>
             <option value="aa">Amino acid at site</option>
             <option value="none">None</option>
           </select>
@@ -279,7 +279,7 @@ function SearchPanel({
       )}
 
       <div>
-        {selectedNode && (
+        {/*selectedNode && (
           <div className="text-gray-500 mr-3">
             <h2 className="text-xl mt-5 mb-4 text-gray-700">
               <BsInfoCircle className="inline-block mr-2" />
@@ -355,7 +355,8 @@ function SearchPanel({
               </div>
             )}
           </div>
-        )}
+            )*/}
+        
       </div>
     </div>
   );
