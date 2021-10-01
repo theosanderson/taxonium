@@ -943,9 +943,10 @@ function Deck({
     array.reduce((min, b) => (b < min ? b : min), array[0]);
 
   useEffect(() => {
-    if (zoomToSearch.index !== null) {
+    if (zoomToSearch.index !== null && zoomToSearch.index !== undefined && zoomToSearch.index !== -1) {
+     
 
-      console.log("zoomToSearch", zoomToSearch);
+      
 
       const valid_search = search_configs_initial.filter(
         (x) => x.original_index === zoomToSearch.index
@@ -993,7 +994,7 @@ function Deck({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoomToSearch,node_data]);
+  }, [zoomToSearch,node_data,search_configs_initial]);
 
   return (
     <div
