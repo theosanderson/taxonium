@@ -22,7 +22,7 @@ function App() {
         search: JSON.stringify([
           {
             id: 0.123,
-            category: "lineage",
+            category: "Lineage",
             value: "",
             enabled: true,
             aa_final: "any",
@@ -32,7 +32,7 @@ function App() {
           },
         ]),
         colourBy: JSON.stringify({
-          variable: "lineage",
+          variable: "Lineage",
           gene: "S",
           colourLines: false,
           residue: "681",

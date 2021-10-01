@@ -29,7 +29,7 @@ const searchColors = [
 function Taxodium({protoUrl,uploadedData, query,setQuery}) {
   const [zoomToSearch, setZoomToSearchOrig] = useState({index: (query.zoomToSearch ? parseInt(query.zoomToSearch) : null)} );
   const setZoomToSearch = useCallback( (info) => {
-    console.log("setZoomToSearch", info);
+ 
     let newQuery = {...query}
     delete newQuery.zoomToSearch
     setQuery(newQuery);
@@ -68,6 +68,17 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
     status: "not_attempted",
     data: { node_data: { ids: [] } },
   });
+
+  const getMetadataItem = useCallback((name)=>{
+   
+    if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_singles){
+      return {mapping:[],node_data:[]}
+    }
+    const metadata_item = nodeData.data.node_data.metadata_singles.filter(x=>x.metadata_name===name)[0]
+    return metadata_item
+
+
+  },[nodeData])
 
   const [selectedNode, setSelectedNode] = useState(null);
 
@@ -118,15 +129,12 @@ function getRawfile(protoUrl, uploadedData) {
 
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
-            if(result.node_data.metadata_singles){
+            if(!result.node_data.metadata_singles){
 
-              const country_data = result.node_data.metadata_singles.filter(x=>x.metadata_name==="Country")[0]
-              result.country_mapping=country_data.mapping
-              result.node_data.countries = country_data.node_values
-
-              const lineage_data = result.node_data.metadata_singles.filter(x=>x.metadata_name==="Lineage")[0]
-              result.lineage_mapping=lineage_data.mapping
-              result.node_data.lineages = lineage_data.node_values
+              result.node_data.metadata_singles = [
+                {name:"Country",mapping:result.country_mapping, node_values: result.node_data.countries},
+                {name:"Lineage",mapping:result.lineage_mapping, node_values: result.node_data.lineages}
+               ]
 
             }
 
@@ -200,12 +208,12 @@ function getRawfile(protoUrl, uploadedData) {
           data.node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
       }
 
-      if (item.category === "country") {
+      if (item.category === "Country") {
         filter_function = (x) =>
           data.country_mapping[data.node_data.countries[x]].toLowerCase() ===
           lowercase_query; //TODO precompute lowercase mapping for perf
       }
-      if (item.category === "lineage") {
+      if (item.category === "Lineage") {
         filter_function = (x) =>
           data.lineage_mapping[data.node_data.lineages[x]].toLowerCase() ===
           lowercase_query; //TODO precompute lowercase mapping for perf
@@ -284,6 +292,7 @@ function getRawfile(protoUrl, uploadedData) {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+              getMetadataItem = {getMetadataItem}
                 showMutText={showMutText}
                 search_configs_initial={search_configs_initial}
                 scatterIds={scatterIds}

@@ -214,6 +214,7 @@ function toRGBCSS(string) {
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 function Deck({
+  getMetadataItem,
   showMutText,
   data,
   colourBy,
@@ -421,16 +422,19 @@ function Deck({
   }, [scatterIds, node_data]);
 
   const scatterFillFunction = useMemo(() => {
-    if (colourBy.variable === "lineage") {
-      return (d) => toRGB(data.lineage_mapping[node_data.lineages[d]]);
-    } else if (colourBy.variable === "country") {
-      return (d) => toRGB(data.country_mapping[node_data.countries[d]]);
-    } else if (colourBy.variable === "aa") {
+   
+    
+    if (colourBy.variable === "Lineage" || colourBy.variable === "Country") {
+      const item =  getMetadataItem(colourBy.variable)
+      console.log("item is ",item)
+      return (d) => toRGB(item.mapping[item.node_values[d]]);
+    }
+     else if (colourBy.variable === "aa") {
       return (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue));
     } else {
       return [200, 200, 200];
     }
-  }, [colourBy, node_data, data, getResidue]);
+  }, [colourBy.variable, colourBy.gene, colourBy.residue, getMetadataItem, getResidue]);
 
   const scatterplot_config = {
     data: scatterIds,
@@ -838,12 +842,23 @@ function Deck({
     []
   );
 
+  const lineageInfo= useMemo(()=>{
+    return getMetadataItem("Lineage")
+  },[getMetadataItem])
+
+
+  const countryInfo= useMemo(()=>{
+    return getMetadataItem("Country")
+  },[getMetadataItem])
+
   const hoverStuff = useMemo(() => {
     if (hoverInfo && hoverInfo.object) {
+
+
       const lineage =
-        data.lineage_mapping[node_data.lineages[hoverInfo.object]];
+      lineageInfo.mapping[lineageInfo.node_values[hoverInfo.object]]
       const country =
-        data.country_mapping[node_data.countries[hoverInfo.object]];
+      countryInfo.mapping[countryInfo.node_values[hoverInfo.object]]
       const date = data.date_mapping[node_data.dates[hoverInfo.object]];
       let aa, aa_col;
       if (colourBy.variable === "aa") {
@@ -889,7 +904,7 @@ function Deck({
           <div
             style={{
               color:
-                colourBy.variable === "lineage" ? toRGBCSS(lineage) : "inherit",
+                colourBy.variable === "Lineage" ? toRGBCSS(lineage) : "inherit",
             }}
           >
             {lineage}
@@ -898,7 +913,7 @@ function Deck({
           <div
             style={{
               color:
-                colourBy.variable === "country" ? toRGBCSS(country) : "inherit",
+                colourBy.variable === "Country" ? toRGBCSS(country) : "inherit",
             }}
           >
             {country}
