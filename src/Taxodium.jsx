@@ -69,6 +69,15 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
     data: { node_data: { ids: [] } },
   });
 
+  const metadataItemList = useMemo(()=>{
+    if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_singles){
+      return []
+    }
+     return nodeData.data.node_data.metadata_singles.map(x=>x.metadata_name)
+
+    
+  },[nodeData])
+
   const getMetadataItem = useCallback((name)=>{
    
     if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_singles){
@@ -208,7 +217,7 @@ function getRawfile(protoUrl, uploadedData) {
           data.node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
       }
 
-      if (["Country", "Lineage"].includes(item.category )){
+      if (metadataItemList.includes(item.category )){
         const info =getMetadataItem(item.category)
         filter_function = (x) =>
           info.mapping[info.node_values[x]].toLowerCase() ===
@@ -280,7 +289,7 @@ function getRawfile(protoUrl, uploadedData) {
     const num_results = configs.map((x) => x.data.length);
     const filtered_configs = configs.filter((item) => item.enabled);
     return [filtered_configs, num_results, scatterIds.length];
-  }, [data, searchItems, scatterIds, getMetadataItem]);
+  }, [data, searchItems, scatterIds, getMetadataItem, metadataItemList]);
 
   
 
@@ -289,6 +298,7 @@ function getRawfile(protoUrl, uploadedData) {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+              metadataItemList = {metadataItemList}
               getMetadataItem = {getMetadataItem}
                 showMutText={showMutText}
                 search_configs_initial={search_configs_initial}
@@ -305,6 +315,7 @@ function getRawfile(protoUrl, uploadedData) {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              metadataItemList = {metadataItemList}
               getMetadataItem = {getMetadataItem}
                 showMutText={showMutText}
                 setShowMutText={setShowMutText}
