@@ -208,16 +208,13 @@ function getRawfile(protoUrl, uploadedData) {
           data.node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
       }
 
-      if (item.category === "Country") {
+      if (["Country", "Lineage"].includes(item.category )){
+        const info =getMetadataItem(item.category)
         filter_function = (x) =>
-          data.country_mapping[data.node_data.countries[x]].toLowerCase() ===
+          info.mapping[info.node_values[x]].toLowerCase() ===
           lowercase_query; //TODO precompute lowercase mapping for perf
       }
-      if (item.category === "Lineage") {
-        filter_function = (x) =>
-          data.lineage_mapping[data.node_data.lineages[x]].toLowerCase() ===
-          lowercase_query; //TODO precompute lowercase mapping for perf
-      }
+      
 
       if (item.category === "epis") {
         if (!item.search_for_ids) {
@@ -283,7 +280,7 @@ function getRawfile(protoUrl, uploadedData) {
     const num_results = configs.map((x) => x.data.length);
     const filtered_configs = configs.filter((item) => item.enabled);
     return [filtered_configs, num_results, scatterIds.length];
-  }, [data, searchItems, scatterIds]);
+  }, [data, searchItems, scatterIds, getMetadataItem]);
 
   
 
@@ -308,6 +305,7 @@ function getRawfile(protoUrl, uploadedData) {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              getMetadataItem = {getMetadataItem}
                 showMutText={showMutText}
                 setShowMutText={setShowMutText}
                 setZoomToSearch={setZoomToSearch}
