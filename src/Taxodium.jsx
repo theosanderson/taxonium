@@ -27,8 +27,9 @@ const searchColors = [
 
 
 function Taxodium({protoUrl,uploadedData, query,setQuery}) {
-  const [zoomToSearch, setZoomToSearchOrig] = useState({ index: null });
+  const [zoomToSearch, setZoomToSearchOrig] = useState({index: (query.zoomToSearch ? parseInt(query.zoomToSearch) : null)} );
   const setZoomToSearch = useCallback( (info) => {
+    console.log("setZoomToSearch", info);
     let newQuery = {...query}
     delete newQuery.zoomToSearch
     setQuery(newQuery);
@@ -41,7 +42,10 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
 
   const setSearchItems = useCallback(
     (search) => {
-      setQuery({ ...query, search: JSON.stringify(search) });
+      // Clear zoomToSearch if it is set
+      setZoomToSearchOrig({index: -1});
+      setQuery({ ...query, search: JSON.stringify(search), zoomToSearch: -1 });
+      
     },
     [setQuery, query]
   );
@@ -290,7 +294,7 @@ function getRawfile(protoUrl, uploadedData) {
                 data={data}
                 progress={nodeData.progress}
                 colourBy={colourBy}
-                zoomToSearch={ query.zoomToSearch? {index:parseInt(query.zoomToSearch)} : zoomToSearch }
+                zoomToSearch={ zoomToSearch }
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
