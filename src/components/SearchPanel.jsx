@@ -229,8 +229,7 @@ function SearchPanel({
               setColourBy({ ...colourBy, variable: event.target.value })
             }
           >
-            <option value="Lineage">Lineage</option>
-            <option value="Country">Country</option>
+             {metadataItemList.map((item) => (<option value={item}>{item}</option>))}
             <option value="aa">Amino acid at site</option>
             <option value="none">None</option>
           </select>
