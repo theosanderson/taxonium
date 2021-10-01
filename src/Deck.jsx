@@ -930,7 +930,7 @@ function Deck({
         </div>
       );
     }
-  }, [data, node_data, hoverInfo, colourBy, getResidue]);
+  }, [data, node_data, hoverInfo, colourBy, getResidue,countryInfo,lineageInfo]);
   const spinnerShown = useMemo(() => node_data.ids.length === 0, [node_data]);
 
   const zoomIncrement = useCallback(

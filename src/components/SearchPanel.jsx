@@ -27,6 +27,7 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  getMetadataItem,
   searchItems,
   setSearchItems,
   colourBy,
@@ -102,6 +103,17 @@ function SearchPanel({
       .map((x) => x[0] + x[1])
       .sort();
   }, [data, node_data, selectedNode]);
+
+  const lineageInfo= useMemo(()=>{
+    return getMetadataItem("Lineage")
+  },[getMetadataItem])
+
+
+  const countryInfo= useMemo(()=>{
+    return getMetadataItem("Country")
+  },[getMetadataItem])
+
+
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className=" border-t md:border-t-0 border-b border-gray-300">
@@ -279,7 +291,7 @@ function SearchPanel({
       )}
 
       <div>
-        {/*selectedNode && (
+        {selectedNode && (
           <div className="text-gray-500 mr-3">
             <h2 className="text-xl mt-5 mb-4 text-gray-700">
               <BsInfoCircle className="inline-block mr-2" />
@@ -325,15 +337,15 @@ function SearchPanel({
                 rel="noreferrer"
                 href={
                   "https://outbreak.info/situation-reports?pango=" +
-                  data.lineage_mapping[node_data.lineages[selectedNode]]
+                  lineageInfo.mapping[lineageInfo.node_values[selectedNode]]
                 }
               >
-                {data.lineage_mapping[node_data.lineages[selectedNode]]}
+                { lineageInfo.mapping[lineageInfo.node_values[selectedNode]] }
               </a>
             </div>
             <div>
               <span className="font-semibold">Country:</span>{" "}
-              {data.country_mapping[node_data.countries[selectedNode]]}
+              {countryInfo.mapping[countryInfo.node_values[selectedNode]]}
             </div>
             <span className="font-semibold">Mutations from root:</span>
             <div className="text-xs mr-5 mb-3">
@@ -355,7 +367,7 @@ function SearchPanel({
               </div>
             )}
           </div>
-            )*/}
+            )}
         
       </div>
     </div>
