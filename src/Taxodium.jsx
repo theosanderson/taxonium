@@ -188,7 +188,7 @@ function getRawfile(protoUrl, uploadedData) {
   const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
     const configs = searchItems.map((item, counter) => {
     
-      let filter_function;
+      let filter_function = (x)=> false;
       const lowercase_query = item.value.toLowerCase().trim();
       if (item.category === "mutation") {
         
