@@ -1035,7 +1035,7 @@ function Deck({
         {hoverStuff}
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
           <button
-            className=" w-12 h-10 bg-gray-100  mr -1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
+            className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {
               snapshot();
             }}
