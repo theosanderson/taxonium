@@ -15,7 +15,9 @@ import {
 } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
-import { BiZoomIn, BiZoomOut } from "react-icons/bi";
+import { BiZoomIn, BiZoomOut , BiCamera} from "react-icons/bi";
+
+
 
 const zoomThreshold = 8;
 function coarse_and_fine_configs(
@@ -996,6 +998,20 @@ function Deck({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomToSearch,node_data,search_configs_initial]);
 
+
+
+  const snapshot = useCallback(()=>{
+
+    let canvas = deckRef.current.deck.canvas;
+    deckRef.current.deck.redraw(true)
+let a = document.createElement('a');
+// toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
+a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+a.download = 'taxonium.png';
+a.click();
+   
+  },[])
+
   return (
     <div
       className="w-full h-full relative"
@@ -1034,6 +1050,12 @@ function Deck({
       >
         {hoverStuff}
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
+        <button
+            className=" w-12 h-10 bg-gray-100  mr -1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
+            onClick={() => {
+              snapshot();
+            }}
+          ><BiCamera className="mx-auto  w-5 h-5 " /></button>
           <button
             className=" w-12 h-10 bg-gray-100  p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {
