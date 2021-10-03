@@ -1005,7 +1005,7 @@ function Deck({
     let canvas = deckRef.current.deck.canvas;
     deckRef.current.deck.redraw(true)
 let a = document.createElement('a');
-// toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
+
 a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 a.download = 'taxonium.png';
 a.click();
