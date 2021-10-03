@@ -15,7 +15,7 @@ import {
 } from "@deck.gl/layers";
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
-import { BiZoomIn, BiZoomOut } from "react-icons/bi";
+import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
 
 const zoomThreshold = 8;
 function coarse_and_fine_configs(
@@ -160,8 +160,8 @@ function toRGB_uncached(string) {
   if (string === "USA") {
     return [95, 158, 245]; //This is just because the default is ugly
   }
-  
-   if (string === "B.1.2") {
+
+  if (string === "B.1.2") {
     return [95, 158, 245]; //This is near B.1.617.2
   }
   if (string === "England") {
@@ -943,58 +943,57 @@ function Deck({
     array.reduce((min, b) => (b < min ? b : min), array[0]);
 
   useEffect(() => {
-    if (zoomToSearch.index !== null && zoomToSearch.index !== undefined && zoomToSearch.index !== -1) {
-     
-
-      
-
+    if (
+      zoomToSearch.index !== null &&
+      zoomToSearch.index !== undefined &&
+      zoomToSearch.index !== -1
+    ) {
       const valid_search = search_configs_initial.filter(
         (x) => x.original_index === zoomToSearch.index
-      )
+      );
 
-      if(valid_search.length === 0){
-        return
-
+      if (valid_search.length === 0) {
+        return;
       }
-      
 
-      const y_values = valid_search[0].data.map(x=>node_data.y[x])
+      const y_values = valid_search[0].data.map((x) => node_data.y[x]);
 
-
-      if(y_values.length === 0){
-        return
-
+      if (y_values.length === 0) {
+        return;
       }
-      
 
-      const max_y_val = getMaxOfArrayUsingReduce(y_values)
-      const min_y_val = getMinOfArrayUsingReduce(y_values)
-  
-      
+      const max_y_val = getMaxOfArrayUsingReduce(y_values);
+      const min_y_val = getMinOfArrayUsingReduce(y_values);
+
       const newViewState = {
         ...viewState,
-        zoom: 9-Math.log2(max_y_val-min_y_val+.001),
+        zoom: 9 - Math.log2(max_y_val - min_y_val + 0.001),
 
         needs_update: true,
       };
 
-
       const newViewState2 = {
         ...newViewState,
-        target: [
-          getXval(newViewState),
-          (min_y_val + max_y_val) / 2
-          
-            
-          ,
-        ],
+        target: [getXval(newViewState), (min_y_val + max_y_val) / 2],
       };
 
       setViewState(newViewState2);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoomToSearch,node_data,search_configs_initial]);
+  }, [zoomToSearch, node_data, search_configs_initial]);
+
+  const snapshot = useCallback(() => {
+    let canvas = deckRef.current.deck.canvas;
+    deckRef.current.deck.redraw(true);
+    let a = document.createElement("a");
+
+    a.href = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    a.download = "taxonium.png";
+    a.click();
+  }, []);
 
   return (
     <div
@@ -1023,7 +1022,8 @@ function Deck({
             const second_bit =
               layer.id.includes("mini") |
               ((viewState.zoom < zoomThreshold) & !layer.id.includes("fine")) |
-              ((viewState.zoom >= zoomThreshold) & !layer.id.includes("coarse"));
+              ((viewState.zoom >= zoomThreshold) &
+                !layer.id.includes("coarse"));
 
             return first_bit & second_bit;
           },
@@ -1034,6 +1034,14 @@ function Deck({
       >
         {hoverStuff}
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
+          <button
+            className=" w-12 h-10 bg-gray-100  mr -1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
+            onClick={() => {
+              snapshot();
+            }}
+          >
+            <BiCamera className="mx-auto  w-5 h-5 " />
+          </button>
           <button
             className=" w-12 h-10 bg-gray-100  p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {
