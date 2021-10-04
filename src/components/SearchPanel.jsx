@@ -237,7 +237,7 @@ function SearchPanel({
               setColourBy({ ...colourBy, variable: event.target.value })
             }
           >
-             {metadataItemList.map((item) => (<option value={item}>{toTitleCase(item)}</option>))}
+             {metadataItemList.map((item) => (<option key={item} value={item}>{toTitleCase(item)}</option>))}
             <option value="aa">Amino acid at site</option>
             <option value="none">None</option>
           </select>

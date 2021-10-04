@@ -427,7 +427,6 @@ function Deck({
     
     if (metadataItemList.includes(colourBy.variable)) {
       const item =  getMetadataItem(colourBy.variable)
-      console.log("item is ",item)
       return (d) => toRGB(item.mapping[item.node_values[d]]);
     }
      else if (colourBy.variable === "aa") {
@@ -895,7 +894,7 @@ function Deck({
           {metadataItemList.map(x=>{
             const info =getMetadataItem(x)
             const value = info.mapping[info.node_values[hoverInfo.object]]
-            return  <div
+            return  <div key={x}
             style={{
               color:
                 colourBy.variable === x ? toRGBCSS(value) : "inherit",
