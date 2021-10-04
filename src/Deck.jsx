@@ -16,6 +16,7 @@ import {
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
+import { times } from "lodash";
 
 const zoomThreshold = 8;
 function coarse_and_fine_configs(
@@ -214,6 +215,7 @@ function toRGBCSS(string) {
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 function Deck({
+  blinkingEnabled,
   metadataItemList,
   getMetadataItem,
   showMutText,
@@ -226,6 +228,26 @@ function Deck({
   zoomToSearch,
   selectedNode,
 }) {
+
+  const [time,setTime] = useState(0);
+
+  useEffect(() => {
+    let interval = null
+    //if(blinkingEnabled){
+    
+      interval = setInterval(() => setTime(Date.now()), 100);
+    console.log("Set interval", interval)
+    //}
+    return () => {
+      clearInterval(interval)
+      console.log("Cleared interval", interval);
+    };
+  }, [blinkingEnabled]);
+
+
+  
+
+
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
   const [fineScatterInfo, setFineScatterInfo] = useState({
     ids: [],
@@ -523,11 +545,31 @@ function Deck({
         modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
       })),
     [search_configs, MMatrix]
+
+
   );
+  const blink_on = Math.round(time / 100) %10 >5
+  console.log(blink_on,time,"b")
+
+  const search_configs3 = useMemo(
+    () =>
+      search_configs2.map((x) => ({
+        ...x,
+        lineWidthScale: blinkingEnabled?x.lineWidthScale + blink_on : x.lineWidthScale
+       
+      })),
+    [search_configs2,blink_on,blinkingEnabled]
+
+
+  );
+
+
   const search_layers = useMemo(
-    () => search_configs2.map((x) => new ScatterplotLayer(x)),
-    [search_configs2]
+    () => search_configs3.map((x) => new ScatterplotLayer(x)),
+    [search_configs3]
   );
+
+  
 
   const line_layer_2_config = useMemo(
     () => ({
