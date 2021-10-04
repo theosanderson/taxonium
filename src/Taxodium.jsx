@@ -141,7 +141,7 @@ function getRawfile(protoUrl, uploadedData) {
 
             if(result.node_data.metadata_singles){
 
-              result.node_data.metadata_singles.foreEach(x=>{x.name=x.name.toLowerCase()} )
+              result.node_data.metadata_singles.forEach(x=>{x.name=x.name.toLowerCase()} )
 
             }
 
