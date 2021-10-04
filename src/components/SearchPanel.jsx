@@ -339,7 +339,7 @@ function SearchPanel({
             return  <div
           
           >
-            <span className="font-semibold">{x}:</span>{" "} {value}
+            <span className="font-semibold">{toTitleCase(x)}:</span>{" "} {value}
           </div>
 
           })
