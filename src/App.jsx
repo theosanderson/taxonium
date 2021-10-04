@@ -86,7 +86,7 @@ function onDrop(ev) {
      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
 
 <div className="h-screen w-screen" onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}>
-    {beingDragged && <div>Drop file to upload</div>}
+    {beingDragged && <div>Drop file to import</div>}
   <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
     <div className="flex justify-between">
       <h1 className="text-xl p-4  pb-5 text-white ">
@@ -115,7 +115,7 @@ function onDrop(ev) {
     <p className="text-lg text-gray-700 mb-5">Welcome to Taxodium, a tool for exploring large trees</p>
     <div className="grid grid-cols-2  divide-x divide-gray-300">
     <div className="p-5">
-    <h3 className="text-md text-gray-700 font-semibold mb-2">Upload a Taxodium protobuf file</h3>
+    <h3 className="text-md text-gray-700 font-semibold mb-2">Import a Taxodium protobuf file</h3>
          <TaxodiumUploader readFile={readFile} protoUrl={query.protoUrl} /></div>
          <div className="p-5">
          <h3 className="text-md text-gray-700 font-semibold mb-2">Provide a URL to a Taxodium protobuf file</h3>
