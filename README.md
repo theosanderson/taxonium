@@ -11,7 +11,7 @@ Most of this repository is a client side React app that displays the tree. It lo
 You can now generate Taxodium format files from [UShER](https://github.com/yatisht/usher/pull/134).
 
 
-Right now you would need to create your own `data_processing` directory, which is adapted to produce the `nodelist.pb` file from your own datasets. We will try to streamline this. Feel free to raise an Issue requesting help!
+For datasets that aren't UShER-suited you would at the moment need to create your own `data_processing` directory, which is adapted to produce the `nodelist.pb` file from your own datasets. We will try to streamline this. Feel free to raise an Issue requesting help!
 
 
 
