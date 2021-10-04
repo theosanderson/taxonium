@@ -306,7 +306,7 @@ function Deck({
         return;
       }
 
-      viewState["minimap"] = { zoom: 2.4, target: [5, 18] };
+      viewState["minimap"] = { zoom: 2.2, target: [5, 23] };
       if (zoom_in_x) {
         if (oldViewState) {
           viewState.target[1] = oldViewState.target[1];
