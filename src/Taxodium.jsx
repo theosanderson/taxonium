@@ -102,7 +102,7 @@ function getRawfile(protoUrl, uploadedData) {
             responseType: "arraybuffer",
             onDownloadProgress: (progressEvent) => {
               let percentCompleted = Math.floor(
-                1 * (progressEvent.loaded / 100000000) * 100
+                1 * (progressEvent.loaded / 50000000) * 100
               );
               setNodeData({
                 status: "loading",
@@ -140,8 +140,9 @@ function getRawfile(protoUrl, uploadedData) {
             var result = NodeList.toObject(message);
 
             if(result.node_data.metadata_singles){
+              
 
-              result.node_data.metadata_singles.forEach(x=>{x.name=x.name.toLowerCase()} )
+              result.node_data.metadata_singles.forEach(x=>{x.metadata_name=x.metadata_name.toLowerCase()} )
 
             }
 
@@ -149,8 +150,8 @@ function getRawfile(protoUrl, uploadedData) {
             if(!result.node_data.metadata_singles){
 
               result.node_data.metadata_singles = [
-                {name:"country",mapping:result.country_mapping, node_values: result.node_data.countries},
-                {name:"lineage",mapping:result.lineage_mapping, node_values: result.node_data.lineages}
+                {metadata_name:"country",mapping:result.country_mapping, node_values: result.node_data.countries},
+                {metadata_name:"lineage",mapping:result.lineage_mapping, node_values: result.node_data.lineages}
                ]
 
             }

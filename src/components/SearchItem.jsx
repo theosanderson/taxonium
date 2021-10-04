@@ -72,7 +72,7 @@ function SearchItem({
         onChange={(event) => setThis({ category: event.target.value })}
       >
         <option value="name">Sequence name</option>
-        {metadataItemList.map((item) => (<option value={item}>{toTitleCase(item)}</option>))}
+        {metadataItemList.map((item) => (<option value={item} key={item}  >{toTitleCase(item)}</option>))}
         <option value="mutation">AA mutation</option>
         {/*<option value="epis">EPI_ISL ids</option>*/}
         <option value="genbanks">GenBank ids</option>
