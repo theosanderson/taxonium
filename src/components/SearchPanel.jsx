@@ -6,6 +6,14 @@ import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
 import { IoMdSettings } from "react-icons/io";
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
+}
 
 function get_epi_isl_url(epi_isl) {
   if (epi_isl.length > 4) {
@@ -229,7 +237,7 @@ function SearchPanel({
               setColourBy({ ...colourBy, variable: event.target.value })
             }
           >
-             {metadataItemList.map((item) => (<option value={item}>{item}</option>))}
+             {metadataItemList.map((item) => (<option value={item}>{toTitleCase(item)}</option>))}
             <option value="aa">Amino acid at site</option>
             <option value="none">None</option>
           </select>

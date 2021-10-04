@@ -8,6 +8,15 @@ function numberWithCommas(x) {
   return internationalNumberFormat.format(x);
 }
 
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
+}
+
 function SearchItem({
   metadataItemList,
   id,
@@ -63,7 +72,7 @@ function SearchItem({
         onChange={(event) => setThis({ category: event.target.value })}
       >
         <option value="name">Sequence name</option>
-        {metadataItemList.map((item) => (<option value={item}>{item}</option>))}
+        {metadataItemList.map((item) => (<option value={item}>{toTitleCase(item)}</option>))}
         <option value="mutation">AA mutation</option>
         {/*<option value="epis">EPI_ISL ids</option>*/}
         <option value="genbanks">GenBank ids</option>
