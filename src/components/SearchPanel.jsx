@@ -35,6 +35,8 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  blinkingEnabled,
+  setBlinkingEnabled,
   metadataItemList,
   getMetadataItem,
   searchItems,
@@ -124,6 +126,16 @@ function SearchPanel({
           and CNCB
         </div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
+          <div className="float-right mr-3 text-gray-500 text-sm">
+          <input
+            type="checkbox"
+            checked={blinkingEnabled}
+            onChange={(event) => {
+             
+              setBlinkingEnabled(!blinkingEnabled);
+            }}
+          /> Blink
+          </div>
           <FaSearch className="inline-block mr-2" />
           Search
         </h2>
