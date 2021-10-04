@@ -68,7 +68,7 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
     [setQuery, query]
   );
 
-  const blinkingEnabled=query.blinking=="true";
+  const blinkingEnabled=query.blinking==="true";
 
   const colourBy = useMemo(() => JSON.parse(query.colourBy), [query.colourBy]);
 
