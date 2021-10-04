@@ -27,6 +27,7 @@ const searchColors = [
 
 
 function Taxodium({protoUrl,uploadedData, query,setQuery}) {
+  
   const [zoomToSearch, setZoomToSearchOrig] = useState({index: (query.zoomToSearch ? parseInt(query.zoomToSearch) : null)} );
   const setZoomToSearch = useCallback( (info) => {
  
@@ -39,6 +40,9 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
   const [showMutText, setShowMutText] = useState(false);
 
   const searchItems = useMemo(() => JSON.parse(query.search), [query.search]);
+
+
+
 
   const setSearchItems = useCallback(
     (search) => {
@@ -56,6 +60,16 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
     },
     [setQuery, query]
   );
+
+  const setBlinkingEnabled = useCallback(
+    (enabled) => {
+      setQuery({ ...query, blinking:enabled? "true":"false" });
+    },
+    [setQuery, query]
+  );
+
+  const blinkingEnabled=query.blinking=="true";
+
   const colourBy = useMemo(() => JSON.parse(query.colourBy), [query.colourBy]);
 
   const setColourByWithCheck = useCallback(
@@ -309,6 +323,7 @@ function getRawfile(protoUrl, uploadedData) {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+              blinkingEnabled = {blinkingEnabled}
               metadataItemList = {metadataItemList}
               getMetadataItem = {getMetadataItem}
                 showMutText={showMutText}
@@ -326,6 +341,8 @@ function getRawfile(protoUrl, uploadedData) {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              blinkingEnabled = {blinkingEnabled}
+              setBlinkingEnabled = {setBlinkingEnabled}
               metadataItemList = {metadataItemList}
               getMetadataItem = {getMetadataItem}
                 showMutText={showMutText}
