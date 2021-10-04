@@ -16,7 +16,7 @@ import {
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
-import { times } from "lodash";
+
 
 const zoomThreshold = 8;
 function coarse_and_fine_configs(
