@@ -235,7 +235,11 @@ function Deck({
     let interval = null
     //if(blinkingEnabled){
     
-      interval = setInterval(() => setTime(Date.now()), 100);
+      interval = setInterval(() => {
+        if(blinkingEnabled){
+        setTime(Date.now())
+      }
+      }, 100);
     console.log("Set interval", interval)
     //}
     return () => {
@@ -549,7 +553,7 @@ function Deck({
 
   );
   const blink_on = Math.round(time / 100) %10 >5
-  console.log(blink_on,time,"b")
+  //console.log(blink_on,time,"b")
 
   const search_configs3 = useMemo(
     () =>
