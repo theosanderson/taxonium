@@ -30,9 +30,9 @@ function SearchItem({
 }) {
   const explanations = {
     name: "Enter a sequence name like QEUH-13ADA01",
-    Lineage:
+    lineage:
       "Enter a PANGO lineage like B.1.1.7. Note that sub-lineages will not be found by this method.",
-    Country: "Enter a country like 'India' ",
+    country: "Enter a country like 'India' ",
     mutation:
       "Enter an amino acid mutation. E.g. gene S, position 681, to R. Note that this will identify the internal node at which the mutation occurred, rather than all the leaf nodes with the mutation.",
   };

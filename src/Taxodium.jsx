@@ -138,14 +138,24 @@ function getRawfile(protoUrl, uploadedData) {
 
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
+
+            if(result.node_data.metadata_singles){
+
+              result.node_data.metadata_singles.foreEach(x=>{x.name=x.name.toLowerCase()} )
+
+            }
+
+
             if(!result.node_data.metadata_singles){
 
               result.node_data.metadata_singles = [
-                {name:"Country",mapping:result.country_mapping, node_values: result.node_data.countries},
-                {name:"Lineage",mapping:result.lineage_mapping, node_values: result.node_data.lineages}
+                {name:"country",mapping:result.country_mapping, node_values: result.node_data.countries},
+                {name:"lineage",mapping:result.lineage_mapping, node_values: result.node_data.lineages}
                ]
 
             }
+
+            
 
 
             result.node_data.ids = [...Array(result.node_data.x.length).keys()];
