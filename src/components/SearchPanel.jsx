@@ -6,6 +6,14 @@ import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
 import { IoMdSettings } from "react-icons/io";
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
+}
 
 function get_epi_isl_url(epi_isl) {
   if (epi_isl.length > 4) {
@@ -27,6 +35,8 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  metadataItemList,
+  getMetadataItem,
   searchItems,
   setSearchItems,
   colourBy,
@@ -102,6 +112,10 @@ function SearchPanel({
       .map((x) => x[0] + x[1])
       .sort();
   }, [data, node_data, selectedNode]);
+
+
+
+
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className=" border-t md:border-t-0 border-b border-gray-300">
@@ -116,6 +130,7 @@ function SearchPanel({
         {searchItems.map(function (item, index) {
           return (
             <SearchItem
+            metadataItemList = {metadataItemList}
               numResultsHere={numSearchResults[index]}
               searchColors={searchColors}
               index={index}
@@ -222,8 +237,7 @@ function SearchPanel({
               setColourBy({ ...colourBy, variable: event.target.value })
             }
           >
-            <option value="lineage">Lineage</option>
-            <option value="country">Country</option>
+             {metadataItemList.map((item) => (<option key={item} value={item}>{toTitleCase(item)}</option>))}
             <option value="aa">Amino acid at site</option>
             <option value="none">None</option>
           </select>
@@ -317,24 +331,20 @@ function SearchPanel({
               <span className="font-semibold">Date:</span>{" "}
               {data.date_mapping[node_data.dates[selectedNode]]}
             </div>
-            <div>
-              <span className="font-semibold">Lineage:</span>{" "}
-              <a
-                className="underline"
-                target="_blank"
-                rel="noreferrer"
-                href={
-                  "https://outbreak.info/situation-reports?pango=" +
-                  data.lineage_mapping[node_data.lineages[selectedNode]]
-                }
-              >
-                {data.lineage_mapping[node_data.lineages[selectedNode]]}
-              </a>
-            </div>
-            <div>
-              <span className="font-semibold">Country:</span>{" "}
-              {data.country_mapping[node_data.countries[selectedNode]]}
-            </div>
+           
+
+            {metadataItemList.map(x=>{
+            const info =getMetadataItem(x)
+            const value = info.mapping[info.node_values[selectedNode]]
+            return  <div
+          
+          >
+            <span className="font-semibold">{x}:</span>{" "} {value}
+          </div>
+
+          })
+
+    }
             <span className="font-semibold">Mutations from root:</span>
             <div className="text-xs mr-5 mb-3">
               {
@@ -355,7 +365,8 @@ function SearchPanel({
               </div>
             )}
           </div>
-        )}
+            )}
+        
       </div>
     </div>
   );
