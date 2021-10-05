@@ -36,3 +36,5 @@ data_processing/epiToPublic.tsv.gz
 data_processing/metadata.tsv.gz
 public-latest.all.masked.pb
 data_processing/public-latest.all.masked.pb.gz
+public/nodelist.pb
+public/nodelist.pb

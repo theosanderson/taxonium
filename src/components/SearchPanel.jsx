@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {  useMemo, useState } from "react";
 import SearchItem from "./SearchItem";
 import { FaSearch } from "react-icons/fa";
 import { RiAddCircleLine } from "react-icons/ri";
