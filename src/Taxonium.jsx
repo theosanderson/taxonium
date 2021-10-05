@@ -26,7 +26,7 @@ const searchColors = [
 
 
 
-function Taxodium({protoUrl,uploadedData, query,setQuery}) {
+function Taxonium({protoUrl,uploadedData, query,setQuery}) {
   
   const [zoomToSearch, setZoomToSearchOrig] = useState({index: (query.zoomToSearch ? parseInt(query.zoomToSearch) : null)} );
   const setZoomToSearch = useCallback( (info) => {
@@ -145,7 +145,7 @@ function getRawfile(protoUrl, uploadedData) {
         data: { node_data: { ids: [] } },
       });
 
-      protobuf.load("./taxodium.proto").then(function (root) {
+      protobuf.load("./taxonium.proto").then(function (root) {
         getRawfile(query.protoUrl,uploadedData).then(function (buffer) {
             console.log("buffer loaded");
             var NodeList = root.lookupType("AllData");
@@ -365,4 +365,4 @@ function getRawfile(protoUrl, uploadedData) {
   );
 }
 
-export default Taxodium;
+export default Taxonium;

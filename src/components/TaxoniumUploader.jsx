@@ -1,11 +1,11 @@
 import React, { useRef, useCallback } from "react";
 
-function TaxodiumLoader({
+function TaxoniumLoader({
   readFile
 }) {
   const fileSelector = useRef();
 
-  const supplyTaxodiumData = useCallback(() => {
+  const supplyTaxoniumData = useCallback(() => {
     const file = fileSelector.current.files[0];
     if (file) {
       readFile(file)
@@ -21,10 +21,10 @@ function TaxodiumLoader({
             type="file"
             id="files"
             ref={fileSelector}
-            onChange={supplyTaxodiumData}
+            onChange={supplyTaxoniumData}
           />
        </div>
   );
 }
 
-export default TaxodiumLoader;
+export default TaxoniumLoader;
