@@ -48,4 +48,5 @@ message AllData{
   string tree_title = 7;
   string default_search = 8;
   string default_seq_name_field = 9;
+  string default_colourby = 10;
 }
