@@ -47,4 +47,5 @@ message AllData{
   string tree_description = 6;
   string tree_title = 7;
   string default_search = 8;
+  string default_seq_name_field = 9;
 }
