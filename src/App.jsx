@@ -7,8 +7,8 @@ import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
 
-const Taxodium = React.lazy(() => import("./Taxodium"));
-const TaxodiumUploader = React.lazy(() => import("./components/TaxodiumUploader"));
+const Taxonium = React.lazy(() => import("./Taxonium"));
+const TaxoniumUploader = React.lazy(() => import("./components/TaxoniumUploader"));
 
 function App() {
     function readFile(file){
@@ -92,7 +92,7 @@ function onDrop(ev) {
     <div className="flex justify-between">
       <h1 className="text-xl p-4  pb-5 text-white ">
         <CgListTree className="inline-block h-8 w-8 pr-2 " />
-        <span className="font-bold">Taxodium</span>
+        <span className="font-bold">Taxonium</span>
       </h1>
       <div className="inline-block p-4 pr-0">
         <button
@@ -102,7 +102,7 @@ function onDrop(ev) {
           <BsInfoSquare className="inline-block h-7 w-8" /> About /
           Acknowledgements
         </button>
-        {/*<a className="text-white" href="https://github.com/theosanderson/taxodium">
+        {/*<a className="text-white" href="https://github.com/theosanderson/taxonium">
         <FaGithub className="inline-block text-white h-7 w-8" />
 </a>*/}
       </div>
@@ -110,16 +110,16 @@ function onDrop(ev) {
   </div>
         <Suspense fallback={<div>Loading...</div>}>
           {(uploadedData||query.protoUrl) ? 
-          <Taxodium uploadedData={uploadedData} query={query} setQuery={setQuery}/>
+          <Taxonium uploadedData={uploadedData} query={query} setQuery={setQuery}/>
 : 
 <div className="m-10">
-    <p className="text-lg text-gray-700 mb-5">Welcome to Taxodium, a tool for exploring large trees</p>
+    <p className="text-lg text-gray-700 mb-5">Welcome to Taxonium, a tool for exploring large trees</p>
     <div className="grid grid-cols-2  divide-x divide-gray-300">
     <div className="p-5">
-    <h3 className="text-md text-gray-700 font-semibold mb-2">Import a Taxodium protobuf file</h3>
-         <TaxodiumUploader readFile={readFile} protoUrl={query.protoUrl} /></div>
+    <h3 className="text-md text-gray-700 font-semibold mb-2">Import a Taxonium protobuf file</h3>
+         <TaxoniumUploader readFile={readFile} protoUrl={query.protoUrl} /></div>
          <div className="p-5">
-         <h3 className="text-md text-gray-700 font-semibold mb-2">Provide a URL to a Taxodium protobuf file</h3>
+         <h3 className="text-md text-gray-700 font-semibold mb-2">Provide a URL to a Taxonium protobuf file</h3>
          URL: <input type="text" className="border-gray-300 p-1 w-60 border" value={currentUrl} onChange={(event)=>setCurrentUrl(event.target.value)}></input><br/>
          <button 
          

@@ -30,11 +30,11 @@ function AboutOverlay({ enabled, setEnabled }) {
           </a>{" "}
           using a custom-developed open-source library called{" "}
           <a
-            href="http://github.com/theosanderson/taxodium"
+            href="http://github.com/theosanderson/taxonium"
             className="text-blue-700 underline"
           >
             {" "}
-            Taxodium
+            Taxonium
           </a>
           .<h1 className="font-bold mb-3 text-xl mt-6">The sequences</h1>
           <p>

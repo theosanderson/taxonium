@@ -35,3 +35,4 @@ src/components/SearchPanel.jsx
 data_processing/epiToPublic.tsv.gz
 data_processing/metadata.tsv.gz
 public-latest.all.masked.pb
+public/nodelist.pb
