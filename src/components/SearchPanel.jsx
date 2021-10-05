@@ -35,10 +35,12 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  nodeNames,
+  metadataUniqueItemList,
   blinkingEnabled,
   setBlinkingEnabled,
-  metadataItemList,
-  getMetadataItem,
+  metadataMappedItemList,
+  getMappedMetadataItem,
   searchItems,
   setSearchItems,
   colourBy,
@@ -51,6 +53,7 @@ function SearchPanel({
   setZoomToSearch,
   showMutText,
   setShowMutText,
+  getUniqueMetadataItem
 }) {
   //const [acknowledgements, setAcknowledgements] = useState({});
   const acknowledgements = null;
@@ -58,37 +61,15 @@ function SearchPanel({
 
   const [configMode, setConfigMode] = useState("colour");
 
-  const cur_genbank = useMemo(() => {
+  const cur_uniques = useMemo(() => {
     if (selectedNode) {
-      const cur_genbank = node_data.genbanks[selectedNode];
-      if (cur_genbank && cur_genbank !== "nan") {
-        return cur_genbank;
-      }
+      return Object.fromEntries(metadataUniqueItemList.map(x=> [x, getUniqueMetadataItem(x).node_values[selectedNode]]));
     }
-    return "";
-  }, [node_data, selectedNode]);
+    return {};
+  }, [getUniqueMetadataItem, metadataUniqueItemList, selectedNode]);
 
-  const cur_epi_isl = useMemo(() => {
-    if (selectedNode) {
-      const cur_epi_isl = node_data.epi_isl_numbers[selectedNode];
-      if (cur_epi_isl && cur_epi_isl !== 0) {
-        return "EPI_ISL_" + cur_epi_isl;
-      }
-    }
-    return "";
-  }, [node_data, selectedNode]);
-
-  useEffect(() => {
-    /*
-    if (cur_epi_isl) {
-      fetch(get_epi_isl_url(cur_epi_isl))
-        .then((response) => response.json())
-        .then((data) => setAcknowledgements(data));
-    } else {
-      setAcknowledgements(null);
-    }*/
-  }, [cur_epi_isl]);
-
+ console.log("cur_uniques",cur_uniques)
+ 
   const selected_muts = useMemo(() => {
     if (!selectedNode) {
       return [];
@@ -142,7 +123,8 @@ function SearchPanel({
         {searchItems.map(function (item, index) {
           return (
             <SearchItem
-            metadataItemList = {metadataItemList}
+            metadataUniqueItemList={metadataUniqueItemList}
+            metadataMappedItemList = {metadataMappedItemList}
               numResultsHere={numSearchResults[index]}
               searchColors={searchColors}
               index={index}
@@ -170,10 +152,8 @@ function SearchPanel({
               }}
               enabled={item.enabled}
               current_accession={
-                item.category === "genbanks" && cur_genbank
-                  ? cur_genbank
-                  : item.category === "epis" && cur_epi_isl
-                  ? cur_epi_isl
+                metadataUniqueItemList.includes(item.category) && cur_uniques[item.category]
+                  ? cur_uniques[item.category]
                   : ""
               }
             ></SearchItem>
@@ -249,7 +229,8 @@ function SearchPanel({
               setColourBy({ ...colourBy, variable: event.target.value })
             }
           >
-             {metadataItemList.map((item) => (<option key={item} value={item}>{toTitleCase(item)}</option>))}
+            
+             {metadataMappedItemList.map((item) => (<option key={item} value={item}>{toTitleCase(item)}</option>))}
             <option value="aa">Amino acid at site</option>
             <option value="none">None</option>
           </select>
@@ -313,40 +294,30 @@ function SearchPanel({
             </h2>
 
             <div className="font-bold">
-              {node_data.names[selectedNode] ? (
-                node_data.names[selectedNode]
+              {nodeNames[selectedNode] ? (
+                nodeNames[selectedNode]
               ) : (
                 <>Un-named internal node</>
               )}
             </div>
-            {cur_genbank && (
+            {metadataUniqueItemList.map(x=> cur_uniques[x] ? (
               <div>
-                <span className="font-semibold">Genbank:</span>{" "}
-                <a
+                <span className="font-semibold">{  toTitleCase(x) }:</span>{" "}
+                {/*<a
                   target="_blank"
                   rel="noreferrer"
                   className="underline"
                   href={"https://www.ncbi.nlm.nih.gov/nuccore/" + cur_genbank}
-                >
-                  {cur_genbank}
-                </a>
+                >*/}
+                  {cur_uniques[x]}
+               {/* </a> >*/}
               </div>
-            )}
-            <div>
-              {false && cur_epi_isl && (
-                <>
-                  <span className="font-semibold">GISAID:</span> {cur_epi_isl}
-                </>
-              )}
-            </div>
-            <div>
-              <span className="font-semibold">Date:</span>{" "}
-              {data.date_mapping[node_data.dates[selectedNode]]}
-            </div>
+            ) : <></>)}
+            
            
 
-            {metadataItemList.map(x=>{
-            const info =getMetadataItem(x)
+            {metadataMappedItemList.map(x=>{
+            const info =getMappedMetadataItem(x)
             const value = info.mapping[info.node_values[selectedNode]]
             return  <div
           

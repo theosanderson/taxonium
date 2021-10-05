@@ -83,7 +83,7 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
     data: { node_data: { ids: [] } },
   });
 
-  const metadataItemList = useMemo(()=>{
+  const metadataMappedItemList = useMemo(()=>{
     if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_singles){
       return []
     }
@@ -92,7 +92,16 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
     
   },[nodeData])
 
-  const getMetadataItem = useCallback((name)=>{
+  const metadataUniqueItemList = useMemo(()=>{
+    if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_unique_strings){
+      return []
+    }
+     return nodeData.data.node_data.metadata_unique_strings.map(x=>x.metadata_name)
+
+    
+  },[nodeData])
+
+  const getMappedMetadataItem = useCallback((name)=>{
    
     if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_singles){
       return {mapping:[],node_data:[]}
@@ -102,6 +111,18 @@ function Taxodium({protoUrl,uploadedData, query,setQuery}) {
 
 
   },[nodeData])
+
+  const getUniqueMetadataItem = useCallback((name)=>{
+   
+    if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_unique_strings){
+      return {node_data:[]}
+    }
+    const metadata_item = nodeData.data.node_data.metadata_unique_strings.filter(x=>x.metadata_name===name)[0]
+    return metadata_item
+
+
+  },[nodeData])
+
 
   const [selectedNode, setSelectedNode] = useState(null);
 
@@ -204,10 +225,11 @@ function getRawfile(protoUrl, uploadedData) {
       nodeData.status === "loaded" ? nodeData.data : { node_data: { ids: [] } },
     [nodeData]
   );
-
+  
+  const names = useMemo(() =>  data.node_data.metadata_unique_strings? data.node_data.metadata_unique_strings.filter(x=>x.metadata_name==="name")[0].node_values : [], [data.node_data]);
   const scatterIds = useMemo(
-    () => data.node_data.ids.filter((x) => data.node_data.names[x] !== ""),
-    [data]
+    () => data.node_data.ids.filter((x) => names[x] !== ""),
+    [names,data.node_data]
   );
 
   const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
@@ -239,11 +261,11 @@ function getRawfile(protoUrl, uploadedData) {
 
       if (item.category === "name") {
         filter_function = (x) =>
-          data.node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
+          names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
       }
 
-      if (metadataItemList.includes(item.category )){
-        const info =getMetadataItem(item.category)
+      if (metadataMappedItemList.includes(item.category )){
+        const info =getMappedMetadataItem(item.category)
         filter_function = (x) =>
           info.mapping[info.node_values[x]].toLowerCase() ===
           lowercase_query; //TODO precompute lowercase mapping for perf
@@ -264,7 +286,7 @@ function getRawfile(protoUrl, uploadedData) {
         }
       }
 
-      if (item.category === "genbanks") {
+      if (item.category === "genbank") {
         if (!item.search_for_ids) {
           filter_function = (x) => false;
         } else {
@@ -281,7 +303,7 @@ function getRawfile(protoUrl, uploadedData) {
       const enabled =
         (item.category === "mutation" ||
           item.category === "epis" ||
-          item.category === "genbanks" ||
+          item.category === "genbank" ||
           (item.value !== null && item.value !== "")) &&
         item.enabled;
       return {
@@ -314,7 +336,7 @@ function getRawfile(protoUrl, uploadedData) {
     const num_results = configs.map((x) => x.data.length);
     const filtered_configs = configs.filter((item) => item.enabled);
     return [filtered_configs, num_results, scatterIds.length];
-  }, [data, searchItems, scatterIds, getMetadataItem, metadataItemList]);
+  }, [data, searchItems, scatterIds, getMappedMetadataItem, metadataMappedItemList,names]);
 
   
 
@@ -323,9 +345,12 @@ function getRawfile(protoUrl, uploadedData) {
           <div className="md:grid md:grid-cols-12 h-full">
             <div className="md:col-span-8 h-3/6 md:h-full w-full">
               <Deck
+               nodeNames={names}
               blinkingEnabled = {blinkingEnabled}
-              metadataItemList = {metadataItemList}
-              getMetadataItem = {getMetadataItem}
+              metadataMappedItemList = {metadataMappedItemList}
+              metadataUniqueItemList = {metadataUniqueItemList}
+              getUniqueMetadataItem = {getUniqueMetadataItem}
+              getMappedMetadataItem = {getMappedMetadataItem}
                 showMutText={showMutText}
                 search_configs_initial={search_configs_initial}
                 scatterIds={scatterIds}
@@ -341,10 +366,13 @@ function getRawfile(protoUrl, uploadedData) {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              nodeNames = {names}
               blinkingEnabled = {blinkingEnabled}
+              getUniqueMetadataItem={getUniqueMetadataItem}
+              metadataUniqueItemList = {metadataUniqueItemList}
               setBlinkingEnabled = {setBlinkingEnabled}
-              metadataItemList = {metadataItemList}
-              getMetadataItem = {getMetadataItem}
+              metadataMappedItemList = {metadataMappedItemList}
+              getMappedMetadataItem = {getMappedMetadataItem}
                 showMutText={showMutText}
                 setShowMutText={setShowMutText}
                 setZoomToSearch={setZoomToSearch}

@@ -223,9 +223,12 @@ function toRGBCSS(string) {
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 function Deck({
+  metadataUniqueItemList,
+  nodeNames,
   blinkingEnabled,
-  metadataItemList,
-  getMetadataItem,
+  metadataMappedItemList,
+  getMappedMetadataItem,
+  getUniqueMetadataItem,
   showMutText,
   data,
   colourBy,
@@ -459,8 +462,8 @@ function Deck({
   const scatterFillFunction = useMemo(() => {
    
     
-    if (metadataItemList.includes(colourBy.variable)) {
-      const item =  getMetadataItem(colourBy.variable)
+    if (metadataMappedItemList.includes(colourBy.variable)) {
+      const item =  getMappedMetadataItem(colourBy.variable)
       return (d) => toRGB(item.mapping[item.node_values[d]]);
     }
      else if (colourBy.variable === "aa") {
@@ -468,7 +471,7 @@ function Deck({
     } else {
       return [200, 200, 200];
     }
-  }, [colourBy.variable, colourBy.gene, colourBy.residue, getMetadataItem, getResidue, metadataItemList]);
+  }, [colourBy.variable, colourBy.gene, colourBy.residue, getMappedMetadataItem, getResidue, metadataMappedItemList]);
 
   const scatterplot_config = {
     data: scatterIds,
@@ -723,7 +726,7 @@ function Deck({
       id: "main-text-layer",
       data: textInfo.ids,
       getPosition: (d) => [node_data.x[d] + 0.3, node_data.y[d]],
-      getText: (d) => node_data.names[d],
+      getText: (d) => nodeNames[d],
       getColor: [180, 180, 180],
       getAngle: 0,
 
@@ -731,7 +734,7 @@ function Deck({
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
     }),
-    [node_data, textInfo]
+    [node_data, textInfo,nodeNames]
   );
 
   const text_config_muts = useMemo(
@@ -898,11 +901,13 @@ function Deck({
 
 
 
+
+
   const hoverStuff = useMemo(() => {
     if (hoverInfo && hoverInfo.object) {
 
 
-      const date = data.date_mapping[node_data.dates[hoverInfo.object]];
+     
       let aa, aa_col;
       if (colourBy.variable === "aa") {
         aa = getResidue(hoverInfo.object, colourBy.gene, colourBy.residue);
@@ -930,7 +935,7 @@ function Deck({
             top: hoverInfo.y,
           }}
         >
-          <h2 className="font-bold">{node_data.names[hoverInfo.object]}</h2>
+          <h2 className="font-bold">{nodeNames[hoverInfo.object]}</h2>
           {aa && (
             <div className="bg-white p-1 inline-block">
               {colourBy.gene}:{colourBy.residue}
@@ -945,9 +950,25 @@ function Deck({
             </div>
           )}
 
-          {metadataItemList.map(x=>{
-            const info =getMetadataItem(x)
+          {metadataMappedItemList.map(x=>{
+            const info =getMappedMetadataItem(x)
+            window.info = info
             const value = info.mapping[info.node_values[hoverInfo.object]]
+            return  <div key={x}
+            style={{
+              color:
+                colourBy.variable === x ? toRGBCSS(value) : "inherit",
+            }}
+          >
+            {value}
+          </div>
+
+          })
+
+    }
+    {metadataUniqueItemList.map(x=>{
+            const info = getUniqueMetadataItem(x)
+            const value = info.node_values[hoverInfo.object]
             return  <div key={x}
             style={{
               color:
@@ -962,8 +983,6 @@ function Deck({
     }
         
 
-         
-          {date}
 
           <div className="text-xs text-gray-600">
             <div className="mt-1">
@@ -975,7 +994,7 @@ function Deck({
         </div>
       );
     }
-  }, [data, node_data, hoverInfo, colourBy, getResidue, getMetadataItem, metadataItemList]);
+  }, [data, node_data, hoverInfo, colourBy, getResidue, getMappedMetadataItem, metadataMappedItemList,getUniqueMetadataItem, metadataUniqueItemList,nodeNames]);
   const spinnerShown = useMemo(() => node_data.ids.length === 0, [node_data]);
 
   const zoomIncrement = useCallback(
@@ -1064,6 +1083,7 @@ function Deck({
     >
       {" "}
       <DeckGL
+       
         pickingRadius={10}
         onAfterRender={() => {
           if (viewState.nw === undefined || viewState.needs_update) {

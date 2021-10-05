@@ -18,7 +18,8 @@ function toTitleCase(str) {
 }
 
 function SearchItem({
-  metadataItemList,
+  metadataUniqueItemList,
+  metadataMappedItemList,
   id,
   category,
   enabled,
@@ -57,7 +58,7 @@ function SearchItem({
           outline:
             enabled &&
             (value.length > 0 ||
-              !["name", ...metadataItemList].includes(category))
+              !["name", ...metadataMappedItemList].includes(category))
               ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
               : "0px",
           outlineOffset: "2px",
@@ -71,14 +72,14 @@ function SearchItem({
         value={category}
         onChange={(event) => setThis({ category: event.target.value })}
       >
-        <option value="name">Sequence name</option>
-        {metadataItemList.map((item) => (<option value={item} key={item}  >{toTitleCase(item)}</option>))}
+         {metadataUniqueItemList.map((item) => (<option value={item} key={item}  >{toTitleCase(item)}</option>))}
+        {metadataMappedItemList.map((item) => (<option value={item} key={item}  >{toTitleCase(item)}</option>))}
         <option value="mutation">AA mutation</option>
         {/*<option value="epis">EPI_ISL ids</option>*/}
-        <option value="genbanks">GenBank ids</option>
+        
       </select>
 
-      {["mutation", "epis", "genbanks"].includes(category) && (
+      {["mutation", "epis", "genbank"].includes(category) && (
         <button
           className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8"
           onClick={() => removeItem(id)}
@@ -87,7 +88,7 @@ function SearchItem({
         </button>
       )}
 
-      {(category === "epis" || category === "genbanks") && (
+      {(category === "epis" || category === "genbank") && (
         <div>
           <DebounceInput
             className="w-48 h-32 border p-1 m-1"
@@ -197,7 +198,7 @@ function SearchItem({
           </div>
         </div>
       )}
-      {["name", ...metadataItemList].includes(category) && (
+      {["name", ...metadataMappedItemList].includes(category) && (
         <DebounceInput
           className=" w-32 border py-2 px-3 text-grey-darkest h-10"
           value={value}
@@ -205,7 +206,7 @@ function SearchItem({
           debounceTimeout={300}
         />
       )}
-      {["mutation", "epis", "genbanks"].includes(category) ? (
+      {["mutation", "epis", "genbank"].includes(category) ? (
         <></>
       ) : (
         <button
@@ -221,7 +222,7 @@ function SearchItem({
         {(value.length > 0 ||
           category === "mutation" ||
           category === "epis" ||
-          category === "genbanks") && (
+          category === "genbank") && (
           <>
             {" "}
             {numberWithCommas(numResultsHere)} result

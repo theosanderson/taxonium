@@ -9,6 +9,17 @@ import pandas as pd
 import taxodium_pb2
 import tqdm
 
+# using resource
+import resource
+
+
+def limit_memory(maxsize):
+    soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+    resource.setrlimit(resource.RLIMIT_AS, (maxsize, hard))
+
+
+#limit_memory(7000000000)
+
 accessions = pd.read_table("epiToPublic.tsv.gz",
                            names=["epi_isl", "genbank", "alternative", "date"],
                            low_memory=False)
@@ -150,8 +161,9 @@ class UsherMutationAnnotatedTree:
 
 
 # In[19]:
+import gzip
 
-f = open("./public-latest.all.masked.pb", "rb")
+f = gzip.open("./public-latest.all.masked.pb.gz", "rb")
 
 mat = UsherMutationAnnotatedTree(f)
 mat.tree.ladderize()
@@ -252,15 +264,14 @@ for i, row in tqdm.tqdm(metadata.iterrows()):
 
 print("B")
 
-alt_metadata = pd.read_csv("metadata.tsv.gz",
-                       sep="\t",
-                       low_memory=False)
+# alt_metadata = pd.read_csv("metadata.tsv.gz", sep="\t", low_memory=False)
 
-alt_genbank_lookup = {}
-for i, row in tqdm.tqdm(alt_metadata.iterrows()):
+# alt_genbank_lookup = {}
+# for i, row in tqdm.tqdm(alt_metadata.iterrows()):
 
-    name = row['strain']  #.split("|")[0]
-    alt_genbank_lookup[name] = str(row['genbank_accession'])
+#     name = row['strain']  #.split("|")[0]
+#     alt_genbank_lookup[name] = str(row['genbank_accession'])
+
 
 def make_mapping(list_of_strings):
     sorted_by_value_counts = [""] + pd.Series(list_of_strings).value_counts(
@@ -300,7 +311,6 @@ epi_isls = []
 print("C")
 
 del metadata
-del alt_metadata
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
@@ -319,10 +329,11 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
     else:
         final_name = ""
     names.append(final_name)
-    
-    genbank =genbank_lookup[name]
-    if not genbank and final_name in alt_genbank_lookup and alt_genbank_lookup[final_name]!="?":
-        genbank = alt_genbank_lookup[final_name]
+
+    genbank = genbank_lookup[name]
+    # if not genbank and final_name in alt_genbank_lookup and alt_genbank_lookup[
+    #         final_name] != "?":
+    #     genbank = alt_genbank_lookup[final_name]
     genbanks.append(genbank)
     the_date = date_lookup[name]
 
@@ -340,35 +351,47 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
         get_epi_isl(genbank_lookup[name], final_name, date_lookup[name]))
 
 country_metadata_obj = taxodium_pb2.MetadataSingleValuePerNode(
-    metadata_name = "Country",
-    mapping = country_mapping_list,
-    node_values = countries
-)
-
+    metadata_name="country",
+    metadata_title="Country",
+    mapping=country_mapping_list,
+    node_values=countries)
 
 lineage_metadata_obj = taxodium_pb2.MetadataSingleValuePerNode(
-    metadata_name = "Lineage",
-    mapping = lineage_mapping_list,
-    node_values = lineages
-)
+    metadata_name="lineage",
+    metadata_title="PANGO Lineage",
+    mapping=lineage_mapping_list,
+    node_values=lineages)
 
+date_metadata_obj = taxodium_pb2.MetadataSingleValuePerNode(
+    metadata_name="date",
+    metadata_title="Date",
+    mapping=date_mapping_list,
+    node_values=dates)
+
+genbanks_obj = taxodium_pb2.MetadataUniqueStringPerNode(
+    metadata_name="genbank",
+    metadata_title="GenBank Accession",
+    node_values=genbanks)
+
+names_obj = taxodium_pb2.MetadataUniqueStringPerNode(metadata_name="name",
+                                                     metadata_title="Name",
+                                                     node_values=names)
 
 all_node_data = taxodium_pb2.AllNodeData(
-    genbanks=genbanks,
-    names=names,
     x=xes,
     y=yes,
-    dates=dates,
     mutations=[taxodium_pb2.MutationList(mutation=x) for x in mutations],
     parents=parents,
     num_tips=num_tips,
-    epi_isl_numbers=epi_isls,
-    metadata_singles = [country_metadata_obj, lineage_metadata_obj]
-    )
+    metadata_singles=[
+        country_metadata_obj, lineage_metadata_obj, date_metadata_obj
+    ],
+    metadata_unique_strings=[genbanks_obj, names_obj])
 
 all_data = taxodium_pb2.AllData(node_data=all_node_data,
-                            mutation_mapping=mutation_mapping_list,
-                            date_mapping=date_mapping_list)
+                                mutation_mapping=mutation_mapping_list,
+                                default_colourby="lineage",
+                                default_seq_name_field="name")
 
 f = open("../public/nodelist.pb", "wb")
 f.write(all_data.SerializeToString())
