@@ -161,6 +161,11 @@ function toRGB_uncached(string) {
    if (string === "None") {
     return [220, 220, 220];
   }
+  
+   if (string === "N/A") {
+    return [180, 180, 180];
+  }
+  
   if (string === "USA") {
     return [95, 158, 245]; //This is just because the default is ugly
   }
