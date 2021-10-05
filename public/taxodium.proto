@@ -46,4 +46,5 @@ message AllData{
   repeated string date_mapping = 5; //Deprecated: DO NOT USE (use metadata_singles above)
   string tree_description = 6;
   string tree_title = 7;
+  string default_search = 8;
 }
