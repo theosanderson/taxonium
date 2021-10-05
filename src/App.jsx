@@ -19,7 +19,7 @@ function App() {
       reader.readAsArrayBuffer(file);
     }
     const [query, setQuery] = useQueryAsState({
-      blinking:"false",
+      blinking:"true",
         search: JSON.stringify([
           {
             id: 0.123,
