@@ -75,7 +75,7 @@ function SearchItem({
         {metadataItemList.map((item) => (<option value={item} key={item}  >{toTitleCase(item)}</option>))}
         <option value="mutation">AA mutation</option>
         {/*<option value="epis">EPI_ISL ids</option>*/}
-        <option value="genbanks">GenBank ids</option>
+      
       </select>
 
       {["mutation", "epis", "genbanks"].includes(category) && (
