@@ -124,8 +124,7 @@ function SearchPanel({
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className=" border-t md:border-t-0 border-b border-gray-300">
         <div className="mt-3 mb-3 text-gray-500 text-sm">
-          Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK
-          and CNCB
+          Displaying {numberWithCommas(totalSeqs)} sequences from GISAID
         </div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <div className="float-right mr-3 text-gray-500 text-sm">
