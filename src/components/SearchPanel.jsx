@@ -321,19 +321,7 @@ function SearchPanel({
                 <>Un-named internal node</>
               )}
             </div>
-            {cur_genbank && (
-              <div>
-                <span className="font-semibold">Genbank:</span>{" "}
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline"
-                  href={"https://www.ncbi.nlm.nih.gov/nuccore/" + cur_genbank}
-                >
-                  {cur_genbank}
-                </a>
-              </div>
-            )}
+           
             <div>
               {false && cur_epi_isl && (
                 <>
@@ -353,7 +341,7 @@ function SearchPanel({
             return  <div
           
           >
-            <span className="font-semibold">{toTitleCase(x)}:</span>{" "} {value}
+            <span className="font-semibold">{x==="name2"? "Name" : toTitleCase(x)}:</span>{" "} {value}
           </div>
 
           })
