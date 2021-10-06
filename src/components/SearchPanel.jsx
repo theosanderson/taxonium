@@ -6,6 +6,8 @@ import { BiPalette } from "react-icons/bi";
 import { BsInfoCircle } from "react-icons/bs";
 import { DebounceInput } from "react-debounce-input";
 import { IoMdSettings } from "react-icons/io";
+import {HiOutlineLightBulb} from 'react-icons/hi'
+
 function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
@@ -127,14 +129,14 @@ function SearchPanel({
         </div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <div className="float-right mr-3 text-gray-500 text-sm">
-          <input
+          <HiOutlineLightBulb  className="inline-block  h-4 w-4 mb-1"/>  <input
             type="checkbox"
             checked={blinkingEnabled}
             onChange={(event) => {
              
               setBlinkingEnabled(!blinkingEnabled);
             }}
-          /> Blink
+          /> Blink 
           </div>
           <FaSearch className="inline-block mr-2" />
           Search

@@ -92,7 +92,7 @@ function onDrop(ev) {
     <div className="flex justify-between">
       <h1 className="text-xl p-4  pb-5 text-white ">
         <CgListTree className="inline-block h-8 w-8 pr-2 " />
-        <span className="font-bold">Taxodium</span>
+        <span className="font-bold">Cov2Tree-E </span> <span class="inline text-sm ml-5">Enabled by data from</span><a href="//gisaid.org"> <img src="https://covglobe.org/schild.png" class="inline-block h-6 ml-1" alt="GISAID" /></a>
       </h1>
       <div className="inline-block p-4 pr-0">
         <button
