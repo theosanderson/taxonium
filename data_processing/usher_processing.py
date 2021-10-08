@@ -90,77 +90,13 @@ from io import StringIO
 
 import dendropy
 
-
-class UsherMutationAnnotatedTree:
-    def __init__(self, tree_file):
-        self.data = parsimony_pb2.data()
-        self.data.ParseFromString(tree_file.read())
-        self.condensed_nodes_dict = self.get_condensed_nodes_dict(
-            self.data.condensed_nodes)
-        self.tree = dendropy.Tree.get(data=self.data.newick, schema="newick")
-
-        self.annotate_mutations()
-        self.set_branch_lengths()
-        self.annotate_aa_mutations()
-        self.expand_condensed_nodes()
-
-    def annotate_mutations(self):
-        for i, node in enumerate(self.tree.preorder_node_iter()):
-            node.nuc_mutations = self.data.node_mutations[i]
-
-    def set_branch_lengths(self):
-        for i, node in enumerate(self.tree.preorder_node_iter()):
-            node.edge_length = len(node.nuc_mutations.mutation)
-
-    def annotate_aa_mutations(self):
-        for i, node in tqdm.tqdm(enumerate(self.tree.preorder_node_iter()),
-                                 desc="Annotating mutations"):
-            node.aa_subs = []
-            for mut in node.nuc_mutations.mutation:
-                ref = NUC_ENUM[mut.ref_nuc]
-                alt = NUC_ENUM[mut.mut_nuc[0]]
-                par = NUC_ENUM[mut.par_nuc]
-                aa_sub = get_aa_sub(mut.position, par, alt)
-
-                if aa_sub:
-                    node.aa_subs.append(aa_sub)
-
-    def expand_condensed_nodes(self):
-        for i, node in tqdm.tqdm(enumerate(self.tree.leaf_nodes()),
-                                 desc="Expanding condensed nodes"):
-
-            if node.taxon and node.taxon.label in self.condensed_nodes_dict:
-                assert node.edge_length == 0
-                for new_node_label in self.condensed_nodes_dict[
-                        node.taxon.label]:
-                    new_node = dendropy.Node(
-                        taxon=dendropy.Taxon(new_node_label))
-                    new_node.nuc_mutations = node.nuc_mutations
-                    new_node.aa_subs = node.aa_subs
-                    node.parent_node.add_child(new_node)
-                node.parent_node.remove_child(node)
-
-    def get_condensed_nodes_dict(self, condensed_nodes_dict):
-        output_dict = {}
-        for condensed_node in tqdm.tqdm(condensed_nodes_dict,
-                                        desc="Reading condensed nodes dict"):
-            output_dict[condensed_node.node_name.replace(
-                "_", " ")] = condensed_node.condensed_leaves
-        return output_dict
-
-
 # In[19]:
 
-f = open("./public-latest.all.masked.pb", "rb")
+import gzip
 
-mat = UsherMutationAnnotatedTree(f)
-mat.tree.ladderize()
-
-all_ref_muts = set(get_aa_ref(x) for x in range(len(cov2_genome.seq)))
-all_ref_muts = [x for x in all_ref_muts if x is not None]
-mat.tree.seed_node.aa_subs = all_ref_muts
-
-# In[14]:
+tree = dendropy.Tree.get(file=gzip.open("time_tree5.nwk.gz", "rt"),
+                         schema="newick")
+tree.ladderize()
 
 
 def get_label_from_node(node):
@@ -200,14 +136,14 @@ def align_parents(tree_by_level):
                 node.y = np.mean(childrens_y)
 
 
-root = mat.tree.seed_node
+root = tree.seed_node
 assign_x(root)
-terminals = mat.tree.leaf_nodes()
+terminals = tree.leaf_nodes()
 assign_terminal_y(terminals)
 align_parents(by_level)
 
 all_nodes = terminals
-all_nodes.extend(mat.tree.internal_nodes())
+all_nodes.extend(tree.internal_nodes())
 all_nodes.sort(key=lambda x: x.y)
 lookup = {x: i for i, x in enumerate(all_nodes)}
 
@@ -224,8 +160,7 @@ def add_paths(tree_by_level):
 
 root.path_list = []
 add_paths(by_level)
-
-metadata = pd.read_csv("public-latest.metadata.tsv.gz",
+metadata = pd.read_csv("public-2021-09-15.metadata.tsv.gz",
                        sep="\t",
                        low_memory=False)
 lineage_lookup = defaultdict(lambda: "")
@@ -252,14 +187,6 @@ for i, row in tqdm.tqdm(metadata.iterrows()):
 
 print("B")
 
-alt_metadata = pd.read_csv("metadata.tsv.gz", sep="\t", low_memory=False)
-
-alt_genbank_lookup = {}
-for i, row in tqdm.tqdm(alt_metadata.iterrows()):
-
-    name = row['strain']  #.split("|")[0]
-    alt_genbank_lookup[name] = str(row['genbank_accession'])
-
 
 def make_mapping(list_of_strings):
     sorted_by_value_counts = [""] + pd.Series(list_of_strings).value_counts(
@@ -279,10 +206,7 @@ date_mapping_list, date_mapping_lookup = make_mapping(all_dates)
 all_countries = [x for i, x in country_lookup.items()]
 country_mapping_list, country_mapping_lookup = make_mapping(all_countries)
 
-all_genotypes = []
-for x in mat.tree.nodes():
-    all_genotypes.extend(x.aa_subs)
-mutation_mapping_list, mutation_mapping_lookup = make_mapping(all_genotypes)
+mutation_mapping_list, mutation_mapping_lookup = make_mapping([])
 
 xes = []
 yes = []
@@ -299,7 +223,6 @@ epi_isls = []
 print("C")
 
 del metadata
-del alt_metadata
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
@@ -320,9 +243,7 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
     names.append(final_name)
 
     genbank = genbank_lookup[name]
-    if not genbank and final_name in alt_genbank_lookup and alt_genbank_lookup[
-            final_name] != "?":
-        genbank = alt_genbank_lookup[final_name]
+
     genbanks.append(genbank)
     the_date = date_lookup[name]
 
@@ -333,7 +254,7 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
 
     the_lineage = lineage_lookup[name]
     lineages.append(lineage_mapping_lookup[the_lineage])
-    mutations.append([mutation_mapping_lookup[y] for y in x.aa_subs])
+    mutations.append([])
     num_tips.append(len(x.leaf_nodes()))
 
     epi_isls.append(
