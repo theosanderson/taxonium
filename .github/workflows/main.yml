@@ -20,7 +20,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
-        run: pip install pandas tqdm numpy google dendropy
+        run: pip3 install pandas tqdm numpy google dendropy
       - name: Download protobuf
         run: wget -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.pb
         working-directory: ./data_processing/
@@ -34,7 +34,7 @@ jobs:
         run: wget  -q -N https://data.nextstrain.org/files/ncov/open/metadata.tsv.gz
         working-directory: ./data_processing/
       - name: Run
-        run: python usher_processing.py
+        run: python3 usher_processing.py
         working-directory: ./data_processing/
       - uses: EndBug/add-and-commit@v7
         with:
