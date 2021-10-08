@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import taxonium_pb2
 import tqdm
+import gzip
 
 accessions = pd.read_table("epiToPublic.tsv.gz",
                            names=["epi_isl", "genbank", "alternative", "date"],
@@ -365,6 +366,6 @@ all_data = taxonium_pb2.AllData(node_data=all_node_data,
                                 mutation_mapping=mutation_mapping_list,
                                 date_mapping=date_mapping_list)
 
-f = open("../public/nodelist.pb", "wb")
+f = gzip.open("../public/nodelist.pb.gz", "wb")
 f.write(all_data.SerializeToString())
 f.close()
