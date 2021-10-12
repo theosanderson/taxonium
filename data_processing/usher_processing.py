@@ -103,6 +103,7 @@ class UsherMutationAnnotatedTree:
         self.annotate_mutations()
         self.set_branch_lengths()
         self.annotate_aa_mutations()
+        #self.annotate_nuc_mutations()
         self.expand_condensed_nodes()
 
     def annotate_mutations(self):
@@ -115,7 +116,7 @@ class UsherMutationAnnotatedTree:
 
     def annotate_aa_mutations(self):
         for i, node in tqdm.tqdm(enumerate(self.tree.preorder_node_iter()),
-                                 desc="Annotating mutations"):
+                                 desc="Annotating AA mutations"):
             node.aa_subs = []
             for mut in node.nuc_mutations.mutation:
                 ref = NUC_ENUM[mut.ref_nuc]
@@ -125,6 +126,16 @@ class UsherMutationAnnotatedTree:
 
                 if aa_sub:
                     node.aa_subs.append(aa_sub)
+
+    def annotate_nuc_mutations(self):
+        for i, node in tqdm.tqdm(enumerate(self.tree.preorder_node_iter()),
+                                 desc="Annotating nucleotide mutations"):
+            for mut in node.nuc_mutations.mutation:
+                ref = NUC_ENUM[mut.ref_nuc]
+                alt = NUC_ENUM[mut.mut_nuc[0]]
+                par = NUC_ENUM[mut.par_nuc]
+                aa_style_sub = f"{par}{mut.position}{alt}"
+                node.aa_subs.append(aa_style_sub)
 
     def expand_condensed_nodes(self):
         for i, node in tqdm.tqdm(enumerate(self.tree.leaf_nodes()),
@@ -155,7 +166,29 @@ class UsherMutationAnnotatedTree:
 f = open("./public-latest.all.masked.pb", "rb")
 
 mat = UsherMutationAnnotatedTree(f)
+print("Ladderizing tree")
 mat.tree.ladderize()
+print("Writing distance tree")
+mat.tree.write(path="./distance.nwk",
+               schema="newick",
+               unquoted_underscores=True)
+
+print("Launching chronumental")
+import os
+
+os.system(
+    "chronumental --tree distance.nwk --dates ./public-latest.metadata.tsv.gz -s 200"
+)
+
+print("Reading time tree")
+time_tree = dendropy.Tree.get(path="./timetree__distance.nwk", schema="newick")
+time_tree_iter = time_tree.preorder_node_iter()
+for i, node in tqdm.tqdm(enumerate(mat.tree.preorder_node_iter()),
+                         desc="Adding time tree"):
+    time_tree_node = next(time_tree_iter)
+    node.time = time_tree_node.edge_length
+del time_tree
+del time_tree_iter
 
 all_ref_muts = set(get_aa_ref(x) for x in range(len(cov2_genome.seq)))
 all_ref_muts = [x for x in all_ref_muts if x is not None]
@@ -188,6 +221,18 @@ def assign_x(tree, current_branch_length=0, current_level=0):
         assign_x(clade, current_branch_length, current_level)
 
 
+def assign_x_time(tree, current_branch_length=0, current_level=0):
+
+    by_level[current_level].append(tree)
+
+    if tree.time:
+        current_branch_length = current_branch_length + tree.time
+    current_level += 1
+    tree.x_time = current_branch_length
+    for clade in tree.child_nodes():
+        assign_x_time(clade, current_branch_length, current_level)
+
+
 def assign_terminal_y(terminals):
     for i, node in enumerate(terminals):
         node.y = i
@@ -203,6 +248,7 @@ def align_parents(tree_by_level):
 
 root = mat.tree.seed_node
 assign_x(root)
+assign_x_time(root)
 terminals = mat.tree.leaf_nodes()
 assign_terminal_y(terminals)
 align_parents(by_level)
@@ -286,6 +332,7 @@ for x in mat.tree.nodes():
 mutation_mapping_list, mutation_mapping_lookup = make_mapping(all_genotypes)
 
 xes = []
+time_xes = []
 yes = []
 parents = []
 names = []
@@ -304,6 +351,7 @@ del alt_metadata
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
+    time_xes.append(x.x * 0.02)
     yes.append(x.y / 40000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev) > 0:
@@ -340,6 +388,8 @@ for i, x in tqdm.tqdm(enumerate(all_nodes)):
     epi_isls.append(
         get_epi_isl(genbank_lookup[name], final_name, date_lookup[name]))
 
+print("D")
+
 country_metadata_obj = taxonium_pb2.MetadataSingleValuePerNode(
     metadata_name="Country",
     mapping=country_mapping_list,
@@ -349,18 +399,23 @@ lineage_metadata_obj = taxonium_pb2.MetadataSingleValuePerNode(
     metadata_name="Lineage",
     mapping=lineage_mapping_list,
     node_values=lineages)
+print("E")
 
 all_node_data = taxonium_pb2.AllNodeData(
     genbanks=genbanks,
     names=names,
-    x=xes,
+    x=time_xes,
+    time_x=time_xes,
     y=yes,
     dates=dates,
-    mutations=[taxonium_pb2.MutationList(mutation=x) for x in mutations],
+    mutations=[
+        taxonium_pb2.MutationList(mutation=x) for x in tqdm.tqdm(mutations)
+    ],
     parents=parents,
     num_tips=num_tips,
     epi_isl_numbers=epi_isls,
     metadata_singles=[country_metadata_obj, lineage_metadata_obj])
+print("F")
 
 all_data = taxonium_pb2.AllData(node_data=all_node_data,
                                 mutation_mapping=mutation_mapping_list,
