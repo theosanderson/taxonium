@@ -33,6 +33,7 @@ repeated int32 epi_isl_numbers = 10;  // Deprecated: DO NOT USE
 repeated int32 num_tips = 11;
 repeated MetadataSingleValuePerNode metadata_singles = 12;
 repeated MetadataUniqueStringPerNode metadata_unique_strings=13;
+repeated float time_x = 14;
 
 
 }

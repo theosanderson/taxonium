@@ -64,6 +64,12 @@ def get_aa_ref(pos):
     return None
 
 
+def get_nuc_ref(pos):
+
+    return f"nuc:X_{pos}_{cov2_genome.seq[pos-1]}"
+    return None
+
+
 def get_aa_sub(pos, par, alt):
 
     for gene_name, gene_range in cov2_genome.genes.items():
@@ -103,7 +109,7 @@ class UsherMutationAnnotatedTree:
         self.annotate_mutations()
         self.set_branch_lengths()
         self.annotate_aa_mutations()
-        #self.annotate_nuc_mutations()
+        self.annotate_nuc_mutations()
         self.expand_condensed_nodes()
 
     def annotate_mutations(self):
@@ -134,7 +140,7 @@ class UsherMutationAnnotatedTree:
                 ref = NUC_ENUM[mut.ref_nuc]
                 alt = NUC_ENUM[mut.mut_nuc[0]]
                 par = NUC_ENUM[mut.par_nuc]
-                aa_style_sub = f"{par}{mut.position}{alt}"
+                aa_style_sub = f"nuc:{par}_{mut.position}_{alt}"
                 node.aa_subs.append(aa_style_sub)
 
     def expand_condensed_nodes(self):
@@ -162,13 +168,22 @@ class UsherMutationAnnotatedTree:
 
 
 # In[19]:
+input_file = "public-latest.all.masked.pb.gz"
 
-f = open("./public-latest.all.masked.pb", "rb")
+if input_file.endswith(".gz"):
+    f = gzip.open(input_file, "rb")
+else:
+    f = open(input_file, "rb")
 
 mat = UsherMutationAnnotatedTree(f)
 print("Ladderizing tree")
 mat.tree.ladderize()
 print("Writing distance tree")
+
+#Name any unnamed nodes:
+for i, node in enumerate(mat.tree.preorder_node_iter()):
+    if not node.taxon:
+        node.taxon = dendropy.Taxon(f"temporaryname__{i}")
 mat.tree.write(path="./distance.nwk",
                schema="newick",
                unquoted_underscores=True)
@@ -176,9 +191,9 @@ mat.tree.write(path="./distance.nwk",
 print("Launching chronumental")
 import os
 
-os.system(
-    "chronumental --tree distance.nwk --dates ./public-latest.metadata.tsv.gz -s 200"
-)
+# os.system(
+#     "chronumental --tree distance.nwk --dates ./public-latest.metadata.tsv.gz -s 4000"
+# )
 
 print("Reading time tree")
 time_tree = dendropy.Tree.get(path="./timetree__distance.nwk", schema="newick")
@@ -187,11 +202,16 @@ for i, node in tqdm.tqdm(enumerate(mat.tree.preorder_node_iter()),
                          desc="Adding time tree"):
     time_tree_node = next(time_tree_iter)
     node.time = time_tree_node.edge_length
+    if node.taxon.label.startswith("temporaryname__"):
+        node.taxon.label = ""
 del time_tree
 del time_tree_iter
 
 all_ref_muts = set(get_aa_ref(x) for x in range(len(cov2_genome.seq)))
 all_ref_muts = [x for x in all_ref_muts if x is not None]
+
+all_ref_nuc_muts = set(get_nuc_ref(x) for x in range(len(cov2_genome.seq)))
+all_ref_muts.extend(all_ref_nuc_muts)
 mat.tree.seed_node.aa_subs = all_ref_muts
 
 # In[14]:
@@ -299,13 +319,13 @@ for i, row in tqdm.tqdm(metadata.iterrows()):
 
 print("B")
 
-alt_metadata = pd.read_csv("metadata.tsv.gz", sep="\t", low_memory=False)
+#alt_metadata = pd.read_csv("metadata.tsv.gz", sep="\t", low_memory=False)
 
 alt_genbank_lookup = {}
-for i, row in tqdm.tqdm(alt_metadata.iterrows()):
+# for i, row in tqdm.tqdm(alt_metadata.iterrows()):
 
-    name = row['strain']  #.split("|")[0]
-    alt_genbank_lookup[name] = str(row['genbank_accession'])
+#     name = row['strain']  #.split("|")[0]
+#     alt_genbank_lookup[name] = str(row['genbank_accession'])
 
 
 def make_mapping(list_of_strings):
@@ -347,11 +367,11 @@ epi_isls = []
 print("C")
 
 del metadata
-del alt_metadata
+#del alt_metadata
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
-    time_xes.append(x.x * 0.02)
+    time_xes.append(x.x_time * 0.02)
     yes.append(x.y / 40000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev) > 0:
@@ -404,7 +424,7 @@ print("E")
 all_node_data = taxonium_pb2.AllNodeData(
     genbanks=genbanks,
     names=names,
-    x=time_xes,
+    x=xes,
     time_x=time_xes,
     y=yes,
     dates=dates,
@@ -421,6 +441,7 @@ all_data = taxonium_pb2.AllData(node_data=all_node_data,
                                 mutation_mapping=mutation_mapping_list,
                                 date_mapping=date_mapping_list)
 
-f = gzip.open("../public/nodelist.pb.gz", "wb")
+#f = gzip.open("../public/nodelist.pb.gz", "wb")
+f = open("/mnt/d/timetree.pb", "wb")
 f.write(all_data.SerializeToString())
 f.close()

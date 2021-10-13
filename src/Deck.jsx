@@ -65,7 +65,7 @@ function reduceOverPlotting(nodeIds, node_data, precision, line_mode) {
   const filtered = nodeIds.filter((node) => {
     if (line_mode) {
       if (
-        (Math.abs(node_data.x[node] - node_data.x[node_data.parents[node]]) >
+        (Math.abs(node_data.x_set[node] - node_data.x_set[node_data.parents[node]]) >
           1) |
         (Math.abs(node_data.y[node] - node_data.y[node_data.parents[node]]) >
           0.5)
@@ -74,7 +74,7 @@ function reduceOverPlotting(nodeIds, node_data, precision, line_mode) {
       }
     }
 
-    const rounded_x = Math.round(node_data.x[node] * precision) / precision;
+    const rounded_x = Math.round(node_data.x_set[node] * precision) / precision;
     const rounded_y = Math.round(node_data.y[node] * precision) / precision;
     if (included_points[rounded_x]) {
       if (included_points[rounded_x][rounded_y]) {
@@ -453,6 +453,7 @@ function Deck({
   }, [node_data, data, colourBy]);
 
   const coarseScatterIds = useMemo(() => {
+    console.log("calcing coarse scatter")
     return reduceOverPlotting(scatterIds, node_data, 100, false);
   }, [scatterIds, node_data]);
 
@@ -487,7 +488,7 @@ function Deck({
 
     onHover: (info) => setHoverInfo(info),
     getPosition: (d) => {
-      return [node_data.x[d], node_data.y[d]];
+      return [node_data.x_set[d], node_data.y[d]];
     },
     updateTriggers: {
       getFillColor: scatterFillFunction,
@@ -532,7 +533,7 @@ function Deck({
 
         getLineColor: [0, 0, 0],
         getPosition: (d) => {
-          return [node_data.x[d], node_data.y[d]];
+          return [node_data.x_set[d], node_data.y[d]];
         },
         lineWidthUnits: "pixels",
         lineWidthScale: 2,
@@ -592,10 +593,10 @@ function Deck({
       pickable: true,
       onHover: (info) => setHoverInfo(info),
       getTargetPosition: (d) => [
-        node_data.x[node_data.parents[d]],
+        node_data.x_set[node_data.parents[d]],
         node_data.y[d],
       ],
-      getSourcePosition: (d) => [node_data.x[d], node_data.y[d]],
+      getSourcePosition: (d) => [node_data.x_set[d], node_data.y[d]],
       getColor: [150, 150, 150],
     }),
     [node_data]
@@ -608,11 +609,11 @@ function Deck({
       pickable: false,
       getWidth: 1,
       getTargetPosition: (d) => [
-        node_data.x[node_data.parents[d]],
+        node_data.x_set[node_data.parents[d]],
         node_data.y[node_data.parents[d]],
       ],
       getSourcePosition: (d) => [
-        node_data.x[node_data.parents[d]],
+        node_data.x_set[node_data.parents[d]],
         node_data.y[d],
       ],
       getColor: [150, 150, 150],
@@ -722,7 +723,7 @@ function Deck({
     () => ({
       id: "main-text-layer",
       data: textInfo.ids,
-      getPosition: (d) => [node_data.x[d] + 0.3, node_data.y[d]],
+      getPosition: (d) => [node_data.x_set[d] + 0.3, node_data.y[d]],
       getText: (d) => node_data.names[d],
       getColor: [180, 180, 180],
       getAngle: 0,
@@ -738,7 +739,7 @@ function Deck({
     () => ({
       id: "main-text-muts-layer",
       data: mutTextIds.filter(() => true),
-      getPosition: (d) => [node_data.x[d], node_data.y[d]],
+      getPosition: (d) => [node_data.x_set[d], node_data.y[d]],
       getText: (d) =>
         node_data.mutations[d].mutation
           ? node_data.mutations[d].mutation
@@ -761,7 +762,7 @@ function Deck({
       data.mutation_mapping,
       mutTextIds,
       node_data.mutations,
-      node_data.x,
+      node_data.x_set,
       node_data.y,
     ]
   );

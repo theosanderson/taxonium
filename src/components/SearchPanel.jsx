@@ -35,6 +35,8 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  xAccessor,
+  setXaccessor,
   blinkingEnabled,
   setBlinkingEnabled,
   metadataItemList,
@@ -303,6 +305,22 @@ function SearchPanel({
           )}
         </div>
       )}
+      <h2 className="text-xl mt-5 mb-4 text-gray-700">
+            <button
+              onClick={() => setConfigMode("other")}
+              className="float-right mr-5 block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+            >
+              <IoMdSettings className="inline-block mr-1 ml-1" />
+            </button>
+            <BiPalette className="inline-block mr-2" />
+            Tree type{" "}
+          </h2>
+         {/*} <select value={xAccessor} onChange={(event) => setXaccessor(event.target.value)}>
+            <option value="x">Distance</option>
+            <option value="time_x">Time</option>
+                </select>*/}
+
+
 
       <div>
         {selectedNode && (

@@ -61,6 +61,13 @@ function Taxonium({protoUrl,uploadedData, query,setQuery}) {
     [setQuery, query]
   );
 
+  const setXaccessor = useCallback(
+    (acc) => {
+      setQuery({ ...query, xAccessor: acc });
+    },
+    [setQuery, query]
+  );
+
   const setBlinkingEnabled = useCallback(
     (enabled) => {
       setQuery({ ...query, blinking:enabled? "true":"false" });
@@ -173,7 +180,7 @@ function getRawfile(protoUrl, uploadedData) {
             
 
 
-            result.node_data.ids = [...Array(result.node_data.x.length).keys()];
+            result.node_data.ids = [...Array(result.node_data.y.length).keys()];
 
             const all_genes = new Set();
             result.mutation_mapping = result.mutation_mapping.map((x, i) => {
@@ -200,9 +207,22 @@ function getRawfile(protoUrl, uploadedData) {
   }, [nodeData.status, query.protoUrl, uploadedData]);
 
   const data = useMemo(
-    () =>
-      nodeData.status === "loaded" ? nodeData.data : { node_data: { ids: [] } },
-    [nodeData]
+    () =>{
+     if( nodeData.status === "loaded") {
+
+    console.log("xaccessor isA"+query.xAccessor)
+    const new_data =   {...nodeData.data }
+    new_data.node_data.x_set = nodeData.data.node_data[query.xAccessor]
+    window.NDD = new_data.node_data
+    return new_data;
+  
+  } else{
+
+      return{node_data:{ids:[],x_set:[],y:[],metadata_singles:[]}}
+    } 
+      
+    },
+    [nodeData,query.xAccessor]
   );
 
   const scatterIds = useMemo(
@@ -304,7 +324,7 @@ function getRawfile(protoUrl, uploadedData) {
         lineWidthScale: 1,
 
         getPosition: (d) => {
-          return [data.node_data.x[d], data.node_data.y[d]];
+          return [data.node_data.x_set[d], data.node_data.y[d]];
         },
         getFillColor: (d) => [0, 0, 0],
         getLineColor: (d) => searchColors[counter % searchColors.length],
@@ -341,6 +361,8 @@ function getRawfile(protoUrl, uploadedData) {
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              xAccessor = {query.xAccessor}
+              setXaccessor = {setXaccessor}
               blinkingEnabled = {blinkingEnabled}
               setBlinkingEnabled = {setBlinkingEnabled}
               metadataItemList = {metadataItemList}

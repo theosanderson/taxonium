@@ -20,9 +20,11 @@ function App() {
     }
     const [query, setQuery] = useQueryAsState({
       blinking:"false",
+      xAccessor: "x",
         search: JSON.stringify([
           {
             id: 0.123,
+          
             category: "lineage",
             value: "",
             enabled: true,
