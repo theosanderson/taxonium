@@ -185,6 +185,14 @@ def assign_x(tree, current_branch_length=0, current_level=0):
         assign_x(clade, current_branch_length, current_level)
 
 
+def assign_x_time(tree, current_branch_length=0):
+    if tree.time:
+        current_branch_length = current_branch_length + tree.time
+    tree.x_time = current_branch_length
+    for clade in tree.child_nodes():
+        assign_x_time(clade, current_branch_length)
+
+
 def assign_terminal_y(terminals):
     for i, node in enumerate(terminals):
         node.y = i
@@ -199,8 +207,28 @@ def align_parents(tree_by_level):
                 node.y = (np.min(childrens_y) + np.max(childrens_y)) / 2
 
 
+mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
+
+print("Launching chronumental")
+import os
+
+os.system(
+    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 300 --tree_out /tmp/timetree.nwk"
+)
+
+print("Reading time tree")
+time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
+time_tree_iter = time_tree.traverse_preorder()
+for i, node in tqdm.tqdm(enumerate(mat.tree.traverse_preorder()),
+                         desc="Adding time tree"):
+    time_tree_node = next(time_tree_iter)
+    node.time_length = time_tree_node.edge_length
+del time_tree
+del time_tree_iter
+
 root = mat.tree.root
 assign_x(root)
+assign_x_time(root)
 terminals = list(mat.tree.traverse_leaves())
 assign_terminal_y(terminals)
 align_parents(by_level)
@@ -271,6 +299,7 @@ lineages = []
 genbanks = []
 num_tips = []
 epi_isls = []
+time_xes = []
 
 print("C")
 
@@ -282,6 +311,7 @@ metadata['genbank_accession'] = metadata['genbank_accession'].astype(str)
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
+    time_xes.append(x.x_time * 0.04)
     yes.append(x.y / 40000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev) > 0:
@@ -353,6 +383,7 @@ all_node_data = taxonium_pb2.AllNodeData(
     genbanks=genbanks,
     names=names,
     x=xes,
+    time_x=time_xes,
     y=yes,
     dates=dates,
     mutations=[taxonium_pb2.MutationList(mutation=x) for x in mutations],
