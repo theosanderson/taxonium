@@ -1,5 +1,10 @@
 syntax = "proto3";
 
+message ColourMapping{
+  string key = 1;
+  repeated int32 colour = 2;
+}
+
 
 message MutationList{
   repeated int32 mutation = 1;
@@ -49,4 +54,5 @@ message AllData{
   string default_search = 8;
   string default_seq_name_field = 9;
   string default_colourby = 10;
+  repeated ColourMapping colour_mapping = 11;
 }
