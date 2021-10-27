@@ -106,119 +106,7 @@ const dummy_polygons = [
 ];
 const rgb_cache = {};
 
-function toRGB(string) {
-  if (rgb_cache[string]) {
-    return rgb_cache[string];
-  } else {
-    const result = toRGB_uncached(string);
-    rgb_cache[string] = result;
-    return result;
-  }
-}
 
-function toRGB_uncached(string) {
-  const amino_acids = {
-    A: [230, 25, 75],
-    R: [60, 180, 75],
-    N: [255, 225, 25],
-    D: [67, 99, 216],
-    C: [245, 130, 49],
-    Q: [70, 240, 240],
-    E: [145, 30, 180],
-
-    G: [240, 50, 230],
-    H: [188, 246, 12],
-    I: [250, 190, 190],
-
-    L: [230, 0, 255],
-    K: [0, 128, 128],
-    M: [154, 99, 36],
-    F: [255, 250, 200],
-    P: [128, 0, 0],
-    T: [170, 255, 195],
-    W: [128, 128, 0],
-
-    Y: [0, 0, 117],
-    V: [0, 100, 177],
-    X: [128, 128, 128],
-    O: [255, 255, 255],
-    Z: [0, 0, 0],
-  };
-
-  if (amino_acids[string]) {
-    return amino_acids[string];
-  }
-
-  if (string === undefined) {
-    return [200, 200, 200];
-  }
-  if (string === "") {
-    return [200, 200, 200];
-  }
-  if (string === "unknown") {
-    return [200, 200, 200];
-  }
-   if (string === "None") {
-    return [220, 220, 220];
-  }
-  
-   if (string === "N/A") {
-    return [180, 180, 180];
-  }
-  
-  if (string === "USA") {
-    return [95, 158, 245]; //This is just because the default is ugly
-  }
-
-  if (string === "B.1.2") {
-    return [95, 158, 245]; //This is near B.1.617.2
-  }
-  if (string === "England") {
-    return [214, 58, 15]; // UK all brick
-  }
-  if (string === "Scotland") {
-    return [255, 130, 82]; // UK all brick
-  }
-  if (string === "Wales") {
-    return [148, 49, 22]; // UK all brick
-  }
-  if (string === "Northern Ireland") {
-    return [140, 42, 15]; // UK all brick
-  }
-  if (string === "France") {
-    return [140, 28, 120]; // diff to UK
-  }
-  if (string === "Germany") {
-    return [106, 140, 28]; // diff to UK
-  }
-  if (string === "India") {
-    return [61, 173, 166]; // diff to UK
-  }
-  if (string === "Denmark") {
-    return [24, 112, 32]; // diff to UK
-  }
-
-  string = string.split("").reverse().join("");
-  var hash = 0;
-  if (string.length === 0) return hash;
-  for (var i = 0; i < string.length; i++) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    hash = hash & hash;
-  }
-  var rgb = [0, 0, 0];
-  for (i = 0; i < 3; i++) {
-    var value = (hash >> (i * 8)) & 255;
-    rgb[i] = value;
-  }
-  if (rgb[0] + rgb[1] + rgb[2] < 150 || rgb[0] + rgb[1] + rgb[2] > 500) {
-    return toRGB(string + "_");
-  }
-  return rgb;
-}
-function toRGBCSS(string) {
-  const output = toRGB(string);
-  return `rgb(${output[0]},${output[1]},${output[2]})`;
-}
 
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
@@ -236,6 +124,144 @@ function Deck({
   zoomToSearch,
   selectedNode,
 }) {
+
+
+  const colourMapping = useMemo(() => {
+    if(data.colour_mapping){
+     
+    const answer =  Object.fromEntries( data.colour_mapping.map((x)=>[x.key,x.colour]) ) 
+    return answer
+
+  }
+  else
+  {
+    
+    return {}
+  }
+  },[data]);
+ 
+  
+  const  toRGB_uncached = useCallback( (string)=> {
+
+    if (string in colourMapping) {
+      return colourMapping[string];
+    }
+    const amino_acids = {
+      A: [230, 25, 75],
+      R: [60, 180, 75],
+      N: [255, 225, 25],
+      D: [67, 99, 216],
+      C: [245, 130, 49],
+      Q: [70, 240, 240],
+      E: [145, 30, 180],
+  
+      G: [240, 50, 230],
+      H: [188, 246, 12],
+      I: [250, 190, 190],
+  
+      L: [230, 0, 255],
+      K: [0, 128, 128],
+      M: [154, 99, 36],
+      F: [255, 250, 200],
+      P: [128, 0, 0],
+      T: [170, 255, 195],
+      W: [128, 128, 0],
+  
+      Y: [0, 0, 117],
+      V: [0, 100, 177],
+      X: [128, 128, 128],
+      O: [255, 255, 255],
+      Z: [0, 0, 0],
+    };
+  
+    if (amino_acids[string]) {
+      return amino_acids[string];
+    }
+  
+    if (string === undefined) {
+      return [200, 200, 200];
+    }
+    if (string === "") {
+      return [200, 200, 200];
+    }
+    if (string === "unknown") {
+      return [200, 200, 200];
+    }
+     if (string === "None") {
+      return [220, 220, 220];
+    }
+    
+     if (string === "N/A") {
+      return [180, 180, 180];
+    }
+    
+    if (string === "USA") {
+      return [95, 158, 245]; //This is just because the default is ugly
+    }
+  
+    if (string === "B.1.2") {
+      return [95, 158, 245]; //This is near B.1.617.2
+    }
+    if (string === "England") {
+      return [214, 58, 15]; // UK all brick
+    }
+    if (string === "Scotland") {
+      return [255, 130, 82]; // UK all brick
+    }
+    if (string === "Wales") {
+      return [148, 49, 22]; // UK all brick
+    }
+    if (string === "Northern Ireland") {
+      return [140, 42, 15]; // UK all brick
+    }
+    if (string === "France") {
+      return [140, 28, 120]; // diff to UK
+    }
+    if (string === "Germany") {
+      return [106, 140, 28]; // diff to UK
+    }
+    if (string === "India") {
+      return [61, 173, 166]; // diff to UK
+    }
+    if (string === "Denmark") {
+      return [24, 112, 32]; // diff to UK
+    }
+  
+    string = string.split("").reverse().join("");
+    var hash = 0;
+    if (string.length === 0) return hash;
+    for (var i = 0; i < string.length; i++) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+      hash = hash & hash;
+    }
+    var rgb = [0, 0, 0];
+    for (i = 0; i < 3; i++) {
+      var value = (hash >> (i * 8)) & 255;
+      rgb[i] = value;
+    }
+    if (rgb[0] + rgb[1] + rgb[2] < 150 || rgb[0] + rgb[1] + rgb[2] > 500) {
+      return toRGB_uncached(string + "_");
+    }
+    return rgb;
+  }
+  , [colourMapping]);
+
+  const toRGB = useCallback( (string) =>{
+    if (rgb_cache[string]) {
+      return rgb_cache[string];
+    } else {
+      const result = toRGB_uncached(string);
+      rgb_cache[string] = result;
+      return result;
+    }
+  }, [toRGB_uncached]);
+
+   const toRGBCSS =useCallback ( (string) =>{
+    const output = toRGB(string);
+    return `rgb(${output[0]},${output[1]},${output[2]})`;
+  } ,[toRGB]);
+
+  
 
   const [time,setTime] = useState(0);
 
