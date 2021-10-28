@@ -7,8 +7,52 @@ from collections import defaultdict
 import numpy as np
 import pandas as pd
 import taxonium_pb2
+import parsimony_pb2
 import tqdm
 import gzip
+
+#data = parsimony_pb2.data()
+#file = gzip.open("./public-latest.all.masked.pb.gz", "rb")
+#data.ParseFromString(file.read())
+
+#newick_string = data.newick
+
+import treeswift
+import dendropy
+"""
+newick_string = 
+"(mammal:0.14,(turtle:0.02,(rayfinfish:0.25,(frog:0.01,salamander:0.01):0.12):0.09):0.03);"
+
+        
+ts_tree = treeswift.read_tree_newick(newick_string)
+
+dp_tree = dendropy.Tree.get(data=newick_string, schema="newick")
+
+
+
+
+ts_tree_iter = preorder_traversal(ts_tree.root)
+dp_tree_iter = dp_tree.preorder_node_iter()
+
+for x in range(1000):
+    ts_node = next(ts_tree_iter)
+    dp_node = next(dp_tree_iter)
+
+    print("TS:", ts_node.label, "DP:", dp_node.taxon)"""
+
+#raise ValueError("This script needs to be refactored")
+
+
+def preorder_traversal(node):
+    yield node
+    for clade in node.children:
+        yield from preorder_traversal(clade)
+
+
+def preorder_traversal_iter(node):
+    return iter(preorder_traversal(node))
+
+
 """accessions = pd.read_table("epiToPublic.tsv.gz",
                            names=["epi_isl", "genbank", "alternative", "date"],
                            low_memory=False)"""
@@ -105,15 +149,15 @@ class UsherMutationAnnotatedTree:
         self.expand_condensed_nodes()
 
     def annotate_mutations(self):
-        for i, node in enumerate(self.tree.traverse_preorder()):
+        for i, node in enumerate(preorder_traversal(self.tree.root)):
             node.nuc_mutations = self.data.node_mutations[i]
 
     def set_branch_lengths(self):
-        for i, node in enumerate(self.tree.traverse_preorder()):
+        for i, node in enumerate(preorder_traversal(self.tree.root)):
             node.edge_length = len(node.nuc_mutations.mutation)
 
     def annotate_aa_mutations(self):
-        for i, node in tqdm.tqdm(enumerate(self.tree.traverse_preorder()),
+        for i, node in tqdm.tqdm(enumerate(preorder_traversal(self.tree.root)),
                                  desc="Annotating mutations"):
             node.aa_subs = []
             for mut in node.nuc_mutations.mutation:
@@ -130,29 +174,31 @@ class UsherMutationAnnotatedTree:
                                  desc="Expanding condensed nodes"):
 
             if node.label and node.label in self.condensed_nodes_dict:
-                assert node.edge_length == 0
+
                 for new_node_label in self.condensed_nodes_dict[node.label]:
                     new_node = treeswift.Node(label=new_node_label)
-                    new_node.nuc_mutations = node.nuc_mutations
-                    new_node.aa_subs = node.aa_subs
-                    node.parent.add_child(new_node)
-                node.parent.remove_child(node)
+                    new_node.nuc_mutations = []
+                    new_node.aa_subs = []
+                    node.add_child(new_node)
+                node.label = ""
+            else:
+                pass
 
     def get_condensed_nodes_dict(self, condensed_nodes_dict):
         output_dict = {}
         for condensed_node in tqdm.tqdm(condensed_nodes_dict,
                                         desc="Reading condensed nodes dict"):
-            output_dict[condensed_node.node_name.replace(
-                "_", " ")] = condensed_node.condensed_leaves
+            output_dict[
+                condensed_node.node_name] = condensed_node.condensed_leaves
         return output_dict
 
 
 # In[19]:
 
-f = open("./public-latest.all.masked.pb", "rb")
+f = gzip.open("./public-latest.all.masked.pb.gz", "rb")
 
 mat = UsherMutationAnnotatedTree(f)
-mat.tree.ladderize()
+mat.tree.ladderize(ascending=False)
 
 all_ref_muts = set(get_aa_ref(x) for x in range(len(cov2_genome.seq)))
 all_ref_muts = [x for x in all_ref_muts if x is not None]
@@ -185,6 +231,14 @@ def assign_x(tree, current_branch_length=0, current_level=0):
         assign_x(clade, current_branch_length, current_level)
 
 
+def assign_x_time(tree, current_branch_length=0):
+    if tree.time_length:
+        current_branch_length = current_branch_length + tree.time_length
+    tree.x_time = current_branch_length
+    for clade in tree.child_nodes():
+        assign_x_time(clade, current_branch_length)
+
+
 def assign_terminal_y(terminals):
     for i, node in enumerate(terminals):
         node.y = i
@@ -199,8 +253,28 @@ def align_parents(tree_by_level):
                 node.y = (np.min(childrens_y) + np.max(childrens_y)) / 2
 
 
+mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
+
+print("Launching chronumental")
+import os
+
+os.system(
+    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk"
+)
+
+print("Reading time tree")
+time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
+time_tree_iter = preorder_traversal(time_tree.root)
+for i, node in tqdm.tqdm(enumerate(preorder_traversal(mat.tree.root)),
+                         desc="Adding time tree"):
+    time_tree_node = next(time_tree_iter)
+    node.time_length = time_tree_node.edge_length
+del time_tree
+del time_tree_iter
+
 root = mat.tree.root
 assign_x(root)
+assign_x_time(root)
 terminals = list(mat.tree.traverse_leaves())
 assign_terminal_y(terminals)
 align_parents(by_level)
@@ -256,7 +330,7 @@ all_countries = metadata['country'].unique().tolist()
 country_mapping_list, country_mapping_lookup = make_mapping(all_countries)
 
 all_genotypes = []
-for x in mat.tree.traverse_preorder():
+for x in preorder_traversal_iter(mat.tree.root):
     all_genotypes.extend(x.aa_subs)
 mutation_mapping_list, mutation_mapping_lookup = make_mapping(all_genotypes)
 
@@ -271,6 +345,7 @@ lineages = []
 genbanks = []
 num_tips = []
 epi_isls = []
+time_xes = []
 
 print("C")
 
@@ -282,6 +357,7 @@ metadata['genbank_accession'] = metadata['genbank_accession'].astype(str)
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
+    time_xes.append(x.x_time * 0.018)
     yes.append(x.y / 40000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev) > 0:
@@ -353,6 +429,7 @@ all_node_data = taxonium_pb2.AllNodeData(
     genbanks=genbanks,
     names=names,
     x=xes,
+    time_x=time_xes,
     y=yes,
     dates=dates,
     mutations=[taxonium_pb2.MutationList(mutation=x) for x in mutations],

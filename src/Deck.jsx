@@ -26,12 +26,13 @@ function coarse_and_fine_configs(
   line_mode,
   optionalFineIds,
   optionalCoarseIds
+  ,getX
 ) {
   const coarse = {
     ...config,
     data: optionalCoarseIds
       ? optionalCoarseIds
-      : reduceOverPlotting(config.data, node_data, precision, line_mode),
+      : reduceOverPlotting(config.data, node_data, precision, line_mode, getX),
     visible: true,
     id: config.id + "_coarse",
   };
@@ -59,13 +60,13 @@ function make_minimap_version(config) {
   };
 }
 
-function reduceOverPlotting(nodeIds, node_data, precision, line_mode) {
+function reduceOverPlotting(nodeIds, node_data, precision, line_mode, getX) {
   const included_points = {};
 
   const filtered = nodeIds.filter((node) => {
     if (line_mode) {
       if (
-        (Math.abs(node_data.x[node] - node_data.x[node_data.parents[node]]) >
+        (Math.abs(getX(node) - getX(node_data.parents[node])) >
           1) |
         (Math.abs(node_data.y[node] - node_data.y[node_data.parents[node]]) >
           0.5)
@@ -74,7 +75,7 @@ function reduceOverPlotting(nodeIds, node_data, precision, line_mode) {
       }
     }
 
-    const rounded_x = Math.round(node_data.x[node] * precision) / precision;
+    const rounded_x = Math.round(getX(node) * precision) / precision;
     const rounded_y = Math.round(node_data.y[node] * precision) / precision;
     if (included_points[rounded_x]) {
       if (included_points[rounded_x][rounded_y]) {
@@ -124,6 +125,17 @@ function Deck({
   zoomToSearch,
   selectedNode,
 }) {
+
+
+  const getX = useMemo ( (x) => {
+    console.log("redefining getX")
+    return (d)=>{
+    
+    if( data.node_data.x_cur){
+    return data.node_data.x_cur[d]}
+  }
+  
+}, [ data.node_data.x_cur])
 
 
   const colourMapping = useMemo(() => {
@@ -479,8 +491,8 @@ function Deck({
   }, [node_data, data, colourBy]);
 
   const coarseScatterIds = useMemo(() => {
-    return reduceOverPlotting(scatterIds, node_data, 100, false);
-  }, [scatterIds, node_data]);
+    return reduceOverPlotting(scatterIds, node_data, 100, false, getX);
+  }, [scatterIds, node_data, getX]);
 
   const scatterFillFunction = useMemo(() => {
    
@@ -513,10 +525,11 @@ function Deck({
 
     onHover: (info) => setHoverInfo(info),
     getPosition: (d) => {
-      return [node_data.x[d], node_data.y[d]];
+      return [getX(d), node_data.y[d]];
     },
     updateTriggers: {
       getFillColor: scatterFillFunction,
+      getPosition: [getX, node_data.y]
     },
     getFillColor: scatterFillFunction,
   };
@@ -527,7 +540,7 @@ function Deck({
     100,
     false,
     fineScatterInfo.ids,
-    coarseScatterIds
+    coarseScatterIds,getX
   );
 
   const scatter_configs2 = scatter_configs.map((x) => ({
@@ -558,22 +571,23 @@ function Deck({
 
         getLineColor: [0, 0, 0],
         getPosition: (d) => {
-          return [node_data.x[d], node_data.y[d]];
+          return [getX(d), node_data.y[d]];
         },
         lineWidthUnits: "pixels",
         lineWidthScale: 2,
+        
       }),
-    [selectedNode, node_data, MMatrix]
+    [selectedNode, node_data, MMatrix, getX]
   );
 
   const search_configs = useMemo(
     () =>
       [].concat(
         ...search_configs_initial.map((x) =>
-          coarse_and_fine_configs(x, node_data, 100)
+          coarse_and_fine_configs(x, node_data, 100,null,null,null,getX)
         )
       ),
-    [search_configs_initial, node_data]
+    [search_configs_initial, node_data,getX]
   );
 
   const search_configs2 = useMemo(
@@ -612,38 +626,46 @@ function Deck({
   const line_layer_2_config = useMemo(
     () => ({
       id: "main-line",
-      data: node_data.ids.filter((x) => true),
+      data: node_data.ids,
 
       getWidth: 1,
       pickable: true,
       onHover: (info) => setHoverInfo(info),
       getTargetPosition: (d) => [
-        node_data.x[node_data.parents[d]],
+        getX(node_data.parents[d]),
         node_data.y[d],
       ],
-      getSourcePosition: (d) => [node_data.x[d], node_data.y[d]],
+      updateTriggers:{
+        getSourcePosition: [getX, node_data.y],
+        getTargetPosition: [getX, node_data.y]
+      },
+      getSourcePosition: (d) => [getX(d), node_data.y[d]],
       getColor: [150, 150, 150],
     }),
-    [node_data]
+    [node_data, getX]
   );
 
   const line_layer_3_config = useMemo(
     () => ({
       id: "main-line-2",
-      data: node_data.ids.filter((x) => true),
+      data: node_data.ids,
       pickable: false,
       getWidth: 1,
       getTargetPosition: (d) => [
-        node_data.x[node_data.parents[d]],
+        getX(node_data.parents[d]),
         node_data.y[node_data.parents[d]],
       ],
       getSourcePosition: (d) => [
-        node_data.x[node_data.parents[d]],
+       getX(node_data.parents[d]),
         node_data.y[d],
       ],
+      updateTriggers:{
+        getSourcePosition: [getX, node_data.y],
+        getTargetPosition: [getX, node_data.y]
+      },
       getColor: [150, 150, 150],
     }),
-    [node_data]
+    [node_data,getX]
   );
 
   const line_configs = useMemo(
@@ -651,10 +673,10 @@ function Deck({
       [].concat.apply(
         [],
         [line_layer_2_config, line_layer_3_config].map((x) =>
-          coarse_and_fine_configs(x, node_data, 100, true)
+          coarse_and_fine_configs(x, node_data, 100, true,null,null,getX)
         )
       ),
-    [line_layer_2_config, line_layer_3_config, node_data]
+    [line_layer_2_config, line_layer_3_config, node_data,getX]
   );
 
   const line_configs2 = useMemo(
@@ -748,7 +770,7 @@ function Deck({
     () => ({
       id: "main-text-layer",
       data: textInfo.ids,
-      getPosition: (d) => [node_data.x[d] + 0.3, node_data.y[d]],
+      getPosition: (d) => [getX(d) + 0.3, node_data.y[d]],
       getText: (d) => node_data.names[d],
       getColor: [180, 180, 180],
       getAngle: 0,
@@ -757,14 +779,14 @@ function Deck({
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
     }),
-    [node_data, textInfo]
+    [node_data, textInfo, getX]
   );
 
   const text_config_muts = useMemo(
     () => ({
       id: "main-text-muts-layer",
       data: mutTextIds.filter(() => true),
-      getPosition: (d) => [node_data.x[d], node_data.y[d]],
+      getPosition: (d) => [getX(d), node_data.y[d]],
       getText: (d) =>
         node_data.mutations[d].mutation
           ? node_data.mutations[d].mutation
@@ -787,8 +809,9 @@ function Deck({
       data.mutation_mapping,
       mutTextIds,
       node_data.mutations,
-      node_data.x,
+  
       node_data.y,
+      getX
     ]
   );
 

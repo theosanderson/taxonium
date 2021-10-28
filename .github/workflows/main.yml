@@ -20,18 +20,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
-        run: pip3 install pandas tqdm numpy google-api-python-client dendropy
+        run: source install_deps.sh
+        working-directory: ./data_processing/
       - name: Download protobuf
-        run: wget -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.pb
-        working-directory: ./data_processing/
-      - name: Download metadata
-        run: wget  -q -N https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.metadata.tsv.gz
-        working-directory: ./data_processing/
-      - name: Download accessions
-        run: wget  -q -N https://github.com/CDCgov/SARS-CoV-2_Sequencing/raw/master/files/epiToPublic.tsv.gz
-        working-directory: ./data_processing/
-      - name: Download accessions
-        run: wget  -q -N https://data.nextstrain.org/files/ncov/open/metadata.tsv.gz
+        run: source download.sh
         working-directory: ./data_processing/
       - name: Run
         run: python3 usher_processing.py
