@@ -75,7 +75,7 @@ function reduceOverPlotting(nodeIds, node_data, precision, line_mode, getX) {
       }
     }
 
-    const rounded_x = Math.round(getX(node) * precision) / precision;
+    const rounded_x = Math.round(getX(node) * precision) / (precision*10);
     const rounded_y = Math.round(node_data.y[node] * precision) / precision;
     if (included_points[rounded_x]) {
       if (included_points[rounded_x][rounded_y]) {
