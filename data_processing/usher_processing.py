@@ -258,9 +258,9 @@ mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
 print("Launching chronumental")
 import os
 
-#os.system(
-#    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk"
-#)
+os.system(
+    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk"
+)
 
 print("Reading time tree")
 time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
@@ -357,7 +357,7 @@ metadata['genbank_accession'] = metadata['genbank_accession'].astype(str)
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
-    time_xes.append(x.x_time * 0.025)
+    time_xes.append(x.x_time * 0.018)
     yes.append(x.y / 40000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev) > 0:
