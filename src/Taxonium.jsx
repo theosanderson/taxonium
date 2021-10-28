@@ -340,6 +340,17 @@ function getRawfile(protoUrl, uploadedData) {
   }, [data, searchItems, scatterIds, getMetadataItem, metadataItemList]);
 
   
+  const possibleXTypes = useMemo(() => {
+    const possibilities = []
+    if(mainData.data.node_data.x){
+      possibilities.push("distance")
+    }
+    if(mainData.data.node_data.time_x){
+      possibilities.push("time")
+    }
+    return possibilities
+  },[mainData])
+
 
   return (
         <div className="main_content">
@@ -366,6 +377,7 @@ function getRawfile(protoUrl, uploadedData) {
               <SearchPanel
               xType = {xType}
               setXType = {setXType}
+              possibleXTypes = {possibleXTypes}
               blinkingEnabled = {blinkingEnabled}
               setBlinkingEnabled = {setBlinkingEnabled}
               metadataItemList = {metadataItemList}
