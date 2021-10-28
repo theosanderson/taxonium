@@ -18,7 +18,7 @@ import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
 
 
-const zoomThreshold = 8;
+const zoomThreshold = 9.3;
 function coarse_and_fine_configs(
   config,
   node_data,
@@ -75,7 +75,7 @@ function reduceOverPlotting(nodeIds, node_data, precision, line_mode, getX) {
       }
     }
 
-    const rounded_x = Math.round(getX(node) * precision) / precision;
+    const rounded_x = Math.round(getX(node) * precision/10) / precision;
     const rounded_y = Math.round(node_data.y[node] * precision) / precision;
     if (included_points[rounded_x]) {
       if (included_points[rounded_x][rounded_y]) {
@@ -692,7 +692,7 @@ function Deck({
     [line_configs2]
   );
 
-  if (viewState.zoom > 17 && viewState.needs_update !== true) {
+  if (viewState.zoom > 17 && (viewState.nw && viewState.se &&  (viewState.nw[1] - viewState.se[1])<0.01) && viewState.needs_update !== true) {
     /*
     Creating a text layer with every node takes a *long* time, even if it's not visible until zoomed, so we don't do that.
 
@@ -728,7 +728,11 @@ function Deck({
     }
   }
 
-  if (viewState.zoom > zoomThreshold - 1 && viewState.needs_update !== true) {
+  //console.log(viewState.nw,viewState.se)
+
+  const heightThreshold = 4;
+
+  if ( viewState.needs_update !== true && viewState.se && viewState.nw && viewState.se[1] - viewState.nw[1] < heightThreshold) {
     // Fine coarse
     if (
       (viewState.nw[1] > fineScatterInfo.top) &
@@ -736,14 +740,17 @@ function Deck({
     ) {
       // still within
     } else {
+      console.log("viewState",viewState)
       const cur_top = viewState.nw[1];
       const cur_bot = viewState.se[1];
       const height = cur_bot - cur_top;
-      const new_top = cur_top - height * 2;
-      const new_bot = cur_bot + height * 2;
+      const new_top = cur_top - height * 1;
+      const new_bot = cur_bot + height * 1;
       const fineScatterIds = scatterIds.filter(
         (x) => (node_data.y[x] > new_top) & (node_data.y[x] < new_bot)
       );
+      console.log("Top is ", new_top, "bottom is ", new_bot);
+      console.log("Fine scatter has ",fineScatterIds.length,"nodes")
 
       //console.log("recalculating text")
       setFineScatterInfo({
