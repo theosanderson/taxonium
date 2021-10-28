@@ -7,8 +7,52 @@ from collections import defaultdict
 import numpy as np
 import pandas as pd
 import taxonium_pb2
+import parsimony_pb2
 import tqdm
 import gzip
+
+#data = parsimony_pb2.data()
+#file = gzip.open("./public-latest.all.masked.pb.gz", "rb")
+#data.ParseFromString(file.read())
+
+#newick_string = data.newick
+
+import treeswift
+import dendropy
+"""
+newick_string = 
+"(mammal:0.14,(turtle:0.02,(rayfinfish:0.25,(frog:0.01,salamander:0.01):0.12):0.09):0.03);"
+
+        
+ts_tree = treeswift.read_tree_newick(newick_string)
+
+dp_tree = dendropy.Tree.get(data=newick_string, schema="newick")
+
+
+
+
+ts_tree_iter = preorder_traversal(ts_tree.root)
+dp_tree_iter = dp_tree.preorder_node_iter()
+
+for x in range(1000):
+    ts_node = next(ts_tree_iter)
+    dp_node = next(dp_tree_iter)
+
+    print("TS:", ts_node.label, "DP:", dp_node.taxon)"""
+
+#raise ValueError("This script needs to be refactored")
+
+
+def preorder_traversal(node):
+    yield node
+    for clade in node.children:
+        yield from preorder_traversal(clade)
+
+
+def preorder_traversal_iter(node):
+    return iter(preorder_traversal(node))
+
+
 """accessions = pd.read_table("epiToPublic.tsv.gz",
                            names=["epi_isl", "genbank", "alternative", "date"],
                            low_memory=False)"""
@@ -105,15 +149,15 @@ class UsherMutationAnnotatedTree:
         self.expand_condensed_nodes()
 
     def annotate_mutations(self):
-        for i, node in enumerate(self.tree.traverse_preorder()):
+        for i, node in enumerate(preorder_traversal(self.tree.root)):
             node.nuc_mutations = self.data.node_mutations[i]
 
     def set_branch_lengths(self):
-        for i, node in enumerate(self.tree.traverse_preorder()):
+        for i, node in enumerate(preorder_traversal(self.tree.root)):
             node.edge_length = len(node.nuc_mutations.mutation)
 
     def annotate_aa_mutations(self):
-        for i, node in tqdm.tqdm(enumerate(self.tree.traverse_preorder()),
+        for i, node in tqdm.tqdm(enumerate(preorder_traversal(self.tree.root)),
                                  desc="Annotating mutations"):
             node.aa_subs = []
             for mut in node.nuc_mutations.mutation:
@@ -151,7 +195,7 @@ class UsherMutationAnnotatedTree:
 
 # In[19]:
 
-f = open("./public-latest.all.masked.pb", "rb")
+f = gzip.open("./public-latest.all.masked.pb.gz", "rb")
 
 mat = UsherMutationAnnotatedTree(f)
 mat.tree.ladderize(ascending=False)
@@ -220,8 +264,8 @@ import os
 
 print("Reading time tree")
 time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
-time_tree_iter = time_tree.traverse_preorder()
-for i, node in tqdm.tqdm(enumerate(mat.tree.traverse_preorder()),
+time_tree_iter = preorder_traversal(time_tree.root)
+for i, node in tqdm.tqdm(enumerate(preorder_traversal(mat.tree.root)),
                          desc="Adding time tree"):
     time_tree_node = next(time_tree_iter)
     node.time_length = time_tree_node.edge_length
@@ -286,7 +330,7 @@ all_countries = metadata['country'].unique().tolist()
 country_mapping_list, country_mapping_lookup = make_mapping(all_countries)
 
 all_genotypes = []
-for x in mat.tree.traverse_preorder():
+for x in preorder_traversal_iter(mat.tree.root):
     all_genotypes.extend(x.aa_subs)
 mutation_mapping_list, mutation_mapping_lookup = make_mapping(all_genotypes)
 
