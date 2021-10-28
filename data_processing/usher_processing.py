@@ -130,20 +130,22 @@ class UsherMutationAnnotatedTree:
                                  desc="Expanding condensed nodes"):
 
             if node.label and node.label in self.condensed_nodes_dict:
-                assert node.edge_length == 0
+
                 for new_node_label in self.condensed_nodes_dict[node.label]:
                     new_node = treeswift.Node(label=new_node_label)
-                    new_node.nuc_mutations = node.nuc_mutations
-                    new_node.aa_subs = node.aa_subs
-                    node.parent.add_child(new_node)
-                node.parent.remove_child(node)
+                    new_node.nuc_mutations = []
+                    new_node.aa_subs = []
+                    node.add_child(new_node)
+                node.label = ""
+            else:
+                pass
 
     def get_condensed_nodes_dict(self, condensed_nodes_dict):
         output_dict = {}
         for condensed_node in tqdm.tqdm(condensed_nodes_dict,
                                         desc="Reading condensed nodes dict"):
-            output_dict[condensed_node.node_name.replace(
-                "_", " ")] = condensed_node.condensed_leaves
+            output_dict[
+                condensed_node.node_name] = condensed_node.condensed_leaves
         return output_dict
 
 
@@ -152,7 +154,7 @@ class UsherMutationAnnotatedTree:
 f = open("./public-latest.all.masked.pb", "rb")
 
 mat = UsherMutationAnnotatedTree(f)
-mat.tree.ladderize()
+mat.tree.ladderize(ascending=False)
 
 all_ref_muts = set(get_aa_ref(x) for x in range(len(cov2_genome.seq)))
 all_ref_muts = [x for x in all_ref_muts if x is not None]
@@ -186,8 +188,8 @@ def assign_x(tree, current_branch_length=0, current_level=0):
 
 
 def assign_x_time(tree, current_branch_length=0):
-    if tree.time:
-        current_branch_length = current_branch_length + tree.time
+    if tree.time_length:
+        current_branch_length = current_branch_length + tree.time_length
     tree.x_time = current_branch_length
     for clade in tree.child_nodes():
         assign_x_time(clade, current_branch_length)
@@ -212,9 +214,9 @@ mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
 print("Launching chronumental")
 import os
 
-os.system(
-    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 300 --tree_out /tmp/timetree.nwk"
-)
+#os.system(
+#    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk"
+#)
 
 print("Reading time tree")
 time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
@@ -311,7 +313,7 @@ metadata['genbank_accession'] = metadata['genbank_accession'].astype(str)
 
 for i, x in tqdm.tqdm(enumerate(all_nodes)):
     xes.append(x.x * 0.2)
-    time_xes.append(x.x_time * 0.04)
+    time_xes.append(x.x_time * 0.025)
     yes.append(x.y / 40000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev) > 0:
