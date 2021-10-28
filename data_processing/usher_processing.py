@@ -11,8 +11,6 @@ import parsimony_pb2
 import tqdm
 import gzip
 
-
-
 import treeswift
 
 
@@ -131,7 +129,8 @@ class UsherMutationAnnotatedTree:
 
     def annotate_aa_mutations(self):
         for i, node in tqdm.tqdm(enumerate(preorder_traversal(self.tree.root)),
-                                 desc="Annotating mutations"):
+                                 desc="Annotating mutations",
+                                 miniters=100000):
             node.aa_subs = []
             for mut in node.nuc_mutations.mutation:
                 ref = NUC_ENUM[mut.ref_nuc]
@@ -144,7 +143,8 @@ class UsherMutationAnnotatedTree:
 
     def expand_condensed_nodes(self):
         for i, node in tqdm.tqdm(enumerate(self.tree.traverse_leaves()),
-                                 desc="Expanding condensed nodes"):
+                                 desc="Expanding condensed nodes",
+                                 miniters=100000):
 
             if node.label and node.label in self.condensed_nodes_dict:
 
@@ -160,7 +160,8 @@ class UsherMutationAnnotatedTree:
     def get_condensed_nodes_dict(self, condensed_nodes_dict):
         output_dict = {}
         for condensed_node in tqdm.tqdm(condensed_nodes_dict,
-                                        desc="Reading condensed nodes dict"):
+                                        desc="Reading condensed nodes dict",
+                                        miniters=100000):
             output_dict[
                 condensed_node.node_name] = condensed_node.condensed_leaves
         return output_dict
@@ -239,7 +240,8 @@ print("Reading time tree")
 time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
 time_tree_iter = preorder_traversal(time_tree.root)
 for i, node in tqdm.tqdm(enumerate(preorder_traversal(mat.tree.root)),
-                         desc="Adding time tree"):
+                         desc="Adding time tree",
+                         miniters=100000):
     time_tree_node = next(time_tree_iter)
     node.time_length = time_tree_node.edge_length
 del time_tree
@@ -328,7 +330,7 @@ metadata['date'] = metadata['date'].astype(str)
 metadata['country'] = metadata['country'].astype(str)
 metadata['genbank_accession'] = metadata['genbank_accession'].astype(str)
 
-for i, x in tqdm.tqdm(enumerate(all_nodes)):
+for i, x in tqdm.tqdm(enumerate(all_nodes), miniters=100000):
     xes.append(x.x * 0.2)
     time_xes.append(x.x_time * 0.018)
     yes.append(x.y / 40000)
