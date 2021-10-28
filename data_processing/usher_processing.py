@@ -333,7 +333,7 @@ metadata['genbank_accession'] = metadata['genbank_accession'].astype(str)
 for i, x in tqdm.tqdm(enumerate(all_nodes), miniters=100000):
     xes.append(x.x * 0.2)
     time_xes.append(x.x_time * 0.018)
-    yes.append(x.y / 40000)
+    yes.append(x.y / 60000)
     path_list_rev = x.path_list[::-1]
     if len(path_list_rev) > 0:
         parents.append(path_list_rev[0])
