@@ -35,6 +35,8 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  xType,
+  setXType,
   blinkingEnabled,
   setBlinkingEnabled,
   metadataItemList,
@@ -125,6 +127,10 @@ function SearchPanel({
           Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK
           and CNCB
         </div>
+        <select value={xType} onChange={(e) => setXType(e.target.value)}>
+          <option value="distance">Distance</option>
+          <option value="time">Time</option>
+        </select>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <div className="float-right mr-3 text-gray-500 text-sm">
           <input
