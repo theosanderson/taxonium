@@ -35,6 +35,9 @@ function numberWithCommas(x) {
 }
 
 function SearchPanel({
+  possibleXTypes,
+  xType,
+  setXType,
   blinkingEnabled,
   setBlinkingEnabled,
   metadataItemList,
@@ -124,6 +127,16 @@ function SearchPanel({
         <div className="mt-3 mb-3 text-gray-500 text-sm">
           Displaying {numberWithCommas(totalSeqs)} sequences from INSDC, COG-UK
           and CNCB
+        </div>
+        <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
+        Tree type: <select value={xType} onChange={(e) => setXType(e.target.value)}
+        className="border py-1 px-1 text-grey-darkest text-sm">
+          {possibleXTypes.map((x) => (
+            <option key={x} value={x}>
+              {toTitleCase(x)}
+            </option>
+          ))}
+        </select>
         </div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <div className="float-right mr-3 text-gray-500 text-sm">

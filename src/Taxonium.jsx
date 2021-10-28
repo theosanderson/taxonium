@@ -78,30 +78,53 @@ function Taxonium({protoUrl,uploadedData, query,setQuery}) {
     },
     [setColourBy]
   );
-  const [nodeData, setNodeData] = useState({
+  const [mainDataOriginal, setmainData] = useState({
     status: "not_attempted",
     data: { node_data: { ids: [] } },
   });
 
+  const [xType, setXType] = useState("distance");
+
+  const mainData = useMemo(() => {
+    
+    
+    const newData = {...mainDataOriginal}
+    if(xType==="time"){
+      newData.data.node_data.x_cur = newData.data.node_data.time_x;
+      }
+      else{
+        newData.data.node_data.x_cur = newData.data.node_data.x;
+      }
+      console.log(xType)
+      return newData;
+      
+    }
+    
+    
+    
+  
+  
+  , [mainDataOriginal,xType]);
+
   const metadataItemList = useMemo(()=>{
-    if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_singles){
+    if(!mainData.data.node_data || !mainData.data.node_data.metadata_singles){
       return []
     }
-     return nodeData.data.node_data.metadata_singles.map(x=>x.metadata_name)
+     return mainData.data.node_data.metadata_singles.map(x=>x.metadata_name)
 
     
-  },[nodeData])
+  },[mainData])
 
   const getMetadataItem = useCallback((name)=>{
    
-    if(!nodeData.data.node_data || !nodeData.data.node_data.metadata_singles){
+    if(!mainData.data.node_data || !mainData.data.node_data.metadata_singles){
       return {mapping:[],node_data:[]}
     }
-    const metadata_item = nodeData.data.node_data.metadata_singles.filter(x=>x.metadata_name===name)[0]
+    const metadata_item = mainData.data.node_data.metadata_singles.filter(x=>x.metadata_name===name)[0]
     return metadata_item
 
 
-  },[nodeData])
+  },[mainData])
 
   const [selectedNode, setSelectedNode] = useState(null);
 
@@ -118,7 +141,7 @@ function getRawfile(protoUrl, uploadedData) {
               let percentCompleted = Math.floor(
                 1 * (progressEvent.loaded / 50000000) * 100
               );
-              setNodeData({
+              setmainData({
                 status: "loading",
                 progress: percentCompleted,
                 data: { node_data: { ids: [] } },
@@ -137,9 +160,9 @@ function getRawfile(protoUrl, uploadedData) {
       }
 
   useEffect(() => {
-    if (nodeData.status === "not_attempted") {
+    if (mainData.status === "not_attempted") {
       console.log("starting dl");
-      setNodeData({
+      setmainData({
         status: "loading",
         progress: 0,
         data: { node_data: { ids: [] } },
@@ -193,16 +216,16 @@ function getRawfile(protoUrl, uploadedData) {
             });
 
             result.all_genes = Array.from(all_genes).sort();
-            setNodeData({ status: "loaded", data: result });
+            setmainData({ status: "loaded", data: result });
           });
       });
     }
-  }, [nodeData.status, query.protoUrl, uploadedData]);
+  }, [mainData.status, query.protoUrl, uploadedData]);
 
   const data = useMemo(
     () =>
-      nodeData.status === "loaded" ? nodeData.data : { node_data: { ids: [] } },
-    [nodeData]
+      mainData.status === "loaded" ? mainData.data : { node_data: { ids: [] } },
+    [mainData]
   );
 
   const scatterIds = useMemo(
@@ -304,7 +327,7 @@ function getRawfile(protoUrl, uploadedData) {
         lineWidthScale: 1,
 
         getPosition: (d) => {
-          return [data.node_data.x[d], data.node_data.y[d]];
+          return [data.node_data.x_cur[d], data.node_data.y[d]];
         },
         getFillColor: (d) => [0, 0, 0],
         getLineColor: (d) => searchColors[counter % searchColors.length],
@@ -317,6 +340,17 @@ function getRawfile(protoUrl, uploadedData) {
   }, [data, searchItems, scatterIds, getMetadataItem, metadataItemList]);
 
   
+  const possibleXTypes = useMemo(() => {
+    const possibilities = []
+    if(mainData.data.node_data.x){
+      possibilities.push("distance")
+    }
+    if(mainData.data.node_data.time_x){
+      possibilities.push("time")
+    }
+    return possibilities
+  },[mainData])
+
 
   return (
         <div className="main_content">
@@ -334,13 +368,16 @@ function getRawfile(protoUrl, uploadedData) {
                 setSelectedNode={setSelectedNode}
                 searchItems={searchItems}
                 data={data}
-                progress={nodeData.progress}
+                progress={mainData.progress}
                 colourBy={colourBy}
                 zoomToSearch={ zoomToSearch }
               />
             </div>
             <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
               <SearchPanel
+              xType = {xType}
+              setXType = {setXType}
+              possibleXTypes = {possibleXTypes}
               blinkingEnabled = {blinkingEnabled}
               setBlinkingEnabled = {setBlinkingEnabled}
               metadataItemList = {metadataItemList}
