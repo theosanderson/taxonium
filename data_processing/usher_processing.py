@@ -232,7 +232,7 @@ print("Launching chronumental")
 import os
 
 os.system(
-    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk"
+    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk --dates_out ../public/date_comparison.tsv.gz"
 )
 
 print("Reading time tree")
