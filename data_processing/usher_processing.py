@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-# THIS SCRIPT NEEDS REFACTORING, IT'S GOT BODGED TOGETHER AND ONLY PARTIALLY CONVERTED TO DENDROPY
-# SO DOESN'T MAKE BEST USE OF ITS FEATURES
+
 
 from collections import defaultdict
 import numpy as np
