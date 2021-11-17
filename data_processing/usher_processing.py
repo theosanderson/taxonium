@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-
-
 from collections import defaultdict
 import numpy as np
 import pandas as pd
@@ -96,7 +94,37 @@ def get_aa_sub(pos, par, alt):
     return None
 
 
-# In[18]:
+def get_aa_subs(mutations):
+    aa_subs = []
+    for gene in cov2_genome.genes:
+        gene_range = cov2_genome.genes[gene]
+        for codon_start in tqdm.tqdm(
+                range(gene_range[0] - 1, gene_range[1] - 1, 3)):
+            starting_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
+            final_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
+            codon_pos = (codon_start + 1 - gene_range[0]) // 3 + 1
+            for mutation in mutations:
+                if mutation.position >= codon_start and mutation.position <= (
+                        codon_start + 2):
+                    offset = mutation.position - (codon_start + 1)
+                    starting_codon[offset] = mutation.par_nuc
+                    final_codon[offset] = NUC_ENUM[mutation.mut_nuc[0]]
+                starting_codon = "".join(starting_codon)
+                final_codon = "".join(final_codon)
+            if starting_codon != final_codon:
+                if codon_table[starting_codon] != codon_table[final_codon]:
+                    aa_subs.append(
+                        f"{gene}:{codon_table[starting_codon]}_{codon_pos}_{codon_table[final_codon]}"
+                    )
+    return aa_subs
+
+
+def substitutions_from_mutations(mutations):
+    for gene_name, gene_range in cov2_genome.genes.items():
+        relevant_codons = []
+        for mut in mutations:
+            pos = mut.position
+
 
 import tqdm
 from io import StringIO
@@ -130,15 +158,7 @@ class UsherMutationAnnotatedTree:
         for i, node in tqdm.tqdm(enumerate(preorder_traversal(self.tree.root)),
                                  desc="Annotating mutations",
                                  miniters=100000):
-            node.aa_subs = []
-            for mut in node.nuc_mutations.mutation:
-                ref = NUC_ENUM[mut.ref_nuc]
-                alt = NUC_ENUM[mut.mut_nuc[0]]
-                par = NUC_ENUM[mut.par_nuc]
-                aa_sub = get_aa_sub(mut.position, par, alt)
-
-                if aa_sub:
-                    node.aa_subs.append(aa_sub)
+            node.aa_subs = get_aa_subs(node.nuc_mutations.mutation)
 
     def expand_condensed_nodes(self):
         for i, node in tqdm.tqdm(enumerate(self.tree.traverse_leaves()),
