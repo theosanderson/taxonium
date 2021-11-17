@@ -107,7 +107,7 @@ def get_aa_subs(mutations):
                 if mutation.position >= codon_start and mutation.position <= (
                         codon_start + 2):
                     offset = mutation.position - (codon_start + 1)
-                    starting_codon[offset] = mutation.par_nuc
+                    starting_codon[offset] = NUC_ENUM[mutation.par_nuc]
                     final_codon[offset] = NUC_ENUM[mutation.mut_nuc[0]]
                 starting_codon = "".join(starting_codon)
                 final_codon = "".join(final_codon)
