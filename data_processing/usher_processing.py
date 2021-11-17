@@ -112,7 +112,7 @@ def get_aa_subs(mutations):
             starting_codon = "".join(starting_codon).upper()
             final_codon = "".join(final_codon).upper()
             if starting_codon != final_codon:
-                if codon_table[starting_codon] != codon_table[final_codon.upper]:
+                if codon_table[starting_codon] != codon_table[final_codon]:
                     aa_subs.append(
                         f"{gene}:{codon_table[starting_codon]}_{codon_pos}_{codon_table[final_codon]}"
                     )
