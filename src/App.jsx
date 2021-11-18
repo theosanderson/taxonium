@@ -129,7 +129,7 @@ function onDrop(ev) {
 
     </div>
     <p className="text-md text-gray-700 font-semibold mb-2">
-    or <a className="text-blue-500" href="/nodelist.pb.gz">load the public SARS-CoV-2 tree</a>.
+    or <a className="text-blue-500" href="/?protoUrl=%2Fnodelist.pb.gz">load the public SARS-CoV-2 tree</a>.
     </p> </div>
 }
         </Suspense>
