@@ -95,26 +95,28 @@ def get_aa_sub(pos, par, alt):
 
 
 def get_aa_subs(mutations):
+    mutation_positions = set([x.position for x in mutations])
     aa_subs = []
     for gene in cov2_genome.genes:
         gene_range = cov2_genome.genes[gene]
         for codon_start in  range(gene_range[0] - 1, gene_range[1] - 1, 3):
-            starting_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
-            final_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
-            codon_pos = (codon_start + 1 - gene_range[0]) // 3 + 1
-            for mutation in mutations:
-                if mutation.position >= codon_start and mutation.position <= (
-                        codon_start + 2):
-                    offset = mutation.position - (codon_start + 1)
-                    starting_codon[offset] = NUC_ENUM[mutation.par_nuc]
-                    final_codon[offset] = NUC_ENUM[mutation.mut_nuc[0]]
-            starting_codon = "".join(starting_codon).upper()
-            final_codon = "".join(final_codon).upper()
-            if starting_codon != final_codon:
-                if codon_table[starting_codon] != codon_table[final_codon]:
-                    aa_subs.append(
-                        f"{gene}:{codon_table[starting_codon]}_{codon_pos}_{codon_table[final_codon]}"
-                    )
+            if codon_start in mutation_positions or (codon_start+1) in mutation_positions or (codon_start+2) in mutation_positions:
+                starting_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
+                final_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
+                codon_pos = (codon_start + 1 - gene_range[0]) // 3 + 1
+                for mutation in mutations:
+                    if mutation.position >= codon_start and mutation.position <= (
+                            codon_start + 2):
+                        offset = mutation.position - (codon_start + 1)
+                        starting_codon[offset] = NUC_ENUM[mutation.par_nuc]
+                        final_codon[offset] = NUC_ENUM[mutation.mut_nuc[0]]
+                starting_codon = "".join(starting_codon).upper()
+                final_codon = "".join(final_codon).upper()
+                if starting_codon != final_codon:
+                    if codon_table[starting_codon] != codon_table[final_codon]:
+                        aa_subs.append(
+                            f"{gene}:{codon_table[starting_codon]}_{codon_pos}_{codon_table[final_codon]}"
+                        )
     return aa_subs
 
 
