@@ -100,7 +100,7 @@ def get_aa_subs(mutations):
     for gene in cov2_genome.genes:
         gene_range = cov2_genome.genes[gene]
         for codon_start in  range(gene_range[0] - 1, gene_range[1] - 1, 3):
-            if codon_start in mutation_positions or (codon_start+1) in mutation_positions or (codon_start+2) in mutation_positions:
+            if codon_start in mutation_positions or (codon_start+1) in mutation_positions or (codon_start+2) in mutation_positions or (codon_start+3) in mutation_positions:
                 starting_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
                 final_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
                 codon_pos = (codon_start + 1 - gene_range[0]) // 3 + 1
