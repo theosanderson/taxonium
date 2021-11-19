@@ -12,6 +12,12 @@ You can now generate Taxonium format files from [UShER](https://github.com/yatis
 
 For datasets that aren't UShER-suited you would at the moment need to create your own `data_processing` directory, which is adapted to produce the `nodelist.pb` file from your own datasets. We will try to streamline this. Feel free to raise an Issue requesting help!
 
+### Cloning the repo
+
+For convenience we currently keep the trees checked into the repo. This makes the repo very big.
+
+```git clone -–depth 1 https://github.com/theosanderson/taxonium```
+
 ## Development instructions
 
 ```
