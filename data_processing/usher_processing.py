@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from collections import defaultdict
+import collections
 import numpy as np
 import pandas as pd
 import taxonium_pb2
@@ -95,16 +96,25 @@ def get_aa_sub(pos, par, alt):
 
 
 def get_aa_subs(mutations):
-    poss_mutation_positions = set([x.position -1 for x in mutations])
-    poss_mutation_positions.update( set([x.position -1 -1 for x in mutations]))
-    poss_mutation_positions.update( set([x.position -1 -2 for x in mutations]))
+    poss_mutation_positions = set([x.position - 1 for x in mutations])
+    poss_mutation_positions.update(set([x.position - 1 - 1
+                                        for x in mutations]))
+    poss_mutation_positions.update(set([x.position - 1 - 2
+                                        for x in mutations]))
     aa_subs = []
     for gene in cov2_genome.genes:
         gene_range = cov2_genome.genes[gene]
-        for codon_start in  set(range(gene_range[0] - 1, gene_range[1] - 1, 3)).intersection(poss_mutation_positions):
+
+        def is_a_codon_start(x):
+            return x >= (gene_range[0] - 1) and x <= (gene_range[1] - 1) and (
+                (x - (gene_range[0] - 1)) % 3) == 0
+
+        for codon_start in filter(is_a_codon_start, poss_mutation_positions):
             if True:
-                starting_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
-                final_codon = list(cov2_genome.seq[codon_start:codon_start + 3])
+                starting_codon = list(cov2_genome.seq[codon_start:codon_start +
+                                                      3])
+                final_codon = list(cov2_genome.seq[codon_start:codon_start +
+                                                   3])
                 codon_pos = (codon_start + 1 - gene_range[0]) // 3 + 1
                 for mutation in mutations:
                     if mutation.position >= codon_start and mutation.position <= (
@@ -158,9 +168,11 @@ class UsherMutationAnnotatedTree:
             node.edge_length = len(node.nuc_mutations.mutation)
 
     def annotate_aa_mutations(self):
+
         for i, node in tqdm.tqdm(enumerate(preorder_traversal(self.tree.root)),
                                  desc="Annotating mutations",
                                  miniters=100000):
+
             node.aa_subs = get_aa_subs(node.nuc_mutations.mutation)
 
     def expand_condensed_nodes(self):
@@ -254,9 +266,10 @@ mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
 print("Launching chronumental")
 import os
 
-os.system(
-    "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk --dates_out ../public/date_comparison.tsv.gz"
-)
+if False:
+    os.system(
+        "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk --dates_out ../public/date_comparison.tsv.gz --model AdditiveRelaxedClock --name_all_nodes"
+    )
 
 print("Reading time tree")
 time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
@@ -266,6 +279,7 @@ for i, node in tqdm.tqdm(enumerate(preorder_traversal(mat.tree.root)),
                          miniters=100000):
     time_tree_node = next(time_tree_iter)
     node.time_length = time_tree_node.edge_length
+    node.label = time_tree_node.label
 del time_tree
 del time_tree_iter
 
@@ -352,6 +366,7 @@ metadata['date'] = metadata['date'].astype(str)
 metadata['country'] = metadata['country'].astype(str)
 metadata['genbank_accession'] = metadata['genbank_accession'].astype(str)
 
+initial_names = []
 for i, x in tqdm.tqdm(enumerate(all_nodes), miniters=100000):
     xes.append(x.x * 0.2)
     time_xes.append(x.x_time * 0.018)
@@ -369,6 +384,7 @@ for i, x in tqdm.tqdm(enumerate(all_nodes), miniters=100000):
 
     else:
         final_name = ""
+    initial_names.append(name)
     names.append(final_name)
 
     try:
@@ -422,6 +438,30 @@ lineage_metadata_obj = taxonium_pb2.MetadataSingleValuePerNode(
     mapping=lineage_mapping_list,
     node_values=lineages)
 
+files_list = ["mutation_rates.tsv"]
+
+metadata_objs = []
+for file in files_list:
+    info = pd.read_csv(file, sep="\t" if file.endswith(".tsv") else ",")
+
+    for column in info.columns:
+        if column == "strain":
+            continue
+        lookup = collections.defaultdict(str)
+        info[column] = info[column].astype(str)
+
+        lookup.update(dict(zip(info['strain'], info[column])))
+        this_mapping, this_lookup = make_mapping(
+            info[column].unique().tolist())
+        this_metadata_obj = taxonium_pb2.MetadataSingleValuePerNode(
+            metadata_name=column,
+            mapping=this_mapping,
+            node_values=[this_lookup[lookup[x]] for x in initial_names])
+        metadata_objs.append(this_metadata_obj)
+
+metadata_objs.append(country_metadata_obj)
+metadata_objs.append(lineage_metadata_obj)
+
 all_node_data = taxonium_pb2.AllNodeData(
     genbanks=genbanks,
     names=names,
@@ -433,7 +473,7 @@ all_node_data = taxonium_pb2.AllNodeData(
     parents=parents,
     num_tips=num_tips,
     epi_isl_numbers=epi_isls,
-    metadata_singles=[country_metadata_obj, lineage_metadata_obj])
+    metadata_singles=metadata_objs)
 
 all_data = taxonium_pb2.AllData(node_data=all_node_data,
                                 mutation_mapping=mutation_mapping_list,
