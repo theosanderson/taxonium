@@ -14,7 +14,7 @@ For datasets that aren't UShER-suited you would at the moment need to create you
 
 ### Cloning the repo
 
-For convenience we currently keep the trees checked into the repo. This makes the repo very big.
+For convenience we currently keep the trees checked into the repo. This makes the repo very big. But you can only check out the latest commits using.
 
 ```git clone -–depth 1 https://github.com/theosanderson/taxonium```
 
