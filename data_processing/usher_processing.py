@@ -259,7 +259,7 @@ import os
 os.system("gzip /tmp/distance_tree.nwk")
 import sys
 
-sys.exit(1)
+sys.exit(0)
 
 os.system(
     "chronumental --tree /tmp/distance_tree.nwk --dates ./public-latest.metadata.tsv.gz --steps 1400 --tree_out /tmp/timetree.nwk --dates_out ../public/date_comparison.tsv.gz"
