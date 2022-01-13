@@ -160,13 +160,13 @@ class UsherMutationAnnotatedTree:
     def annotate_aa_mutations(self):
         for i, node in tqdm.tqdm(enumerate(preorder_traversal(self.tree.root)),
                                  desc="Annotating mutations",
-                                 miniters=100000):
+                                 miniters=100000,mininterval=10):
             node.aa_subs = get_aa_subs(node.nuc_mutations.mutation)
 
     def expand_condensed_nodes(self):
         for i, node in tqdm.tqdm(enumerate(self.tree.traverse_leaves()),
                                  desc="Expanding condensed nodes",
-                                 miniters=100000):
+                                 miniters=100000,mininterval=10):
 
             if node.label and node.label in self.condensed_nodes_dict:
 
@@ -183,7 +183,7 @@ class UsherMutationAnnotatedTree:
         output_dict = {}
         for condensed_node in tqdm.tqdm(condensed_nodes_dict,
                                         desc="Reading condensed nodes dict",
-                                        miniters=100000):
+                                        miniters=100000,mininterval=10):
             output_dict[
                 condensed_node.node_name] = condensed_node.condensed_leaves
         return output_dict
