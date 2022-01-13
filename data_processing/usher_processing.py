@@ -321,7 +321,7 @@ all_lineages = metadata['pangolin_lineage'].unique().tolist()
 lineage_mapping_list, lineage_mapping_lookup = make_mapping(all_lineages)
 
 all_dates = metadata['date'].unique().tolist()
-date_mapping_list, date_mapping_lookup = make_mapping(all_dates)
+date_mapping_list, date_mapping_lookup = make_mapping(all_dates + ['nan'])
 
 all_countries = metadata['country'].unique().tolist()
 country_mapping_list, country_mapping_lookup = make_mapping(all_countries)
