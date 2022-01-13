@@ -28,8 +28,6 @@ jobs:
       - name: Run
         run: python3 usher_processing.py
         working-directory: ./data_processing/
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v2
+      - uses: EndBug/add-and-commit@v7
         with:
-          name: code-coverage-report
-          path: /tmp/distance_tree.nwk.gz
+          default_author: github_actions
