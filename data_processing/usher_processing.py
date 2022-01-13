@@ -249,14 +249,14 @@ def align_parents(tree_by_level):
                 node.y = (np.min(childrens_y) + np.max(childrens_y)) / 2
 
 
-mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
+mat.tree.write_tree_newick("distance_tree.nwk")
 
 
 
 print("Launching chronumental")
 import os
 
-os.system("gzip /tmp/distance_tree.nwk")
+os.system("gzip distance_tree.nwk")
 import sys
 
 sys.exit(0)
