@@ -6,6 +6,7 @@ import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
+import pako from "pako";
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 const TaxoniumUploader = React.lazy(() => import("./components/TaxoniumUploader"));
@@ -14,8 +15,18 @@ function App() {
     function readFile(file){
         const reader = new FileReader();
       reader.onload = () => {
-        setUploadedData(reader.result);
+
+        //setUploadedData(reader.result);
+        if (file.name.endsWith(".gz")) {
+          setUploadedData(pako.ungzip(reader.result));
+        }
+        else {
+          setUploadedData(reader.result);
+        }
+
       };
+      
+
       reader.readAsArrayBuffer(file);
     }
     const [query, setQuery] = useQueryAsState({
