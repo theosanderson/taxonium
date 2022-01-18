@@ -171,10 +171,16 @@ function getRawfile(protoUrl, uploadedData) {
       protobuf.load("./taxonium.proto").then(function (root) {
         getRawfile(query.protoUrl,uploadedData).then(function (buffer) {
             console.log("buffer loaded");
+            try{
             var NodeList = root.lookupType("AllData");
 
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
+            }
+            catch(e){
+              console.log(e)
+              window.alert("Error loading input file. Please check the file supplied is a valid taxonium file.")
+            }
 
             if(result.node_data.metadata_singles){
               
