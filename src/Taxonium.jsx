@@ -147,8 +147,10 @@ function getRawfile(protoUrl, uploadedData) {
                 data: { node_data: { ids: [] } },
               });
             },
-          })
-          .then(function (response) {
+          }).catch(err=>{
+            console.log(err)
+            window.alert(err+"\n\nPlease check the URL entered, or your internet connection, and try again.")
+          }).then(function (response) {
             if(protoUrl.endsWith(".gz")){
               return pako.ungzip(response.data);
             }
@@ -156,6 +158,7 @@ function getRawfile(protoUrl, uploadedData) {
               return response.data;
             
           }})
+
         }
       }
 
