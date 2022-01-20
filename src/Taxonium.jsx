@@ -7,11 +7,7 @@ import pako from "pako";
 
 //import {FaGithub} from  "react-icons/fa";
 
-
 var protobuf = require("protobufjs");
-
-
-
 
 protobuf.parse.defaults.keepCase = true;
 
@@ -24,32 +20,30 @@ const searchColors = [
   [0, 255, 255],
 ];
 
+function Taxonium({ protoUrl, uploadedData, query, setQuery }) {
+  const [zoomToSearch, setZoomToSearchOrig] = useState({
+    index: query.zoomToSearch ? parseInt(query.zoomToSearch) : null,
+  });
 
+  const setZoomToSearch = useCallback(
+    (info) => {
+      let newQuery = { ...query };
+      delete newQuery.zoomToSearch;
+      setQuery(newQuery);
+      setZoomToSearchOrig(info);
+    },
+    [setZoomToSearchOrig, query, setQuery]
+  );
 
-function Taxonium({protoUrl,uploadedData, query,setQuery}) {
-  
-  const [zoomToSearch, setZoomToSearchOrig] = useState({index: (query.zoomToSearch ? parseInt(query.zoomToSearch) : null)} );
-  const setZoomToSearch = useCallback( (info) => {
- 
-    let newQuery = {...query}
-    delete newQuery.zoomToSearch
-    setQuery(newQuery);
-    setZoomToSearchOrig(info);
-  }
-  , [setZoomToSearchOrig,query,setQuery]);
   const [showMutText, setShowMutText] = useState(false);
 
   const searchItems = useMemo(() => JSON.parse(query.search), [query.search]);
 
-
-
-
   const setSearchItems = useCallback(
     (search) => {
       // Clear zoomToSearch if it is set
-      setZoomToSearchOrig({index: -1});
+      setZoomToSearchOrig({ index: -1 });
       setQuery({ ...query, search: JSON.stringify(search), zoomToSearch: -1 });
-      
     },
     [setQuery, query]
   );
@@ -63,12 +57,12 @@ function Taxonium({protoUrl,uploadedData, query,setQuery}) {
 
   const setBlinkingEnabled = useCallback(
     (enabled) => {
-      setQuery({ ...query, blinking:enabled? "true":"false" });
+      setQuery({ ...query, blinking: enabled ? "true" : "false" });
     },
     [setQuery, query]
   );
 
-  const blinkingEnabled=query.blinking==="true";
+  const blinkingEnabled = query.blinking === "true";
 
   const colourBy = useMemo(() => JSON.parse(query.colourBy), [query.colourBy]);
 
@@ -86,81 +80,79 @@ function Taxonium({protoUrl,uploadedData, query,setQuery}) {
   const [xType, setXType] = useState("distance");
 
   const mainData = useMemo(() => {
-    
-    
-    const newData = {...mainDataOriginal}
-    if(xType==="time"){
+    const newData = { ...mainDataOriginal };
+    if (xType === "time") {
       newData.data.node_data.x_cur = newData.data.node_data.time_x;
+    } else {
+      newData.data.node_data.x_cur = newData.data.node_data.x;
+    }
+    console.log(xType);
+    return newData;
+  }, [mainDataOriginal, xType]);
+
+  const metadataItemList = useMemo(() => {
+    if (!mainData.data.node_data || !mainData.data.node_data.metadata_singles) {
+      return [];
+    }
+    return mainData.data.node_data.metadata_singles.map((x) => x.metadata_name);
+  }, [mainData]);
+
+  const getMetadataItem = useCallback(
+    (name) => {
+      if (
+        !mainData.data.node_data ||
+        !mainData.data.node_data.metadata_singles
+      ) {
+        return { mapping: [], node_data: [] };
       }
-      else{
-        newData.data.node_data.x_cur = newData.data.node_data.x;
-      }
-      console.log(xType)
-      return newData;
-      
-    }
-    
-    
-    
-  
-  
-  , [mainDataOriginal,xType]);
-
-  const metadataItemList = useMemo(()=>{
-    if(!mainData.data.node_data || !mainData.data.node_data.metadata_singles){
-      return []
-    }
-     return mainData.data.node_data.metadata_singles.map(x=>x.metadata_name)
-
-    
-  },[mainData])
-
-  const getMetadataItem = useCallback((name)=>{
-   
-    if(!mainData.data.node_data || !mainData.data.node_data.metadata_singles){
-      return {mapping:[],node_data:[]}
-    }
-    const metadata_item = mainData.data.node_data.metadata_singles.filter(x=>x.metadata_name===name)[0]
-    return metadata_item
-
-
-  },[mainData])
+      const metadata_item = mainData.data.node_data.metadata_singles.filter(
+        (x) => x.metadata_name === name
+      )[0];
+      return metadata_item;
+    },
+    [mainData]
+  );
 
   const [selectedNode, setSelectedNode] = useState(null);
 
+  function getRawfile(protoUrl, uploadedData) {
+    if (uploadedData) {
+      return new Promise((resolve, reject) => {
+        resolve(uploadedData);
+      });
+    } else {
+      console.log("aaaa", protoUrl);
 
-function getRawfile(protoUrl, uploadedData) {
-  if(uploadedData){
-    return new Promise((resolve, reject) => {resolve(uploadedData)} )
-      }    else{
-        console.log("aaaa",protoUrl)
-
-  return axios.get(protoUrl, {
-            responseType: "arraybuffer",
-            onDownloadProgress: (progressEvent) => {
-              let percentCompleted = Math.floor(
-                1 * (progressEvent.loaded / 50000000) * 100
-              );
-              setmainData({
-                status: "loading",
-                progress: percentCompleted,
-                data: { node_data: { ids: [] } },
-              });
-            },
-          }).catch(err=>{
-            console.log(err)
-            window.alert(err+"\n\nPlease check the URL entered, or your internet connection, and try again.")
-          }).then(function (response) {
-            if(protoUrl.endsWith(".gz")){
-              return pako.ungzip(response.data);
-            }
-            else{
-              return response.data;
-            
-          }})
-
-        }
-      }
+      return axios
+        .get(protoUrl, {
+          responseType: "arraybuffer",
+          onDownloadProgress: (progressEvent) => {
+            let percentCompleted = Math.floor(
+              1 * (progressEvent.loaded / 50000000) * 100
+            );
+            setmainData({
+              status: "loading",
+              progress: percentCompleted,
+              data: { node_data: { ids: [] } },
+            });
+          },
+        })
+        .catch((err) => {
+          console.log(err);
+          window.alert(
+            err +
+              "\n\nPlease check the URL entered, or your internet connection, and try again."
+          );
+        })
+        .then(function (response) {
+          if (protoUrl.endsWith(".gz")) {
+            return pako.ungzip(response.data);
+          } else {
+            return response.data;
+          }
+        });
+    }
+  }
 
   useEffect(() => {
     if (mainData.status === "not_attempted") {
@@ -172,61 +164,63 @@ function getRawfile(protoUrl, uploadedData) {
       });
 
       protobuf.load("./taxonium.proto").then(function (root) {
-        getRawfile(query.protoUrl,uploadedData).then(function (buffer) {
-            console.log("buffer loaded");
-            try{
+        getRawfile(query.protoUrl, uploadedData).then(function (buffer) {
+          console.log("buffer loaded");
+          try {
             var NodeList = root.lookupType("AllData");
 
             var message = NodeList.decode(new Uint8Array(buffer));
             var result = NodeList.toObject(message);
-            }
-            catch(e){
-              console.log(e)
-              window.alert("Error loading input file. Please check the file supplied is a valid taxonium file.")
-            }
+          } catch (e) {
+            console.log(e);
+            window.alert(
+              "Error loading input file. Please check the file supplied is a valid taxonium file."
+            );
+          }
 
-            if(result.node_data.metadata_singles){
-              
-
-              result.node_data.metadata_singles.forEach(x=>{x.metadata_name=x.metadata_name.toLowerCase()} )
-
-            }
-
-
-            if(!result.node_data.metadata_singles){
-
-              result.node_data.metadata_singles = [
-                {metadata_name:"country",mapping:result.country_mapping, node_values: result.node_data.countries},
-                {metadata_name:"lineage",mapping:result.lineage_mapping, node_values: result.node_data.lineages}
-               ]
-
-            }
-
-            
-
-
-            result.node_data.ids = [...Array(result.node_data.x.length).keys()];
-
-            const all_genes = new Set();
-            result.mutation_mapping = result.mutation_mapping.map((x, i) => {
-              const mutation_array = {};
-
-              const [gene, rest] = x.split(":");
-              if (rest) {
-                const [orig_res, position, final_res] = rest.split("_");
-                mutation_array.gene = gene;
-                mutation_array.position = position;
-                mutation_array.orig_res = orig_res;
-                mutation_array.final_res = final_res;
-                all_genes.add(gene);
-              }
-              mutation_array.id = i;
-              return mutation_array;
+          if (result.node_data.metadata_singles) {
+            result.node_data.metadata_singles.forEach((x) => {
+              x.metadata_name = x.metadata_name.toLowerCase();
             });
+          }
 
-            result.all_genes = Array.from(all_genes).sort();
-            setmainData({ status: "loaded", data: result });
+          if (!result.node_data.metadata_singles) {
+            result.node_data.metadata_singles = [
+              {
+                metadata_name: "country",
+                mapping: result.country_mapping,
+                node_values: result.node_data.countries,
+              },
+              {
+                metadata_name: "lineage",
+                mapping: result.lineage_mapping,
+                node_values: result.node_data.lineages,
+              },
+            ];
+          }
+
+          result.node_data.ids = [...Array(result.node_data.x.length).keys()];
+
+          const all_genes = new Set();
+          result.mutation_mapping = result.mutation_mapping.map((x, i) => {
+            const mutation_array = {};
+
+            const [gene, rest] = x.split(":");
+            if (rest) {
+              const [orig_res, position, final_res] = rest.split("_");
+              mutation_array.gene = gene;
+              mutation_array.position = position;
+              mutation_array.orig_res = orig_res;
+              mutation_array.final_res = final_res;
+              all_genes.add(gene);
+            }
+            mutation_array.id = i;
+            return mutation_array;
           });
+
+          result.all_genes = Array.from(all_genes).sort();
+          setmainData({ status: "loaded", data: result });
+        });
       });
     }
   }, [mainData.status, query.protoUrl, uploadedData]);
@@ -244,11 +238,9 @@ function getRawfile(protoUrl, uploadedData) {
 
   const [search_configs_initial, numSearchResults, totalSeqs] = useMemo(() => {
     const configs = searchItems.map((item, counter) => {
-    
-      let filter_function = (x)=> false;
+      let filter_function = (x) => false;
       const lowercase_query = item.value.toLowerCase().trim();
       if (item.category === "mutation") {
-        
         const subset = data.mutation_mapping
           ? data.mutation_mapping
               .filter(
@@ -274,13 +266,11 @@ function getRawfile(protoUrl, uploadedData) {
           data.node_data.names[x].toLowerCase().includes(lowercase_query); //TODO precompute lowercase mapping for perf?
       }
 
-      if (metadataItemList.includes(item.category )){
-        const info =getMetadataItem(item.category)
+      if (metadataItemList.includes(item.category)) {
+        const info = getMetadataItem(item.category);
         filter_function = (x) =>
-          info.mapping[info.node_values[x]].toLowerCase() ===
-          lowercase_query; //TODO precompute lowercase mapping for perf
+          info.mapping[info.node_values[x]].toLowerCase() === lowercase_query; //TODO precompute lowercase mapping for perf
       }
-      
 
       if (item.category === "epis") {
         if (!item.search_for_ids) {
@@ -348,66 +338,63 @@ function getRawfile(protoUrl, uploadedData) {
     return [filtered_configs, num_results, scatterIds.length];
   }, [data, searchItems, scatterIds, getMetadataItem, metadataItemList]);
 
-  
   const possibleXTypes = useMemo(() => {
-    const possibilities = []
-    if(mainData.data.node_data.x){
-      possibilities.push("distance")
+    const possibilities = [];
+    if (mainData.data.node_data.x) {
+      possibilities.push("distance");
     }
-    if(mainData.data.node_data.time_x){
-      possibilities.push("time")
+    if (mainData.data.node_data.time_x) {
+      possibilities.push("time");
     }
-    return possibilities
-  },[mainData])
-
+    return possibilities;
+  }, [mainData]);
 
   return (
-        <div className="main_content">
-          <div className="md:grid md:grid-cols-12 h-full">
-            <div className="md:col-span-8 h-3/6 md:h-full w-full">
-              <Deck
-              blinkingEnabled = {blinkingEnabled}
-              metadataItemList = {metadataItemList}
-              getMetadataItem = {getMetadataItem}
-                showMutText={showMutText}
-                search_configs_initial={search_configs_initial}
-                scatterIds={scatterIds}
-                searchColors={searchColors}
-                selectedNode={selectedNode}
-                setSelectedNode={setSelectedNode}
-                searchItems={searchItems}
-                data={data}
-                progress={mainData.progress}
-                colourBy={colourBy}
-                zoomToSearch={ zoomToSearch }
-              />
-            </div>
-            <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
-              <SearchPanel
-              xType = {xType}
-              setXType = {setXType}
-              possibleXTypes = {possibleXTypes}
-              blinkingEnabled = {blinkingEnabled}
-              setBlinkingEnabled = {setBlinkingEnabled}
-              metadataItemList = {metadataItemList}
-              getMetadataItem = {getMetadataItem}
-                showMutText={showMutText}
-                setShowMutText={setShowMutText}
-                setZoomToSearch={setZoomToSearch}
-                totalSeqs={totalSeqs}
-                numSearchResults={numSearchResults}
-                searchColors={searchColors}
-                selectedNode={selectedNode}
-                searchItems={searchItems}
-                data={data}
-                setSearchItems={setSearchItems}
-                colourBy={colourBy}
-                setColourBy={setColourByWithCheck}
-              />
-            </div>
-          </div>
+    <div className="main_content">
+      <div className="md:grid md:grid-cols-12 h-full">
+        <div className="md:col-span-8 h-3/6 md:h-full w-full">
+          <Deck
+            blinkingEnabled={blinkingEnabled}
+            metadataItemList={metadataItemList}
+            getMetadataItem={getMetadataItem}
+            showMutText={showMutText}
+            search_configs_initial={search_configs_initial}
+            scatterIds={scatterIds}
+            searchColors={searchColors}
+            selectedNode={selectedNode}
+            setSelectedNode={setSelectedNode}
+            searchItems={searchItems}
+            data={data}
+            progress={mainData.progress}
+            colourBy={colourBy}
+            zoomToSearch={zoomToSearch}
+          />
         </div>
-     
+        <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
+          <SearchPanel
+            xType={xType}
+            setXType={setXType}
+            possibleXTypes={possibleXTypes}
+            blinkingEnabled={blinkingEnabled}
+            setBlinkingEnabled={setBlinkingEnabled}
+            metadataItemList={metadataItemList}
+            getMetadataItem={getMetadataItem}
+            showMutText={showMutText}
+            setShowMutText={setShowMutText}
+            setZoomToSearch={setZoomToSearch}
+            totalSeqs={totalSeqs}
+            numSearchResults={numSearchResults}
+            searchColors={searchColors}
+            selectedNode={selectedNode}
+            searchItems={searchItems}
+            data={data}
+            setSearchItems={setSearchItems}
+            colourBy={colourBy}
+            setColourBy={setColourByWithCheck}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
