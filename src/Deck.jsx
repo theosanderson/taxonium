@@ -17,7 +17,6 @@ import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
 
-
 const zoomThreshold = 9.3;
 function coarse_and_fine_configs(
   config,
@@ -25,8 +24,8 @@ function coarse_and_fine_configs(
   precision,
   line_mode,
   optionalFineIds,
-  optionalCoarseIds
-  ,getX
+  optionalCoarseIds,
+  getX
 ) {
   const coarse = {
     ...config,
@@ -66,8 +65,7 @@ function reduceOverPlotting(nodeIds, node_data, precision, line_mode, getX) {
   const filtered = nodeIds.filter((node) => {
     if (line_mode) {
       if (
-        (Math.abs(getX(node) - getX(node_data.parents[node])) >
-          1) |
+        (Math.abs(getX(node) - getX(node_data.parents[node])) > 1) |
         (Math.abs(node_data.y[node] - node_data.y[node_data.parents[node]]) >
           0.5)
       ) {
@@ -75,7 +73,7 @@ function reduceOverPlotting(nodeIds, node_data, precision, line_mode, getX) {
       }
     }
 
-    const rounded_x = Math.round(getX(node) * precision/10) / precision;
+    const rounded_x = Math.round((getX(node) * precision) / 10) / precision;
     const rounded_y = Math.round(node_data.y[node] * precision) / precision;
     if (included_points[rounded_x]) {
       if (included_points[rounded_x][rounded_y]) {
@@ -107,8 +105,6 @@ const dummy_polygons = [
 ];
 const rgb_cache = {};
 
-
-
 const getXval = (viewState) => 7 / 2 ** (viewState.zoom - 5.6);
 
 function Deck({
@@ -125,178 +121,173 @@ function Deck({
   zoomToSearch,
   selectedNode,
 }) {
-
-
-  const getX = useMemo ( (x) => {
-    console.log("redefining getX")
-    return (d)=>{
-    
-    if( data.node_data.x_cur){
-    return data.node_data.x_cur[d]}
-  }
-  
-}, [ data.node_data.x_cur])
-
+  const getX = useMemo(
+    (x) => {
+      console.log("redefining getX");
+      return (d) => {
+        if (data.node_data.x_cur) {
+          return data.node_data.x_cur[d];
+        }
+      };
+    },
+    [data.node_data.x_cur]
+  );
 
   const colourMapping = useMemo(() => {
-    if(data.colour_mapping){
-     
-    const answer =  Object.fromEntries( data.colour_mapping.map((x)=>[x.key,x.colour]) ) 
-    return answer
-
-  }
-  else
-  {
-    
-    return {}
-  }
-  },[data]);
- 
-  
-  const  toRGB_uncached = useCallback( (string)=> {
-
-    if (string in colourMapping) {
-      return colourMapping[string];
-    }
-    const amino_acids = {
-      A: [230, 25, 75],
-      R: [60, 180, 75],
-      N: [255, 225, 25],
-      D: [67, 99, 216],
-      C: [245, 130, 49],
-      Q: [70, 240, 240],
-      E: [145, 30, 180],
-  
-      G: [240, 50, 230],
-      H: [188, 246, 12],
-      I: [250, 190, 190],
-  
-      L: [230, 0, 255],
-      K: [0, 128, 128],
-      M: [154, 99, 36],
-      F: [154, 60, 256],
-      P: [128, 0, 0],
-      T: [170, 255, 195],
-      W: [128, 128, 0],
-  
-      Y: [0, 0, 117],
-      V: [0, 100, 177],
-      X: [128, 128, 128],
-      O: [255, 255, 255],
-      Z: [0, 0, 0],
-    };
-  
-    if (amino_acids[string]) {
-      return amino_acids[string];
-    }
-  
-    if (string === undefined) {
-      return [200, 200, 200];
-    }
-    if (string === "") {
-      return [200, 200, 200];
-    }
-    if (string === "unknown") {
-      return [200, 200, 200];
-    }
-     if (string === "None") {
-      return [220, 220, 220];
-    }
-    
-     if (string === "N/A") {
-      return [180, 180, 180];
-    }
-    
-    if (string === "USA") {
-      return [95, 158, 245]; //This is just because the default is ugly
-    }
-  
-    if (string === "B.1.2") {
-      return [95, 158, 245]; //This is near B.1.617.2
-    }
-    if (string === "England") {
-      return [214, 58, 15]; // UK all brick
-    }
-    if (string === "Scotland") {
-      return [255, 130, 82]; // UK all brick
-    }
-    if (string === "Wales") {
-      return [148, 49, 22]; // UK all brick
-    }
-    if (string === "Northern Ireland") {
-      return [140, 42, 15]; // UK all brick
-    }
-    if (string === "France") {
-      return [140, 28, 120]; // diff to UK
-    }
-    if (string === "Germany") {
-      return [106, 140, 28]; // diff to UK
-    }
-    if (string === "India") {
-      return [61, 173, 166]; // diff to UK
-    }
-    if (string === "Denmark") {
-      return [24, 112, 32]; // diff to UK
-    }
-  
-    string = string.split("").reverse().join("");
-    var hash = 0;
-    if (string.length === 0) return hash;
-    for (var i = 0; i < string.length; i++) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-      hash = hash & hash;
-    }
-    var rgb = [0, 0, 0];
-    for (i = 0; i < 3; i++) {
-      var value = (hash >> (i * 8)) & 255;
-      rgb[i] = value;
-    }
-    if (rgb[0] + rgb[1] + rgb[2] < 150 || rgb[0] + rgb[1] + rgb[2] > 500) {
-      return toRGB_uncached(string + "_");
-    }
-    return rgb;
-  }
-  , [colourMapping]);
-
-  const toRGB = useCallback( (string) =>{
-    if (rgb_cache[string]) {
-      return rgb_cache[string];
+    if (data.colour_mapping) {
+      const answer = Object.fromEntries(
+        data.colour_mapping.map((x) => [x.key, x.colour])
+      );
+      return answer;
     } else {
-      const result = toRGB_uncached(string);
-      rgb_cache[string] = result;
-      return result;
+      return {};
     }
-  }, [toRGB_uncached]);
+  }, [data]);
 
-   const toRGBCSS =useCallback ( (string) =>{
-    const output = toRGB(string);
-    return `rgb(${output[0]},${output[1]},${output[2]})`;
-  } ,[toRGB]);
+  const toRGB_uncached = useCallback(
+    (string) => {
+      if (string in colourMapping) {
+        return colourMapping[string];
+      }
+      const amino_acids = {
+        A: [230, 25, 75],
+        R: [60, 180, 75],
+        N: [255, 225, 25],
+        D: [67, 99, 216],
+        C: [245, 130, 49],
+        Q: [70, 240, 240],
+        E: [145, 30, 180],
 
-  
+        G: [240, 50, 230],
+        H: [188, 246, 12],
+        I: [250, 190, 190],
 
-  const [time,setTime] = useState(0);
+        L: [230, 0, 255],
+        K: [0, 128, 128],
+        M: [154, 99, 36],
+        F: [154, 60, 256],
+        P: [128, 0, 0],
+        T: [170, 255, 195],
+        W: [128, 128, 0],
+
+        Y: [0, 0, 117],
+        V: [0, 100, 177],
+        X: [128, 128, 128],
+        O: [255, 255, 255],
+        Z: [0, 0, 0],
+      };
+
+      if (amino_acids[string]) {
+        return amino_acids[string];
+      }
+
+      if (string === undefined) {
+        return [200, 200, 200];
+      }
+      if (string === "") {
+        return [200, 200, 200];
+      }
+      if (string === "unknown") {
+        return [200, 200, 200];
+      }
+      if (string === "None") {
+        return [220, 220, 220];
+      }
+
+      if (string === "N/A") {
+        return [180, 180, 180];
+      }
+
+      if (string === "USA") {
+        return [95, 158, 245]; //This is just because the default is ugly
+      }
+
+      if (string === "B.1.2") {
+        return [95, 158, 245]; //This is near B.1.617.2
+      }
+      if (string === "England") {
+        return [214, 58, 15]; // UK all brick
+      }
+      if (string === "Scotland") {
+        return [255, 130, 82]; // UK all brick
+      }
+      if (string === "Wales") {
+        return [148, 49, 22]; // UK all brick
+      }
+      if (string === "Northern Ireland") {
+        return [140, 42, 15]; // UK all brick
+      }
+      if (string === "France") {
+        return [140, 28, 120]; // diff to UK
+      }
+      if (string === "Germany") {
+        return [106, 140, 28]; // diff to UK
+      }
+      if (string === "India") {
+        return [61, 173, 166]; // diff to UK
+      }
+      if (string === "Denmark") {
+        return [24, 112, 32]; // diff to UK
+      }
+
+      string = string.split("").reverse().join("");
+      var hash = 0;
+      if (string.length === 0) return hash;
+      for (var i = 0; i < string.length; i++) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        hash = hash & hash;
+      }
+      var rgb = [0, 0, 0];
+      for (i = 0; i < 3; i++) {
+        var value = (hash >> (i * 8)) & 255;
+        rgb[i] = value;
+      }
+      if (rgb[0] + rgb[1] + rgb[2] < 150 || rgb[0] + rgb[1] + rgb[2] > 500) {
+        return toRGB_uncached(string + "_");
+      }
+      return rgb;
+    },
+    [colourMapping]
+  );
+
+  const toRGB = useCallback(
+    (string) => {
+      if (rgb_cache[string]) {
+        return rgb_cache[string];
+      } else {
+        const result = toRGB_uncached(string);
+        rgb_cache[string] = result;
+        return result;
+      }
+    },
+    [toRGB_uncached]
+  );
+
+  const toRGBCSS = useCallback(
+    (string) => {
+      const output = toRGB(string);
+      return `rgb(${output[0]},${output[1]},${output[2]})`;
+    },
+    [toRGB]
+  );
+
+  const [time, setTime] = useState(0);
 
   useEffect(() => {
-    let interval = null
-    //if(blinkingEnabled){
-    
-      interval = setInterval(() => {
-        if(blinkingEnabled){
-        setTime(Date.now())
+    let interval = null;
+
+    interval = setInterval(() => {
+      if (blinkingEnabled) {
+        setTime(Date.now());
       }
-      }, 100);
-    console.log("Set interval", interval)
-    //}
+    }, 100);
+    console.log("Set interval", interval);
+
     return () => {
-      clearInterval(interval)
+      clearInterval(interval);
       console.log("Cleared interval", interval);
     };
   }, [blinkingEnabled]);
-
-
-  
-
 
   const [textInfo, setTextInfo] = useState({ ids: [], top: 0, bottom: 0 });
   const [fineScatterInfo, setFineScatterInfo] = useState({
@@ -495,18 +486,23 @@ function Deck({
   }, [scatterIds, node_data, getX]);
 
   const scatterFillFunction = useMemo(() => {
-   
-    
     if (metadataItemList.includes(colourBy.variable)) {
-      const item =  getMetadataItem(colourBy.variable)
+      const item = getMetadataItem(colourBy.variable);
       return (d) => toRGB(item.mapping[item.node_values[d]]);
-    }
-     else if (colourBy.variable === "aa") {
+    } else if (colourBy.variable === "aa") {
       return (d) => toRGB(getResidue(d, colourBy.gene, colourBy.residue));
     } else {
       return [200, 200, 200];
     }
-  }, [colourBy.variable, colourBy.gene, colourBy.residue, getMetadataItem, getResidue, metadataItemList, toRGB]);
+  }, [
+    colourBy.variable,
+    colourBy.gene,
+    colourBy.residue,
+    getMetadataItem,
+    getResidue,
+    metadataItemList,
+    toRGB,
+  ]);
 
   const scatterplot_config = {
     data: scatterIds,
@@ -529,7 +525,7 @@ function Deck({
     },
     updateTriggers: {
       getFillColor: scatterFillFunction,
-      getPosition: [getX, node_data.y]
+      getPosition: [getX, node_data.y],
     },
     getFillColor: scatterFillFunction,
   };
@@ -540,7 +536,8 @@ function Deck({
     100,
     false,
     fineScatterInfo.ids,
-    coarseScatterIds,getX
+    coarseScatterIds,
+    getX
   );
 
   const scatter_configs2 = scatter_configs.map((x) => ({
@@ -575,7 +572,6 @@ function Deck({
         },
         lineWidthUnits: "pixels",
         lineWidthScale: 2,
-        
       }),
     [selectedNode, node_data, MMatrix, getX]
   );
@@ -584,10 +580,10 @@ function Deck({
     () =>
       [].concat(
         ...search_configs_initial.map((x) =>
-          coarse_and_fine_configs(x, node_data, 100,null,null,null,getX)
+          coarse_and_fine_configs(x, node_data, 100, null, null, null, getX)
         )
       ),
-    [search_configs_initial, node_data,getX]
+    [search_configs_initial, node_data, getX]
   );
 
   const search_configs2 = useMemo(
@@ -597,31 +593,25 @@ function Deck({
         modelMatrix: x.id.includes("mini") ? undefined : MMatrix,
       })),
     [search_configs, MMatrix]
-
-
   );
-  const blink_on = Math.round(time / 100) %10 >5
+  const blink_on = Math.round(time / 100) % 10 > 5;
   //console.log(blink_on,time,"b")
 
   const search_configs3 = useMemo(
     () =>
       search_configs2.map((x) => ({
         ...x,
-        lineWidthScale: blinkingEnabled?x.lineWidthScale + blink_on : x.lineWidthScale
-       
+        lineWidthScale: blinkingEnabled
+          ? x.lineWidthScale + blink_on
+          : x.lineWidthScale,
       })),
-    [search_configs2,blink_on,blinkingEnabled]
-
-
+    [search_configs2, blink_on, blinkingEnabled]
   );
-
 
   const search_layers = useMemo(
     () => search_configs3.map((x) => new ScatterplotLayer(x)),
     [search_configs3]
   );
-
-  
 
   const line_layer_2_config = useMemo(
     () => ({
@@ -631,13 +621,10 @@ function Deck({
       getWidth: 1,
       pickable: true,
       onHover: (info) => setHoverInfo(info),
-      getTargetPosition: (d) => [
-        getX(node_data.parents[d]),
-        node_data.y[d],
-      ],
-      updateTriggers:{
+      getTargetPosition: (d) => [getX(node_data.parents[d]), node_data.y[d]],
+      updateTriggers: {
         getSourcePosition: [getX, node_data.y],
-        getTargetPosition: [getX, node_data.y]
+        getTargetPosition: [getX, node_data.y],
       },
       getSourcePosition: (d) => [getX(d), node_data.y[d]],
       getColor: [150, 150, 150],
@@ -655,17 +642,14 @@ function Deck({
         getX(node_data.parents[d]),
         node_data.y[node_data.parents[d]],
       ],
-      getSourcePosition: (d) => [
-       getX(node_data.parents[d]),
-        node_data.y[d],
-      ],
-      updateTriggers:{
+      getSourcePosition: (d) => [getX(node_data.parents[d]), node_data.y[d]],
+      updateTriggers: {
         getSourcePosition: [getX, node_data.y],
-        getTargetPosition: [getX, node_data.y]
+        getTargetPosition: [getX, node_data.y],
       },
       getColor: [150, 150, 150],
     }),
-    [node_data,getX]
+    [node_data, getX]
   );
 
   const line_configs = useMemo(
@@ -673,10 +657,10 @@ function Deck({
       [].concat.apply(
         [],
         [line_layer_2_config, line_layer_3_config].map((x) =>
-          coarse_and_fine_configs(x, node_data, 100, true,null,null,getX)
+          coarse_and_fine_configs(x, node_data, 100, true, null, null, getX)
         )
       ),
-    [line_layer_2_config, line_layer_3_config, node_data,getX]
+    [line_layer_2_config, line_layer_3_config, node_data, getX]
   );
 
   const line_configs2 = useMemo(
@@ -692,7 +676,13 @@ function Deck({
     [line_configs2]
   );
 
-  if (viewState.zoom > 17 && (viewState.nw && viewState.se &&  (viewState.nw[1] - viewState.se[1])<0.01) && viewState.needs_update !== true) {
+  if (
+    viewState.zoom > 17 &&
+    viewState.nw &&
+    viewState.se &&
+    viewState.nw[1] - viewState.se[1] < 0.01 &&
+    viewState.needs_update !== true
+  ) {
     /*
     Creating a text layer with every node takes a *long* time, even if it's not visible until zoomed, so we don't do that.
 
@@ -732,7 +722,12 @@ function Deck({
 
   const heightThreshold = 4;
 
-  if ( viewState.needs_update !== true && viewState.se && viewState.nw && viewState.se[1] - viewState.nw[1] < heightThreshold) {
+  if (
+    viewState.needs_update !== true &&
+    viewState.se &&
+    viewState.nw &&
+    viewState.se[1] - viewState.nw[1] < heightThreshold
+  ) {
     // Fine coarse
     if (
       (viewState.nw[1] > fineScatterInfo.top) &
@@ -740,7 +735,7 @@ function Deck({
     ) {
       // still within
     } else {
-      console.log("viewState",viewState)
+      console.log("viewState", viewState);
       const cur_top = viewState.nw[1];
       const cur_bot = viewState.se[1];
       const height = cur_bot - cur_top;
@@ -750,7 +745,7 @@ function Deck({
         (x) => (node_data.y[x] > new_top) & (node_data.y[x] < new_bot)
       );
       console.log("Top is ", new_top, "bottom is ", new_bot);
-      console.log("Fine scatter has ",fineScatterIds.length,"nodes")
+      console.log("Fine scatter has ", fineScatterIds.length, "nodes");
 
       //console.log("recalculating text")
       setFineScatterInfo({
@@ -812,14 +807,7 @@ function Deck({
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
     }),
-    [
-      data.mutation_mapping,
-      mutTextIds,
-      node_data.mutations,
-  
-      node_data.y,
-      getX
-    ]
+    [data.mutation_mapping, mutTextIds, node_data.mutations, node_data.y, getX]
   );
 
   const text_layers = useMemo(() => {
@@ -952,12 +940,8 @@ function Deck({
     []
   );
 
-
-
   const hoverStuff = useMemo(() => {
     if (hoverInfo && hoverInfo.object) {
-
-
       const date = data.date_mapping[node_data.dates[hoverInfo.object]];
       let aa, aa_col;
       if (colourBy.variable === "aa") {
@@ -1001,24 +985,21 @@ function Deck({
             </div>
           )}
 
-          {metadataItemList.map(x=>{
-            const info =getMetadataItem(x)
-            const value = info.mapping[info.node_values[hoverInfo.object]]
-            return  <div key={x}
-            style={{
-              color:
-                colourBy.variable === x ? toRGBCSS(value) : "inherit",
-            }}
-          >
-            {value}
-          </div>
+          {metadataItemList.map((x) => {
+            const info = getMetadataItem(x);
+            const value = info.mapping[info.node_values[hoverInfo.object]];
+            return (
+              <div
+                key={x}
+                style={{
+                  color: colourBy.variable === x ? toRGBCSS(value) : "inherit",
+                }}
+              >
+                {value}
+              </div>
+            );
+          })}
 
-          })
-
-    }
-        
-
-         
           {date}
 
           <div className="text-xs text-gray-600">
@@ -1031,7 +1012,16 @@ function Deck({
         </div>
       );
     }
-  }, [data, node_data, hoverInfo, colourBy, getResidue, getMetadataItem, metadataItemList, toRGBCSS]);
+  }, [
+    data,
+    node_data,
+    hoverInfo,
+    colourBy,
+    getResidue,
+    getMetadataItem,
+    metadataItemList,
+    toRGBCSS,
+  ]);
   const spinnerShown = useMemo(() => node_data.ids.length === 0, [node_data]);
 
   const zoomIncrement = useCallback(
