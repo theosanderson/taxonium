@@ -16,6 +16,7 @@ import {
 import { OrthographicView } from "@deck.gl/core";
 import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
+import useSnapshot from "./hooks/useSnapshot";
 
 const zoomThreshold = 9.3;
 function coarse_and_fine_configs(
@@ -1089,18 +1090,7 @@ function Deck({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomToSearch, node_data, search_configs_initial]);
 
-  const snapshot = useCallback(() => {
-    let canvas = deckRef.current.deck.canvas;
-    deckRef.current.deck.redraw(true);
-    let a = document.createElement("a");
-
-    a.href = canvas
-      .toDataURL("image/png")
-      .replace("image/png", "image/octet-stream");
-    a.download = "taxonium.png";
-    a.click();
-  }, []);
-
+  const snapshot = useSnapshot(deckRef);
   return (
     <div
       className="w-full h-full relative"
