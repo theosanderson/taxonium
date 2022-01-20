@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import Deck from "./Deck";
+import Deck from "./newDeck";
 import SearchPanel from "./components/SearchPanel";
 import axios from "axios";
 import pako from "pako";
