@@ -1,0 +1,104 @@
+from typing import Optional
+from data_processing import taxonium_pb2
+import gzip
+from fastapi import FastAPI
+import sqlite3
+import time
+
+app = FastAPI()
+
+database_location = "./database/database.db"
+max_to_return = 1e5
+
+
+def get_cursor() -> sqlite3.Cursor:
+    conn = sqlite3.connect(database_location)
+    c = conn.cursor()
+    conn.row_factory = sqlite3.Row
+    return c
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: Optional[str] = None):
+    return {"item_id": item_id, "q": q}
+
+
+@app.get("/node/{node_id}")
+def read_item(node_id: int):
+    # query nodes table
+
+    c = get_cursor()
+    c.execute(f"SELECT * FROM nodes WHERE node_id = {node_id}")
+
+    sql = f"""SELECT * FROM nodes WHERE node_id = {node_id}"""
+    c.execute(sql)
+    # fetch as dictionary of columns and values
+    node = c.fetchone()
+    print(node)
+    return node
+
+
+@app.get("/nodes/")
+def read_nodes(min_x: float = None,
+               max_x: float = None,
+               min_y: float = None,
+               max_y: float = None,
+               x_precision: int = None,
+               y_precision: int = None):
+    start_time = time.time()
+
+    # query nodes table
+    c = get_cursor()
+    sql = f"""  FROM nodes WHERE 1=1 """
+
+    sql += f""" AND node_id == MAX(node_id) """
+    if min_x is not None:
+        sql += f""" AND x >= {min_x}"""
+    if max_x is not None:
+        sql += f""" AND x <= {max_x}"""
+    if min_y is not None:
+        sql += f""" AND y >= {min_y}"""
+    if max_y is not None:
+        sql += f""" AND y <= {max_y}"""
+
+    group_by_parts = []
+    if x_precision is not None:
+        group_by_parts.append(f"x_precision_{x_precision}")
+    if y_precision is not None:
+        group_by_parts.append(f"y_precision_{y_precision}")
+    if len(group_by_parts) > 0:
+        group_by_parts = ", ".join(group_by_parts)
+        sql += f""" GROUP BY {group_by_parts} """
+
+    print(sql)
+
+    # Create a count of how many rows will be returned by this SQL query
+    sql_count = f"""SELECT COUNT(*) {sql}"""
+    c.execute(sql_count)
+    num_rows = c.fetchone()[0]
+
+    print(f"num_rows: {num_rows}")
+    nodes = []
+
+    print(f"time: {time.time() - start_time}")
+
+    return num_rows
+
+
+@app.get("/test/")
+def read_test():
+    sql = """
+SELECT DISTINCT x_precision_1, y_precision_1 FROM nodes
+  """
+    print("running test")
+    start_time = time.time()
+    c = get_cursor()
+    c.execute(sql)
+    nodes = c.fetchall()
+    time_diff = time.time() - start_time
+    return [time_diff, len(nodes)]

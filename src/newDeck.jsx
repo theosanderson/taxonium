@@ -9,12 +9,12 @@ import React, {
 import DeckGL from "@deck.gl/react";
 import useLayers from "./hooks/useLayers";
 import useProcessData from "./hooks/useProcessData";
-import { OrthographicView } from "@deck.gl/core";
+
 import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
 import useSnapshot from "./hooks/useSnapshot";
 
-function Deck({ processedData, progress, spinnerShown, view }) {
+function Deck({ data, progress, spinnerShown, view }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
   const {
@@ -26,11 +26,13 @@ function Deck({ processedData, progress, spinnerShown, view }) {
     onAfterRender,
   } = view;
 
+  console.log(viewState);
+
   const onClickOrMouseMove = useCallback((ev) => {
     // console.log("onClickOrMouseMove", ev);
   }, []);
 
-  const { layers, layerFilter } = useLayers(processedData);
+  const { layers, layerFilter } = useLayers(data);
 
   return (
     <div
