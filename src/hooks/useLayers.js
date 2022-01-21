@@ -7,14 +7,23 @@ import {
 
 import { useMemo } from "react";
 
-const useLayers = (processedData) => {
-  console.log(processedData);
+const useLayers = (data) => {
+  console.log("useLayers");
   const temp_scatter_layer = new ScatterplotLayer({
     id: "scatter-layer",
+    data: data.data,
+    getPosition: (d) => [d.x, d.y],
+    getColor: [255, 0, 0],
+    // radius in pixels
+    getRadius: 5,
+    pickable: true,
+    radiusUnits: "pixels",
   });
   const layers = [temp_scatter_layer];
 
-  return { layers };
+  const layerFilter = () => true;
+
+  return { layers, layerFilter };
 };
 
 export default useLayers;

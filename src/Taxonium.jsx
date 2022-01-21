@@ -7,6 +7,7 @@ import pako from "pako";
 import useView from "./hooks/useView";
 import useProcessData from "./hooks/useProcessData";
 import useLoadStaticData from "./hooks/useLoadStaticData";
+import useGetDynamicData from "./hooks/useGetDynamicData";
 
 //import {FaGithub} from  "react-icons/fa";
 
@@ -15,22 +16,16 @@ var protobuf = require("protobufjs");
 protobuf.parse.defaults.keepCase = true;
 
 function Taxonium({ uploadedData, query, setQuery }) {
-  const staticData = useLoadStaticData(query.protoUrl, uploadedData);
-  console.log(staticData, "SS");
+  // The useProcessData hook takes the raw data and processes it into a format ready to make into layers. This should be replaceable with something that actually makes queries to a server in the dynamic ver.
 
-  const processedData = {};
   const view = useView();
+  const data = useGetDynamicData(query.backend, view.viewState);
 
   return (
     <div className="main_content">
       <div className="md:grid md:grid-cols-12 h-full">
         <div className="md:col-span-8 h-3/6 md:h-full w-full">
-          <Deck
-            processedData={processedData}
-            view={view}
-            progress={staticData.progress}
-            spinnerShown={staticData.status != "loaded"}
-          />
+          <Deck data={data} view={view} />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
           <SearchPanel />
