@@ -128,7 +128,7 @@ function Taxonium({ protoUrl, uploadedData, query, setQuery }) {
           responseType: "arraybuffer",
           onDownloadProgress: (progressEvent) => {
             let percentCompleted = Math.floor(
-              1 * (progressEvent.loaded / 50000000) * 100
+              1 * (progressEvent.loaded / 150000000) * 100
             );
             setmainData({
               status: "loading",
