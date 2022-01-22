@@ -8,7 +8,6 @@ import {
 import { useMemo } from "react";
 
 const useLayers = (data) => {
-  console.log("useLayers");
   const temp_scatter_layer = new ScatterplotLayer({
     id: "scatter-layer",
     data: data.data,

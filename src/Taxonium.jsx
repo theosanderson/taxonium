@@ -20,12 +20,43 @@ function Taxonium({ uploadedData, query, setQuery }) {
 
   const view = useView();
   const data = useGetDynamicData(query.backend, view.viewState);
+  const fakeData = view.viewState.fixed_target
+    ? {
+        data: [
+          {
+            x: view.viewState.fixed_target[0],
+            y: view.viewState.fixed_target[1],
+          },
+          {
+            x: view.viewState.min_x,
+            y: view.viewState.min_y,
+          },
+          {
+            x: view.viewState.max_x,
+            y: view.viewState.max_y,
+          },
+          {
+            x: view.viewState.fixed_target[0],
+            y: view.viewState.min_y,
+          },
+          {
+            x: view.viewState.max_x,
+            y: view.viewState.fixed_target[1],
+          },
+        ],
+      }
+    : { data: [] };
+  const stitched = useMemo(() => {
+    return {
+      data: [...fakeData.data, ...data.data],
+    };
+  }, [data.data, fakeData.data]);
 
   return (
     <div className="main_content">
       <div className="md:grid md:grid-cols-12 h-full">
         <div className="md:col-span-8 h-3/6 md:h-full w-full">
-          <Deck data={data} view={view} />
+          <Deck data={stitched} view={view} />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
           <SearchPanel />
