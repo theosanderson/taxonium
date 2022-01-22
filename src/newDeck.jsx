@@ -26,8 +26,6 @@ function Deck({ data, progress, spinnerShown, view }) {
     onAfterRender,
   } = view;
 
-  console.log(viewState);
-
   const onClickOrMouseMove = useCallback((ev) => {
     // console.log("onClickOrMouseMove", ev);
   }, []);
@@ -50,7 +48,6 @@ function Deck({ data, progress, spinnerShown, view }) {
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         layerFilter={layerFilter}
-        controller={true}
         layers={layers}
       >
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>

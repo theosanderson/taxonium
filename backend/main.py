@@ -25,6 +25,7 @@ app.add_middleware(
 database_loc = "./database/database.feather"
 
 database = pandas.read_feather(database_loc)
+database['y'] = database['y'] * 10000
 max_rows = 100e3
 
 
@@ -61,14 +62,17 @@ def read_nodes(
     if max_y is not None:
         filtered = filtered[filtered["y"] <= max_y]
 
+    // TODO: automatically set precision from height and width instead.
+
     if x_precision is not None:
         assert y_precision is not None
 
+
     if x_precision is not None:
-        exponentiated_val = 2**x_precision
+        exponentiated_val = 2**(x_precision - 2)
         filtered["rounded_x"] = (filtered["x"] *
                                  exponentiated_val).round() / exponentiated_val
-        exponentiated_val = 2**y_precision
+        exponentiated_val = 2**(y_precision - 2)
         filtered["rounded_y"] = (filtered["y"] *
                                  exponentiated_val).round() / exponentiated_val
         # make distinct on combination of rounded_x and rounded_y
