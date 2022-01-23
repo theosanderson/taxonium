@@ -62,11 +62,8 @@ def read_nodes(
     if max_y is not None:
         filtered = filtered[filtered["y"] <= max_y]
 
-    // TODO: automatically set precision from height and width instead.
-
     if x_precision is not None:
         assert y_precision is not None
-
 
     if x_precision is not None:
         exponentiated_val = 2**(x_precision - 2)

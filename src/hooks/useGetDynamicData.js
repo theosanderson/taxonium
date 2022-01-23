@@ -14,7 +14,7 @@ function useGetDynamicData(backend_url, viewState) {
       !parametersToQuery ||
       (true &&
         (viewState.min_x <
-          parametersToQuery.min_x + viewState.real_height / 2 ||
+          parametersToQuery.min_x + viewState.real_width / 2 ||
           viewState.max_x >
             parametersToQuery.max_x - viewState.real_width / 2 ||
           viewState.min_y <
@@ -24,6 +24,11 @@ function useGetDynamicData(backend_url, viewState) {
           Math.abs(viewState.zoom[0] - parametersToQuery.zoom[0]) > 1 ||
           Math.abs(viewState.zoom[1] - parametersToQuery.zoom[1]) > 1))
     ) {
+      if(window.log){
+
+      console.log([viewState.min_x ,
+        parametersToQuery.min_x])}
+
       console.log("updating parameters to query");
 
       const newParamsToQuery = {
