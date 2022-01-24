@@ -8,6 +8,8 @@ function useGetDynamicData(backend_url, viewState) {
   });
 
   let [parametersToQuery, setParametersToQuery] = useState(null);
+  let [triggerRefresh,setTriggerRefresh] = useState({});
+  let [timeoutRef, setTimeoutRef] = useState(null);
 
   useEffect(() => {
     if (
@@ -21,8 +23,8 @@ function useGetDynamicData(backend_url, viewState) {
             parametersToQuery.min_y + viewState.real_height / 2 ||
           viewState.max_y >
             parametersToQuery.max_y - viewState.real_height / 2 ||
-          Math.abs(viewState.zoom[0] - parametersToQuery.zoom[0]) > 1 ||
-          Math.abs(viewState.zoom[1] - parametersToQuery.zoom[1]) > 1))
+         
+          Math.abs(viewState.zoom - parametersToQuery.zoom) > 0.5))
     ) {
       if(window.log){
 
@@ -43,13 +45,20 @@ function useGetDynamicData(backend_url, viewState) {
 
       setParametersToQuery(newParamsToQuery);
     }
-  }, [viewState, parametersToQuery]);
+  }, [viewState, parametersToQuery, triggerRefresh]);
 
   useEffect(() => {
     if (!parametersToQuery) return;
 
     if (dynamicData.status === "loading") {
-      return;
+      console.log("not trying to get as we are still loading");
+      clearTimeout(timeoutRef);
+      setTimeoutRef(setTimeout(()=>{
+        setTriggerRefresh({});
+      },500
+      )
+        )
+        return;
     }
     console.log("attempting get");
     // Make call to backend to get data
@@ -72,17 +81,6 @@ function useGetDynamicData(backend_url, viewState) {
         parametersToQuery.max_y;
     }
 
-    let query_precision = {
-      x: parametersToQuery.zoom[0],
-      y: parametersToQuery.zoom[1],
-    };
-
-    url =
-      url +
-      "&x_precision=" +
-      query_precision.x +
-      "&y_precision=" +
-      query_precision.y;
 
     axios.get(url).then(function (response) {
       console.log("got data", response.data);
@@ -90,9 +88,16 @@ function useGetDynamicData(backend_url, viewState) {
         status: "loaded",
         data: response.data,
       });
+    }).catch(function (error) {
+      console.log(error);
+      setDynamicData({
+        status: "error",
+        data: [],
+      });
+      setTriggerRefresh({});
     });
     setDynamicData({ ...dynamicData, status: "loading" });
-  }, [parametersToQuery, backend_url]);
+  }, [parametersToQuery, backend_url, triggerRefresh]);
 
   return dynamicData;
 }

@@ -46,17 +46,12 @@ function Taxonium({ uploadedData, query, setQuery }) {
         ],
       }
     : { data: [] };
-  const stitched = useMemo(() => {
-    return {
-      data: [...fakeData.data, ...data.data],
-    };
-  }, [data.data, fakeData.data]);
 
   return (
     <div className="main_content">
       <div className="md:grid md:grid-cols-12 h-full">
         <div className="md:col-span-8 h-3/6 md:h-full w-full">
-          <Deck data={stitched} view={view} />
+          <Deck data={data} view={view} />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
           <SearchPanel />
