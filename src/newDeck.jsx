@@ -9,9 +9,10 @@ import React, {
 import DeckGL from "@deck.gl/react";
 import useLayers from "./hooks/useLayers";
 import useProcessData from "./hooks/useProcessData";
+import {ClipLoader} from 'react-spinners';
 
 import Spinner from "./components/Spinner";
-import { BiZoomIn, BiZoomOut, BiCamera } from "react-icons/bi";
+import { BiZoomIn, BiZoomOut, BiCamera, BiMoveVertical, BiMoveHorizontal } from "react-icons/bi";
 import useSnapshot from "./hooks/useSnapshot";
 
 function Deck({ data, progress, spinnerShown, view }) {
@@ -19,18 +20,21 @@ function Deck({ data, progress, spinnerShown, view }) {
   const snapshot = useSnapshot(deckRef);
   const {
     viewState,
-    setViewState,
+   
     onViewStateChange,
     views,
     zoomIncrement,
     onAfterRender,
+    zoomAxis,
+    setZoomAxis
   } = view;
+  
 
   const onClickOrMouseMove = useCallback((ev) => {
     // console.log("onClickOrMouseMove", ev);
   }, []);
 
-  const { layers, layerFilter } = useLayers(data);
+  const { layers, layerFilter } = useLayers(data, viewState);
 
   return (
     <div
@@ -49,8 +53,21 @@ function Deck({ data, progress, spinnerShown, view }) {
         onViewStateChange={onViewStateChange}
         layerFilter={layerFilter}
         layers={layers}
+     
       >
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
+          {data.status === "loading" && ( <ClipLoader />)}
+          
+        <button
+            className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
+            onClick={() => {
+              setZoomAxis(zoomAxis==="X"?"Y":"X");
+            }}
+          >
+           {zoomAxis==="Y"? <BiMoveVertical className="mx-auto  w-5 h-5 " title="Switch to horizontal zoom"/> : <BiMoveHorizontal className="mx-auto  w-5 h-5 " title="Switch to vertical zoom"/>}  
+
+
+          </button>
           <button
             className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {

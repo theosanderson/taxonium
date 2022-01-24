@@ -1,30 +1,37 @@
 import { useState, useMemo } from "react";
 import {
   OrthographicView,
-  OrthographicController,
   //OrthographicViewport,
 } from "@deck.gl/core";
 
 const useView = () => {
+  const [zoomAxis, setZoomAxis] = useState("a");
   const [viewState, setViewState] = useState({
-    zoom: [5, -10],
-    target: [5, 5],
+    zoom: 0,
+    target: [0,0],
     pitch: 0,
     bearing: 0,
   });
 
+
   const views = useMemo(() => {
+
+
     return [
       new OrthographicView({
         id: "main",
         controller: {
           inertia: true,
-          zoomAxis: "Y",
+          zoomAxis: zoomAxis,
         },
         initialViewState: viewState,
       }),
     ];
-  }, [viewState]);
+  }, [viewState, zoomAxis]);
+
+  const modelMatrix = useMemo(() => {
+    return  [1, 0, 0, 0, 0, 1/2 ** viewState.zoom, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+  }, [viewState.zoom]);
 
   const onViewStateChange = ({ viewState, interactionState, oldViewState }) => {
     /*
@@ -37,21 +44,28 @@ const useView = () => {
     }
 
     */
+   
 
     //const temp_viewport = new OrthographicViewport(viewS
+    const oldScale = 2**oldViewState.zoom;
+    const newScale = 2**viewState.zoom;
+    if (oldScale !== newScale) {
+      viewState.target[0] = oldViewState.target[0] / newScale * oldScale;
+    }
 
-    viewState.real_height = viewState.height / 2 ** viewState.zoom[1];
-    viewState.real_width = viewState.width / 2 ** viewState.zoom[0];
+   
+    viewState.target= [...viewState.target];
+
+    viewState.real_height = viewState.height / newScale;
+    viewState.real_width = viewState.width ;
+
+    
 
     viewState.fixed_target = [...viewState.target];
 
-    if (viewState.zoom[1] > viewState.zoom[0]) {
-      viewState.fixed_target[1] =
-        viewState.target[1] / 2 ** (viewState.zoom[1] - viewState.zoom[0]);
-    } else {
-      viewState.fixed_target[0] =
-        viewState.target[0] / 2 ** (viewState.zoom[0] - viewState.zoom[1]);
-    }
+
+    
+
     console.log(viewState.fixed_target);
 
     const nw = [
@@ -74,11 +88,12 @@ const useView = () => {
       viewState.min_x,
       viewState.max_x
     );
-
+      
     setViewState(viewState);
+    return viewState
   };
 
-  return { viewState, setViewState, onViewStateChange, views };
+  return { viewState, setViewState, onViewStateChange, views, zoomAxis, setZoomAxis, modelMatrix };
 };
 
 export default useView;
