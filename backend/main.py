@@ -10,12 +10,13 @@ import pandas
 import numpy as np
 from collections import defaultdict
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 
 # disable CORS checks
 origins = ["*", "localhost:3000"]
 
 app = FastAPI(title="Taxonium API", openapi_url="/openapi.json")
-
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
