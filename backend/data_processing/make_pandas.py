@@ -39,6 +39,31 @@ print(df)
 
 # Write out in feather format
 df.to_feather("../database/database.feather", compression="zstd")
+from collections import defaultdict
+
+all_parents = defaultdict(set)
+
+
+def get_parent_ids(node_id):
+    parent_id = int(df.parent_id[node_id])
+    if parent_id == node_id:
+        return
+    if parent_id not in all_parents:
+        get_parent_ids(parent_id)
+    all_parents[node_id].update(all_parents[parent_id])
+    all_parents[node_id].add(parent_id)
+
+
+for node_id, parent_id in tqdm.tqdm(df.parent_id.items()):
+    if node_id not in all_parents:
+        get_parent_ids(node_id)
+
+import json
+
+all_parents = {i: list(x) for i, x in all_parents.items()}
+# Write out the parents
+with gzip.open("../database/all_parents.json.gz", "wb") as f:
+    json.dump(all_parents, f)
 
 mutation_ids = []
 previous_residues = []

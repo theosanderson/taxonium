@@ -48,6 +48,8 @@ function useGetDynamicData(backend_url, viewState) {
   }, [viewState, parametersToQuery, triggerRefresh]);
 
   useEffect(() => {
+    clearTimeout(timeoutRef);
+    setTimeoutRef(setTimeout(() => {
     if (!parametersToQuery) return;
 
     if (dynamicData.status === "loading") {
@@ -97,6 +99,8 @@ function useGetDynamicData(backend_url, viewState) {
       setTriggerRefresh({});
     });
     setDynamicData({ ...dynamicData, status: "loading" });
+
+    },300));
   }, [parametersToQuery, backend_url, triggerRefresh]);
 
   return dynamicData;

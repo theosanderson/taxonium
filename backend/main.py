@@ -29,11 +29,16 @@ database_loc = "./database/database.feather"
 
 database = pandas.read_feather(database_loc)
 database.set_index("node_id", inplace=True)
-# check index is unique
 
 database['y'] = database['y'] * 20  #* 10000000000
-database['x'] = database['x'] * 45  #* 1000 * 2**10
-max_rows = 200e3
+database['x'] = database['x'] * 65  #* 1000 * 2**10
+max_rows = 500e3
+
+import json
+with gzip.open("./database/all_parents.json.gz", "r") as f:
+    all_parents = json.load(f)
+
+all_parents = {i: set(x) for i, x in all_parents.items()}
 
 
 @app.get("/test/")
@@ -64,31 +69,39 @@ def read_nodes(
 
     filtered = database
 
-    if min_x is None:
-        min_x = filtered['x'].min()
+    if min_x is not None:
+        assert max_x is not None and min_y is not None and max_y is not None
+        filtered = filtered[(filtered.x >= min_x) & (filtered.x <= max_x)
+                            & (filtered.y >= min_y) & (filtered.y <= max_y)]
+
     else:
-        filtered = filtered[filtered['x'] >= min_x]
-    if max_x is None:
-        max_x = filtered['x'].max()
-    else:
-        filtered = filtered[filtered['x'] <= max_x]
-    if min_y is None:
-        min_y = filtered['y'].min()
-    else:
-        filtered = filtered[filtered['y'] >= min_y]
-    if max_y is None:
-        max_y = filtered['y'].max()
-    else:
-        filtered = filtered[filtered['y'] <= max_y]
+        min_x = filtered.x.min()
+        max_x = filtered.x.max()
+        min_y = filtered.y.min()
+        max_y = filtered.y.max()
+
+    print("pre-rounding time {}".format(time.time() - start_time))
+
+    start_rounding_time = time.time()
 
     filtered["rounded_x"] = round_and_norm_column(filtered["x"], min_x, max_x,
                                                   3)
     filtered["rounded_y"] = round_and_norm_column(filtered["y"], min_y, max_y,
                                                   3)
+    print("rounding time:", time.time() - start_rounding_time)
 
     # make distinct on combination of rounded_x and rounded_y
     filtered = filtered.drop_duplicates(subset=["rounded_x", "rounded_y"])
+
     filtered = filtered.drop(columns=["rounded_x", "rounded_y"])
+
+    set_of_nodes = set()
+    for node_id in filtered.index.values:
+        set_of_nodes.add(node_id)
+        if node_id in all_parents:
+            set_of_nodes.update(all_parents[node_id])
+
+    filtered = database.loc[list(set_of_nodes)]
 
     # get row count
     num_rows = filtered.shape[0]
