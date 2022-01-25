@@ -15,7 +15,7 @@ import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera, BiMoveVertical, BiMoveHorizontal } from "react-icons/bi";
 import useSnapshot from "./hooks/useSnapshot";
 
-function Deck({ data, progress, spinnerShown, view }) {
+function Deck({ data, progress, spinnerShown, view , colorHook}) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
   const {
@@ -34,7 +34,7 @@ function Deck({ data, progress, spinnerShown, view }) {
     // console.log("onClickOrMouseMove", ev);
   }, []);
 
-  const { layers, layerFilter } = useLayers(data, viewState);
+  const { layers, layerFilter } = useLayers(data, viewState, colorHook);
 
   return (
     <div
@@ -56,7 +56,7 @@ function Deck({ data, progress, spinnerShown, view }) {
      
       >
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
-          {data.status === "loading" && ( <ClipLoader />)}
+          {data.status === "loading" && ( <div className="mr-4 inline-block" ><ClipLoader size={24} color="#444444" /></div>)}
           
         <button
             className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
