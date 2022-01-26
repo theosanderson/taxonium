@@ -28,6 +28,15 @@ const useView = () => {
         },
         initialViewState: viewState,
       }),
+      new OrthographicView({
+        id: "minimap",
+        x: "79%",
+        y: "1%",
+        width: "20%",
+        height: "35%",
+        borderWidth: "1px",
+        controller: true,
+      }),
     ];
   }, [viewState, zoomAxis]);
 
@@ -35,7 +44,10 @@ const useView = () => {
     return  [1, 0, 0, 0, 0, 1/2 ** viewState.zoom, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
   }, [viewState.zoom]);
 
-  const onViewStateChange = ({ viewState, interactionState, oldViewState }) => {
+  const onViewStateChange = ({ viewState, interactionState,viewId, oldViewState }) => {
+    if (viewId === "minimap") {
+      return;
+    }
     /*
     if (window.zoomX) {
       viewState.zoom[1] = oldViewState.zoom[1];
@@ -93,7 +105,7 @@ const useView = () => {
       viewState.min_x,
       viewState.max_x
     );
-      
+    viewState["minimap"] = { zoom: -3, target: [205, 700] };
     setViewState(viewState);
     return viewState
   };

@@ -86,10 +86,17 @@ function useGetDynamicData(backend_url, viewState) {
 
     axios.get(url).then(function (response) {
       console.log("got data", response.data);
-      setDynamicData({
+      if(!parametersToQuery.min_x){
+        setDynamicData({
+          status: "loaded",
+          base_data: response.data,
+        });
+      }else{
+      setDynamicData({...dynamicData,
         status: "loaded",
         data: response.data,
       });
+    }
     }).catch(function (error) {
       console.log(error);
       setDynamicData({
