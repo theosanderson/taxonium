@@ -14,6 +14,7 @@ import {ClipLoader} from 'react-spinners';
 import Spinner from "./components/Spinner";
 import { BiZoomIn, BiZoomOut, BiCamera, BiMoveVertical, BiMoveHorizontal } from "react-icons/bi";
 import useSnapshot from "./hooks/useSnapshot";
+import NodeHoverTip  from "./NodeHoverTip"
 
 function Deck({ data, progress, spinnerShown, view , colorHook}) {
   const deckRef = useRef();
@@ -33,8 +34,9 @@ function Deck({ data, progress, spinnerShown, view , colorHook}) {
   const onClickOrMouseMove = useCallback((ev) => {
     // console.log("onClickOrMouseMove", ev);
   }, []);
-
-  const { layers, layerFilter } = useLayers(data, viewState, colorHook);
+  const [hoverInfo, setHoverInfo] = useState(null);
+  const { layers, layerFilter } = useLayers(data, viewState, colorHook, setHoverInfo);
+  console.log("h",hoverInfo)
 
   return (
     <div
@@ -55,6 +57,7 @@ function Deck({ data, progress, spinnerShown, view , colorHook}) {
         layers={layers}
      
       >
+        <NodeHoverTip hoverInfo={hoverInfo} />
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
           {data.status === "loading" && ( <div className="mr-4 inline-block" ><ClipLoader size={24} color="#444444" /></div>)}
           
