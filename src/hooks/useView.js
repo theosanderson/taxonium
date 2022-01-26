@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   OrthographicView,
   //OrthographicViewport,
@@ -12,6 +12,8 @@ const useView = () => {
     pitch: 0,
     bearing: 0,
   });
+
+ 
 
 
   const views = useMemo(() => {
@@ -96,7 +98,16 @@ const useView = () => {
     return viewState
   };
 
-  return { viewState, setViewState, onViewStateChange, views, zoomAxis, setZoomAxis, modelMatrix };
+  const zoomIncrement = useCallback((increment) => {
+    const newViewState = { ...viewState };
+    newViewState.zoom += increment;
+
+    onViewStateChange({ viewState:newViewState, interactionState:"isZooming", oldViewState: viewState }) 
+
+
+  });
+
+  return { viewState, setViewState, onViewStateChange, views, zoomAxis, setZoomAxis, modelMatrix ,zoomIncrement};
 };
 
 export default useView;

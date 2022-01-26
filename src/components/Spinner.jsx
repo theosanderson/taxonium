@@ -1,5 +1,5 @@
 import React from "react";
-import "./Spinner.css";
+
 
 function Spinner({ isShown, progress }) {
   if (isShown) {

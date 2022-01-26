@@ -31,7 +31,10 @@ database = pandas.read_feather(database_loc)
 database.set_index("node_id", inplace=True)
 
 database['y'] = database['y'] * 20  #* 10000000000
-database['x'] = database['x'] * 65  #* 1000 * 2**10
+database['x'] = database['x'] * 45  #* 1000 * 2**10
+# round x and y to 2dp
+database['x'] = database['x'].round(2)
+database['y'] = database['y'].round(5)
 max_rows = 500e3
 
 import json
@@ -85,15 +88,13 @@ def read_nodes(
     start_rounding_time = time.time()
 
     filtered["rounded_x"] = round_and_norm_column(filtered["x"], min_x, max_x,
-                                                  3)
+                                                  4)
     filtered["rounded_y"] = round_and_norm_column(filtered["y"], min_y, max_y,
-                                                  3)
+                                                  4)
     print("rounding time:", time.time() - start_rounding_time)
 
     # make distinct on combination of rounded_x and rounded_y
     filtered = filtered.drop_duplicates(subset=["rounded_x", "rounded_y"])
-
-    filtered = filtered.drop(columns=["rounded_x", "rounded_y"])
 
     set_of_nodes = set()
     for node_id in filtered.index.values:
@@ -101,7 +102,8 @@ def read_nodes(
         if node_id in all_parents:
             set_of_nodes.update(all_parents[node_id])
 
-    filtered = database.loc[list(set_of_nodes)]
+    filtered = database.loc[list(set_of_nodes),
+                            ['x', 'y', 'name', 'meta_Lineage', 'parent_id']]
 
     # get row count
     num_rows = filtered.shape[0]

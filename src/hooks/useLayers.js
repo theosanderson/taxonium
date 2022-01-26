@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 let getMMatrix = (zoom) => [ 1/2 ** zoom, 0, 0, 0, 0,1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];// new Matrix4().scale([Math.max(1, zoom), 1, 1]);
 
-const useLayers = (data, viewState, colorHook) => {
+const useLayers = (data, viewState, colorHook, setHoverInfo) => {
   const {toRGB} = colorHook
   const accessor="meta_Lineage"
   const temp_scatter_layer = new ScatterplotLayer({
@@ -18,9 +18,15 @@ const useLayers = (data, viewState, colorHook) => {
     getPosition: (d) => [d.x, d.y],
     getColor: (d) => toRGB(d[accessor]),
     // radius in pixels
-    getRadius: 2,
+    getRadius: 3,
+    getLineColor: [100, 100, 100],
+    opacity: 0.6,
+    stroked: data.data.leaves && data.data.leaves.length < 3000,
+    lineWidthUnits: "pixels",
+    lineWidthScale: 1,
     pickable: true,
     radiusUnits: "pixels",
+    onHover: (info) => setHoverInfo(info),
     modelMatrix: getMMatrix(viewState.zoom),
 
   });
@@ -57,20 +63,23 @@ const useLayers = (data, viewState, colorHook) => {
     getPosition: (d) => [d.x, d.y],
     getColor: (d) => [0, 0, 0, 255],
     // radius in pixels
-    getRadius: 20,
+    getRadius: 4,
     pickable: true,
     radiusUnits: "pixels",
     modelMatrix: getMMatrix(viewState.zoom),
+    
+
   });
 
-  
+  const lineColor = [150,150,150]
   const temp_line_layer = new LineLayer({
     id: "line-layer",
     data: data.data.lines,
     getSourcePosition: (d) => [d.x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
-    getColor: [200, 200, 200],
+    getColor: lineColor,
     pickable: true,
+    
     modelMatrix: getMMatrix(viewState.zoom),
   });
 
@@ -79,7 +88,7 @@ const useLayers = (data, viewState, colorHook) => {
     data: data.data.lines,
     getSourcePosition: (d) => [d.parent_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.parent_y],
-    getColor: [200, 200, 200],
+    getColor: lineColor,
     pickable: true,
     modelMatrix: getMMatrix(viewState.zoom),
   });

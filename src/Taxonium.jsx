@@ -22,6 +22,7 @@ function Taxonium({ uploadedData, query, setQuery }) {
   const colourMapping = {}
   const colorHook = useColor(colourMapping);
   const data = useGetDynamicData(query.backend, view.viewState);
+
   
     // 
 
