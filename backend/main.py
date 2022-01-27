@@ -1,7 +1,7 @@
 from email.policy import default
 from typing import Optional
 from data_processing import taxonium_pb2
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 import sqlite3
 import time
 import gzip
@@ -35,6 +35,13 @@ database['x'] = database['x'] * 45  #* 1000 * 2**10
 # round x and y to 2dp
 database['x'] = database['x'].round(2)
 database['y'] = database['y'].round(5)
+
+g_min_x = database['x'].min()
+g_max_x = database['x'].max()
+g_min_y = database['y'].min()
+g_max_y = database['y'].max()
+
+total_height = database['y'].max() - database['y'].min()
 max_rows = 500e3
 
 import json
@@ -44,12 +51,42 @@ import json
 #all_parents = {i: set(x) for i, x in all_parents.items()}
 all_parents = {}
 
+
+def make_level(database, level):
+    database = database.copy()
+    exp_level = 2**level
+    rounding_level = 4
+    database['round_x'] = (database['x'] / exp_level).round(rounding_level)
+    database['round_y'] = (database['y'] / exp_level).round(rounding_level)
+    uniqued = database.drop_duplicates(subset=['round_x', 'round_y'])
+    uniqued.drop(columns=['round_x', 'round_y'], inplace=True)
+    # sort by y, permanently
+    uniqued.sort_values(by=['y'], inplace=True, ignore_index=True)
+
+    uniqued['parent_x'] = database.loc[uniqued.parent_id, "x"].values
+    uniqued['parent_y'] = database.loc[uniqued.parent_id, "y"].values
+    return uniqued
+
+
+levels = {i: make_level(database, i) for i in tqdm.tqdm(range(0, 15))}
+
+
+def get_level(height):
+    most_zoomed_out_level = 12
+    difference = height / total_height
+    difference_log2 = np.log2(difference)
+    level_inc = int(difference_log2)
+    level = most_zoomed_out_level + level_inc
+    if level < 0:
+        level = 0
+    if level > most_zoomed_out_level:
+        level = most_zoomed_out_level
+    return level
+
+
 @app.get("/test/")
 def read_test():
-    # get row count
-    start_time = time.time()
-    num_rows = database.shape[0]
-    return [num_rows, time.time() - start_time]
+    return Response(content=data, media_type="application/xml")
 
 
 def round_and_norm_column(column, minimum, maximum, precision):
@@ -70,43 +107,38 @@ def read_nodes(
     start_time = time.time()
     print("starting")
 
-    filtered = database
-
     if min_x is not None:
         assert max_x is not None and min_y is not None and max_y is not None
-        filtered = filtered[(filtered.x >= min_x) & (filtered.x <= max_x)
-                            & (filtered.y >= min_y) & (filtered.y <= max_y)]
 
     else:
-        min_x = filtered.x.min()
-        max_x = filtered.x.max()
-        min_y = filtered.y.min()
-        max_y = filtered.y.max()
+        min_x = g_min_x
+        max_x = g_max_x
+        min_y = g_min_y
+        max_y = g_max_y
+
+    height = max_y - min_y
+    level_num = get_level(height)
+    print(level_num, "level")
+    filtered = levels[level_num]
+    get_position_of_min_y_by_binary_search = np.searchsorted(filtered.y,
+                                                             min_y,
+                                                             side='left')
+    get_position_of_max_y_by_binary_search = np.searchsorted(filtered.y,
+                                                             max_y,
+                                                             side='right')
+    filtered = filtered.iloc[get_position_of_min_y_by_binary_search:
+                             get_position_of_max_y_by_binary_search]
 
     print("pre-rounding time {}".format(time.time() - start_time))
 
     start_rounding_time = time.time()
 
-    filtered["rounded_x"] = round_and_norm_column(filtered["x"], min_x, max_x,
-                                                  4)
-    filtered["rounded_y"] = round_and_norm_column(filtered["y"], min_y, max_y,
-                                                  4)
     print("rounding time:", time.time() - start_rounding_time)
 
     # make distinct on combination of rounded_x and rounded_y
-    filtered = filtered.drop_duplicates(subset=["rounded_x", "rounded_y"])
-
-    set_of_nodes = set()
-    for node_id in filtered.index.values:
-        set_of_nodes.add(node_id)
-        if node_id in all_parents:
-            set_of_nodes.update(all_parents[node_id])
-
-    filtered = database.loc[list(set_of_nodes),
-                            ['x', 'y', 'name', 'meta_Lineage', 'parent_id']]
 
     # get row count
-    num_rows = filtered.shape[0]
+    num_rows = len(filtered)
     print(f"num_rows: {num_rows}")
     if num_rows > max_rows:
         # Return an error from the API
@@ -114,18 +146,16 @@ def read_nodes(
                             detail=f"Too many rows: {num_rows}")
 
     # return filtered as dict
-    print(f"done filtering bit")
+    print(f"done filtering bit in {time.time() - start_time}")
 
-    # Create a pandas df of lines
-    lines = filtered
+    print(f"done parents bit in {time.time() - start_time}")
 
-    parent_ids = lines["parent_id"]
-    lines['parent_x'] = database.loc[parent_ids, "x"].values
-    lines['parent_y'] = database.loc[parent_ids, "y"].values
+    leaf_cols = ["x", "y", "meta_Lineage", "name"]
+    line_cols = ["x", "y", "parent_x", "parent_y"]
+    to_return = '{"leaves":' + filtered[leaf_cols][
+        filtered.name != ""].to_json(
+            orient='records') + ', "lines":' + filtered[line_cols].to_json(
+                orient='records') + '}'
 
-    print(f"done in {time.time() - start_time}")
-
-    return {
-        "leaves": filtered[filtered.name != ""].to_dict(orient="records"),
-        "lines": lines.to_dict(orient="records")
-    }
+    print("done encoding bit in {}".format(time.time() - start_time))
+    return Response(content=to_return, media_type="application/json")
