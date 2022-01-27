@@ -19,14 +19,17 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
   const layers = []
 
   const combo = useMemo(() => {
-    if (data.data.leaves && data.base_data.leaves) {
+    if (data.data.leaves && data.base_data.leaves && data.status=="loading") {
     return [...data.data.leaves, ...data.base_data.leaves]
+    }
+    else if(data.data.leaves  && data.status=="loaded"){
+      return data.data.leaves
     }
     else{
       return []
     }
 
-  }, [data.data, data.base_data]);
+  }, [data.data, data.base_data, data.status]);
   const outer_bounds = [[-1000,-1000],
   [1000,-1000],
   [10000,10000],
@@ -164,7 +167,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
     getPolygon: (d) => d,
     pickable: true,
     stroked: true,
-    opacity:.3,
+    opacity:.1,
     filled: true,
     wireframe: true,
     getFillColor: (d) => [240, 240, 240],
@@ -187,7 +190,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
     getLineWidth: 1,
     lineWidthUnits: "pixels",});
 
-  layers.unshift(minimap_polygon_background,minimap_scatter,minimap_bound_polygon);
+  layers.push(minimap_polygon_background,minimap_scatter,minimap_bound_polygon );
   
 
   const layerFilter =useCallback(
