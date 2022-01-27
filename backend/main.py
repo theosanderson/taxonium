@@ -38,11 +38,11 @@ database['y'] = database['y'].round(5)
 max_rows = 500e3
 
 import json
-with gzip.open("./database/all_parents.json.gz", "r") as f:
-    all_parents = json.load(f)
+#with gzip.open("./database/all_parents.json.gz", "r") as f:
+#    all_parents = json.load(f)
 
-all_parents = {i: set(x) for i, x in all_parents.items()}
-
+#all_parents = {i: set(x) for i, x in all_parents.items()}
+all_parents = {}
 
 @app.get("/test/")
 def read_test():
