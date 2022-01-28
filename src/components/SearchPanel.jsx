@@ -1,40 +1,25 @@
-import React, { useEffect, useMemo, useState } from "react";
-import SearchItem from "./SearchItem";
-import { FaSearch } from "react-icons/fa";
+import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
-import { BiPalette } from "react-icons/bi";
-import { BsInfoCircle } from "react-icons/bs";
-import { DebounceInput } from "react-debounce-input";
-import { IoMdSettings } from "react-icons/io";
-function toTitleCase(str) {
-  return str.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-}
 
-function get_epi_isl_url(epi_isl) {
-  if (epi_isl.length > 4) {
-    return (
-      "https://www.epicov.org/acknowledgement/" +
-      epi_isl.slice(-4, -2) +
-      "/" +
-      epi_isl.slice(-2) +
-      "/" +
-      epi_isl +
-      ".json"
-    );
-  }
-}
-get_epi_isl_url("");
-function numberWithCommas(x) {
-  const internationalNumberFormat = new Intl.NumberFormat("en-US");
-  return internationalNumberFormat.format(x);
-}
-
-function SearchPanel() {
+function SearchPanel({ search }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
-      Search panel to go here
+      {search.searchSpec.map((item, index) => (
+        <SearchTopLayerItem
+          key={index}
+          singleSearchSpec={item}
+          myKey={index}
+          search={search}
+        />
+      ))}
+
+      <button
+        className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+        onClick={search.addNewTopLevelSearch}
+      >
+        <RiAddCircleLine className="inline-block mr-2" />
+        Add a new search
+      </button>
     </div>
   );
 }
