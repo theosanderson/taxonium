@@ -72,7 +72,7 @@ levels = {i: make_level(database, i) for i in tqdm.tqdm(range(0, 15))}
 
 
 def get_level(height):
-    most_zoomed_out_level = 12
+    most_zoomed_out_level = 11
     difference = height / total_height
     difference_log2 = np.log2(difference)
     level_inc = int(difference_log2)
