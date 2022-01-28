@@ -46,8 +46,6 @@ function useGetDynamicData(backend_url, viewState) {
 
   useEffect(() => {
     clearTimeout(timeoutRef);
-    setDynamicData({ ...dynamicData, status: "pending" });
-
     setTimeoutRef(
       setTimeout(() => {
         if (!parametersToQuery) return;
