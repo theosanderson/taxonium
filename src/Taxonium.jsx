@@ -84,7 +84,7 @@ function Taxonium({ protoUrl, uploadedData, query, setQuery }) {
     if (xType === "time") {
       newData.data.node_data.x_cur = newData.data.node_data.time_x;
     } else {
-      newData.data.node_data.x_cur = newData.data.node_data.x;
+      newData.data.node_data.x_cur = newData.data.node_data.x.map( x=> 0.1*x);
     }
     console.log(xType);
     return newData;
