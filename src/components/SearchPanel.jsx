@@ -4,11 +4,11 @@ import { RiAddCircleLine } from "react-icons/ri";
 function SearchPanel({ search }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
-      {search.searchSpec.map((item, index) => (
+      {search.searchSpec.map((item) => (
         <SearchTopLayerItem
-          key={index}
+          key={item.key}
           singleSearchSpec={item}
-          myKey={index}
+          myKey={item.key}
           search={search}
         />
       ))}

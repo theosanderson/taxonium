@@ -41,3 +41,6 @@ data_processing/public-latest.all.masked.pb.1
 data_processing/public-latest.all.masked.pb.gz
 public/nodelist.pb.gz
 public/nodelist.pb.gz
+backend/__pycache__/main.cpython-39.pyc
+backend/data_processing/__pycache__/taxonium_pb2.cpython-39.pyc
+backend/database/usa_indices.json

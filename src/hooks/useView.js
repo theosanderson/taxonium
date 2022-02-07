@@ -132,7 +132,18 @@ const useView = () => {
     [viewState, onViewStateChange]
   );
 
-  return {
+  const output = useMemo(() => {
+    return {
+      viewState,
+      setViewState,
+      onViewStateChange,
+      views,
+      zoomAxis,
+      setZoomAxis,
+      modelMatrix,
+      zoomIncrement,
+    };
+  }, [
     viewState,
     setViewState,
     onViewStateChange,
@@ -141,7 +152,9 @@ const useView = () => {
     setZoomAxis,
     modelMatrix,
     zoomIncrement,
-  };
+  ]);
+
+  return output;
 };
 
 export default useView;

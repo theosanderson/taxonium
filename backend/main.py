@@ -96,6 +96,17 @@ def round_and_norm_column(column, minimum, maximum, precision):
     return rounded
 
 
+@app.get("/search/")
+def do_search(searchInfo: str = None, ):
+    if searchInfo is None:
+        # raise http exception
+        raise HTTPException(status_code=400, detail="No search info provided")
+    # parse json string of search info
+    searchInfo = json.loads(searchInfo)
+    if searchInfo['type'] == "meta_search":
+        return meta_search(searchInfo)
+
+
 @app.get("/nodes/")
 def read_nodes(
     min_x: float = None,
