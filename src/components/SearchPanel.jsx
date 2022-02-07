@@ -354,7 +354,7 @@ function SearchPanel({
             </div>
             <div>
               <span className="font-semibold">Date:</span>{" "}
-              {data.date_mapping[node_data.dates[selectedNode]]}
+              {node_data.num_tips[selectedNode]}
             </div>
            
 
