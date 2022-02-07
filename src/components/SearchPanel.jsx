@@ -366,6 +366,10 @@ function SearchPanel({
           >
             <span className="font-semibold">{toTitleCase(x)}:</span>{" "} {value}
           </div>
+                                             <div>
+              <span className="font-semibold">Num descendent:</span>{" "}
+              {data.date_mapping[node_data.num_tips[selectedNode]]}
+            </div>
 
           })
 
