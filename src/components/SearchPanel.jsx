@@ -366,14 +366,15 @@ function SearchPanel({
           >
             <span className="font-semibold">{toTitleCase(x)}:</span>{" "} {value}
           </div>
-                                             <div>
+                                      
+          })
+
+    }
+                                         <div>
               <span className="font-semibold">Num descendent:</span>{" "}
               {data.date_mapping[node_data.num_tips[selectedNode]]}
             </div>
 
-          })
-
-    }
             <span className="font-semibold">Mutations from root:</span>
             <div className="text-xs mr-5 mb-3">
               {
