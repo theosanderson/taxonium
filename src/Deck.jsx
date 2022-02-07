@@ -39,7 +39,7 @@ function Deck({ data, progress, spinnerShown, view, colorHook }) {
     colorHook,
     setHoverInfo
   );
-  console.log("h", hoverInfo);
+  console.log("deck refresh");
 
   return (
     <div

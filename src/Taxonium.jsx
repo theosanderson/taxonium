@@ -5,6 +5,7 @@ import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
 import useSearch from "./hooks/useSearch";
+import { useRef, useMemo } from "react";
 
 var protobuf = require("protobufjs");
 
@@ -12,10 +13,12 @@ protobuf.parse.defaults.keepCase = true;
 
 function Taxonium({ uploadedData, query, setQuery }) {
   const view = useView();
-  const colourMapping = {};
+  const colourMapping = useMemo(() => {
+    return {};
+  }, []);
   const colorHook = useColor(colourMapping);
   const data = useGetDynamicData(query.backend, view.viewState);
-  const search = useSearch();
+  const search = useSearch(data);
 
   //
 

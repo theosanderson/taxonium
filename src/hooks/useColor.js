@@ -1,10 +1,9 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 let rgb_cache = {};
 
 const useColor = (colorMapping) => {
-
- const toRGB_uncached = useCallback(
+  const toRGB_uncached = useCallback(
     (string) => {
       if (string in colorMapping) {
         return colorMapping[string];
@@ -122,10 +121,11 @@ const useColor = (colorMapping) => {
     },
     [toRGB_uncached]
   );
-  return { toRGB };
 
-}
-
-
+  const output = useMemo(() => {
+    return { toRGB };
+  }, [toRGB]);
+  return output;
+};
 
 export default useColor;
