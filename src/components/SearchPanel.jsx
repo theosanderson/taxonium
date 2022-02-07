@@ -356,7 +356,10 @@ function SearchPanel({
               <span className="font-semibold">Date:</span>{" "}
               {data.date_mapping[node_data.dates[selectedNode]]}
             </div>
-           
+            <div>
+              <span className="font-semibold">Num tips:</span>{" "}
+              {node_data.num_tips[selectedNode]}
+            </div>
 
             {metadataItemList.map(x=>{
             const info =getMetadataItem(x)
