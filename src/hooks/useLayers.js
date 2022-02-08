@@ -151,7 +151,9 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
 
   const minimap_scatter = new ScatterplotLayer({
     id: "minimap-scatter",
-    data: data.base_data ? data.base_data.nodes : [],
+    data: data.base_data
+      ? data.base_data.nodes.filter((node) => node.name !== "")
+      : [],
     getPosition: (d) => [d.x, d.y],
     getColor: (d) => toRGB(d[accessor]),
     // radius in pixels
