@@ -44,3 +44,11 @@ public/nodelist.pb.gz
 backend/__pycache__/main.cpython-39.pyc
 backend/data_processing/__pycache__/taxonium_pb2.cpython-39.pyc
 backend/database/usa_indices.json
+backend/database/all_parents.json.gz
+backend/database/database.feather
+backend/database/database.json.gz
+backend/database/database.jsonl.gz
+backend/database/all_parents.json.gz
+backend/database/database.feather
+backend/database/database.feather
+backend/database/all_parents.json.gz
