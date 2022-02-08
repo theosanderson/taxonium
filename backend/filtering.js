@@ -60,18 +60,28 @@ const addParents = (data, filtered) => {
   const selected_node_ids = filtered.map((node) => node.node_id);
   // creat a set to keep track of selected_node_ids
   const selected_node_ids_set = new Set(selected_node_ids);
-  const edges = selected_node_ids.map((node_id) => {
+  const starting_size = filtered.length;
+  for (let i = 0; i < selected_node_ids.length; i++) {
+    const node_id = selected_node_ids[i];
     const parent_id = data[node_id].parent_id;
+    //console.log(i);
+
     // if parent_id is not in selected_node_ids, then add it
     if (!selected_node_ids_set.has(parent_id)) {
       selected_node_ids_set.add(parent_id);
       selected_node_ids.push(parent_id);
+      //console.log("adding parent:", parent_id);
+      //console.log("New length is", selected_node_ids.length);
     }
-    return data[node_id];
-  });
+  }
+  const with_parents = data.filter((node) =>
+    selected_node_ids_set.has(node.node_id)
+  );
+  const final_size = with_parents.length;
   console.log("Adding parents took " + (Date.now() - start_time) + "ms.");
+  console.log("Went from " + starting_size + " to " + final_size + " nodes.");
 
-  return edges;
+  return with_parents;
 };
 
 function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {

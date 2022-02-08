@@ -30,6 +30,7 @@ app.get("/nodes/", function (req, res) {
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
   res.send({ nodes: result });
+
   console.log(
     "Request took " +
       (Date.now() - start_time) +
@@ -99,6 +100,7 @@ function whenReady() {
     null,
     null
   );
+
   console.log("I AM READY");
 }
 
