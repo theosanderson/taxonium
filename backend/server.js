@@ -11,25 +11,30 @@ app.get("/", function (req, res) {
 
 app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
-  // get min_x, max_x, min_y, max_y from URL
   const min_x = req.query.min_x;
   const max_x = req.query.max_x;
-  const min_y = req.query.min_y;
-  const max_y = req.query.max_y;
-
-  const filtered =
-    min_y !== undefined ? filtering.filter(data, min_y, max_y) : data;
-
-  const precision = min_y !== undefined ? 1000.0 / (max_y - min_y) : 4;
-  const reduced_leaves = filtering.reduceOverPlotting(filtered, precision);
-  const reduced = filtering.addParents(data, reduced_leaves);
-  console.log("precision:", precision);
-  res.send({ nodes: reduced });
+  let min_y = req.query.min_y !== undefined ? req.query.min_y : overallMinY();
+  let max_y = req.query.max_y !== undefined ? req.query.max_y : overallMaxY();
+  if (min_y < overallMinY()) {
+    min_y = overallMinY();
+  }
+  if (max_y > overallMaxY()) {
+    max_y = overallMaxY();
+  }
+  let result;
+  if (min_y === overallMinY() && max_y === overallMaxY()) {
+    result = cached_starting_values;
+    console.log("Using cached values");
+  } else {
+    result = filtering.getNodes(data, y_positions, min_y, max_y, min_x, max_x);
+  }
+  console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
+  res.send({ nodes: result });
   console.log(
     "Request took " +
       (Date.now() - start_time) +
       "ms, and output " +
-      reduced.length +
+      result.length +
       " nodes."
   );
 });
@@ -56,6 +61,16 @@ const data = [];
 
 let counter = 0;
 
+let y_positions;
+let cached_starting_values;
+function overallMinY() {
+  return data[0].y;
+}
+
+function overallMaxY() {
+  return data[data.length - 1].y;
+}
+
 function whenReady() {
   const scale_x = 20;
   const scale_y = 45;
@@ -67,6 +82,24 @@ function whenReady() {
     node.parent_x = data[node.parent_id].x;
     node.parent_y = data[node.parent_id].y;
   });
+  y_positions = data.map((node) => node.y);
+  // assert that y is sorted
+  for (let i = 1; i < y_positions.length; i++) {
+    if (y_positions[i] < y_positions[i - 1]) {
+      console.log("y is not sorted");
+      // throw an error
+      throw new Error("y is not sorted");
+    }
+  }
+  cached_starting_values = filtering.getNodes(
+    data,
+    y_positions,
+    overallMinY(),
+    overallMaxY(),
+    null,
+    null
+  );
+  console.log("I AM READY");
 }
 
 // consume the parsed objects by listening to data event

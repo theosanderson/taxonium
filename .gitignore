@@ -52,3 +52,4 @@ backend/database/all_parents.json.gz
 backend/database/database.feather
 backend/database/database.feather
 backend/database/all_parents.json.gz
+backend/database/database.feather
