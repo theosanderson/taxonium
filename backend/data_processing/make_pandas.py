@@ -37,12 +37,24 @@ print("Done creating dataframe")
 
 print(df)
 
+df = df.sort_values(by=["y"])
+df.reset_index(inplace=True)
+# reset index and create mapping from old index to new index
+old_node_ids = df.node_id.values.tolist()
+df['node_id'] = list(range(len(nodelist.node_data.x)))
+old_to_new = dict(zip(old_node_ids, df.node_id.values))
+df['parent_id'] = df.parent_id.apply(lambda x: old_to_new[int(x)])
+
+
+
 # Write out in feather format
 df.to_feather("../database/database.feather", compression="zstd")
 
 # also save as jsonl
 df.to_json("../database/database.jsonl.gz", orient="records", lines=True)
 
+print("saved")
+raise Exception("WILL NEED TO FIX THE BELOW TO UPDATE NODE IDs")
 
 from collections import defaultdict
 
