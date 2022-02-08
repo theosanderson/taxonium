@@ -36,13 +36,13 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
 
   const combo = useMemo(() => {
     if (
-      data.data.leaves &&
-      data.base_data.leaves &&
+      data.data.nodes &&
+      data.base_data.nodes &&
       (data.status === "loading" || data.status === "pending")
     ) {
-      return [...data.data.leaves, ...data.base_data.leaves];
-    } else if (data.data.leaves && data.status === "loaded") {
-      return data.data.leaves;
+      return [...data.data.nodes, ...data.base_data.nodes];
+    } else if (data.data.nodes && data.status === "loaded") {
+      return data.data.nodes;
     } else {
       return [];
     }
@@ -63,17 +63,17 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
 
   const bound_contour = [[outer_bounds, inner_bounds]];
 
-  if (data.data.leaves) {
+  if (data.data.nodes) {
     const temp_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
-      data: combo,
+      data: combo.filter((d) => d.name !== ""),
       getPosition: (d) => [d.x, d.y],
       getColor: (d) => toRGB(d[accessor]),
       // radius in pixels
       getRadius: 3,
       getLineColor: [100, 100, 100],
       opacity: 0.6,
-      stroked: data.data.leaves && data.data.leaves.length < 3000,
+      stroked: data.data.nodes && data.data.nodes.length < 3000,
       lineWidthUnits: "pixels",
       lineWidthScale: 1,
       pickable: true,
@@ -97,7 +97,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
     const lineColor = [150, 150, 150];
     const temp_line_layer = new LineLayer({
       id: "main-line-horiz",
-      data: data.data.lines,
+      data: data.data.nodes,
       getSourcePosition: (d) => [d.x, d.y],
       getTargetPosition: (d) => [d.parent_x, d.y],
       getColor: lineColor,
@@ -108,7 +108,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
 
     const temp_line_layer2 = new LineLayer({
       id: "main-line-vert",
-      data: data.data.lines,
+      data: data.data.nodes,
       getSourcePosition: (d) => [d.parent_x, d.y],
       getTargetPosition: (d) => [d.parent_x, d.parent_y],
       getColor: lineColor,
@@ -125,12 +125,12 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
 
   const max_text_number = 400;
   // If leaves are fewer than max_text_number, add a text layer
-  if (data.data.leaves && data.data.leaves.length < max_text_number) {
+  if (data.data.nodes && data.data.nodes.length < max_text_number) {
     console.log("Adding text layer");
     const node_label_layer = new TextLayer({
       id: "main-text-node",
 
-      data: data.data.leaves,
+      data: data.data.nodes,
       getPosition: (d) => [d.x + 10, d.y],
       getText: (d) => d.name,
 
@@ -140,7 +140,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
       billboard: true,
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
-      getSize: data.data.leaves.length < 200 ? 12 : 9.5,
+      getSize: data.data.nodes.length < 200 ? 12 : 9.5,
       modelMatrix: getMMatrix(viewState.zoom),
     });
 
@@ -149,7 +149,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
 
   const minimap_scatter = new ScatterplotLayer({
     id: "minimap-scatter",
-    data: data.base_data ? data.base_data.leaves : [],
+    data: data.base_data ? data.base_data.nodes : [],
     getPosition: (d) => [d.x, d.y],
     getColor: (d) => toRGB(d[accessor]),
     // radius in pixels
