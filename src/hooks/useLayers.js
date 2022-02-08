@@ -102,6 +102,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
       getTargetPosition: (d) => [d.parent_x, d.y],
       getColor: lineColor,
       pickable: true,
+      onHover: (info) => setHoverInfo(info),
 
       modelMatrix: getMMatrix(viewState.zoom),
     });
@@ -111,6 +112,7 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
       data: data.data.nodes,
       getSourcePosition: (d) => [d.parent_x, d.y],
       getTargetPosition: (d) => [d.parent_x, d.parent_y],
+      onHover: (info) => setHoverInfo(info),
       getColor: lineColor,
       pickable: true,
       modelMatrix: getMMatrix(viewState.zoom),
