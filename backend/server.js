@@ -73,7 +73,6 @@ if (myArgs[0] && myArgs[0]=="ssl"){
 
 
 
-const fs = require("fs");
 const zlib = require("zlib");
 const { parse } = require("@jsonlines/core");
 
