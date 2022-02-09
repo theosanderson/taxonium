@@ -2,6 +2,7 @@ var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
 var app = express();
+var fs = require("fs")
 let options
 // check for command line arg
 const myArgs = process.argv.slice(2);
