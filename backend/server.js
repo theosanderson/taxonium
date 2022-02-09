@@ -83,16 +83,12 @@ app.get("/nodes/", function (req, res) {
     );
   }
   if (result === cached_starting_values) {
-    // This is already a JSON string so
-    // we can send it directly
-    //res.setHeader("Content-Type", "application/json");
     res.send(result);
     console.log(
       "Returning cached results took ",
       Date.now() - start_time + "ms."
     );
   }
-  //res.send({ nodes: result });
 });
 
 if (myArgs[0] && myArgs[0] == "ssl") {
