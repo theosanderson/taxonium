@@ -101,9 +101,28 @@ if (myArgs[0] && myArgs[0] == "ssl") {
 }
 
 const zlib = require("zlib");
-const { parse } = require("@jsonlines/core");
 
 const filtering = require("./filtering.js");
+
+const node_to_mut_file = "./database/node_to_mut.json.gz";
+const file_contents = fs.readFileSync(node_to_mut_file);
+const unzipped_file = zlib.gunzipSync(file_contents);
+const node_to_mut = JSON.parse(unzipped_file);
+
+const mutations_file = "./database/mutation_table.jsonl.gz";
+const mutations_file_contents = fs.readFileSync(mutations_file);
+const unzipped_mutations_file = zlib.gunzipSync(mutations_file_contents);
+const lines = unzipped_mutations_file.toString().split("\n");
+const mutations = [];
+for (let i = 0; i < lines.length; i++) {
+  if (lines[i] !== "") {
+    mutations.push(JSON.parse(lines[i]));
+  }
+}
+
+console.log(mutations);
+
+const { parse } = require("@jsonlines/core");
 
 // create a duplex stream which parse input as lines of json
 const parseStream = parse();
