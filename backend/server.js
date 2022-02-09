@@ -2,7 +2,12 @@ var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
 var app = express();
-const https = require("https://")
+let options
+// check for command line arg
+const myArgs = process.argv.slice(2);
+
+
+
 app.use(cors());
 app.use(compression());
 
@@ -53,7 +58,19 @@ app.get("/nodes/", function (req, res) {
   );
 });
 
-app.listen(8000, () => console.log(`App is listening on port 3000!`));
+app.listen(8000, () => console.log(`App is listening on port 8000!`));
+
+if (myArgs[0] && myArgs[0]=="ssl"){
+  options = {
+    key: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/privkey.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/cert.pem")
+  };
+  https.createServer(options, app).listen(8080);
+  console.log("SSL on 8080")
+
+}
+
+
 
 const fs = require("fs");
 const zlib = require("zlib");
