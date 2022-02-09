@@ -60,7 +60,36 @@ function useGetDynamicData(backend, viewState) {
         }
         console.log("attempting get");
         // Make call to backend to get data
-        queryNodes(boundsForQueries, setDynamicData, setTriggerRefresh);
+        queryNodes(
+          boundsForQueries,
+          (result) => {
+            setDynamicData((prevData) => {
+              const new_result = {
+                ...prevData,
+                status: "loaded",
+                data: result,
+              };
+              if (!boundsForQueries) {
+                new_result.base_data = result;
+              } else {
+                if (!prevData.base_data) {
+                  queryNodes(null, (base_result) => {
+                    setDynamicData((prevData) => {
+                      const new_result = {
+                        ...prevData,
+                        status: "loaded",
+                        base_data: base_result,
+                      };
+                      return new_result;
+                    });
+                  });
+                }
+              }
+              return new_result;
+            });
+          },
+          setTriggerRefresh
+        );
 
         setDynamicData({ ...dynamicData, status: "loading" });
       }, 300)

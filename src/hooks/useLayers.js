@@ -35,23 +35,26 @@ const useLayers = (
   colorBy
 ) => {
   const getNodeColorField = colorBy.getNodeColorField;
-  if (!data.data && data.base_data) {
-    data.data = data.base_data;
-  }
+
   const { toRGB } = colorHook;
 
   const layers = [];
 
   const combo = useMemo(() => {
     if (
+      data.data &&
+      data.base_data &&
       data.data.nodes &&
       data.base_data.nodes &&
       (data.status === "loading" || data.status === "pending")
     ) {
       return [...data.data.nodes, ...data.base_data.nodes];
+      console.log("A");
     } else if (data.data.nodes && data.status === "loaded") {
       return data.data.nodes;
+      console.log("B");
     } else {
+      console.log("C", data.data, data.base_data);
       return [];
     }
   }, [data.data, data.base_data, data.status]);

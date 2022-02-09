@@ -2,9 +2,10 @@ import { useCallback } from "react";
 import axios from "axios";
 function useBackend(backend_url) {
   const queryNodes = useCallback(
-    (boundsForQueries, setDynamicData, setTriggerRefresh) => {
+    (boundsForQueries, setResult, setTriggerRefresh) => {
       let url = backend_url + "/nodes/?type=leaves";
       if (
+        boundsForQueries &&
         boundsForQueries.min_x &&
         boundsForQueries.max_x &&
         boundsForQueries.min_y &&
@@ -26,25 +27,11 @@ function useBackend(backend_url) {
         .get(url)
         .then(function (response) {
           console.log("got data", response.data);
-          if (!boundsForQueries.min_x) {
-            setDynamicData({
-              status: "loaded",
-              base_data: response.data,
-            });
-          } else {
-            setDynamicData((dynamicData) => ({
-              ...dynamicData,
-              status: "loaded",
-              data: response.data,
-            }));
-          }
+          setResult(response.data);
         })
         .catch(function (error) {
           console.log(error);
-          setDynamicData({
-            status: "error",
-            data: [],
-          });
+          setResult([]);
           setTriggerRefresh({});
         });
     },

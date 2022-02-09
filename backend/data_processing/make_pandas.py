@@ -2,6 +2,7 @@ import taxonium_pb2
 import gzip
 import tqdm
 import pandas as pd
+import json
 
 protobuf_location = "../../public/nodelist.pb.gz"
 print("Reading proto")
@@ -46,42 +47,12 @@ old_to_new = dict(zip(old_node_ids, df.node_id.values))
 df['parent_id'] = df.parent_id.apply(lambda x: old_to_new[int(x)])
 
 
-
-# Write out in feather format
-df.to_feather("../database/database.feather", compression="zstd")
-
 # also save as jsonl
 df.to_json("../database/database.jsonl.gz", orient="records", lines=True)
 
 
 print("saved")
-raise Exception("WILL NEED TO FIX THE BELOW TO UPDATE NODE IDs")
 
-from collections import defaultdict
-
-all_parents = defaultdict(set)
-
-
-def get_parent_ids(node_id):
-    parent_id = int(df.parent_id[node_id])
-    if parent_id == node_id:
-        return
-    if parent_id not in all_parents:
-        get_parent_ids(parent_id)
-    all_parents[node_id].update(all_parents[parent_id])
-    all_parents[node_id].add(parent_id)
-
-
-for node_id, parent_id in tqdm.tqdm(df.parent_id.items()):
-    if node_id not in all_parents:
-        get_parent_ids(node_id)
-
-import json
-
-all_parents = {i: list(x) for i, x in all_parents.items()}
-# Write out the parents
-with gzip.open("../database/all_parents.json.gz", "wb") as f:
-    json.dump(all_parents, f)
 
 mutation_ids = []
 previous_residues = []
@@ -108,6 +79,10 @@ mutation_table = pd.DataFrame({
     "gene": genes
 })
 
+mutation_table.to_json("../database/mutation_table.jsonl.gz", orient="records", lines=True)
+
+
+
 # set gene and residues to categorical
 mutation_table["gene"] = mutation_table["gene"].astype("category")
 mutation_table["previous_residue"] = mutation_table["previous_residue"].astype(
@@ -115,8 +90,7 @@ mutation_table["previous_residue"] = mutation_table["previous_residue"].astype(
 mutation_table["new_residue"] = mutation_table["new_residue"].astype(
     "category")
 
-mutation_table.to_feather("../database/mutation_table.feather",
-                          compression="zstd")
+
 
 node_ids = []
 mutation_ids = []
@@ -125,6 +99,16 @@ for node_id, these_mutation_ids in enumerate(nodelist.node_data.mutations):
         node_ids.append(node_id)
         mutation_ids.append(mutation_id)
 
-df = pd.DataFrame({"node_id": node_ids, "mutation_id": mutation_ids})
+node_to_mut = pd.DataFrame({"node_id": node_ids, "mutation_id": mutation_ids})
+node_to_mut['node_id'] = node_to_mut.node_id.apply(lambda x: old_to_new[x])
+grouped = node_to_mut.sort_values(by=["node_id"]).groupby("node_id")
+output_list = [ [] for x in range(len(nodelist.node_data.x))]
+for name, group in grouped:
+    output_list[name] = group.mutation_id.values.tolist()
 
-df.to_feather("../database/node_mutation_table.feather", compression="zstd")
+output_file = "../database/node_to_mut.json.gz"
+with gzip.open(output_file, "wt") as f:
+    json.dump(output_list, f)
+
+
+
