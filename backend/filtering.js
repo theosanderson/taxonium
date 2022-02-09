@@ -1,3 +1,5 @@
+var crypto = require("crypto");
+const count_per_hash = {};
 const reduceOverPlotting = (input, precision) => {
   const included_points = {};
 
@@ -42,7 +44,6 @@ function binary_search_for_insertion_point(values, search) {
 }
 
 function filter(input, y_positions, min_y, max_y) {
-  console.log(y_positions);
   // do binary search for min_y and max_y
   const min_y_index = binary_search_for_insertion_point(y_positions, min_y);
   const max_y_index = binary_search_for_insertion_point(y_positions, max_y);
@@ -84,6 +85,11 @@ const addParents = (data, filtered) => {
   return with_parents;
 };
 
+function getPrecision(min_y, max_y) {
+  const precision = 4000.0 / (max_y - min_y);
+  return precision;
+}
+
 function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
   const start_time = Date.now();
   // get min_x, max_x, min_y, max_y from URL
@@ -92,7 +98,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
     min_y !== undefined ? filter(data, y_positions, min_y, max_y) : data;
   const time2 = Date.now();
   console.log("Filtering took " + (time2 - start_time) + "ms.");
-  const precision = 4000.0 / (max_y - min_y);
+  const precision = getPrecision(min_y, max_y);
   const reduced_leaves = reduceOverPlotting(filtered, precision);
   const time3 = Date.now();
   console.log("Reducing took " + (time3 - time2) + "ms.");
@@ -101,4 +107,71 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
   return reduced;
 }
 
-module.exports = { reduceOverPlotting, filter, search, addParents, getNodes };
+function searchFiltering(data, spec) {
+  console.log(spec);
+  let filtered;
+  if (spec.method === "text_match") {
+    // case insensitive
+    spec.text = spec.text.toLowerCase();
+    filtered = data.filter((node) =>
+      node[spec.type].toLowerCase().includes(spec.text)
+    );
+    return filtered;
+  } else if (spec.method === "text_exact") {
+    // case insensitive
+    spec.text = spec.text.toLowerCase();
+    filtered = data.filter(
+      (node) => node[spec.type].toLowerCase() === spec.text
+    );
+    return filtered;
+  }
+  console.log("No method found");
+  return [];
+}
+
+function singleSearch(data, spec, min_y, max_y, y_positions) {
+  const text_spec = JSON.stringify(spec);
+  const max_to_return = 10000;
+  const hash_spec = crypto
+    .createHash("md5")
+    .update(text_spec)
+    .digest("hex")
+    .slice(0, 8);
+  let filtered;
+  if (count_per_hash[hash_spec] === undefined) {
+    filtered = searchFiltering(data, spec);
+    count_per_hash[hash_spec] = filtered.length;
+  }
+  const num_returned = count_per_hash[hash_spec];
+  let result;
+  if (num_returned > max_to_return) {
+    const cut = filter(data, y_positions, min_y, max_y);
+    const filtered_cut = searchFiltering(cut, spec);
+
+    const reduced = reduceOverPlotting(
+      filtered_cut,
+      getPrecision(min_y, max_y)
+    );
+    result = {
+      type: "filtered",
+      data: reduced,
+      total_count: num_returned,
+    };
+  } else {
+    result = {
+      type: "complete",
+      data: filtered,
+      total_count: num_returned,
+    };
+  }
+  return result;
+}
+
+module.exports = {
+  reduceOverPlotting,
+  filter,
+  search,
+  addParents,
+  getNodes,
+  singleSearch,
+};

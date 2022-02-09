@@ -26,7 +26,7 @@ let getMMatrix = (zoom) => [
   1,
 ]; // new Matrix4().scale([Math.max(1, zoom), 1, 1]);
 
-const useLayers = (data, viewState, colorHook, setHoverInfo) => {
+const useLayers = (data, search, viewState, colorHook, setHoverInfo) => {
   if (!data.data && data.base_data) {
     data.data = data.base_data;
   }
@@ -200,6 +200,30 @@ const useLayers = (data, viewState, colorHook, setHoverInfo) => {
     minimap_scatter,
     minimap_bound_polygon
   );
+
+  const { searchSpec, searchResults } = search;
+
+  const search_layers = searchSpec.map((spec, i) => {
+    const data = searchResults[spec.key]
+      ? searchResults[spec.key].result.data
+      : [];
+
+    return new ScatterplotLayer({
+      data: data,
+      id: "main-search-scatter-" + spec.key,
+      getPosition: (d) => [d.x, d.y],
+      getLineColor: [255, 0, 0],
+      getRadius: 10,
+      radiusUnits: "pixels",
+      lineWidthUnits: "pixels",
+      stroked: true,
+      getLineWidth: 1,
+      filled: true,
+      getColor: [255, 0, 0, 0],
+      modelMatrix: getMMatrix(viewState.zoom),
+    });
+  });
+  layers.push(...search_layers);
 
   const layerFilter = useCallback(({ layer, viewport }) => {
     const first_bit =

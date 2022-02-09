@@ -2,13 +2,11 @@ var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
 var app = express();
-var fs = require("fs")
-var https = require("https")
-let options
+var fs = require("fs");
+var https = require("https");
+let options;
 // check for command line arg
 const myArgs = process.argv.slice(2);
-
-
 
 app.use(cors());
 app.use(compression());
@@ -17,6 +15,34 @@ app.get("/", function (req, res) {
   res.send("Hello World!");
 });
 
+app.get("/search", function (req, res) {
+  const start_time = Date.now();
+  console.log("/search");
+  const json = req.query.json;
+  const spec = JSON.parse(JSON.parse(json));
+  console.log(spec);
+  req.query.min_y =
+    req.query.min_y !== undefined ? req.query.min_y : overallMinY();
+  req.query.max_y =
+    req.query.max_y !== undefined ? req.query.max_y : overallMaxY();
+
+  const result = filtering.singleSearch(
+    data,
+    spec,
+    req.query.min_y,
+    req.query.max_y,
+    y_positions
+  );
+  res.send(result);
+  console.log(
+    "Found " +
+      result.data.length +
+      " results in " +
+      (Date.now() - start_time) +
+      "ms"
+  );
+  console.log("Result type was " + result.type);
+});
 
 app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
@@ -42,37 +68,37 @@ app.get("/nodes/", function (req, res) {
   if (result !== cached_starting_values) {
     // This will be sent as json
     res.send({ nodes: result });
+    console.log(
+      "Request took " +
+        (Date.now() - start_time) +
+        "ms, and output " +
+        result.length +
+        " nodes."
+    );
   }
   if (result === cached_starting_values) {
     // This is already a JSON string so
     // we can send it directly
     //res.setHeader("Content-Type", "application/json");
     res.send(result);
+    console.log(
+      "Returning cached results took ",
+      Date.now() - start_time + "ms."
+    );
   }
   //res.send({ nodes: result });
-
-  console.log(
-    "Request took " +
-      (Date.now() - start_time) +
-      "ms, and output " +
-      result.length +
-      " nodes."
-  );
 });
 
-//app.listen(8000, () => console.log(`App is listening on port 8000!`));
-
-if (myArgs[0] && myArgs[0]=="ssl"){
+if (myArgs[0] && myArgs[0] == "ssl") {
   options = {
     key: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/cert.pem")
+    cert: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/cert.pem"),
   };
   https.createServer(options, app).listen(8080);
-  console.log("SSL on 8080")
-
+  console.log("SSL on 8080");
+} else {
+  app.listen(8000, () => console.log(`App is listening on port 8000!`));
 }
-
-
 
 const zlib = require("zlib");
 const { parse } = require("@jsonlines/core");

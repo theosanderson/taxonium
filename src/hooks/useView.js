@@ -88,9 +88,6 @@ const useView = () => {
       viewState.real_target = [...viewState.target];
       viewState.real_target[0] = viewState.real_target[0] * newScale;
 
-      console.log(viewState.real_target);
-      console.log("W", viewState.real_width);
-
       const nw = [
         viewState.real_target[0] - viewState.real_width / 2,
         viewState.real_target[1] - viewState.real_height / 2,
@@ -105,12 +102,6 @@ const useView = () => {
       viewState.min_y = nw[1];
       viewState.max_y = se[1];
 
-      console.log(
-        viewState.min_y,
-        viewState.max_y,
-        viewState.min_x,
-        viewState.max_x
-      );
       viewState["minimap"] = { zoom: -3, target: [205, 700] };
       setViewState(viewState);
       return viewState;

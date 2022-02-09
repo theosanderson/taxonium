@@ -1,54 +1,52 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 
-function useGetDynamicData(backend_url, viewState) {
+function useGetDynamicData(backend, viewState) {
+  const { queryNodes } = backend;
   const [dynamicData, setDynamicData] = useState({
     status: "not_started",
     data: [],
   });
 
-  let [parametersToQuery, setParametersToQuery] = useState(null);
+  let [boundsForQueries, setBoundsForQueries] = useState(null);
   let [triggerRefresh, setTriggerRefresh] = useState({});
   let [timeoutRef, setTimeoutRef] = useState(null);
 
   useEffect(() => {
     if (
-      !parametersToQuery ||
+      !boundsForQueries ||
       (true &&
-        (viewState.min_x < parametersToQuery.min_x + viewState.real_width / 2 ||
-          viewState.max_x >
-            parametersToQuery.max_x - viewState.real_width / 2 ||
+        (viewState.min_x < boundsForQueries.min_x + viewState.real_width / 2 ||
+          viewState.max_x > boundsForQueries.max_x - viewState.real_width / 2 ||
           viewState.min_y <
-            parametersToQuery.min_y + viewState.real_height / 2 ||
+            boundsForQueries.min_y + viewState.real_height / 2 ||
           viewState.max_y >
-            parametersToQuery.max_y - viewState.real_height / 2 ||
-          Math.abs(viewState.zoom - parametersToQuery.zoom) > 0.5))
+            boundsForQueries.max_y - viewState.real_height / 2 ||
+          Math.abs(viewState.zoom - boundsForQueries.zoom) > 0.5))
     ) {
       if (window.log) {
-        console.log([viewState.min_x, parametersToQuery.min_x]);
+        console.log([viewState.min_x, boundsForQueries.min_x]);
       }
 
       console.log("updating parameters to query");
 
-      const newParamsToQuery = {
+      const newBoundForQuery = {
         min_x: viewState.min_x - viewState.real_width,
         max_x: viewState.max_x + viewState.real_width,
         min_y: viewState.min_y - viewState.real_height,
         max_y: viewState.max_y + viewState.real_height,
         zoom: viewState.zoom,
       };
-      console.log(viewState);
-      console.log(newParamsToQuery);
 
-      setParametersToQuery(newParamsToQuery);
+      setBoundsForQueries(newBoundForQuery);
+      console.log("updating bounds");
     }
-  }, [viewState, parametersToQuery, triggerRefresh]);
+  }, [viewState, boundsForQueries, triggerRefresh]);
 
   useEffect(() => {
     clearTimeout(timeoutRef);
     setTimeoutRef(
       setTimeout(() => {
-        if (!parametersToQuery) return;
+        if (!boundsForQueries) return;
 
         if (dynamicData.status === "loading") {
           console.log("not trying to get as we are still loading");
@@ -62,56 +60,14 @@ function useGetDynamicData(backend_url, viewState) {
         }
         console.log("attempting get");
         // Make call to backend to get data
-        let url = backend_url + "/nodes/?type=leaves";
-        if (
-          parametersToQuery.min_x &&
-          parametersToQuery.max_x &&
-          parametersToQuery.min_y &&
-          parametersToQuery.max_y
-        ) {
-          url =
-            url +
-            "&min_x=" +
-            parametersToQuery.min_x +
-            "&max_x=" +
-            parametersToQuery.max_x +
-            "&min_y=" +
-            parametersToQuery.min_y +
-            "&max_y=" +
-            parametersToQuery.max_y;
-        }
+        queryNodes(boundsForQueries, setDynamicData, setTriggerRefresh);
 
-        axios
-          .get(url)
-          .then(function (response) {
-            console.log("got data", response.data);
-            if (!parametersToQuery.min_x) {
-              setDynamicData({
-                status: "loaded",
-                base_data: response.data,
-              });
-            } else {
-              setDynamicData({
-                ...dynamicData,
-                status: "loaded",
-                data: response.data,
-              });
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-            setDynamicData({
-              status: "error",
-              data: [],
-            });
-            setTriggerRefresh({});
-          });
         setDynamicData({ ...dynamicData, status: "loading" });
       }, 300)
     );
-  }, [parametersToQuery, backend_url, triggerRefresh]);
+  }, [boundsForQueries, queryNodes, triggerRefresh]);
 
-  return dynamicData;
+  return { data: dynamicData, boundsForQueries };
 }
 
 export default useGetDynamicData;
