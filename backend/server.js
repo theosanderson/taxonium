@@ -2,12 +2,14 @@ var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
 var app = express();
+const https = require("https://")
 app.use(cors());
 app.use(compression());
 
 app.get("/", function (req, res) {
   res.send("Hello World!");
 });
+
 
 app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
@@ -51,7 +53,7 @@ app.get("/nodes/", function (req, res) {
   );
 });
 
-app.listen(3000, () => console.log(`App is listening on port 3000!`));
+app.listen(8000, () => console.log(`App is listening on port 3000!`));
 
 const fs = require("fs");
 const zlib = require("zlib");
