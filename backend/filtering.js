@@ -137,7 +137,7 @@ function singleSearch(data, spec, min_y, max_y, y_positions) {
     .update(text_spec)
     .digest("hex")
     .slice(0, 8);
-  let filtered;
+  let filtered = null;
   if (count_per_hash[hash_spec] === undefined) {
     filtered = searchFiltering(data, spec);
     count_per_hash[hash_spec] = filtered.length;
@@ -158,6 +158,9 @@ function singleSearch(data, spec, min_y, max_y, y_positions) {
       total_count: num_returned,
     };
   } else {
+    if (filtered === null) {
+      filtered = searchFiltering(data, spec);
+    }
     result = {
       type: "complete",
       data: filtered,
