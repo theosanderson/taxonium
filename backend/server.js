@@ -24,12 +24,23 @@ app.get("/nodes/", function (req, res) {
   let result;
   if (min_y === overallMinY() && max_y === overallMaxY()) {
     result = cached_starting_values;
+
     console.log("Using cached values");
   } else {
     result = filtering.getNodes(data, y_positions, min_y, max_y, min_x, max_x);
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
-  res.send({ nodes: result });
+  if (result !== cached_starting_values) {
+    // This will be sent as json
+    res.send({ nodes: result });
+  }
+  if (result === cached_starting_values) {
+    // This is already a JSON string so
+    // we can send it directly
+    //res.setHeader("Content-Type", "application/json");
+    res.send(result);
+  }
+  //res.send({ nodes: result });
 
   console.log(
     "Request took " +
@@ -73,11 +84,17 @@ function overallMaxY() {
 }
 
 function whenReady() {
-  const scale_x = 20;
+  const scale_x = 30;
   const scale_y = 45;
   data.forEach((node) => {
     node.x = node.x * scale_x;
     node.y = node.y * scale_y;
+  });
+
+  // round x and y to 5 dp
+  data.forEach((node) => {
+    node.x = Math.round(node.x * 100000) / 100000;
+    node.y = Math.round(node.y * 100000) / 100000;
   });
   data.forEach((node) => {
     node.parent_x = data[node.parent_id].x;
@@ -100,6 +117,8 @@ function whenReady() {
     null,
     null
   );
+
+  cached_starting_values = JSON.stringify({ nodes: cached_starting_values });
 
   console.log("I AM READY");
 }

@@ -53,6 +53,7 @@ df.to_feather("../database/database.feather", compression="zstd")
 # also save as jsonl
 df.to_json("../database/database.jsonl.gz", orient="records", lines=True)
 
+
 print("saved")
 raise Exception("WILL NEED TO FIX THE BELOW TO UPDATE NODE IDs")
 
