@@ -45,6 +45,12 @@ app.get("/search", function (req, res) {
 });
 
 app.get("/nodes/", function (req, res) {
+  let extra_params = req.query.extra;
+  if (extra_params && extra_params.length > 0) {
+    extra_params = JSON.parse(extra_params);
+    console.log("Got extra params", extra_params);
+  }
+
   const start_time = Date.now();
   const min_x = req.query.min_x;
   const max_x = req.query.max_x;
@@ -57,7 +63,7 @@ app.get("/nodes/", function (req, res) {
     max_y = overallMaxY();
   }
   let result;
-  if (min_y === overallMinY() && max_y === overallMaxY()) {
+  if (min_y === overallMinY() && max_y === overallMaxY() && !extra_params) {
     result = cached_starting_values;
 
     console.log("Using cached values");

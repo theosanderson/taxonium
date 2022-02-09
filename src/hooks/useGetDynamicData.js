@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-function useGetDynamicData(backend, viewState) {
+function useGetDynamicData(backend, colorBy, viewState) {
   const { queryNodes } = backend;
   const [dynamicData, setDynamicData] = useState({
     status: "not_started",
@@ -42,6 +42,8 @@ function useGetDynamicData(backend, viewState) {
     }
   }, [viewState, boundsForQueries, triggerRefresh]);
 
+  const extraParams = colorBy.nodeRetrievalExtraParams;
+
   useEffect(() => {
     clearTimeout(timeoutRef);
     setTimeoutRef(
@@ -62,6 +64,7 @@ function useGetDynamicData(backend, viewState) {
         // Make call to backend to get data
         queryNodes(
           boundsForQueries,
+          extraParams,
           (result) => {
             setDynamicData((prevData) => {
               const new_result = {
@@ -72,13 +75,14 @@ function useGetDynamicData(backend, viewState) {
               if (!boundsForQueries) {
                 new_result.base_data = result;
               } else {
-                if (!prevData.base_data) {
-                  queryNodes(null, (base_result) => {
+                if (!prevData.base_data || prevData.base_data_is_invalid) {
+                  queryNodes(null, extraParams, (base_result) => {
                     setDynamicData((prevData) => {
                       const new_result = {
                         ...prevData,
                         status: "loaded",
                         base_data: base_result,
+                        base_data_is_invalid: false,
                       };
                       return new_result;
                     });
@@ -94,7 +98,7 @@ function useGetDynamicData(backend, viewState) {
         setDynamicData({ ...dynamicData, status: "loading" });
       }, 300)
     );
-  }, [boundsForQueries, queryNodes, triggerRefresh]);
+  }, [boundsForQueries, extraParams, queryNodes, triggerRefresh]);
 
   return { data: dynamicData, boundsForQueries };
 }
