@@ -1,10 +1,14 @@
-import { useState, useMemo, useEffect } from "react";
-import axios from "axios";
+import { useState, useMemo, useEffect, useRef } from "react";
 
-const useSearch = (data) => {
+const useSearch = (data, boundsForQueries, view, backend) => {
+  const { singleSearch } = backend;
+
   const [searchSpec, setSearchSpec] = useState([]);
   const [searchResults, setSearchResults] = useState({});
   const [jsonSearch, setJsonSearch] = useState({});
+
+  const timeouts = useRef({});
+
   useEffect(() => {
     // Remove search results which are no longer in the search spec
     const spec_keys = searchSpec.map((spec) => spec.key);
@@ -27,32 +31,58 @@ const useSearch = (data) => {
       (key) => spec_json[key] !== jsonSearch[key]
     );
 
+    // also add any result where the result type is not complete, and the bounding box has changed
+    const result_changed = Object.keys(searchResults).filter(
+      (key) =>
+        !(searchResults[key].result.type === "complete") &&
+        searchResults[key].boundingBox != boundsForQueries
+    );
+
     // if any json strings have changed, update the search results
     if (json_changed.length > 0) {
       setJsonSearch(spec_json);
     }
 
+    const all_changed_with_dupes = json_changed.concat(result_changed);
+    const all_changed = [...new Set(all_changed_with_dupes)];
+    // remove dupes
+
     // if there are changed json strings, update the search results
-    if (json_changed.length > 0) {
-      json_changed.forEach((key) => {
+    if (all_changed.length > 0) {
+      all_changed.forEach((key) => {
         console.log("searching for " + key, JSON.parse(spec_json[key]));
-        // make an axios call to /search/?json=<json>
-        axios.get(`/search/?json=${spec_json[key]}`).then((response) => {
-          setSearchResults((prevState) => ({
-            ...prevState,
-            [key]: response.data,
-          }));
-          console.log(searchResults);
-        });
+
+        const this_json = spec_json[key];
+        console.log("performing search");
+
+        const do_search = () => {
+          singleSearch(this_json, boundsForQueries, (result) => {
+            setSearchResults((prevState) => ({
+              ...prevState,
+              [key]: { boundingBox: boundsForQueries, result: result },
+            }));
+            console.log(searchResults);
+          });
+        };
+
+        // debounce the search
+        if (timeouts.current[key]) {
+          clearTimeout(timeouts.current[key]);
+          console.log("clearing timeout");
+        }
+        timeouts.current[key] = setTimeout(do_search, 500);
       });
     }
-  }, [searchSpec, searchResults, jsonSearch]);
+  }, [searchSpec, searchResults, jsonSearch, singleSearch, boundsForQueries]);
 
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
     // get a random string key
     const newKey = Math.random().toString(36).substring(2, 15);
-    setSearchSpec([...searchSpec, { key: newKey }]);
+    setSearchSpec([
+      ...searchSpec,
+      { key: newKey, type: "meta_Lineage", method: "text_exact", text: "abc" },
+    ]);
   };
 
   const deleteTopLevelSearch = (key) => {
@@ -60,6 +90,7 @@ const useSearch = (data) => {
   };
 
   return {
+    searchResults,
     searchSpec,
     setSearchSpec,
     addNewTopLevelSearch,
