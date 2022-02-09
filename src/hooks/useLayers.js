@@ -26,12 +26,20 @@ let getMMatrix = (zoom) => [
   1,
 ]; // new Matrix4().scale([Math.max(1, zoom), 1, 1]);
 
-const useLayers = (data, search, viewState, colorHook, setHoverInfo) => {
+const useLayers = (
+  data,
+  search,
+  viewState,
+  colorHook,
+  setHoverInfo,
+  colorBy
+) => {
+  const getNodeColorField = colorBy.getNodeColorField;
   if (!data.data && data.base_data) {
     data.data = data.base_data;
   }
   const { toRGB } = colorHook;
-  const accessor = "meta_Lineage";
+
   const layers = [];
 
   const combo = useMemo(() => {
@@ -68,7 +76,7 @@ const useLayers = (data, search, viewState, colorHook, setHoverInfo) => {
       id: "main-scatter",
       data: combo.filter((d) => d.name !== ""),
       getPosition: (d) => [d.x, d.y],
-      getColor: (d) => toRGB(d[accessor]),
+      getColor: (d) => toRGB(getNodeColorField(d)),
       // radius in pixels
       getRadius: 3,
       getLineColor: [100, 100, 100],
@@ -155,7 +163,7 @@ const useLayers = (data, search, viewState, colorHook, setHoverInfo) => {
       ? data.base_data.nodes.filter((node) => node.name !== "")
       : [],
     getPosition: (d) => [d.x, d.y],
-    getColor: (d) => toRGB(d[accessor]),
+    getColor: (d) => toRGB(getNodeColorField(d)),
     // radius in pixels
     getRadius: 2,
     getLineColor: [100, 100, 100],
@@ -207,16 +215,19 @@ const useLayers = (data, search, viewState, colorHook, setHoverInfo) => {
     const data = searchResults[spec.key]
       ? searchResults[spec.key].result.data
       : [];
+    const lineColor = search.getLineColor(i);
 
     return new ScatterplotLayer({
       data: data,
       id: "main-search-scatter-" + spec.key,
       getPosition: (d) => [d.x, d.y],
-      getLineColor: [255, 0, 0],
-      getRadius: 10,
+      getLineColor: lineColor,
+      getRadius: 10 + 2 * i,
       radiusUnits: "pixels",
       lineWidthUnits: "pixels",
       stroked: true,
+
+      wireframe: true,
       getLineWidth: 1,
       filled: true,
       getColor: [255, 0, 0, 0],

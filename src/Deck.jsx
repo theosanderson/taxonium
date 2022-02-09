@@ -15,7 +15,15 @@ import {
 import useSnapshot from "./hooks/useSnapshot";
 import NodeHoverTip from "./NodeHoverTip";
 
-function Deck({ data, search, progress, spinnerShown, view, colorHook }) {
+function Deck({
+  data,
+  search,
+  progress,
+  spinnerShown,
+  view,
+  colorHook,
+  colorBy,
+}) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
   const {
@@ -38,7 +46,8 @@ function Deck({ data, search, progress, spinnerShown, view, colorHook }) {
     search,
     viewState,
     colorHook,
-    setHoverInfo
+    setHoverInfo,
+    colorBy
   );
   // console.log("deck refresh");
 

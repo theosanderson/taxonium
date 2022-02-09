@@ -5,6 +5,7 @@ import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
 import useSearch from "./hooks/useSearch";
+import useColorBy from "./hooks/useColorBy";
 import { useRef, useMemo } from "react";
 import useBackend from "./hooks/useBackend";
 
@@ -21,6 +22,7 @@ function Taxonium({ uploadedData, query, setQuery }) {
   const backend = useBackend(query.backend);
   const { data, boundsForQueries } = useGetDynamicData(backend, view.viewState);
   const search = useSearch(data, boundsForQueries, view, backend);
+  const colorBy = useColorBy(data);
 
   //
 
@@ -28,10 +30,16 @@ function Taxonium({ uploadedData, query, setQuery }) {
     <div className="main_content">
       <div className="md:grid md:grid-cols-12 h-full">
         <div className="md:col-span-8 h-3/6 md:h-full w-full">
-          <Deck data={data} search={search} view={view} colorHook={colorHook} />
+          <Deck
+            data={data}
+            search={search}
+            view={view}
+            colorHook={colorHook}
+            colorBy={colorBy}
+          />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
-          <SearchPanel search={search} />
+          <SearchPanel search={search} colorBy={colorBy} />
         </div>
       </div>
     </div>
