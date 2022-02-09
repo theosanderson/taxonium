@@ -3,6 +3,12 @@ import { BsTrash } from "react-icons/bs";
 import { useCallback, useState } from "react";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search }) {
+  const this_result = search.searchResults[myKey];
+  console.log(this_result);
+  const num_results =
+    this_result && this_result.result
+      ? this_result.result.total_count
+      : "Loading";
   const setThisSearchSpec = useCallback(
     (thisSpec) => {
       // find the index of the item in the searchSpec array
@@ -23,6 +29,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search }) {
         singleSearchSpec={singleSearchSpec}
         setThisSearchSpec={setThisSearchSpec}
       />
+      <div className="text-gray-700 text-right">{num_results} results</div>
       <button
         className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
         onClick={() => search.deleteTopLevelSearch(myKey)}

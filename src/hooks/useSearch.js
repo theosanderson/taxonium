@@ -89,12 +89,24 @@ const useSearch = (data, boundsForQueries, view, backend) => {
     setSearchSpec(searchSpec.filter((s) => s.key !== key));
   };
 
+  const lineColors = [
+    [255, 0, 0],
+    [0, 255, 0],
+    [0, 0, 255],
+    [255, 255, 0],
+    [255, 0, 255],
+    [0, 255, 255],
+  ];
+
+  const getLineColor = (index) => lineColors[index % lineColors.length];
+
   return {
     searchResults,
     searchSpec,
     setSearchSpec,
     addNewTopLevelSearch,
     deleteTopLevelSearch,
+    getLineColor,
   };
 };
 
