@@ -57,10 +57,38 @@ const useSearch = (data, boundsForQueries, view, backend) => {
 
         const do_search = () => {
           singleSearch(this_json, boundsForQueries, (result) => {
-            setSearchResults((prevState) => ({
-              ...prevState,
-              [key]: { boundingBox: boundsForQueries, result: result },
-            }));
+            setSearchResults((prevState) => {
+              const new_result = {
+                boundingBox: boundsForQueries,
+                result: result,
+              };
+              if (result.type === "complete") {
+                new_result.overview = result.data;
+              } else {
+                if (
+                  prevState[key] &&
+                  prevState[key].overview &&
+                  !json_changed.includes(key)
+                ) {
+                  new_result.overview = prevState[key].overview;
+                } else {
+                  singleSearch(this_json, null, (result) => {
+                    setSearchResults((prevState) => {
+                      const new_result = prevState[key];
+                      new_result.overview = result.data;
+                      return {
+                        ...prevState,
+                        [key]: new_result,
+                      };
+                    });
+                  });
+                }
+              }
+              return {
+                ...prevState,
+                [key]: new_result,
+              };
+            });
             console.log(searchResults);
           });
         };

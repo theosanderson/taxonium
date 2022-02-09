@@ -236,6 +236,30 @@ const useLayers = (
   });
   layers.push(...search_layers);
 
+  const search_mini_layers = searchSpec.map((spec, i) => {
+    const data = searchResults[spec.key]
+      ? searchResults[spec.key].overview
+      : [];
+    const lineColor = search.getLineColor(i);
+
+    return new ScatterplotLayer({
+      data: data,
+      id: "mini-search-scatter-" + spec.key,
+      getPosition: (d) => [d.x, d.y],
+      getLineColor: lineColor,
+      getRadius: 5 + 2 * i,
+      radiusUnits: "pixels",
+      lineWidthUnits: "pixels",
+      stroked: true,
+
+      wireframe: true,
+      getLineWidth: 1,
+      filled: true,
+      getColor: [255, 0, 0, 0],
+    });
+  });
+  layers.push(...search_layers, search_mini_layers);
+
   const layerFilter = useCallback(({ layer, viewport }) => {
     const first_bit =
       (layer.id.startsWith("main") && viewport.id === "main") ||

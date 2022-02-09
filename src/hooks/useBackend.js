@@ -55,6 +55,7 @@ function useBackend(backend_url) {
     (singleSearch, boundsForQueries, setResult) => {
       let url = backend_url + "/search/?json=" + JSON.stringify(singleSearch);
       if (
+        boundsForQueries &&
         boundsForQueries.min_x &&
         boundsForQueries.max_x &&
         boundsForQueries.min_y &&
