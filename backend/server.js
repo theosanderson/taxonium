@@ -60,7 +60,7 @@ app.get("/nodes/", function (req, res) {
   );
 });
 
-app.listen(8000, () => console.log(`App is listening on port 8000!`));
+//app.listen(8000, () => console.log(`App is listening on port 8000!`));
 
 if (myArgs[0] && myArgs[0]=="ssl"){
   options = {
