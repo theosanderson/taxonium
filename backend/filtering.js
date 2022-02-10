@@ -104,7 +104,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
   return reduced;
 }
 
-function searchFiltering({ data, spec, mutations, node_to_mut }) {
+function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
   console.log(mutations);
   console.log(spec);
   let filtered;
@@ -151,6 +151,42 @@ function searchFiltering({ data, spec, mutations, node_to_mut }) {
     );
     console.log("filtered:", filtered);
     return filtered;
+  } else if (spec.method === "revertant") {
+    if (!all_data) {
+      all_data = data;
+    }
+    const root = all_data.find((node) => node.node_id == node.parent_id);
+    const root_mutations = node_to_mut[root.node_id];
+    const revertant_mutations = [];
+    root_mutations.forEach((mutation) => {
+      const mutation_full = mutations[mutation];
+      const gene = mutation_full.gene;
+      const position = mutation_full.residue_pos;
+      const original_resiude = mutation_full.new_residue;
+      const some_revertants = mutations
+        .filter((mutation) => {
+          return (
+            mutation.gene === gene &&
+            mutation.residue_pos === position &&
+            mutation.new_residue === original_resiude
+          );
+        })
+        .map((x) => x.mutation_id);
+      revertant_mutations.push(...some_revertants);
+    });
+
+    const relevant_mutations_set = new Set(revertant_mutations);
+    console.log("reverse_mutations:", revertant_mutations);
+
+    filtered = data.filter(
+      (node) =>
+        node.num_tips > spec.min_tips &&
+        node_to_mut[node.node_id].some((mutation_id) =>
+          relevant_mutations_set.has(mutation_id)
+        )
+    );
+    console.log("filtered:", filtered);
+    return filtered;
   }
   return [];
 }
@@ -185,6 +221,7 @@ function singleSearch({
       spec,
       mutations,
       node_to_mut,
+      all_data: data,
     });
 
     const reduced = reduceOverPlotting(
