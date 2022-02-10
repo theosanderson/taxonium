@@ -23,11 +23,8 @@ const reduceOverPlotting = (input, precision) => {
 };
 
 function binary_search_for_insertion_point(values, search) {
-  //console.log("search:", search);
-  //console.log("values:", values);
   // Returns where in values to insert search to maintain sorted order.
-  // If search is already in values, return its index.
-  // If search is not in values, return the index where it would be inserted.
+
   let low = 0;
   let high = values.length - 1;
   while (low <= high) {
@@ -107,11 +104,15 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
   return reduced;
 }
 
-function searchFiltering(data, spec) {
+function searchFiltering({ data, spec, mutations, node_to_mut }) {
+  console.log(mutations);
   console.log(spec);
   let filtered;
-  if (["text_match", "text_exact"].indexOf(spec.method) && spec.text === "") {
+  if (["text_match", "text_exact"].includes(spec.method) && spec.text === "") {
     return [];
+  }
+  if (spec.position) {
+    spec.position = parseInt(spec.position);
   }
   if (spec.method === "text_match") {
     // case insensitive
@@ -127,12 +128,42 @@ function searchFiltering(data, spec) {
       (node) => node[spec.type].toLowerCase() === spec.text
     );
     return filtered;
+  } else if (spec.method === "mutation") {
+    const relevant_mutations = mutations
+      .filter((mutation) => {
+        return (
+          mutation.gene === spec.gene &&
+          mutation.residue_pos === spec.position &&
+          (spec.new_residue === "any" ||
+            mutation.new_residue === spec.new_residue)
+        );
+      })
+      .map((mutation) => mutation.mutation_id);
+    console.log("relevant_mutations:", relevant_mutations);
+    const relevant_mutations_set = new Set(relevant_mutations);
+    console.log("node_to_mut:", node_to_mut);
+
+    filtered = data.filter(
+      (node) =>
+        node_to_mut[node.node_id].some((mutation_id) =>
+          relevant_mutations_set.has(mutation_id)
+        ) && node.num_tips > spec.min_tips
+    );
+    console.log("filtered:", filtered);
+    return filtered;
   }
-  console.log("No method found");
   return [];
 }
 
-function singleSearch(data, spec, min_y, max_y, y_positions) {
+function singleSearch({
+  data,
+  spec,
+  min_y,
+  max_y,
+  y_positions,
+  mutations,
+  node_to_mut,
+}) {
   const text_spec = JSON.stringify(spec);
   const max_to_return = 10000;
   const hash_spec = crypto
@@ -142,14 +173,19 @@ function singleSearch(data, spec, min_y, max_y, y_positions) {
     .slice(0, 8);
   let filtered = null;
   if (count_per_hash[hash_spec] === undefined) {
-    filtered = searchFiltering(data, spec);
+    filtered = searchFiltering({ data, spec, mutations, node_to_mut });
     count_per_hash[hash_spec] = filtered.length;
   }
   const num_returned = count_per_hash[hash_spec];
   let result;
   if (num_returned > max_to_return) {
     const cut = filter(data, y_positions, min_y, max_y);
-    const filtered_cut = searchFiltering(cut, spec);
+    const filtered_cut = searchFiltering({
+      data: cut,
+      spec,
+      mutations,
+      node_to_mut,
+    });
 
     const reduced = reduceOverPlotting(
       filtered_cut,
@@ -162,7 +198,7 @@ function singleSearch(data, spec, min_y, max_y, y_positions) {
     };
   } else {
     if (filtered === null) {
-      filtered = searchFiltering(data, spec);
+      filtered = searchFiltering({ data, spec, mutations, node_to_mut });
     }
     result = {
       type: "complete",
@@ -233,6 +269,7 @@ const extraAnnotation = ({
         mutation.residue_pos == extra_params.genotype.position
     )
     .map((x) => x.mutation_id);
+
   const relevant_mutations_set = new Set(relevant_mutations);
   console.log("relevant_mutations_set", relevant_mutations_set);
   const cache = {};

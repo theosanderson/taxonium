@@ -1,10 +1,15 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
+import { FaSearch } from "react-icons/fa";
 
 const genes = ["S", "N"];
 function SearchPanel({ search, colorBy }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
+      <h2 className="text-lg text-gray-500 mt-5">
+        <FaSearch className="inline-block mr-2 w-4" />
+        Search
+      </h2>
       {search.searchSpec.map((item) => (
         <SearchTopLayerItem
           key={item.key}
