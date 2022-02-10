@@ -15,7 +15,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec }) => {
   return (
     <div>
       <select
-        className="block w-full bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+        className="inline-block w-42 bg-gray-100 text-sm  p-1 rounded border-gray-300 border m-1 text-gray-700"
         value={singleSearchSpec.type}
         onChange={(e) =>
           setThisSearchSpec({
@@ -31,7 +31,6 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec }) => {
           </option>
         ))}
       </select>
-      <label>Text</label>
       <input
         className="inline-block w-56 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
         value={singleSearchSpec.text}

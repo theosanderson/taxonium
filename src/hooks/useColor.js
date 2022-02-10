@@ -122,9 +122,17 @@ const useColor = (colorMapping) => {
     [toRGB_uncached]
   );
 
+  const toRGBCSS = useCallback(
+    (string) => {
+      const output = toRGB(string);
+      return `rgb(${output[0]},${output[1]},${output[2]})`;
+    },
+    [toRGB]
+  );
+
   const output = useMemo(() => {
-    return { toRGB };
-  }, [toRGB]);
+    return { toRGB, toRGBCSS };
+  }, [toRGB, toRGBCSS]);
   return output;
 };
 

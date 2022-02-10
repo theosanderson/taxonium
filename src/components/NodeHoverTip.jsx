@@ -1,6 +1,12 @@
 import { useMemo } from "react";
 import { BeatLoader } from "react-spinners";
-const NodeHoverTip = ({ hoverInfo, hoverDetails }) => {
+const keys_to_display = ["meta_Lineage", "meta_Country", "genotype"];
+const prettify_key = {
+  meta_Lineage: "Lineage",
+  meta_Country: "Country",
+  genotype: "Genotype",
+};
+const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
   const mutations = useMemo(() => {
     if (!hoverDetails.nodeDetails) {
       return [];
@@ -35,12 +41,28 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails }) => {
       }}
     >
       <h2 className="font-bold">
-        {hoveredNode.node_id}: {hoveredNode.name}
+        {hoveredNode.name !== "" ? hoveredNode.name : <i>Internal node</i>}
       </h2>
+      {keys_to_display.map(
+        (key) =>
+          hoveredNode[key] && (
+            <div key={key}>
+              {/*<span className="text-gray-800">{prettify_key[key]}</span>:{" "}*/}
+              {colorBy.colorByField === key ? (
+                <span style={{ color: colorHook.toRGBCSS(hoveredNode[key]) }}>
+                  {hoveredNode[key]}
+                </span>
+              ) : (
+                hoveredNode[key]
+              )}
+            </div>
+          )
+      )}
+
       {hoverDetails.nodeDetails &&
       hoveredNode.node_id === hoverDetails.nodeDetails.node_id ? (
         <div>
-          <div className="mutations">
+          <div className="mutations text-sm">
             {mutations.map((mutation, i) => (
               <span key={mutation.mutation_id}>
                 {i > 0 && <>, </>}
@@ -51,11 +73,17 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails }) => {
                 </div>
               </span>
             ))}
+            {mutations.length === 0 && (
+              <div className="text-sm italic">No coding mutations</div>
+            )}
           </div>
         </div>
       ) : (
         <BeatLoader className="mx-auto my-3" size={4} />
       )}
+      {window.show_ids ? (
+        <div className="mt-3 text-xs text-gray-400">{hoveredNode.node_id}</div>
+      ) : null}
     </div>
   );
 };
