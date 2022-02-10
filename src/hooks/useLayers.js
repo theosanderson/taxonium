@@ -237,7 +237,6 @@ const useLayers = (
       modelMatrix: getMMatrix(viewState.zoom),
     });
   });
-  layers.push(...search_layers);
 
   const search_mini_layers = searchSpec.map((spec, i) => {
     const data = searchResults[spec.key]
