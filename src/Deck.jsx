@@ -1133,7 +1133,7 @@ function Deck({
 
             return first_bit & second_bit;
           },
-          [viewState.zoom]
+          [viewState.zoom,window.disable_minimap]
         )}
         controller={true}
         layers={layers}
