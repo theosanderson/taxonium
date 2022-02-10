@@ -6,6 +6,7 @@ import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
 import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
+import useNodeDetails from "./hooks/useNodeDetails";
 import { useRef, useMemo } from "react";
 import useBackend from "./hooks/useBackend";
 
@@ -20,12 +21,15 @@ function Taxonium({ uploadedData, query, setQuery }) {
   }, []);
   const colorHook = useColor(colourMapping);
   const backend = useBackend(query.backend);
+  const hoverDetails = useNodeDetails("hover", backend);
+  const selectedDetails = useNodeDetails("selected", backend);
   const colorBy = useColorBy();
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
     colorBy,
     view.viewState
   );
+
   const search = useSearch(data, boundsForQueries, view, backend);
 
   //
@@ -40,6 +44,7 @@ function Taxonium({ uploadedData, query, setQuery }) {
             view={view}
             colorHook={colorHook}
             colorBy={colorBy}
+            hoverDetails={hoverDetails}
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">

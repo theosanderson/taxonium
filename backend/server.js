@@ -225,3 +225,18 @@ app.get("/parents/", function (req, res) {
 app.get("/genotypes/", function (req, res) {
   const query_id = req.query.id;
 });
+
+app.get("/node_details/", function (req, res) {
+  const start_time = Date.now();
+  const query_id = req.query.id;
+  const node = data[query_id];
+  const node_mutations = node_to_mut[query_id].map((mutation) => {
+    return mutations[mutation];
+  });
+
+  const detailed_node = { ...node, mutations: node_mutations };
+  res.send(detailed_node);
+  console.log(
+    "Request took " + (Date.now() - start_time) + "ms, and output " + node
+  );
+});
