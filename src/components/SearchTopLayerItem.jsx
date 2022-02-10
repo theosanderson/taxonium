@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search }) {
   const this_result = search.searchResults[myKey];
-  console.log(this_result);
+
   const num_results =
     this_result && this_result.result
       ? this_result.result.total_count
