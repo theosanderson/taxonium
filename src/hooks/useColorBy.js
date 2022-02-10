@@ -5,6 +5,12 @@ function useColorBy() {
   const [colorByPosition, setColorByPosition] = useState(501);
 
   const colorByOptions = ["meta_Lineage", "meta_Country", "genotype", "None"];
+  const prettyColorByOptions = {
+    meta_Lineage: "Lineage",
+    meta_Country: "Country",
+    genotype: "Genotype",
+    None: "None",
+  };
   const getNodeColorField = (node) => {
     if (colorByField === "None") {
       return "";
@@ -32,6 +38,7 @@ function useColorBy() {
     setColorByPosition,
     colorByGene,
     setColorByGene,
+    prettyColorByOptions,
   };
 }
 export default useColorBy;

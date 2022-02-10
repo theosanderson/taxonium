@@ -29,7 +29,7 @@ function SearchPanel({ search, colorBy }) {
       >
         {colorBy.colorByOptions.map((item) => (
           <option key={item} value={item}>
-            {item}
+            {colorBy.prettyColorByOptions[item]}
           </option>
         ))}
       </select>
@@ -39,6 +39,7 @@ function SearchPanel({ search, colorBy }) {
           <select
             value={colorBy.colorByGene}
             onChange={(e) => colorBy.setColorByGene(e.target.value)}
+            className="inline-block w-16 mr-4 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
           >
             {genes.map((item) => (
               <option key={item} value={item}>
@@ -52,7 +53,7 @@ function SearchPanel({ search, colorBy }) {
             onChange={(e) => colorBy.setColorByPosition(e.target.value)}
             type="number"
             min="0"
-            className="inline-block w-56 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+            className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
           />
         </div>
       )}

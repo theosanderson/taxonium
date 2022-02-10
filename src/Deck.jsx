@@ -13,7 +13,7 @@ import {
   BiMoveHorizontal,
 } from "react-icons/bi";
 import useSnapshot from "./hooks/useSnapshot";
-import NodeHoverTip from "./NodeHoverTip";
+import NodeHoverTip from "./components/NodeHoverTip";
 
 function Deck({
   data,
@@ -89,7 +89,12 @@ function Deck({
         layerFilter={layerFilter}
         layers={layers}
       >
-        <NodeHoverTip hoverInfo={hoverInfo} hoverDetails={hoverDetails} />
+        <NodeHoverTip
+          hoverInfo={hoverInfo}
+          hoverDetails={hoverDetails}
+          colorHook={colorHook}
+          colorBy={colorBy}
+        />
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
           {data.status === "loading" && (
             <div className="mr-4 inline-block">

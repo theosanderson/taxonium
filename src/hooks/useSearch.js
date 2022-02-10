@@ -113,7 +113,7 @@ const useSearch = (data, boundsForQueries, view, backend) => {
     const newKey = Math.random().toString(36).substring(2, 15);
     setSearchSpec([
       ...searchSpec,
-      { key: newKey, type: "meta_Lineage", method: "text_exact", text: "abc" },
+      { key: newKey, type: "meta_Lineage", method: "text_exact", text: "" },
     ]);
   };
 

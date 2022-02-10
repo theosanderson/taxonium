@@ -110,6 +110,9 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
 function searchFiltering(data, spec) {
   console.log(spec);
   let filtered;
+  if (["text_match", "text_exact"].indexOf(spec.method) && spec.text === "") {
+    return [];
+  }
   if (spec.method === "text_match") {
     // case insensitive
     spec.text = spec.text.toLowerCase();
