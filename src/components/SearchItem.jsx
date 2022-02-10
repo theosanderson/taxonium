@@ -6,6 +6,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec }) => {
     { name: "meta_Lineage", label: "PANGO lineage", type: "text_exact" },
     { name: "meta_Country", label: "Country", type: "text_match" },
     { name: "mutation", label: "Mutation", type: "mutation" },
+    { name: "revertant", label: "Revertant", type: "revertant" },
   ];
 
   let all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
@@ -96,6 +97,13 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec }) => {
               ))}
             </select>
             <br />
+          </div>
+        </div>
+      )}
+      {(singleSearchSpec.type == "revertant" ||
+        singleSearchSpec.type == "mutation") && (
+        <div>
+          <div>
             with at least&nbsp;
             <input
               type="number"
