@@ -1,11 +1,24 @@
+import { useMemo } from "react";
 import { BeatLoader } from "react-spinners";
 const NodeHoverTip = ({ hoverInfo, hoverDetails }) => {
+  const mutations = useMemo(() => {
+    if (!hoverDetails.nodeDetails) {
+      return [];
+    }
+
+    const starting = hoverDetails.nodeDetails.mutations;
+    // sort by gene and then by residue_pos
+    return starting.sort((a, b) => {
+      if (a.gene !== b.gene) {
+        return a.gene > b.gene ? 1 : -1;
+      }
+      return parseInt(a.residue_pos) > parseInt(b.residue_pos) ? 1 : -1;
+    });
+  }, [hoverDetails]);
   if (!hoverInfo) {
     return null;
   }
-
   const hoveredNode = hoverInfo.object;
-
   if (!hoveredNode) {
     return null;
   }
@@ -28,15 +41,15 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails }) => {
       hoveredNode.node_id === hoverDetails.nodeDetails.node_id ? (
         <div>
           <div className="mutations">
-            {hoverDetails.nodeDetails.mutations.map((mutation, i) => (
-              <>
+            {mutations.map((mutation, i) => (
+              <span key={mutation.mutation_id}>
                 {i > 0 && <>, </>}
-                <div className="inline-block" key={mutation.mutation_id}>
+                <div className="inline-block">
                   {mutation.gene}:{mutation.previous_residue}
                   {mutation.residue_pos}
                   {mutation.new_residue}
                 </div>
-              </>
+              </span>
             ))}
           </div>
         </div>
