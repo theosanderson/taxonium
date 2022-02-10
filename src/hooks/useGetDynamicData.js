@@ -45,6 +45,15 @@ function useGetDynamicData(backend, colorBy, viewState) {
   const extraParams = colorBy.nodeRetrievalExtraParams;
 
   useEffect(() => {
+    console.log("invalidating base data");
+    setDynamicData((prevData) => ({
+      ...prevData,
+      base_data_is_invalid: true,
+    }));
+    dynamicData["base_data_is_invalid"] = true;
+  }, [colorBy.nodeRetrievalExtraParams]);
+
+  useEffect(() => {
     clearTimeout(timeoutRef);
     setTimeoutRef(
       setTimeout(() => {
@@ -66,16 +75,18 @@ function useGetDynamicData(backend, colorBy, viewState) {
           boundsForQueries,
           extraParams,
           (result) => {
+            console.log("got result, bounds were", boundsForQueries);
             setDynamicData((prevData) => {
               const new_result = {
                 ...prevData,
                 status: "loaded",
                 data: result,
               };
-              if (!boundsForQueries) {
+              if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
                 new_result.base_data = result;
               } else {
                 if (!prevData.base_data || prevData.base_data_is_invalid) {
+                  console.log("query for minimap");
                   queryNodes(null, extraParams, (base_result) => {
                     setDynamicData((prevData) => {
                       const new_result = {
