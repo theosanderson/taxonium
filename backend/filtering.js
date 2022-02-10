@@ -193,7 +193,7 @@ function getGenotype({
     if (node.parent_id === node_index) {
       return "X";
     } else {
-      return getGenotype({
+      const answer = getGenotype({
         node_index: node.parent_id,
         relevant_mutations_set,
         node_to_mut,
@@ -201,6 +201,8 @@ function getGenotype({
         data,
         cache,
       });
+      cache[node_index] = answer;
+      return answer;
     }
   } else {
     const answer = mutations[relevant_node_mutations[0]].new_residue;
