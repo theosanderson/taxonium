@@ -27,6 +27,8 @@ function Deck({
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
+  const no_data = !data.data || !data.data.nodes || !data.data.nodes.length;
+
   const {
     viewState,
 
@@ -72,7 +74,11 @@ function Deck({
       onPointerMove={onClickOrMouseMove}
       onPointerDown={onClickOrMouseMove}
     >
-      {" "}
+      {no_data && (
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+          <ClipLoader size={150} color={"#aaaaaa"} loading={true} />
+        </div>
+      )}{" "}
       <DeckGL
         pickingRadius={10}
         onAfterRender={onAfterRender}

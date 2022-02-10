@@ -34,6 +34,7 @@ const useLayers = (
   setHoverInfo,
   colorBy
 ) => {
+  const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
 
   const { toRGB } = colorHook;
@@ -105,7 +106,6 @@ const useLayers = (
       modelMatrix: getMMatrix(viewState.zoom),
     });
 
-    const lineColor = [150, 150, 150];
     const temp_line_layer = new LineLayer({
       id: "main-line-horiz",
       data: data.data.nodes,
@@ -175,6 +175,24 @@ const useLayers = (
     onHover: (info) => setHoverInfo(info),
   });
 
+  const minimap_line_horiz = new LineLayer({
+    id: "minimap-line-horiz",
+    data: data.base_data ? data.base_data.nodes : [],
+    getSourcePosition: (d) => [d.x, d.y],
+    getTargetPosition: (d) => [d.parent_x, d.y],
+    getColor: lineColor,
+  });
+
+  const minimap_line_vert = new LineLayer({
+    id: "minimap-line-vert",
+    data: data.base_data ? data.base_data.nodes : [],
+    getSourcePosition: (d) => [d.parent_x, d.y],
+    getTargetPosition: (d) => [d.parent_x, d.parent_y],
+    getColor: lineColor,
+  });
+
+  layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
+
   const minimap_polygon_background = new PolygonLayer({
     id: "minimap-bound-polygon",
     data: [outer_bounds],
@@ -208,7 +226,7 @@ const useLayers = (
 
   layers.push(
     minimap_polygon_background,
-    minimap_scatter,
+
     minimap_bound_polygon
   );
 

@@ -46,9 +46,11 @@ app.get("/search", function (req, res) {
 
 app.get("/nodes/", function (req, res) {
   let extra_params = req.query.extra;
-  if (extra_params && extra_params.length > 0) {
+  if (extra_params && Object.keys(extra_params).length > 0) {
     extra_params = JSON.parse(extra_params);
-    console.log("Got extra params", extra_params);
+    if (Object.keys(extra_params).length == 0) {
+      extra_params = null;
+    }
   }
 
   const start_time = Date.now();
@@ -159,7 +161,7 @@ function overallMaxY() {
 }
 
 function whenReady() {
-  const scale_x = 30;
+  const scale_x = 50;
   const scale_y = 45;
   data.forEach((node) => {
     node.x = node.x * scale_x;
