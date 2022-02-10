@@ -23,6 +23,7 @@ function Deck({
   view,
   colorHook,
   colorBy,
+  hoverDetails,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -40,7 +41,20 @@ function Deck({
   const onClickOrMouseMove = useCallback((ev) => {
     // console.log("onClickOrMouseMove", ev);
   }, []);
-  const [hoverInfo, setHoverInfo] = useState(null);
+  const [hoverInfo, setHoverInfoRaw] = useState(null);
+  const setHoverInfo = useCallback(
+    (info) => {
+      setHoverInfoRaw(info);
+
+      if (info && info.object) {
+        hoverDetails.getNodeDetails(info.object.node_id);
+      } else {
+        hoverDetails.clearNodeDetails();
+      }
+    },
+    [hoverDetails]
+  );
+
   const { layers, layerFilter } = useLayers(
     data,
     search,
@@ -69,7 +83,7 @@ function Deck({
         layerFilter={layerFilter}
         layers={layers}
       >
-        <NodeHoverTip hoverInfo={hoverInfo} />
+        <NodeHoverTip hoverInfo={hoverInfo} hoverDetails={hoverDetails} />
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
           {data.status === "loading" && (
             <div className="mr-4 inline-block">

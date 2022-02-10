@@ -77,6 +77,17 @@ function useBackend(backend_url) {
     [backend_url]
   );
 
-  return { queryNodes, singleSearch };
+  const getDetails = useCallback(
+    (node_id, setResult) => {
+      let url = backend_url + "/node_details/?id=" + node_id;
+      axios.get(url).then(function (response) {
+        setResult(response.data);
+      });
+    },
+    [backend_url]
+  );
+
+  return { queryNodes, singleSearch, getDetails };
 }
+
 export default useBackend;
