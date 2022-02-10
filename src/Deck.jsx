@@ -1124,7 +1124,7 @@ function Deck({
           ({ layer, viewport }) => {
             const first_bit =
               (layer.id.startsWith("main") && viewport.id === "main") ||
-              (layer.id.startsWith("mini") && viewport.id === "minimap");
+              (layer.id.startsWith("mini") && viewport.id === "minimap" && !window.disable_minimap);
             const second_bit =
               layer.id.includes("mini") |
               ((viewState.zoom < zoomThreshold) & !layer.id.includes("fine")) |
