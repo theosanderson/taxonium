@@ -69,6 +69,13 @@ app.get("/nodes/", function (req, res) {
     console.log("Using cached values");
   } else {
     result = filtering.getNodes(data, y_positions, min_y, max_y, min_x, max_x);
+    result = filtering.extraAnnotation({
+      input: result,
+      data,
+      extra_params,
+      node_to_mut,
+      mutations,
+    });
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
   if (result !== cached_starting_values) {
@@ -109,13 +116,13 @@ const filtering = require("./filtering.js");
 const node_to_mut_file = "./database/node_to_mut.json.gz";
 const file_contents = fs.readFileSync(node_to_mut_file);
 const unzipped_file = zlib.gunzipSync(file_contents);
-const node_to_mut = JSON.parse(unzipped_file);
+let node_to_mut = JSON.parse(unzipped_file);
 
 const mutations_file = "./database/mutation_table.jsonl.gz";
 const mutations_file_contents = fs.readFileSync(mutations_file);
 const unzipped_mutations_file = zlib.gunzipSync(mutations_file_contents);
 const lines = unzipped_mutations_file.toString().split("\n");
-const mutations = [];
+const mutations = [{}]; //create with one element because of the way the data is structured
 for (let i = 0; i < lines.length; i++) {
   if (lines[i] !== "") {
     mutations.push(JSON.parse(lines[i]));
@@ -123,6 +130,7 @@ for (let i = 0; i < lines.length; i++) {
 }
 
 console.log(mutations);
+console.log(node_to_mut);
 
 const { parse } = require("@jsonlines/core");
 
@@ -200,3 +208,20 @@ parseStream.on("data", (value) => {
 });
 
 parseStream.on("end", whenReady);
+
+function getParents(node) {
+  console.log(node);
+  if (node.parent_id === node.node_id) {
+    return [];
+  }
+  return [node.parent_id].concat(getParents(data[node.parent_id]));
+}
+
+app.get("/parents/", function (req, res) {
+  const query_id = req.query.id;
+  res.send(getParents(data[query_id]));
+});
+
+app.get("/genotypes/", function (req, res) {
+  const query_id = req.query.id;
+});

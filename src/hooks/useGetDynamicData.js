@@ -98,7 +98,13 @@ function useGetDynamicData(backend, colorBy, viewState) {
         setDynamicData({ ...dynamicData, status: "loading" });
       }, 300)
     );
-  }, [boundsForQueries, extraParams, queryNodes, triggerRefresh]);
+  }, [
+    boundsForQueries,
+    extraParams,
+    queryNodes,
+    triggerRefresh,
+    colorBy.nodeRetrievalExtraParams,
+  ]);
 
   return { data: dynamicData, boundsForQueries };
 }
