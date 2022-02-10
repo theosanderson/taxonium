@@ -1,9 +1,22 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 
+const getDefaultSearch = () => {
+  return {
+    key: Math.random().toString(36).substring(2, 15),
+    type: "meta_Lineage",
+    method: "text_exact",
+    text: "",
+    gene: "S",
+    position: 484,
+    new_residue: "K",
+    min_tips: 0,
+  };
+};
+
 const useSearch = (data, boundsForQueries, view, backend) => {
   const { singleSearch } = backend;
 
-  const [searchSpec, setSearchSpec] = useState([]);
+  const [searchSpec, setSearchSpec] = useState([getDefaultSearch()]);
   const [searchResults, setSearchResults] = useState({});
   const [jsonSearch, setJsonSearch] = useState({});
 
@@ -111,10 +124,7 @@ const useSearch = (data, boundsForQueries, view, backend) => {
     console.log("addNewTopLevelSearch");
     // get a random string key
     const newKey = Math.random().toString(36).substring(2, 15);
-    setSearchSpec([
-      ...searchSpec,
-      { key: newKey, type: "meta_Lineage", method: "text_exact", text: "" },
-    ]);
+    setSearchSpec([...searchSpec, getDefaultSearch()]);
   };
 
   const deleteTopLevelSearch = (key) => {

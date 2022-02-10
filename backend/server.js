@@ -26,13 +26,15 @@ app.get("/search", function (req, res) {
   req.query.max_y =
     req.query.max_y !== undefined ? req.query.max_y : overallMaxY();
 
-  const result = filtering.singleSearch(
+  const result = filtering.singleSearch({
     data,
     spec,
-    req.query.min_y,
-    req.query.max_y,
-    y_positions
-  );
+    min_y: req.query.min_y,
+    max_y: req.query.max_y,
+    y_positions,
+    mutations,
+    node_to_mut,
+  });
   res.send(result);
   console.log(
     "Found " +
@@ -50,6 +52,9 @@ app.get("/nodes/", function (req, res) {
     extra_params = JSON.parse(extra_params);
     if (Object.keys(extra_params).length == 0) {
       extra_params = null;
+    }
+    if (extra_params) {
+      console.log("extra_params", extra_params);
     }
   }
 
@@ -71,13 +76,15 @@ app.get("/nodes/", function (req, res) {
     console.log("Using cached values");
   } else {
     result = filtering.getNodes(data, y_positions, min_y, max_y, min_x, max_x);
-    result = filtering.extraAnnotation({
-      input: result,
-      data,
-      extra_params,
-      node_to_mut,
-      mutations,
-    });
+    if (extra_params) {
+      result = filtering.extraAnnotation({
+        input: result,
+        data,
+        extra_params,
+        node_to_mut,
+        mutations,
+      });
+    }
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
   if (result !== cached_starting_values) {
@@ -124,12 +131,15 @@ const mutations_file = "./database/mutation_table.jsonl.gz";
 const mutations_file_contents = fs.readFileSync(mutations_file);
 const unzipped_mutations_file = zlib.gunzipSync(mutations_file_contents);
 const lines = unzipped_mutations_file.toString().split("\n");
-const mutations = [{}]; //create with one element because of the way the data is structured
+let mutations = [{}]; //create with one element because of the way the data is structured
 for (let i = 0; i < lines.length; i++) {
   if (lines[i] !== "") {
     mutations.push(JSON.parse(lines[i]));
   }
 }
+mutations.forEach((mutation) => {
+  mutation.residue_pos = parseInt(mutation.residue_pos);
+});
 
 console.log(mutations);
 console.log(node_to_mut);
