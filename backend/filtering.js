@@ -325,6 +325,11 @@ const extraAnnotation = ({
   return output;
 };
 
+function addMutations(input, mutations, node_to_mut) {
+  return input.map(node => ({...node, mutations: node_to_mut[node.node_id].map(x=> mutations[x])}));
+
+}
+
 module.exports = {
   reduceOverPlotting,
   filter,
@@ -333,4 +338,5 @@ module.exports = {
   getNodes,
   singleSearch,
   extraAnnotation,
+  addMutations
 };

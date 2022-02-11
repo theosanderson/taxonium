@@ -70,7 +70,8 @@ app.get("/nodes/", function (req, res) {
     max_y = overallMaxY();
   }
   let result;
-  if (min_y === overallMinY() && max_y === overallMaxY() && !extra_params) {
+  const disable_cache= true;
+  if (min_y === overallMinY() && max_y === overallMaxY() && !extra_params && !disable_cache) {
     result = cached_starting_values;
 
     console.log("Using cached values");
@@ -84,7 +85,10 @@ app.get("/nodes/", function (req, res) {
         node_to_mut,
         mutations,
       });
+     
     }
+    result = filtering.addMutations(result, mutations, node_to_mut);
+    
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
   if (result !== cached_starting_values) {
