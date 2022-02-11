@@ -25,6 +25,8 @@ jobs:
       - name: Download protobuf
         run: source download.sh
         working-directory: ./data_processing/
+      - name: Prune
+        run: source prune.sh
       - name: Run
         run: python3 usher_processing.py
         working-directory: ./data_processing/
