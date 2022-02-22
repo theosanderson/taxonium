@@ -928,15 +928,7 @@ function Deck({
   const views = useMemo(
     () => [
       new OrthographicView({ id: "main", controller: true }),
-      new OrthographicView({
-        id: "minimap",
-        x: "79%",
-        y: "1%",
-        width: "20%",
-        height: "35%",
-        borderWidth: "1px",
-        controller: true,
-      }),
+      
     ],
     []
   );
