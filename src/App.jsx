@@ -177,6 +177,8 @@ function App() {
                 </a>
                 .
               </p>{" "}
+
+<p className="text-sm">Given the increasing size of the tree, we are now testing a <a href="https://cov2tree-git-stableish-backend-theosanderson.vercel.app/?backend=https://api.taxonium.org:8080">server side version</a> that does not require downloading the full tree to your computer, but this remains under development and should be treated as an early beta. 
             </div>
           )}
         </Suspense>
