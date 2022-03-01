@@ -91,8 +91,6 @@ function Deck({
     [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange]
   );
 
-  console.log(viewState);
-
   const [hoverInfo, setHoverInfoRaw] = useState(null);
   const setHoverInfo = useCallback(
     (info) => {

@@ -29,7 +29,9 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search }) {
         singleSearchSpec={singleSearchSpec}
         setThisSearchSpec={setThisSearchSpec}
       />
-      <div className="text-gray-700 text-right">{num_results} results</div>
+      <div className="text-gray-700 text-right pr-2 text-sm">
+        {num_results} results
+      </div>
       <button
         className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
         onClick={() => search.deleteTopLevelSearch(myKey)}

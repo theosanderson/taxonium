@@ -55,9 +55,14 @@ if (path_for_summary && fs.existsSync(path_for_summary)) {
 } else {
   summary = { title: "", source: "" };
 }
-
+let initial_x = 0;
+let initial_y = 0;
 app.get("/summary", function (req, res) {
   summary.num_nodes = data.length;
+  summary.initial_x = initial_x;
+  summary.initial_y = initial_y;
+  summary.initial_zoom = -3;
+
   res.send(summary);
 });
 
@@ -169,6 +174,30 @@ function overallMaxY() {
   return data[data.length - 1].y;
 }
 
+function overallMinX() {
+  return data.reduce((min, node) => {
+    if (node.x < min) {
+      return node.x;
+    } else {
+      return min;
+    }
+  }, data[0].x);
+}
+function overallMaxX() {
+  return data.reduce((max, node) => {
+    if (node.x > max) {
+      return node.x;
+    } else {
+      return max;
+    }
+  }, data[0].x);
+}
+
+function nthpercentilofX(n) {
+  return data.map((node) => node.x).sort((a, b) => a - b)[
+    Math.floor((n * data.length) / 100)
+  ];
+}
 function whenReady() {
   const scale_x = 50;
   const scale_y = 45;
@@ -203,6 +232,9 @@ function whenReady() {
     null,
     null
   );
+
+  initial_y = (overallMinY() + overallMaxY()) / 2;
+  initial_x = 2000;
 
   cached_starting_values = JSON.stringify({ nodes: cached_starting_values });
 
