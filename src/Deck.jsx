@@ -24,6 +24,7 @@ function Deck({
   colorHook,
   colorBy,
   hoverDetails,
+  selectedDetails,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -40,9 +41,54 @@ function Deck({
     setZoomAxis,
   } = view;
 
-  const onClickOrMouseMove = useCallback((ev) => {
-    // console.log("onClickOrMouseMove", ev);
-  }, []);
+  const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
+
+  const onClickOrMouseMove = useCallback(
+    (event) => {
+      if (event.buttons === 0 && event._reactName === "onPointerMove") {
+        return false;
+      }
+
+      const pickInfo = deckRef.current.pickObject({
+        x: event.nativeEvent.offsetX,
+        y: event.nativeEvent.offsetY,
+        radius: 10,
+      });
+
+      if (event._reactName === "onPointerDown") {
+        if (pickInfo && pickInfo.viewport.id === "minimap") {
+          setMouseDownIsMinimap(true);
+        } else {
+          setMouseDownIsMinimap(false);
+        }
+      }
+      if (
+        pickInfo &&
+        pickInfo.viewport.id === "main" &&
+        event._reactName === "onClick"
+      ) {
+        selectedDetails.getNodeDetails(pickInfo.object.node_id);
+      }
+
+      if (!pickInfo && event._reactName === "onClick") {
+        selectedDetails.clearNodeDetails();
+      }
+
+      if (
+        pickInfo &&
+        pickInfo.viewport.id === "minimap" &&
+        mouseDownIsMinimap
+      ) {
+        onViewStateChange({
+          ...viewState,
+          longitude: pickInfo.lngLat[0],
+          latitude: pickInfo.lngLat[1],
+        });
+      }
+    },
+    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange]
+  );
+
   const [hoverInfo, setHoverInfoRaw] = useState(null);
   const setHoverInfo = useCallback(
     (info) => {
