@@ -41,7 +41,11 @@ function useColorBy() {
         if (parent_id === node.node_id) {
           result = "X";
         } else {
-          result = getNodeColorField(dataset.nodeLookup[parent_id], dataset);
+          if (dataset.nodeLookup[parent_id]) {
+            result = getNodeColorField(dataset.nodeLookup[parent_id], dataset);
+          } else {
+            result = "X";
+          }
         }
       }
       colorCache[node.node_id] = result;
