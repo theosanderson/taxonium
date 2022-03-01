@@ -49,14 +49,17 @@ const useLayers = (
       data.base_data.nodes &&
       (data.status === "loading" || data.status === "pending")
     ) {
-      return [...data.data.nodes, ...data.base_data.nodes];
+      return {
+        nodes: [...data.data.nodes, ...data.base_data.nodes],
+        nodeLookup: { ...data.data.nodeLookup, ...data.base_data.nodeLookup },
+      };
       console.log("A");
     } else if (data.data.nodes && data.status === "loaded") {
-      return data.data.nodes;
+      return data.data;
       console.log("B");
     } else {
       console.log("C", data.data, data.base_data);
-      return [];
+      return { nodes: [], nodeLookup: {} };
     }
   }, [data.data, data.base_data, data.status]);
   const outer_bounds = [
@@ -78,9 +81,9 @@ const useLayers = (
   if (data.data.nodes) {
     const temp_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
-      data: data.data.nodes.filter((d) => d.name !== ""),
+      data: combo.nodes.filter((d) => d.name !== ""),
       getPosition: (d) => [d.x, d.y],
-      getColor: (d) => toRGB(getNodeColorField(d, data.data)),
+      getColor: (d) => toRGB(getNodeColorField(d, combo)),
       // radius in pixels
       getRadius: 3,
       getLineColor: [100, 100, 100],
