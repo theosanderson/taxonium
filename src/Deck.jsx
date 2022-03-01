@@ -80,14 +80,18 @@ function Deck({
         mouseDownIsMinimap
       ) {
         onViewStateChange({
-          ...viewState,
-          longitude: pickInfo.lngLat[0],
-          latitude: pickInfo.lngLat[1],
+          oldViewState: viewState,
+          viewState: {
+            ...viewState,
+            target: [pickInfo.coordinate[0], pickInfo.coordinate[1]],
+          },
         });
       }
     },
     [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange]
   );
+
+  console.log(viewState);
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
   const setHoverInfo = useCallback(
