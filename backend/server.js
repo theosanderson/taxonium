@@ -46,6 +46,21 @@ app.get("/search", function (req, res) {
   console.log("Result type was " + result.type);
 });
 
+const path_for_summary = myArgs[1];
+
+// check if path exists
+let summary;
+if (path_for_summary && fs.existsSync(path_for_summary)) {
+  summary = JSON.parse(fs.readFileSync(path_for_summary));
+} else {
+  summary = { title: "", source: "" };
+}
+
+app.get("/summary", function (req, res) {
+  summary.num_nodes = data.length;
+  res.send(summary);
+});
+
 app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
   const min_x = req.query.min_x;

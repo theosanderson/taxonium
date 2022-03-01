@@ -9,6 +9,7 @@ import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import { useRef, useMemo } from "react";
 import useBackend from "./hooks/useBackend";
+import useSummary from "./hooks/useSummary";
 
 var protobuf = require("protobufjs");
 
@@ -23,6 +24,7 @@ function Taxonium({ uploadedData, query, setQuery }) {
   const backend = useBackend(query.backend);
   const hoverDetails = useNodeDetails("hover", backend);
   const selectedDetails = useNodeDetails("selected", backend);
+  const summary = useSummary(backend);
   const colorBy = useColorBy();
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
@@ -48,7 +50,7 @@ function Taxonium({ uploadedData, query, setQuery }) {
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
-          <SearchPanel search={search} colorBy={colorBy} />
+          <SearchPanel search={search} colorBy={colorBy} summary={summary} />
         </div>
       </div>
     </div>

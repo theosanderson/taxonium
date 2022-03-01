@@ -8,19 +8,20 @@ const prettify_key = {
 };
 const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
   const mutations = useMemo(() => {
-    if (!hoverDetails.nodeDetails) {
+    if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
+      const starting = hoverInfo.object.mutations;
+      // sort by gene and then by residue_pos
+      return starting.sort((a, b) => {
+        if (a.gene !== b.gene) {
+          return a.gene > b.gene ? 1 : -1;
+        }
+        return parseInt(a.residue_pos) > parseInt(b.residue_pos) ? 1 : -1;
+      });
+    } else {
       return [];
     }
+  }, [hoverInfo]);
 
-    const starting = hoverDetails.nodeDetails.mutations;
-    // sort by gene and then by residue_pos
-    return starting.sort((a, b) => {
-      if (a.gene !== b.gene) {
-        return a.gene > b.gene ? 1 : -1;
-      }
-      return parseInt(a.residue_pos) > parseInt(b.residue_pos) ? 1 : -1;
-    });
-  }, [hoverDetails]);
   if (!hoverInfo) {
     return null;
   }
@@ -70,8 +71,7 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
           )
       )}
 
-      {hoverDetails.nodeDetails &&
-      hoveredNode.node_id === hoverDetails.nodeDetails.node_id ? (
+      {
         <div>
           <div className="mutations text-sm">
             {mutations.map((mutation, i) => (
@@ -89,9 +89,7 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
             )}
           </div>
         </div>
-      ) : (
-        <BeatLoader className="mx-auto my-3" size={4} />
-      )}
+      }
       {window.show_ids ? (
         <div className="mt-3 text-xs text-gray-400">{hoveredNode.node_id}</div>
       ) : null}
