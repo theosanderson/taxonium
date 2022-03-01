@@ -47,10 +47,16 @@ function Taxonium({ uploadedData, query, setQuery }) {
             colorHook={colorHook}
             colorBy={colorBy}
             hoverDetails={hoverDetails}
+            selectedDetails={selectedDetails}
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
-          <SearchPanel search={search} colorBy={colorBy} summary={summary} />
+          <SearchPanel
+            search={search}
+            colorBy={colorBy}
+            summary={summary}
+            selectedDetails={selectedDetails}
+          />
         </div>
       </div>
     </div>

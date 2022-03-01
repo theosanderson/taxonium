@@ -3,7 +3,7 @@ import { RiAddCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 
 const genes = ["S", "N"];
-function SearchPanel({ search, colorBy, summary }) {
+function SearchPanel({ search, colorBy, summary, selectedDetails }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className="text-sm mt-3 text-gray-700 mb-1">
@@ -66,6 +66,12 @@ function SearchPanel({ search, colorBy, summary }) {
             min="0"
             className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
           />
+        </div>
+      )}
+      {selectedDetails.nodeDetails && (
+        <div>
+          <hr />
+          <h2>{selectedDetails.nodeDetails.name}</h2>
         </div>
       )}
     </div>

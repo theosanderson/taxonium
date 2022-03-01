@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import axios from "axios";
 
 function useBackend(backend_url) {
@@ -96,7 +96,9 @@ function useBackend(backend_url) {
     [backend_url]
   );
 
-  return { queryNodes, singleSearch, getDetails, getSummary };
+  return useMemo(() => {
+    return { queryNodes, singleSearch, getDetails, getSummary };
+  }, [queryNodes, singleSearch, getDetails, getSummary]);
 }
 
 export default useBackend;
