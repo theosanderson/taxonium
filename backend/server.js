@@ -47,17 +47,6 @@ app.get("/search", function (req, res) {
 });
 
 app.get("/nodes/", function (req, res) {
-  let extra_params = req.query.extra;
-  if (extra_params && Object.keys(extra_params).length > 0) {
-    extra_params = JSON.parse(extra_params);
-    if (Object.keys(extra_params).length == 0) {
-      extra_params = null;
-    }
-    if (extra_params) {
-      console.log("extra_params", extra_params);
-    }
-  }
-
   const start_time = Date.now();
   const min_x = req.query.min_x;
   const max_x = req.query.max_x;
@@ -70,25 +59,16 @@ app.get("/nodes/", function (req, res) {
     max_y = overallMaxY();
   }
   let result;
-  const disable_cache= true;
-  if (min_y === overallMinY() && max_y === overallMaxY() && !extra_params && !disable_cache) {
+
+  if (min_y === overallMinY() && max_y === overallMaxY() && false) {
+    //disabled
     result = cached_starting_values;
 
     console.log("Using cached values");
   } else {
     result = filtering.getNodes(data, y_positions, min_y, max_y, min_x, max_x);
-    if (extra_params) {
-      result = filtering.extraAnnotation({
-        input: result,
-        data,
-        extra_params,
-        node_to_mut,
-        mutations,
-      });
-     
-    }
+
     result = filtering.addMutations(result, mutations, node_to_mut);
-    
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
   if (result !== cached_starting_values) {

@@ -43,6 +43,17 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
       <h2 className="font-bold">
         {hoveredNode.name !== "" ? hoveredNode.name : <i>Internal node</i>}
       </h2>
+      {colorBy.colorByField === "genotype" && (
+        <span
+          style={{
+            color: colorHook.toRGBCSS(colorBy.getNodeColorField(hoveredNode)),
+          }}
+        >
+          {colorBy.colorByGene}:{colorBy.colorByPosition}
+          {colorBy.getNodeColorField(hoveredNode)}
+        </span>
+      )}
+
       {keys_to_display.map(
         (key) =>
           hoveredNode[key] && (

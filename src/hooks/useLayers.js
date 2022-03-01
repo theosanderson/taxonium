@@ -78,9 +78,9 @@ const useLayers = (
   if (data.data.nodes) {
     const temp_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
-      data: combo.filter((d) => d.name !== ""),
+      data: data.data.nodes.filter((d) => d.name !== ""),
       getPosition: (d) => [d.x, d.y],
-      getColor: (d) => toRGB(getNodeColorField(d)),
+      getColor: (d) => toRGB(getNodeColorField(d, data.data)),
       // radius in pixels
       getRadius: 3,
       getLineColor: [100, 100, 100],
@@ -166,7 +166,7 @@ const useLayers = (
       ? data.base_data.nodes.filter((node) => node.name !== "")
       : [],
     getPosition: (d) => [d.x, d.y],
-    getColor: (d) => toRGB(getNodeColorField(d)),
+    getColor: (d) => toRGB(getNodeColorField(d, data.base_data)),
     // radius in pixels
     getRadius: 2,
     getLineColor: [100, 100, 100],
