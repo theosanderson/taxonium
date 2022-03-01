@@ -245,89 +245,15 @@ function singleSearch({
   }
   return result;
 }
-function getGenotype({
-  node_index,
-  relevant_mutations_set,
-  node_to_mut,
-  mutations,
-  data,
-  cache,
-}) {
-  if (node_index == 0) {
-    return "X";
-  }
-  //console.log("getting genotype for node:", node_index);
-  if (node_index in cache) {
-    return cache[node_index];
-  }
-  const node = data[node_index];
-
-  let relevant_node_mutations = node_to_mut[node_index].filter((x) =>
-    relevant_mutations_set.has(x)
-  );
-  if (relevant_node_mutations.length === 0) {
-    if (node.parent_id === node_index) {
-      return "X";
-    } else {
-      const answer = getGenotype({
-        node_index: node.parent_id,
-        relevant_mutations_set,
-        node_to_mut,
-        mutations,
-        data,
-        cache,
-      });
-      cache[node_index] = answer;
-      return answer;
-    }
-  } else {
-    const answer = mutations[relevant_node_mutations[0]].new_residue;
-    cache[node_index] = answer;
-    //console.log("Finally returning genotype:", answer, "for node:", node_index);
-    return answer;
-  }
-}
-
-const extraAnnotation = ({
-  input,
-  data,
-  extra_params,
-  node_to_mut,
-  mutations,
-}) => {
-  if (extra_params.genotype === undefined) {
-    console.log("extraAnnotation: genotype is undefined, giving up");
-    return input;
-  }
-  const relevant_mutations = mutations
-    .filter(
-      (mutation) =>
-        mutation.gene == extra_params.genotype.gene &&
-        mutation.residue_pos == extra_params.genotype.position
-    )
-    .map((x) => x.mutation_id);
-
-  const relevant_mutations_set = new Set(relevant_mutations);
-  console.log("relevant_mutations_set", relevant_mutations_set);
-  const cache = {};
-
-  const output = input.map((node) => ({
-    ...node,
-    genotype: getGenotype({
-      node_index: node.node_id,
-      relevant_mutations_set,
-      node_to_mut,
-      mutations,
-      data,
-      cache,
-    }),
-  }));
-  return output;
-};
 
 function addMutations(input, mutations, node_to_mut) {
-  return input.map(node => ({...node, mutations: node_to_mut[node.node_id].map(x=> mutations[x])}));
-
+  const start_time = new Date();
+  const result = input.map((node) => ({
+    ...node,
+    mutations: node_to_mut[node.node_id].map((x) => mutations[x]),
+  }));
+  console.log("addMutations:", new Date() - start_time);
+  return result;
 }
 
 module.exports = {
@@ -337,6 +263,5 @@ module.exports = {
   addParents,
   getNodes,
   singleSearch,
-  extraAnnotation,
-  addMutations
+  addMutations,
 };
