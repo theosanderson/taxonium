@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useSummary = (backend) => {
+const useSummary = (backend, view) => {
   const [summary, setSummary] = useState({
     title: "loading",
     source: "",
@@ -8,7 +8,23 @@ const useSummary = (backend) => {
   });
 
   useEffect(() => {
-    backend.getSummary(setSummary);
+    backend.getSummary((results) => {
+      const viewState = {
+        ...view.viewState,
+        target: [2000, results.initial_y],
+        zoom: results.initial_zoom,
+      };
+
+      const oldViewState = { ...viewState };
+
+      setSummary(results);
+      console.log(results);
+      view.onViewStateChange({
+        viewState,
+        oldViewState,
+        interactionState: "isZooming",
+      });
+    });
   }, [backend]);
 
   return summary;

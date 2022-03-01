@@ -24,7 +24,7 @@ function Taxonium({ uploadedData, query, setQuery }) {
   const backend = useBackend(query.backend);
   const hoverDetails = useNodeDetails("hover", backend);
   const selectedDetails = useNodeDetails("selected", backend);
-  const summary = useSummary(backend);
+  const summary = useSummary(backend, view);
   const colorBy = useColorBy();
   const { data, boundsForQueries } = useGetDynamicData(
     backend,

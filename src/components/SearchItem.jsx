@@ -100,8 +100,8 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec }) => {
           </div>
         </div>
       )}
-      {(singleSearchSpec.type == "revertant" ||
-        singleSearchSpec.type == "mutation") && (
+      {(singleSearchSpec.type === "revertant" ||
+        singleSearchSpec.type === "mutation") && (
         <div>
           <div>
             with at least&nbsp;
