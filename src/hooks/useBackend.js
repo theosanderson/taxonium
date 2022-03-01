@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import axios from "axios";
+
 function useBackend(backend_url) {
   const queryNodes = useCallback(
-    (boundsForQueries, extraParams, setResult, setTriggerRefresh) => {
+    (boundsForQueries, setResult, setTriggerRefresh) => {
       let url = backend_url + "/nodes/?type=leaves";
       if (
         boundsForQueries &&
@@ -22,14 +23,12 @@ function useBackend(backend_url) {
           "&max_y=" +
           boundsForQueries.max_y;
       }
-      if (extraParams) {
-        url = url + "&extra=" + JSON.stringify(extraParams);
-      }
 
       axios
         .get(url)
         .then(function (response) {
           console.log("got data", response.data);
+
           setResult(response.data);
         })
         .catch(function (error) {

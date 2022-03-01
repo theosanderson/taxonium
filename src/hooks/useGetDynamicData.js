@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 
+function addNodeLookup(data) {
+  const output = {
+    ...data,
+    nodeLookup: Object.fromEntries(data.nodes.map((n) => [n.node_id, n])),
+  };
+  console.log("cc", output);
+  return output;
+}
 function useGetDynamicData(backend, colorBy, viewState) {
   const { queryNodes } = backend;
   const [dynamicData, setDynamicData] = useState({
@@ -42,17 +50,6 @@ function useGetDynamicData(backend, colorBy, viewState) {
     }
   }, [viewState, boundsForQueries, triggerRefresh]);
 
-  const extraParams = colorBy.nodeRetrievalExtraParams;
-
-  useEffect(() => {
-    console.log("invalidating base data");
-    setDynamicData((prevData) => ({
-      ...prevData,
-      base_data_is_invalid: true,
-    }));
-    dynamicData["base_data_is_invalid"] = true;
-  }, [colorBy.nodeRetrievalExtraParams]);
-
   useEffect(() => {
     clearTimeout(timeoutRef);
     setTimeoutRef(
@@ -73,26 +70,26 @@ function useGetDynamicData(backend, colorBy, viewState) {
         // Make call to backend to get data
         queryNodes(
           boundsForQueries,
-          extraParams,
+
           (result) => {
             console.log("got result, bounds were", boundsForQueries);
             setDynamicData((prevData) => {
               const new_result = {
                 ...prevData,
                 status: "loaded",
-                data: result,
+                data: addNodeLookup(result),
               };
               if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
-                new_result.base_data = result;
+                new_result.base_data = addNodeLookup(result);
               } else {
                 if (!prevData.base_data || prevData.base_data_is_invalid) {
                   console.log("query for minimap");
-                  queryNodes(null, extraParams, (base_result) => {
+                  queryNodes(null, (base_result) => {
                     setDynamicData((prevData) => {
                       const new_result = {
                         ...prevData,
                         status: "loaded",
-                        base_data: base_result,
+                        base_data: addNodeLookup(base_result),
                         base_data_is_invalid: false,
                       };
                       return new_result;
@@ -109,13 +106,7 @@ function useGetDynamicData(backend, colorBy, viewState) {
         setDynamicData({ ...dynamicData, status: "loading" });
       }, 300)
     );
-  }, [
-    boundsForQueries,
-    extraParams,
-    queryNodes,
-    triggerRefresh,
-    colorBy.nodeRetrievalExtraParams,
-  ]);
+  }, [boundsForQueries, queryNodes, triggerRefresh]);
 
   return { data: dynamicData, boundsForQueries };
 }

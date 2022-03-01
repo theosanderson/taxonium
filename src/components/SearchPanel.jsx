@@ -55,7 +55,9 @@ function SearchPanel({ search, colorBy }) {
           Position:{" "}
           <input
             value={colorBy.colorByPosition}
-            onChange={(e) => colorBy.setColorByPosition(e.target.value)}
+            onChange={(e) =>
+              colorBy.setColorByPosition(parseInt(e.target.value))
+            }
             type="number"
             min="0"
             className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
