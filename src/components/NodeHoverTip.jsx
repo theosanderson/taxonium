@@ -73,7 +73,7 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
 
       {
         <div>
-          <div className="mutations text-sm">
+          <div className="mutations text-xs">
             {mutations.map((mutation, i) => (
               <span key={mutation.mutation_id}>
                 {i > 0 && <>, </>}
@@ -85,7 +85,7 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
               </span>
             ))}
             {mutations.length === 0 && (
-              <div className="text-sm italic">No coding mutations</div>
+              <div className="text-xs italic">No coding mutations</div>
             )}
           </div>
         </div>
