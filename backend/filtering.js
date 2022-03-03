@@ -83,7 +83,7 @@ const addParents = (data, filtered) => {
 };
 
 function getPrecision(min_y, max_y) {
-  const precision = 4000.0 / (max_y - min_y);
+  const precision = 2000.0 / (max_y - min_y);
   return precision;
 }
 

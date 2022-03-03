@@ -19,7 +19,6 @@ function useColorBy() {
     colorCache = {};
   }, [colorByGene, colorByPosition]);
 
-  console.log("colorBy");
   const getNodeColorField = useCallback(
     (node, dataset) => {
       if (colorByField === "None") {
