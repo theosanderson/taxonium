@@ -4,9 +4,20 @@ var compression = require("compression");
 var app = express();
 var fs = require("fs");
 var https = require("https");
+
 let options;
-// check for command line arg
-const myArgs = process.argv.slice(2);
+const { program } = require('commander');
+
+program
+  .option('--ssl', 'use ssl')
+  .option('--database_dir <database_dir>', 'database directory')
+  .option('--port <port>', 'port')
+  .option('--summary_json <summary_json>', 'summary json')
+
+program.parse();
+
+const command_options = program.opts();
+
 
 app.use(cors());
 app.use(compression());
@@ -46,7 +57,7 @@ app.get("/search", function (req, res) {
   console.log("Result type was " + result.type);
 });
 
-const path_for_summary = myArgs[1];
+const path_for_summary = command_options.summary_json;
 
 // check if path exists
 let summary;
@@ -112,27 +123,27 @@ app.get("/nodes/", function (req, res) {
   }
 });
 
-if (myArgs[0] && myArgs[0] == "ssl") {
+if (command_options.ssl) {
   options = {
     key: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/privkey.pem"),
     cert: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/cert.pem"),
   };
-  https.createServer(options, app).listen(8080);
-  console.log("SSL on 8080");
+  https.createServer(options, app).listen(command_options.port);
+  console.log("SSL on port " + command_options.port);
 } else {
-  app.listen(8000, () => console.log(`App is listening on port 8000!`));
+  app.listen(command_options.port, () => console.log(`App is listening on port ${command_options.port}`));
 }
 
 const zlib = require("zlib");
 
 const filtering = require("./filtering.js");
 
-const node_to_mut_file = "./database/node_to_mut.json.gz";
+const node_to_mut_file = `${command_options.database_dir}/node_to_mut.json.gz`;
 const file_contents = fs.readFileSync(node_to_mut_file);
 const unzipped_file = zlib.gunzipSync(file_contents);
 let node_to_mut = JSON.parse(unzipped_file);
 
-const mutations_file = "./database/mutation_table.jsonl.gz";
+const mutations_file = `${command_options.database_dir}/mutation_table.jsonl.gz`;
 const mutations_file_contents = fs.readFileSync(mutations_file);
 const unzipped_mutations_file = zlib.gunzipSync(mutations_file_contents);
 const lines = unzipped_mutations_file.toString().split("\n");
@@ -160,7 +171,7 @@ const parseStream = parse();
 const unzip = zlib.createGunzip();
 
 // read from the file and pipe into the parseStream
-fs.createReadStream("./database/database.jsonl.gz")
+fs.createReadStream(`${command_options.database_dir}/database.jsonl.gz`)
   .pipe(unzip)
   .pipe(parseStream);
 
@@ -204,7 +215,7 @@ function nthpercentilofX(n) {
 }
 function whenReady() {
   const scale_x = 50;
-  const scale_y = 45;
+  const scale_y = 9e7/data.length;
   data.forEach((node) => {
     node.x = node.x * scale_x;
     node.y = node.y * scale_y;

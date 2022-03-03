@@ -3,12 +3,20 @@ import gzip
 import tqdm
 import pandas as pd
 import json
+import argparse
+import xopen
 
-protobuf_location = "../../public/nodelist.pb.gz"
+parser = argparse.ArgumentParser(description='Process taxonium metadata')
+parser.add_argument('--infile', type=str, help='Input file', required=True)
+parser.add_argument('--outdir', type=str, help='Output directory', required=True)
+args = parser.parse_args()
+
+
+protobuf_location = args.infile
 print("Reading proto")
 
 # Read in the protobuf file
-with gzip.open(protobuf_location, "rb") as f:
+with xopen.xopen(protobuf_location, "rb") as f:
     nodelist = taxonium_pb2.AllData()
     nodelist.ParseFromString(f.read())
 
@@ -48,7 +56,7 @@ df['parent_id'] = df.parent_id.apply(lambda x: old_to_new[int(x)])
 
 
 # also save as jsonl
-df.to_json("../database/database.jsonl.gz", orient="records", lines=True)
+df.to_json(f"{args.outdir}/database.jsonl.gz", orient="records", lines=True)
 
 
 print("saved")
@@ -60,7 +68,7 @@ residue_poses = []
 new_residues = []
 genes = []
 
-for mutation_id, name in enumerate(nodelist.mutation_mapping):
+for mutation_id, name in tqdm.tqdm(enumerate(nodelist.mutation_mapping)):
     if name == "":
         continue
     gene, rest = name.split(":")
@@ -79,7 +87,7 @@ mutation_table = pd.DataFrame({
     "gene": genes
 })
 
-mutation_table.to_json("../database/mutation_table.jsonl.gz", orient="records", lines=True)
+mutation_table.to_json(f"{args.outdir}/mutation_table.jsonl.gz", orient="records", lines=True)
 
 
 
@@ -94,7 +102,7 @@ mutation_table["new_residue"] = mutation_table["new_residue"].astype(
 
 node_ids = []
 mutation_ids = []
-for node_id, these_mutation_ids in enumerate(nodelist.node_data.mutations):
+for node_id, these_mutation_ids in tqdm.tqdm(enumerate(nodelist.node_data.mutations)):
     for mutation_id in these_mutation_ids.mutation:
         node_ids.append(node_id)
         mutation_ids.append(mutation_id)
@@ -106,7 +114,7 @@ output_list = [ [] for x in range(len(nodelist.node_data.x))]
 for name, group in grouped:
     output_list[name] = group.mutation_id.values.tolist()
 
-output_file = "../database/node_to_mut.json.gz"
+output_file = f"{args.outdir}/node_to_mut.json.gz"
 with gzip.open(output_file, "wt") as f:
     json.dump(output_list, f)
 

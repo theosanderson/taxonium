@@ -41,3 +41,4 @@ data_processing/public-latest.all.masked.pb.1
 data_processing/public-latest.all.masked.pb.gz
 public/nodelist.pb.gz
 public/nodelist.pb.gz
+backend/data_processing/__pycache__/taxonium_pb2.cpython-39.pyc

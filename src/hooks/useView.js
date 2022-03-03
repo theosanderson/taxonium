@@ -102,7 +102,7 @@ const useView = () => {
       viewState.min_y = nw[1];
       viewState.max_y = se[1];
 
-      viewState["minimap"] = { zoom: -3, target: [205, 700] };
+      viewState["minimap"] = { zoom: -3, target: [250, 1000] };
       setViewState(viewState);
       return viewState;
     },
