@@ -80,7 +80,7 @@ app.get("/nodes/", function (req, res) {
   }
   let result;
 
-  if (min_y === overallMinY() && max_y === overallMaxY() && false) {
+  if (min_y === overallMinY() && max_y === overallMaxY()) {
     //disabled
     result = cached_starting_values;
 
@@ -231,6 +231,12 @@ function whenReady() {
     overallMaxY(),
     null,
     null
+  );
+
+  cached_starting_values = filtering.addMutations(
+    cached_starting_values,
+    mutations,
+    node_to_mut
   );
 
   initial_y = (overallMinY() + overallMaxY()) / 2;
