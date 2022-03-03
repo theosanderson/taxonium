@@ -62,6 +62,18 @@ const useLayers = (
       return { nodes: [], nodeLookup: {} };
     }
   }, [data.data, data.base_data, data.status]);
+
+  const combo_scatter = useMemo(() => {
+    console.log("new scatter");
+    return combo.nodes.filter((d) => d.name !== "");
+  }, [combo]);
+
+  const minimap_scatter_data = useMemo(() => {
+    return data.base_data
+      ? data.base_data.nodes.filter((node) => node.name !== "")
+      : [];
+  }, [data.base_data]);
+
   const outer_bounds = [
     [-1000, -1000],
     [1000, -1000],
@@ -81,7 +93,7 @@ const useLayers = (
   if (data.data.nodes) {
     const temp_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
-      data: combo.nodes.filter((d) => d.name !== ""),
+      data: combo_scatter,
       getPosition: (d) => [d.x, d.y],
       getColor: (d) => toRGB(getNodeColorField(d, combo)),
       // radius in pixels
@@ -165,9 +177,7 @@ const useLayers = (
 
   const minimap_scatter = new ScatterplotLayer({
     id: "minimap-scatter",
-    data: data.base_data
-      ? data.base_data.nodes.filter((node) => node.name !== "")
-      : [],
+    data: minimap_scatter_data,
     getPosition: (d) => [d.x, d.y],
     getColor: (d) => toRGB(getNodeColorField(d, data.base_data)),
     // radius in pixels
