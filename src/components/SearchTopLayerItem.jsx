@@ -2,7 +2,7 @@ import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
 import { useCallback, useState } from "react";
 
-function SearchTopLayerItem({ singleSearchSpec, myKey, search }) {
+function SearchTopLayerItem({ singleSearchSpec, myKey, search, summary }) {
   const this_result = search.searchResults[myKey];
 
   const num_results =
@@ -26,6 +26,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search }) {
   return (
     <div className="border-gray-100 border-b mb-3 pb-3">
       <SearchItem
+        summary={summary}
         singleSearchSpec={singleSearchSpec}
         setThisSearchSpec={setThisSearchSpec}
       />

@@ -62,6 +62,7 @@ app.get("/summary", function (req, res) {
   summary.initial_x = initial_x;
   summary.initial_y = initial_y;
   summary.initial_zoom = -3;
+  summary.genes = genes;
 
   res.send(summary);
 });
@@ -145,8 +146,11 @@ mutations.forEach((mutation) => {
   mutation.residue_pos = parseInt(mutation.residue_pos);
 });
 
-console.log(mutations);
-console.log(node_to_mut);
+const genes = [...new Set(mutations.map((mutation) => mutation.gene))].filter(
+  (x) => x !== undefined
+);
+
+console.log(genes);
 
 const { parse } = require("@jsonlines/core");
 

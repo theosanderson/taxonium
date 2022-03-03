@@ -49,14 +49,14 @@ const useLayers = (
       data.base_data.nodes &&
       (data.status === "loading" || data.status === "pending")
     ) {
+      console.log("A");
       return {
         nodes: [...data.data.nodes, ...data.base_data.nodes],
         nodeLookup: { ...data.data.nodeLookup, ...data.base_data.nodeLookup },
       };
-      console.log("A");
     } else if (data.data.nodes && data.status === "loaded") {
-      return data.data;
       console.log("B");
+      return data.data;
     } else {
       console.log("C", data.data, data.base_data);
       return { nodes: [], nodeLookup: {} };
@@ -93,9 +93,10 @@ const useLayers = (
   if (data.data.nodes) {
     const temp_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
-      data: combo_scatter,
+      data: combo_scatter.filter((x) => true), //this isn't great: how can we remove this. We have it because otherwise colour doesn't always update.
       getPosition: (d) => [d.x, d.y],
       getColor: (d) => toRGB(getNodeColorField(d, combo)),
+
       // radius in pixels
       getRadius: 3,
       getLineColor: [100, 100, 100],
@@ -107,6 +108,9 @@ const useLayers = (
       radiusUnits: "pixels",
       onHover: (info) => setHoverInfo(info),
       modelMatrix: getMMatrix(viewState.zoom),
+      updateTriggers: {
+        getColor: [combo, getNodeColorField],
+      },
     });
 
     const bound_layer = new ScatterplotLayer({
@@ -177,7 +181,7 @@ const useLayers = (
 
   const minimap_scatter = new ScatterplotLayer({
     id: "minimap-scatter",
-    data: minimap_scatter_data,
+    data: minimap_scatter_data.filter((x) => true),
     getPosition: (d) => [d.x, d.y],
     getColor: (d) => toRGB(getNodeColorField(d, data.base_data)),
     // radius in pixels
