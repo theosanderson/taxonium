@@ -2,7 +2,6 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 
-const genes = ["S", "N"];
 function SearchPanel({ search, colorBy, summary, selectedDetails }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
@@ -20,6 +19,7 @@ function SearchPanel({ search, colorBy, summary, selectedDetails }) {
           singleSearchSpec={item}
           myKey={item.key}
           search={search}
+          summary={summary}
         />
       ))}
       <button
@@ -50,7 +50,7 @@ function SearchPanel({ search, colorBy, summary, selectedDetails }) {
             onChange={(e) => colorBy.setColorByGene(e.target.value)}
             className="inline-block w-16 mr-4 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
           >
-            {genes.map((item) => (
+            {summary.genes.map((item) => (
               <option key={item} value={item}>
                 {item}
               </option>

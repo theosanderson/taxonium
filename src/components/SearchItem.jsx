@@ -1,6 +1,6 @@
 import React from "react";
 
-const SearchItem = ({ singleSearchSpec, setThisSearchSpec }) => {
+const SearchItem = ({ singleSearchSpec, setThisSearchSpec, summary }) => {
   const types = [
     { name: "name", label: "Name", type: "text_match" },
     { name: "meta_Lineage", label: "PANGO lineage", type: "text_exact" },
@@ -62,8 +62,11 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec }) => {
               }
               className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
             >
-              <option value="S">S</option>
-              <option value="N">N</option>
+              {summary.genes.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
             </select>
           </div>
           <div>

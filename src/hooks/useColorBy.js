@@ -41,7 +41,11 @@ function useColorBy() {
           if (parent_id === node.node_id) {
             result = "X";
           } else {
-            if (dataset.nodeLookup && dataset.nodeLookup[parent_id]) {
+            if (
+              dataset &&
+              dataset.nodeLookup &&
+              dataset.nodeLookup[parent_id]
+            ) {
               result = getNodeColorField(
                 dataset.nodeLookup[parent_id],
                 dataset
