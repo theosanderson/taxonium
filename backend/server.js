@@ -4,6 +4,7 @@ var compression = require("compression");
 var app = express();
 var fs = require("fs");
 var https = require("https");
+var axios = require("axios");
 
 let options;
 const { program } = require('commander');
@@ -214,7 +215,7 @@ function nthpercentilofX(n) {
   ];
 }
 function whenReady() {
-  const scale_x = 50;
+  const scale_x = 35;
   const scale_y = 9e7/data.length;
   data.forEach((node) => {
     node.x = node.x * scale_x;
@@ -290,7 +291,24 @@ app.get("/genotypes/", function (req, res) {
   const query_id = req.query.id;
 });
 
-app.get("/node_details/", function (req, res) {
+
+// "Takes EPI_ISL_12345" input
+function get_epi_isl_url(epi_isl) {
+  if (epi_isl.length > 4) {
+    return (
+      "https://www.epicov.org/acknowledgement/" +
+      epi_isl.slice(-4, -2) +
+      "/" +
+      epi_isl.slice(-2) +
+      "/" +
+      epi_isl +
+      ".json"
+    );
+  }
+}
+
+
+app.get("/node_details/", async (req, res) =>{
   const start_time = Date.now();
   const query_id = req.query.id;
   const node = data[query_id];
@@ -299,6 +317,23 @@ app.get("/node_details/", function (req, res) {
   });
 
   const detailed_node = { ...node, mutations: node_mutations };
+  // If node name starts with EPI_ISL_, then get the URL
+  if (detailed_node.name.startsWith("EPI_ISL_")) {
+    acknowledgements_url = get_epi_isl_url(detailed_node.name);
+    // get the data from the URL
+    const response = await axios.get(acknowledgements_url).catch((e) => {
+      console.log(e);
+    });
+    try {
+      const data = response.data;
+      detailed_node.acknowledgements = data;
+    }
+    catch (e) {
+      console.log(e);
+    }
+
+
+  }
   res.send(detailed_node);
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + node
