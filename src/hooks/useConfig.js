@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-const useSummary = (backend, view) => {
-  const [summary, setSummary] = useState({
+const useConfig = (backend, view, overlayRef) => {
+  const [config, setConfig] = useState({
     title: "loading",
     source: "",
     num_nodes: 0,
@@ -17,17 +17,19 @@ const useSummary = (backend, view) => {
 
       const oldViewState = { ...viewState };
 
-      setSummary(results);
+      setConfig(results);
       console.log(results);
       view.onViewStateChange({
         viewState,
         oldViewState,
         interactionState: "isZooming",
       });
+
+      overlayRef.current.innerHTML = results.overlay;
     });
   }, [backend]);
 
-  return summary;
+  return config;
 };
 
-export default useSummary;
+export default useConfig;

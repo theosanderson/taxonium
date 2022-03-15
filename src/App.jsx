@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense , useRef} from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -49,6 +49,7 @@ function App() {
     }),
   });
   const [beingDragged, setBeingDragged] = useState(false);
+  const overlayRef = useRef(null);
 
   function onDrop(ev) {
     console.log("File(s) dropped");
@@ -91,7 +92,7 @@ function App() {
   const [currentUrl, setCurrentUrl] = useState("");
   return (
     <Router>
-      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} />
+      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} overlayRef={overlayRef} />
 
       <div
         className="h-screen w-screen"
@@ -126,6 +127,7 @@ function App() {
               uploadedData={uploadedData}
               query={query}
               setQuery={setQuery}
+              overlayRef={overlayRef}
             />
           ) : (
             <div className="m-10">

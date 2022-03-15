@@ -1,12 +1,16 @@
 import { useMemo } from "react";
 import { BeatLoader } from "react-spinners";
-const keys_to_display = ["meta_Lineage", "meta_Country", "genotype"];
+
+const fixName = (name) => {
+  return name.replace("hCoV-19/", "hCoV-19/\n");
+};
+
 const prettify_key = {
   meta_Lineage: "Lineage",
   meta_Country: "Country",
   genotype: "Genotype",
 };
-const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
+const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config }) => {
   const mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
       const starting = hoverInfo.object.mutations;
@@ -41,8 +45,8 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
         top: hoverInfo.y,
       }}
     >
-      <h2 className="font-bold">
-        {hoveredNode.name !== "" ? hoveredNode.name : <i>Internal node</i>}
+      <h2 className="font-bold whitespace-pre-wrap">
+        {hoveredNode[config.name_accessor] !== "" ? fixName(hoveredNode[config.name_accessor] ): <i>Internal node</i>}
       </h2>
       {colorBy.colorByField === "genotype" && (
         <span
@@ -55,7 +59,7 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy }) => {
         </span>
       )}
 
-      {keys_to_display.map(
+      {config.keys_to_display.map(
         (key) =>
           hoveredNode[key] && (
             <div key={key}>

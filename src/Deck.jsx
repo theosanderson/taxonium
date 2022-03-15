@@ -25,6 +25,7 @@ function Deck({
   colorBy,
   hoverDetails,
   selectedDetails,
+  config
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -100,7 +101,8 @@ function Deck({
       setHoverInfoRaw(info);
 
       if (info && info.object) {
-        hoverDetails.getNodeDetails(info.object.node_id);
+      
+        hoverDetails.setNodeDetails(info.object);
       } else {
         hoverDetails.clearNodeDetails();
       }
@@ -145,6 +147,7 @@ function Deck({
           hoverDetails={hoverDetails}
           colorHook={colorHook}
           colorBy={colorBy}
+          config={config}
         />
         <div style={{ position: "absolute", right: "0.2em", bottom: "0.2em" }}>
           {data.status === "loading" && (
