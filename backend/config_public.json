@@ -1,0 +1,1 @@
+{"source":"INSDC", "title":"Phylo", "name_accessor":"name",     "keys_to_display" : [ "genotype","meta_Lineage","meta_Country"],"overlay":"TODO"}
