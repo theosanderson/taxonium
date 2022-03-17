@@ -86,9 +86,9 @@ function useBackend(backend_url) {
     [backend_url]
   );
 
-  const getSummary = useCallback(
+  const getConfig = useCallback(
     (setResult) => {
-      let url = backend_url + "/summary/";
+      let url = backend_url + "/config/";
       axios.get(url).then(function (response) {
         setResult(response.data);
       });
@@ -97,8 +97,8 @@ function useBackend(backend_url) {
   );
 
   return useMemo(() => {
-    return { queryNodes, singleSearch, getDetails, getSummary };
-  }, [queryNodes, singleSearch, getDetails, getSummary]);
+    return { queryNodes, singleSearch, getDetails, getConfig };
+  }, [queryNodes, singleSearch, getDetails, getConfig]);
 }
 
 export default useBackend;

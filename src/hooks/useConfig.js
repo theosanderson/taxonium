@@ -8,7 +8,7 @@ const useConfig = (backend, view, overlayRef) => {
   });
 
   useEffect(() => {
-    backend.getSummary((results) => {
+    backend.getConfig((results) => {
       const viewState = {
         ...view.viewState,
         target: [2000, results.initial_y],

@@ -4,7 +4,7 @@
 
 `npm install`
 
-`node server.js`
+`node server.js --database_dir ./database/ --port 8080 --ssl --config_json config.json`
 
 (or `node.server.js ssl` if running on my droplet)
 
