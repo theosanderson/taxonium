@@ -7,6 +7,8 @@ import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
 import pako from "pako";
+import axios from "axios";
+import { useEffect } from "react/cjs/react.production.min";
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 const TaxoniumUploader = React.lazy(() =>
@@ -19,9 +21,10 @@ function App() {
     reader.onload = () => {
       //setUploadedData(reader.result);
       if (file.name.endsWith(".gz")) {
-        setUploadedData(pako.ungzip(reader.result));
+       
+        setUploadedData({status: "loaded", data: pako.ungzip(reader.result)});
       } else {
-        setUploadedData(reader.result);
+        setUploadedData({status: "loaded", data: reader.result});
       }
     };
 
@@ -90,6 +93,41 @@ function App() {
   const [uploadedData, setUploadedData] = useState(null);
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
+
+  
+  const protoUrl = query.protoUrl
+      
+  if(protoUrl&&!uploadedData){
+    axios.get(protoUrl, {
+      responseType: "arraybuffer",
+      onDownloadProgress: (progressEvent) => {
+        let percentCompleted = Math.floor(
+          1 * (progressEvent.loaded / 50000000) * 100
+        );
+        setUploadedData({
+          status: "loading",
+          progress: percentCompleted,
+          data: { node_data: { ids: [] } },
+        });
+      },
+    })
+    .catch((err) => {
+      console.log(err);
+      window.alert(
+        err +
+          "\n\nPlease check the URL entered, or your internet connection, and try again."
+      );
+    })
+    .then(function (response) {
+      if (protoUrl.endsWith(".gz")) {
+        setUploadedData( {status: "loaded", data: pako.ungzip(response.data)});
+      } else {
+        setUploadedData( {status: "loaded", data: response.data});
+      }
+    });
+  }
+
+  
   return (
     <Router>
       <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} overlayRef={overlayRef} />
@@ -122,7 +160,7 @@ function App() {
           </div>
         </div>
         <Suspense fallback={<div>Loading...</div>}>
-          {query.backend || uploadedData || query.protoUrl ? (
+          {query.backend || (uploadedData&& uploadedData.status==="loaded") || query.protoUrl ? (
             <Taxonium
               uploadedData={uploadedData}
               query={query}
