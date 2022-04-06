@@ -12048,6 +12048,10 @@
     "mkdirp" "^1.0.3"
     "yallist" "^4.0.0"
 
+"taxonium_data_handling@file:taxonium_data_handling":
+  "resolved" "file:taxonium_data_handling"
+  "version" "1.0.0"
+
 "temp-dir@^1.0.0":
   "integrity" "sha1-CnwOom06Oa+n4OvqnB/AvE2qAR0="
   "resolved" "https://registry.npmjs.org/temp-dir/-/temp-dir-1.0.0.tgz"

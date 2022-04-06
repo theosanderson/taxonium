@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, Suspense , useRef} from "react";
+import React, { useState, Suspense , useRef, useEffect} from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -8,7 +8,9 @@ import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
 import pako from "pako";
 import axios from "axios";
-import { useEffect } from "react/cjs/react.production.min";
+import protobuf from "protobufjs";
+
+protobuf.parse.defaults.keepCase = true;
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 const TaxoniumUploader = React.lazy(() =>
@@ -52,6 +54,7 @@ function App() {
     }),
   });
   const [beingDragged, setBeingDragged] = useState(false);
+  const [proto, setProto] = useState(null);
   const overlayRef = useRef(null);
 
   function onDrop(ev) {
@@ -127,6 +130,16 @@ function App() {
     });
   }
 
+  useEffect(() => {
+    if(!proto){
+      protobuf.load("./taxonium.proto").then(function (proto) {
+        setProto(proto);
+      });
+    } }
+
+  , [proto])
+
+
   
   return (
     <Router>
@@ -160,12 +173,13 @@ function App() {
           </div>
         </div>
         <Suspense fallback={<div>Loading...</div>}>
-          {query.backend || (uploadedData&& uploadedData.status==="loaded") || query.protoUrl ? (
+          {query.backend || (uploadedData&& uploadedData.status==="loaded" &&proto) || (query.protoUrl&&proto) ? (
             <Taxonium
               uploadedData={uploadedData}
               query={query}
               setQuery={setQuery}
               overlayRef={overlayRef}
+              proto = {proto}
             />
           ) : (
             <div className="m-10">
