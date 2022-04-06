@@ -320,7 +320,7 @@ app.get("/node_details/", async (req, res) =>{
   const detailed_node = { ...node, mutations: node_mutations };
   // If node name starts with EPI_ISL_, then get the URL
   if (detailed_node.name.startsWith("EPI_ISL_")) {
-    acknowledgements_url = get_epi_isl_url(detailed_node.name);
+    const acknowledgements_url = get_epi_isl_url(detailed_node.name);
     // get the data from the URL
     const response = await axios.get(acknowledgements_url).catch((e) => {
       console.log(e);
