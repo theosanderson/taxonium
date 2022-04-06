@@ -3,7 +3,7 @@ import useLocalBackend from "./useLocalBackend";
 
 function useBackend(backend_url, uploaded_data){
     const serverBackend = useServerBackend(backend_url);
-    const localBackend = useLocalBackend(backend_url);
+    const localBackend = useLocalBackend(uploaded_data);
     if (backend_url) {
         return serverBackend;
     }
