@@ -5,6 +5,7 @@ var app = express();
 var fs = require("fs");
 var https = require("https");
 var axios = require("axios");
+var filtering = require("../taxonium_data_handling")
 
 let options;
 const { program } = require('commander');
@@ -138,8 +139,6 @@ if (command_options.ssl) {
 }
 
 const zlib = require("zlib");
-
-const filtering = require("./filtering.js");
 
 const node_to_mut_file = `${command_options.database_dir}/node_to_mut.json.gz`;
 const file_contents = fs.readFileSync(node_to_mut_file);

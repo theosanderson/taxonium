@@ -1,0 +1,11 @@
+{
+  "name": "taxonium_data_handling",
+  "version": "1.0.0",
+  "description": "Taxonium data handling",
+  "main": "filtering.js",
+  "scripts": {
+    "test": "yarn test"
+  },
+  "author": "",
+  "license": "ISC"
+}
