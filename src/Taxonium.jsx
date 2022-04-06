@@ -16,13 +16,13 @@ var protobuf = require("protobufjs");
 
 protobuf.parse.defaults.keepCase = true;
 
-function Taxonium({ uploadedData, query, setQuery, overlayRef }) {
+function Taxonium({ uploadedData, query, setQuery, overlayRef , proto}) {
   const view = useView();
   const colourMapping = useMemo(() => {
     return {};
   }, []);
   const colorHook = useColor(colourMapping);
-  const backend = useBackend(query.backend, uploadedData);
+  const backend = useBackend(query.backend, uploadedData, proto);
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);
