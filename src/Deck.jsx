@@ -29,6 +29,7 @@ function Deck({
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
+  console.log("DATA is ", data);
   const no_data = !data.data || !data.data.nodes || !data.data.nodes.length;
 
   const {
