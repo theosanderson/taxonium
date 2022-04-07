@@ -171,7 +171,7 @@ const scale_y = 9e7/nodes.length;
   }
   console.log("result is ", result)
   setResult(result);
-    setTriggerRefresh({});
+    //setTriggerRefresh({});
          
         },
         [nodes, overallMaxY, overallMinY, y_positions]
