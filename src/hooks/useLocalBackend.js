@@ -58,8 +58,6 @@ function useLocalBackend(uploaded_data, proto){
             y: node_data_in_columnar_form.y[i],
             num_tips: node_data_in_columnar_form.num_tips[i],
             parent_id: node_data_in_columnar_form.parents[i],
-            parent_x: node_data_in_columnar_form.x[node_data_in_columnar_form.parents[i]],
-            parent_y: node_data_in_columnar_form.y[node_data_in_columnar_form.parents[i]],
             date: result.date_mapping[node_data_in_columnar_form.dates[i]],
             meta_Country: country_stuff.mapping[country_stuff.node_values[i]],
             meta_Lineage: lineage_stuff.mapping[lineage_stuff.node_values[i]],
@@ -73,16 +71,25 @@ function useLocalBackend(uploaded_data, proto){
         const node_indices = nodes_initial.map((x,i)=>i)
         const sorted_node_indices = node_indices.sort((a,b)=>nodes_initial[a].y-nodes_initial[b].y)
         const nodes = sorted_node_indices.map(x=>nodes_initial[x])
+        const old_to_new_mapping = Object.fromEntries(sorted_node_indices.map((x,i)=>[x,i]))
         
         const scale_x = 35;
 const scale_y = 9e7/nodes.length;
 
         nodes.forEach((node,i)=>{
-            node.parent_id = sorted_node_indices.indexOf(node.parent_id)
+            node.parent_id = old_to_new_mapping[node.parent_id]
             node.node_id = i
+
             node.x = node.x * scale_x;
             node.y = node.y * scale_y;
+
         })
+
+        nodes.forEach((node,i)=>{
+            node.parent_x = nodes[node.parent_id].x;
+            node.parent_y = nodes[node.parent_id].y;
+        })
+
 
 
 
@@ -146,7 +153,7 @@ const scale_y = 9e7/nodes.length;
 
     const queryNodes = useCallback(
         (boundsForQueries, setResult, setTriggerRefresh) => {
-            const start_time = Date.now();
+      
   const min_x = boundsForQueries.min_x;
   const max_x = boundsForQueries.max_x;
   let min_y = boundsForQueries.min_y !== undefined ? boundsForQueries.min_y : overallMinY;
