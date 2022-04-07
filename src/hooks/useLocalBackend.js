@@ -6,16 +6,23 @@ var protobuf = require("protobufjs");
 
 
 function useLocalBackend(uploaded_data, proto){
+
+   
+
     
     console.log("local backend:", uploaded_data)
 
     const processedUploadedData = useMemo(() => {
+
+        if(!uploaded_data){
+            return {}
+        }
         
 
         
         console.log("Processing uploaded data")
         const NodeList = proto.lookupType("AllData");
-        const message = NodeList.decode(new Uint8Array(uploaded_data.data));
+        const message = NodeList.decode(new Uint8Array(uploaded_data.data ));
         const result = NodeList.toObject(message);
         window.result = result;
         console.log(result)
@@ -130,7 +137,7 @@ const scale_y = 9e7/nodes.length;
         
 
     
-    , [proto, uploaded_data.data]);
+    , [proto, uploaded_data]);
 
     
 
