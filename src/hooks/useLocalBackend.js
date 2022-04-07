@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import filtering from "taxonium_data_handling"
+import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 var protobuf = require("protobufjs");
 
 
@@ -100,40 +101,11 @@ const scale_y = 9e7/nodes.length;
     
         const y_positions = nodes.map((node) => node.y);
 
-        const overallMaxY =  nodes.reduce((max, node) => {
-            if (node.y > max) {
-                return node.y;
-            } else {
-                return max;
-            }
-        }, nodes[0].y);
-
-        const overallMinY
-        = nodes.reduce((min, node) => {
-            if (node.y < min) {
-                return node.y;
-            } else {
-                return min;
-            }
-        }, nodes[0].y);
-
-        const overallMaxX
-        = nodes.reduce((max, node) => {
-            if (node.x > max) {
-                return node.x;
-            } else {
-                return max;
-            }
-        }, nodes[0].x);
-
-        const overallMinX
-        = nodes.reduce((min, node) => {
-            if (node.x < min) {
-                return node.x;
-            } else {
-                return min;
-            }
-        }, nodes[0].x);
+        const overallMaxY =  reduceMaxOrMin(nodes, node=>node.y, "max")
+        const overallMinY =  reduceMaxOrMin(nodes, node=>node.y, "min")
+        const overallMaxX =  reduceMaxOrMin(nodes, node=>node.x, "max")
+        const overallMinX =  reduceMaxOrMin(nodes, node=>node.x, "min")
+        console.log("overallMaxY is ", overallMaxY, "overallMinY is ", overallMinY, "overallMaxX is ", overallMaxX, "overallMinX is ", overallMinX)
 
         const output =  {nodes:nodes, overallMaxX, overallMaxY, overallMinX, overallMinY, y_positions}
         
@@ -156,8 +128,8 @@ const scale_y = 9e7/nodes.length;
       
   const min_x = boundsForQueries.min_x;
   const max_x = boundsForQueries.max_x;
-  let min_y = boundsForQueries.min_y !== undefined ? boundsForQueries.min_y : overallMinY;
-  let max_y = boundsForQueries.max_y !== undefined ? boundsForQueries.max_y : overallMaxY;
+  let min_y = isNaN( boundsForQueries.min_y ) ?  overallMinY : boundsForQueries.min_y ;
+  let max_y = isNaN( boundsForQueries.max_y ) ?  overallMaxY : boundsForQueries.max_y ;
   if (min_y < overallMinY) {
     min_y = overallMinY;
   }
