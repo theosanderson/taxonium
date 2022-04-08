@@ -50,6 +50,9 @@ function useLocalBackend(uploaded_data, proto){
             }})
 
 
+            console.log("Extracting")
+
+
         
 
         
@@ -69,6 +72,8 @@ function useLocalBackend(uploaded_data, proto){
         nodes_initial.push(new_node)
         }
         //sort on y
+
+        console.log("Sorting")
         const node_indices = nodes_initial.map((x,i)=>i)
         const sorted_node_indices = node_indices.sort((a,b)=>nodes_initial[a].y-nodes_initial[b].y)
         const nodes = sorted_node_indices.map(x=>nodes_initial[x])
@@ -76,6 +81,8 @@ function useLocalBackend(uploaded_data, proto){
         
         const scale_x = 35;
 const scale_y = 9e7/nodes.length;
+
+console.log("Rescaling")
 
         nodes.forEach((node,i)=>{
             node.parent_id = old_to_new_mapping[node.parent_id]
@@ -85,6 +92,8 @@ const scale_y = 9e7/nodes.length;
             node.y = node.y * scale_y;
 
         })
+
+        console.log("Adding parent coords")
 
         nodes.forEach((node,i)=>{
             node.parent_x = nodes[node.parent_id].x;
