@@ -19,18 +19,26 @@ postMessage({ data: "Worker starting" });
 
 let processedUploadedData;
 
+const sendStatusMessage = (message) => {
+  postMessage({
+    type: "status",
+    data: message,
+  });
+};
+
 export const processUploadedData = async (uploaded_data) => {
   if (!uploaded_data) {
     return {};
   }
   const proto = await getProto();
 
-  console.log("Processing uploaded data");
-  const NodeList = proto.lookupType("AllData");
-  const message = NodeList.decode(new Uint8Array(uploaded_data.data));
-  const result = NodeList.toObject(message);
+  sendStatusMessage("Extracting data from protobuf");
 
-  console.log(result);
+  const NodeList = proto.lookupType("AllData");
+  const message = NodeList.decode(new Uint8Array(uploaded_data.data)); // TODO refactor this to function so it gets deleted after use
+
+  sendStatusMessage("Converting data to initial javascript object");
+  const result = NodeList.toObject(message);
 
   const node_data_in_columnar_form = result.node_data;
 
@@ -55,7 +63,7 @@ export const processUploadedData = async (uploaded_data) => {
     };
   });
 
-  console.log("Extracting");
+  sendStatusMessage("Extracting individual nodes from columnar format");
 
   for (let i in node_data_in_columnar_form.names) {
     const new_node = {
@@ -77,7 +85,7 @@ export const processUploadedData = async (uploaded_data) => {
   }
   //sort on y
 
-  console.log("Sorting");
+  sendStatusMessage("Sorting nodes on y");
   const node_indices = nodes_initial.map((x, i) => i);
   const sorted_node_indices = node_indices.sort(
     (a, b) => nodes_initial[a].y - nodes_initial[b].y
@@ -90,7 +98,7 @@ export const processUploadedData = async (uploaded_data) => {
   const scale_x = 35;
   const scale_y = 9e7 / nodes.length;
 
-  console.log("Rescaling");
+  sendStatusMessage("Rescaling for good fit");
 
   nodes.forEach((node, i) => {
     node.parent_id = old_to_new_mapping[node.parent_id];
@@ -100,14 +108,14 @@ export const processUploadedData = async (uploaded_data) => {
     node.y = node.y * scale_y;
   });
 
-  console.log("Adding parent coords");
+  sendStatusMessage("Adding parental coordinates");
 
   nodes.forEach((node, i) => {
     node.parent_x = nodes[node.parent_id].x;
     node.parent_y = nodes[node.parent_id].y;
   });
 
-  console.log("NODES is ", nodes);
+  sendStatusMessage("Almost ready");
 
   const y_positions = nodes.map((node) => node.y);
 
@@ -139,12 +147,24 @@ export const processUploadedData = async (uploaded_data) => {
   processedUploadedData = output;
 };
 
-export const queryNodes = (boundsForQueries) => {
-  console.log("Worker query Nodes");
-  if (!processedUploadedData) {
-    console.log("No data yet");
-    return { nodes: [] };
+const waitForProcessedData = async () => {
+  // check if processedUploadedData is defined, if not wait until it is
+  if (processedUploadedData === undefined) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (processedUploadedData !== undefined) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
   }
+};
+
+export const queryNodes = async (boundsForQueries) => {
+  console.log("Worker query Nodes");
+  await waitForProcessedData();
+
   const {
     nodes,
     overallMaxX,
@@ -186,7 +206,7 @@ export const queryNodes = (boundsForQueries) => {
   return result;
 };
 
-onmessage = (event) => {
+onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
@@ -196,7 +216,7 @@ onmessage = (event) => {
   }
   if (data.type === "query") {
     console.log("Worker query");
-    const result = queryNodes(data.bounds);
-    postMessage(result);
+    const result = await queryNodes(data.bounds);
+    postMessage({ type: "query", data: result });
   }
 };
