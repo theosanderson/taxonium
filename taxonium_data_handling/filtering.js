@@ -132,6 +132,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     const relevant_mutations = mutations
       .filter((mutation) => {
         return (
+          mutation &&
           mutation.gene === spec.gene &&
           mutation.residue_pos === spec.position &&
           (spec.new_residue === "any" ||
