@@ -104,7 +104,7 @@ function App() {
         responseType: "arraybuffer",
         onDownloadProgress: (progressEvent) => {
           let percentCompleted = Math.floor(
-            1 * (progressEvent.loaded / 50000000) * 100
+            1 * (progressEvent.loaded / progressEvent.total) * 100
           );
           setUploadedData({
             status: "loading",
@@ -167,7 +167,11 @@ function App() {
             </div>
           </div>
         </div>
-        <Suspense fallback={<div>Loading... {uploadedData.progress}</div>}>
+        <Suspense
+          fallback={
+            <div>Loading... {uploadedData && uploadedData.progress}</div>
+          }
+        >
           {query.backend ||
           (uploadedData && uploadedData.status === "loaded") ? (
             <Taxonium
@@ -176,6 +180,13 @@ function App() {
               setQuery={setQuery}
               overlayRef={overlayRef}
             />
+          ) : uploadedData && uploadedData.status === "loading" ? (
+            <div className="flex justify-center items-center h-screen w-screen">
+              <div className="text-center">
+                <div className="text-xl">Downloading file...</div>
+                <div className="text-gray-500">{uploadedData.progress}%</div>
+              </div>
+            </div>
           ) : (
             <div className="m-10">
               <p className="text-lg text-gray-700 mb-5">
