@@ -5,7 +5,7 @@ function addNodeLookup(data) {
     ...data,
     nodeLookup: Object.fromEntries(data.nodes.map((n) => [n.node_id, n])),
   };
-  console.log("cc", output);
+  console.log("cc");
   return output;
 }
 function useGetDynamicData(backend, colorBy, viewState) {
@@ -71,13 +71,16 @@ function useGetDynamicData(backend, colorBy, viewState) {
 
         setDynamicData({ ...dynamicData, status: "loading" });
 
-        
         queryNodes(
           boundsForQueries,
 
           (result) => {
-            console.log("got result, bounds were", boundsForQueries," result is ", result);
-            
+            console.log(
+              "got result, bounds were",
+              boundsForQueries,
+              " result is "
+            );
+
             setDynamicData((prevData) => {
               const new_result = {
                 ...prevData,
@@ -107,8 +110,6 @@ function useGetDynamicData(backend, colorBy, viewState) {
           },
           setTriggerRefresh
         );
-
-    
       }, 300)
     );
   }, [boundsForQueries, queryNodes, triggerRefresh]);

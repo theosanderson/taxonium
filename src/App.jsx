@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, Suspense , useRef, useEffect} from "react";
+import React, { useState, Suspense, useRef, useEffect } from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -23,10 +23,9 @@ function App() {
     reader.onload = () => {
       //setUploadedData(reader.result);
       if (file.name.endsWith(".gz")) {
-       
-        setUploadedData({status: "loaded", data: pako.ungzip(reader.result)});
+        setUploadedData({ status: "loaded", data: pako.ungzip(reader.result) });
       } else {
-        setUploadedData({status: "loaded", data: reader.result});
+        setUploadedData({ status: "loaded", data: reader.result });
       }
     };
 
@@ -97,53 +96,49 @@ function App() {
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
 
-  
-  const protoUrl = query.protoUrl
-      
-  if(protoUrl&&!uploadedData){
-    axios.get(protoUrl, {
-      responseType: "arraybuffer",
-      onDownloadProgress: (progressEvent) => {
-        let percentCompleted = Math.floor(
-          1 * (progressEvent.loaded / 50000000) * 100
+  const protoUrl = query.protoUrl;
+
+  if (protoUrl && !uploadedData) {
+    axios
+      .get(protoUrl, {
+        responseType: "arraybuffer",
+        onDownloadProgress: (progressEvent) => {
+          let percentCompleted = Math.floor(
+            1 * (progressEvent.loaded / progressEvent.total) * 100
+          );
+          setUploadedData({
+            status: "loading",
+            progress: percentCompleted,
+            data: { node_data: { ids: [] } },
+          });
+        },
+      })
+      .catch((err) => {
+        console.log(err);
+        window.alert(
+          err +
+            "\n\nPlease check the URL entered, or your internet connection, and try again."
         );
-        setUploadedData({
-          status: "loading",
-          progress: percentCompleted,
-          data: { node_data: { ids: [] } },
-        });
-      },
-    })
-    .catch((err) => {
-      console.log(err);
-      window.alert(
-        err +
-          "\n\nPlease check the URL entered, or your internet connection, and try again."
-      );
-    })
-    .then(function (response) {
-      if (protoUrl.endsWith(".gz")) {
-        setUploadedData( {status: "loaded", data: pako.ungzip(response.data)});
-      } else {
-        setUploadedData( {status: "loaded", data: response.data});
-      }
-    });
+      })
+      .then(function (response) {
+        if (protoUrl.endsWith(".gz")) {
+          setUploadedData({
+            status: "loaded",
+            data: pako.ungzip(response.data),
+          });
+        } else {
+          setUploadedData({ status: "loaded", data: response.data });
+        }
+      });
   }
 
-  useEffect(() => {
-    if(!proto){
-      protobuf.load("./taxonium.proto").then(function (proto) {
-        setProto(proto);
-      });
-    } }
-
-  , [proto])
-
-
-  
   return (
     <Router>
-      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} overlayRef={overlayRef} />
+      <AboutOverlay
+        enabled={aboutEnabled}
+        setEnabled={setAboutEnabled}
+        overlayRef={overlayRef}
+      />
 
       <div
         className="h-screen w-screen"
@@ -172,15 +167,26 @@ function App() {
             </div>
           </div>
         </div>
-        <Suspense fallback={<div>Loading...</div>}>
-          {query.backend || (uploadedData&& uploadedData.status==="loaded" &&proto) || (query.protoUrl&&proto) ? (
+        <Suspense
+          fallback={
+            <div>Loading... {uploadedData && uploadedData.progress}</div>
+          }
+        >
+          {query.backend ||
+          (uploadedData && uploadedData.status === "loaded") ? (
             <Taxonium
               uploadedData={uploadedData}
               query={query}
               setQuery={setQuery}
               overlayRef={overlayRef}
-              proto = {proto}
             />
+          ) : uploadedData && uploadedData.status === "loading" ? (
+            <div className="flex justify-center items-center h-screen w-screen">
+              <div className="text-center">
+                <div className="text-xl">Downloading file...</div>
+                <div className="text-gray-500">{uploadedData.progress}%</div>
+              </div>
+            </div>
           ) : (
             <div className="m-10">
               <p className="text-lg text-gray-700 mb-5">
