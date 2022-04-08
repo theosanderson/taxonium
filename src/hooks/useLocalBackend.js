@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from "react";
+import { useCallback, useMemo, useEffect, useState } from "react";
 
 // test
 console.log("new worker");
@@ -6,11 +6,27 @@ const worker = new Worker(
   new URL("../webworkers/localBackendWorker.js", import.meta.url)
 );
 
+let onQueryReceipt = (receivedData) => {};
+let onStatusReceipt = (receivedData) => {
+  console.log("STATUS:", receivedData.data);
+};
+
 worker.onmessage = (event) => {
-  console.log("got data", event.data);
+  console.log("got message from worker", event.data);
+  if (event.data.type === "status") {
+    onStatusReceipt(event.data);
+  }
+  if (event.data.type === "query") {
+    onQueryReceipt(event.data.data);
+  }
 };
 
 function useLocalBackend(uploaded_data, proto) {
+  const [statusMessage, setStatusMessage] = useState("");
+  onStatusReceipt = (receivedData) => {
+    console.log("STATUS:", receivedData.data);
+    setStatusMessage(receivedData.data);
+  };
   useEffect(() => {
     console.log("Sending data to worker");
     worker.postMessage({
@@ -46,9 +62,9 @@ function useLocalBackend(uploaded_data, proto) {
         type: "query",
         bounds: boundsForQueries,
       });
-      worker.onmessage = (event) => {
-        console.log("got data", event.data);
-        setResult(event.data);
+      onQueryReceipt = (receivedData) => {
+        console.log("got query result", receivedData);
+        setResult(receivedData);
       };
     },
     []
@@ -90,8 +106,8 @@ function useLocalBackend(uploaded_data, proto) {
   }, []);
 
   return useMemo(() => {
-    return { queryNodes, singleSearch, getDetails, getConfig };
-  }, [queryNodes, singleSearch, getDetails, getConfig]);
+    return { queryNodes, singleSearch, getDetails, getConfig, statusMessage };
+  }, [queryNodes, singleSearch, getDetails, getConfig, statusMessage]);
 }
 
 export default useLocalBackend;
