@@ -26,19 +26,24 @@ const sendStatusMessage = (message) => {
   });
 };
 
+const decodeAndConvertToObjectFromBuffer = (uploaded_data, proto) => {
+  sendStatusMessage("Extracting data from protobuf");
+  const NodeList = proto.lookupType("AllData");
+  const message = NodeList.decode(new Uint8Array(uploaded_data.data)); // TODO refactor this to function so it gets deleted after use
+
+  sendStatusMessage("Converting data to initial javascript object");
+  const result = NodeList.toObject(message);
+  return result;
+};
+
 export const processUploadedData = async (uploaded_data) => {
   if (!uploaded_data) {
     return {};
   }
   const proto = await getProto();
 
-  sendStatusMessage("Extracting data from protobuf");
-
-  const NodeList = proto.lookupType("AllData");
-  const message = NodeList.decode(new Uint8Array(uploaded_data.data)); // TODO refactor this to function so it gets deleted after use
-
-  sendStatusMessage("Converting data to initial javascript object");
-  const result = NodeList.toObject(message);
+  const result = decodeAndConvertToObjectFromBuffer(uploaded_data, proto);
+  uploaded_data = undefined;
 
   const node_data_in_columnar_form = result.node_data;
 
