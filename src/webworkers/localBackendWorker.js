@@ -1,20 +1,35 @@
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 import filtering from "taxonium_data_handling";
+import protobuf from "protobufjs";
+
+protobuf.parse.defaults.keepCase = true;
+let proto;
+
+const proto_location = "/taxonium.proto";
+
+const getProto = async () => {
+  if (proto === undefined) {
+    proto = await protobuf.load(proto_location);
+  }
+  return proto;
+};
 
 console.log("worker starting");
+postMessage({ data: "Worker starting" });
 
 let processedUploadedData;
 
-export const processUploadedData = (uploaded_data, proto) => {
+export const processUploadedData = async (uploaded_data) => {
   if (!uploaded_data) {
     return {};
   }
+  const proto = await getProto();
 
   console.log("Processing uploaded data");
   const NodeList = proto.lookupType("AllData");
   const message = NodeList.decode(new Uint8Array(uploaded_data.data));
   const result = NodeList.toObject(message);
-  window.result = result;
+
   console.log(result);
 
   const node_data_in_columnar_form = result.node_data;
@@ -171,5 +186,17 @@ export const queryNodes = (boundsForQueries) => {
   return result;
 };
 
-//console.log("processedUploadedData", processedUploadedData)
-//const {nodes, overallMaxX, overallMaxY, overallMinX, overallMinY, y_positions} = processedUploadedData;
+onmessage = (event) => {
+  //Process uploaded data:
+  console.log("Worker onmessage");
+  const { data } = event;
+  if (data.type === "upload") {
+    console.log("Worker upload");
+    processUploadedData(data.data);
+  }
+  if (data.type === "query") {
+    console.log("Worker query");
+    const result = queryNodes(data.bounds);
+    postMessage(result);
+  }
+};

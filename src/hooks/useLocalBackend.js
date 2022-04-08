@@ -1,16 +1,25 @@
 import { useCallback, useMemo, useEffect } from "react";
-import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 
-const createWorker = createWorkerFactory(() =>
-  import("../webworkers/localBackendWorker.js")
+// test
+console.log("new worker");
+const worker = new Worker(
+  new URL("../webworkers/localBackendWorker.js", import.meta.url)
 );
 
-function useLocalBackend(uploaded_data, proto) {
-  const worker = useWorker(createWorker);
+worker.onmessage = (event) => {
+  console.log("got data", event.data);
+};
 
+function useLocalBackend(uploaded_data, proto) {
   useEffect(() => {
-    worker.processUploadedData(uploaded_data, proto);
-  }, [uploaded_data, proto, worker]);
+    console.log("Sending data to worker");
+    worker.postMessage({
+      type: "upload",
+      data: uploaded_data,
+      proto: proto,
+    });
+  }, [uploaded_data, proto]);
+
   /*
     
     
@@ -33,11 +42,18 @@ function useLocalBackend(uploaded_data, proto) {
   const queryNodes = useCallback(
     async (boundsForQueries, setResult, setTriggerRefresh) => {
       console.log("queryNodes", boundsForQueries);
-      const result = await worker.queryNodes(boundsForQueries);
-      setResult(result);
+      worker.postMessage({
+        type: "query",
+        bounds: boundsForQueries,
+      });
+      worker.onmessage = (event) => {
+        console.log("got data", event.data);
+        setResult(event.data);
+      };
     },
-    [worker]
+    []
   );
+
   const singleSearch = useCallback(() => {
     console.log("singleSearch");
   }, []);
