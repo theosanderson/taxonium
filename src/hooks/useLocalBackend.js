@@ -10,6 +10,7 @@ let onQueryReceipt = (receivedData) => {};
 let onStatusReceipt = (receivedData) => {
   console.log("STATUS:", receivedData.data);
 };
+let onSearchReceipt = (receivedData) => {};
 
 worker.onmessage = (event) => {
   console.log("got message from worker", event.data);
@@ -18,6 +19,9 @@ worker.onmessage = (event) => {
   }
   if (event.data.type === "query") {
     onQueryReceipt(event.data.data);
+  }
+  if (event.data.type === "search") {
+    onSearchReceipt(event.data.data);
   }
 };
 
@@ -70,9 +74,22 @@ function useLocalBackend(uploaded_data, proto) {
     []
   );
 
-  const singleSearch = useCallback(() => {
-    console.log("singleSearch");
-  }, []);
+  const singleSearch = useCallback(
+    (singleSearch, boundsForQueries, setResult) => {
+      console.log("singleSearch", singleSearch);
+      worker.postMessage({
+        type: "search",
+        search: singleSearch,
+        bounds: boundsForQueries,
+      });
+      onSearchReceipt = (receivedData) => {
+        console.log("got search result", receivedData);
+        setResult(receivedData);
+      };
+    },
+    []
+  );
+
   const getDetails = useCallback(() => {
     console.log("getDetails");
   }, []);
