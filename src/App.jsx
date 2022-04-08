@@ -167,10 +167,9 @@ function App() {
             </div>
           </div>
         </div>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>Loading... {uploadedData.progress}</div>}>
           {query.backend ||
-          (uploadedData && uploadedData.status === "loaded") ||
-          query.protoUrl ? (
+          (uploadedData && uploadedData.status === "loaded") ? (
             <Taxonium
               uploadedData={uploadedData}
               query={query}
