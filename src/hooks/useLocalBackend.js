@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useEffect } from "react";
-import filtering from "taxonium_data_handling";
-
 import { createWorkerFactory, useWorker } from "@shopify/react-web-worker";
 
 const createWorker = createWorkerFactory(() =>
