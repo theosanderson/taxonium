@@ -54,7 +54,7 @@ export const processUploadedData = async (uploaded_data) => {
     (x) => x.metadata_name === "Lineage"
   );
   const nodes_initial = [];
-  result.mutation_mapping = result.mutation_mapping.map((x) => {
+  result.mutation_mapping = result.mutation_mapping.map((x, i) => {
     if (x === "") {
       return null;
     }
@@ -65,6 +65,7 @@ export const processUploadedData = async (uploaded_data) => {
       previous_residue,
       residue_pos: parseInt(residue_pos),
       new_residue,
+      mutation_id: i,
     };
   });
 
@@ -81,9 +82,7 @@ export const processUploadedData = async (uploaded_data) => {
       meta_Country: country_stuff.mapping[country_stuff.node_values[i]],
       meta_Lineage: lineage_stuff.mapping[lineage_stuff.node_values[i]],
       mutations: node_data_in_columnar_form.mutations[i].mutation
-        ? node_data_in_columnar_form.mutations[i].mutation.map(
-            (x) => result.mutation_mapping[x]
-          )
+        ? node_data_in_columnar_form.mutations[i].mutation
         : [],
     };
     nodes_initial.push(new_node);
@@ -95,7 +94,14 @@ export const processUploadedData = async (uploaded_data) => {
   const sorted_node_indices = node_indices.sort(
     (a, b) => nodes_initial[a].y - nodes_initial[b].y
   );
+
   const nodes = sorted_node_indices.map((x) => nodes_initial[x]);
+  const node_to_mut = nodes.map((x) => x.mutations);
+
+  nodes.forEach((node) => {
+    node.mutations = node.mutations.map((x) => result.mutation_mapping[x]);
+  });
+
   const old_to_new_mapping = Object.fromEntries(
     sorted_node_indices.map((x, i) => [x, i])
   );
@@ -146,6 +152,8 @@ export const processUploadedData = async (uploaded_data) => {
     overallMinX,
     overallMinY,
     y_positions,
+    mutations: result.mutation_mapping,
+    node_to_mut,
   };
 
   console.log("output is ", output);
@@ -211,6 +219,40 @@ export const queryNodes = async (boundsForQueries) => {
   return result;
 };
 
+const search = async (search, bounds) => {
+  console.log("Worker query Search");
+  await waitForProcessedData();
+
+  const {
+    nodes,
+    overallMaxX,
+    overallMaxY,
+    overallMinX,
+    overallMinY,
+    y_positions,
+    node_to_mut,
+    mutations,
+  } = processedUploadedData;
+  const spec = JSON.parse(search);
+  console.log(spec);
+
+  const min_y = bounds.min_y ? bounds.min_y : overallMinY;
+  const max_y = bounds.max_y ? bounds.max_y : overallMaxY;
+
+  const result = filtering.singleSearch({
+    data: nodes,
+    spec,
+    min_y,
+    max_y,
+    y_positions,
+    mutations,
+    node_to_mut,
+  });
+  console.log("mutations var is ", mutations);
+  console.log("got search result", result);
+  return result;
+};
+
 onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
@@ -223,5 +265,10 @@ onmessage = async (event) => {
     console.log("Worker query");
     const result = await queryNodes(data.bounds);
     postMessage({ type: "query", data: result });
+  }
+  if (data.type === "search") {
+    console.log("Worker search");
+    const result = await search(data.search, data.bounds);
+    postMessage({ type: "search", data: result });
   }
 };
