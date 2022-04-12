@@ -236,8 +236,8 @@ const search = async (search, bounds) => {
   const spec = JSON.parse(search);
   console.log(spec);
 
-  const min_y = bounds.min_y ? bounds.min_y : overallMinY;
-  const max_y = bounds.max_y ? bounds.max_y : overallMaxY;
+  const min_y = (bounds&&bounds.min_y) ? bounds.min_y : overallMinY;
+  const max_y = (bounds&&bounds.max_y) ? bounds.max_y : overallMaxY;
 
   const result = filtering.singleSearch({
     data: nodes,
