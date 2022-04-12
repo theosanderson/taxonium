@@ -175,7 +175,7 @@ const useSearch = (
       const oldViewState = { ...view.viewState };
       const viewState = {
         ...view.viewState,
-        target: [2000, (min_y + max_y) / 2],
+        target: [0, (min_y + max_y) / 2],
         zoom: 9 - Math.log2(max_y - min_y + 0.001),
       };
       console.log("zoom to search new VS", viewState);
