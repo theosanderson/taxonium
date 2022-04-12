@@ -197,6 +197,7 @@ const useSearch = (
     addNewTopLevelSearch,
     deleteTopLevelSearch,
     getLineColor,
+    setZoomToSearch,
   };
 };
 
