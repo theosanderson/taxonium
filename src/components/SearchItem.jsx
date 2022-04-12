@@ -1,13 +1,7 @@
 import React from "react";
 
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
-  const types = [
-    { name: "name", label: "Name", type: "text_match" },
-    { name: "meta_Lineage", label: "PANGO lineage", type: "text_exact" },
-    { name: "meta_Country", label: "Country", type: "text_match" },
-    { name: "mutation", label: "Mutation", type: "mutation" },
-    { name: "revertant", label: "Revertant", type: "revertant" },
-  ];
+  const types = config.search_types ? config.search_types : [];
 
   let all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
   all_amino_acids = ["any"].concat(all_amino_acids);

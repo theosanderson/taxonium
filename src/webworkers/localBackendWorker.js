@@ -288,6 +288,24 @@ const getConfig = async () => {
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
   );
+
+  config.search_types = [
+    { name: "name", label: "Name", type: "text_match" },
+    { name: "meta_Lineage", label: "PANGO lineage", type: "text_exact" },
+    { name: "meta_Country", label: "Country", type: "text_match" },
+    { name: "mutation", label: "Mutation", type: "mutation" },
+    { name: "revertant", label: "Revertant", type: "revertant" },
+  ];
+
+  const colorByOptions = ["meta_Lineage", "meta_Country", "genotype", "None"];
+  const prettyColorByOptions = {
+    meta_Lineage: "Lineage",
+    meta_Country: "Country",
+    genotype: "Genotype",
+    None: "None",
+  };
+  config.colorBy = { colorByOptions, prettyColorByOptions };
+
   console.log("config is ", config);
 
   return config;

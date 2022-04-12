@@ -1,14 +1,12 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 
 let colorCache = {};
-const colorByOptions = ["meta_Lineage", "meta_Country", "genotype", "None"];
-const prettyColorByOptions = {
-  meta_Lineage: "Lineage",
-  meta_Country: "Country",
-  genotype: "Genotype",
-  None: "None",
-};
-function useColorBy() {
+
+function useColorBy(config) {
+  const { colorByOptions, prettyColorByOptions } = config.colorBy
+    ? config.colorBy
+    : { colorByOptions: [], prettyColorByOptions: {} };
+
   window.cc = colorCache;
   const [colorByField, setColorByField] = useState("meta_Lineage");
   const [colorByGene, setColorByGene] = useState("S");
