@@ -1,6 +1,7 @@
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 import filtering from "taxonium_data_handling";
 import protobuf from "protobufjs";
+import pako from "pako";
 
 protobuf.parse.defaults.keepCase = true;
 let proto;
@@ -26,33 +27,27 @@ const sendStatusMessage = (message) => {
   });
 };
 
-const decodeAndConvertToObjectFromBuffer = (uploaded_data, proto) => {
-  sendStatusMessage("Extracting data from protobuf");
+const decodeAndConvertToObjectFromBuffer = async (uploaded_data) => {
+  const proto = await getProto();
+
   const NodeList = proto.lookupType("AllData");
-  const message = NodeList.decode(new Uint8Array(uploaded_data.data)); // TODO refactor this to function so it gets deleted after use
+  let message;
+  if (uploaded_data.type && uploaded_data.type === "gz") {
+    sendStatusMessage("Extracting data from compressed protobuf");
+    message = NodeList.decode(new Uint8Array(pako.ungzip(uploaded_data.data))); // TODO refactor this to function so it gets deleted after use
+  } else {
+    sendStatusMessage("Extracting data from protobuf");
+    message = NodeList.decode(new Uint8Array(uploaded_data.data));
+  }
 
   sendStatusMessage("Converting data to initial javascript object");
   const result = NodeList.toObject(message);
   return result;
 };
 
-export const processUploadedData = async (uploaded_data) => {
-  if (!uploaded_data) {
-    return {};
-  }
-  const proto = await getProto();
+export const processUploadedData = async (result) => {
+  let node_data_in_columnar_form = result.node_data;
 
-  const result = decodeAndConvertToObjectFromBuffer(uploaded_data, proto);
-  uploaded_data = undefined;
-
-  const node_data_in_columnar_form = result.node_data;
-
-  const country_stuff = node_data_in_columnar_form.metadata_singles.find(
-    (x) => x.metadata_name === "Country"
-  );
-  const lineage_stuff = node_data_in_columnar_form.metadata_singles.find(
-    (x) => x.metadata_name === "Lineage"
-  );
   const nodes_initial = [];
   result.mutation_mapping = result.mutation_mapping.map((x, i) => {
     if (x === "") {
@@ -79,15 +74,24 @@ export const processUploadedData = async (uploaded_data) => {
       num_tips: node_data_in_columnar_form.num_tips[i],
       parent_id: node_data_in_columnar_form.parents[i],
       date: result.date_mapping[node_data_in_columnar_form.dates[i]],
-      meta_Country: country_stuff.mapping[country_stuff.node_values[i]],
-      meta_Lineage: lineage_stuff.mapping[lineage_stuff.node_values[i]],
       mutations: node_data_in_columnar_form.mutations[i].mutation
         ? node_data_in_columnar_form.mutations[i].mutation
         : [],
     };
+    node_data_in_columnar_form.metadata_singles.forEach((x) => {
+      new_node["meta_" + x.metadata_name] = x.mapping[x.node_values[i]];
+    });
+
+    // assert that y is a float
+    if (typeof new_node.y !== "number") {
+      new_node.y = parseFloat(new_node.y);
+    }
+
     nodes_initial.push(new_node);
   }
   //sort on y
+
+  node_data_in_columnar_form = undefined;
 
   sendStatusMessage("Sorting nodes on y");
   const node_indices = nodes_initial.map((x, i) => i);
@@ -295,7 +299,9 @@ onmessage = async (event) => {
   const { data } = event;
   if (data.type === "upload") {
     console.log("Worker upload");
-    processUploadedData(data.data);
+    const initial = await decodeAndConvertToObjectFromBuffer(data.data);
+    data.data = undefined;
+    processUploadedData(initial);
   }
   if (data.type === "query") {
     console.log("Worker query");

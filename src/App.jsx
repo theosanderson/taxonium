@@ -6,7 +6,7 @@ import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
-import pako from "pako";
+
 import axios from "axios";
 import protobuf from "protobufjs";
 import { getDefaultSearch } from "./utils/searchUtil";
@@ -24,7 +24,7 @@ function App() {
     reader.onload = () => {
       //setUploadedData(reader.result);
       if (file.name.endsWith(".gz")) {
-        setUploadedData({ status: "loaded", data: pako.ungzip(reader.result) });
+        setUploadedData({ status: "loaded", type: "gz", data: reader.result });
       } else {
         setUploadedData({ status: "loaded", data: reader.result });
       }
@@ -107,7 +107,8 @@ function App() {
         if (protoUrl.endsWith(".gz")) {
           setUploadedData({
             status: "loaded",
-            data: pako.ungzip(response.data),
+            type: "gz",
+            data: response.data,
           });
         } else {
           setUploadedData({ status: "loaded", data: response.data });
