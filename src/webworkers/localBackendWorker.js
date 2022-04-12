@@ -236,8 +236,8 @@ const search = async (search, bounds) => {
   const spec = JSON.parse(search);
   console.log(spec);
 
-  const min_y = (bounds&&bounds.min_y) ? bounds.min_y : overallMinY;
-  const max_y = (bounds&&bounds.max_y) ? bounds.max_y : overallMaxY;
+  const min_y = bounds && bounds.min_y ? bounds.min_y : overallMinY;
+  const max_y = bounds && bounds.max_y ? bounds.max_y : overallMaxY;
 
   const result = filtering.singleSearch({
     data: nodes,
@@ -251,6 +251,42 @@ const search = async (search, bounds) => {
   console.log("mutations var is ", mutations);
   console.log("got search result", result);
   return result;
+};
+
+const getConfig = async () => {
+  console.log("Worker getConfig");
+  await waitForProcessedData();
+  const config = {};
+  config.num_nodes = processedUploadedData.nodes.length;
+  config.initial_x =
+    (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
+  config.initial_y =
+    (processedUploadedData.overallMaxY + processedUploadedData.overallMinY) / 2;
+  config.initial_zoom = -3;
+  config.genes = [
+    ...new Set(processedUploadedData.mutations.map((x) => (x ? x.gene : null))),
+  ]
+    .filter((x) => x)
+    .sort();
+
+  config.name_accessor = "name";
+  const to_remove = [
+    "parent_x",
+    "parent_y",
+    "parent_id",
+    "node_id",
+    "x",
+    "y",
+    "mutations",
+    "name",
+    "num_tips",
+  ];
+  config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
+    (x) => !to_remove.includes(x)
+  );
+  console.log("config is ", config);
+
+  return config;
 };
 
 onmessage = async (event) => {
@@ -270,5 +306,10 @@ onmessage = async (event) => {
     console.log("Worker search");
     const result = await search(data.search, data.bounds);
     postMessage({ type: "search", data: result });
+  }
+  if (data.type === "config") {
+    console.log("Worker config");
+    const result = await getConfig();
+    postMessage({ type: "config", data: result });
   }
 };
