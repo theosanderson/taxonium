@@ -1,22 +1,33 @@
 import { useState, useMemo, useEffect, useRef } from "react";
+import { getDefaultSearch } from "../utils/searchUtil";
+import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
-const getDefaultSearch = () => {
-  return {
-    key: Math.random().toString(36).substring(2, 15),
-    type: "meta_Lineage",
-    method: "text_exact",
-    text: "",
-    gene: "S",
-    position: 484,
-    new_residue: "K",
-    min_tips: 0,
-  };
-};
+const hasZoomed = false;
 
-const useSearch = (data, boundsForQueries, view, backend) => {
+const useSearch = (
+  data,
+  boundsForQueries,
+  view,
+  backend,
+  query,
+  updateQuery
+) => {
   const { singleSearch } = backend;
 
-  const [searchSpec, setSearchSpec] = useState([getDefaultSearch()]);
+  const searchSpec = useMemo(() => {
+    return JSON.parse(query.srch);
+  }, [query.srch]);
+
+  const [zoomToSearch, setZoomToSearch] = useState(
+    query.zoomToSearch ? { index: query.zoomToSearch } : null
+  );
+
+  const setSearchSpec = (newSearchSpec) => {
+    updateQuery({
+      srch: JSON.stringify(newSearchSpec),
+    });
+  };
+
   const [searchResults, setSearchResults] = useState({});
   const [jsonSearch, setJsonSearch] = useState({});
 
@@ -141,6 +152,43 @@ const useSearch = (data, boundsForQueries, view, backend) => {
   ];
 
   const getLineColor = (index) => lineColors[index % lineColors.length];
+
+  useEffect(() => {
+    if (zoomToSearch) {
+      const { index } = zoomToSearch;
+      const relevant = searchResults[searchSpec[index].key];
+      if (!relevant) {
+        console.log("no search results for index", index);
+        console.log(searchResults);
+        return;
+      }
+      const { overview } = relevant;
+      if (!overview || overview.length === 0) {
+        console.log("no overview for index", index);
+        return;
+      }
+      const min_y = reduceMaxOrMin(overview, (d) => d.y, "min");
+      const max_y = reduceMaxOrMin(overview, (d) => d.y, "max");
+      const min_x = reduceMaxOrMin(overview, (d) => d.x, "min");
+      const max_x = reduceMaxOrMin(overview, (d) => d.x, "max");
+
+      const oldViewState = { ...view.viewState };
+      const viewState = {
+        ...view.viewState,
+        target: [2000, (min_y + max_y) / 2],
+        zoom: 9 - Math.log2(max_y - min_y + 0.001),
+      };
+      console.log("zoom to search new VS", viewState);
+
+      view.onViewStateChange({
+        viewState: viewState,
+        oldViewState,
+        interactionState: "isZooming",
+      });
+      updateQuery({ zoomToSearch: undefined });
+      setZoomToSearch(undefined);
+    }
+  }, [zoomToSearch, searchResults]);
 
   return {
     searchResults,
