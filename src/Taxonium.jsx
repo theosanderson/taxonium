@@ -16,7 +16,7 @@ var protobuf = require("protobufjs");
 
 protobuf.parse.defaults.keepCase = true;
 
-function Taxonium({ uploadedData, query, setQuery, overlayRef, proto }) {
+function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const view = useView();
   const colourMapping = useMemo(() => {
     return {};
@@ -33,7 +33,14 @@ function Taxonium({ uploadedData, query, setQuery, overlayRef, proto }) {
     view.viewState
   );
 
-  const search = useSearch(data, boundsForQueries, view, backend);
+  const search = useSearch(
+    data,
+    boundsForQueries,
+    view,
+    backend,
+    query,
+    updateQuery
+  );
   const statusMessage = backend.statusMessage ? backend.statusMessage : "";
 
   //

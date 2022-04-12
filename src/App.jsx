@@ -9,6 +9,7 @@ import useQueryAsState from "./hooks/useQueryAsState";
 import pako from "pako";
 import axios from "axios";
 import protobuf from "protobufjs";
+import { getDefaultSearch } from "./utils/searchUtil";
 
 protobuf.parse.defaults.keepCase = true;
 
@@ -31,26 +32,8 @@ function App() {
 
     reader.readAsArrayBuffer(file);
   }
-  const [query, setQuery] = useQueryAsState({
-    blinking: "false",
-    search: JSON.stringify([
-      {
-        id: 0.123,
-        category: "lineage",
-        value: "",
-        enabled: true,
-        aa_final: "any",
-        min_tips: 1,
-        aa_gene: "S",
-        search_for_ids: "",
-      },
-    ]),
-    colourBy: JSON.stringify({
-      variable: "lineage",
-      gene: "S",
-      colourLines: false,
-      residue: "681",
-    }),
+  const [query, updateQuery] = useQueryAsState({
+    srch: JSON.stringify([getDefaultSearch()]),
   });
   const [beingDragged, setBeingDragged] = useState(false);
   const [proto, setProto] = useState(null);
@@ -177,7 +160,7 @@ function App() {
             <Taxonium
               uploadedData={uploadedData}
               query={query}
-              setQuery={setQuery}
+              updateQuery={updateQuery}
               overlayRef={overlayRef}
             />
           ) : uploadedData && uploadedData.status === "loading" ? (
@@ -217,7 +200,7 @@ function App() {
                   <button
                     className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8 mt-5"
                     onClick={() =>
-                      setQuery({
+                      updateQuery({
                         ...query,
                         protoUrl: currentUrl.replace("http://", "https://"),
                       })
