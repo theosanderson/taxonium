@@ -11,6 +11,7 @@ let onStatusReceipt = (receivedData) => {
   console.log("STATUS:", receivedData.data);
 };
 let onSearchReceipt = (receivedData) => {};
+let onConfigReceipt = (receivedData) => {};
 
 worker.onmessage = (event) => {
   console.log("got message from worker", event.data);
@@ -22,6 +23,9 @@ worker.onmessage = (event) => {
   }
   if (event.data.type === "search") {
     onSearchReceipt(event.data.data);
+  }
+  if (event.data.type === "config") {
+    onConfigReceipt(event.data.data);
   }
 };
 
@@ -94,32 +98,15 @@ function useLocalBackend(uploaded_data, proto) {
     console.log("getDetails");
   }, []);
   const getConfig = useCallback((setResult) => {
-    const result = {
-      source: "INSDC",
-      title: "Phylo",
-      name_accessor: "name",
-      keys_to_display: ["genotype", "meta_Lineage", "meta_Country"],
-      overlay: "TODO",
-      num_nodes: 4766574,
-      initial_x: 2000,
-      initial_y: 563.171305,
-      initial_zoom: -3,
-      genes: [
-        "ORF7a",
-        "ORF1a",
-        "N",
-        "ORF8",
-        "ORF1b",
-        "S",
-        "M",
-        "ORF7b",
-        "ORF3a",
-        "ORF10",
-        "E",
-        "ORF6",
-      ],
+    console.log("getConfig");
+    worker.postMessage({
+      type: "config",
+    });
+
+    onConfigReceipt = (receivedData) => {
+      console.log("got config result", receivedData);
+      setResult(receivedData);
     };
-    setResult(result);
   }, []);
 
   return useMemo(() => {
