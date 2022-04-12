@@ -26,7 +26,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);
-  const colorBy = useColorBy();
+  const colorBy = useColorBy(config);
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
     colorBy,
