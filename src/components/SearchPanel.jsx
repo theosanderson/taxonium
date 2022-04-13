@@ -2,7 +2,6 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 
-
 const formatNumber = (num) => {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 };
@@ -15,12 +14,35 @@ const fixAuthors = (authors) => {
   return authors.replace(/,([^\s])/g, ", $1");
 };
 
-function SearchPanel({ search, colorBy, config, selectedDetails, colorHook }) {
+function SearchPanel({
+  search,
+  colorBy,
+  config,
+  selectedDetails,
+  colorHook,
+  xAccessor,
+  setXAccessor,
+}) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className="text-sm mt-3 text-gray-700 mb-1">
         Displaying {formatNumber(config.num_nodes)} nodes
         {config.source && ` from ${config.source}`}
+      </div>
+      <div>
+        x accessor:
+        <select
+          className="ml-2"
+          value={xAccessor}
+          onChange={(e) => setXAccessor(e.target.value)}
+        >
+          {config.x_accessors &&
+            config.x_accessors.map((x) => (
+              <option key={x} value={x}>
+                {x}
+              </option>
+            ))}
+        </select>
       </div>
       <h2 className="text-lg text-gray-500 mt-5">
         <FaSearch className="inline-block mr-2 w-4" />
@@ -83,53 +105,71 @@ function SearchPanel({ search, colorBy, config, selectedDetails, colorHook }) {
       )}
       {selectedDetails.nodeDetails && (
         <div>
-          <hr className="mt-4 mb-4"/>
+          <hr className="mt-4 mb-4" />
           <h2 className="font-bold whitespace-pre-wrap text-sm">
-        {selectedDetails.nodeDetails[config.name_accessor] !== "" ? fixName(selectedDetails.nodeDetails[config.name_accessor] ): <i>Internal node</i>}
-      </h2>
-      {colorBy.colorByField === "genotype" && (
-        <span
-          style={{
-            color: colorHook.toRGBCSS(colorBy.getNodeColorField(selectedDetails.nodeDetails)),
-          }}
-        >
-          {colorBy.colorByGene}:{colorBy.colorByPosition}
-          {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
-        </span>
-      )}
+            {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
+              fixName(selectedDetails.nodeDetails[config.name_accessor])
+            ) : (
+              <i>Internal node</i>
+            )}
+          </h2>
+          {colorBy.colorByField === "genotype" && (
+            <span
+              style={{
+                color: colorHook.toRGBCSS(
+                  colorBy.getNodeColorField(selectedDetails.nodeDetails)
+                ),
+              }}
+            >
+              {colorBy.colorByGene}:{colorBy.colorByPosition}
+              {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
+            </span>
+          )}
 
-      {config.keys_to_display.map(
-        (key) =>
-        selectedDetails.nodeDetails[key] && (
-            <div className="text-sm mt-1" key={key}>
-              {/*<span className="text-gray-800">{prettify_key[key]}</span>:{" "}*/}
-              {colorBy.colorByField === key ? (
-                <span style={{ color: colorHook.toRGBCSS(selectedDetails.nodeDetails[key]) }}>
-                  {selectedDetails.nodeDetails[key]}
-                </span>
-              ) : (
-                selectedDetails.nodeDetails[key]
+          {config.keys_to_display.map(
+            (key) =>
+              selectedDetails.nodeDetails[key] && (
+                <div className="text-sm mt-1" key={key}>
+                  {/*<span className="text-gray-800">{prettify_key[key]}</span>:{" "}*/}
+                  {colorBy.colorByField === key ? (
+                    <span
+                      style={{
+                        color: colorHook.toRGBCSS(
+                          selectedDetails.nodeDetails[key]
+                        ),
+                      }}
+                    >
+                      {selectedDetails.nodeDetails[key]}
+                    </span>
+                  ) : (
+                    selectedDetails.nodeDetails[key]
+                  )}
+                </div>
+              )
+          )}
+
+          {
+            <div>
+              {selectedDetails.nodeDetails.acknowledgements && (
+                <div className="text-xs mt-3  text-gray-700 mr-3">
+                  <div className="mt-1">
+                    <b className="font-semibold">Originating laboratory:</b>{" "}
+                    {selectedDetails.nodeDetails.acknowledgements.covv_orig_lab}
+                  </div>
+                  <div className="mt-1">
+                    <b className="font-semibold">Submitting laboratory:</b>{" "}
+                    {selectedDetails.nodeDetails.acknowledgements.covv_subm_lab}
+                  </div>
+                  <div className="mt-1 justify">
+                    <b className="font-semibold">Authors:</b>{" "}
+                    {fixAuthors(
+                      selectedDetails.nodeDetails.acknowledgements.covv_authors
+                    )}
+                  </div>
+                </div>
               )}
             </div>
-          )
-      )}
-
-      {
-        <div>
-       
-          {selectedDetails.nodeDetails.acknowledgements && (
-            <div className="text-xs mt-3  text-gray-700 mr-3">
- 
-              <div className="mt-1"><b className="font-semibold">Originating laboratory:</b> {selectedDetails.nodeDetails.acknowledgements.covv_orig_lab}</div>
-              <div  className="mt-1"><b className="font-semibold">Submitting laboratory:</b> {selectedDetails.nodeDetails.acknowledgements.covv_subm_lab}</div>
-              <div  className="mt-1 justify"><b className="font-semibold">Authors:</b> {fixAuthors(selectedDetails.nodeDetails.acknowledgements.covv_authors)}</div>
-
-            </div>
-          )}
-        </div>
-        
-      }
-   
+          }
         </div>
       )}
     </div>

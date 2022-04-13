@@ -32,7 +32,8 @@ const useLayers = (
   viewState,
   colorHook,
   setHoverInfo,
-  colorBy
+  colorBy,
+  xAccessor
 ) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
