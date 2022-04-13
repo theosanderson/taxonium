@@ -25,6 +25,7 @@ function Deck({
   selectedDetails,
   config,
   statusMessage,
+  xAccessor,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -115,7 +116,8 @@ function Deck({
     viewState,
     colorHook,
     setHoverInfo,
-    colorBy
+    colorBy,
+    xAccessor
   );
   // console.log("deck refresh");
 

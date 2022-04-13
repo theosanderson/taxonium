@@ -296,6 +296,11 @@ const getConfig = async () => {
     "name",
     "num_tips",
   ];
+
+  config.x_accessors = processedUploadedData.nodes[0].time_x
+    ? ["x", "time_x"]
+    : ["x"];
+
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
   );
