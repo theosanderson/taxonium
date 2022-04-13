@@ -45,7 +45,7 @@ const decodeAndConvertToObjectFromBuffer = async (uploaded_data) => {
   return result;
 };
 
-export const processUploadedData = async (result) => {
+export const unstackUploadedData = async (result) => {
   let node_data_in_columnar_form = result.node_data;
 
   const nodes_initial = [];
@@ -63,6 +63,8 @@ export const processUploadedData = async (result) => {
       mutation_id: i,
     };
   });
+
+  const mutation_mapping = result.mutation_mapping;
 
   sendStatusMessage("Extracting individual nodes from columnar format");
 
@@ -87,12 +89,21 @@ export const processUploadedData = async (result) => {
       new_node.y = parseFloat(new_node.y);
     }
 
+    if (node_data_in_columnar_form.time_x) {
+      new_node.time_x = node_data_in_columnar_form.time_x[i];
+    }
+
     nodes_initial.push(new_node);
   }
   //sort on y
 
-  node_data_in_columnar_form = undefined;
+  return { nodes_initial, mutation_mapping };
+};
 
+export const processUnstackedData = async ({
+  nodes_initial,
+  mutation_mapping,
+}) => {
   sendStatusMessage("Sorting nodes on y");
   const node_indices = nodes_initial.map((x, i) => i);
   const sorted_node_indices = node_indices.sort(
@@ -103,7 +114,7 @@ export const processUploadedData = async (result) => {
   const node_to_mut = nodes.map((x) => x.mutations);
 
   nodes.forEach((node) => {
-    node.mutations = node.mutations.map((x) => result.mutation_mapping[x]);
+    node.mutations = node.mutations.map((x) => mutation_mapping[x]);
   });
 
   const old_to_new_mapping = Object.fromEntries(
@@ -119,8 +130,8 @@ export const processUploadedData = async (result) => {
     node.parent_id = old_to_new_mapping[node.parent_id];
     node.node_id = i;
 
-    node.x = node.x * scale_x;
-    node.y = node.y * scale_y;
+    node.x = Math.fround(node.x * scale_x);
+    node.y = Math.fround(node.y * scale_y);
   });
 
   sendStatusMessage("Adding parental coordinates");
@@ -156,7 +167,7 @@ export const processUploadedData = async (result) => {
     overallMinX,
     overallMinY,
     y_positions,
-    mutations: result.mutation_mapping,
+    mutations: mutation_mapping,
     node_to_mut,
   };
 
@@ -317,23 +328,25 @@ onmessage = async (event) => {
   const { data } = event;
   if (data.type === "upload") {
     console.log("Worker upload");
-    const initial = await decodeAndConvertToObjectFromBuffer(data.data);
+    let data2 = await decodeAndConvertToObjectFromBuffer(data.data);
     data.data = undefined;
-    processUploadedData(initial);
-  }
-  if (data.type === "query") {
-    console.log("Worker query");
-    const result = await queryNodes(data.bounds);
-    postMessage({ type: "query", data: result });
-  }
-  if (data.type === "search") {
-    console.log("Worker search");
-    const result = await search(data.search, data.bounds);
-    postMessage({ type: "search", data: result });
-  }
-  if (data.type === "config") {
-    console.log("Worker config");
-    const result = await getConfig();
-    postMessage({ type: "config", data: result });
+    data2 = await unstackUploadedData(data2);
+    await processUnstackedData(data2);
+  } else {
+    if (data.type === "query") {
+      console.log("Worker query");
+      const result = await queryNodes(data.bounds);
+      postMessage({ type: "query", data: result });
+    }
+    if (data.type === "search") {
+      console.log("Worker search");
+      const result = await search(data.search, data.bounds);
+      postMessage({ type: "search", data: result });
+    }
+    if (data.type === "config") {
+      console.log("Worker config");
+      const result = await getConfig();
+      postMessage({ type: "config", data: result });
+    }
   }
 };
