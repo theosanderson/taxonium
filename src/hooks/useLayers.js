@@ -42,7 +42,7 @@ const useLayers = (
 
   const layers = [];
 
-  const combo = useMemo(() => {
+  const init_combo = useMemo(() => {
     if (
       data.data &&
       data.base_data &&
@@ -63,6 +63,17 @@ const useLayers = (
       return { nodes: [], nodeLookup: {} };
     }
   }, [data.data, data.base_data, data.status]);
+
+  const combo = useMemo(() => {
+    init_combo.nodes.forEach((node) => {
+      node.final_x = node[xAccessor];
+    });
+    init_combo.nodes.forEach((node) => {
+      node.parent_x = init_combo.nodeLookup[node.parent_id].final_x;
+      node.parent_y = init_combo.nodeLookup[node.parent_id].y;
+    });
+    return { nodes: init_combo.nodes, nodeLookup: init_combo.nodeLookup };
+  }, [init_combo, xAccessor]);
 
   const combo_scatter = useMemo(() => {
     console.log("new scatter");
@@ -95,7 +106,7 @@ const useLayers = (
     const temp_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
       data: combo_scatter.filter((x) => true), //this isn't great: how can we remove this. We have it because otherwise colour doesn't always update.
-      getPosition: (d) => [d.x, d.y],
+      getPosition: (d) => [d.final_x, d.y],
       getColor: (d) => toRGB(getNodeColorField(d, combo)),
 
       // radius in pixels
@@ -129,13 +140,17 @@ const useLayers = (
     const temp_line_layer = new LineLayer({
       id: "main-line-horiz",
       data: data.data.nodes,
-      getSourcePosition: (d) => [d.x, d.y],
+      getSourcePosition: (d) => [d.final_x, d.y],
       getTargetPosition: (d) => [d.parent_x, d.y],
       getColor: lineColor,
       pickable: true,
       onHover: (info) => setHoverInfo(info),
 
       modelMatrix: getMMatrix(viewState.zoom),
+      updateTriggers: {
+        getSourcePosition: [combo, xAccessor],
+        getTargetPosition: [combo, xAccessor],
+      },
     });
 
     const temp_line_layer2 = new LineLayer({
@@ -147,6 +162,10 @@ const useLayers = (
       getColor: lineColor,
       pickable: true,
       modelMatrix: getMMatrix(viewState.zoom),
+      updateTriggers: {
+        getSourcePosition: [combo, xAccessor],
+        getTargetPosition: [combo, xAccessor],
+      },
     });
     layers.push(
       bound_layer,
@@ -164,7 +183,7 @@ const useLayers = (
       id: "main-text-node",
 
       data: data.data.nodes,
-      getPosition: (d) => [d.x + 10, d.y],
+      getPosition: (d) => [d.final_x + 10, d.y],
       getText: (d) => d.name,
 
       getColor: [180, 180, 180],
@@ -183,7 +202,7 @@ const useLayers = (
   const minimap_scatter = new ScatterplotLayer({
     id: "minimap-scatter",
     data: minimap_scatter_data.filter((x) => true),
-    getPosition: (d) => [d.x, d.y],
+    getPosition: (d) => [d.final_x, d.y],
     getColor: (d) => toRGB(getNodeColorField(d, data.base_data)),
     // radius in pixels
     getRadius: 2,
@@ -196,9 +215,14 @@ const useLayers = (
   const minimap_line_horiz = new LineLayer({
     id: "minimap-line-horiz",
     data: data.base_data ? data.base_data.nodes : [],
-    getSourcePosition: (d) => [d.x, d.y],
+    getSourcePosition: (d) => [d.final_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
     getColor: lineColor,
+
+    updateTriggers: {
+      getSourcePosition: [combo, xAccessor],
+      getTargetPosition: [combo, xAccessor],
+    },
   });
 
   const minimap_line_vert = new LineLayer({
@@ -207,6 +231,11 @@ const useLayers = (
     getSourcePosition: (d) => [d.parent_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.parent_y],
     getColor: lineColor,
+
+    updateTriggers: {
+      getSourcePosition: [combo, xAccessor],
+      getTargetPosition: [combo, xAccessor],
+    },
   });
 
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
@@ -259,7 +288,7 @@ const useLayers = (
     return new ScatterplotLayer({
       data: data,
       id: "main-search-scatter-" + spec.key,
-      getPosition: (d) => [d.x, d.y],
+      getPosition: (d) => [d.final_x, d.y],
       getLineColor: lineColor,
       getRadius: 10 + 2 * i,
       radiusUnits: "pixels",
@@ -283,7 +312,7 @@ const useLayers = (
     return new ScatterplotLayer({
       data: data,
       id: "mini-search-scatter-" + spec.key,
-      getPosition: (d) => [d.x, d.y],
+      getPosition: (d) => [d.final_x, d.y],
       getLineColor: lineColor,
       getRadius: 5 + 2 * i,
       radiusUnits: "pixels",
