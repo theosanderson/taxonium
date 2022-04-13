@@ -50,14 +50,23 @@ const useLayers = (
       data.base_data.nodes &&
       (data.status === "loading" || data.status === "pending")
     ) {
-      console.log("A");
+      // add data.data.nodes and data.base_data.nodes and dedupe
+      const nodes_deduped = [
+        ...new Set([...data.data.nodes, ...data.base_data.nodes]),
+      ];
       return {
-        nodes: [...data.data.nodes, ...data.base_data.nodes],
+        nodes: nodes_deduped,
         nodeLookup: { ...data.data.nodeLookup, ...data.base_data.nodeLookup },
       };
     } else if (data.data.nodes && data.status === "loaded") {
-      console.log("B");
-      return data.data;
+      // add data.data.nodes and data.base_data.nodes and dedupe
+      const nodes_deduped = [
+        ...new Set([...data.data.nodes, ...data.base_data.nodes]),
+      ];
+      return {
+        nodes: nodes_deduped,
+        nodeLookup: { ...data.data.nodeLookup, ...data.base_data.nodeLookup },
+      };
     } else {
       console.log("C", data.data, data.base_data);
       return { nodes: [], nodeLookup: {} };
