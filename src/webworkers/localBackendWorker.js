@@ -132,13 +132,9 @@ export const processUnstackedData = async ({
 
     node.x = Math.fround(node.x * scale_x);
     node.y = Math.fround(node.y * scale_y);
-  });
-
-  sendStatusMessage("Adding parental coordinates");
-
-  nodes.forEach((node, i) => {
-    node.parent_x = nodes[node.parent_id].x;
-    node.parent_y = nodes[node.parent_id].y;
+    if (node.time_x) {
+      node.time_x = Math.fround(node.time_x * scale_x);
+    }
   });
 
   sendStatusMessage("Almost ready");
@@ -286,8 +282,6 @@ const getConfig = async () => {
 
   config.name_accessor = "name";
   const to_remove = [
-    "parent_x",
-    "parent_y",
     "parent_id",
     "node_id",
     "x",
