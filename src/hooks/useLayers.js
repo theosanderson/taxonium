@@ -107,7 +107,7 @@ const useLayers = (
       id: "main-scatter",
       data: combo_scatter.filter((x) => true), //this isn't great: how can we remove this. We have it because otherwise colour doesn't always update.
       getPosition: (d) => [d.final_x, d.y],
-      getColor: (d) => toRGB(getNodeColorField(d, combo)),
+      getFillColor: (d) => toRGB(getNodeColorField(d, combo)),
 
       // radius in pixels
       getRadius: 3,
@@ -121,7 +121,7 @@ const useLayers = (
       onHover: (info) => setHoverInfo(info),
       modelMatrix: getMMatrix(viewState.zoom),
       updateTriggers: {
-        getColor: [combo, getNodeColorField],
+        getFillColor: [combo, getNodeColorField],
       },
     });
 
@@ -203,13 +203,16 @@ const useLayers = (
     id: "minimap-scatter",
     data: minimap_scatter_data.filter((x) => true),
     getPosition: (d) => [d.final_x, d.y],
-    getColor: (d) => toRGB(getNodeColorField(d, data.base_data)),
+    getFillColor: (d) => toRGB(getNodeColorField(d, data.base_data)),
     // radius in pixels
     getRadius: 2,
     getLineColor: [100, 100, 100],
     opacity: 0.6,
     radiusUnits: "pixels",
     onHover: (info) => setHoverInfo(info),
+    updateTriggers: {
+      getFillColor: [data.base_data, getNodeColorField],
+    },
   });
 
   const minimap_line_horiz = new LineLayer({
