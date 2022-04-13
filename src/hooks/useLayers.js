@@ -75,16 +75,32 @@ const useLayers = (
     return { nodes: init_combo.nodes, nodeLookup: init_combo.nodeLookup };
   }, [init_combo, xAccessor]);
 
+  const base_data = useMemo(() => {
+    if (data.base_data && data.base_data.nodes) {
+      data.base_data.nodes.forEach((node) => {
+        node.final_x = node[xAccessor];
+      });
+      data.base_data.nodes.forEach((node) => {
+        node.parent_x = data.base_data.nodeLookup[node.parent_id].final_x;
+        node.parent_y = data.base_data.nodeLookup[node.parent_id].y;
+      });
+      return {
+        nodes: data.base_data.nodes,
+        nodeLookup: data.base_data.nodeLookup,
+      };
+    } else {
+      return { nodes: [], nodeLookup: {} };
+    }
+  }, [data.base_data, xAccessor]);
+
   const combo_scatter = useMemo(() => {
     console.log("new scatter");
     return combo.nodes.filter((d) => d.name !== "");
   }, [combo]);
 
   const minimap_scatter_data = useMemo(() => {
-    return data.base_data
-      ? data.base_data.nodes.filter((node) => node.name !== "")
-      : [];
-  }, [data.base_data]);
+    return base_data ? base_data.nodes.filter((node) => node.name !== "") : [];
+  }, [base_data]);
 
   const outer_bounds = [
     [-1000, -1000],
@@ -201,9 +217,9 @@ const useLayers = (
 
   const minimap_scatter = new ScatterplotLayer({
     id: "minimap-scatter",
-    data: minimap_scatter_data.filter((x) => true),
+    data: minimap_scatter_data,
     getPosition: (d) => [d.final_x, d.y],
-    getFillColor: (d) => toRGB(getNodeColorField(d, data.base_data)),
+    getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
     // radius in pixels
     getRadius: 2,
     getLineColor: [100, 100, 100],
@@ -211,13 +227,14 @@ const useLayers = (
     radiusUnits: "pixels",
     onHover: (info) => setHoverInfo(info),
     updateTriggers: {
-      getFillColor: [data.base_data, getNodeColorField],
+      getFillColor: [base_data, getNodeColorField],
+      getPosition: [minimap_scatter_data, xAccessor],
     },
   });
 
   const minimap_line_horiz = new LineLayer({
     id: "minimap-line-horiz",
-    data: data.base_data ? data.base_data.nodes : [],
+    data: base_data ? base_data.nodes : [],
     getSourcePosition: (d) => [d.final_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
     getColor: lineColor,
@@ -230,7 +247,7 @@ const useLayers = (
 
   const minimap_line_vert = new LineLayer({
     id: "minimap-line-vert",
-    data: data.base_data ? data.base_data.nodes : [],
+    data: base_data ? base_data.nodes : [],
     getSourcePosition: (d) => [d.parent_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.parent_y],
     getColor: lineColor,
@@ -244,7 +261,7 @@ const useLayers = (
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
 
   const minimap_polygon_background = new PolygonLayer({
-    id: "minimap-bound-polygon",
+    id: "minimap-bound-background",
     data: [outer_bounds],
     getPolygon: (d) => d,
     pickable: true,
@@ -260,7 +277,7 @@ const useLayers = (
   });
 
   const minimap_bound_polygon = new PolygonLayer({
-    id: "minimap-bound-polygon",
+    id: "minimap-bound-line",
     data: bound_contour,
     getPolygon: (d) => d,
     pickable: true,
@@ -301,7 +318,7 @@ const useLayers = (
       wireframe: true,
       getLineWidth: 1,
       filled: true,
-      getColor: [255, 0, 0, 0],
+      getFillColor: [255, 0, 0, 0],
       modelMatrix: getMMatrix(viewState.zoom),
     });
   });
@@ -325,7 +342,7 @@ const useLayers = (
       wireframe: true,
       getLineWidth: 1,
       filled: true,
-      getColor: [255, 0, 0, 0],
+      getFillColor: [255, 0, 0, 0],
     });
   });
   layers.push(...search_layers, search_mini_layers);
