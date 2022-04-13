@@ -30,8 +30,6 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
     [search, getMyIndex]
   );
 
-  console.log("search is", search);
-
   return (
     <div className="border-gray-100 border-b mb-3 pb-3">
       <SearchItem
