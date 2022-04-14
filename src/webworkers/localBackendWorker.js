@@ -328,6 +328,15 @@ const getConfig = async () => {
   return config;
 };
 
+const getDetails = async (node_id) => {
+  console.log("Worker getDetails");
+  await waitForProcessedData();
+  const { nodes } = processedUploadedData;
+  const node = nodes[node_id];
+  console.log("node is ", node);
+  return node;
+};
+
 onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
@@ -353,6 +362,11 @@ onmessage = async (event) => {
       console.log("Worker config");
       const result = await getConfig();
       postMessage({ type: "config", data: result });
+    }
+    if (data.type === "details") {
+      console.log("Worker details");
+      const result = await getDetails(data.node_id);
+      postMessage({ type: "details", data: result });
     }
   }
 };

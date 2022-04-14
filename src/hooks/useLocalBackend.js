@@ -12,6 +12,8 @@ let onStatusReceipt = (receivedData) => {
 };
 
 let onConfigReceipt = (receivedData) => {};
+let onDetailsReceipt = (receivedData) => {};
+
 let searchSetters = {};
 
 worker.onmessage = (event) => {
@@ -28,6 +30,9 @@ worker.onmessage = (event) => {
   }
   if (event.data.type === "config") {
     onConfigReceipt(event.data.data);
+  }
+  if (event.data.type === "details") {
+    onDetailsReceipt(event.data.data);
   }
 };
 
@@ -104,9 +109,18 @@ function useLocalBackend(uploaded_data, proto) {
     []
   );
 
-  const getDetails = useCallback(() => {
-    console.log("getDetails");
+  const getDetails = useCallback((node_id, setResult) => {
+    console.log("getDetails", node_id);
+    worker.postMessage({
+      type: "details",
+      node_id: node_id,
+    });
+    onDetailsReceipt = (receivedData) => {
+      console.log("got details result", receivedData);
+      setResult(receivedData);
+    };
   }, []);
+
   const getConfig = useCallback((setResult) => {
     console.log("getConfig");
     worker.postMessage({
