@@ -42,6 +42,7 @@ const decodeAndConvertToObjectFromBuffer = async (uploaded_data) => {
 
   sendStatusMessage("Converting data to initial javascript object");
   const result = NodeList.toObject(message);
+  console.log("got result", result);
   return result;
 };
 
@@ -73,6 +74,7 @@ export const unstackUploadedData = async (result) => {
       name: node_data_in_columnar_form.names[i],
       x: node_data_in_columnar_form.x[i],
       y: node_data_in_columnar_form.y[i],
+      genbank: node_data_in_columnar_form.genbanks[i],
       num_tips: node_data_in_columnar_form.num_tips[i],
       parent_id: node_data_in_columnar_form.parents[i],
       date: result.date_mapping[node_data_in_columnar_form.dates[i]],
