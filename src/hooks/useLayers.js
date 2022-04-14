@@ -306,7 +306,7 @@ const useLayers = (
     minimap_bound_polygon
   );
 
-  const { searchSpec, searchResults } = search;
+  const { searchSpec, searchResults, searchesEnabled } = search;
 
   const search_layers = searchSpec.map((spec, i) => {
     const data = searchResults[spec.key]
@@ -324,7 +324,7 @@ const useLayers = (
       radiusUnits: "pixels",
       lineWidthUnits: "pixels",
       stroked: true,
-
+      visible: searchesEnabled[spec.key],
       wireframe: true,
       getLineWidth: 1,
       filled: true,
@@ -345,6 +345,7 @@ const useLayers = (
     return new ScatterplotLayer({
       data: data,
       id: "mini-search-scatter-" + spec.key,
+      visible: searchesEnabled[spec.key],
       getPosition: (d) => [d[xAccessor], d.y],
       getLineColor: lineColor,
       getRadius: 5 + 2 * i,
