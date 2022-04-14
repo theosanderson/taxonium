@@ -119,10 +119,10 @@ const useLayers = (
     [-1000, -1000],
   ];
   const inner_bounds = [
-    [viewState.min_x, viewState.min_y],
-    [viewState.max_x, viewState.min_y],
-    [viewState.max_x, viewState.max_y],
-    [viewState.min_x, viewState.max_y],
+    [viewState.min_x, viewState.min_y < -1000 ? -1000 : viewState.min_y],
+    [viewState.max_x, viewState.min_y < -1000 ? -1000 : viewState.min_y],
+    [viewState.max_x, viewState.max_y > 10000 ? 10000 : viewState.max_y],
+    [viewState.min_x, viewState.max_y > 10000 ? 10000 : viewState.max_y],
   ];
 
   const bound_contour = [[outer_bounds, inner_bounds]];
@@ -294,7 +294,7 @@ const useLayers = (
     opacity: 0.3,
     filled: true,
     wireframe: true,
-    getFillColor: (d) => [240, 240, 240],
+    getFillColor: (d) => [200, 200, 200],
     getLineColor: [80, 80, 80],
     getLineWidth: 1,
     lineWidthUnits: "pixels",
