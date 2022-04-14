@@ -27,6 +27,7 @@ const useConfig = (backend, view, overlayRef) => {
 
       overlayRef.current.innerHTML = results.overlay;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [backend]);
 
   return config;

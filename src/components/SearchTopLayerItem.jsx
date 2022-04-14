@@ -1,6 +1,6 @@
 import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
   const this_result = search.searchResults[myKey];

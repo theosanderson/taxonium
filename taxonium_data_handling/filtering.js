@@ -156,7 +156,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     if (!all_data) {
       all_data = data;
     }
-    const root = all_data.find((node) => node.node_id == node.parent_id);
+    const root = all_data.find((node) => node.node_id === node.parent_id);
     const root_mutations = node_to_mut[root.node_id];
     const revertant_mutations = [];
     root_mutations.forEach((mutation) => {
@@ -167,6 +167,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
       const some_revertants = mutations
         .filter((mutation) => {
           return (
+            mutation &&
             mutation.gene === gene &&
             mutation.residue_pos === position &&
             mutation.new_residue === original_resiude

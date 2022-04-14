@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, Suspense, useRef, useEffect } from "react";
+import React, { useState, Suspense, useRef } from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -36,7 +36,7 @@ function App() {
     srch: JSON.stringify([getDefaultSearch()]),
   });
   const [beingDragged, setBeingDragged] = useState(false);
-  const [proto, setProto] = useState(null);
+
   const overlayRef = useRef(null);
 
   function onDrop(ev) {
