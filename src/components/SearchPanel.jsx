@@ -1,6 +1,7 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
+const prettify_x_types = { x: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -25,27 +26,27 @@ function SearchPanel({
 }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
-      <div className="text-sm mt-3 text-gray-700 mb-1">
+      <div className="mt-3 mb-3 text-gray-500 text-sm">
         Displaying {formatNumber(config.num_nodes)} nodes
         {config.source && ` from ${config.source}`}
       </div>
-      <div>
-        x accessor:
+      <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
+        Tree type:{" "}
         <select
-          className="ml-2"
           value={xAccessor}
           onChange={(e) => setXAccessor(e.target.value)}
+          className="border py-1 px-1 text-grey-darkest text-sm"
         >
           {config.x_accessors &&
             config.x_accessors.map((x) => (
               <option key={x} value={x}>
-                {x}
+                {prettify_x_types[x]}
               </option>
             ))}
         </select>
       </div>
-      <h2 className="text-lg text-gray-500 mt-5">
-        <FaSearch className="inline-block mr-2 w-4" />
+      <h2 className="text-xl mt-5 mb-4 text-gray-700">
+        <FaSearch className="inline-block mr-2" />
         Search
       </h2>
       {search.searchSpec.map((item) => (

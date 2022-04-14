@@ -45,7 +45,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           }
         />
       )}
-      {singleSearchSpec.type == "mutation" && (
+      {singleSearchSpec.type === "mutation" && (
         <div>
           <div>
             <label>of gene </label>
