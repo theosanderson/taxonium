@@ -17,7 +17,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   return (
     <div>
       <select
-        className="inline-block w-42 bg-gray-100 text-sm  p-1 rounded border-gray-300 border m-1 text-gray-700"
+        className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm"
         value={singleSearchSpec.type}
         onChange={(e) =>
           setThisSearchSpec({
@@ -35,7 +35,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       </select>
       {is_text && (
         <input
-          className="inline-block w-56 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
           onChange={(e) =>
             setThisSearchSpec({
@@ -54,7 +54,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               onChange={(e) =>
                 setThisSearchSpec({ ...singleSearchSpec, gene: e.target.value })
               }
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             >
               {config.genes.map((item) => (
                 <option key={item} value={item}>
@@ -74,7 +74,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                   position: e.target.value,
                 })
               }
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />
             &nbsp;to&nbsp;
             <select
@@ -85,7 +85,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                   new_residue: e.target.value,
                 });
               }}
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             >
               {all_amino_acids.map((aa) => (
                 <option key={aa} value={aa}>
@@ -111,7 +111,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                   min_tips: e.target.value,
                 })
               }
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />{" "}
             descendants
           </div>
