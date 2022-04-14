@@ -16,9 +16,18 @@ const useSearch = (
     return JSON.parse(query.srch);
   }, [query.srch]);
 
+  console.log("spec", searchSpec);
+
   const [zoomToSearch, setZoomToSearch] = useState(
     query.zoomToSearch ? { index: query.zoomToSearch } : null
   );
+  const searchesEnabled = query.enabled ? JSON.parse(query.enabled) : {};
+  console.log("searchesEnabled", searchesEnabled);
+  const setEnabled = (key, enabled) => {
+    console.log("setEnabled", key, enabled);
+    const newSearchesEnabled = { ...searchesEnabled, [key]: enabled };
+    updateQuery({ enabled: JSON.stringify(newSearchesEnabled) });
+  };
 
   const setSearchSpec = (newSearchSpec) => {
     updateQuery({
@@ -132,8 +141,12 @@ const useSearch = (
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
     // get a random string key
+    const newSearch = getDefaultSearch();
 
-    setSearchSpec([...searchSpec, getDefaultSearch()]);
+    setSearchSpec([...searchSpec, newSearch]);
+    setTimeout(() => {
+      setEnabled(newSearch.key, true);
+    }, 50);
   };
 
   const deleteTopLevelSearch = (key) => {
@@ -199,6 +212,8 @@ const useSearch = (
     deleteTopLevelSearch,
     getLineColor,
     setZoomToSearch,
+    searchesEnabled,
+    setEnabled,
   };
 };
 

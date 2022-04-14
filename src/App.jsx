@@ -11,6 +11,8 @@ import axios from "axios";
 import protobuf from "protobufjs";
 import { getDefaultSearch } from "./utils/searchUtil";
 
+const first_search = getDefaultSearch("aa1");
+
 protobuf.parse.defaults.keepCase = true;
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
@@ -32,9 +34,12 @@ function App() {
 
     reader.readAsArrayBuffer(file);
   }
+
   const [query, updateQuery] = useQueryAsState({
-    srch: JSON.stringify([getDefaultSearch()]),
+    srch: JSON.stringify([first_search]),
+    enabled: JSON.stringify({ [first_search.key]: true }),
   });
+
   const [beingDragged, setBeingDragged] = useState(false);
 
   const overlayRef = useRef(null);

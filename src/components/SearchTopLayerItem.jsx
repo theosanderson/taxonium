@@ -30,8 +30,29 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
     [search, getMyIndex]
   );
 
+  const enabled =
+    search.searchesEnabled[myKey] !== undefined
+      ? search.searchesEnabled[myKey]
+      : false;
+
   return (
     <div className="border-gray-100 border-b mb-3 pb-3">
+      <input
+        name="isGoing"
+        type="checkbox"
+        /*style={{
+          outline:
+            enabled &&
+            (value.length > 0 ||
+              !["name", ...metadataItemList].includes(category))
+              ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
+              : "0px",
+          outlineOffset: "2px",
+        }}*/
+        className="w-3 h-3 m-3"
+        checked={enabled}
+        onChange={(event) => search.setEnabled(myKey, event.target.checked)}
+      />
       <SearchItem
         config={config}
         singleSearchSpec={singleSearchSpec}
