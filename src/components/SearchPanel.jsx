@@ -70,7 +70,7 @@ function SearchPanel({
       <select
         value={colorBy.colorByField}
         onChange={(e) => colorBy.setColorByField(e.target.value)}
-        className="inline-block w-56 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+        className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
       >
         {colorBy.colorByOptions.map((item) => (
           <option key={item} value={item}>
@@ -84,7 +84,7 @@ function SearchPanel({
           <select
             value={colorBy.colorByGene}
             onChange={(e) => colorBy.setColorByGene(e.target.value)}
-            className="inline-block w-16 mr-4 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+            className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
           >
             {config.genes.map((item) => (
               <option key={item} value={item}>
