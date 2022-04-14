@@ -14,6 +14,8 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   const is_text = text_types.includes(singleSearchSpec.method);
 
+  const is_multi_text = singleSearchSpec.method === "text_per_line";
+
   return (
     <>
       <select
@@ -45,6 +47,19 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           }
         />
       )}
+      {is_multi_text && (
+        <textarea
+          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
+          value={singleSearchSpec.text}
+          onChange={(e) =>
+            setThisSearchSpec({
+              ...singleSearchSpec,
+              text: e.target.value,
+            })
+          }
+        />
+      )}
+
       {singleSearchSpec.type === "mutation" && (
         <div>
           <div>

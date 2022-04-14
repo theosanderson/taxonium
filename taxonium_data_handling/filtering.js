@@ -105,7 +105,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
 }
 
 function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
-  console.log(mutations);
+  console.log("SEARCHFILTER", data);
   console.log(spec);
   let filtered;
   if (["text_match", "text_exact"].includes(spec.method) && spec.text === "") {
@@ -127,6 +127,27 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     filtered = data.filter(
       (node) => node[spec.type].toLowerCase() === spec.text
     );
+    return filtered;
+  } else if (spec.method === "text_per_line") {
+    // case insensitive
+    const possible_matches = new Set(
+      spec.text
+        .toLowerCase()
+        .split("\n")
+        .map((line) => {
+          return line.trim();
+        })
+        .filter((line) => line !== "")
+    );
+
+    console.log("PERLINE", possible_matches);
+
+    filtered = data.filter((node) => {
+      const to_test = node[spec.type].toLowerCase().trim();
+      //console.log(to_test);
+      // check if node's spec type is in possible_matches
+      return possible_matches.has(to_test);
+    });
     return filtered;
   } else if (spec.method === "mutation") {
     const relevant_mutations = mutations
