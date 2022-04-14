@@ -8,7 +8,7 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useRef, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 

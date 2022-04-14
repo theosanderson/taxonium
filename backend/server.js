@@ -193,30 +193,6 @@ function overallMaxY() {
   return data[data.length - 1].y;
 }
 
-function overallMinX() {
-  return data.reduce((min, node) => {
-    if (node.x < min) {
-      return node.x;
-    } else {
-      return min;
-    }
-  }, data[0].x);
-}
-function overallMaxX() {
-  return data.reduce((max, node) => {
-    if (node.x > max) {
-      return node.x;
-    } else {
-      return max;
-    }
-  }, data[0].x);
-}
-
-function nthpercentilofX(n) {
-  return data.map((node) => node.x).sort((a, b) => a - b)[
-    Math.floor((n * data.length) / 100)
-  ];
-}
 function whenReady() {
   const scale_x = 35;
   const scale_y = 9e7 / data.length;
@@ -285,10 +261,6 @@ function getParents(node) {
 app.get("/parents/", function (req, res) {
   const query_id = req.query.id;
   res.send(getParents(data[query_id]));
-});
-
-app.get("/genotypes/", function (req, res) {
-  const query_id = req.query.id;
 });
 
 // "Takes EPI_ISL_12345" input

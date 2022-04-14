@@ -191,8 +191,10 @@ export const queryNodes = async (boundsForQueries) => {
 
   const {
     nodes,
+    // eslint-disable-next-line no-unused-vars
     overallMaxX,
     overallMaxY,
+    // eslint-disable-next-line no-unused-vars
     overallMinX,
     overallMinY,
     y_positions,
@@ -236,8 +238,10 @@ const search = async (search, bounds) => {
 
   const {
     nodes,
+    // eslint-disable-next-line no-unused-vars
     overallMaxX,
     overallMaxY,
+    // eslint-disable-next-line no-unused-vars
     overallMinX,
     overallMinY,
     y_positions,

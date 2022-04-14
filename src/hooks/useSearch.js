@@ -2,8 +2,6 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
-const hasZoomed = false;
-
 const useSearch = (
   data,
   boundsForQueries,
@@ -59,7 +57,7 @@ const useSearch = (
     const result_changed = Object.keys(searchResults).filter(
       (key) =>
         !(searchResults[key].result.type === "complete") &&
-        searchResults[key].boundingBox != boundsForQueries
+        searchResults[key].boundingBox !== boundsForQueries
     );
 
     // if any json strings have changed, update the search results
@@ -134,7 +132,7 @@ const useSearch = (
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
     // get a random string key
-    const newKey = Math.random().toString(36).substring(2, 15);
+
     setSearchSpec([...searchSpec, getDefaultSearch()]);
   };
 
@@ -169,7 +167,9 @@ const useSearch = (
       }
       const min_y = reduceMaxOrMin(overview, (d) => d.y, "min");
       const max_y = reduceMaxOrMin(overview, (d) => d.y, "max");
+      // eslint-disable-next-line no-unused-vars
       const min_x = reduceMaxOrMin(overview, (d) => d.x, "min");
+      // eslint-disable-next-line no-unused-vars
       const max_x = reduceMaxOrMin(overview, (d) => d.x, "max");
 
       const oldViewState = { ...view.viewState };
@@ -188,6 +188,7 @@ const useSearch = (
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomToSearch, searchResults]);
 
   return {
