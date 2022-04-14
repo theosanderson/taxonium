@@ -261,6 +261,7 @@ const search = async (search, bounds) => {
   });
   console.log("mutations var is ", mutations);
   console.log("got search result", result);
+  result.key = spec.key;
   return result;
 };
 

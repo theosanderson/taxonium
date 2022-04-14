@@ -312,12 +312,13 @@ const useLayers = (
     const data = searchResults[spec.key]
       ? searchResults[spec.key].result.data
       : [];
+
     const lineColor = search.getLineColor(i);
 
     return new ScatterplotLayer({
       data: data,
       id: "main-search-scatter-" + spec.key,
-      getPosition: (d) => [d.final_x, d.y],
+      getPosition: (d) => [d[xAccessor], d.y],
       getLineColor: lineColor,
       getRadius: 10 + 2 * i,
       radiusUnits: "pixels",
@@ -329,6 +330,9 @@ const useLayers = (
       filled: true,
       getFillColor: [255, 0, 0, 0],
       modelMatrix: getMMatrix(viewState.zoom),
+      updateTriggers: {
+        getPosition: [xAccessor],
+      },
     });
   });
 
@@ -341,7 +345,7 @@ const useLayers = (
     return new ScatterplotLayer({
       data: data,
       id: "mini-search-scatter-" + spec.key,
-      getPosition: (d) => [d.final_x, d.y],
+      getPosition: (d) => [d[xAccessor], d.y],
       getLineColor: lineColor,
       getRadius: 5 + 2 * i,
       radiusUnits: "pixels",
@@ -352,6 +356,7 @@ const useLayers = (
       getLineWidth: 1,
       filled: true,
       getFillColor: [255, 0, 0, 0],
+      updateTriggers: { getPosition: [xAccessor] },
     });
   });
   layers.push(...search_layers, search_mini_layers);
