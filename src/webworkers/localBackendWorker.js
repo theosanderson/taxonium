@@ -312,6 +312,7 @@ const getConfig = async () => {
     { name: "meta_Country", label: "Country", type: "text_match" },
     { name: "mutation", label: "Mutation", type: "mutation" },
     { name: "revertant", label: "Revertant", type: "revertant" },
+    { name: "genbank", label: "Genbank", type: "text_per_line" },
   ];
 
   const colorByOptions = ["meta_Lineage", "meta_Country", "genotype", "None"];
