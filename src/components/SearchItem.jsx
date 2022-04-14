@@ -15,7 +15,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const is_text = text_types.includes(singleSearchSpec.method);
 
   return (
-    <div>
+    <>
       <select
         className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm"
         value={singleSearchSpec.type}
@@ -117,7 +117,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

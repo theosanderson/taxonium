@@ -49,7 +49,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
               : "0px",
           outlineOffset: "2px",
         }}
-        className="w-3 h-3 m-3"
+        className="w-3 h-3 m-3 inline-block"
         checked={enabled}
         onChange={(event) => search.setEnabled(myKey, event.target.checked)}
       />
