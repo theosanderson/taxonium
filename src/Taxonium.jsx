@@ -8,7 +8,7 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
@@ -22,7 +22,16 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
     return {};
   }, []);
   const colorHook = useColor(colourMapping);
-  const backend = useBackend(query.backend, query.sid, uploadedData, proto);
+  const url_on_fail = process.env.REACT_APP_URL_ON_FAIL
+    ? process.env.REACT_APP_URL_ON_FAIL
+    : null;
+  const backend = useBackend(
+    query.backend,
+    query.sid,
+    url_on_fail,
+    uploadedData,
+    proto
+  );
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);

@@ -4,7 +4,7 @@ import { FaSearch } from "react-icons/fa";
 const prettify_x_types = { x: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  return num ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
 };
 const fixName = (name) => {
   return name.replace("hCoV-19/", "hCoV-19/\n");
