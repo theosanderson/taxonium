@@ -47,7 +47,7 @@ app.get("/search", function (req, res) {
     mutations,
     node_to_mut,
   });
-  res.send(result);
+  validateSIDandSend(result, req.query.sid, res);
   console.log(
     "Found " +
       result.data.length +
@@ -76,7 +76,7 @@ app.get("/config", function (req, res) {
   config.initial_zoom = -3;
   config.genes = genes;
 
-  res.send(config);
+  validateSIDandSend(config, req.query.sid, res);
 });
 
 app.get("/nodes/", function (req, res) {
@@ -106,7 +106,7 @@ app.get("/nodes/", function (req, res) {
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
   if (result !== cached_starting_values) {
     // This will be sent as json
-    res.send({ nodes: result });
+    validateSIDandSend({ nodes: result }, req.query.sid, res);
     console.log(
       "Request took " +
         (Date.now() - start_time) +
@@ -116,7 +116,7 @@ app.get("/nodes/", function (req, res) {
     );
   }
   if (result === cached_starting_values) {
-    res.send(result);
+    validateSIDandSend(result, req.query.sid, res);
     console.log(
       "Returning cached results took ",
       Date.now() - start_time + "ms."
@@ -152,6 +152,68 @@ const mutations_file_contents = fs.readFileSync(mutations_file);
 const unzipped_mutations_file = zlib.gunzipSync(mutations_file_contents);
 const lines = unzipped_mutations_file.toString().split("\n");
 let mutations = [{}]; //create with one element because of the way the data is structured
+let sid_cache = {};
+
+async function validateSID(sid) {
+  /* 
+
+  Create a call to https://gpsapi.epicov.org/epi3/gps_api 
+
+  with URL encoded version of the following parameters:
+  
+  {"cmd":"state/session/validate",
+"client_id": "TEST-1234",
+"api": {"version":1},
+"sid":"RFWFYY...PQZNQQASXUR"}
+
+packaged as req
+*/
+  const caching_time = 1000 * 60 * 5; // 5 minutes
+  if (
+    sid_cache[sid] !== undefined &&
+    sid_cache[sid].time > Date.now() - caching_time &&
+    sid_cache[sid].validity === "ok"
+  ) {
+    console.log("Using cached validity");
+    return "ok";
+  }
+
+  const key = process.env.GPS_API_KEY;
+
+  const req_obj = {
+    cmd: "state/session/validate",
+    client_id: key,
+    api: { version: 1 },
+    sid: sid,
+  };
+  const req_raw = JSON.stringify(req_obj);
+  const req = encodeURIComponent(req_raw);
+  const url = "https://gpsapi.epicov.org/epi3/gps_api?req=" + req;
+  console.log(url);
+  response = await axios.get(url);
+  console.log("got response", response.data);
+  validity =
+    response.data && response.data.rc && response.data.rc === "ok"
+      ? "ok"
+      : "invalid";
+  console.log("validity", validity);
+  sid_cache[sid] = { validity: validity, time: Date.now() };
+  return validity;
+}
+
+async function validateSIDandSend(to_send, sid, res) {
+  if (!config.validate_SID) {
+    res.send(to_send);
+  }
+  const validity = await validateSID(sid);
+
+  if (validity === "ok") {
+    res.send(to_send);
+  } else {
+    res.send({ error: "Invalid session ID" });
+  }
+}
+
 for (let i = 0; i < lines.length; i++) {
   if (lines[i] !== "") {
     mutations.push(JSON.parse(lines[i]));
@@ -168,6 +230,7 @@ const genes = [...new Set(mutations.map((mutation) => mutation.gene))].filter(
 console.log(genes);
 
 const { parse } = require("@jsonlines/core");
+const { url } = require("inspector");
 
 // create a duplex stream which parse input as lines of json
 const parseStream = parse();
@@ -260,7 +323,17 @@ function getParents(node) {
 
 app.get("/parents/", function (req, res) {
   const query_id = req.query.id;
-  res.send(getParents(data[query_id]));
+  validateSIDandSend(getParents(data[query_id]), req.query.sid, res);
+});
+
+app.get("/validate/", async function (req, res) {
+  const start_time = new Date();
+  const query_sid = req.query.sid;
+  const validity = await validateSID(query_sid);
+  console.log("Got validity", validity);
+
+  res.send(validity);
+  console.log(new Date() - start_time);
 });
 
 // "Takes EPI_ISL_12345" input
@@ -301,7 +374,7 @@ app.get("/node_details/", async (req, res) => {
       console.log(e);
     }
   }
-  res.send(detailed_node);
+  validateSIDandSend(detailed_node, req.query.sid, res);
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + node
   );

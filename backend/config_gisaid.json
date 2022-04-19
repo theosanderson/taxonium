@@ -1,4 +1,5 @@
 {
+  "validate_SID": true,
   "source": "GISAID",
   "title": "Phylo",
   "name_accessor": "meta_name2",
