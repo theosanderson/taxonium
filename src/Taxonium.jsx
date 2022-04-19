@@ -22,7 +22,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
     return {};
   }, []);
   const colorHook = useColor(colourMapping);
-  const backend = useBackend(query.backend, uploadedData, proto);
+  const backend = useBackend(query.backend, query.sid, uploadedData, proto);
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);

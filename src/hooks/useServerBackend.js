@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from "react";
 import axios from "axios";
 
-function useServerBackend(backend_url) {
+function useServerBackend(backend_url, sid) {
   const queryNodes = useCallback(
     (boundsForQueries, setResult, setTriggerRefresh) => {
-      let url = backend_url + "/nodes/?type=leaves";
+      let url = backend_url + "/nodes/?type=leaves&sid=" + sid;
       if (
         boundsForQueries &&
         boundsForQueries.min_x &&
@@ -37,12 +37,17 @@ function useServerBackend(backend_url) {
           setTriggerRefresh({});
         });
     },
-    [backend_url]
+    [backend_url, sid]
   );
 
   const singleSearch = useCallback(
     (singleSearch, boundsForQueries, setResult) => {
-      let url = backend_url + "/search/?json=" + JSON.stringify(singleSearch);
+      let url =
+        backend_url +
+        "/search/?json=" +
+        JSON.stringify(singleSearch) +
+        "&sid=" +
+        sid;
       if (
         boundsForQueries &&
         boundsForQueries.min_x &&
@@ -73,27 +78,27 @@ function useServerBackend(backend_url) {
           setResult([]);
         });
     },
-    [backend_url]
+    [backend_url, sid]
   );
 
   const getDetails = useCallback(
     (node_id, setResult) => {
-      let url = backend_url + "/node_details/?id=" + node_id;
+      let url = backend_url + "/node_details/?id=" + node_id + "&sid=" + sid;
       axios.get(url).then(function (response) {
         setResult(response.data);
       });
     },
-    [backend_url]
+    [backend_url, sid]
   );
 
   const getConfig = useCallback(
     (setResult) => {
-      let url = backend_url + "/config/";
+      let url = backend_url + "/config/" + "?sid=" + sid;
       axios.get(url).then(function (response) {
         setResult(response.data);
       });
     },
-    [backend_url]
+    [backend_url, sid]
   );
 
   return useMemo(() => {
