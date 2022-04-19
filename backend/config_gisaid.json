@@ -26,5 +26,6 @@
       "genotype": "Genotype",
       "None": "None"
     }
-  }
+  },
+  "x_accessors": ["x", "x_time"]
 }
