@@ -2,8 +2,6 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
-const hasZoomed = false;
-
 const useSearch = (
   data,
   boundsForQueries,
@@ -18,9 +16,18 @@ const useSearch = (
     return JSON.parse(query.srch);
   }, [query.srch]);
 
+  console.log("spec", searchSpec);
+
   const [zoomToSearch, setZoomToSearch] = useState(
     query.zoomToSearch ? { index: query.zoomToSearch } : null
   );
+  const searchesEnabled = query.enabled ? JSON.parse(query.enabled) : {};
+  console.log("searchesEnabled", searchesEnabled);
+  const setEnabled = (key, enabled) => {
+    console.log("setEnabled", key, enabled);
+    const newSearchesEnabled = { ...searchesEnabled, [key]: enabled };
+    updateQuery({ enabled: JSON.stringify(newSearchesEnabled) });
+  };
 
   const setSearchSpec = (newSearchSpec) => {
     updateQuery({
@@ -59,7 +66,7 @@ const useSearch = (
     const result_changed = Object.keys(searchResults).filter(
       (key) =>
         !(searchResults[key].result.type === "complete") &&
-        searchResults[key].boundingBox != boundsForQueries
+        searchResults[key].boundingBox !== boundsForQueries
     );
 
     // if any json strings have changed, update the search results
@@ -134,8 +141,12 @@ const useSearch = (
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
     // get a random string key
-    const newKey = Math.random().toString(36).substring(2, 15);
-    setSearchSpec([...searchSpec, getDefaultSearch()]);
+    const newSearch = getDefaultSearch();
+
+    setSearchSpec([...searchSpec, newSearch]);
+    setTimeout(() => {
+      setEnabled(newSearch.key, true);
+    }, 50);
   };
 
   const deleteTopLevelSearch = (key) => {
@@ -169,13 +180,15 @@ const useSearch = (
       }
       const min_y = reduceMaxOrMin(overview, (d) => d.y, "min");
       const max_y = reduceMaxOrMin(overview, (d) => d.y, "max");
+      // eslint-disable-next-line no-unused-vars
       const min_x = reduceMaxOrMin(overview, (d) => d.x, "min");
+      // eslint-disable-next-line no-unused-vars
       const max_x = reduceMaxOrMin(overview, (d) => d.x, "max");
 
       const oldViewState = { ...view.viewState };
       const viewState = {
         ...view.viewState,
-        target: [2000, (min_y + max_y) / 2],
+        target: [0, (min_y + max_y) / 2],
         zoom: 9 - Math.log2(max_y - min_y + 0.001),
       };
       console.log("zoom to search new VS", viewState);
@@ -188,6 +201,7 @@ const useSearch = (
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomToSearch, searchResults]);
 
   return {
@@ -198,6 +212,8 @@ const useSearch = (
     deleteTopLevelSearch,
     getLineColor,
     setZoomToSearch,
+    searchesEnabled,
+    setEnabled,
   };
 };
 

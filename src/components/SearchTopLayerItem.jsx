@@ -1,6 +1,6 @@
 import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
   const this_result = search.searchResults[myKey];
@@ -30,10 +30,29 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
     [search, getMyIndex]
   );
 
-  console.log("search is", search);
+  const enabled =
+    search.searchesEnabled[myKey] !== undefined
+      ? search.searchesEnabled[myKey]
+      : false;
+
+  const thecolor = search.getLineColor(getMyIndex());
 
   return (
     <div className="border-gray-100 border-b mb-3 pb-3">
+      <input
+        name="isGoing"
+        type="checkbox"
+        style={{
+          outline:
+            enabled && num_results > 0
+              ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
+              : "0px",
+          outlineOffset: "2px",
+        }}
+        className="w-3 h-3 m-3 inline-block"
+        checked={enabled}
+        onChange={(event) => search.setEnabled(myKey, event.target.checked)}
+      />
       <SearchItem
         config={config}
         singleSearchSpec={singleSearchSpec}

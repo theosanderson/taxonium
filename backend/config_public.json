@@ -1,1 +1,23 @@
-{"source":"INSDC", "title":"Phylo", "name_accessor":"name",     "keys_to_display" : [ "genotype","meta_Lineage","meta_Country"],"overlay":"TODO"}
+{
+  "source": "INSDC",
+  "title": "Phylo",
+  "name_accessor": "name",
+  "keys_to_display": ["genotype", "meta_Lineage", "meta_Country"],
+  "overlay": "TODO",
+  "search_types": [
+    { "name": "name", "label": "Name", "type": "text_match" },
+    { "name": "meta_Lineage", "label": "PANGO lineage", "type": "text_exact" },
+    { "name": "meta_Country", "label": "Country", "type": "text_match" },
+    { "name": "mutation", "label": "Mutation", "type": "mutation" },
+    { "name": "revertant", "label": "Revertant", "type": "revertant" }
+  ],
+  "colorBy": {
+    "colorByOptions": ["meta_Lineage", "meta_Country", "genotype", "None"],
+    "prettyColorByOptions": {
+      "meta_Lineage": "Lineage",
+      "meta_Country": "Country",
+      "genotype": "Genotype",
+      "None": "None"
+    }
+  }
+}

@@ -1,6 +1,10 @@
-export function getDefaultSearch() {
+export function getDefaultSearch(key) {
+  if (!key) {
+    key = Math.random().toString(36).substring(2, 15);
+    console.log("generated key", key);
+  }
   return {
-    key: Math.random().toString(36).substring(2, 15),
+    key,
     type: "meta_Lineage",
     method: "text_exact",
     text: "",

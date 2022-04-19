@@ -5,21 +5,20 @@ var app = express();
 var fs = require("fs");
 var https = require("https");
 var axios = require("axios");
-var filtering = require("../taxonium_data_handling")
+var filtering = require("../taxonium_data_handling");
 
 let options;
-const { program } = require('commander');
+const { program } = require("commander");
 
 program
-  .option('--ssl', 'use ssl')
-  .option('--database_dir <database_dir>', 'database directory')
-  .option('--port <port>', 'port')
-  .option('--config_json <config_json>', 'config json')
+  .option("--ssl", "use ssl")
+  .option("--database_dir <database_dir>", "database directory")
+  .option("--port <port>", "port")
+  .option("--config_json <config_json>", "config json");
 
 program.parse();
 
 const command_options = program.opts();
-
 
 app.use(cors());
 app.use(compression());
@@ -129,13 +128,16 @@ if (command_options.ssl) {
   options = {
     key: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/privkey.pem"),
     ca: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/chain.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/fullchain.pem"),
-    
+    cert: fs.readFileSync(
+      "/etc/letsencrypt/live/api.taxonium.org/fullchain.pem"
+    ),
   };
   https.createServer(options, app).listen(command_options.port);
   console.log("SSL on port " + command_options.port);
 } else {
-  app.listen(command_options.port, () => console.log(`App is listening on port ${command_options.port}`));
+  app.listen(command_options.port, () =>
+    console.log(`App is listening on port ${command_options.port}`)
+  );
 }
 
 const zlib = require("zlib");
@@ -191,33 +193,9 @@ function overallMaxY() {
   return data[data.length - 1].y;
 }
 
-function overallMinX() {
-  return data.reduce((min, node) => {
-    if (node.x < min) {
-      return node.x;
-    } else {
-      return min;
-    }
-  }, data[0].x);
-}
-function overallMaxX() {
-  return data.reduce((max, node) => {
-    if (node.x > max) {
-      return node.x;
-    } else {
-      return max;
-    }
-  }, data[0].x);
-}
-
-function nthpercentilofX(n) {
-  return data.map((node) => node.x).sort((a, b) => a - b)[
-    Math.floor((n * data.length) / 100)
-  ];
-}
 function whenReady() {
   const scale_x = 35;
-  const scale_y = 9e7/data.length;
+  const scale_y = 9e7 / data.length;
   data.forEach((node) => {
     node.x = node.x * scale_x;
     node.y = node.y * scale_y;
@@ -228,10 +206,7 @@ function whenReady() {
     node.x = Math.round(node.x * 100000) / 100000;
     node.y = Math.round(node.y * 100000) / 100000;
   });
-  data.forEach((node) => {
-    node.parent_x = data[node.parent_id].x;
-    node.parent_y = data[node.parent_id].y;
-  });
+
   y_positions = data.map((node) => node.y);
   // assert that y is sorted
   for (let i = 1; i < y_positions.length; i++) {
@@ -288,11 +263,6 @@ app.get("/parents/", function (req, res) {
   res.send(getParents(data[query_id]));
 });
 
-app.get("/genotypes/", function (req, res) {
-  const query_id = req.query.id;
-});
-
-
 // "Takes EPI_ISL_12345" input
 function get_epi_isl_url(epi_isl) {
   if (epi_isl.length > 4) {
@@ -308,8 +278,7 @@ function get_epi_isl_url(epi_isl) {
   }
 }
 
-
-app.get("/node_details/", async (req, res) =>{
+app.get("/node_details/", async (req, res) => {
   const start_time = Date.now();
   const query_id = req.query.id;
   const node = data[query_id];
@@ -328,12 +297,9 @@ app.get("/node_details/", async (req, res) =>{
     try {
       const data = response.data;
       detailed_node.acknowledgements = data;
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
     }
-
-
   }
   res.send(detailed_node);
   console.log(
