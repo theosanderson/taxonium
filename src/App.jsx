@@ -1,12 +1,17 @@
 import "./App.css";
-import React, { useState, Suspense , useRef} from "react";
+import React, { useState, Suspense, useRef, useEffect } from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
-import pako from "pako";
+
+import axios from "axios";
+import protobuf from "protobufjs";
+import { getDefaultSearch } from "./utils/searchUtil";
+
+protobuf.parse.defaults.keepCase = true;
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 const TaxoniumUploader = React.lazy(() =>
@@ -19,36 +24,19 @@ function App() {
     reader.onload = () => {
       //setUploadedData(reader.result);
       if (file.name.endsWith(".gz")) {
-        setUploadedData(pako.ungzip(reader.result));
+        setUploadedData({ status: "loaded", type: "gz", data: reader.result });
       } else {
-        setUploadedData(reader.result);
+        setUploadedData({ status: "loaded", data: reader.result });
       }
     };
 
     reader.readAsArrayBuffer(file);
   }
-  const [query, setQuery] = useQueryAsState({
-    blinking: "false",
-    search: JSON.stringify([
-      {
-        id: 0.123,
-        category: "lineage",
-        value: "",
-        enabled: true,
-        aa_final: "any",
-        min_tips: 1,
-        aa_gene: "S",
-        search_for_ids: "",
-      },
-    ]),
-    colourBy: JSON.stringify({
-      variable: "lineage",
-      gene: "S",
-      colourLines: false,
-      residue: "681",
-    }),
+  const [query, updateQuery] = useQueryAsState({
+    srch: JSON.stringify([getDefaultSearch()]),
   });
   const [beingDragged, setBeingDragged] = useState(false);
+  const [proto, setProto] = useState(null);
   const overlayRef = useRef(null);
 
   function onDrop(ev) {
@@ -90,9 +78,51 @@ function App() {
   const [uploadedData, setUploadedData] = useState(null);
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
+
+  const protoUrl = query.protoUrl;
+
+  if (protoUrl && !uploadedData) {
+    axios
+      .get(protoUrl, {
+        responseType: "arraybuffer",
+        onDownloadProgress: (progressEvent) => {
+          let percentCompleted = Math.floor(
+            1 * (progressEvent.loaded / progressEvent.total) * 100
+          );
+          setUploadedData({
+            status: "loading",
+            progress: percentCompleted,
+            data: { node_data: { ids: [] } },
+          });
+        },
+      })
+      .catch((err) => {
+        console.log(err);
+        window.alert(
+          err +
+            "\n\nPlease check the URL entered, or your internet connection, and try again."
+        );
+      })
+      .then(function (response) {
+        if (protoUrl.endsWith(".gz")) {
+          setUploadedData({
+            status: "loaded",
+            type: "gz",
+            data: response.data,
+          });
+        } else {
+          setUploadedData({ status: "loaded", data: response.data });
+        }
+      });
+  }
+
   return (
     <Router>
-      <AboutOverlay enabled={aboutEnabled} setEnabled={setAboutEnabled} overlayRef={overlayRef} />
+      <AboutOverlay
+        enabled={aboutEnabled}
+        setEnabled={setAboutEnabled}
+        overlayRef={overlayRef}
+      />
 
       <div
         className="h-screen w-screen"
@@ -121,14 +151,26 @@ function App() {
             </div>
           </div>
         </div>
-        <Suspense fallback={<div>Loading...</div>}>
-          {query.backend || uploadedData || query.protoUrl ? (
+        <Suspense
+          fallback={
+            <div>Loading... {uploadedData && uploadedData.progress}</div>
+          }
+        >
+          {query.backend ||
+          (uploadedData && uploadedData.status === "loaded") ? (
             <Taxonium
               uploadedData={uploadedData}
               query={query}
-              setQuery={setQuery}
+              updateQuery={updateQuery}
               overlayRef={overlayRef}
             />
+          ) : uploadedData && uploadedData.status === "loading" ? (
+            <div className="flex justify-center items-center h-screen w-screen">
+              <div className="text-center">
+                <div className="text-xl">Downloading file...</div>
+                <div className="text-gray-500">{uploadedData.progress}%</div>
+              </div>
+            </div>
           ) : (
             <div className="m-10">
               <p className="text-lg text-gray-700 mb-5">
@@ -159,7 +201,7 @@ function App() {
                   <button
                     className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8 mt-5"
                     onClick={() =>
-                      setQuery({
+                      updateQuery({
                         ...query,
                         protoUrl: currentUrl.replace("http://", "https://"),
                       })

@@ -4,9 +4,11 @@
 
 `npm install`
 
-`node server.js`
+`node server.js --database_dir ./database/ --port 8080 --ssl --config_json config.json`
 
-(or `node.server.js ssl` if running on my droplet)
+
+Non-SSL public:
+`node server.js --database_dir ./database/ --port 8080 --config_json config_public.json`
 
 then start the dev server for the front-end and go to e.g. http://localhost:3000/?backend=http://localhost:8000
 

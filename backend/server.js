@@ -5,6 +5,7 @@ var app = express();
 var fs = require("fs");
 var https = require("https");
 var axios = require("axios");
+var filtering = require("../taxonium_data_handling")
 
 let options;
 const { program } = require('commander');
@@ -13,7 +14,7 @@ program
   .option('--ssl', 'use ssl')
   .option('--database_dir <database_dir>', 'database directory')
   .option('--port <port>', 'port')
-  .option('--summary_json <summary_json>', 'summary json')
+  .option('--config_json <config_json>', 'config json')
 
 program.parse();
 
@@ -58,25 +59,25 @@ app.get("/search", function (req, res) {
   console.log("Result type was " + result.type);
 });
 
-const path_for_summary = command_options.summary_json;
+const path_for_config = command_options.config_json;
 
 // check if path exists
-let summary;
-if (path_for_summary && fs.existsSync(path_for_summary)) {
-  summary = JSON.parse(fs.readFileSync(path_for_summary));
+let config;
+if (path_for_config && fs.existsSync(path_for_config)) {
+  config = JSON.parse(fs.readFileSync(path_for_config));
 } else {
-  summary = { title: "", source: "" };
+  config = { title: "", source: "" };
 }
 let initial_x = 0;
 let initial_y = 0;
-app.get("/summary", function (req, res) {
-  summary.num_nodes = data.length;
-  summary.initial_x = initial_x;
-  summary.initial_y = initial_y;
-  summary.initial_zoom = -3;
-  summary.genes = genes;
+app.get("/config", function (req, res) {
+  config.num_nodes = data.length;
+  config.initial_x = initial_x;
+  config.initial_y = initial_y;
+  config.initial_zoom = -3;
+  config.genes = genes;
 
-  res.send(summary);
+  res.send(config);
 });
 
 app.get("/nodes/", function (req, res) {
@@ -127,7 +128,9 @@ app.get("/nodes/", function (req, res) {
 if (command_options.ssl) {
   options = {
     key: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/cert.pem"),
+    ca: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/chain.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/fullchain.pem"),
+    
   };
   https.createServer(options, app).listen(command_options.port);
   console.log("SSL on port " + command_options.port);
@@ -136,8 +139,6 @@ if (command_options.ssl) {
 }
 
 const zlib = require("zlib");
-
-const filtering = require("./filtering.js");
 
 const node_to_mut_file = `${command_options.database_dir}/node_to_mut.json.gz`;
 const file_contents = fs.readFileSync(node_to_mut_file);
@@ -319,7 +320,7 @@ app.get("/node_details/", async (req, res) =>{
   const detailed_node = { ...node, mutations: node_mutations };
   // If node name starts with EPI_ISL_, then get the URL
   if (detailed_node.name.startsWith("EPI_ISL_")) {
-    acknowledgements_url = get_epi_isl_url(detailed_node.name);
+    const acknowledgements_url = get_epi_isl_url(detailed_node.name);
     // get the data from the URL
     const response = await axios.get(acknowledgements_url).catch((e) => {
       console.log(e);

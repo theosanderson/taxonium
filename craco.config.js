@@ -1,11 +1,7 @@
-// craco.config.js
 module.exports = {
   style: {
-    postcss: {
-      plugins: [
-        require('tailwindcss'),
-        require('autoprefixer'),
-      ],
+    postcssOptions: {
+      plugins: [require("tailwindcss"), require("autoprefixer")],
     },
   },
   devServer: {
@@ -16,4 +12,25 @@ module.exports = {
       "Access-Control-Allow-Credentials": "true"
     },
   }
-}
+},
+  webpack: {
+    configure: {
+      resolve: {
+        fallback: {
+          crypto: require.resolve("crypto-browserify"),
+          stream: require.resolve("stream-browserify"),
+        },
+      },
+      module: {
+        rules: [
+          {
+            type: "javascript/auto",
+            test: /\.mjs$/,
+            use: [],
+          },
+        ],
+      },
+    },
+  },
+};
+
