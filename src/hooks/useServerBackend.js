@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import axios from "axios";
 
-function useServerBackend(backend_url, sid) {
+function useServerBackend(backend_url, sid, url_on_fail) {
   const queryNodes = useCallback(
     (boundsForQueries, setResult, setTriggerRefresh) => {
       let url = backend_url + "/nodes/?type=leaves&sid=" + sid;
@@ -95,6 +95,13 @@ function useServerBackend(backend_url, sid) {
     (setResult) => {
       let url = backend_url + "/config/" + "?sid=" + sid;
       axios.get(url).then(function (response) {
+        console.log("got config", response.data);
+        if (response.data.error) {
+          window.alert(
+            response.data.error + (url_on_fail ? "\nRedirecting you." : "")
+          );
+          window.location.href = url_on_fail;
+        }
         setResult(response.data);
       });
     },

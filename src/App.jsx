@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, Suspense, useRef } from "react";
+import React, { useState, Suspense, useRef, useEffect } from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -38,6 +38,7 @@ function App() {
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),
     enabled: JSON.stringify({ [first_search.key]: true }),
+    backend: process.env.REACT_APP_DEFAULT_BACKEND,
   });
 
   const [beingDragged, setBeingDragged] = useState(false);
@@ -222,7 +223,7 @@ function App() {
                   className="text-blue-500"
                   href="/?protoUrl=%2Fnodelist.pb.gz"
                 >
-                  load the public SARS-CoV-2 tree
+                  load the public SARS-CoV-2 treeX
                 </a>
                 .
               </p>{" "}

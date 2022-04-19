@@ -174,10 +174,12 @@ function Deck({
                 title="Switch to horizontal zoom"
               />
             ) : (
-              <BiMoveHorizontal
+              {
+                /*<BiMoveHorizontal
                 className="mx-auto  w-5 h-5 "
                 title="Switch to vertical zoom"
-              />
+            />*/
+              }
             )}
           </button>
           <button
