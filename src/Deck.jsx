@@ -162,7 +162,7 @@ function Deck({
             </div>
           )}
 
-          <button
+          {/* <button
             className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {
               setZoomAxis(zoomAxis === "X" ? "Y" : "X");
@@ -174,14 +174,14 @@ function Deck({
                 title="Switch to horizontal zoom"
               />
             ) : (
-              {
-                /*<BiMoveHorizontal
+              
+                <BiMoveHorizontal
                 className="mx-auto  w-5 h-5 "
                 title="Switch to vertical zoom"
-            />*/
-              }
+            />
+              
             )}
-          </button>
+            </button>*/}
           <button
             className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {
