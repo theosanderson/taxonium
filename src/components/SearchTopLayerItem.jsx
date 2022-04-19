@@ -9,10 +9,17 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
     this_result && this_result.result
       ? this_result.result.total_count
       : "Loading";
+
+  const getMyIndex = useCallback(() => {
+    const index = search.searchSpec.findIndex((item) => item.key === myKey);
+    return index;
+  }, [search.searchSpec, myKey]);
+
   const setThisSearchSpec = useCallback(
     (thisSpec) => {
       // find the index of the item in the searchSpec array
-      const index = search.searchSpec.findIndex((item) => item.key === myKey);
+      const index = getMyIndex();
+
       // make a copy of the searchSpec array
       const newSearchSpec = [...search.searchSpec];
       // replace the item at the index with the new item
@@ -20,8 +27,10 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       // set the new searchSpec array
       search.setSearchSpec(newSearchSpec);
     },
-    [myKey, search]
+    [search, getMyIndex]
   );
+
+  console.log("search is", search);
 
   return (
     <div className="border-gray-100 border-b mb-3 pb-3">
@@ -31,7 +40,17 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
         setThisSearchSpec={setThisSearchSpec}
       />
       <div className="text-gray-700 text-right pr-2 text-sm">
-        {num_results} results
+        {num_results > 0 && (
+          <button
+            className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+            onClick={() => {
+              search.setZoomToSearch({ index: getMyIndex() });
+            }}
+          >
+            zoom to
+          </button>
+        )}{" "}
+        {num_results} result{num_results === 1 ? "" : "s"}
       </div>
       <button
         className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"

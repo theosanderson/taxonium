@@ -4,7 +4,6 @@ import DeckGL from "@deck.gl/react";
 import useLayers from "./hooks/useLayers";
 import { ClipLoader } from "react-spinners";
 
-import Spinner from "./components/Spinner";
 import {
   BiZoomIn,
   BiZoomOut,
@@ -18,17 +17,18 @@ import NodeHoverTip from "./components/NodeHoverTip";
 function Deck({
   data,
   search,
-  progress,
-  spinnerShown,
+
   view,
   colorHook,
   colorBy,
   hoverDetails,
   selectedDetails,
-  config
+  config,
+  statusMessage,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
+  //console.log("DATA is ", data);
   const no_data = !data.data || !data.data.nodes || !data.data.nodes.length;
 
   const {
@@ -101,7 +101,6 @@ function Deck({
       setHoverInfoRaw(info);
 
       if (info && info.object) {
-      
         hoverDetails.setNodeDetails(info.object);
       } else {
         hoverDetails.clearNodeDetails();
@@ -129,7 +128,12 @@ function Deck({
     >
       {no_data && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-          <ClipLoader size={150} color={"#aaaaaa"} loading={true} />
+          <div className="text-center">
+            <ClipLoader size={150} color={"#aaaaaa"} loading={true} />
+            <div className="text-center text-gray-700 mt-20">
+              {statusMessage}
+            </div>
+          </div>
         </div>
       )}{" "}
       <DeckGL
@@ -200,7 +204,6 @@ function Deck({
           </button>
         </div>
       </DeckGL>
-      {spinnerShown && <Spinner isShown={true} progress={progress} />}
     </div>
   );
 }

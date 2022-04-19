@@ -16,13 +16,13 @@ var protobuf = require("protobufjs");
 
 protobuf.parse.defaults.keepCase = true;
 
-function Taxonium({ uploadedData, query, setQuery, overlayRef }) {
+function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const view = useView();
   const colourMapping = useMemo(() => {
     return {};
   }, []);
   const colorHook = useColor(colourMapping);
-  const backend = useBackend(query.backend);
+  const backend = useBackend(query.backend, uploadedData, proto);
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);
@@ -33,7 +33,15 @@ function Taxonium({ uploadedData, query, setQuery, overlayRef }) {
     view.viewState
   );
 
-  const search = useSearch(data, boundsForQueries, view, backend);
+  const search = useSearch(
+    data,
+    boundsForQueries,
+    view,
+    backend,
+    query,
+    updateQuery
+  );
+  const statusMessage = backend.statusMessage ? backend.statusMessage : "";
 
   //
 
@@ -42,6 +50,7 @@ function Taxonium({ uploadedData, query, setQuery, overlayRef }) {
       <div className="md:grid md:grid-cols-12 h-full">
         <div className="md:col-span-8 h-3/6 md:h-full w-full">
           <Deck
+            statusMessage={statusMessage}
             data={data}
             search={search}
             view={view}
