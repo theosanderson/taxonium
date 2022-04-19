@@ -1,13 +1,7 @@
 import React from "react";
 
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
-  const types = [
-    { name: "name", label: "Name", type: "text_match" },
-    { name: "meta_Lineage", label: "PANGO lineage", type: "text_exact" },
-    { name: "meta_Country", label: "Country", type: "text_match" },
-    { name: "mutation", label: "Mutation", type: "mutation" },
-    { name: "revertant", label: "Revertant", type: "revertant" },
-  ];
+  const types = config.search_types ? config.search_types : [];
 
   let all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
   all_amino_acids = ["any"].concat(all_amino_acids);
@@ -20,10 +14,12 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   const is_text = text_types.includes(singleSearchSpec.method);
 
+  const is_multi_text = singleSearchSpec.method === "text_per_line";
+
   return (
-    <div>
+    <>
       <select
-        className="inline-block w-42 bg-gray-100 text-sm  p-1 rounded border-gray-300 border m-1 text-gray-700"
+        className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm"
         value={singleSearchSpec.type}
         onChange={(e) =>
           setThisSearchSpec({
@@ -41,7 +37,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       </select>
       {is_text && (
         <input
-          className="inline-block w-56 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
           onChange={(e) =>
             setThisSearchSpec({
@@ -51,7 +47,20 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           }
         />
       )}
-      {singleSearchSpec.type == "mutation" && (
+      {is_multi_text && (
+        <textarea
+          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
+          value={singleSearchSpec.text}
+          onChange={(e) =>
+            setThisSearchSpec({
+              ...singleSearchSpec,
+              text: e.target.value,
+            })
+          }
+        />
+      )}
+
+      {singleSearchSpec.type === "mutation" && (
         <div>
           <div>
             <label>of gene </label>
@@ -60,7 +69,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               onChange={(e) =>
                 setThisSearchSpec({ ...singleSearchSpec, gene: e.target.value })
               }
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             >
               {config.genes.map((item) => (
                 <option key={item} value={item}>
@@ -80,7 +89,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                   position: e.target.value,
                 })
               }
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />
             &nbsp;to&nbsp;
             <select
@@ -91,7 +100,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                   new_residue: e.target.value,
                 });
               }}
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             >
               {all_amino_acids.map((aa) => (
                 <option key={aa} value={aa}>
@@ -117,13 +126,13 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                   min_tips: e.target.value,
                 })
               }
-              className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />{" "}
             descendants
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

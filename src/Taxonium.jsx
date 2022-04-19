@@ -8,7 +8,7 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useRef, useMemo } from "react";
+import { useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
@@ -26,7 +26,8 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);
-  const colorBy = useColorBy();
+  const colorBy = useColorBy(config);
+  const [xAccessor, setXAccessor] = useState("x");
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
     colorBy,
@@ -59,6 +60,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             config={config}
             hoverDetails={hoverDetails}
             selectedDetails={selectedDetails}
+            xAccessor={xAccessor}
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
@@ -68,6 +70,8 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             colorHook={colorHook}
             config={config}
             selectedDetails={selectedDetails}
+            xAccessor={xAccessor}
+            setXAccessor={setXAccessor}
           />
         </div>
       </div>

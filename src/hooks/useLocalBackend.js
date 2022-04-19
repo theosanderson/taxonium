@@ -10,8 +10,11 @@ let onQueryReceipt = (receivedData) => {};
 let onStatusReceipt = (receivedData) => {
   console.log("STATUS:", receivedData.data);
 };
-let onSearchReceipt = (receivedData) => {};
+
 let onConfigReceipt = (receivedData) => {};
+let onDetailsReceipt = (receivedData) => {};
+
+let searchSetters = {};
 
 worker.onmessage = (event) => {
   console.log("got message from worker", event.data);
@@ -22,10 +25,14 @@ worker.onmessage = (event) => {
     onQueryReceipt(event.data.data);
   }
   if (event.data.type === "search") {
-    onSearchReceipt(event.data.data);
+    console.log("SEARCHRES", event.data.data);
+    searchSetters[event.data.data.key](event.data.data);
   }
   if (event.data.type === "config") {
     onConfigReceipt(event.data.data);
+  }
+  if (event.data.type === "details") {
+    onDetailsReceipt(event.data.data);
   }
 };
 
@@ -80,23 +87,40 @@ function useLocalBackend(uploaded_data, proto) {
 
   const singleSearch = useCallback(
     (singleSearch, boundsForQueries, setResult) => {
-      console.log("singleSearch", singleSearch);
+      const key = JSON.parse(singleSearch).key;
+      console.log("singleSearch", singleSearch, "key", key);
       worker.postMessage({
         type: "search",
         search: singleSearch,
         bounds: boundsForQueries,
       });
-      onSearchReceipt = (receivedData) => {
-        console.log("got search result", receivedData);
+
+      searchSetters[key] = (receivedData) => {
+        console.log(
+          "got search result from ",
+          key,
+          singleSearch,
+          "result",
+          receivedData
+        );
         setResult(receivedData);
       };
     },
     []
   );
 
-  const getDetails = useCallback(() => {
-    console.log("getDetails");
+  const getDetails = useCallback((node_id, setResult) => {
+    console.log("getDetails", node_id);
+    worker.postMessage({
+      type: "details",
+      node_id: node_id,
+    });
+    onDetailsReceipt = (receivedData) => {
+      console.log("got details result", receivedData);
+      setResult(receivedData);
+    };
   }, []);
+
   const getConfig = useCallback((setResult) => {
     console.log("getConfig");
     worker.postMessage({

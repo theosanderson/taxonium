@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, Suspense, useRef, useEffect } from "react";
+import React, { useState, Suspense, useRef } from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
@@ -10,6 +10,8 @@ import useQueryAsState from "./hooks/useQueryAsState";
 import axios from "axios";
 import protobuf from "protobufjs";
 import { getDefaultSearch } from "./utils/searchUtil";
+
+const first_search = getDefaultSearch("aa1");
 
 protobuf.parse.defaults.keepCase = true;
 
@@ -32,11 +34,14 @@ function App() {
 
     reader.readAsArrayBuffer(file);
   }
+
   const [query, updateQuery] = useQueryAsState({
-    srch: JSON.stringify([getDefaultSearch()]),
+    srch: JSON.stringify([first_search]),
+    enabled: JSON.stringify({ [first_search.key]: true }),
   });
+
   const [beingDragged, setBeingDragged] = useState(false);
-  const [proto, setProto] = useState(null);
+
   const overlayRef = useRef(null);
 
   function onDrop(ev) {

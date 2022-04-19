@@ -10,7 +10,13 @@ const prettify_key = {
   meta_Country: "Country",
   genotype: "Genotype",
 };
-const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config }) => {
+const NodeHoverTip = ({
+  hoverInfo,
+  hoverDetails,
+  colorHook,
+  colorBy,
+  config,
+}) => {
   const mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
       const starting = hoverInfo.object.mutations;
@@ -46,7 +52,11 @@ const NodeHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config }) =
       }}
     >
       <h2 className="font-bold whitespace-pre-wrap">
-        {hoveredNode[config.name_accessor] !== "" ? fixName(hoveredNode[config.name_accessor] ): <i>Internal node</i>}
+        {hoveredNode[config.name_accessor] !== "" ? (
+          fixName(hoveredNode[config.name_accessor])
+        ) : (
+          <i>Internal node</i>
+        )}
       </h2>
       {colorBy.colorByField === "genotype" && (
         <span
