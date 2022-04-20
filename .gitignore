@@ -43,3 +43,8 @@ public/nodelist.pb.gz
 public/nodelist.pb.gz
 backend/data_processing/__pycache__/taxonium_pb2.cpython-39.pyc
 **/node_modules/**
+process/__pycache__/parsimony_pb2.cpython-39.pyc
+process/__pycache__/ushertools.cpython-39.pyc
+process/public-2021-09-14.all.masked.pb
+public-latest.metadata.tsv.gz
+public-2020-12-08.all.plus.cogUk.12-30.masked.pb
