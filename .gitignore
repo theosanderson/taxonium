@@ -48,3 +48,5 @@ process/__pycache__/ushertools.cpython-39.pyc
 process/public-2021-09-14.all.masked.pb
 public-latest.metadata.tsv.gz
 public-2020-12-08.all.plus.cogUk.12-30.masked.pb
+process/nodelist.pb.gz
+process/date_comparison.tsv.gz
