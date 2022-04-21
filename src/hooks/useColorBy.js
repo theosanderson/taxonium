@@ -20,7 +20,7 @@ function useColorBy(config) {
   const getNodeColorField = useCallback(
     (node, dataset) => {
       if (colorByField === "None") {
-        return "none";
+        return "None";
       }
       if (colorByField === "genotype") {
         if (colorCache[node.node_id]) {
