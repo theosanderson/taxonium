@@ -154,7 +154,7 @@ const useLayers = (
       id: "main-bounds",
       data: outer_bounds,
       getPosition: (d) => [d[0], d[1]],
-      getColor: (d) => [0, 0, 0, 255],
+      getColor: (d) => [255, 0, 0, 255],
       // radius in pixels
       getRadius: 4,
       pickable: true,
@@ -227,6 +227,7 @@ const useLayers = (
   const minimap_scatter = new ScatterplotLayer({
     id: "minimap-scatter",
     data: minimap_scatter_data,
+    getPolygonOffset: ({layerIndex}) => [0, -4000],
     getPosition: (d) => [d.final_x, d.y],
     getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
     // radius in pixels
@@ -243,6 +244,7 @@ const useLayers = (
 
   const minimap_line_horiz = new LineLayer({
     id: "minimap-line-horiz",
+    getPolygonOffset: ({layerIndex}) => [0, -4000],
     data: base_data ? base_data.nodes : [],
     getSourcePosition: (d) => [d.final_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
@@ -256,6 +258,7 @@ const useLayers = (
 
   const minimap_line_vert = new LineLayer({
     id: "minimap-line-vert",
+    getPolygonOffset: ({layerIndex}) => [0, -4000],
     data: base_data ? base_data.nodes : [],
     getSourcePosition: (d) => [d.parent_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.parent_y],
@@ -267,7 +270,7 @@ const useLayers = (
     },
   });
 
-  layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
+
 
   const minimap_polygon_background = new PolygonLayer({
     id: "minimap-bound-background",
@@ -275,14 +278,12 @@ const useLayers = (
     getPolygon: (d) => d,
     pickable: true,
     stroked: true,
-    opacity: 0.1,
+    opacity: 0.3,
     filled: true,
-    wireframe: true,
-    getFillColor: (d) => [240, 240, 240],
-    getLineColor: [80, 80, 80],
-    getLineWidth: 1,
-    getElevation: 20,
-    lineWidthUnits: "pixels",
+    getPolygonOffset: ({layerIndex}) => [0, -2000],
+    
+    getFillColor: (d) => [255, 255, 255],
+  
   });
 
   const minimap_bound_polygon = new PolygonLayer({
@@ -294,17 +295,12 @@ const useLayers = (
     opacity: 0.3,
     filled: true,
     wireframe: true,
-    getFillColor: (d) => [200, 200, 200],
+    getFillColor: (d) => [240, 240, 240],
     getLineColor: [80, 80, 80],
     getLineWidth: 1,
     lineWidthUnits: "pixels",
+    getPolygonOffset: ({layerIndex}) => [0, -6000],
   });
-
-  layers.push(
-    minimap_polygon_background,
-
-    minimap_bound_polygon
-  );
 
   const { searchSpec, searchResults, searchesEnabled } = search;
 
@@ -344,6 +340,7 @@ const useLayers = (
 
     return new ScatterplotLayer({
       data: data,
+      getPolygonOffset: ({layerIndex}) => [0, -9000],
       id: "mini-search-scatter-" + spec.key,
       visible: searchesEnabled[spec.key],
       getPosition: (d) => [d[xAccessor], d.y],
@@ -361,6 +358,15 @@ const useLayers = (
     });
   });
   layers.push(...search_layers, search_mini_layers);
+
+  
+  layers.push(
+    minimap_polygon_background)
+    layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
+layers.push(
+    minimap_bound_polygon
+  );
+
 
   const layerFilter = useCallback(({ layer, viewport }) => {
     const first_bit =
