@@ -1,5 +1,5 @@
 import React from "react";
-import { DebounceInput , DebounceTextArea} from "react-debounce-input";
+import { DebounceInput } from "react-debounce-input";
 
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const types = config.search_types ? config.search_types : [];
