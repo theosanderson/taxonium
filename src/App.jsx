@@ -267,7 +267,7 @@ if(query.search){
                 or{" "}
                 <a
                   className="text-blue-500"
-                  href="/?protoUrl=%2Fnodelist.pb.gz"
+                  href="/?protoUrl=https://cov2tree-git-v1-theosanderson.vercel.app/nodelist.pb.gz"
                 >
                   load the public SARS-CoV-2 tree
                 </a>
