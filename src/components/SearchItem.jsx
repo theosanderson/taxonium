@@ -50,7 +50,8 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       )}
       {is_multi_text && (
         
-        <DebounceTextArea 
+        <DebounceInput
+        element="textarea" 
           className="block w-56 h-32 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
           onChange={(e) =>

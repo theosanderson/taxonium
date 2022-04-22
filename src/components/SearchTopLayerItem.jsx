@@ -2,6 +2,9 @@ import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useCallback } from "react";
+const formatNumber = (num) => {
+  return num!==null ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
+};
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
   const this_result = search.searchResults[myKey];
@@ -61,7 +64,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       />
       <div className="text-black  pr-2 text-sm">
         {" "}
-        {num_results} result{num_results === 1 ? "" : "s"} {num_results > 0 && (
+        {formatNumber(num_results)} result{num_results === 1 ? "" : "s"} {num_results > 0 && (
           <button
             className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
             onClick={() => {
