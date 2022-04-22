@@ -1,5 +1,6 @@
 import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
+import { FaSearch } from "react-icons/fa";
 import { useCallback } from "react";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
@@ -58,18 +59,18 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
         singleSearchSpec={singleSearchSpec}
         setThisSearchSpec={setThisSearchSpec}
       />
-      <div className="text-gray-700 text-right pr-2 text-sm">
-        {num_results > 0 && (
+      <div className="text-black  pr-2 text-sm">
+        {" "}
+        {num_results} result{num_results === 1 ? "" : "s"} {num_results > 0 && (
           <button
-            className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+            className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
             onClick={() => {
               search.setZoomToSearch({ index: getMyIndex() });
             }}
           >
-            zoom to
+            <FaSearch />
           </button>
-        )}{" "}
-        {num_results} result{num_results === 1 ? "" : "s"}
+        )}
       </div>
       <button
         className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
