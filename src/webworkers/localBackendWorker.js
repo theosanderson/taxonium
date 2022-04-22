@@ -163,22 +163,54 @@ const getConfig = async () => {
     (x) => !to_remove.includes(x)
   );
 
-  config.search_types = [
+  /*config.search_types = [
     { name: "name", label: "Name", type: "text_match" },
     { name: "meta_Lineage", label: "PANGO lineage", type: "text_exact" },
     { name: "meta_Country", label: "Country", type: "text_match" },
     { name: "mutation", label: "Mutation", type: "mutation" },
     { name: "revertant", label: "Revertant", type: "revertant" },
     { name: "genbank", label: "Genbank", type: "text_per_line" },
-  ];
+  ];*/
+  const prettyName = (x) => {
+    // if x starts with meta_
+    if (x.startsWith("meta_")) {
+      const bit = x.substring(5);
+      const capitalised_first_letter= bit.charAt(0).toUpperCase() + bit.slice(1);
+      return capitalised_first_letter;
+    }
+    if (x === "mutation") {
+      return "Mutation";
+    }
+    const capitalised_first_letter= x.charAt(0).toUpperCase() + x.slice(1);
+    return capitalised_first_letter
+  }
 
-  const colorByOptions = ["meta_Lineage", "meta_Country", "genotype", "None"];
-  const prettyColorByOptions = {
-    meta_Lineage: "Lineage",
-    meta_Country: "Country",
-    genotype: "Genotype",
-    None: "None",
-  };
+  const typeFromKey = (x) => {
+    if (x === "mutation") {
+      return "mutation";
+    }
+    if ( x=== "genbank") {
+      return "text_per_line";
+    }
+    if (x=== "revertant") {
+      return "revertant";
+    }
+    if(x === "meta_Lineage") {
+      return "text_exact";
+    }
+    return "text_match";
+  }
+  config.search_types = ["name", ...config.keys_to_display, "mutation", "revertant"].map((x) => ({
+    name: x,
+    label: prettyName(x),
+    type: typeFromKey(x),
+  }));
+
+
+
+  const colorByOptions =  [...config.keys_to_display, "mutation"]
+
+  const prettyColorByOptions = Object.fromEntries( colorByOptions.map( (x) => [x, prettyName(x)] ) )
   config.colorBy = { colorByOptions, prettyColorByOptions };
 
   console.log("config is ", config);
