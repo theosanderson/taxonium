@@ -1,5 +1,6 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
+import { BiPalette } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 const prettify_x_types = { x: "Distance", x_time: "Time" };
 
@@ -66,7 +67,10 @@ function SearchPanel({
         Add a new search
       </button>
       <hr />
-      Color by:{" "}
+      <h2 className="text-xl mt-5 mb-4 text-gray-700">
+            <BiPalette className="inline-block mr-2" />
+            Colour by{" "}
+          </h2>
       <select
         value={colorBy.colorByField}
         onChange={(e) => colorBy.setColorByField(e.target.value)}
@@ -79,12 +83,15 @@ function SearchPanel({
         ))}
       </select>
       {colorBy.colorByField === "genotype" && (
+        <>
         <div>
-          Gene:{" "}
+          <label className="text-sm">
+           Gene
+           </label>
           <select
             value={colorBy.colorByGene}
             onChange={(e) => colorBy.setColorByGene(e.target.value)}
-            className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
+            className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
           >
             {config.genes.map((item) => (
               <option key={item} value={item}>
@@ -92,7 +99,11 @@ function SearchPanel({
               </option>
             ))}
           </select>
-          Position:{" "}
+          </div>
+          <div>
+          <label className="text-sm">
+           Residue
+           </label>
           <input
             value={colorBy.colorByPosition}
             onChange={(e) =>
@@ -100,9 +111,10 @@ function SearchPanel({
             }
             type="number"
             min="0"
-            className="inline-block w-16 bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-1 text-gray-700"
+           className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
           />
-        </div>
+        </div></>
+        
       )}
       {selectedDetails.nodeDetails && (
         <div>

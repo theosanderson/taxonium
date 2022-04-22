@@ -1,4 +1,5 @@
 import React from "react";
+import { DebounceInput , DebounceTextArea} from "react-debounce-input";
 
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const types = config.search_types ? config.search_types : [];
@@ -19,7 +20,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   return (
     <>
       <select
-        className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm"
+        className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm mr-1"
         value={singleSearchSpec.type}
         onChange={(e) =>
           setThisSearchSpec({
@@ -36,7 +37,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
         ))}
       </select>
       {is_text && (
-        <input
+        <DebounceInput
           className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
           onChange={(e) =>
@@ -48,8 +49,9 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
         />
       )}
       {is_multi_text && (
-        <textarea
-          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
+        
+        <DebounceTextArea 
+          className="block w-56 h-32 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
           onChange={(e) =>
             setThisSearchSpec({
@@ -61,26 +63,27 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       )}
 
       {singleSearchSpec.type === "mutation" && (
-        <div>
+            <div className="pl-11 pt-2 text-gray-700">
           <div>
-            <label>of gene </label>
+            <label className="text-sm mr-2">Gene: </label>
             <select
               value={singleSearchSpec.gene}
               onChange={(e) =>
                 setThisSearchSpec({ ...singleSearchSpec, gene: e.target.value })
               }
-              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm h-8"
             >
-              {config.genes.map((item) => (
+              {config.genes && config.genes.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>
               ))}
             </select>
           </div>
-          <div>
-            &nbsp;at&nbsp;
-            <input
+          <div className="pt-2">
+            
+            <label className="text-sm">Mutation at residue </label>
+            <DebounceInput
               type="number"
               value={singleSearchSpec.position}
               onChange={(e) =>
@@ -91,7 +94,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               }
               className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />
-            &nbsp;to&nbsp;
+            <label className="text-sm">&nbsp;to&nbsp;</label>
             <select
               value={singleSearchSpec.new_residue}
               onChange={(e) => {
@@ -115,9 +118,9 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       {(singleSearchSpec.type === "revertant" ||
         singleSearchSpec.type === "mutation") && (
         <div>
-          <div>
-            with at least&nbsp;
-            <input
+          <div className="pl-11 pt-3 text-gray-700">
+            <label className="text-sm">with at least&nbsp; </label>
+            <DebounceInput
               type="number"
               value={singleSearchSpec.min_tips}
               onChange={(e) =>
@@ -128,7 +131,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               }
               className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />{" "}
-            descendants
+            <label className="text-sm">descendants</label>
           </div>
         </div>
       )}
