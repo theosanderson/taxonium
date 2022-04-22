@@ -38,8 +38,51 @@ function App() {
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),
     enabled: JSON.stringify({ [first_search.key]: true }),
-    backend: process.env.REACT_APP_DEFAULT_BACKEND,
+    backend: process.env.REACT_APP_DEFAULT_BACKEND
   });
+  
+  useEffect(() => {
+  if(query.colourBy){
+     // TODO: remove this, after ClusterTraccker has been updated
+
+    // old style colourBy, fix it
+    const new_color= {field: "meta_"+JSON.parse(query.colourBy).variable};
+    
+    updateQuery({color: JSON.stringify(new_color), colourBy: null});
+
+  }
+}, [query, updateQuery]);
+
+useEffect(() => {
+  // TODO: remove this, after ClusterTraccker has been updated
+if(query.search){
+
+  // old style search, fix it
+  /* Old style searches looked like:
+  [{"id":0.123,"category":"cluster","value":"California_node_45047","enabled":true,"aa_final":"any","min_tips":1,"aa_gene":"S","search_for_ids":""}]
+
+  New style looks like:
+  [{"key":"aa1","type":"meta_Lineage","method":"text_exact","text":"a","gene":"S","position":484,"new_residue":"K","min_tips":0}]
+
+  */
+ const map_old_to_new = (old) => {
+
+  const new_search = {
+    key: "AA"+old.id,
+    type: "meta_"+old.category,
+    method: "text_exact",
+    text: old.value,
+  };
+  return new_search;
+};
+
+
+  const new_searches = JSON.parse(query.search).map(map_old_to_new);
+  const searches_enabled = Object.fromEntries( new_searches.map(s => [s.key, true]));
+  updateQuery({srch: JSON.stringify(new_searches), search: null, enabled: JSON.stringify(searches_enabled)});
+}
+}, [query, updateQuery]);
+
 
   const [beingDragged, setBeingDragged] = useState(false);
 
@@ -87,6 +130,8 @@ function App() {
 
   const protoUrl = query.protoUrl;
 
+  useEffect(() => {
+
   if (protoUrl && !uploadedData) {
     axios
       .get(protoUrl, {
@@ -121,6 +166,7 @@ function App() {
         }
       });
   }
+  }, [protoUrl, uploadedData]);
 
   return (
     <Router>
