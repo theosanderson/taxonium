@@ -153,6 +153,7 @@ const getConfig = async () => {
     "mutations",
     "name",
     "num_tips",
+    "time_x"
   ];
 
   config.x_accessors = processedUploadedData.nodes[0].time_x
@@ -208,7 +209,7 @@ const getConfig = async () => {
 
 
 
-  const colorByOptions =  [...config.keys_to_display, "mutation"]
+  const colorByOptions =  [...config.keys_to_display, "genotype"]
 
   const prettyColorByOptions = Object.fromEntries( colorByOptions.map( (x) => [x, prettyName(x)] ) )
   config.colorBy = { colorByOptions, prettyColorByOptions };

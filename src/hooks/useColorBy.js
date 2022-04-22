@@ -2,15 +2,36 @@ import { useMemo, useState, useEffect, useCallback } from "react";
 
 let colorCache = {};
 
-function useColorBy(config) {
+function useColorBy(config, query, updateQuery) {
+  const colorByConfig = useMemo(() => {
+    return query.color ? JSON.parse(query.color) : {};
+  }, [query.color]);
+
+  const colorByField = colorByConfig.field ? colorByConfig.field : "meta_Lineage";
+  const colorByGene = colorByConfig.gene ? colorByConfig.gene : "S";
+  const colorByPosition = colorByConfig.pos ? colorByConfig.pos : 501;
+
+
+
   const { colorByOptions, prettyColorByOptions } = config.colorBy
     ? config.colorBy
     : { colorByOptions: [], prettyColorByOptions: {} };
 
   window.cc = colorCache;
-  const [colorByField, setColorByField] = useState("meta_Lineage");
-  const [colorByGene, setColorByGene] = useState("S");
-  const [colorByPosition, setColorByPosition] = useState(501);
+
+  const setColorByField = useCallback( (field) => {
+    updateQuery({color: JSON.stringify({...colorByConfig, field })});
+  }, [colorByConfig, updateQuery]);
+
+  const setColorByGene = useCallback( (gene) => {
+    updateQuery({color: JSON.stringify({...colorByConfig, gene })});
+  }, [colorByConfig, updateQuery]);
+
+  const setColorByPosition = useCallback( (pos) => {
+    updateQuery({color: JSON.stringify({...colorByConfig, pos })});
+  }, [colorByConfig, updateQuery]);
+  
+
 
   useEffect(() => {
     console.log("clearing cache");

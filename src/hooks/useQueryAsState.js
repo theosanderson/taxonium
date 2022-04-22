@@ -53,10 +53,17 @@ const useQueryAsState = (defaultValues) => {
   const updateQuery = useCallback(
     (updatedParams, method = "push") => {
       const { pathname, decodedSearch } = updateRef.current;
+      const new_vals = { ...decodedSearch, ...updatedParams }
+     Object.keys(updatedParams).forEach( key => {
+       const value = updatedParams[key];
+        if (value === null) {
+          delete new_vals[key];
+        }
+      });
       history[method](
         pathname +
           objectToQueryParams(
-            encodeValues({ ...decodedSearch, ...updatedParams })
+            encodeValues(new_vals)
           )
       );
     },
