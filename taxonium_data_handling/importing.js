@@ -23,7 +23,8 @@ export const decodeAndConvertToObjectFromBuffer = async (uploaded_data, getProto
   
     const NodeList = proto.lookupType("AllData");
     let message;
-    if (uploaded_data.type && uploaded_data.type === "gz") {
+    // check if filename (uploaded_data.filename) ends with gz
+    if (uploaded_data.filename.endsWith(".gz")) {
       sendStatusMessage("Extracting data from compressed protobuf");
       message = NodeList.decode(new Uint8Array(pako.ungzip(uploaded_data.data))); // TODO refactor this to function so it gets deleted after use
     } else {
