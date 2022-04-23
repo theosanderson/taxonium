@@ -7,6 +7,6 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "src/taxoniumtools/_version.py"
+write_to = "taxoniumtools/src/taxoniumtools/_version.py"
 root = "../"
 relative_to = "__file__"
