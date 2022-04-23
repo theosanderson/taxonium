@@ -1,5 +1,5 @@
 from re import I
-import parsimony_pb2
+from . import parsimony_pb2
 import treeswift
 from alive_progress import alive_it, alive_bar
 from Bio import SeqIO
