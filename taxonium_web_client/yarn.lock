@@ -12021,7 +12021,7 @@ tapable@^2.0.0, tapable@^2.1.1, tapable@^2.2.0:
   resolved "https://registry.npmjs.org/tapable/-/tapable-2.2.1.tgz"
   integrity sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==
 
-"taxonium_data_handling@file:taxonium_data_handling":
+"taxonium_data_handling@file:../taxonium_data_handling":
   version "1.0.1"
 
 temp-dir@^2.0.0:
