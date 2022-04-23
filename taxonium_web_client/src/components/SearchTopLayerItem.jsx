@@ -2,9 +2,7 @@ import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useCallback } from "react";
-const formatNumber = (num) => {
-  return num!==null ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
-};
+import {formatNumber} from "./utils/formatNumber";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
   const this_result = search.searchResults[myKey];

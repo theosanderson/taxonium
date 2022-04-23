@@ -1,24 +1,11 @@
 import filtering from "taxonium_data_handling";
 import {processUnstackedData, decodeAndConvertToObjectFromBuffer, unstackUploadedData, modules} from "taxonium_data_handling/importing.js";
 import protobuf from "protobufjs";
-const formatNumber = (num) => {
-  return num!==null ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
-};
+import reduceMaxOrMin from "../utils/reduceMaxOrMin";
+import {formatNumber} from "./utils/formatNumber";
 
 const {stream, zlib, buffer} = modules
 
-function reduceMaxOrMin(array, accessFunction, maxOrMin) {
-  if(maxOrMin === 'max') {
-    return accessFunction(array.reduce(function(max, item) {
-      return accessFunction(item) > accessFunction(max) ? item : max;
-    }));
-  }
-    else if(maxOrMin === 'min') {
-    return accessFunction(array.reduce(function(min, item) {
-      return accessFunction(item) < accessFunction(min) ? item : min;
-    }));
-  }
-}
 
 
 protobuf.parse.defaults.keepCase = true;
