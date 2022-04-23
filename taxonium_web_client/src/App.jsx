@@ -25,11 +25,9 @@ function App() {
     const reader = new FileReader();
     reader.onload = () => {
       //setUploadedData(reader.result);
-      if (file.name.endsWith(".gz")) {
-        setUploadedData({ status: "loaded", type: "gz", data: reader.result });
-      } else {
-        setUploadedData({ status: "loaded", data: reader.result });
-      }
+    
+      setUploadedData({ status: "loaded",  filename:file.name, data: reader.result });
+      
     };
 
     reader.readAsArrayBuffer(file);
@@ -158,20 +156,20 @@ if(query.search){
         if (protoUrl.endsWith(".jsonl")) {
           setUploadedData({
             status: "loaded",
-            type: "jsonl",
+            filename: protoUrl.split("/").pop(),
             data: response.data,
           });
         } else if(protoUrl.endsWith(".jsonl.gz")) {
           setUploadedData({
             status: "loaded",
-            type: "jsonl.gz",
+            filename: protoUrl.split("/").pop(),
             data: response.data,
           });
         }
         else if (protoUrl.endsWith(".gz")) {
           setUploadedData({
             status: "loaded",
-            type: "gz",
+            filename: protoUrl.split("/").pop(),
             data: response.data,
           });
         } else {

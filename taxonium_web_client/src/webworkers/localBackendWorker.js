@@ -1,6 +1,9 @@
 import filtering from "taxonium_data_handling";
 import {processUnstackedData, decodeAndConvertToObjectFromBuffer, unstackUploadedData, modules} from "taxonium_data_handling/importing.js";
 import protobuf from "protobufjs";
+const formatNumber = (num) => {
+  return num!==null ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
+};
 
 const {stream, zlib, buffer} = modules
 
@@ -246,7 +249,18 @@ const getDetails = async (node_id) => {
 const setUpStream = (the_stream, data) =>
 {
   function processLine(line, line_number) {
-    console.log("LINE",line_number,line);
+    // log every 1000
+    if (line_number % 5000 === 0 && line_number > 0) {
+      console.log(`Processed ${formatNumber(line_number)} lines`);
+      if (data.header.total_nodes){
+      const percentage = (line_number / data.header.total_nodes) * 100;
+      sendStatusMessage(`Loaded ${formatNumber(line_number)} nodes. ${formatNumber(percentage.toFixed(0))}% complete.`);
+      }
+      else{
+        sendStatusMessage(`Loaded ${formatNumber(line_number)} nodes.`);
+      }
+    }
+   // console.log("LINE",line_number,line);
     const decoded = JSON.parse(line);
     if (line_number===0){
       data.header = decoded;
@@ -297,7 +311,7 @@ const processJsonl = async (jsonl) => {
   const data = jsonl.data
   const type = jsonl.type
   let the_stream
-  if (type.includes("gz")){
+  if (jsonl.filename.includes("gz")){
     // Create a stream
      the_stream = zlib.createGunzip();
   }
@@ -354,7 +368,7 @@ onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
-  if (data.type === "upload" && data.data.type.includes("jsonl")) {
+  if (data.type === "upload" && data.data.filename.includes("jsonl")) {
     processedUploadedData = await processJsonl(data.data);
     console.log("processedUploadedData is ", processedUploadedData);
   }
