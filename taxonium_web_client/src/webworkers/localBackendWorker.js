@@ -2,7 +2,7 @@ import filtering from "taxonium_data_handling";
 import {processUnstackedData, decodeAndConvertToObjectFromBuffer, unstackUploadedData, modules} from "taxonium_data_handling/importing.js";
 import protobuf from "protobufjs";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
-import {formatNumber} from "./utils/formatNumber";
+import {formatNumber} from "../utils/formatNumber";
 
 const {stream, zlib, buffer} = modules
 
