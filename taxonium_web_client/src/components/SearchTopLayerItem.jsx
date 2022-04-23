@@ -2,7 +2,7 @@ import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useCallback } from "react";
-import {formatNumber} from "./utils/formatNumber";
+import {formatNumber} from "../utils/formatNumber";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
   const this_result = search.searchResults[myKey];
