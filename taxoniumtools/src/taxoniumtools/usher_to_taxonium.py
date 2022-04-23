@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from alive_progress import config_handler, alive_it, alive_bar
 import treeswift
+from . import ushertools
 import argparse
 import gzip
 
@@ -49,8 +50,6 @@ del metadata
 print("Metadata loaded")
 
 #config_handler.set_global(force_tty=True) # Uncommenting this will force progress bars
-
-import ushertools
 
 if "gz" in args.input:
     f = gzip.open(args.input, 'rb')
