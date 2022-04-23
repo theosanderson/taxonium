@@ -19,7 +19,7 @@ For convenience we currently keep the trees checked into the repo. This makes th
 ```git clone --depth 1 https://github.com/theosanderson/taxonium```
 
 
-### Structure
+## Structure
 
 Taxonium now consists of a number of components:
 * [taxoniumtools](./taxoniumtools/) - a Python package that lets you easily generate Taxonium files from Usher protobuf files
