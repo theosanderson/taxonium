@@ -153,6 +153,7 @@ if(query.search){
         );
       })
       .then(function (response) {
+        console.log("filename",  protoUrl.split("/").pop())
        
           setUploadedData({
             status: "loaded",
