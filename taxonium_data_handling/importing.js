@@ -1,4 +1,9 @@
 import pako from "pako";
+import zlib from "zlib";
+import stream from "stream";
+import buffer from "buffer";
+
+export const modules= {zlib,stream, buffer}
 
 function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   if(maxOrMin === 'max') {

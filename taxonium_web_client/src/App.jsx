@@ -155,7 +155,20 @@ if(query.search){
         );
       })
       .then(function (response) {
-        if (protoUrl.endsWith(".gz")) {
+        if (protoUrl.endsWith(".jsonl")) {
+          setUploadedData({
+            status: "loaded",
+            type: "jsonl",
+            data: response.data,
+          });
+        } else if(protoUrl.endsWith(".jsonl.gz")) {
+          setUploadedData({
+            status: "loaded",
+            type: "jsonl.gz",
+            data: response.data,
+          });
+        }
+        else if (protoUrl.endsWith(".gz")) {
           setUploadedData({
             status: "loaded",
             type: "gz",

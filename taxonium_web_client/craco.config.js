@@ -1,3 +1,5 @@
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+
 module.exports = {
   style: {
     postcssOptions: {
@@ -5,13 +7,17 @@ module.exports = {
     },
   },
   webpack: {
+    plugins: {
+      add: [
+        new NodePolyfillPlugin({
+          excludeAliases: ['console'],
+        }),
+      ]
+    },
+    
+
     configure: {
-      resolve: {
-        fallback: {
-          crypto: require.resolve("crypto-browserify"),
-          stream: require.resolve("stream-browserify"),
-        },
-      },
+     
       module: {
         rules: [
           {
