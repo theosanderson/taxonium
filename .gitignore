@@ -3,3 +3,6 @@ data_processing_tools/public-latest.all.masked.pb
 data_processing_tools/date_comparison.tsv.gz
 data_processing_tools/public-latest.metadata.tsv.gz
 data_processing_tools/__pycache__/ushertools.cpython-38.pyc
+taxonium_web_client/public/public2.jsonl.gz
+taxonium_web_client/public/public.jsonl.gz
+data_processing_tools/public-latest.all.masked.pb.gz

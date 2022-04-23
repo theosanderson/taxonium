@@ -1,4 +1,9 @@
 import pako from "pako";
+import zlib from "zlib";
+import stream from "stream";
+import buffer from "buffer";
+
+export const modules= {zlib,stream, buffer}
 
 function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   if(maxOrMin === 'max') {
@@ -18,7 +23,9 @@ export const decodeAndConvertToObjectFromBuffer = async (uploaded_data, getProto
   
     const NodeList = proto.lookupType("AllData");
     let message;
-    if (uploaded_data.type && uploaded_data.type === "gz") {
+    // check if filename (uploaded_data.filename) ends with gz
+    console.log("uploaded_data.filename", uploaded_data.filename);
+    if (uploaded_data.filename.endsWith(".gz")) {
       sendStatusMessage("Extracting data from compressed protobuf");
       message = NodeList.decode(new Uint8Array(pako.ungzip(uploaded_data.data))); // TODO refactor this to function so it gets deleted after use
     } else {

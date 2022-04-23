@@ -133,7 +133,7 @@ class UsherMutationAnnotatedTree:
         self.data.ParseFromString(tree_file.read())
         self.condensed_nodes_dict = self.get_condensed_nodes_dict(
             self.data.condensed_nodes)
-        print("Loading tree")
+        print("Loading tree, this may take a while...")
         self.tree = treeswift.read_tree(self.data.newick, schema="newick")
         self.data.newick = ''
 
@@ -147,7 +147,8 @@ class UsherMutationAnnotatedTree:
 
     def perform_aa_analysis(self):
         seq = str(self.genbank.seq)
-        with alive_bar(self.tree.num_nodes()) as pbar:
+        with alive_bar(self.tree.num_nodes(),
+                       title="Annotating amino acids") as pbar:
             recursive_mutation_analysis(self.tree.root, {}, seq, self.cdses,
                                         pbar)
 
@@ -164,17 +165,19 @@ class UsherMutationAnnotatedTree:
             assert len(cds.location.parts[0]) % 3 == 0
 
     def annotate_mutations(self):
-        for i, node in alive_it(enumerate(preorder_traversal(self.tree.root)),
+        for i, node in alive_it(list(
+                enumerate(preorder_traversal(self.tree.root))),
                                 title="Annotating nuc muts"):
             node.nuc_mutations = self.data.node_mutations[i].mutation
 
     def set_branch_lengths(self):
-        for i, node in alive_it(enumerate(preorder_traversal(self.tree.root)),
+        for i, node in alive_it(list(
+                enumerate(preorder_traversal(self.tree.root))),
                                 title="Setting branch length"):
             node.edge_length = len(node.nuc_mutations)
 
     def expand_condensed_nodes(self):
-        for i, node in alive_it(enumerate(self.tree.traverse_leaves()),
+        for i, node in alive_it(list(enumerate(self.tree.traverse_leaves())),
                                 title="Expanding condensed nodes"):
 
             if node.label and node.label in self.condensed_nodes_dict:
