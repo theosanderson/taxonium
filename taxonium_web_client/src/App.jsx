@@ -153,28 +153,14 @@ if(query.search){
         );
       })
       .then(function (response) {
-        if (protoUrl.endsWith(".jsonl")) {
+       
           setUploadedData({
             status: "loaded",
             filename: protoUrl.split("/").pop(),
             data: response.data,
           });
-        } else if(protoUrl.endsWith(".jsonl.gz")) {
-          setUploadedData({
-            status: "loaded",
-            filename: protoUrl.split("/").pop(),
-            data: response.data,
-          });
-        }
-        else if (protoUrl.endsWith(".gz")) {
-          setUploadedData({
-            status: "loaded",
-            filename: protoUrl.split("/").pop(),
-            data: response.data,
-          });
-        } else {
-          setUploadedData({ status: "loaded", data: response.data });
-        }
+        
+        
       });
   }
   }, [protoUrl, uploadedData]);
