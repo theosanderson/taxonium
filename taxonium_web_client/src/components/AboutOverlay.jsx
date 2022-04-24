@@ -21,11 +21,8 @@ function AboutOverlay({ enabled, setEnabled, overlayRef }) {
           >
             X
           </button>
-           
-          <div ref={overlayRef}>
-            
-          </div>
-            
+
+          <div ref={overlayRef}></div>
         </div>{" "}
       </div>
     </div>
