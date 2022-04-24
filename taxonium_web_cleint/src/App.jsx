@@ -171,7 +171,7 @@ function App() {
                 or{" "}
                 <a
                   className="text-blue-500"
-                  href="/?protoUrl=%2Fnodelist.pb.gz"
+                  href="/?protoUrl=https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/public-latest.all.masked.taxodium.pb.gz"
                 >
                   load the public SARS-CoV-2 tree
                 </a>
