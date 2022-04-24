@@ -96,7 +96,7 @@ function App() {
   const protoUrl = query.protoUrl;
   if (protoUrl&&protoUrl.includes(".pb")) {
 
-    const url_parts = protoUrl.split("?", 2);
+    const url_parts = window.location.href.split("?", 2);
     if(url_parts[1]){
     console.log(url_parts,"parts");
     // V1 format
