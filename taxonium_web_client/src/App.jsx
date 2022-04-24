@@ -104,7 +104,7 @@ function App() {
           <div className="flex justify-between">
             <h1 className="text-xl p-4  pb-5 text-white ">
               <CgListTree className="inline-block h-8 w-8 pr-2 " />
-              <span className="font-bold">Taxonium</span>
+              <span className="font-bold">Taxonium v1 [deprecated]</span>
             </h1>
             <div className="inline-block p-4 pr-0">
               <button
