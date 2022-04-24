@@ -1,6 +1,6 @@
 # Taxonium
 
-Taxonium is a client-side Javascript tool for exploring extremely large trees. It is currently used for Cov2Tree, a display of the global SARS-CoV-2 phylogeny: 🌳 http://cov2tree.org
+Taxonium is a tool for exploring extremely large trees. It is currently used for Cov2Tree, a display of the global SARS-CoV-2 phylogeny: 🌳 http://cov2tree.org
 
 The data and tree displayed in Cov2Tree are collated by the UShER team: http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2// . The sequences contained represent the work of thousands of researchers across the world.
 
