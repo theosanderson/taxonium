@@ -41,7 +41,12 @@ def main():
 
     #only load these cols:
     print("Loading metadata file..")
+    #Disable warnings because of DTypeWarning in pandas
+    import warnings 
+    warnings.filterwarnings("ignore")
     metadata = pd.read_csv(args.metadata, sep="\t", usecols=cols_of_interest)
+    # Enable again
+    warnings.filterwarnings("default")
     metadata.set_index("strain", inplace=True)
     # convert metadata to dict of rows
 
