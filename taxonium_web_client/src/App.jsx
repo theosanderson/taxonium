@@ -25,6 +25,13 @@ function App() {
     const reader = new FileReader();
     reader.onload = () => {
       //setUploadedData(reader.result);
+
+      if (file.name.includes(".pb")) {
+        // V1 format
+        window.alert("It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site.");
+        window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/" ;
+      }
+    
     
       setUploadedData({ status: "loaded",  filename:file.name, data: reader.result });
       
@@ -127,6 +134,13 @@ if(query.search){
   const [currentUrl, setCurrentUrl] = useState("");
 
   const protoUrl = query.protoUrl;
+  if (protoUrl.includes(".pb")) {
+    // V1 format
+    window.alert("It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site.");
+    // split url into before question mark and after
+    const url_parts = protoUrl.split("?", limit = 2);
+    window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/" + "?protoUrl=" + url_parts[1];
+  }
 
   useEffect(() => {
 
