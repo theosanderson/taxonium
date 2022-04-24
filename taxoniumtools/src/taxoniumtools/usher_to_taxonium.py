@@ -239,7 +239,7 @@ def main():
                         title="Converting each node, and writing out in JSON"):
         node_object = get_node_object(node, node_to_index, metadata_dict,
                                     aa_mut_tuple_to_index, metadata_cols)
-        output_file.write(json.dumps(node_object) + "\n")
+        output_file.write(json.dumps(node_object, separators=(',', ':')) + "\n")
     output_file.close()
 
     print(f"Done. Output written to {args.output}, with {len(nodes_sorted_by_y)} nodes.")
