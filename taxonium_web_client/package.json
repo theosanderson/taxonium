@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.1.2",
-  
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -25,12 +24,14 @@
     "process": "^0.11.10",
     "protobufjs": "^6.11.2",
     "react": "^17.0.2",
+    "react-circular-progressbar": "^2.0.4",
     "react-debounce-input": "^3.2.3",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "5.0.0",
     "react-spinners": "^0.11.0",
+    "readable-web-to-node-stream": "^3.0.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "taxonium_data_handling": "file:../taxonium_data_handling",
     "web-vitals": "^1.0.1",

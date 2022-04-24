@@ -231,5 +231,5 @@ def main():
         output_file.write(json.dumps(node_object) + "\n")
     output_file.close()
 
-    print("Done")
+    print(f"Done. Output written to {args.output}, with {len(nodes_sorted_by_y)} nodes.")
 

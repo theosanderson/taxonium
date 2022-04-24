@@ -37,9 +37,13 @@ worker.onmessage = (event) => {
 };
 
 function useLocalBackend(uploaded_data, proto) {
-  const [statusMessage, setStatusMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState({message:null});
   onStatusReceipt = (receivedData) => {
     console.log("STATUS:", receivedData.data);
+    if(receivedData.data.error) {
+      window.alert(receivedData.data.error);
+      console.log("ERROR33:", receivedData.data.error);
+    }
     setStatusMessage(receivedData.data);
   };
   useEffect(() => {
