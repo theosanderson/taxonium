@@ -1,9 +1,8 @@
-import pako from "pako";
 import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
-const { ReadableWebToNodeStream } = require("readable-web-to-node-stream");
+const { ReadableWebToNodeStream } = import("readable-web-to-node-stream");
 export const formatNumber = (num) => {
   return num !== null
     ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")

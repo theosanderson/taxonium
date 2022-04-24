@@ -5,7 +5,10 @@ var app = express();
 var fs = require("fs");
 var https = require("https");
 var axios = require("axios");
-var filtering = require("../taxonium_data_handling");
+var pako = require("pako");
+var importing = import("taxonium_data_handling/importing.js");
+var filtering = import("taxonium_data_handling/filtering.js");
+
 
 let options;
 const { program } = require("commander");
@@ -24,7 +27,7 @@ app.use(cors());
 app.use(compression());
 
 app.get("/", function (req, res) {
-  res.send("Hello World!");
+  res.send("Hello World, Taxonium is here!");
 });
 
 app.get("/search", function (req, res) {
@@ -140,18 +143,6 @@ if (command_options.ssl) {
   );
 }
 
-const zlib = require("zlib");
-
-const node_to_mut_file = `${command_options.database_dir}/node_to_mut.json.gz`;
-const file_contents = fs.readFileSync(node_to_mut_file);
-const unzipped_file = zlib.gunzipSync(file_contents);
-let node_to_mut = JSON.parse(unzipped_file);
-
-const mutations_file = `${command_options.database_dir}/mutation_table.jsonl.gz`;
-const mutations_file_contents = fs.readFileSync(mutations_file);
-const unzipped_mutations_file = zlib.gunzipSync(mutations_file_contents);
-const lines = unzipped_mutations_file.toString().split("\n");
-let mutations = [{}]; //create with one element because of the way the data is structured
 let sid_cache = {};
 
 async function validateSID(sid) {
@@ -215,117 +206,9 @@ async function validateSIDandSend(to_send, sid, res) {
   }
 }
 
-for (let i = 0; i < lines.length; i++) {
-  if (lines[i] !== "") {
-    mutations.push(JSON.parse(lines[i]));
-  }
-}
-mutations.forEach((mutation) => {
-  mutation.residue_pos = parseInt(mutation.residue_pos);
-});
 
-const genes = [...new Set(mutations.map((mutation) => mutation.gene))].filter(
-  (x) => x !== undefined
-);
 
-console.log(genes);
 
-const { parse } = require("@jsonlines/core");
-const { url } = require("inspector");
-
-// create a duplex stream which parse input as lines of json
-const parseStream = parse();
-
-const unzip = zlib.createGunzip();
-
-// read from the file and pipe into the parseStream
-fs.createReadStream(`${command_options.database_dir}/database.jsonl.gz`)
-  .pipe(unzip)
-  .pipe(parseStream);
-
-const data = [];
-
-let counter = 0;
-
-let y_positions;
-let cached_starting_values;
-function overallMinY() {
-  return data[0].y;
-}
-
-function overallMaxY() {
-  return data[data.length - 1].y;
-}
-
-function whenReady() {
-  const scale_x = 35;
-  const scale_y = 9e7 / data.length;
-  data.forEach((node) => {
-    node.x = node.x * scale_x;
-    node.y = node.y * scale_y;
-  });
-
-  // round x and y to 5 dp
-  data.forEach((node) => {
-    node.x = Math.round(node.x * 100000) / 100000;
-    node.y = Math.round(node.y * 100000) / 100000;
-  });
-
-  y_positions = data.map((node) => node.y);
-  // assert that y is sorted
-  for (let i = 1; i < y_positions.length; i++) {
-    if (y_positions[i] < y_positions[i - 1]) {
-      console.log("y is not sorted");
-      // throw an error
-      throw new Error("y is not sorted");
-    }
-  }
-  cached_starting_values = filtering.getNodes(
-    data,
-    y_positions,
-    overallMinY(),
-    overallMaxY(),
-    null,
-    null
-  );
-
-  cached_starting_values = filtering.addMutations(
-    cached_starting_values,
-    mutations,
-    node_to_mut
-  );
-
-  initial_y = (overallMinY() + overallMaxY()) / 2;
-  initial_x = 2000;
-
-  cached_starting_values = JSON.stringify({ nodes: cached_starting_values });
-
-  console.log("I AM READY");
-}
-
-// consume the parsed objects by listening to data event
-parseStream.on("data", (value) => {
-  data.push(value);
-  counter++;
-  if (counter % 100000 === 0) {
-    console.log(counter);
-  }
-});
-
-parseStream.on("end", whenReady);
-
-function getParents(node) {
-  console.log(node);
-  if (node.parent_id === node.node_id) {
-    return [];
-  }
-  return [node.parent_id].concat(getParents(data[node.parent_id]));
-}
-
-app.get("/parents/", function (req, res) {
-  const query_id = req.query.id;
-  validateSIDandSend(getParents(data[query_id]), req.query.sid, res);
-});
 
 app.get("/validate/", async function (req, res) {
   const start_time = new Date();

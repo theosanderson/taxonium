@@ -1,4 +1,4 @@
-var crypto = require("crypto");
+var crypto = import("crypto");
 const count_per_hash = {};
 const reduceOverPlotting = (input, precision) => {
   const included_points = {};
@@ -279,7 +279,7 @@ function addMutations(input, mutations, node_to_mut) {
   return result;
 }
 
-module.exports = {
+export default {
   reduceOverPlotting,
   filter,
   search,

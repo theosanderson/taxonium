@@ -1,4 +1,4 @@
-import filtering from "taxonium_data_handling";
+import filtering from "taxonium_data_handling/filtering.js";
 import { processJsonl } from "taxonium_data_handling/importing.js";
 
 console.log("worker starting");

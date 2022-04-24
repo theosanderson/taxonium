@@ -7,3 +7,5 @@ taxonium_web_client/public/public2.jsonl.gz
 taxonium_web_client/public/public.jsonl.gz
 data_processing_tools/public-latest.all.masked.pb.gz
 .venv/**
+taxonium_backend/latest_public.jsonl.gz
+taxonium_backend/latest_public.jsonl.gz.1
