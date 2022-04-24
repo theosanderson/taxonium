@@ -51,7 +51,6 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
     query,
     updateQuery
   );
- 
 
   //
 

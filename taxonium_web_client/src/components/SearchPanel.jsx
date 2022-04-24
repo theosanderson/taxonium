@@ -68,9 +68,9 @@ function SearchPanel({
       </button>
       <hr />
       <h2 className="text-xl mt-5 mb-4 text-gray-700">
-            <BiPalette className="inline-block mr-2" />
-            Colour by{" "}
-          </h2>
+        <BiPalette className="inline-block mr-2" />
+        Colour by{" "}
+      </h2>
       <select
         value={colorBy.colorByField}
         onChange={(e) => colorBy.setColorByField(e.target.value)}
@@ -84,37 +84,33 @@ function SearchPanel({
       </select>
       {colorBy.colorByField === "genotype" && (
         <>
-        <div>
-          <label className="text-sm">
-           Gene
-           </label>
-          <select
-            value={colorBy.colorByGene}
-            onChange={(e) => colorBy.setColorByGene(e.target.value)}
-            className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
-          >
-            {config.genes.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label className="text-sm">Gene</label>
+            <select
+              value={colorBy.colorByGene}
+              onChange={(e) => colorBy.setColorByGene(e.target.value)}
+              className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
+            >
+              {config.genes.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
-          <label className="text-sm">
-           Residue
-           </label>
-          <input
-            value={colorBy.colorByPosition}
-            onChange={(e) =>
-              colorBy.setColorByPosition(parseInt(e.target.value))
-            }
-            type="number"
-            min="0"
-           className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
-          />
-        </div></>
-        
+            <label className="text-sm">Residue</label>
+            <input
+              value={colorBy.colorByPosition}
+              onChange={(e) =>
+                colorBy.setColorByPosition(parseInt(e.target.value))
+              }
+              type="number"
+              min="0"
+              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
+            />
+          </div>
+        </>
       )}
       {selectedDetails.nodeDetails && (
         <div>

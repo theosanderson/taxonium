@@ -9,7 +9,6 @@ import useQueryAsState from "./hooks/useQueryAsState";
 import protobuf from "protobufjs";
 import { getDefaultSearch } from "./utils/searchUtil";
 
-
 const first_search = getDefaultSearch("aa1");
 
 protobuf.parse.defaults.keepCase = true;
@@ -27,15 +26,18 @@ function App() {
 
       if (file.name.includes(".pb")) {
         // V1 format
-        window.alert("It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there.");
-        window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/" ;
+        window.alert(
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there."
+        );
+        window.location.href =
+          "https://cov2tree-git-v1-theosanderson.vercel.app/";
+      } else {
+        setUploadedData({
+          status: "loaded",
+          filename: file.name,
+          data: reader.result,
+        });
       }
-      else{
-    
-    
-      setUploadedData({ status: "loaded",  filename:file.name, data: reader.result });
-      }
-      
     };
 
     reader.readAsArrayBuffer(file);
@@ -44,9 +46,8 @@ function App() {
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),
     enabled: JSON.stringify({ [first_search.key]: true }),
-    backend: process.env.REACT_APP_DEFAULT_BACKEND
+    backend: process.env.REACT_APP_DEFAULT_BACKEND,
   });
-  
 
   const [beingDragged, setBeingDragged] = useState(false);
 
@@ -93,29 +94,32 @@ function App() {
   const [currentUrl, setCurrentUrl] = useState("");
 
   const protoUrl = query.protoUrl;
-  if (protoUrl&&protoUrl.includes(".pb")) {
-
+  if (protoUrl && protoUrl.includes(".pb")) {
     const url_parts = window.location.href.split("?", 2);
-    if(url_parts[1]){
-    console.log(url_parts,"parts");
-    // V1 format
-    window.alert("It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site.");
-    // split url into before question mark and after
-    
-    window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/?" + url_parts[1];
-    }
-    else{
-      window.alert("It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site.");
-      window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/?protoUrl=" + protoUrl;
-    }
+    if (url_parts[1]) {
+      console.log(url_parts, "parts");
+      // V1 format
+      window.alert(
+        "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site."
+      );
+      // split url into before question mark and after
 
+      window.location.href =
+        "https://cov2tree-git-v1-theosanderson.vercel.app/?" + url_parts[1];
+    } else {
+      window.alert(
+        "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site."
+      );
+      window.location.href =
+        "https://cov2tree-git-v1-theosanderson.vercel.app/?protoUrl=" +
+        protoUrl;
+    }
   }
 
   useEffect(() => {
-
-  if (protoUrl && !uploadedData) {
-    setUploadedData({ status: "url_supplied", filename: protoUrl });
-  }
+    if (protoUrl && !uploadedData) {
+      setUploadedData({ status: "url_supplied", filename: protoUrl });
+    }
   }, [protoUrl, uploadedData]);
 
   return (
@@ -153,20 +157,18 @@ function App() {
             </div>
           </div>
         </div>
-        <Suspense
-          fallback={
-            <div>Loading..</div>
-          }
-        >
+        <Suspense fallback={<div>Loading..</div>}>
           {query.backend ||
-          (uploadedData && (uploadedData.status === "loaded" ||   uploadedData.status === "url_supplied")) ? (
+          (uploadedData &&
+            (uploadedData.status === "loaded" ||
+              uploadedData.status === "url_supplied")) ? (
             <Taxonium
               uploadedData={uploadedData}
               query={query}
               updateQuery={updateQuery}
               overlayRef={overlayRef}
             />
-          ) :  (
+          ) : (
             <div className="m-10">
               <p className="text-lg text-gray-700 mb-5">
                 Welcome to Taxonium, a tool for exploring large trees

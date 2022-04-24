@@ -3,8 +3,8 @@ import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import useLayers from "./hooks/useLayers";
 import { ClipLoader } from "react-spinners";
-import { CircularProgressbar,  buildStyles  } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 import {
   BiZoomIn,
@@ -134,28 +134,32 @@ function Deck({
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
           <div className="text-center">
             {statusMessage.percentage && (
-              <CircularProgressbar value={statusMessage.percentage} text={`${statusMessage.percentage}%`} strokeWidth={2} styles={buildStyles({
-                // Rotation of path and trail, in number of turns (0-1)
-                //rotation: 0.25,
-            
-                // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-              //  strokeLinecap: 'butt',
-            
-                // Text size
-                textSize: '8px',
-            
-                // How long animation takes to go from one percentage to another, in seconds
-                //pathTransitionDuration: 0.5,
-            
-                // Can specify path transition in more detail, or remove it entirely
-                // pathTransition: 'none',
-            
-                // Colors
-                pathColor: `#666`,
-                textColor: '#666',
-                trailColor: '#d6d6d6',
-               
-              })}/>
+              <CircularProgressbar
+                value={statusMessage.percentage}
+                text={`${statusMessage.percentage}%`}
+                strokeWidth={2}
+                styles={buildStyles({
+                  // Rotation of path and trail, in number of turns (0-1)
+                  //rotation: 0.25,
+
+                  // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+                  //  strokeLinecap: 'butt',
+
+                  // Text size
+                  textSize: "8px",
+
+                  // How long animation takes to go from one percentage to another, in seconds
+                  //pathTransitionDuration: 0.5,
+
+                  // Can specify path transition in more detail, or remove it entirely
+                  // pathTransition: 'none',
+
+                  // Colors
+                  pathColor: `#666`,
+                  textColor: "#666",
+                  trailColor: "#d6d6d6",
+                })}
+              />
             )}
             <div className="text-center text-gray-700 mt-20">
               {statusMessage && statusMessage.message}

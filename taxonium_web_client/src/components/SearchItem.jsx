@@ -49,9 +49,8 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
         />
       )}
       {is_multi_text && (
-        
         <DebounceInput
-        element="textarea" 
+          element="textarea"
           className="block w-56 h-32 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
           onChange={(e) =>
@@ -64,7 +63,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       )}
 
       {singleSearchSpec.type === "mutation" && (
-            <div className="pl-11 pt-2 text-gray-700">
+        <div className="pl-11 pt-2 text-gray-700">
           <div>
             <label className="text-sm mr-2">Gene: </label>
             <select
@@ -74,15 +73,15 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               }
               className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm h-8"
             >
-              {config.genes && config.genes.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
+              {config.genes &&
+                config.genes.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="pt-2">
-            
             <label className="text-sm">Mutation at residue </label>
             <DebounceInput
               type="number"

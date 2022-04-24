@@ -1,29 +1,24 @@
 import React, { useRef, useCallback } from "react";
 
-function TaxoniumLoader({
-  readFile
-}) {
+function TaxoniumLoader({ readFile }) {
   const fileSelector = useRef();
 
   const supplyTaxoniumData = useCallback(() => {
     const file = fileSelector.current.files[0];
     if (file) {
-      readFile(file)
+      readFile(file);
     }
-  
   }, [readFile]);
-
-
 
   return (
     <div>
-          <input
-            type="file"
-            id="files"
-            ref={fileSelector}
-            onChange={supplyTaxoniumData}
-          />
-       </div>
+      <input
+        type="file"
+        id="files"
+        ref={fileSelector}
+        onChange={supplyTaxoniumData}
+      />
+    </div>
   );
 }
 
