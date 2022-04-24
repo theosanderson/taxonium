@@ -7,6 +7,8 @@ import treeswift
 from . import ushertools
 import argparse
 import gzip
+import os
+import sys
 
 def main():
     parser = argparse.ArgumentParser(
@@ -69,14 +71,24 @@ def main():
     f.close()
 
     if args.chronumental:
+        chronumental_is_available = os.system("which chronumental > /dev/null") == 0
+        if not chronumental_is_available:
+            print("#####  Chronumental is not available.  #####")
+            print("#####  Please install it with `pip install chronumental` and restart. Or you can disable the --chronumental flag.  #####")
+            print("#####  Exiting.  #####")
+            sys.exit(1)
         mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
 
         print("Launching chronumental")
-        import os
 
-        os.system(
+        result = os.system(
             f"chronumental --tree /tmp/distance_tree.nwk --dates {args.metadata} --steps {args.chronumental_steps} --tree_out /tmp/timetree.nwk --dates_out ./date_comparison.tsv.gz"
         )
+
+        if result != 0:
+            print("#####  Chronumental failed.  #####")
+            print("#####  Exiting.  #####")
+            sys.exit(1)
 
         # %%
 
