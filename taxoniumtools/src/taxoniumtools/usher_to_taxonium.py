@@ -209,3 +209,7 @@ for node in alive_it(nodes_sorted_by_y,
     output_file.write(json.dumps(node_object) + "\n")
 
 print("Done")
+
+def main():
+    # Ugly hack, fix it
+    pass
