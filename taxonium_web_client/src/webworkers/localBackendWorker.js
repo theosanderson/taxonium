@@ -1,12 +1,10 @@
 import filtering from "taxonium_data_handling";
-import {processJsonl} from "taxonium_data_handling/importing.js";
-
+import { processJsonl } from "taxonium_data_handling/importing.js";
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
 let processedUploadedData;
-
 
 const sendStatusMessage = (status_obj) => {
   postMessage({
@@ -14,8 +12,6 @@ const sendStatusMessage = (status_obj) => {
     data: status_obj,
   });
 };
-
-
 
 const waitForProcessedData = async () => {
   // check if processedUploadedData is defined, if not wait until it is
@@ -142,7 +138,7 @@ const getConfig = async () => {
     "mutations",
     "name",
     "num_tips",
-    "time_x"
+    "time_x",
   ];
 
   config.x_accessors = processedUploadedData.nodes[0].time_x
@@ -165,42 +161,48 @@ const getConfig = async () => {
     // if x starts with meta_
     if (x.startsWith("meta_")) {
       const bit = x.substring(5);
-      const capitalised_first_letter= bit.charAt(0).toUpperCase() + bit.slice(1);
+      const capitalised_first_letter =
+        bit.charAt(0).toUpperCase() + bit.slice(1);
       return capitalised_first_letter;
     }
     if (x === "mutation") {
       return "Mutation";
     }
-    const capitalised_first_letter= x.charAt(0).toUpperCase() + x.slice(1);
-    return capitalised_first_letter
-  }
+    const capitalised_first_letter = x.charAt(0).toUpperCase() + x.slice(1);
+    return capitalised_first_letter;
+  };
 
   const typeFromKey = (x) => {
     if (x === "mutation") {
       return "mutation";
     }
-    if ( x=== "genbank") {
+    if (x === "genbank") {
       return "text_per_line";
     }
-    if (x=== "revertant") {
+    if (x === "revertant") {
       return "revertant";
     }
-    if(x === "meta_Lineage") {
+    if (x === "meta_Lineage") {
       return "text_exact";
     }
     return "text_match";
-  }
-  config.search_types = ["name", ...config.keys_to_display, "mutation", "revertant"].map((x) => ({
+  };
+  config.search_types = [
+    "name",
+    ...config.keys_to_display,
+    "mutation",
+    "revertant",
+  ].map((x) => ({
     name: x,
     label: prettyName(x),
     type: typeFromKey(x),
   }));
 
+  const colorByOptions = [...config.keys_to_display, "genotype"];
 
-
-  const colorByOptions =  [...config.keys_to_display, "genotype"]
-
-  const prettyColorByOptions = Object.fromEntries( colorByOptions.map( (x) => [x, prettyName(x)] ) )
+  const prettyColorByOptions = Object.fromEntries(
+    colorByOptions.map((x) => [x, prettyName(x)])
+  );
   config.colorBy = { colorByOptions, prettyColorByOptions };
 
   console.log("config is ", config);
@@ -217,8 +219,6 @@ const getDetails = async (node_id) => {
   return node;
 };
 
-
-
 onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
@@ -226,9 +226,11 @@ onmessage = async (event) => {
   if (data.type === "upload" && data.data.filename.includes("jsonl")) {
     processedUploadedData = await processJsonl(data.data, sendStatusMessage);
     console.log("processedUploadedData is ", processedUploadedData);
-  }
-  else if (data.type === "upload") {
-    sendStatusMessage({error: "Only Taxonium jsonl files are supported (could not find 'jsonl' in filename)"});
+  } else if (data.type === "upload") {
+    sendStatusMessage({
+      error:
+        "Only Taxonium jsonl files are supported (could not find 'jsonl' in filename)",
+    });
   } else {
     if (data.type === "query") {
       console.log("Worker query");

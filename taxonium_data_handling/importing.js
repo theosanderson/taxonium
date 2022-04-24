@@ -3,61 +3,65 @@ import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
-
-const {ReadableWebToNodeStream} = require('readable-web-to-node-stream');
+const { ReadableWebToNodeStream } = require("readable-web-to-node-stream");
 export const formatNumber = (num) => {
-  return num!==null ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
+  return num !== null
+    ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    : "";
 };
 
-
-export const modules= {zlib,stream, buffer}
+export const modules = { zlib, stream, buffer };
 
 function reduceMaxOrMin(array, accessFunction, maxOrMin) {
-  if(maxOrMin === 'max') {
-    return accessFunction(array.reduce(function(max, item) {
-      return accessFunction(item) > accessFunction(max) ? item : max;
-    }));
-  }
-    else if(maxOrMin === 'min') {
-    return accessFunction(array.reduce(function(min, item) {
-      return accessFunction(item) < accessFunction(min) ? item : min;
-    }));
+  if (maxOrMin === "max") {
+    return accessFunction(
+      array.reduce(function (max, item) {
+        return accessFunction(item) > accessFunction(max) ? item : max;
+      })
+    );
+  } else if (maxOrMin === "min") {
+    return accessFunction(
+      array.reduce(function (min, item) {
+        return accessFunction(item) < accessFunction(min) ? item : min;
+      })
+    );
   }
 }
 
-
-export const setUpStream = (the_stream, data, sendStatusMessage) =>
-{
+export const setUpStream = (the_stream, data, sendStatusMessage) => {
   function processLine(line, line_number) {
     // log every 1000
     if (line_number % 10000 === 0 && line_number > 0) {
       console.log(`Processed ${formatNumber(line_number)} lines`);
-      if (data.header.total_nodes){
-      const percentage = (line_number / data.header.total_nodes) * 100;
-      sendStatusMessage({message:`Loaded ${formatNumber(line_number)} nodes`, percentage: percentage.toFixed(0)});
-      }
-      else{
-        sendStatusMessage({message:`Loaded ${formatNumber(line_number)} nodes.`});
+      if (data.header.total_nodes) {
+        const percentage = (line_number / data.header.total_nodes) * 100;
+        sendStatusMessage({
+          message: `Loaded ${formatNumber(line_number)} nodes`,
+          percentage: percentage.toFixed(0),
+        });
+      } else {
+        sendStatusMessage({
+          message: `Loaded ${formatNumber(line_number)} nodes.`,
+        });
       }
     }
-   // console.log("LINE",line_number,line);
+    // console.log("LINE",line_number,line);
     const decoded = JSON.parse(line);
-    if (line_number===0){
+    if (line_number === 0) {
       data.header = decoded;
       data.nodes = [];
       data.node_to_mut = {};
-    }
-    else{
+    } else {
       data.node_to_mut[decoded.node_id] = decoded.mutations; // this is an int to ints map
-      decoded.mutations = decoded.mutations.map( (x) =>  data.header.aa_mutations[x]  )
+      decoded.mutations = decoded.mutations.map(
+        (x) => data.header.aa_mutations[x]
+      );
       data.nodes.push(decoded);
     }
-
-
   }
   let cur_line = "";
   let line_counter = 0;
-  the_stream.on('data', function(data) {
+  the_stream.on("data", function (data) {
     cur_line += data.toString();
     if (cur_line.includes("\n")) {
       const lines = cur_line.split("\n");
@@ -65,100 +69,82 @@ export const setUpStream = (the_stream, data, sendStatusMessage) =>
       lines.forEach((line) => {
         processLine(line, line_counter);
         line_counter++;
-        
-
       });
     }
-    
-    
-  }
-  );
-  
-  the_stream.on('error', function(err) {
+  });
+
+  the_stream.on("error", function (err) {
     console.log(err);
-  }
-  );
+  });
 
-  the_stream.on('end', function() {
+  the_stream.on("end", function () {
     console.log("end");
-  }
-  );
-  
-}
-
-  
- 
+  });
+};
 
 export const processJsonl = async (jsonl, sendStatusMessage) => {
   console.log("Worker processJsonl", jsonl);
-  const data = jsonl.data
-  const status = jsonl.status
-  let the_stream
-  if (jsonl.filename.includes("gz")){
+  const data = jsonl.data;
+  const status = jsonl.status;
+  let the_stream;
+  if (jsonl.filename.includes("gz")) {
     // Create a stream
-     the_stream = zlib.createGunzip();
-  }
-  else{
+    the_stream = zlib.createGunzip();
+  } else {
     // create a fallback stream, and process the output, initially just logging it
-     the_stream = new stream.PassThrough();
+    the_stream = new stream.PassThrough();
+  }
+  let new_data = {};
+  setUpStream(the_stream, new_data, sendStatusMessage);
 
-  }
-  let new_data = {}
-  setUpStream(the_stream, new_data, sendStatusMessage)
-  
-  if(status==="loaded"){
-  const my_buf = new buffer.Buffer(data);
-  the_stream.write(my_buf);
-  the_stream.end();
-  }
-  else if(status==="url_supplied"){
-    const url = jsonl.filename
-    let response
+  if (status === "loaded") {
+    const my_buf = new buffer.Buffer(data);
+    the_stream.write(my_buf);
+    the_stream.end();
+  } else if (status === "url_supplied") {
+    const url = jsonl.filename;
+    let response;
     // Try fetch
-    console.log("STARTING FETCH")
+    console.log("STARTING FETCH");
     try {
       response = await fetch(url);
     } catch (error) {
       console.log("Fetch error", error);
-      sendStatusMessage({error:`Fetch error: ${error}`});
+      sendStatusMessage({ error: `Fetch error: ${error}` });
       return;
     }
     console.log("ALL FINE", response);
-   
-   
+
     const readableWebStream = response.body;
     const nodeStream = new ReadableWebToNodeStream(readableWebStream);
     nodeStream.pipe(the_stream);
-  }
-  else {
-    throw new Error("Unknown status: "+status)
+  } else {
+    throw new Error("Unknown status: " + status);
   }
 
-  
   // Wait for the stream to finish
   await new Promise((resolve, reject) => {
-    the_stream.on('end', resolve);
-    the_stream.on('error', reject);
-  }
-  );
+    the_stream.on("end", resolve);
+    the_stream.on("error", reject);
+  });
   console.log("done with stream");
   console.log("new_data is ", new_data);
   const scale_x = 10;
   const scale_y = 10e2 / new_data.nodes.length;
   new_data.nodes.forEach((node) => {
     node.x_dist = node.x_dist * scale_x;
-    node.x = node.x_dist
+    node.x = node.x_dist;
     node.y = node.y * scale_y;
   });
   const y_positions = new_data.nodes.map((node) => node.y);
-  
+
   const overallMaxY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "max");
   const overallMinY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "min");
   const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "max");
   const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "min");
-  
+
   const output = {
-    nodes : new_data.nodes,
+    nodes: new_data.nodes,
     overallMaxX,
     overallMaxY,
     overallMinX,
@@ -168,6 +154,5 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     node_to_mut: new_data.node_to_mut,
   };
 
-  return output
-
-}
+  return output;
+};

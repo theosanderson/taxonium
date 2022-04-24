@@ -3,7 +3,6 @@ import { useState, useCallback, useRef } from "react";
 function useHoverDetails() {
   const [nodeDetails, setNodeDetails] = useState(null);
 
-
   const clearNodeDetails = useCallback(() => {
     setNodeDetails(null);
   }, []);

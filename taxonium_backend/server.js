@@ -155,7 +155,6 @@ let mutations = [{}]; //create with one element because of the way the data is s
 let sid_cache = {};
 
 async function validateSID(sid) {
-
   /* 
 
   Create a call to https://gpsapi.epicov.org/epi3/gps_api 
@@ -205,7 +204,7 @@ packaged as req
 async function validateSIDandSend(to_send, sid, res) {
   if (!config.validate_SID) {
     res.send(to_send);
-    return
+    return;
   }
   const validity = await validateSID(sid);
 

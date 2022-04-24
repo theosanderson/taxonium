@@ -31,7 +31,7 @@ const useView = () => {
         height: "35%",
         borderWidth: "1px",
         controller: true,
-       // clear: true,
+        // clear: true,
       }),
     ];
   }, [viewState, zoomAxis]);
