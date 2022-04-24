@@ -2,7 +2,6 @@
 
 Taxonium tools is a Python utility that allows you to generate Taxonium format files from [UShER](https://usher-wiki.readthedocs.io/en/latest/) mutation-annoated trees.
 
-
 ## Installation
 
 ```
@@ -10,12 +9,12 @@ pip install taxoniumtools
 
 ```
 
-
 ## Usage
 
 ### Basic run
 
 First get some files:
+
 ```
 wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.meta.tsv.gz
 wget https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb
