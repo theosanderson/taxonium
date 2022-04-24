@@ -27,6 +27,9 @@ def main():
     parser.add_argument('--chronumental',
                         action='store_true',
                         help='If set, we will run chronumental')
+    parser.add_argument('--chronumental_steps',
+                        type=int,
+                        help='Number of steps to run chronumental for')
     parser.add_argument("--columns",
                         type=str,
                         help="Columns to include in the metadata")
@@ -72,7 +75,7 @@ def main():
         import os
 
         os.system(
-            "chronumental --tree /tmp/distance_tree.nwk --dates ./tfci.meta.tsv.gz --steps 140 --tree_out /tmp/timetree.nwk --dates_out ./date_comparison.tsv.gz"
+            f"chronumental --tree /tmp/distance_tree.nwk --dates {args.metadata} --steps {args.chronumental_steps} --tree_out /tmp/timetree.nwk --dates_out ./date_comparison.tsv.gz"
         )
 
         # %%
@@ -214,6 +217,7 @@ def main():
         node_object = get_node_object(node, node_to_index, metadata_dict,
                                     aa_mut_tuple_to_index, metadata_cols)
         output_file.write(json.dumps(node_object) + "\n")
+    output_file.close()
 
     print("Done")
 
