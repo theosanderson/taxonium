@@ -63,6 +63,7 @@ def main():
         f = open(args.input, 'rb')
 
     mat = ushertools.UsherMutationAnnotatedTree(f, args.genbank)
+    f.close()
 
     if args.chronumental:
         mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
