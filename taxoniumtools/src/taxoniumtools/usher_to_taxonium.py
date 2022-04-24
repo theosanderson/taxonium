@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from alive_progress import config_handler, alive_it, alive_bar
 import treeswift
+import tempfile
 from . import ushertools
 import argparse
 import gzip
@@ -35,6 +36,10 @@ def main():
     parser.add_argument("--columns",
                         type=str,
                         help="Columns to include in the metadata")
+    parser.add_argument("--taxonium_date_file_output",
+                        type=str,
+                        help="Output file for the taxonium date file, if any")
+
     parser.add_argument('--gzlevel', type=int, help='Gzip level', default=6)
 
     args = parser.parse_args()
@@ -70,6 +75,9 @@ def main():
     mat = ushertools.UsherMutationAnnotatedTree(f, args.genbank)
     f.close()
 
+
+
+
     if args.chronumental:
         chronumental_is_available = os.system("which chronumental > /dev/null") == 0
         if not chronumental_is_available:
@@ -77,32 +85,35 @@ def main():
             print("#####  Please install it with `pip install chronumental` and restart. Or you can disable the --chronumental flag.  #####")
             print("#####  Exiting.  #####")
             sys.exit(1)
-        mat.tree.write_tree_newick("/tmp/distance_tree.nwk")
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            mat.tree.write_tree_newick(os.path.join(tmpdirname, "distance_tree.nwk"))
 
-        print("Launching chronumental")
+            print("Launching chronumental")
 
-        result = os.system(
-            f"chronumental --tree /tmp/distance_tree.nwk --dates {args.metadata} --steps {args.chronumental_steps} --tree_out /tmp/timetree.nwk --dates_out ./date_comparison.tsv.gz"
-        )
+            
+            command =    f"chronumental --tree {os.path.join(tmpdirname, 'distance_tree.nwk')} --dates {args.metadata} --steps {args.chronumental_steps} --tree_out {os.path.join(tmpdirname, 'timetree.nwk')}"
+            
+            if args.taxonium_date_file_output:
+                command += f" --dates_out {args.taxonium_date_file_output}"
+            result = os.system(command)
+            if result != 0:
+                print("#####  Chronumental failed.  #####")
+                print("#####  Exiting.  #####")
+                sys.exit(1)
 
-        if result != 0:
-            print("#####  Chronumental failed.  #####")
-            print("#####  Exiting.  #####")
-            sys.exit(1)
+            # %%
 
-        # %%
-
-        print("Reading time tree")
-        time_tree = treeswift.read_tree("/tmp/timetree.nwk", schema="newick")
-        time_tree_iter = ushertools.preorder_traversal(time_tree.root)
-        for i, node in alive_it(enumerate(
-                ushertools.preorder_traversal(mat.tree.root)),
-                                title="Adding time tree"):
-            time_tree_node = next(time_tree_iter)
-            if args.chronumental:
-                node.time_length = time_tree_node.edge_length
-        del time_tree
-        del time_tree_iter
+            print("Reading time tree")
+            time_tree = treeswift.read_tree(os.path.join(tmpdirname, "timetree.nwk"), schema="newick")
+            time_tree_iter = ushertools.preorder_traversal(time_tree.root)
+            for i, node in alive_it(enumerate(
+                    ushertools.preorder_traversal(mat.tree.root)),
+                                    title="Adding time tree"):
+                time_tree_node = next(time_tree_iter)
+                if args.chronumental:
+                    node.time_length = time_tree_node.edge_length
+            del time_tree
+            del time_tree_iter
 
 
     def set_x_coords(root):
