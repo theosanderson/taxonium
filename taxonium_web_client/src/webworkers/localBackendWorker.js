@@ -3,6 +3,9 @@ import {processUnstackedData, decodeAndConvertToObjectFromBuffer, unstackUploade
 import protobuf from "protobufjs";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 import {formatNumber} from "../utils/formatNumber";
+const {ReadableWebToNodeStream} = require('readable-web-to-node-stream');
+
+
 
 const {stream, zlib, buffer} = modules
 
@@ -310,9 +313,14 @@ const processJsonl = async (jsonl) => {
   let new_data = {}
   setUpStream(the_stream, new_data)
   
-  const my_buf = new buffer.Buffer(data);
-  the_stream.write(my_buf);
-  the_stream.end();
+  //const my_buf = new buffer.Buffer(data);
+  const url = jsonl.filename
+  // Perform fetch
+  const response = await fetch(url);
+  const readableWebStream = response.body;
+  const nodeStream = new ReadableWebToNodeStream(readableWebStream);
+  nodeStream.pipe(the_stream);
+  //the_stream.end();
   console.log("done with gunzip");
   // Wait for the stream to finish
   await new Promise((resolve, reject) => {
