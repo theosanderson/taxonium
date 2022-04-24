@@ -1,24 +1,6 @@
 import filtering from "taxonium_data_handling";
-import {processUnstackedData, decodeAndConvertToObjectFromBuffer, unstackUploadedData, modules} from "taxonium_data_handling/importing.js";
-import protobuf from "protobufjs";
-import reduceMaxOrMin from "../utils/reduceMaxOrMin";
-import {formatNumber} from "../utils/formatNumber";
+import {processJsonl} from "taxonium_data_handling/importing.js";
 
-const {stream, zlib, buffer} = modules
-
-
-
-protobuf.parse.defaults.keepCase = true;
-let proto;
-
-const proto_location = "/taxonium.proto";
-
-const getProto = async () => {
-  if (proto === undefined) {
-    proto = await protobuf.load(proto_location);
-  }
-  return proto;
-};
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
@@ -26,10 +8,10 @@ postMessage({ data: "Worker starting" });
 let processedUploadedData;
 
 
-const sendStatusMessage = (message) => {
+const sendStatusMessage = (status_obj) => {
   postMessage({
     type: "status",
-    data: message,
+    data: status_obj,
   });
 };
 
@@ -154,6 +136,7 @@ const getConfig = async () => {
     "parent_id",
     "node_id",
     "x",
+    "x_dist",
     "y",
     "mutations",
     "name",
@@ -233,138 +216,18 @@ const getDetails = async (node_id) => {
   return node;
 };
 
-const setUpStream = (the_stream, data) =>
-{
-  function processLine(line, line_number) {
-    // log every 1000
-    if (line_number % 5000 === 0 && line_number > 0) {
-      console.log(`Processed ${formatNumber(line_number)} lines`);
-      if (data.header.total_nodes){
-      const percentage = (line_number / data.header.total_nodes) * 100;
-      sendStatusMessage(`Loaded ${formatNumber(line_number)} nodes. ${formatNumber(percentage.toFixed(0))}% complete.`);
-      }
-      else{
-        sendStatusMessage(`Loaded ${formatNumber(line_number)} nodes.`);
-      }
-    }
-   // console.log("LINE",line_number,line);
-    const decoded = JSON.parse(line);
-    if (line_number===0){
-      data.header = decoded;
-      data.nodes = [];
-      data.node_to_mut = {};
-    }
-    else{
-      data.node_to_mut[decoded.node_id] = decoded.mutations; // this is an int to ints map
-      decoded.mutations = decoded.mutations.map( (x) =>  data.header.aa_mutations[x]  )
-      data.nodes.push(decoded);
-    }
 
-
-  }
-  let cur_line = "";
-  let line_counter = 0;
-  the_stream.on('data', function(data) {
-    cur_line += data.toString();
-    if (cur_line.includes("\n")) {
-      const lines = cur_line.split("\n");
-      cur_line = lines.pop();
-      lines.forEach((line) => {
-        processLine(line, line_counter);
-        line_counter++;
-        
-
-      });
-    }
-    
-    
-  }
-  );
-  
-  the_stream.on('error', function(err) {
-    console.log(err);
-  }
-  );
-
-  the_stream.on('end', function() {
-    console.log("end");
-  }
-  );
-  
-}
-
-const processJsonl = async (jsonl) => {
-  console.log("Worker processJsonl", jsonl);
-  const data = jsonl.data
-  const type = jsonl.type
-  let the_stream
-  if (jsonl.filename.includes("gz")){
-    // Create a stream
-     the_stream = zlib.createGunzip();
-  }
-  else{
-    // create a fallback stream, and process the output, initially just logging it
-     the_stream = new stream.PassThrough();
-
-  }
-  let new_data = {}
-  setUpStream(the_stream, new_data)
-  
-  const my_buf = new buffer.Buffer(data);
-  the_stream.write(my_buf);
-  the_stream.end();
-  console.log("done with gunzip");
-  // Wait for the stream to finish
-  await new Promise((resolve, reject) => {
-    the_stream.on('end', resolve);
-    the_stream.on('error', reject);
-  }
-  );
-  console.log("done with stream");
-  console.log("new_data is ", new_data);
-  const scale_x = 10;
-  const scale_y = 10e2 / new_data.nodes.length;
-  new_data.nodes.forEach((node) => {
-    node.x_dist = node.x_dist * scale_x;
-    node.x = node.x_dist
-    node.y = node.y * scale_y;
-  });
-  const y_positions = new_data.nodes.map((node) => node.y);
-  
-  const overallMaxY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "max");
-  const overallMinY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "min");
-  const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "max");
-  const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "min");
-  
-  const output = {
-    nodes : new_data.nodes,
-    overallMaxX,
-    overallMaxY,
-    overallMinX,
-    overallMinY,
-    y_positions,
-    mutations: new_data.header.aa_mutations,
-    node_to_mut: new_data.node_to_mut,
-  };
-
-  return output
-
-}
 
 onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
   if (data.type === "upload" && data.data.filename.includes("jsonl")) {
-    processedUploadedData = await processJsonl(data.data);
+    processedUploadedData = await processJsonl(data.data, sendStatusMessage);
     console.log("processedUploadedData is ", processedUploadedData);
   }
   else if (data.type === "upload") {
-    console.log("Worker upload");
-    let data2 = await decodeAndConvertToObjectFromBuffer(data.data, getProto,sendStatusMessage);
-    data.data = undefined;
-    data2 = await unstackUploadedData(data2, sendStatusMessage);
-    processedUploadedData = await processUnstackedData(data2, sendStatusMessage); 
+    sendStatusMessage({error: "Only Taxonium jsonl files are supported (could not find 'jsonl' in filename)"});
   } else {
     if (data.type === "query") {
       console.log("Worker query");

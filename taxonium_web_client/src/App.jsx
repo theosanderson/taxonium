@@ -6,10 +6,9 @@ import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
-
-import axios from "axios";
 import protobuf from "protobufjs";
 import { getDefaultSearch } from "./utils/searchUtil";
+
 
 const first_search = getDefaultSearch("aa1");
 
@@ -103,11 +102,11 @@ function App() {
     window.alert("It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site.");
     // split url into before question mark and after
     
-    window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/" + "?" + url_parts[1];
+    window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/?" + url_parts[1];
     }
     else{
       window.alert("It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site.");
-      window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/" + "?protoUrl=" + protoUrl;
+      window.location.href = "https://cov2tree-git-v1-theosanderson.vercel.app/?protoUrl=" + protoUrl;
     }
 
   }
@@ -115,38 +114,7 @@ function App() {
   useEffect(() => {
 
   if (protoUrl && !uploadedData) {
-    axios
-      .get(protoUrl, {
-        responseType: "arraybuffer",
-        onDownloadProgress: (progressEvent) => {
-          let percentCompleted = Math.floor(
-            1 * (progressEvent.loaded / progressEvent.total) * 100
-          );
-          setUploadedData({
-            status: "loading",
-            progress: percentCompleted,
-            data: { node_data: { ids: [] } },
-          });
-        },
-      })
-      .catch((err) => {
-        console.log(err);
-        window.alert(
-          err +
-            "\n\nPlease check the URL entered, or your internet connection, and try again."
-        );
-      })
-      .then(function (response) {
-        console.log("filename",  protoUrl);
-       
-          setUploadedData({
-            status: "loaded",
-            filename: protoUrl,
-            data: response.data,
-          });
-        
-        
-      });
+    setUploadedData({ status: "url_supplied", filename: protoUrl });
   }
   }, [protoUrl, uploadedData]);
 
@@ -187,25 +155,18 @@ function App() {
         </div>
         <Suspense
           fallback={
-            <div>Loading... {uploadedData && uploadedData.progress}</div>
+            <div>Loading..</div>
           }
         >
           {query.backend ||
-          (uploadedData && uploadedData.status === "loaded") ? (
+          (uploadedData && (uploadedData.status === "loaded" ||   uploadedData.status === "url_supplied")) ? (
             <Taxonium
               uploadedData={uploadedData}
               query={query}
               updateQuery={updateQuery}
               overlayRef={overlayRef}
             />
-          ) : uploadedData && uploadedData.status === "loading" ? (
-            <div className="flex justify-center items-center h-screen w-screen">
-              <div className="text-center">
-                <div className="text-xl">Downloading file...</div>
-                <div className="text-gray-500">{uploadedData.progress}%</div>
-              </div>
-            </div>
-          ) : (
+          ) :  (
             <div className="m-10">
               <p className="text-lg text-gray-700 mb-5">
                 Welcome to Taxonium, a tool for exploring large trees

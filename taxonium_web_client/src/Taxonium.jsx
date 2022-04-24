@@ -8,7 +8,7 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
@@ -51,7 +51,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
     query,
     updateQuery
   );
-  const statusMessage = backend.statusMessage ? backend.statusMessage : "";
+ 
 
   //
 
@@ -60,7 +60,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
       <div className="md:grid md:grid-cols-12 h-full">
         <div className="md:col-span-8 h-3/6 md:h-full w-full">
           <Deck
-            statusMessage={statusMessage}
+            statusMessage={backend.statusMessage}
             data={data}
             search={search}
             view={view}

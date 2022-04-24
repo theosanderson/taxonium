@@ -3,6 +3,13 @@ import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
+
+const {ReadableWebToNodeStream} = require('readable-web-to-node-stream');
+export const formatNumber = (num) => {
+  return num!==null ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
+};
+
+
 export const modules= {zlib,stream, buffer}
 
 function reduceMaxOrMin(array, accessFunction, maxOrMin) {
@@ -18,151 +25,149 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
-export const decodeAndConvertToObjectFromBuffer = async (uploaded_data, getProto, sendStatusMessage) => {
-    const proto = await getProto();
-  
-    const NodeList = proto.lookupType("AllData");
-    let message;
-    // check if filename (uploaded_data.filename) ends with gz
-    console.log("uploaded_data.filename", uploaded_data.filename);
-    if (uploaded_data.filename.endsWith(".gz")) {
-      sendStatusMessage("Extracting data from compressed protobuf");
-      message = NodeList.decode(new Uint8Array(pako.ungzip(uploaded_data.data))); // TODO refactor this to function so it gets deleted after use
-    } else {
-      sendStatusMessage("Extracting data from protobuf");
-      message = NodeList.decode(new Uint8Array(uploaded_data.data));
-    }
-  
-    sendStatusMessage("Converting data to initial javascript object");
-    const result = NodeList.toObject(message);
-    console.log("got result", result);
-    return result;
-  };
-  
 
-  export const unstackUploadedData = async (result, sendStatusMessage) => {
-    let node_data_in_columnar_form = result.node_data;
-  
-    const nodes_initial = [];
-    result.mutation_mapping = result.mutation_mapping.map((x, i) => {
-      if (x === "") {
-        return null;
+export const setUpStream = (the_stream, data, sendStatusMessage) =>
+{
+  function processLine(line, line_number) {
+    // log every 1000
+    if (line_number % 10000 === 0 && line_number > 0) {
+      console.log(`Processed ${formatNumber(line_number)} lines`);
+      if (data.header.total_nodes){
+      const percentage = (line_number / data.header.total_nodes) * 100;
+      sendStatusMessage({message:`Loaded ${formatNumber(line_number)} nodes`, percentage: percentage.toFixed(0)});
       }
-      const [gene, rest] = x.split(":");
-      const [previous_residue, residue_pos, new_residue] = rest.split("_");
-      return {
-        gene,
-        previous_residue,
-        residue_pos: parseInt(residue_pos),
-        new_residue,
-        mutation_id: i,
-      };
-    });
-  
-    const mutation_mapping = result.mutation_mapping;
-  
-    sendStatusMessage("Extracting individual nodes from columnar format");
-  
-    for (let i in node_data_in_columnar_form.names) {
-      const new_node = {
-        name: node_data_in_columnar_form.names[i],
-        x: node_data_in_columnar_form.x[i],
-        y: node_data_in_columnar_form.y[i],
-        genbank: node_data_in_columnar_form.genbanks[i],
-        num_tips: node_data_in_columnar_form.num_tips[i],
-        parent_id: node_data_in_columnar_form.parents[i],
-        date: result.date_mapping[node_data_in_columnar_form.dates[i]],
-        mutations: node_data_in_columnar_form.mutations[i].mutation
-          ? node_data_in_columnar_form.mutations[i].mutation
-          : [],
-      };
-      node_data_in_columnar_form.metadata_singles.forEach((x) => {
-        new_node["meta_" + x.metadata_name] = x.mapping[x.node_values[i]];
-      });
-  
-      // assert that y is a float
-      if (typeof new_node.y !== "number") {
-        new_node.y = parseFloat(new_node.y);
+      else{
+        sendStatusMessage({message:`Loaded ${formatNumber(line_number)} nodes.`});
       }
-  
-      if (node_data_in_columnar_form.time_x) {
-        new_node.time_x = node_data_in_columnar_form.time_x[i];
-      }
-  
-      nodes_initial.push(new_node);
     }
-    //sort on y
+   // console.log("LINE",line_number,line);
+    const decoded = JSON.parse(line);
+    if (line_number===0){
+      data.header = decoded;
+      data.nodes = [];
+      data.node_to_mut = {};
+    }
+    else{
+      data.node_to_mut[decoded.node_id] = decoded.mutations; // this is an int to ints map
+      decoded.mutations = decoded.mutations.map( (x) =>  data.header.aa_mutations[x]  )
+      data.nodes.push(decoded);
+    }
+
+
+  }
+  let cur_line = "";
+  let line_counter = 0;
+  the_stream.on('data', function(data) {
+    cur_line += data.toString();
+    if (cur_line.includes("\n")) {
+      const lines = cur_line.split("\n");
+      cur_line = lines.pop();
+      lines.forEach((line) => {
+        processLine(line, line_counter);
+        line_counter++;
+        
+
+      });
+    }
+    
+    
+  }
+  );
   
-    return { nodes_initial, mutation_mapping };
+  the_stream.on('error', function(err) {
+    console.log(err);
+  }
+  );
+
+  the_stream.on('end', function() {
+    console.log("end");
+  }
+  );
+  
+}
+
+  
+ 
+
+export const processJsonl = async (jsonl, sendStatusMessage) => {
+  console.log("Worker processJsonl", jsonl);
+  const data = jsonl.data
+  const status = jsonl.status
+  let the_stream
+  if (jsonl.filename.includes("gz")){
+    // Create a stream
+     the_stream = zlib.createGunzip();
+  }
+  else{
+    // create a fallback stream, and process the output, initially just logging it
+     the_stream = new stream.PassThrough();
+
+  }
+  let new_data = {}
+  setUpStream(the_stream, new_data, sendStatusMessage)
+  
+  if(status==="loaded"){
+  const my_buf = new buffer.Buffer(data);
+  the_stream.write(my_buf);
+  the_stream.end();
+  }
+  else if(status==="url_supplied"){
+    const url = jsonl.filename
+    let response
+    // Try fetch
+    console.log("STARTING FETCH")
+    try {
+      response = await fetch(url);
+    } catch (error) {
+      console.log("Fetch error", error);
+      sendStatusMessage({error:`Fetch error: ${error}`});
+      return;
+    }
+    console.log("ALL FINE", response);
+   
+   
+    const readableWebStream = response.body;
+    const nodeStream = new ReadableWebToNodeStream(readableWebStream);
+    nodeStream.pipe(the_stream);
+  }
+  else {
+    throw new Error("Unknown status: "+status)
+  }
+
+  
+  // Wait for the stream to finish
+  await new Promise((resolve, reject) => {
+    the_stream.on('end', resolve);
+    the_stream.on('error', reject);
+  }
+  );
+  console.log("done with stream");
+  console.log("new_data is ", new_data);
+  const scale_x = 10;
+  const scale_y = 10e2 / new_data.nodes.length;
+  new_data.nodes.forEach((node) => {
+    node.x_dist = node.x_dist * scale_x;
+    node.x = node.x_dist
+    node.y = node.y * scale_y;
+  });
+  const y_positions = new_data.nodes.map((node) => node.y);
+  
+  const overallMaxY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "max");
+  const overallMinY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "min");
+  const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "max");
+  const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "min");
+  
+  const output = {
+    nodes : new_data.nodes,
+    overallMaxX,
+    overallMaxY,
+    overallMinX,
+    overallMinY,
+    y_positions,
+    mutations: new_data.header.aa_mutations,
+    node_to_mut: new_data.node_to_mut,
   };
-  
-  export const processUnstackedData = async ({
-    nodes_initial,
-    mutation_mapping 
-  }, sendStatusMessage) => {
-    sendStatusMessage("Sorting nodes on y");
-    const node_indices = nodes_initial.map((x, i) => i);
-    const sorted_node_indices = node_indices.sort(
-      (a, b) => nodes_initial[a].y - nodes_initial[b].y
-    );
-  
-    const nodes = sorted_node_indices.map((x) => nodes_initial[x]);
-    const node_to_mut = nodes.map((x) => x.mutations);
-  
-    nodes.forEach((node) => {
-      node.mutations = node.mutations.map((x) => mutation_mapping[x]);
-    });
-  
-    const old_to_new_mapping = Object.fromEntries(
-      sorted_node_indices.map((x, i) => [x, i])
-    );
-  
-    const scale_x = 35;
-    const scale_y = 9e7 / nodes.length;
-  
-    sendStatusMessage("Rescaling for good fit");
-  
-    nodes.forEach((node, i) => {
-      node.parent_id = old_to_new_mapping[node.parent_id];
-      node.node_id = i;
-  
-      node.x = Math.fround(node.x * scale_x);
-      node.y = Math.fround(node.y * scale_y);
-      if (node.time_x) {
-        node.time_x = Math.fround(node.time_x * scale_x);
-      }
-    });
-  
-    sendStatusMessage("Almost ready");
-  
-    const y_positions = nodes.map((node) => node.y);
-  
-    const overallMaxY = reduceMaxOrMin(nodes, (node) => node.y, "max");
-    const overallMinY = reduceMaxOrMin(nodes, (node) => node.y, "min");
-    const overallMaxX = reduceMaxOrMin(nodes, (node) => node.x, "max");
-    const overallMinX = reduceMaxOrMin(nodes, (node) => node.x, "min");
-    console.log(
-      "overallMaxY is ",
-      overallMaxY,
-      "overallMinY is ",
-      overallMinY,
-      "overallMaxX is ",
-      overallMaxX,
-      "overallMinX is ",
-      overallMinX
-    );
-  
-    const output = {
-      nodes,
-      overallMaxX,
-      overallMaxY,
-      overallMinX,
-      overallMinY,
-      y_positions,
-      mutations: mutation_mapping,
-      node_to_mut,
-    };
-  
-    console.log("output is ", output);
-    return output;
-  };
+
+  return output
+
+}
