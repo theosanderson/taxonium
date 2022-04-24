@@ -137,6 +137,7 @@ const getConfig = async () => {
     "node_id",
     "x",
     "x_dist",
+    "x_time",
     "y",
     "mutations",
     "name",
