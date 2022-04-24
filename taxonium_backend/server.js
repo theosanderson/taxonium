@@ -9,7 +9,6 @@ var pako = require("pako");
 var importing = import("taxonium_data_handling/importing.js");
 var filtering = import("taxonium_data_handling/filtering.js");
 
-
 let options;
 const { program } = require("commander");
 
@@ -205,10 +204,6 @@ async function validateSIDandSend(to_send, sid, res) {
     res.send({ error: "Invalid session ID" });
   }
 }
-
-
-
-
 
 app.get("/validate/", async function (req, res) {
   const start_time = new Date();
