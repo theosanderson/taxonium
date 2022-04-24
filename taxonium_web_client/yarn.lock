@@ -2731,11 +2731,6 @@
   resolved "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@remote-ui/rpc@^1.2.5":
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/@remote-ui/rpc/-/rpc-1.3.0.tgz"
-  integrity sha512-tO0nYON8IhErx/DYxufo7ccwnSh1Vo5mS41HAjUQ+fCctNmRABug0tjvCdOq1E6R6JAq1EbxN0U5w+7pYMcaFg==
-
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.npmjs.org/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz"
@@ -2777,32 +2772,6 @@
   version "1.1.1"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.1.1.tgz"
   integrity sha512-BUyKJGdDWqvWC5GEhyOiUrGNi9iJUr4CU0O2WxJL6QJhHeeA/NVBalH+FeK0r/x/W0rPymXt5s78TDS7d6lCwg==
-
-"@shopify/react-hooks@^2.1.18":
-  version "2.1.18"
-  resolved "https://registry.npmjs.org/@shopify/react-hooks/-/react-hooks-2.1.18.tgz"
-  integrity sha512-LZJcqKhqQC8+3B+x+JANR+4M0k6YICA8LwfF0/6yeF6NC7r8tr8lLhfyZPD//LP8HweVRZoqi8QphXzcjZNVwA==
-
-"@shopify/react-web-worker@^4.0.10":
-  version "4.0.10"
-  resolved "https://registry.npmjs.org/@shopify/react-web-worker/-/react-web-worker-4.0.10.tgz"
-  integrity sha512-ez8HFZkS9x6xBlh6WE1F2hny61lzVSO6Y2IFXMhTNNZb3mVpHS4SWRRUQulGrxEMZqivM9LKOnpilGX4mWPCJA==
-  dependencies:
-    "@shopify/react-hooks" "^2.1.18"
-    "@shopify/useful-types" "^4.0.2"
-    "@shopify/web-worker" "^4.0.5"
-
-"@shopify/useful-types@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.npmjs.org/@shopify/useful-types/-/useful-types-4.0.2.tgz"
-  integrity sha512-W+d6IwA8JDMJPxTej/8JhCYody9eEIgIwuDHIEm4Kk2HqtUSs6Ma9quKqJAaNXmBHjy8wSU+W4E3kNIw4lmNyg==
-
-"@shopify/web-worker@^4.0.5":
-  version "4.0.5"
-  resolved "https://registry.npmjs.org/@shopify/web-worker/-/web-worker-4.0.5.tgz"
-  integrity sha512-In0cWnPhSdnDZtMo9mb8R3zJ3CReu+c2m6MM3u386wYyk3DEGUD9B0g68YL3mmdRsa29JTx/r+fTk4EiOl7uVA==
-  dependencies:
-    "@remote-ui/rpc" "^1.2.5"
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.2"
