@@ -5,7 +5,7 @@ export function getDefaultSearch(key) {
   }
   return {
     key,
-    type: "meta_Lineage",
+    type: "meta_pangolin_lineage",
     method: "text_exact",
     text: "",
     gene: "S",

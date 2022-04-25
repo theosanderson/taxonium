@@ -5,11 +5,7 @@ const fixName = (name) => {
   return name.replace("hCoV-19/", "hCoV-19/\n");
 };
 
-const prettify_key = {
-  meta_Lineage: "Lineage",
-  meta_Country: "Country",
-  genotype: "Genotype",
-};
+
 const NodeHoverTip = ({
   hoverInfo,
   hoverDetails,
