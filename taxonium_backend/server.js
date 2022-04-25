@@ -235,10 +235,6 @@ async function validateSIDandSend(to_send, sid, res) {
   }
 }
 
-
-
-
-
 app.get("/validate/", async function (req, res) {
   const start_time = new Date();
   const query_sid = req.query.sid;
