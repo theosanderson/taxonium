@@ -2,7 +2,16 @@
 
 Taxonium is a tool for exploring extremely large trees. It is currently used for Cov2Tree, a display of the global SARS-CoV-2 phylogeny: 🌳 http://cov2tree.org
 
-The data and tree displayed in Cov2Tree are collated by the UShER team: http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/UShER_SARS-CoV-2// . The sequences contained represent the work of thousands of researchers across the world.
+## How do I..
+### explore the global SARS-CoV-2 phylogeny?
+Visit [Cov2Tree.org](http://Cov2Tree.org) which uses Taxonium to allow you to explore a tree built by researchers at UCSC using public data contributed by researchers across the world to the INSDC databases.
+
+### build my own phylogeny to explore in Taxonium, or add my own metadata to an existing phylogeny?
+Use [UShER](https://github.com/yatisht/usher/) to build a mutation-annotated tree. Then use [taxoniumtools](./taxoniumtools/) to convert it to a Taxonium format you can upload to the interface at [Taxonium.org](Taxonium.org)
+
+You can also use taxoniumtools to add your own metadata to the existing public phylogeny.
+
+####
 
 ## Structure
 
