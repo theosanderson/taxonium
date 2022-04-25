@@ -62,7 +62,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       />
       <div className="text-black  pr-2 text-sm">
         {" "}
-        {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}{" "}
+        {num_results!=="Loading" && <>{formatNumber(num_results)} result{num_results === 1 ? "" : "s"}</>}{" "}
         {num_results > 0 && (
           <button
             className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
