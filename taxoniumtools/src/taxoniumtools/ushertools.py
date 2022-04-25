@@ -97,7 +97,8 @@ def recursive_mutation_analysis(node, past_nuc_muts_dict, seq, cdses, pbar):
 
     new_nuc_mutations_here = node.nuc_mutations
     new_past_nuc_muts_dict = past_nuc_muts_dict.copy()
-    node.aa_muts = get_mutations(new_past_nuc_muts_dict,
+    past_mut_dict = {} if (node.parent is None) else new_past_nuc_muts_dict
+    node.aa_muts = get_mutations(past_mut_dict,
                                  new_nuc_mutations_here, seq, cdses, disable_check_for_differences = (node.parent is None))
     for child in node.children:
         recursive_mutation_analysis(child, new_past_nuc_muts_dict, seq, cdses,
