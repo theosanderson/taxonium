@@ -215,7 +215,9 @@ function App() {
                   href="/?protoUrl=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
                 >
                   load the public SARS-CoV-2 tree
-                </a>, or the experimental <a
+                </a>
+                , or the experimental{" "}
+                <a
                   className="text-blue-500"
                   href="/?backend=https://api.taxonium.org:8080"
                 >

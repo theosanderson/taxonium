@@ -3,7 +3,10 @@ import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import useLayers from "./hooks/useLayers";
 import { ClipLoader } from "react-spinners";
-import { CircularProgressbarWithChildren , buildStyles } from "react-circular-progressbar";
+import {
+  CircularProgressbarWithChildren,
+  buildStyles,
+} from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 import {
@@ -134,9 +137,8 @@ function Deck({
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
           <div className="text-center">
             {statusMessage && statusMessage.percentage ? (
-              <CircularProgressbarWithChildren 
+              <CircularProgressbarWithChildren
                 value={statusMessage.percentage}
-               
                 strokeWidth={2}
                 styles={buildStyles({
                   // Rotation of path and trail, in number of turns (0-1)
@@ -160,16 +162,15 @@ function Deck({
                   trailColor: "#d6d6d6",
                 })}
               >
-                 {/* Put any JSX content in here that you'd like. It'll be vertically and horizonally centered. */}
-  
-                 <div className="text-center text-gray-700  text-lg wt font-medium">
-              {statusMessage && statusMessage.message}
-            </div>
+                {/* Put any JSX content in here that you'd like. It'll be vertically and horizonally centered. */}
+
+                <div className="text-center text-gray-700  text-lg wt font-medium">
+                  {statusMessage && statusMessage.message}
+                </div>
               </CircularProgressbarWithChildren>
             ) : (
               <ClipLoader size={100} color={"#666"} />
             )}
-            
           </div>
         </div>
       )}{" "}
