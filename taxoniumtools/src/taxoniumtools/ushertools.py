@@ -144,6 +144,7 @@ class UsherMutationAnnotatedTree:
         if genbank_file:
             self.load_genbank_file(genbank_file)
             self.perform_aa_analysis()
+        self.assign_num_tips()
 
     def perform_aa_analysis(self):
         seq = str(self.genbank.seq)
@@ -197,3 +198,10 @@ class UsherMutationAnnotatedTree:
             output_dict[
                 condensed_node.node_name] = condensed_node.condensed_leaves
         return output_dict
+
+    def assign_num_tips(self):
+        for node in self.tree.traverse_postorder():
+            if node.is_leaf():
+                node.num_tips = 1
+            else:
+                node.num_tips = sum(child.num_tips for child in node.children)

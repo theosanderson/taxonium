@@ -195,6 +195,8 @@ def main():
             node.parent] if node.parent else node_to_index[node]
         object['node_id'] = node_to_index[
             node]  # We don't strictly need this, but it doesn't add much to the space
+
+        object['num_tips'] = node.num_tips
         return object
 
 
