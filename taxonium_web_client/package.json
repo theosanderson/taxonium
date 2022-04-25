@@ -22,7 +22,6 @@
     "node-polyfill-webpack-plugin": "^1.1.4",
     "pako": "^2.0.4",
     "process": "^0.11.10",
-    "protobufjs": "^6.11.2",
     "react": "^17.0.2",
     "react-circular-progressbar": "^2.0.4",
     "react-debounce-input": "^3.2.3",

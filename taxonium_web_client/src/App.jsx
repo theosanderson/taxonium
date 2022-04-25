@@ -6,12 +6,10 @@ import { CgListTree } from "react-icons/cg";
 //import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
-import protobuf from "protobufjs";
+
 import { getDefaultSearch } from "./utils/searchUtil";
 
 const first_search = getDefaultSearch("aa1");
-
-protobuf.parse.defaults.keepCase = true;
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 const TaxoniumUploader = React.lazy(() =>
@@ -176,7 +174,7 @@ function App() {
               <div className="grid grid-cols-2  divide-x divide-gray-300">
                 <div className="p-5">
                   <h3 className="text-md text-gray-700 font-semibold mb-2">
-                    Import a Taxonium protobuf file
+                    Import a Taxonium JSONL file
                   </h3>
                   <TaxoniumUploader
                     readFile={readFile}
@@ -215,7 +213,9 @@ function App() {
                   href="/?protoUrl=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
                 >
                   load the public SARS-CoV-2 tree
-                </a>, or the experimental <a
+                </a>
+                , or the experimental{" "}
+                <a
                   className="text-blue-500"
                   href="/?backend=https://api.taxonium.org:8080"
                 >
