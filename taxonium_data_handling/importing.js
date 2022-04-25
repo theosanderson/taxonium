@@ -132,23 +132,23 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
 
   const scale_x = 10;
   const scale_y = 24e2 / new_data.nodes.length;
-  console.log("Scaling")
+  console.log("Scaling");
   for (const node of new_data.nodes) {
     node.x_dist = node.x_dist * scale_x;
     node.x = node.x_dist;
     node.y = node.y * scale_y;
   }
-  console.log("Calculating y positions")
+  console.log("Calculating y positions");
   const y_positions = new_data.nodes.map((node) => node.y);
 
-  console.log("Calculating coord extremes")
+  console.log("Calculating coord extremes");
 
   const overallMaxY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "max");
   const overallMinY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "min");
   const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "max");
   const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "min");
 
-console.log("Creating output obj")
+  console.log("Creating output obj");
   const output = {
     nodes: new_data.nodes,
     overallMaxX,

@@ -16,7 +16,6 @@ const useSearch = (
     return JSON.parse(query.srch);
   }, [query.srch]);
 
-
   const [zoomToSearch, setZoomToSearch] = useState(
     query.zoomToSearch ? { index: query.zoomToSearch } : null
   );

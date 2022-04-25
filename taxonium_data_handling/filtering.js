@@ -144,8 +144,6 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
         .filter((line) => line !== "")
     );
 
-    
-
     filtered = data.filter((node) => {
       const to_test = node[spec.type].toLowerCase().trim();
       //console.log(to_test);
@@ -168,7 +166,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     console.log("relevant_mutations:", relevant_mutations);
     const relevant_mutations_set = new Set(relevant_mutations);
     //console.log("node_to_mut:", node_to_mut);
-    console.log("NODE",data[0]);
+    console.log("NODE", data[0]);
 
     filtered = data.filter(
       (node) =>

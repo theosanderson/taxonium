@@ -5,7 +5,6 @@ const fixName = (name) => {
   return name.replace("hCoV-19/", "hCoV-19/\n");
 };
 
-
 const NodeHoverTip = ({
   hoverInfo,
   hoverDetails,
