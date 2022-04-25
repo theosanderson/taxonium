@@ -1,8 +1,10 @@
 import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
-
-const { ReadableWebToNodeStream } = import("readable-web-to-node-stream");
+let  ReadableWebToNodeStream 
+ import("readable-web-to-node-stream").then(function (module) {
+  ReadableWebToNodeStream = module.ReadableWebToNodeStream;
+});
 export const formatNumber = (num) => {
   return num !== null
     ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
@@ -127,7 +129,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     the_stream.on("error", reject);
   });
   console.log("done with stream");
-  console.log("new_data is ", new_data);
+ 
   const scale_x = 10;
   const scale_y = 10e2 / new_data.nodes.length;
   new_data.nodes.forEach((node) => {
@@ -155,3 +157,5 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
 
   return output;
 };
+
+export default {processJsonl}

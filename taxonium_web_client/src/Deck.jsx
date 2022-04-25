@@ -133,7 +133,7 @@ function Deck({
       {no_data && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
           <div className="text-center">
-            {statusMessage.percentage && (
+            {statusMessage && statusMessage.percentage ? (
               <CircularProgressbar
                 value={statusMessage.percentage}
                 text={`${statusMessage.percentage}%`}
@@ -160,7 +160,7 @@ function Deck({
                   trailColor: "#d6d6d6",
                 })}
               />
-            )}
+            ):(<ClipLoader size={100} color={"#666"} />)}
             <div className="text-center text-gray-700 mt-20">
               {statusMessage && statusMessage.message}
             </div>

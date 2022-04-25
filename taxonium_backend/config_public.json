@@ -2,20 +2,20 @@
   "source": "INSDC",
   "title": "Phylo",
   "name_accessor": "name",
-  "keys_to_display": ["genotype", "meta_Lineage", "meta_Country"],
+  "keys_to_display": ["genotype","meta_date", "meta_pangolin_lineage", "meta_country"],
   "overlay": "TODO",
   "search_types": [
     { "name": "name", "label": "Name", "type": "text_match" },
-    { "name": "meta_Lineage", "label": "PANGO lineage", "type": "text_exact" },
-    { "name": "meta_Country", "label": "Country", "type": "text_match" },
+    { "name": "meta_pangolin_lineage", "label": "PANGO lineage", "type": "text_exact" },
+    { "name": "meta_country", "label": "Country", "type": "text_match" },
     { "name": "mutation", "label": "Mutation", "type": "mutation" },
     { "name": "revertant", "label": "Revertant", "type": "revertant" }
   ],
   "colorBy": {
-    "colorByOptions": ["meta_Lineage", "meta_Country", "genotype", "None"],
+    "colorByOptions": ["meta_pangolin_lineage", "meta_country", "genotype", "None"],
     "prettyColorByOptions": {
-      "meta_Lineage": "Lineage",
-      "meta_Country": "Country",
+      "meta_pangolin_lineage": "Lineage",
+      "meta_country": "Country",
       "genotype": "Genotype",
       "None": "None"
     }

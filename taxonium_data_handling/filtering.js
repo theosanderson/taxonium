@@ -1,4 +1,9 @@
-var crypto = import("crypto");
+var crypto = null
+import("crypto").then((c) => {
+  crypto = c;
+});
+
+
 const count_per_hash = {};
 const reduceOverPlotting = (input, precision) => {
   const included_points = {};

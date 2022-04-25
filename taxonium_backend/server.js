@@ -1,14 +1,42 @@
 var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
+
 var app = express();
 var fs = require("fs");
 var https = require("https");
 var axios = require("axios");
 var pako = require("pako");
-var importing = import("taxonium_data_handling/importing.js");
-var filtering = import("taxonium_data_handling/filtering.js");
+var importing
+var filtering
+import("taxonium_data_handling/importing.js").then((imported) => {
+  importing = imported.default;
+  console.log("imported importing");
+  console.log("importing is ", importing);
+})
 
+
+import("taxonium_data_handling/filtering.js").then((imported) => {
+  filtering = imported.default;
+  console.log("imported filtering");
+});
+
+waitForTheImports = async () => {
+  if (importing === undefined || filtering === undefined) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (importing !== undefined && filtering !== undefined) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+};
+
+
+var processedData = null
+var cached_starting_values = null
 
 let options;
 const { program } = require("commander");
@@ -26,6 +54,14 @@ const command_options = program.opts();
 app.use(cors());
 app.use(compression());
 
+const logStatusMessage = (status_obj) => {
+  console.log("status", status_obj);
+};
+
+
+
+
+
 app.get("/", function (req, res) {
   res.send("Hello World, Taxonium is here!");
 });
@@ -37,18 +73,18 @@ app.get("/search", function (req, res) {
   const spec = JSON.parse(JSON.parse(json));
   console.log(spec);
   req.query.min_y =
-    req.query.min_y !== undefined ? req.query.min_y : overallMinY();
+    req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
   req.query.max_y =
-    req.query.max_y !== undefined ? req.query.max_y : overallMaxY();
+    req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
 
   const result = filtering.singleSearch({
-    data,
+    data: processedData.nodes,
     spec,
     min_y: req.query.min_y,
     max_y: req.query.max_y,
-    y_positions,
-    mutations,
-    node_to_mut,
+    y_positions:processedData.y_positions,
+    mutations:processedData.mutations,
+    node_to_mut:processedData.node_to_mut,
   });
   validateSIDandSend(result, req.query.sid, res);
   console.log(
@@ -70,14 +106,13 @@ if (path_for_config && fs.existsSync(path_for_config)) {
 } else {
   config = { title: "", source: "" };
 }
-let initial_x = 0;
-let initial_y = 0;
+
 app.get("/config", function (req, res) {
-  config.num_nodes = data.length;
-  config.initial_x = initial_x;
-  config.initial_y = initial_y;
-  config.initial_zoom = -3;
-  config.genes = genes;
+  config.num_nodes = processedData.nodes.length;
+  config.initial_x = (processedData.overallMinX + processedData.overallMaxX) / 2;
+  config.initial_y = (processedData.overallMinY + processedData.overallMaxY) / 2;
+  config.initial_zoom = -1.5;
+  config.genes = processedData.genes;
 
   validateSIDandSend(config, req.query.sid, res);
 });
@@ -86,28 +121,27 @@ app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
   const min_x = req.query.min_x;
   const max_x = req.query.max_x;
-  let min_y = req.query.min_y !== undefined ? req.query.min_y : overallMinY();
-  let max_y = req.query.max_y !== undefined ? req.query.max_y : overallMaxY();
-  if (min_y < overallMinY()) {
-    min_y = overallMinY();
+  let min_y = req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
+  let max_y = req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
+  if (min_y < processedData.overallMinY) {
+    min_y = processedData.overallMinY;
   }
-  if (max_y > overallMaxY()) {
-    max_y = overallMaxY();
+  if (max_y > processedData.overallMaxY) {
+    max_y = processedData.overallMaxY;
   }
   let result;
 
-  if (min_y === overallMinY() && max_y === overallMaxY()) {
-    //disabled
+  if (min_y === processedData.overallMinY && max_y === processedData.overallMaxY) {
+   
     result = cached_starting_values;
 
     console.log("Using cached values");
   } else {
-    result = filtering.getNodes(data, y_positions, min_y, max_y, min_x, max_x);
-
-    result = filtering.addMutations(result, mutations, node_to_mut);
+    result = filtering.getNodes(processedData.nodes, processedData.y_positions, min_y, max_y, min_x, max_x);
+    result = filtering.addMutations(result, processedData.mutations, processedData.node_to_mut);
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
-  if (result !== cached_starting_values) {
+
     // This will be sent as json
     validateSIDandSend({ nodes: result }, req.query.sid, res);
     console.log(
@@ -117,16 +151,10 @@ app.get("/nodes/", function (req, res) {
         result.length +
         " nodes."
     );
-  }
-  if (result === cached_starting_values) {
-    validateSIDandSend(result, req.query.sid, res);
-    console.log(
-      "Returning cached results took ",
-      Date.now() - start_time + "ms."
-    );
-  }
+  
 });
 
+function startListening(){
 if (command_options.ssl) {
   options = {
     key: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/privkey.pem"),
@@ -141,6 +169,7 @@ if (command_options.ssl) {
   app.listen(command_options.port, () =>
     console.log(`App is listening on port ${command_options.port}`)
   );
+}
 }
 
 let sid_cache = {};
@@ -238,9 +267,9 @@ function get_epi_isl_url(epi_isl) {
 app.get("/node_details/", async (req, res) => {
   const start_time = Date.now();
   const query_id = req.query.id;
-  const node = data[query_id];
-  const node_mutations = node_to_mut[query_id].map((mutation) => {
-    return mutations[mutation];
+  const node = processedData.nodes[query_id];
+  const node_mutations = processedData.node_to_mut[query_id].map((mutation) => {
+    return processedData.mutations[mutation];
   });
 
   const detailed_node = { ...node, mutations: node_mutations };
@@ -263,3 +292,40 @@ app.get("/node_details/", async (req, res) => {
     "Request took " + (Date.now() - start_time) + "ms, and output " + node
   );
 });
+
+const loadData = async () => {
+  await waitForTheImports();
+  let supplied_object
+  if (false){
+local_file = "latest_public.jsonl.gz";
+//  local_file = "tfci.jsonl";
+// Read as bytes
+const file_data = fs.readFileSync(local_file);
+supplied_object = {data: file_data, status:"loaded", filename: local_file};
+}
+else{
+  url = "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
+  supplied_object = {status: "url_supplied", filename: url};
+}
+
+processedData = await importing.processJsonl(supplied_object, logStatusMessage);
+processedData.genes = new Set(processedData.mutations.map((mutation) => mutation.gene));
+// as array
+processedData.genes = Array.from(processedData.genes);
+  console.log("Loaded data");
+
+  result = filtering.getNodes(processedData.nodes, processedData.y_positions, processedData.overallMinY, processedData.overallMaxY, processedData.overallMinX, processedData.overallMaxX);
+  result = filtering.addMutations(result, processedData.mutations, processedData.node_to_mut);
+  cached_starting_values = result;
+  console.log("Saved cached starting vals");
+  // set a timeout to start listening
+  setTimeout(() => {
+    console.log("Starting to listen");
+    startListening();
+  }
+  , 10);
+
+
+  
+};
+loadData();
