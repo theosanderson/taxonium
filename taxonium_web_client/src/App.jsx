@@ -11,8 +11,6 @@ import { getDefaultSearch } from "./utils/searchUtil";
 
 const first_search = getDefaultSearch("aa1");
 
-
-
 const Taxonium = React.lazy(() => import("./Taxonium"));
 const TaxoniumUploader = React.lazy(() =>
   import("./components/TaxoniumUploader")

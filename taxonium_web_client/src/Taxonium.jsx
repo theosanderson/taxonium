@@ -12,8 +12,6 @@ import { useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
-
-
 function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const view = useView();
   const colourMapping = useMemo(() => {
