@@ -233,6 +233,7 @@ const useLayers = (
     // radius in pixels
     getRadius: 2,
     getLineColor: [100, 100, 100],
+
     opacity: 0.6,
     radiusUnits: "pixels",
     onHover: (info) => setHoverInfo(info),
@@ -349,7 +350,7 @@ const useLayers = (
 
       wireframe: true,
       getLineWidth: 1,
-      filled: true,
+      filled: false,
       getFillColor: [255, 0, 0, 0],
       updateTriggers: { getPosition: [xAccessor] },
     });
