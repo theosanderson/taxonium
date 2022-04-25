@@ -7,7 +7,7 @@ This is the client used at taxonium.org
 
 ```
 nvm use 17.5
-vpm install -g yarn
+npm install -g yarn
 yarn install
 yarn start
 ```
