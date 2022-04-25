@@ -16,13 +16,12 @@ const useSearch = (
     return JSON.parse(query.srch);
   }, [query.srch]);
 
-  console.log("spec", searchSpec);
 
   const [zoomToSearch, setZoomToSearch] = useState(
     query.zoomToSearch ? { index: query.zoomToSearch } : null
   );
   const searchesEnabled = query.enabled ? JSON.parse(query.enabled) : {};
-  console.log("searchesEnabled", searchesEnabled);
+
   const setEnabled = (key, enabled) => {
     console.log("setEnabled", key, enabled);
     const newSearchesEnabled = { ...searchesEnabled, [key]: enabled };

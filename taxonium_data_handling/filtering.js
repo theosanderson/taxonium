@@ -165,9 +165,10 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
         );
       })
       .map((mutation) => mutation.mutation_id);
-    //console.log("relevant_mutations:", relevant_mutations);
+    console.log("relevant_mutations:", relevant_mutations);
     const relevant_mutations_set = new Set(relevant_mutations);
     //console.log("node_to_mut:", node_to_mut);
+    console.log("NODE",data[0]);
 
     filtered = data.filter(
       (node) =>
@@ -175,7 +176,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           relevant_mutations_set.has(mutation_id)
         ) && node.num_tips > spec.min_tips
     );
-    //console.log("filtered:", filtered);
+    console.log("filtered:", filtered);
     return filtered;
   } else if (spec.method === "revertant") {
     if (!all_data) {
