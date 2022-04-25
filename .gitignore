@@ -9,3 +9,4 @@ data_processing_tools/public-latest.all.masked.pb.gz
 .venv/**
 taxonium_backend/latest_public.jsonl.gz
 taxonium_backend/latest_public.jsonl.gz.1
+**/.pyc

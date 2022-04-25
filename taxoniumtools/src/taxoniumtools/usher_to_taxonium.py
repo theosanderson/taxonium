@@ -10,6 +10,7 @@ import argparse
 import gzip
 import os
 import sys
+import warnings 
 
 def main():
     parser = argparse.ArgumentParser(
@@ -24,8 +25,7 @@ def main():
                         required=True)
     parser.add_argument('--metadata',
                         type=str,
-                        help='Metadata file',
-                        required=True)
+                        help='Metadata file')
     parser.add_argument('--genbank', type=str, help='Genbank file', required=True)
     parser.add_argument('--chronumental',
                         action='store_true',
@@ -50,20 +50,24 @@ def main():
     cols_of_interest = list(cols_of_interest)
 
     #only load these cols:
-    print("Loading metadata file..")
-    #Disable warnings because of DTypeWarning in pandas
-    import warnings 
-    warnings.filterwarnings("ignore")
-    metadata = pd.read_csv(args.metadata, sep="\t", usecols=cols_of_interest)
-    # Enable again
-    warnings.filterwarnings("default")
-    metadata.set_index("strain", inplace=True)
-    # convert metadata to dict of rows
+    if args.metadata:
+        print("Loading metadata file..")
+        #Disable warnings because of DTypeWarning in pandas
+        
+        warnings.filterwarnings("ignore")
+        metadata = pd.read_csv(args.metadata, sep="\t", usecols=cols_of_interest)
+        # Enable again
+        warnings.filterwarnings("default")
+        metadata.set_index("strain", inplace=True)
+        # convert metadata to dict of rows
 
-    metadata_dict = metadata.to_dict("index")
-    metadata_cols = metadata.columns
-    del metadata
-    print("Metadata loaded")
+        metadata_dict = metadata.to_dict("index")
+        metadata_cols = metadata.columns
+        del metadata
+        print("Metadata loaded")
+    else:
+        metadata_dict = {}
+        metadata_cols = []
 
     #config_handler.set_global(force_tty=True) # Uncommenting this will force progress bars
 
@@ -246,3 +250,5 @@ def main():
 
     print(f"Done. Output written to {args.output}, with {len(nodes_sorted_by_y)} nodes.")
 
+if __name__ == "__main__":
+    main()

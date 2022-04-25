@@ -7,6 +7,10 @@ from Bio import SeqIO
 from dataclasses import dataclass
 from collections import defaultdict
 
+@dataclass
+class UsherLikeMutation:
+    position : int
+    mut_nuc : list
 
 @dataclass
 class AnnotatedMutation:
@@ -30,7 +34,7 @@ def get_codon_table():
 codon_table = get_codon_table()
 
 
-def get_mutations(past_nuc_muts_dict, new_nuc_mutations_here, seq, cdses):
+def get_mutations(past_nuc_muts_dict, new_nuc_mutations_here, seq, cdses, disable_check_for_differences = False):
 
     annotated_mutations = []
 
@@ -77,7 +81,7 @@ def get_mutations(past_nuc_muts_dict, new_nuc_mutations_here, seq, cdses):
         final_codon = "".join(final_codon)
         initial_codon_trans = codon_table[initial_codon]
         final_codon_trans = codon_table[final_codon]
-        if initial_codon_trans != final_codon_trans:
+        if initial_codon_trans != final_codon_trans or disable_check_for_differences:
             mutations_here.append((gene, codon_number + 1, initial_codon_trans,
                                    final_codon_trans))
 
@@ -90,16 +94,18 @@ def get_mutations(past_nuc_muts_dict, new_nuc_mutations_here, seq, cdses):
 
 def recursive_mutation_analysis(node, past_nuc_muts_dict, seq, cdses, pbar):
     pbar()
+
     new_nuc_mutations_here = node.nuc_mutations
     new_past_nuc_muts_dict = past_nuc_muts_dict.copy()
     node.aa_muts = get_mutations(new_past_nuc_muts_dict,
-                                 new_nuc_mutations_here, seq, cdses)
+                                 new_nuc_mutations_here, seq, cdses, disable_check_for_differences = (node.parent is None))
     for child in node.children:
         recursive_mutation_analysis(child, new_past_nuc_muts_dict, seq, cdses,
                                     pbar)
 
 
 NUC_ENUM = "ACGT"
+LETTER_TO_POS = {letter: pos for pos, letter in enumerate(NUC_ENUM)}
 
 
 def preorder_traversal(node):
@@ -146,12 +152,23 @@ class UsherMutationAnnotatedTree:
             self.perform_aa_analysis()
         self.assign_num_tips()
 
+    def create_mutation_like_objects_to_record_reference_seq(self):
+        """Hacky way of recording the reference"""
+        ref_muts = []
+        for i, character in enumerate(self.genbank.seq):
+            ref_muts.append(
+                UsherLikeMutation(position=i + 1, mut_nuc=[LETTER_TO_POS[character]]))
+        return ref_muts
+
+
     def perform_aa_analysis(self):
+        self.tree.root.nuc_mutations = self.create_mutation_like_objects_to_record_reference_seq()
         seq = str(self.genbank.seq)
         with alive_bar(self.tree.num_nodes(),
                        title="Annotating amino acids") as pbar:
             recursive_mutation_analysis(self.tree.root, {}, seq, self.cdses,
                                         pbar)
+        self.tree.root.nuc_mutations = []
 
     def load_genbank_file(self, genbank_file):
         self.genbank = SeqIO.read(genbank_file, "genbank")
@@ -205,3 +222,4 @@ class UsherMutationAnnotatedTree:
                 node.num_tips = 1
             else:
                 node.num_tips = sum(child.num_tips for child in node.children)
+
