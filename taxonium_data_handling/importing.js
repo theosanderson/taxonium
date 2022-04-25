@@ -130,7 +130,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   });
   console.log("done with stream");
 
-  const scale_x = 10;
+  const scale_x = 7;
   const scale_y = 24e2 / new_data.nodes.length;
   console.log("Scaling");
   for (const node of new_data.nodes) {
