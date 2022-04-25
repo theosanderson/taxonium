@@ -109,7 +109,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
 }
 
 function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
-  console.log("SEARCHFILTER", data);
+  //console.log("SEARCHFILTER", data);
   console.log(spec);
   let filtered;
   if (["text_match", "text_exact"].includes(spec.method) && spec.text === "") {
@@ -144,7 +144,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
         .filter((line) => line !== "")
     );
 
-    console.log("PERLINE", possible_matches);
+    
 
     filtered = data.filter((node) => {
       const to_test = node[spec.type].toLowerCase().trim();
@@ -165,9 +165,9 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
         );
       })
       .map((mutation) => mutation.mutation_id);
-    console.log("relevant_mutations:", relevant_mutations);
+    //console.log("relevant_mutations:", relevant_mutations);
     const relevant_mutations_set = new Set(relevant_mutations);
-    console.log("node_to_mut:", node_to_mut);
+    //console.log("node_to_mut:", node_to_mut);
 
     filtered = data.filter(
       (node) =>
@@ -175,7 +175,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           relevant_mutations_set.has(mutation_id)
         ) && node.num_tips > spec.min_tips
     );
-    console.log("filtered:", filtered);
+    //console.log("filtered:", filtered);
     return filtered;
   } else if (spec.method === "revertant") {
     if (!all_data) {
@@ -212,7 +212,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           relevant_mutations_set.has(mutation_id)
         )
     );
-    console.log("filtered:", filtered);
+    //console.log("filtered:", filtered);
     return filtered;
   }
   return [];
