@@ -97,17 +97,21 @@ function App() {
     if (url_parts[1]) {
       console.log(url_parts, "parts");
       // V1 format
-      window.alert(
-        "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site."
-      );
+      if(!window.redirecting){
+        window.alert(
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there."
+        );}
+        window.redirecting = 1
       // split url into before question mark and after
 
       window.location.href =
         "https://cov2tree-git-v1-theosanderson.vercel.app/?" + url_parts[1];
     } else {
-      window.alert(
-        "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site."
-      );
+      if(!window.redirecting){
+        window.alert(
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there."
+        );}
+        window.redirecting = 1
       window.location.href =
         "https://cov2tree-git-v1-theosanderson.vercel.app/?protoUrl=" +
         protoUrl;
