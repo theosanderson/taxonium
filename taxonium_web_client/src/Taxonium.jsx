@@ -12,9 +12,7 @@ import { useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
-var protobuf = require("protobufjs");
 
-protobuf.parse.defaults.keepCase = true;
 
 function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const view = useView();
