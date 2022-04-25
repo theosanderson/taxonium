@@ -99,7 +99,7 @@ function App() {
       // V1 format
       if (!window.redirecting) {
         window.alert(
-          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there."
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. "
         );
       }
       window.redirecting = 1;
@@ -110,7 +110,7 @@ function App() {
     } else {
       if (!window.redirecting) {
         window.alert(
-          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there."
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. "
         );
       }
       window.redirecting = 1;
