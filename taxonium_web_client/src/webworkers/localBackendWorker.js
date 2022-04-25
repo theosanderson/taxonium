@@ -120,7 +120,7 @@ const getConfig = async () => {
     (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
   config.initial_y =
     (processedUploadedData.overallMaxY + processedUploadedData.overallMinY) / 2;
-  config.initial_zoom = -3;
+  config.initial_zoom = -2;
   config.genes = [
     ...new Set(processedUploadedData.mutations.map((x) => (x ? x.gene : null))),
   ]

@@ -107,7 +107,7 @@ app.get("/config", function (req, res) {
     (processedData.overallMinX + processedData.overallMaxX) / 2;
   config.initial_y =
     (processedData.overallMinY + processedData.overallMaxY) / 2;
-  config.initial_zoom = -1.5;
+  config.initial_zoom = -2;
   config.genes = processedData.genes;
 
   validateSIDandSend(config, req.query.sid, res);

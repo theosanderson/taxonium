@@ -131,7 +131,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   console.log("done with stream");
 
   const scale_x = 10;
-  const scale_y = 10e2 / new_data.nodes.length;
+  const scale_y = 24e2 / new_data.nodes.length;
   new_data.nodes.forEach((node) => {
     node.x_dist = node.x_dist * scale_x;
     node.x = node.x_dist;
