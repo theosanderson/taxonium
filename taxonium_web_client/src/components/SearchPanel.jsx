@@ -91,7 +91,7 @@ function SearchPanel({
               onChange={(e) => colorBy.setColorByGene(e.target.value)}
               className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
             >
-              {config.genes.map((item) => (
+              {config.genes && config.genes.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>
