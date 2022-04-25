@@ -160,7 +160,9 @@ function Deck({
                   trailColor: "#d6d6d6",
                 })}
               />
-            ):(<ClipLoader size={100} color={"#666"} />)}
+            ) : (
+              <ClipLoader size={100} color={"#666"} />
+            )}
             <div className="text-center text-gray-700 mt-20">
               {statusMessage && statusMessage.message}
             </div>

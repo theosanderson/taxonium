@@ -7,14 +7,13 @@ var fs = require("fs");
 var https = require("https");
 var axios = require("axios");
 var pako = require("pako");
-var importing
-var filtering
+var importing;
+var filtering;
 import("taxonium_data_handling/importing.js").then((imported) => {
   importing = imported.default;
   console.log("imported importing");
   console.log("importing is ", importing);
-})
-
+});
 
 import("taxonium_data_handling/filtering.js").then((imported) => {
   filtering = imported.default;
@@ -34,9 +33,8 @@ waitForTheImports = async () => {
   }
 };
 
-
-var processedData = null
-var cached_starting_values = null
+var processedData = null;
+var cached_starting_values = null;
 
 let options;
 const { program } = require("commander");
@@ -58,10 +56,6 @@ const logStatusMessage = (status_obj) => {
   console.log("status", status_obj);
 };
 
-
-
-
-
 app.get("/", function (req, res) {
   res.send("Hello World, Taxonium is here!");
 });
@@ -82,9 +76,9 @@ app.get("/search", function (req, res) {
     spec,
     min_y: req.query.min_y,
     max_y: req.query.max_y,
-    y_positions:processedData.y_positions,
-    mutations:processedData.mutations,
-    node_to_mut:processedData.node_to_mut,
+    y_positions: processedData.y_positions,
+    mutations: processedData.mutations,
+    node_to_mut: processedData.node_to_mut,
   });
   validateSIDandSend(result, req.query.sid, res);
   console.log(
@@ -109,8 +103,10 @@ if (path_for_config && fs.existsSync(path_for_config)) {
 
 app.get("/config", function (req, res) {
   config.num_nodes = processedData.nodes.length;
-  config.initial_x = (processedData.overallMinX + processedData.overallMaxX) / 2;
-  config.initial_y = (processedData.overallMinY + processedData.overallMaxY) / 2;
+  config.initial_x =
+    (processedData.overallMinX + processedData.overallMaxX) / 2;
+  config.initial_y =
+    (processedData.overallMinY + processedData.overallMaxY) / 2;
   config.initial_zoom = -1.5;
   config.genes = processedData.genes;
 
@@ -121,8 +117,10 @@ app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
   const min_x = req.query.min_x;
   const max_x = req.query.max_x;
-  let min_y = req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
-  let max_y = req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
+  let min_y =
+    req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
+  let max_y =
+    req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
   if (min_y < processedData.overallMinY) {
     min_y = processedData.overallMinY;
   }
@@ -131,45 +129,59 @@ app.get("/nodes/", function (req, res) {
   }
   let result;
 
-  if (min_y === processedData.overallMinY && max_y === processedData.overallMaxY) {
-   
+  if (
+    min_y === processedData.overallMinY &&
+    max_y === processedData.overallMaxY
+  ) {
     result = cached_starting_values;
 
     console.log("Using cached values");
   } else {
-    result = filtering.getNodes(processedData.nodes, processedData.y_positions, min_y, max_y, min_x, max_x);
-    result = filtering.addMutations(result, processedData.mutations, processedData.node_to_mut);
+    result = filtering.getNodes(
+      processedData.nodes,
+      processedData.y_positions,
+      min_y,
+      max_y,
+      min_x,
+      max_x
+    );
+    result = filtering.addMutations(
+      result,
+      processedData.mutations,
+      processedData.node_to_mut
+    );
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
 
-    // This will be sent as json
-    validateSIDandSend({ nodes: result }, req.query.sid, res);
-    console.log(
-      "Request took " +
-        (Date.now() - start_time) +
-        "ms, and output " +
-        result.length +
-        " nodes."
-    );
-  
+  // This will be sent as json
+  validateSIDandSend({ nodes: result }, req.query.sid, res);
+  console.log(
+    "Request took " +
+      (Date.now() - start_time) +
+      "ms, and output " +
+      result.length +
+      " nodes."
+  );
 });
 
-function startListening(){
-if (command_options.ssl) {
-  options = {
-    key: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/privkey.pem"),
-    ca: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/chain.pem"),
-    cert: fs.readFileSync(
-      "/etc/letsencrypt/live/api.taxonium.org/fullchain.pem"
-    ),
-  };
-  https.createServer(options, app).listen(command_options.port);
-  console.log("SSL on port " + command_options.port);
-} else {
-  app.listen(command_options.port, () =>
-    console.log(`App is listening on port ${command_options.port}`)
-  );
-}
+function startListening() {
+  if (command_options.ssl) {
+    options = {
+      key: fs.readFileSync(
+        "/etc/letsencrypt/live/api.taxonium.org/privkey.pem"
+      ),
+      ca: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/chain.pem"),
+      cert: fs.readFileSync(
+        "/etc/letsencrypt/live/api.taxonium.org/fullchain.pem"
+      ),
+    };
+    https.createServer(options, app).listen(command_options.port);
+    console.log("SSL on port " + command_options.port);
+  } else {
+    app.listen(command_options.port, () =>
+      console.log(`App is listening on port ${command_options.port}`)
+    );
+  }
 }
 
 let sid_cache = {};
@@ -291,37 +303,53 @@ app.get("/node_details/", async (req, res) => {
 
 const loadData = async () => {
   await waitForTheImports();
-  let supplied_object
-  if (false){
-local_file = "latest_public.jsonl.gz";
-//  local_file = "tfci.jsonl";
-// Read as bytes
-const file_data = fs.readFileSync(local_file);
-supplied_object = {data: file_data, status:"loaded", filename: local_file};
-}
-else{
-  url = "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
-  supplied_object = {status: "url_supplied", filename: url};
-}
+  let supplied_object;
+  if (false) {
+    local_file = "latest_public.jsonl.gz";
+    //  local_file = "tfci.jsonl";
+    // Read as bytes
+    const file_data = fs.readFileSync(local_file);
+    supplied_object = {
+      data: file_data,
+      status: "loaded",
+      filename: local_file,
+    };
+  } else {
+    url =
+      "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz";
+    supplied_object = { status: "url_supplied", filename: url };
+  }
 
-processedData = await importing.processJsonl(supplied_object, logStatusMessage);
-processedData.genes = new Set(processedData.mutations.map((mutation) => mutation.gene));
-// as array
-processedData.genes = Array.from(processedData.genes);
+  processedData = await importing.processJsonl(
+    supplied_object,
+    logStatusMessage
+  );
+  processedData.genes = new Set(
+    processedData.mutations.map((mutation) => mutation.gene)
+  );
+  // as array
+  processedData.genes = Array.from(processedData.genes);
   console.log("Loaded data");
 
-  result = filtering.getNodes(processedData.nodes, processedData.y_positions, processedData.overallMinY, processedData.overallMaxY, processedData.overallMinX, processedData.overallMaxX);
-  result = filtering.addMutations(result, processedData.mutations, processedData.node_to_mut);
+  result = filtering.getNodes(
+    processedData.nodes,
+    processedData.y_positions,
+    processedData.overallMinY,
+    processedData.overallMaxY,
+    processedData.overallMinX,
+    processedData.overallMaxX
+  );
+  result = filtering.addMutations(
+    result,
+    processedData.mutations,
+    processedData.node_to_mut
+  );
   cached_starting_values = result;
   console.log("Saved cached starting vals");
   // set a timeout to start listening
   setTimeout(() => {
     console.log("Starting to listen");
     startListening();
-  }
-  , 10);
-
-
-  
+  }, 10);
 };
 loadData();
