@@ -36,7 +36,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
     colorBy,
-    view.viewState
+    view.viewState, config
   );
 
   const search = useSearch(

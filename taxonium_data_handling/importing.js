@@ -54,9 +54,6 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
       data.node_to_mut = {};
     } else {
       data.node_to_mut[decoded.node_id] = decoded.mutations; // this is an int to ints map
-      decoded.mutations = decoded.mutations.map(
-        (x) => data.header.aa_mutations[x]
-      );
       data.nodes.push(decoded);
     }
   }

@@ -8,6 +8,7 @@ const useConfig = (backend, view, overlayRef) => {
   });
 
   useEffect(() => {
+    console.log("GETTING CONFIG")
     backend.getConfig((results) => {
       const viewState = {
         ...view.viewState,
@@ -28,7 +29,7 @@ const useConfig = (backend, view, overlayRef) => {
       overlayRef.current.innerHTML = results.overlay;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [backend]);
+  }, [backend.getConfig]);
 
   return config;
 };

@@ -8,7 +8,7 @@ function addNodeLookup(data) {
   console.log("cc");
   return output;
 }
-function useGetDynamicData(backend, colorBy, viewState) {
+function useGetDynamicData(backend, colorBy, viewState, config) {
   const { queryNodes } = backend;
   const [dynamicData, setDynamicData] = useState({
     status: "not_started",
@@ -51,6 +51,7 @@ function useGetDynamicData(backend, colorBy, viewState) {
   }, [viewState, boundsForQueries, triggerRefresh]);
 
   useEffect(() => {
+    if(config.title!="loading"){
     clearTimeout(timeoutRef);
     setTimeoutRef(
       setTimeout(() => {
@@ -102,17 +103,19 @@ function useGetDynamicData(backend, colorBy, viewState) {
                       };
                       return new_result;
                     });
-                  });
+                  },undefined, config);
                 }
               }
               return new_result;
             });
           },
-          setTriggerRefresh
+          setTriggerRefresh, 
+          config
         );
       }, 300)
     );
-  }, [boundsForQueries, queryNodes, triggerRefresh]);
+    }
+  }, [boundsForQueries, queryNodes, triggerRefresh, config]);
 
   return { data: dynamicData, boundsForQueries };
 }
