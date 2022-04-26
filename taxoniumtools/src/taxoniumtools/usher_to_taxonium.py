@@ -166,6 +166,7 @@ def main():
             "residue_pos": pos,
             "new_residue": next,
             "mutation_id": i,
+            "type" : "aa"
         }
 
 

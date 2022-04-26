@@ -97,9 +97,8 @@ def recursive_mutation_analysis(node, past_nuc_muts_dict, seq, cdses, pbar):
 
     new_nuc_mutations_here = node.nuc_mutations
     new_past_nuc_muts_dict = past_nuc_muts_dict.copy()
-    past_mut_dict = {} if (node.parent is None) else new_past_nuc_muts_dict
-    node.aa_muts = get_mutations(past_mut_dict,
-                                 new_nuc_mutations_here, seq, cdses, disable_check_for_differences = (node.parent is None))
+    node.aa_muts = get_mutations(new_past_nuc_muts_dict,
+                                 new_nuc_mutations_here, seq, cdses)
     for child in node.children:
         recursive_mutation_analysis(child, new_past_nuc_muts_dict, seq, cdses,
                                     pbar)
@@ -163,13 +162,15 @@ class UsherMutationAnnotatedTree:
 
 
     def perform_aa_analysis(self):
-        self.tree.root.nuc_mutations = self.create_mutation_like_objects_to_record_reference_seq()
+        
         seq = str(self.genbank.seq)
         with alive_bar(self.tree.num_nodes(),
                        title="Annotating amino acids") as pbar:
             recursive_mutation_analysis(self.tree.root, {}, seq, self.cdses,
                                         pbar)
-        self.tree.root.nuc_mutations = []
+        reference_muts = self.create_mutation_like_objects_to_record_reference_seq()
+        self.tree.root.aa_muts = get_mutations({},
+                                 reference_muts, seq, self.cdses)
 
     def load_genbank_file(self, genbank_file):
         self.genbank = SeqIO.read(genbank_file, "genbank")
