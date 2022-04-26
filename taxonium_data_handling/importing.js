@@ -38,7 +38,7 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
         const percentage = (line_number / data.header.total_nodes) * 100;
         sendStatusMessage({
           message: `Loaded ${formatNumber(line_number)} nodes`,
-          percentage: percentage.toFixed(0),
+          percentage: percentage.toFixed(2),
         });
       } else {
         sendStatusMessage({
