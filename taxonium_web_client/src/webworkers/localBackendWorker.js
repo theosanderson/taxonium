@@ -59,13 +59,10 @@ export const queryNodes = async (boundsForQueries) => {
   let result;
   console.log("filtering");
 
-  
-    
-    result = {
-      nodes: filtering.getNodes(nodes, y_positions, min_y, max_y, min_x, max_x),
-     
-    };
- 
+  result = {
+    nodes: filtering.getNodes(nodes, y_positions, min_y, max_y, min_x, max_x),
+  };
+
   console.log("result is done");
 
   return result;

@@ -82,10 +82,12 @@ function useLocalBackend(uploaded_data, proto) {
         bounds: boundsForQueries,
       });
       onQueryReceipt = (receivedData) => {
-      //  console.log("CONFIG IS", config);
+        //  console.log("CONFIG IS", config);
         console.log("got query result", receivedData);
-          receivedData.nodes.forEach((node) => {
-          node.mutations = node.mutations.map((mutation) => config.mutations[mutation]);
+        receivedData.nodes.forEach((node) => {
+          node.mutations = node.mutations.map(
+            (mutation) => config.mutations[mutation]
+          );
         });
         setResult(receivedData);
       };

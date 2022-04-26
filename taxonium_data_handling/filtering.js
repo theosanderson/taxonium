@@ -276,7 +276,8 @@ function addMutations(input, mutations, node_to_mut) {
   const start_time = new Date();
   const result = input.map((node) => ({
     ...node,
-    mutations: node_to_mut[node.node_id]}));
+    mutations: node_to_mut[node.node_id],
+  }));
   console.log("addMutations:", new Date() - start_time);
   return result;
 }

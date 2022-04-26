@@ -51,69 +51,74 @@ function useGetDynamicData(backend, colorBy, viewState, config) {
   }, [viewState, boundsForQueries, triggerRefresh]);
 
   useEffect(() => {
-    if(config.title!="loading"){
-    clearTimeout(timeoutRef);
-    setTimeoutRef(
-      setTimeout(() => {
-        if (!boundsForQueries) return;
+    if (config.title != "loading") {
+      clearTimeout(timeoutRef);
+      setTimeoutRef(
+        setTimeout(() => {
+          if (!boundsForQueries) return;
 
-        if (dynamicData.status === "loading") {
-          console.log("not trying to get as we are still loading");
-          clearTimeout(timeoutRef);
-          setTimeoutRef(
-            setTimeout(() => {
-              setTriggerRefresh({});
-            }, 100)
-          );
-          return;
-        }
-        console.log("attempting get");
-        // Make call to backend to get data
-
-        setDynamicData({ ...dynamicData, status: "loading" });
-
-        queryNodes(
-          boundsForQueries,
-
-          (result) => {
-            console.log(
-              "got result, bounds were",
-              boundsForQueries,
-              " result is "
+          if (dynamicData.status === "loading") {
+            console.log("not trying to get as we are still loading");
+            clearTimeout(timeoutRef);
+            setTimeoutRef(
+              setTimeout(() => {
+                setTriggerRefresh({});
+              }, 100)
             );
+            return;
+          }
+          console.log("attempting get");
+          // Make call to backend to get data
 
-            setDynamicData((prevData) => {
-              const new_result = {
-                ...prevData,
-                status: "loaded",
-                data: addNodeLookup(result),
-              };
-              if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
-                new_result.base_data = addNodeLookup(result);
-              } else {
-                if (!prevData.base_data || prevData.base_data_is_invalid) {
-                  console.log("query for minimap");
-                  queryNodes(null, (base_result) => {
-                    setDynamicData((prevData) => {
-                      const new_result = {
-                        ...prevData,
-                        status: "loaded",
-                        base_data: addNodeLookup(base_result),
-                        base_data_is_invalid: false,
-                      };
-                      return new_result;
-                    });
-                  },undefined, config);
+          setDynamicData({ ...dynamicData, status: "loading" });
+
+          queryNodes(
+            boundsForQueries,
+
+            (result) => {
+              console.log(
+                "got result, bounds were",
+                boundsForQueries,
+                " result is "
+              );
+
+              setDynamicData((prevData) => {
+                const new_result = {
+                  ...prevData,
+                  status: "loaded",
+                  data: addNodeLookup(result),
+                };
+                if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
+                  new_result.base_data = addNodeLookup(result);
+                } else {
+                  if (!prevData.base_data || prevData.base_data_is_invalid) {
+                    console.log("query for minimap");
+                    queryNodes(
+                      null,
+                      (base_result) => {
+                        setDynamicData((prevData) => {
+                          const new_result = {
+                            ...prevData,
+                            status: "loaded",
+                            base_data: addNodeLookup(base_result),
+                            base_data_is_invalid: false,
+                          };
+                          return new_result;
+                        });
+                      },
+                      undefined,
+                      config
+                    );
+                  }
                 }
-              }
-              return new_result;
-            });
-          },
-          setTriggerRefresh, 
-          config
-        );
-      }, 300)
-    );
+                return new_result;
+              });
+            },
+            setTriggerRefresh,
+            config
+          );
+        }, 300)
+      );
     }
   }, [boundsForQueries, queryNodes, triggerRefresh, config]);
 

@@ -8,7 +8,7 @@ const useConfig = (backend, view, overlayRef) => {
   });
 
   useEffect(() => {
-    console.log("GETTING CONFIG")
+    console.log("GETTING CONFIG");
     backend.getConfig((results) => {
       const viewState = {
         ...view.viewState,

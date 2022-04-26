@@ -146,7 +146,6 @@ app.get("/nodes/", function (req, res) {
       min_x,
       max_x
     );
-    
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
 
@@ -336,7 +335,7 @@ const loadData = async () => {
     processedData.overallMinX,
     processedData.overallMaxX
   );
-  
+
   cached_starting_values = result;
   console.log("Saved cached starting vals");
   // set a timeout to start listening
