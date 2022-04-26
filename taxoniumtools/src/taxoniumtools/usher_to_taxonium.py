@@ -151,10 +151,18 @@ def main():
     def get_all_aa_muts(root):
         all_aa_muts = set()
         for node in alive_it(list(root.traverse_preorder()),
-                            title="Collecting all mutations"):
+                            title="Collecting all AA mutations"):
             if node.aa_muts:
                 all_aa_muts.update(node.aa_muts)
         return list(all_aa_muts)
+
+    def get_all_nuc_muts(root):
+        all_nuc_muts = set()
+        for node in alive_it(list(root.traverse_preorder()),
+                            title="Collecting all nuc mutations"):
+            if node.nuc_mutations:
+                all_nuc_muts.update(node.nuc_mutations)
+        return list(all_nuc_muts)
 
 
     def make_aa_object(i, aa_tuple):
@@ -169,8 +177,18 @@ def main():
             "type" : "aa"
         }
 
+    def make_nuc_object(i, nuc_mut):
+        return {
+            "gene": "nt",
+            "previous_residue": nuc_mut.par_nuc,
+            "residue_pos": nuc_mut.one_indexed_position, 
+            "new_residue": nuc_mut.mut_nuc,
+            "mutation_id": i,
+            "type" : "nt"
+        }        
 
-    def get_node_object(node, node_to_index, metadata, aa_mut_tuple_to_index,
+
+    def get_node_object(node, node_to_index, metadata, input_to_index,
                         columns):
 
         object = {}
@@ -181,8 +199,8 @@ def main():
             object["x_time"] = round(node.x_time, 5)
         object["y"] = node.y
         object['mutations'] = [
-            aa_mut_tuple_to_index[aa_tuple] for aa_tuple in node.aa_muts
-        ]
+            input_to_index[my_input] for my_input in node.aa_muts
+        ] + [input_to_index[my_input] for my_input in node.nuc_mutations]
         # check if label is in metadata's index
         try:
             my_dict = metadata[node.label]
@@ -222,19 +240,16 @@ def main():
                                 key=lambda x: return_y(x))
 
     all_aa_muts_tuples = get_all_aa_muts(mat.tree.root)
-    all_aa_muts_objects = [
-        make_aa_object(i, aa_tuple)
-        for i, aa_tuple in alive_it(enumerate(all_aa_muts_tuples),
-                                    title="Making AA mut objects")
-    ]
-    aa_mut_tuple_to_index = {
-        aa_tuple: i
-        for i, aa_tuple in enumerate(all_aa_muts_tuples)
-    }
+    all_nuc_muts = get_all_nuc_muts(mat.tree.root)
+    all_mut_inputs = all_aa_muts_tuples + all_nuc_muts
+    all_mut_objects = [make_aa_object(i, input_thing) if isinstance(input_thing, tuple) else make_nuc_object(i, input_thing) for i, input_thing in enumerate(all_mut_inputs)]
+    input_to_index = {input_thing: i for i, input_thing in enumerate(all_mut_inputs)}
+
     first_json = {
-        "aa_mutations": all_aa_muts_objects,
+        "aa_mutations": all_mut_objects,
         "total_nodes": len(nodes_sorted_by_y),
     }
+
     node_to_index = {node: i for i, node in enumerate(nodes_sorted_by_y)}
 
     if "gz" in args.output:
@@ -245,7 +260,7 @@ def main():
     for node in alive_it(nodes_sorted_by_y,
                         title="Converting each node, and writing out in JSON"):
         node_object = get_node_object(node, node_to_index, metadata_dict,
-                                    aa_mut_tuple_to_index, metadata_cols)
+                                    input_to_index, metadata_cols)
         output_file.write(json.dumps(node_object, separators=(',', ':')) + "\n")
     output_file.close()
 

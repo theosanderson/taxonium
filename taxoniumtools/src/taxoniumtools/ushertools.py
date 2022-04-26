@@ -1,4 +1,3 @@
-from re import I
 from . import parsimony_pb2
 import treeswift
 from alive_progress import alive_it, alive_bar
@@ -8,12 +7,7 @@ from dataclasses import dataclass
 from collections import defaultdict
 
 @dataclass
-class UsherLikeMutation:
-    position : int
-    mut_nuc : list
-
-@dataclass
-class AnnotatedMutation:
+class AnnotatedMutation: #not-hashable atm
     genome_position: int  #0-based
     genome_residue: str
     cds: lambda: "CDS"
@@ -22,13 +16,20 @@ class AnnotatedMutation:
     codon_end: int  #0-based
     gene: str
 
+@dataclass(eq=True, frozen=True)
+class NucMutation: #hashable
+    one_indexed_position: int
+    par_nuc : str
+    mut_nuc: str
+    chromosome: str = "chrom"
+
 
 def get_codon_table():
     bases = "TCAG"
     codons = [a + b + c for a in bases for b in bases for c in bases]
     amino_acids = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG'
-    codon_table = dict(zip(codons, amino_acids))
-    return codon_table
+    return dict(zip(codons, amino_acids))
+
 
 
 codon_table = get_codon_table()
@@ -39,13 +40,13 @@ def get_mutations(past_nuc_muts_dict, new_nuc_mutations_here, seq, cdses, disabl
     annotated_mutations = []
 
     for mutation in new_nuc_mutations_here:
-        cds = find_cds(mutation.position - 1, cdses)
+        cds = find_cds(mutation.one_indexed_position - 1, cdses)
         if cds:
             codon_number, codon_start, codon_end = find_codon(
-                mutation.position - 1, cds)
+                mutation.one_indexed_position - 1, cds)
             annotated_mutations.append(
-                AnnotatedMutation(genome_position=mutation.position - 1,
-                                  genome_residue=NUC_ENUM[mutation.mut_nuc[0]],
+                AnnotatedMutation(genome_position=mutation.one_indexed_position - 1,
+                                  genome_residue=mutation.mut_nuc,
                                   gene=cds.qualifiers["gene"][0],
                                   codon_number=codon_number,
                                   codon_start=codon_start,
@@ -105,7 +106,6 @@ def recursive_mutation_analysis(node, past_nuc_muts_dict, seq, cdses, pbar):
 
 
 NUC_ENUM = "ACGT"
-LETTER_TO_POS = {letter: pos for pos, letter in enumerate(NUC_ENUM)}
 
 
 def preorder_traversal(node):
@@ -157,7 +157,7 @@ class UsherMutationAnnotatedTree:
         ref_muts = []
         for i, character in enumerate(self.genbank.seq):
             ref_muts.append(
-                UsherLikeMutation(position=i + 1, mut_nuc=[LETTER_TO_POS[character]]))
+                NucMutation(one_indexed_position=i + 1, mut_nuc=character, par_nuc = "X"))
         return ref_muts
 
 
@@ -171,6 +171,7 @@ class UsherMutationAnnotatedTree:
         reference_muts = self.create_mutation_like_objects_to_record_reference_seq()
         self.tree.root.aa_muts = get_mutations({},
                                  reference_muts, seq, self.cdses, disable_check_for_differences = True)
+        self.tree.root.nuc_mutations = reference_muts
 
     def load_genbank_file(self, genbank_file):
         self.genbank = SeqIO.read(genbank_file, "genbank")
@@ -184,20 +185,26 @@ class UsherMutationAnnotatedTree:
             assert len(cds.location.parts) == 1
             assert len(cds.location.parts[0]) % 3 == 0
 
+    def convert_nuc_mutation(self, usher_mutation):
+        new_mut = NucMutation(one_indexed_position=usher_mutation.position,
+                              par_nuc = NUC_ENUM[usher_mutation.par_nuc],
+                              mut_nuc = NUC_ENUM[usher_mutation.mut_nuc[0]])
+        return new_mut
+
     def annotate_mutations(self):
         for i, node in alive_it(list(
                 enumerate(preorder_traversal(self.tree.root))),
                                 title="Annotating nuc muts"):
-            node.nuc_mutations = self.data.node_mutations[i].mutation
+            node.nuc_mutations = [self.convert_nuc_mutation(x) for x in self.data.node_mutations[i].mutation]
 
     def set_branch_lengths(self):
-        for i, node in alive_it(list(
-                enumerate(preorder_traversal(self.tree.root))),
+        for node in alive_it(list(
+                preorder_traversal(self.tree.root)),
                                 title="Setting branch length"):
             node.edge_length = len(node.nuc_mutations)
 
     def expand_condensed_nodes(self):
-        for i, node in alive_it(list(enumerate(self.tree.traverse_leaves())),
+        for node in alive_it(list(self.tree.traverse_leaves()),
                                 title="Expanding condensed nodes"):
 
             if node.label and node.label in self.condensed_nodes_dict:
