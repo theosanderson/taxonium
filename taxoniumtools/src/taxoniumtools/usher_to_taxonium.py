@@ -169,6 +169,16 @@ def main():
             "type" : "aa"
         }
 
+    def make_nuc_object(i, nuc_mut):
+        return {
+            "gene": "nt",
+            "previous_residue": ushertools.NUC_ENUM[nuc_mut.par_nuc] if nuc_mut.par_nuc != -1 else "X",
+            "residue_pos": nuc_mut.position, #already 1-indexed
+            "new_residue": ushertools.NUC_ENUM[nuc_mut.mut_nuc[0]],
+            "mutation_id": i,
+            "type" : "nt"
+        }        
+
 
     def get_node_object(node, node_to_index, metadata, aa_mut_tuple_to_index,
                         columns):

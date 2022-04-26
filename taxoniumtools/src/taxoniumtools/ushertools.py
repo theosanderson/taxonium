@@ -8,12 +8,7 @@ from dataclasses import dataclass
 from collections import defaultdict
 
 @dataclass
-class UsherLikeMutation:
-    position : int
-    mut_nuc : list
-
-@dataclass
-class AnnotatedMutation:
+class AnnotatedMutation: #not-hashable atm
     genome_position: int  #0-based
     genome_residue: str
     cds: lambda: "CDS"
@@ -21,6 +16,13 @@ class AnnotatedMutation:
     codon_start: int  #0-based
     codon_end: int  #0-based
     gene: str
+
+@dataclass
+class NucMutation(eq=True, frozen=True): #hashable
+    one_indexed_position: int
+    par_nuc : str
+    mut_nuc: str
+    chromosome: str
 
 
 def get_codon_table():
@@ -157,7 +159,7 @@ class UsherMutationAnnotatedTree:
         ref_muts = []
         for i, character in enumerate(self.genbank.seq):
             ref_muts.append(
-                UsherLikeMutation(position=i + 1, mut_nuc=[LETTER_TO_POS[character]]))
+                UsherLikeMutation(position=i + 1, mut_nuc=[LETTER_TO_POS[character]]), par_nuc = -1)
         return ref_muts
 
 
@@ -171,6 +173,7 @@ class UsherMutationAnnotatedTree:
         reference_muts = self.create_mutation_like_objects_to_record_reference_seq()
         self.tree.root.aa_muts = get_mutations({},
                                  reference_muts, seq, self.cdses, disable_check_for_differences = True)
+        self.tree.root.nuc_muts = reference_muts
 
     def load_genbank_file(self, genbank_file):
         self.genbank = SeqIO.read(genbank_file, "genbank")
@@ -184,11 +187,13 @@ class UsherMutationAnnotatedTree:
             assert len(cds.location.parts) == 1
             assert len(cds.location.parts[0]) % 3 == 0
 
+    def convert_nuc_mutation(self, usher_mutation):
+        pass
     def annotate_mutations(self):
         for i, node in alive_it(list(
                 enumerate(preorder_traversal(self.tree.root))),
                                 title="Annotating nuc muts"):
-            node.nuc_mutations = self.data.node_mutations[i].mutation
+            node.nuc_mutations = [convert_nuc_mutation(x) for x in self.data.node_mutations[i].mutation]
 
     def set_branch_lengths(self):
         for i, node in alive_it(list(
