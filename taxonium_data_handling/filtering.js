@@ -19,7 +19,8 @@ const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
         return (
           mutation.residue_pos === position &&
           mutation.gene === gene &&
-          mutation.new_residue === original_resiude
+          mutation.new_residue === original_resiude &&
+          mutation.previous_residue != original_resiude
         );
       })
       .map((x) => x.mutation_id);
