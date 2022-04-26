@@ -16,8 +16,8 @@ class AnnotatedMutation: #not-hashable atm
     codon_end: int  #0-based
     gene: str
 
-@dataclass
-class NucMutation(eq=True, frozen=True): #hashable
+@dataclass(eq=True, frozen=True)
+class NucMutation: #hashable
     one_indexed_position: int
     par_nuc : str
     mut_nuc: str
