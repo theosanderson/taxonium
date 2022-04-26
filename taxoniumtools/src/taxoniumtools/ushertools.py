@@ -170,7 +170,7 @@ class UsherMutationAnnotatedTree:
                                         pbar)
         reference_muts = self.create_mutation_like_objects_to_record_reference_seq()
         self.tree.root.aa_muts = get_mutations({},
-                                 reference_muts, seq, self.cdses)
+                                 reference_muts, seq, self.cdses, disable_check_for_differences = True)
 
     def load_genbank_file(self, genbank_file):
         self.genbank = SeqIO.read(genbank_file, "genbank")
