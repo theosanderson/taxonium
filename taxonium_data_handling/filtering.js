@@ -18,7 +18,7 @@ const getRevertantMutationsSet = async (all_data, node_to_mut, mutations) => {
       .filter((mutation) => {
         return (
           mutation.residue_pos === position &&
-           mutation.gene === gene &&
+          mutation.gene === gene &&
           mutation.new_residue === original_resiude
         );
       })
