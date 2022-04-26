@@ -160,8 +160,8 @@ def main():
         all_nuc_muts = set()
         for node in alive_it(list(root.traverse_preorder()),
                             title="Collecting all nuc mutations"):
-            if node.nuc_muts:
-                all_nuc_muts.update(node.nuc_muts)
+            if node.nuc_mutations:
+                all_nuc_muts.update(node.nuc_mutations)
         return list(all_nuc_muts)
 
 
@@ -200,7 +200,7 @@ def main():
         object["y"] = node.y
         object['mutations'] = [
             input_to_index[my_input] for my_input in node.aa_muts
-        ] + [input_to_index[my_input] for my_input in node.nuc_muts]
+        ] + [input_to_index[my_input] for my_input in node.nuc_mutations]
         # check if label is in metadata's index
         try:
             my_dict = metadata[node.label]
