@@ -1,6 +1,7 @@
 var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
+var responseTime = require('response-time')
 
 var app = express();
 var fs = require("fs");
@@ -51,6 +52,7 @@ const command_options = program.opts();
 
 app.use(cors());
 app.use(compression());
+app.use(responseTime());
 
 const logStatusMessage = (status_obj) => {
   console.log("status", status_obj);
@@ -61,7 +63,7 @@ app.get("/", function (req, res) {
 });
 
 app.get("/search", function (req, res) {
-  const start_time = Date.now();
+
   console.log("/search");
   const json = req.query.json;
   const spec = JSON.parse(JSON.parse(json));
@@ -84,9 +86,7 @@ app.get("/search", function (req, res) {
   console.log(
     "Found " +
       result.data.length +
-      " results in " +
-      (Date.now() - start_time) +
-      "ms"
+      " results"
   );
   console.log("Result type was " + result.type);
 });
@@ -114,7 +114,7 @@ app.get("/config", function (req, res) {
 });
 
 app.get("/nodes/", function (req, res) {
-  const start_time = Date.now();
+
   const min_x = req.query.min_x;
   const max_x = req.query.max_x;
   let min_y =
@@ -151,17 +151,11 @@ app.get("/nodes/", function (req, res) {
       processedData.node_to_mut
     );
   }
-  console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
+
 
   // This will be sent as json
   validateSIDandSend({ nodes: result }, req.query.sid, res);
-  console.log(
-    "Request took " +
-      (Date.now() - start_time) +
-      "ms, and output " +
-      result.length +
-      " nodes."
-  );
+ 
 });
 
 function startListening() {
@@ -248,13 +242,12 @@ async function validateSIDandSend(to_send, sid, res) {
 }
 
 app.get("/validate/", async function (req, res) {
-  const start_time = new Date();
   const query_sid = req.query.sid;
   const validity = await validateSID(query_sid);
   console.log("Got validity", validity);
 
   res.send(validity);
-  console.log(new Date() - start_time);
+
 });
 
 // "Takes EPI_ISL_12345" input
@@ -273,7 +266,7 @@ function get_epi_isl_url(epi_isl) {
 }
 
 app.get("/node_details/", async (req, res) => {
-  const start_time = Date.now();
+  
   const query_id = req.query.id;
   const node = processedData.nodes[query_id];
   const node_mutations = processedData.node_to_mut[query_id].map((mutation) => {
@@ -296,9 +289,7 @@ app.get("/node_details/", async (req, res) => {
     }
   }
   validateSIDandSend(detailed_node, req.query.sid, res);
-  console.log(
-    "Request took " + (Date.now() - start_time) + "ms, and output " + node
-  );
+ 
 });
 
 const loadData = async () => {
