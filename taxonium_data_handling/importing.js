@@ -1,6 +1,10 @@
 import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
+
+const roundToDp = (number, dp) => {
+  return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
+};
 let ReadableWebToNodeStream;
 import("readable-web-to-node-stream").then(function (module) {
   ReadableWebToNodeStream = module.ReadableWebToNodeStream;
@@ -133,7 +137,9 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   for (const node of new_data.nodes) {
     node.x_dist = node.x_dist * scale_x;
     node.x = node.x_dist;
-    node.y = node.y * scale_y;
+    // numerically round to the nearest 0.1
+
+    node.y = roundToDp(node.y * scale_y, 6);
   }
   console.log("Calculating y positions");
   const y_positions = new_data.nodes.map((node) => node.y);
