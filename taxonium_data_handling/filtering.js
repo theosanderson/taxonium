@@ -5,7 +5,7 @@ import("crypto").then((c) => {
 
 let revertant_mutations_set = null;
 
-const getRevertantMutationsSet =  (all_data, node_to_mut, mutations) => {
+const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
   const root = all_data.find((node) => node.node_id === node.parent_id);
   const root_mutations = node_to_mut[root.node_id];
   const revertant_mutations = [];
