@@ -109,6 +109,7 @@ app.get("/config", function (req, res) {
     (processedData.overallMinY + processedData.overallMaxY) / 2;
   config.initial_zoom = -2;
   config.genes = processedData.genes;
+  config.mutations = processedData.mutations;
 
   validateSIDandSend(config, req.query.sid, res);
 });
@@ -144,11 +145,6 @@ app.get("/nodes/", function (req, res) {
       max_y,
       min_x,
       max_x
-    );
-    result = filtering.addMutations(
-      result,
-      processedData.mutations,
-      processedData.node_to_mut
     );
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
@@ -339,11 +335,7 @@ const loadData = async () => {
     processedData.overallMinX,
     processedData.overallMaxX
   );
-  result = filtering.addMutations(
-    result,
-    processedData.mutations,
-    processedData.node_to_mut
-  );
+
   cached_starting_values = result;
   console.log("Saved cached starting vals");
   // set a timeout to start listening

@@ -75,14 +75,20 @@ function useLocalBackend(uploaded_data, proto) {
      
       */
   const queryNodes = useCallback(
-    async (boundsForQueries, setResult, setTriggerRefresh) => {
+    async (boundsForQueries, setResult, setTriggerRefresh, config) => {
       console.log("queryNodes", boundsForQueries);
       worker.postMessage({
         type: "query",
         bounds: boundsForQueries,
       });
       onQueryReceipt = (receivedData) => {
+        //  console.log("CONFIG IS", config);
         console.log("got query result", receivedData);
+        receivedData.nodes.forEach((node) => {
+          node.mutations = node.mutations.map(
+            (mutation) => config.mutations[mutation]
+          );
+        });
         setResult(receivedData);
       };
     },

@@ -3,7 +3,7 @@ import axios from "axios";
 
 function useServerBackend(backend_url, sid, url_on_fail) {
   const queryNodes = useCallback(
-    (boundsForQueries, setResult, setTriggerRefresh) => {
+    (boundsForQueries, setResult, setTriggerRefresh, config) => {
       let url = backend_url + "/nodes/?type=leaves&sid=" + sid;
       if (
         boundsForQueries &&
@@ -28,6 +28,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         .get(url)
         .then(function (response) {
           console.log("got data", response.data);
+          response.data.nodes.forEach((node) => {
+            node.mutations = node.mutations.map(
+              (mutation) => config.mutations[mutation]
+            );
+          });
 
           setResult(response.data);
         })
