@@ -2,7 +2,6 @@ import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
-
 const roundToDp = (number, dp) => {
   return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
 };
@@ -140,7 +139,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     node.x = node.x_dist;
     // numerically round to the nearest 0.1
 
-    node.y = roundToDp(node.y * scale_y,6)
+    node.y = roundToDp(node.y * scale_y, 6);
   }
   console.log("Calculating y positions");
   const y_positions = new_data.nodes.map((node) => node.y);
