@@ -133,7 +133,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   for (const node of new_data.nodes) {
     node.x_dist = node.x_dist * scale_x;
     node.x = node.x_dist;
-    node.y = (node.y * scale_y).toFixed(6);
+    node.y = (node.y * scale_y)
   }
   console.log("Calculating y positions");
   const y_positions = new_data.nodes.map((node) => node.y);
