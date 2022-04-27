@@ -1,5 +1,5 @@
 # docker build -f Dockerfile.backend -t taxoniumbackend .
-FROM node:16-alpine
+FROM node:17.9-alpine
 WORKDIR /app
 
 COPY taxonium_backend ./taxonium_backend
