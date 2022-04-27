@@ -16,7 +16,7 @@ const useLayers = ({
   colorBy,
   xAccessor,
   modelMatrix,
-  selectedDetails
+  selectedDetails,
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
