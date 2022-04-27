@@ -12,6 +12,21 @@ import "react-circular-progressbar/dist/styles.css";
 import useSnapshot from "./hooks/useSnapshot";
 import NodeHoverTip from "./components/NodeHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
+import Modal from 'react-modal';
+
+const settingsModalStyle = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    //width: '50%',
+    backgroundColor: '#fafafa',
+  },
+};
+
 
 function Deck({
   data,
@@ -25,9 +40,19 @@ function Deck({
   config,
   statusMessage,
   xAccessor,
+  minimapEnabled,
+  setMinimapEnabled
+
+
 }) {
+
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
+  const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
+
+
+ 
+
   //console.log("DATA is ", data);
   const no_data = !data.data || !data.data.nodes || !data.data.nodes.length;
 
@@ -169,6 +194,19 @@ function Deck({
           </div>
         </div>
       )}{" "}
+      <Modal
+        isOpen={deckSettingsOpen}
+        style={settingsModalStyle}
+     
+        onRequestClose={() => setDeckSettingsOpen(false)}
+      
+        contentLabel="Example Modal"
+      >
+        <h2 className="font-medium mb-3">Settings</h2>
+        <div className="text-sm">
+          <input type="checkbox" className="mr-1" checked={minimapEnabled} onChange={() => setMinimapEnabled(!minimapEnabled)} /> Enable minimap
+        </div>
+      </Modal>
       <DeckGL
         pickingRadius={10}
         onAfterRender={onAfterRender}
@@ -192,6 +230,7 @@ function Deck({
           setZoomAxis={setZoomAxis}
           snapshot={snapshot}
           loading={data.status==="loading"}
+          requestOpenSettings={() => setDeckSettingsOpen(true)}
         />
 
         

@@ -13,7 +13,8 @@ import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
 function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
-  const view = useView();
+  const [minimapEnabled, setMinimapEnabled] = useState(true);
+  const view = useView({minimapEnabled});
   const colourMapping = useMemo(() => {
     return {};
   }, []);
@@ -63,9 +64,12 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             colorHook={colorHook}
             colorBy={colorBy}
             config={config}
+            ariaHideApp={false} // sadly with or without this the app is not suitable for screen readers
             hoverDetails={hoverDetails}
             selectedDetails={selectedDetails}
             xAccessor={xAccessor}
+            minimapEnabled={minimapEnabled}
+            setMinimapEnabled={setMinimapEnabled}
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
