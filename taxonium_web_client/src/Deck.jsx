@@ -35,12 +35,12 @@ function Deck({
   colorHook,
   colorBy,
   hoverDetails,
-  selectedDetails,
   config,
   statusMessage,
   xAccessor,
   minimapEnabled,
   setMinimapEnabled,
+  selectedDetails,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -136,6 +136,7 @@ function Deck({
     colorBy,
     xAccessor,
     modelMatrix: view.modelMatrix,
+    selectedDetails,
   });
   // console.log("deck refresh");
 
