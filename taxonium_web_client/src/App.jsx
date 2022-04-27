@@ -50,6 +50,7 @@ function App() {
   const [beingDragged, setBeingDragged] = useState(false);
 
   const overlayRef = useRef(null);
+  const dragTimeout = useRef(null);
 
   function onDrop(ev) {
     console.log("File(s) dropped");
@@ -75,16 +76,28 @@ function App() {
   }
 
   function onDragOver(ev) {
+    if(uploadedData && (uploadedData.status === "loaded" || uploadedData.status === "loading")) {
+      ev.preventDefault();
+      return;
+    }
     console.log("File(s) in drop zone");
     setBeingDragged(true);
+    if (dragTimeout.current) {
+      clearTimeout(dragTimeout.current);
+    }
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   }
 
   function onDragLeave(ev) {
-    setBeingDragged(false);
-    ev.preventDefault();
+    //debounce:
+    if (dragTimeout.current) {
+      clearTimeout(dragTimeout.current);
+    }
+    dragTimeout.current = setTimeout(() => {
+      setBeingDragged(false);
+    }, 500);
   }
 
   const [uploadedData, setUploadedData] = useState(null);
@@ -140,7 +153,7 @@ function App() {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        {beingDragged && <div>Drop file to import</div>}
+        {beingDragged && <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>}
         <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
           <div className="flex justify-between">
             <h1 className="text-xl p-4  pb-5 text-white ">
