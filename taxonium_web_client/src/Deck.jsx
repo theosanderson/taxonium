@@ -16,6 +16,8 @@ import {
   BiMoveVertical,
   BiMoveHorizontal,
 } from "react-icons/bi";
+
+import { TiZoom } from "react-icons/ti";
 import useSnapshot from "./hooks/useSnapshot";
 import NodeHoverTip from "./components/NodeHoverTip";
 
@@ -115,15 +117,16 @@ function Deck({
     [hoverDetails]
   );
 
-  const { layers, layerFilter } = useLayers(
+  const { layers, layerFilter } = useLayers({
     data,
     search,
     viewState,
     colorHook,
     setHoverInfo,
     colorBy,
-    xAccessor
-  );
+    xAccessor,
+    modelMatrix: view.modelMatrix,
+  });
   // console.log("deck refresh");
 
   return (
@@ -198,33 +201,34 @@ function Deck({
             </div>
           )}
 
-          {/* <button
-            className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
+          <button
+            className=" w-16 h-10 bg-gray-100 mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {
               setZoomAxis(zoomAxis === "X" ? "Y" : "X");
             }}
+            title={
+              zoomAxis === "X"
+                ? "Switch to Y-axis zoom"
+                : "Switch to X-axis zoom"
+            }
           >
+            <TiZoom className="mx-auto  w-5 h-5 inline-block m-0" />
             {zoomAxis === "Y" ? (
-              <BiMoveVertical
-                className="mx-auto  w-5 h-5 "
-                title="Switch to horizontal zoom"
-              />
+              <BiMoveVertical className="mx-auto  w-5 h-5 inline-block m-0" />
             ) : (
-              
-                <BiMoveHorizontal
-                className="mx-auto  w-5 h-5 "
-                title="Switch to vertical zoom"
-            />
-              
+              <>
+                <BiMoveHorizontal className="mx-auto  w-5 h-5 inline-block m-0" />
+              </>
             )}
-            </button>*/}
+          </button>
+
           <button
             className=" w-12 h-10 bg-gray-100  mr-1 p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
             onClick={() => {
               snapshot();
             }}
           >
-            <BiCamera className="mx-auto  w-5 h-5 " />
+            <BiCamera className="mx-auto  w-5 h-5 inline-block" />
           </button>
           <button
             className=" w-12 h-10 bg-gray-100  p-1 rounded border-gray-300 text-gray-700 opacity-60 hover:opacity-100"
@@ -232,7 +236,7 @@ function Deck({
               zoomIncrement(0.6);
             }}
           >
-            <BiZoomIn className="mx-auto  w-5 h-5 " />
+            <BiZoomIn className="mx-auto  w-5 h-5 inline-block" />
           </button>
           <button
             className=" w-12 h-10 bg-gray-100 ml-1 p-1 rounded border-gray-300 text-gray-700  opacity-60  hover:opacity-100"
@@ -240,7 +244,7 @@ function Deck({
               zoomIncrement(-0.6);
             }}
           >
-            <BiZoomOut className="mx-auto w-5 h-5 " />
+            <BiZoomOut className="mx-auto w-5 h-5 inline-block" />
           </button>
         </div>
       </DeckGL>

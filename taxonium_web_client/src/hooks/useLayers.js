@@ -7,34 +7,16 @@ import {
 
 import { useMemo, useCallback } from "react";
 
-let getMMatrix = (zoom) => [
-  1 / 2 ** zoom,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  0,
-  1,
-]; // new Matrix4().scale([Math.max(1, zoom), 1, 1]);
-
-const useLayers = (
+const useLayers = ({
   data,
   search,
   viewState,
   colorHook,
   setHoverInfo,
   colorBy,
-  xAccessor
-) => {
+  xAccessor,
+  modelMatrix,
+}) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
 
@@ -144,7 +126,7 @@ const useLayers = (
       pickable: true,
       radiusUnits: "pixels",
       onHover: (info) => setHoverInfo(info),
-      modelMatrix: getMMatrix(viewState.zoom),
+      modelMatrix: modelMatrix,
       updateTriggers: {
         getFillColor: [combo, getNodeColorField],
       },
@@ -159,7 +141,7 @@ const useLayers = (
       getRadius: 4,
       pickable: true,
       radiusUnits: "pixels",
-      modelMatrix: getMMatrix(viewState.zoom),
+      modelMatrix: modelMatrix,
     });
 
     const temp_line_layer = new LineLayer({
@@ -171,7 +153,7 @@ const useLayers = (
       pickable: true,
       onHover: (info) => setHoverInfo(info),
 
-      modelMatrix: getMMatrix(viewState.zoom),
+      modelMatrix: modelMatrix,
       updateTriggers: {
         getSourcePosition: [combo, xAccessor],
         getTargetPosition: [combo, xAccessor],
@@ -186,7 +168,7 @@ const useLayers = (
       onHover: (info) => setHoverInfo(info),
       getColor: lineColor,
       pickable: true,
-      modelMatrix: getMMatrix(viewState.zoom),
+      modelMatrix: modelMatrix,
       updateTriggers: {
         getSourcePosition: [combo, xAccessor],
         getTargetPosition: [combo, xAccessor],
@@ -218,7 +200,7 @@ const useLayers = (
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
       getSize: data.data.nodes.length < 200 ? 12 : 9.5,
-      modelMatrix: getMMatrix(viewState.zoom),
+      modelMatrix: modelMatrix,
     });
 
     layers.push(node_label_layer);
@@ -323,7 +305,7 @@ const useLayers = (
       getLineWidth: 1,
       filled: true,
       getFillColor: [255, 0, 0, 0],
-      modelMatrix: getMMatrix(viewState.zoom),
+      modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [xAccessor],
       },
