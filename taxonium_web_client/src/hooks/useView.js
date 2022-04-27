@@ -70,7 +70,7 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({minimapEnabled}) => {
+const useView = ({ minimapEnabled }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
 
@@ -82,26 +82,33 @@ const useView = ({minimapEnabled}) => {
   });
 
   const views = useMemo(() => {
-    return [...[
-      new OrthographicView({
-        id: "main",
-        controller: {
-          type: MyOrthographicController,
-          scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
-        },
-        initialViewState: viewState,
-      })] , ...(minimapEnabled ? [
-      new OrthographicView({
-        id: "minimap",
-        x: "79%",
-        y: "1%",
-        width: "20%",
-        height: "35%",
-        borderWidth: "1px",
-        controller: true,
-        // clear: true,
-      })] : [])];
-  }, [viewState, zoomAxis,minimapEnabled, xzoom]);
+    return [
+      ...[
+        new OrthographicView({
+          id: "main",
+          controller: {
+            type: MyOrthographicController,
+            scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
+          },
+          initialViewState: viewState,
+        }),
+      ],
+      ...(minimapEnabled
+        ? [
+            new OrthographicView({
+              id: "minimap",
+              x: "79%",
+              y: "1%",
+              width: "20%",
+              height: "35%",
+              borderWidth: "1px",
+              controller: true,
+              // clear: true,
+            }),
+          ]
+        : []),
+    ];
+  }, [viewState, zoomAxis, minimapEnabled, xzoom]);
 
   const modelMatrix = useMemo(() => {
     return [

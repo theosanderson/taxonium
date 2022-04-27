@@ -14,7 +14,7 @@ import useConfig from "./hooks/useConfig";
 
 function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
-  const view = useView({minimapEnabled});
+  const view = useView({ minimapEnabled });
   const colourMapping = useMemo(() => {
     return {};
   }, []);
