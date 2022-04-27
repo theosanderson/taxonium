@@ -2,12 +2,11 @@
 FROM node:16-alpine
 WORKDIR /app
 
-COPY backend ./backend
+COPY taxonium_backend ./taxonium_backend
 COPY taxonium_data_handling ./taxonium_data_handling
-WORKDIR /app/backend
+WORKDIR /app/taxonium_backend
 RUN yarn --frozen-lockfile
 
 
 EXPOSE 8080
 CMD node server.js --database_dir ./database/ --port 8080 --config_json config_public.json
-
