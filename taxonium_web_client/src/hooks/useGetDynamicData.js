@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+const DEBOUNCE_TIME = 100;
+const CHECK_AGAIN_TIME = 100;
 function addNodeLookup(data) {
   const output = {
     ...data,
@@ -63,7 +65,7 @@ function useGetDynamicData(backend, colorBy, viewState, config) {
             setTimeoutRef(
               setTimeout(() => {
                 setTriggerRefresh({});
-              }, 100)
+              }, CHECK_AGAIN_TIME)
             );
             return;
           }
@@ -117,7 +119,7 @@ function useGetDynamicData(backend, colorBy, viewState, config) {
             setTriggerRefresh,
             config
           );
-        }, 300)
+        }, DEBOUNCE_TIME)
       );
     }
   }, [boundsForQueries, queryNodes, triggerRefresh, config]);
