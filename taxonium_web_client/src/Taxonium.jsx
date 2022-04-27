@@ -57,6 +57,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
       <div className="md:grid md:grid-cols-12 h-full">
         <div className="md:col-span-8 h-3/6 md:h-full w-full">
           <Deck
+
             statusMessage={backend.statusMessage}
             data={data}
             search={search}
@@ -70,7 +71,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             xAccessor={xAccessor}
             minimapEnabled={minimapEnabled}
             setMinimapEnabled={setMinimapEnabled}
-          />
+            />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
           <SearchPanel

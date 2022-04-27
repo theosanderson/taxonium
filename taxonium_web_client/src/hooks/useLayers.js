@@ -16,6 +16,7 @@ const useLayers = ({
   colorBy,
   xAccessor,
   modelMatrix,
+  selectedDetails
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -174,11 +175,34 @@ const useLayers = ({
         getTargetPosition: [combo, xAccessor],
       },
     });
+    console.log("SELECTED DETAILS", selectedDetails);
+
+    const selectedLayer = new ScatterplotLayer({
+      data: selectedDetails.nodeDetails ? [selectedDetails.nodeDetails] : [],
+      visible: true,
+      opacity: 1,
+      getRadius: 6,
+      radiusUnits: "pixels",
+
+      id: "main-selected",
+      filled: false,
+      stroked: true,
+      modelMatrix,
+
+      getLineColor: [0, 0, 0],
+      getPosition: (d) => {
+        return [d[xAccessor], d.y];
+      },
+      lineWidthUnits: "pixels",
+      lineWidthScale: 2,
+    });
+
     layers.push(
       bound_layer,
       temp_line_layer,
       temp_line_layer2,
-      temp_scatter_layer
+      temp_scatter_layer,
+      selectedLayer
     );
   }
 
