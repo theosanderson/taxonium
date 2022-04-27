@@ -7,8 +7,6 @@ import {
 
 import { useMemo, useCallback } from "react";
 
-
-
 const useLayers = ({
   data,
   search,
@@ -17,9 +15,8 @@ const useLayers = ({
   setHoverInfo,
   colorBy,
   xAccessor,
-  modelMatrix
-}
-) => {
+  modelMatrix,
+}) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
 

@@ -1,66 +1,66 @@
 import { useState, useMemo, useCallback } from "react";
 import {
-  OrthographicView,OrthographicController
+  OrthographicView,
+  OrthographicController,
   //OrthographicViewport,
 } from "@deck.gl/core";
 class MyOrthographicController extends OrthographicController {
-
   // on construction
   constructor(props) {
     console.log("MyOrthographicController.constructor");
     super(props);
-
-    
   }
-   // Default handler for the `wheel` event.
-    onWheel(event){
-      if (!this.scrollZoom) {
-        return false;
-      }
-      event.preventDefault();
-  
-      const pos = this.getCenter(event);
-      if (!this.isPointInBounds(pos, event)) {
-        return false;
-      }
-  
-      const {speed = 0.01, smooth = false, zoomAxis = "Y"} = this.scrollZoom;
-      const {delta} = event;
-  
-      // Map wheel delta to relative scale
-      let scale = 2 / (1 + Math.exp(-Math.abs(delta * speed)));
-      if (delta < 0 && scale !== 0) {
-        scale = 1 / scale;
-      }
-  
-      const newControllerState = this.controllerState.zoom({pos, scale});
+  // Default handler for the `wheel` event.
+  onWheel(event) {
+    if (!this.scrollZoom) {
+      return false;
+    }
+    event.preventDefault();
 
-  
-      let transitionDuration = smooth? 250:1;
-      if(zoomAxis === "X"){
-        transitionDuration = 0;
-      }
-      console.log("zoomAxis:", zoomAxis);
-      
-      this.updateViewport(
-        newControllerState,
-        {...this._getTransitionProps({around: pos}), transitionDuration: transitionDuration},
-        {
-          isZooming: zoomAxis === "Y",
-          isPanning: true
-        }
-      );
-      return true;
+    const pos = this.getCenter(event);
+    if (!this.isPointInBounds(pos, event)) {
+      return false;
     }
 
+    const { speed = 0.01, smooth = false, zoomAxis = "Y" } = this.scrollZoom;
+    const { delta } = event;
+
+    // Map wheel delta to relative scale
+    let scale = 2 / (1 + Math.exp(-Math.abs(delta * speed)));
+    if (delta < 0 && scale !== 0) {
+      scale = 1 / scale;
+    }
+
+    const newControllerState = this.controllerState.zoom({ pos, scale });
+
+    let transitionDuration = smooth ? 250 : 1;
+    if (zoomAxis === "X") {
+      transitionDuration = 0;
+    }
+    console.log("zoomAxis:", zoomAxis);
+
+    this.updateViewport(
+      newControllerState,
+      {
+        ...this._getTransitionProps({ around: pos }),
+        transitionDuration: transitionDuration,
+      },
+      {
+        isZooming: zoomAxis === "Y",
+        isPanning: true,
+      }
+    );
+    return true;
+  }
+
   handleEvent(event) {
-   // console.log("event:", event);
-    if (event.type === 'wheel') {
-      const {ControllerState} = this;
+    // console.log("event:", event);
+    if (event.type === "wheel") {
+      const { ControllerState } = this;
       this.controllerState = new ControllerState({
         makeViewport: this.makeViewport,
         ...this.controllerStateProps,
-        ...this._state
+        ...this._state,
       });
       const eventStartBlocked = this._eventStartBlocked;
       return this.onWheel(event);
@@ -70,10 +70,7 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-
-
 const useView = () => {
-
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
 
@@ -81,7 +78,7 @@ const useView = () => {
     zoom: 0,
     target: [0, 0],
     pitch: 0,
-    bearing: 0
+    bearing: 0,
   });
 
   const views = useMemo(() => {
@@ -90,7 +87,7 @@ const useView = () => {
         id: "main",
         controller: {
           type: MyOrthographicController,
-          scrollZoom: {smooth:true, zoomAxis: zoomAxis , xzoom: xzoom},
+          scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
         },
         initialViewState: viewState,
       }),
@@ -106,11 +103,10 @@ const useView = () => {
       }),
     ];
   }, [viewState, zoomAxis]);
-  
+
   const modelMatrix = useMemo(() => {
-   
     return [
-      1 / 2 ** (viewState.zoom-xzoom),
+      1 / 2 ** (viewState.zoom - xzoom),
       0,
       0,
       0,
@@ -126,7 +122,7 @@ const useView = () => {
       0,
       0,
       1,
-    ]
+    ];
   }, [viewState.zoom, xzoom]);
 
   const onViewStateChange = useCallback(
@@ -135,47 +131,40 @@ const useView = () => {
       if (viewId === "minimap") {
         return;
       }
-    
 
       //const temp_viewport = new OrthographicViewport(viewS
       const oldScaleY = 2 ** oldViewState.zoom;
       const newScaleY = 2 ** viewState.zoom;
-      const oldScaleX = 2 ** xzoom
+      const oldScaleX = 2 ** xzoom;
       let newScaleX = 2 ** xzoom;
-      
-      //console.log("old",oldViewState)
-      console.log(zoomAxis)
-      if (oldScaleY !== newScaleY ) {
-        if(zoomAxis==="Y"){
-        viewState.target[0] = (oldViewState.target[0] / newScaleY) * oldScaleY; 
-       
-        
-        }
-        else{
-          const difference = (viewState.zoom- oldViewState.zoom);
-        
 
-          setXzoom( (old) => old + difference);
-          
-          
-          newScaleX = 2**(xzoom + difference);
-          console.log(xzoom, difference, newScaleX)
+      //console.log("old",oldViewState)
+      console.log(zoomAxis);
+      if (oldScaleY !== newScaleY) {
+        if (zoomAxis === "Y") {
+          viewState.target[0] =
+            (oldViewState.target[0] / newScaleY) * oldScaleY;
+        } else {
+          const difference = viewState.zoom - oldViewState.zoom;
+
+          setXzoom((old) => old + difference);
+
+          newScaleX = 2 ** (xzoom + difference);
+          console.log(xzoom, difference, newScaleX);
           viewState.zoom = oldViewState.zoom;
-          viewState.target[0] = (oldViewState.target[0] / oldScaleY) * newScaleY; 
+          viewState.target[0] =
+            (oldViewState.target[0] / oldScaleY) * newScaleY;
         }
       }
-     
-      
-  
+
       viewState.target = [...viewState.target];
 
       viewState.real_height = viewState.height / newScaleY;
       viewState.real_width = viewState.width / newScaleX;
 
-
-
       viewState.real_target = [...viewState.target];
-      viewState.real_target[0] = viewState.real_target[0] * newScaleY/ newScaleX;
+      viewState.real_target[0] =
+        (viewState.real_target[0] * newScaleY) / newScaleX;
 
       const nw = [
         viewState.real_target[0] - viewState.real_width / 2,
@@ -215,7 +204,7 @@ const useView = () => {
   const output = useMemo(() => {
     return {
       viewState,
-     
+
       onViewStateChange,
       views,
       zoomAxis,
