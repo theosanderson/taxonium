@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taxoniumbackend
+  labels:
+    app: taxoniumbackend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: taxoniumbackend
+  template:
+    metadata:
+      labels:
+        app: taxoniumbackend
+    spec:
+      containers:
+      - name: taxoniumbackend
+        image: theosanderson/taxonium:master
+        ports:
+        - containerPort: 8080
