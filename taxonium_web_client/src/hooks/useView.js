@@ -62,7 +62,7 @@ class MyOrthographicController extends OrthographicController {
         ...this.controllerStateProps,
         ...this._state,
       });
-      const eventStartBlocked = this._eventStartBlocked;
+      
       return this.onWheel(event);
     } else {
       super.handleEvent(event);

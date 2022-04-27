@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 const DEBOUNCE_TIME = 100;
 const CHECK_AGAIN_TIME = 100;
@@ -53,7 +53,7 @@ function useGetDynamicData(backend, colorBy, viewState, config) {
   }, [viewState, boundsForQueries, triggerRefresh]);
 
   useEffect(() => {
-    if (config.title != "loading") {
+    if (config.title !== "loading") {
       clearTimeout(timeoutRef);
       setTimeoutRef(
         setTimeout(() => {
