@@ -90,6 +90,9 @@ const useLayers = ({
     return combo.nodes.filter((d) => d.name !== "");
   }, [combo]);
 
+  
+
+
   const minimap_scatter_data = useMemo(() => {
     return base_data ? base_data.nodes.filter((node) => node.name !== "") : [];
   }, [base_data]);
@@ -111,9 +114,9 @@ const useLayers = ({
   const bound_contour = [[outer_bounds, inner_bounds]];
 
   if (data.data.nodes) {
-    const temp_scatter_layer = new ScatterplotLayer({
+    const main_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
-      data: combo_scatter.filter((x) => true), //this isn't great: how can we remove this. We have it because otherwise colour doesn't always update.
+      data: combo_scatter, 
       getPosition: (d) => [d.final_x, d.y],
       getFillColor: (d) => toRGB(getNodeColorField(d, combo)),
 
@@ -147,7 +150,7 @@ const useLayers = ({
 
     const temp_line_layer = new LineLayer({
       id: "main-line-horiz",
-      data: data.data.nodes,
+      data: combo.nodes,
       getSourcePosition: (d) => [d.final_x, d.y],
       getTargetPosition: (d) => [d.parent_x, d.y],
       getColor: lineColor,
@@ -163,7 +166,7 @@ const useLayers = ({
 
     const temp_line_layer2 = new LineLayer({
       id: "main-line-vert",
-      data: data.data.nodes,
+      data: combo.nodes,
       getSourcePosition: (d) => [d.parent_x, d.y],
       getTargetPosition: (d) => [d.parent_x, d.parent_y],
       onHover: (info) => setHoverInfo(info),
@@ -175,7 +178,6 @@ const useLayers = ({
         getTargetPosition: [combo, xAccessor],
       },
     });
-    console.log("SELECTED DETAILS", selectedDetails);
 
     const selectedLayer = new ScatterplotLayer({
       data: selectedDetails.nodeDetails ? [selectedDetails.nodeDetails] : [],
@@ -201,7 +203,7 @@ const useLayers = ({
       bound_layer,
       temp_line_layer,
       temp_line_layer2,
-      temp_scatter_layer,
+      main_scatter_layer,
       selectedLayer
     );
   }
