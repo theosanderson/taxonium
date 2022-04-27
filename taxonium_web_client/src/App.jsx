@@ -197,7 +197,14 @@ function App() {
                     className="border-gray-300 p-1 w-60 border"
                     value={currentUrl}
                     onChange={(event) => setCurrentUrl(event.target.value)}
-                  ></input>
+                    // submit on enter
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
+                        updateQuery({
+                          ...query,
+                          protoUrl: currentUrl.replace("http://", "https://"),
+                        })
+                      } }}  />
                   <br />
                   <button
                     className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8 mt-5"
