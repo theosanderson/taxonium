@@ -217,6 +217,7 @@ const useView = ({ minimapEnabled }) => {
       setZoomAxis,
       modelMatrix,
       zoomIncrement,
+      xzoom
     };
   }, [
     viewState,
@@ -227,6 +228,7 @@ const useView = ({ minimapEnabled }) => {
     setZoomAxis,
     modelMatrix,
     zoomIncrement,
+    xzoom
   ]);
 
   return output;

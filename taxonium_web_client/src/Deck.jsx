@@ -58,6 +58,7 @@ function Deck({
     onAfterRender,
     zoomAxis,
     setZoomAxis,
+    xzoom
   } = view;
 
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
@@ -103,14 +104,14 @@ function Deck({
           viewState: {
             ...viewState,
             target: [
-              pickInfo.coordinate[0] / 2 ** viewState.zoom,
+              pickInfo.coordinate[0] / 2 ** (viewState.zoom-xzoom),
               pickInfo.coordinate[1],
             ],
           },
         });
       }
     },
-    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange]
+    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, xzoom]
   );
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
