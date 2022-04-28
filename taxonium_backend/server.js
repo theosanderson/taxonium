@@ -41,11 +41,10 @@ const { program } = require("commander");
 
 program
   .option("--ssl", "use ssl")
-  .option("--database_dir <database_dir>", "database directory")
   .option("--port <port>", "port")
   .option("--config_json <config_json>", "config json")
   .option("--data_url <data url>", "data url")
-  .option("--dat_file <data file>", "local data file, as alternative to data url");
+  .option("--data_file <data file>", "local data file, as alternative to data url");
 
 program.parse();
 
