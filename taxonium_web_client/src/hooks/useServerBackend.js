@@ -29,11 +29,15 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         .then(function (response) {
           console.log("got data", response.data);
           response.data.nodes.forEach((node) => {
+            if(node.node_id=== config.rootId){
+              node.mutations = config.rootMutations.map((x)=>config.mutations[x]);
+            }
+            else{
             node.mutations = node.mutations.map(
-              (mutation) => config.mutations[mutation]
+              (mutation) =>  config.mutations[mutation]
             );
+          }
           });
-
           setResult(response.data);
         })
         .catch(function (error) {
