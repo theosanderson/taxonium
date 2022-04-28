@@ -42,14 +42,15 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
     config
   );
 
-  const search = useSearch(
+  const search = useSearch({
     data,
     boundsForQueries,
     view,
     backend,
     query,
-    updateQuery
-  );
+    updateQuery,
+    deckSize,
+  });
 
   //
 

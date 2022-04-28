@@ -2,14 +2,15 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
-const useSearch = (
+const useSearch = ({
   data,
   boundsForQueries,
   view,
   backend,
   query,
-  updateQuery
-) => {
+  updateQuery,
+  deckSize,
+}) => {
   const { singleSearch } = backend;
 
   const searchSpec = useMemo(() => {
@@ -163,7 +164,7 @@ const useSearch = (
   const getLineColor = (index) => lineColors[index % lineColors.length];
 
   useEffect(() => {
-    if (zoomToSearch) {
+    if (zoomToSearch && deckSize) {
       const { index } = zoomToSearch;
       const relevant = searchResults[searchSpec[index].key];
       if (!relevant) {
@@ -207,7 +208,7 @@ const useSearch = (
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
-  }, [zoomToSearch, searchResults]);
+  }, [zoomToSearch, searchResults, deckSize]);
 
   return {
     searchResults,
