@@ -171,12 +171,12 @@ function startListening() {
         "/etc/letsencrypt/live/api.taxonium.org/fullchain.pem"
       ),
     };
-    https.createServer(options, app).listen(command_options.port);
+    https.createServer(options, app).listen(command_options.port,"0.0.0.0");
     console.log("SSL on port " + command_options.port);
   } else {
-    app.listen(command_options.port, () =>
-      console.log(`App is listening on port ${command_options.port}`)
-    );
+    app.listen(command_options.port,"0.0.0.0");
+    console.log("Non SSL on port " + command_options.port);
+    
   }
 }
 
