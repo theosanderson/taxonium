@@ -17,6 +17,7 @@ spec:
       containers:
         - name: taxoniumbackend
           image: theosanderson/taxonium:master
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           livenessProbe:
