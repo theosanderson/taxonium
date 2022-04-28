@@ -211,7 +211,7 @@ const useLayers = ({
   const max_text_number = 400;
   // If leaves are fewer than max_text_number, add a text layer
   if (data.data.nodes && data.data.nodes.length < max_text_number) {
-    console.log("Adding text layer");
+   
     const node_label_layer = new TextLayer({
       id: "main-text-node",
 
