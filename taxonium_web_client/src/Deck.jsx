@@ -196,14 +196,14 @@ function Deck({
         contentLabel="Example Modal"
       >
         <h2 className="font-medium mb-3">Settings</h2>
-        <div className="text-sm">
+        <div className="text-sm"><label>
           <input
             type="checkbox"
             className="mr-1"
             checked={minimapEnabled}
             onChange={() => setMinimapEnabled(!minimapEnabled)}
           />{" "}
-          Enable minimap
+          Enable minimap</label>
         </div>
       </Modal>
       <DeckGL
