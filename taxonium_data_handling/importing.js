@@ -116,6 +116,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
       return;
     }
     console.log("ALL FINE", response);
+    sendStatusMessage({ message: "Fetching data from URL" });
 
     const readableWebStream = response.body;
     const nodeStream = new ReadableWebToNodeStream(readableWebStream);
@@ -151,7 +152,12 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "max");
   const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "min");
 
+  const root = new_data.nodes.find((node) => node.parent_id === node.node_id);
+  const rootMutations = root.mutations;
+  root.mutations = [];
+
   console.log("Creating output obj");
+
   const output = {
     nodes: new_data.nodes,
     overallMaxX,
@@ -161,6 +167,8 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     y_positions,
     mutations: new_data.header.aa_mutations,
     node_to_mut: new_data.node_to_mut,
+    rootMutations: rootMutations,
+    rootId: root.node_id,
   };
 
   return output;

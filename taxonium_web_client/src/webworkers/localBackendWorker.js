@@ -121,6 +121,9 @@ const getConfig = async () => {
     .filter((x) => x)
     .sort();
 
+  config.rootMutations = processedUploadedData.rootMutations;
+  config.rootId = processedUploadedData.rootId;
+
   config.name_accessor = "name";
   const to_remove = [
     "parent_id",

@@ -85,9 +85,15 @@ function useLocalBackend(uploaded_data, proto) {
         //  console.log("CONFIG IS", config);
         console.log("got query result", receivedData);
         receivedData.nodes.forEach((node) => {
-          node.mutations = node.mutations.map(
-            (mutation) => config.mutations[mutation]
-          );
+          if (node.node_id === config.rootId) {
+            node.mutations = config.rootMutations.map(
+              (x) => config.mutations[x]
+            );
+          } else {
+            node.mutations = node.mutations.map(
+              (mutation) => config.mutations[mutation]
+            );
+          }
         });
         setResult(receivedData);
       };
