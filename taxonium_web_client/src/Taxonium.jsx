@@ -15,7 +15,7 @@ import useConfig from "./hooks/useConfig";
 function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const [deckSize, setDeckSize] = useState(null);
   const [minimapEnabled, setMinimapEnabled] = useState(true);
-  const view = useView({ minimapEnabled , deckSize});
+  const view = useView({ minimapEnabled, deckSize });
   const colourMapping = useMemo(() => {
     return {};
   }, []);

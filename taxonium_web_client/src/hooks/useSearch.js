@@ -164,7 +164,6 @@ const useSearch = (
 
   useEffect(() => {
     if (zoomToSearch) {
-
       const { index } = zoomToSearch;
       const relevant = searchResults[searchSpec[index].key];
       if (!relevant) {
@@ -188,9 +187,9 @@ const useSearch = (
 
       const oldViewState = { ...view.viewState };
       const newZoom = 9 - Math.log2(max_y - min_y + 0.00001);
-      const new_target = [ (min_x+max_x)/2, (min_y + max_y) / 2];
+      const new_target = [(min_x + max_x) / 2, (min_y + max_y) / 2];
       console.log("NEW TARGET", new_target);
-      
+
       const viewState = {
         ...view.viewState,
         real_target: undefined,
@@ -203,13 +202,11 @@ const useSearch = (
         viewState: viewState,
         interactionState: "isZooming",
         oldViewState,
-        basicTarget:true
-       
+        basicTarget: true,
       });
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
-
   }, [zoomToSearch, searchResults]);
 
   return {
