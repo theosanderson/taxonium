@@ -14,7 +14,6 @@ Use [UShER](https://github.com/yatisht/usher/) to build a mutation-annotated tre
 
 You can also use taxoniumtools to add your own metadata to the existing public phylogeny.
 
-
 ## Structure
 
 Taxonium now consists of a number of components:
