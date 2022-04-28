@@ -13,8 +13,9 @@ import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
 function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
+  const [deckSize, setDeckSize] = useState(null);
   const [minimapEnabled, setMinimapEnabled] = useState(true);
-  const view = useView({ minimapEnabled });
+  const view = useView({ minimapEnabled , deckSize});
   const colourMapping = useMemo(() => {
     return {};
   }, []);
@@ -70,6 +71,8 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             xAccessor={xAccessor}
             minimapEnabled={minimapEnabled}
             setMinimapEnabled={setMinimapEnabled}
+            setDeckSize={setDeckSize}
+            deckSize={deckSize}
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">

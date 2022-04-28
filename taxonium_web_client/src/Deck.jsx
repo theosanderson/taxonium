@@ -41,6 +41,8 @@ function Deck({
   minimapEnabled,
   setMinimapEnabled,
   selectedDetails,
+  setDeckSize,
+  deckSize
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -55,7 +57,7 @@ function Deck({
     onViewStateChange,
     views,
     zoomIncrement,
-    onAfterRender,
+
     zoomAxis,
     setZoomAxis,
     xzoom
@@ -208,13 +210,24 @@ function Deck({
       </Modal>
       <DeckGL
         pickingRadius={10}
-        onAfterRender={onAfterRender}
+       
         ref={deckRef}
         views={views}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         layerFilter={layerFilter}
         layers={layers}
+        onResize={(size ) => { setDeckSize(size);
+        console.log("resize", size); }}
+        onAfterRender={(event) => {
+          if(isNaN(deckSize.width)){
+            setDeckSize(event.target.parentElement.getBoundingClientRect());
+          }
+        }
+        }
+        
+
+
       >
         <NodeHoverTip
           hoverInfo={hoverInfo}

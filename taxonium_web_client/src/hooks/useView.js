@@ -70,7 +70,7 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({ minimapEnabled }) => {
+const useView = ({ minimapEnabled, deckSize }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
 
@@ -132,11 +132,13 @@ const useView = ({ minimapEnabled }) => {
   }, [viewState.zoom, xzoom]);
 
   const onViewStateChange = useCallback(
-    ({ viewState, interactionState, viewId, oldViewState }) => {
+    ({ viewState, interactionState, viewId, oldViewState, basicTarget }) => {
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
         return;
       }
+
+      
 
       //const temp_viewport = new OrthographicViewport(viewS
       const oldScaleY = 2 ** oldViewState.zoom;
@@ -145,7 +147,13 @@ const useView = ({ minimapEnabled }) => {
       let newScaleX = 2 ** xzoom;
 
       //console.log("old",oldViewState)
-      console.log(zoomAxis);
+
+      if(basicTarget){
+        console.log("BASIC", viewState.target)
+        viewState.target[0] = viewState.target[0] / newScaleY * newScaleX;
+      }
+      else{
+      
       if (oldScaleY !== newScaleY) {
         if (zoomAxis === "Y") {
           viewState.target[0] =
@@ -162,11 +170,14 @@ const useView = ({ minimapEnabled }) => {
             (oldViewState.target[0] / oldScaleY) * newScaleY;
         }
       }
+    }
 
       viewState.target = [...viewState.target];
-
-      viewState.real_height = viewState.height / newScaleY;
-      viewState.real_width = viewState.width / newScaleX;
+      console.log("DECKSIZE:", deckSize);
+      viewState.real_height = deckSize.height / newScaleY;
+      viewState.real_width = deckSize.width / newScaleX;
+      console.log("real_height:", viewState.real_height);
+      console.log("real_width:", viewState.real_width);
 
       viewState.real_target = [...viewState.target];
       viewState.real_target[0] =
@@ -187,10 +198,11 @@ const useView = ({ minimapEnabled }) => {
       viewState.max_y = se[1];
 
       viewState["minimap"] = { zoom: -3, target: [250, 1000] };
+      console.log("FINAL VS:", viewState);
       setViewState(viewState);
       return viewState;
     },
-    [zoomAxis, xzoom]
+    [zoomAxis, xzoom, deckSize]
   );
 
   const zoomIncrement = useCallback(
