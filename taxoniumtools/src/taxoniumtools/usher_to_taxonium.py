@@ -40,7 +40,7 @@ def main():
                         type=str,
                         help="Output file for the taxonium date file, if any")
 
-    parser.add_argument("--taxonium_reference_node", type=str, help="Taxonium reference node", default=None)
+    parser.add_argument("--chronumental_reference_node", type=str, help="Taxonium reference node", default=None)
 
     parser.add_argument('--gzlevel', type=int, help='Gzip level', default=6)
 
@@ -98,8 +98,8 @@ def main():
 
             
             command =    f"chronumental --tree {os.path.join(tmpdirname, 'distance_tree.nwk')} --dates {args.metadata} --steps {args.chronumental_steps} --tree_out {os.path.join(tmpdirname, 'timetree.nwk')}"
-            if args.taxonium_reference_node:
-                command += f" --reference_node {args.taxonium_reference_node}"
+            if args.chronumental_reference_node:
+                command += f" --reference_node {args.chronumental_reference_node}"
 
             
             if args.taxonium_date_file_output:
