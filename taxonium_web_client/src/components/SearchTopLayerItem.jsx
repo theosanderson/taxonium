@@ -73,6 +73,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
             onClick={() => {
               search.setZoomToSearch({ index: getMyIndex() });
             }}
+            title="Zoom to this search"
           >
             <FaSearch />
           </button>

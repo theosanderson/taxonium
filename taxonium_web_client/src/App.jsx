@@ -76,7 +76,10 @@ function App() {
   }
 
   function onDragOver(ev) {
-    if(uploadedData && (uploadedData.status === "loaded" || uploadedData.status === "loading")) {
+    if (
+      uploadedData &&
+      (uploadedData.status === "loaded" || uploadedData.status === "loading")
+    ) {
       ev.preventDefault();
       return;
     }
@@ -153,7 +156,9 @@ function App() {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        {beingDragged && <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>}
+        {beingDragged && (
+          <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>
+        )}
         <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
           <div className="flex justify-between">
             <h1 className="text-xl p-4  pb-5 text-white ">
@@ -216,8 +221,10 @@ function App() {
                         updateQuery({
                           ...query,
                           protoUrl: currentUrl.replace("http://", "https://"),
-                        })
-                      } }}  />
+                        });
+                      }
+                    }}
+                  />
                   <br />
                   <button
                     className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8 mt-5"

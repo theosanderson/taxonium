@@ -62,7 +62,7 @@ class MyOrthographicController extends OrthographicController {
         ...this.controllerStateProps,
         ...this._state,
       });
-      
+
       return this.onWheel(event);
     } else {
       super.handleEvent(event);
@@ -70,7 +70,7 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({ minimapEnabled }) => {
+const useView = ({ minimapEnabled, deckSize }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
 
@@ -132,7 +132,7 @@ const useView = ({ minimapEnabled }) => {
   }, [viewState.zoom, xzoom]);
 
   const onViewStateChange = useCallback(
-    ({ viewState, interactionState, viewId, oldViewState }) => {
+    ({ viewState, interactionState, viewId, oldViewState, basicTarget }) => {
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
         return;
@@ -145,28 +145,32 @@ const useView = ({ minimapEnabled }) => {
       let newScaleX = 2 ** xzoom;
 
       //console.log("old",oldViewState)
-      console.log(zoomAxis);
-      if (oldScaleY !== newScaleY) {
-        if (zoomAxis === "Y") {
-          viewState.target[0] =
-            (oldViewState.target[0] / newScaleY) * oldScaleY;
-        } else {
-          const difference = viewState.zoom - oldViewState.zoom;
 
-          setXzoom((old) => old + difference);
+      if (basicTarget) {
+        viewState.target[0] = (viewState.target[0] / newScaleY) * newScaleX;
+      } else {
+        if (oldScaleY !== newScaleY) {
+          if (zoomAxis === "Y") {
+            viewState.target[0] =
+              (oldViewState.target[0] / newScaleY) * oldScaleY;
+          } else {
+            const difference = viewState.zoom - oldViewState.zoom;
 
-          newScaleX = 2 ** (xzoom + difference);
-          console.log(xzoom, difference, newScaleX);
-          viewState.zoom = oldViewState.zoom;
-          viewState.target[0] =
-            (oldViewState.target[0] / oldScaleY) * newScaleY;
+            setXzoom((old) => old + difference);
+
+            newScaleX = 2 ** (xzoom + difference);
+            console.log(xzoom, difference, newScaleX);
+            viewState.zoom = oldViewState.zoom;
+            viewState.target[0] =
+              (oldViewState.target[0] / oldScaleY) * newScaleY;
+          }
         }
       }
 
       viewState.target = [...viewState.target];
 
-      viewState.real_height = viewState.height / newScaleY;
-      viewState.real_width = viewState.width / newScaleX;
+      viewState.real_height = deckSize.height / newScaleY;
+      viewState.real_width = deckSize.width / newScaleX;
 
       viewState.real_target = [...viewState.target];
       viewState.real_target[0] =
@@ -187,10 +191,11 @@ const useView = ({ minimapEnabled }) => {
       viewState.max_y = se[1];
 
       viewState["minimap"] = { zoom: -3, target: [250, 1000] };
+
       setViewState(viewState);
       return viewState;
     },
-    [zoomAxis, xzoom]
+    [zoomAxis, xzoom, deckSize]
   );
 
   const zoomIncrement = useCallback(
@@ -217,7 +222,7 @@ const useView = ({ minimapEnabled }) => {
       setZoomAxis,
       modelMatrix,
       zoomIncrement,
-      xzoom
+      xzoom,
     };
   }, [
     viewState,
@@ -228,7 +233,7 @@ const useView = ({ minimapEnabled }) => {
     setZoomAxis,
     modelMatrix,
     zoomIncrement,
-    xzoom
+    xzoom,
   ]);
 
   return output;

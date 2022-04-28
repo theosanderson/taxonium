@@ -183,23 +183,30 @@ const useSearch = (
       // eslint-disable-next-line no-unused-vars
       const max_x = reduceMaxOrMin(overview, (d) => d.x, "max");
 
+      console.log("Doing zoom", min_y, max_y, min_x, max_x);
+
       const oldViewState = { ...view.viewState };
+      const newZoom = 9 - Math.log2(max_y - min_y + 0.00001);
+      const new_target = [(min_x + max_x) / 2, (min_y + max_y) / 2];
+      console.log("NEW TARGET", new_target);
+
       const viewState = {
         ...view.viewState,
-        target: [0, (min_y + max_y) / 2],
-        zoom: 9 - Math.log2(max_y - min_y + 0.001),
+        real_target: undefined,
+        target: new_target,
+        zoom: newZoom,
       };
       console.log("zoom to search new VS", viewState);
 
       view.onViewStateChange({
         viewState: viewState,
-        oldViewState,
         interactionState: "isZooming",
+        oldViewState,
+        basicTarget: true,
       });
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomToSearch, searchResults]);
 
   return {

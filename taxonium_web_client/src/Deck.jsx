@@ -41,6 +41,8 @@ function Deck({
   minimapEnabled,
   setMinimapEnabled,
   selectedDetails,
+  setDeckSize,
+  deckSize,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -55,10 +57,10 @@ function Deck({
     onViewStateChange,
     views,
     zoomIncrement,
-    onAfterRender,
+
     zoomAxis,
     setZoomAxis,
-    xzoom
+    xzoom,
   } = view;
 
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
@@ -104,7 +106,7 @@ function Deck({
           viewState: {
             ...viewState,
             target: [
-              pickInfo.coordinate[0] / 2 ** (viewState.zoom-xzoom),
+              pickInfo.coordinate[0] / 2 ** (viewState.zoom - xzoom),
               pickInfo.coordinate[1],
             ],
           },
@@ -196,25 +198,35 @@ function Deck({
         contentLabel="Example Modal"
       >
         <h2 className="font-medium mb-3">Settings</h2>
-        <div className="text-sm"><label>
-          <input
-            type="checkbox"
-            className="mr-1"
-            checked={minimapEnabled}
-            onChange={() => setMinimapEnabled(!minimapEnabled)}
-          />{" "}
-          Enable minimap</label>
+        <div className="text-sm">
+          <label>
+            <input
+              type="checkbox"
+              className="mr-1"
+              checked={minimapEnabled}
+              onChange={() => setMinimapEnabled(!minimapEnabled)}
+            />{" "}
+            Enable minimap
+          </label>
         </div>
       </Modal>
       <DeckGL
         pickingRadius={10}
-        onAfterRender={onAfterRender}
         ref={deckRef}
         views={views}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         layerFilter={layerFilter}
         layers={layers}
+        onResize={(size) => {
+          setDeckSize(size);
+          console.log("resize", size);
+        }}
+        onAfterRender={(event) => {
+          if (isNaN(deckSize.width)) {
+            setDeckSize(event.target.parentElement.getBoundingClientRect());
+          }
+        }}
       >
         <NodeHoverTip
           hoverInfo={hoverInfo}

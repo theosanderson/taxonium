@@ -90,9 +90,6 @@ const useLayers = ({
     return combo.nodes.filter((d) => d.name !== "");
   }, [combo]);
 
-  
-
-
   const minimap_scatter_data = useMemo(() => {
     return base_data ? base_data.nodes.filter((node) => node.name !== "") : [];
   }, [base_data]);
@@ -116,7 +113,7 @@ const useLayers = ({
   if (data.data.nodes) {
     const main_scatter_layer = new ScatterplotLayer({
       id: "main-scatter",
-      data: combo_scatter, 
+      data: combo_scatter,
       getPosition: (d) => [d.final_x, d.y],
       getFillColor: (d) => toRGB(getNodeColorField(d, combo)),
 
@@ -211,7 +208,6 @@ const useLayers = ({
   const max_text_number = 400;
   // If leaves are fewer than max_text_number, add a text layer
   if (data.data.nodes && data.data.nodes.length < max_text_number) {
-    console.log("Adding text layer");
     const node_label_layer = new TextLayer({
       id: "main-text-node",
 

@@ -48,7 +48,7 @@ function useGetDynamicData(backend, colorBy, viewState, config) {
       };
 
       setBoundsForQueries(newBoundForQuery);
-      console.log("updating bounds");
+      console.log("updating bounds", newBoundForQuery);
     }
   }, [viewState, boundsForQueries, triggerRefresh]);
 
