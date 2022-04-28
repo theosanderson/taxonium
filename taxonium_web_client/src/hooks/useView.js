@@ -149,7 +149,7 @@ const useView = ({ minimapEnabled, deckSize }) => {
       //console.log("old",oldViewState)
 
       if(basicTarget){
-        console.log("BASIC", viewState.target)
+       
         viewState.target[0] = viewState.target[0] / newScaleY * newScaleX;
       }
       else{
@@ -173,11 +173,10 @@ const useView = ({ minimapEnabled, deckSize }) => {
     }
 
       viewState.target = [...viewState.target];
-      console.log("DECKSIZE:", deckSize);
+     
       viewState.real_height = deckSize.height / newScaleY;
       viewState.real_width = deckSize.width / newScaleX;
-      console.log("real_height:", viewState.real_height);
-      console.log("real_width:", viewState.real_width);
+
 
       viewState.real_target = [...viewState.target];
       viewState.real_target[0] =
@@ -198,7 +197,7 @@ const useView = ({ minimapEnabled, deckSize }) => {
       viewState.max_y = se[1];
 
       viewState["minimap"] = { zoom: -3, target: [250, 1000] };
-      console.log("FINAL VS:", viewState);
+     
       setViewState(viewState);
       return viewState;
     },
