@@ -43,7 +43,9 @@ program
   .option("--ssl", "use ssl")
   .option("--database_dir <database_dir>", "database directory")
   .option("--port <port>", "port")
-  .option("--config_json <config_json>", "config json");
+  .option("--config_json <config_json>", "config json")
+  .option("--data_url <data url>", "data url")
+  .option("--dat_file <data file>", "local data file, as alternative to data url");
 
 program.parse();
 
@@ -300,8 +302,8 @@ app.get("/node_details/", async (req, res) => {
 const loadData = async () => {
   await waitForTheImports();
   let supplied_object;
-  if (false) {
-    local_file = "latest_public.jsonl.gz";
+  if (command_options.data_file) {
+    local_file = command_options.data_file
     //  local_file = "tfci.jsonl";
     // Read as bytes
     const file_data = fs.readFileSync(local_file);
@@ -311,8 +313,8 @@ const loadData = async () => {
       filename: local_file,
     };
   } else {
-    url =
-      "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz";
+    url = command_options.data_url
+      
     supplied_object = { status: "url_supplied", filename: url };
   }
 
