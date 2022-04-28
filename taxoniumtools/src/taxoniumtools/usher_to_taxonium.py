@@ -55,7 +55,7 @@ def main():
         #Disable warnings because of DTypeWarning in pandas
         
         warnings.filterwarnings("ignore")
-        metadata = pd.read_csv(args.metadata, sep="\t", usecols=cols_of_interest)
+        metadata = pd.read_csv(args.metadata, sep="\t" if args.metadata.endswith(".tsv") or args.metadata.endswith(".tsv.gz") else ",", usecols=cols_of_interest)
         # Enable again
         warnings.filterwarnings("default")
         metadata.set_index("strain", inplace=True)
