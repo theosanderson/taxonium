@@ -44,7 +44,6 @@ const useLayers = ({
     } else if (data.data.nodes && data.status === "loaded" && data.base_data) {
       // add data.data.nodes and data.base_data.nodes and dedupe
 
-      
       const nodes_deduped = [
         ...new Set([...data.data.nodes, ...data.base_data.nodes]),
       ];

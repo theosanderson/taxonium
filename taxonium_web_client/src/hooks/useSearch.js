@@ -3,15 +3,14 @@ import { getDefaultSearch } from "../utils/searchUtil";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
 const useSearch = ({
-    data,
-    boundsForQueries,
-    view,
-    backend,
-    query,
-    updateQuery,
-    deckSize
-}
-) => {
+  data,
+  boundsForQueries,
+  view,
+  backend,
+  query,
+  updateQuery,
+  deckSize,
+}) => {
   const { singleSearch } = backend;
 
   const searchSpec = useMemo(() => {
@@ -209,7 +208,7 @@ const useSearch = ({
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
-  }, [zoomToSearch, searchResults,deckSize]);
+  }, [zoomToSearch, searchResults, deckSize]);
 
   return {
     searchResults,

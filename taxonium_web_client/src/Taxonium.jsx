@@ -49,9 +49,8 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
     backend,
     query,
     updateQuery,
-    deckSize
-  }
-  );
+    deckSize,
+  });
 
   //
 
