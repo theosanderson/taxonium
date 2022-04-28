@@ -133,6 +133,14 @@ const useView = ({ minimapEnabled, deckSize }) => {
 
   const onViewStateChange = useCallback(
     ({ viewState, interactionState, viewId, oldViewState, basicTarget }) => {
+      if(!deckSize) {
+        setTimeout(() => {
+          onViewStateChange({ viewState, interactionState, viewId, oldViewState, basicTarget });
+        }
+        , 100);
+        return;
+
+      }
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
         return;
