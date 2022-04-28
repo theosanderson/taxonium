@@ -10,7 +10,8 @@ import argparse
 import gzip
 import os
 import sys
-import warnings 
+import warnings
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -23,10 +24,11 @@ def main():
                         type=str,
                         help='Output jsonl file',
                         required=True)
-    parser.add_argument('--metadata',
+    parser.add_argument('--metadata', type=str, help='Metadata file')
+    parser.add_argument('--genbank',
                         type=str,
-                        help='Metadata file')
-    parser.add_argument('--genbank', type=str, help='Genbank file', required=True)
+                        help='Genbank file',
+                        required=True)
     parser.add_argument('--chronumental',
                         action='store_true',
                         help='If set, we will run chronumental')
@@ -40,7 +42,10 @@ def main():
                         type=str,
                         help="Output file for the taxonium date file, if any")
 
-    parser.add_argument("--chronumental_reference_node", type=str, help="Taxonium reference node", default=None)
+    parser.add_argument("--chronumental_reference_node",
+                        type=str,
+                        help="Taxonium reference node",
+                        default=None)
 
     parser.add_argument('--gzlevel', type=int, help='Gzip level', default=6)
 
@@ -55,9 +60,12 @@ def main():
     if args.metadata:
         print("Loading metadata file..")
         #Disable warnings because of DTypeWarning in pandas
-        
+
         warnings.filterwarnings("ignore")
-        metadata = pd.read_csv(args.metadata, sep="\t" if args.metadata.endswith(".tsv") or args.metadata.endswith(".tsv.gz") else ",", usecols=cols_of_interest)
+        metadata = pd.read_csv(args.metadata,
+                               sep="\t" if args.metadata.endswith(".tsv")
+                               or args.metadata.endswith(".tsv.gz") else ",",
+                               usecols=cols_of_interest)
         # Enable again
         warnings.filterwarnings("default")
         metadata.set_index("strain", inplace=True)
@@ -81,27 +89,26 @@ def main():
     mat = ushertools.UsherMutationAnnotatedTree(f, args.genbank)
     f.close()
 
-
-
-
     if args.chronumental:
-        chronumental_is_available = os.system("which chronumental > /dev/null") == 0
+        chronumental_is_available = os.system(
+            "which chronumental > /dev/null") == 0
         if not chronumental_is_available:
             print("#####  Chronumental is not available.  #####")
-            print("#####  Please install it with `pip install chronumental` and restart. Or you can disable the --chronumental flag.  #####")
+            print(
+                "#####  Please install it with `pip install chronumental` and restart. Or you can disable the --chronumental flag.  #####"
+            )
             print("#####  Exiting.  #####")
             sys.exit(1)
         with tempfile.TemporaryDirectory() as tmpdirname:
-            mat.tree.write_tree_newick(os.path.join(tmpdirname, "distance_tree.nwk"))
+            mat.tree.write_tree_newick(
+                os.path.join(tmpdirname, "distance_tree.nwk"))
 
             print("Launching chronumental")
 
-            
-            command =    f"chronumental --tree {os.path.join(tmpdirname, 'distance_tree.nwk')} --dates {args.metadata} --steps {args.chronumental_steps} --tree_out {os.path.join(tmpdirname, 'timetree.nwk')}"
+            command = f"chronumental --tree {os.path.join(tmpdirname, 'distance_tree.nwk')} --dates {args.metadata} --steps {args.chronumental_steps} --tree_out {os.path.join(tmpdirname, 'timetree.nwk')}"
             if args.chronumental_reference_node:
                 command += f" --reference_node {args.chronumental_reference_node}"
 
-            
             if args.taxonium_date_file_output:
                 command += f" --dates_out {args.taxonium_date_file_output}"
             result = os.system(command)
@@ -113,7 +120,9 @@ def main():
             # %%
 
             print("Reading time tree")
-            time_tree = treeswift.read_tree(os.path.join(tmpdirname, "timetree.nwk"), schema="newick")
+            time_tree = treeswift.read_tree(os.path.join(
+                tmpdirname, "timetree.nwk"),
+                                            schema="newick")
             time_tree_iter = ushertools.preorder_traversal(time_tree.root)
             for i, node in alive_it(enumerate(
                     ushertools.preorder_traversal(mat.tree.root)),
@@ -124,18 +133,16 @@ def main():
             del time_tree
             del time_tree_iter
 
-
     def set_x_coords(root):
         """ Set x coordinates for the tree"""
         root.x_dist = 0
         root.x_time = 0
         for node in alive_it(root.traverse_preorder(),
-                            title="Setting x coordinates"):
+                             title="Setting x coordinates"):
             if node.parent:
                 node.x_dist = node.parent.x_dist + node.edge_length
                 if args.chronumental:
                     node.x_time = node.parent.x_time + node.time_length
-
 
     def set_terminal_y_coords(root):
         for i, node in alive_it(enumerate(root.traverse_leaves()),
@@ -143,20 +150,19 @@ def main():
             node.y = i
             node.y = i
 
-
     def set_internal_y_coords(root):
         # Each node should be halfway between the min and max y of its children
-        for node in alive_it(root.traverse_postorder(leaves=False, internal=True),
-                            title="Setting internal y coordinates"):
+        for node in alive_it(root.traverse_postorder(leaves=False,
+                                                     internal=True),
+                             title="Setting internal y coordinates"):
 
             child_ys = [child.y for child in node.children]
             node.y = (min(child_ys) + max(child_ys)) / 2
 
-
     def get_all_aa_muts(root):
         all_aa_muts = set()
         for node in alive_it(list(root.traverse_preorder()),
-                            title="Collecting all AA mutations"):
+                             title="Collecting all AA mutations"):
             if node.aa_muts:
                 all_aa_muts.update(node.aa_muts)
         return list(all_aa_muts)
@@ -164,11 +170,10 @@ def main():
     def get_all_nuc_muts(root):
         all_nuc_muts = set()
         for node in alive_it(list(root.traverse_preorder()),
-                            title="Collecting all nuc mutations"):
+                             title="Collecting all nuc mutations"):
             if node.nuc_mutations:
                 all_nuc_muts.update(node.nuc_mutations)
         return list(all_nuc_muts)
-
 
     def make_aa_object(i, aa_tuple):
         # Tuple format is gene, position, prev, next
@@ -179,19 +184,18 @@ def main():
             "residue_pos": pos,
             "new_residue": next,
             "mutation_id": i,
-            "type" : "aa"
+            "type": "aa"
         }
 
     def make_nuc_object(i, nuc_mut):
         return {
             "gene": "nt",
             "previous_residue": nuc_mut.par_nuc,
-            "residue_pos": nuc_mut.one_indexed_position, 
+            "residue_pos": nuc_mut.one_indexed_position,
             "new_residue": nuc_mut.mut_nuc,
             "mutation_id": i,
-            "type" : "nt"
-        }        
-
+            "type": "nt"
+        }
 
     def get_node_object(node, node_to_index, metadata, input_to_index,
                         columns):
@@ -227,7 +231,6 @@ def main():
         object['num_tips'] = node.num_tips
         return object
 
-
     print("Ladderizing tree..")
     mat.tree.ladderize(ascending=False)
     print("Ladderizing done")
@@ -242,13 +245,20 @@ def main():
             return node.y
 
         nodes_sorted_by_y = sorted(mat.tree.root.traverse_preorder(),
-                                key=lambda x: return_y(x))
+                                   key=lambda x: return_y(x))
 
     all_aa_muts_tuples = get_all_aa_muts(mat.tree.root)
     all_nuc_muts = get_all_nuc_muts(mat.tree.root)
     all_mut_inputs = all_aa_muts_tuples + all_nuc_muts
-    all_mut_objects = [make_aa_object(i, input_thing) if isinstance(input_thing, tuple) else make_nuc_object(i, input_thing) for i, input_thing in enumerate(all_mut_inputs)]
-    input_to_index = {input_thing: i for i, input_thing in enumerate(all_mut_inputs)}
+    all_mut_objects = [
+        make_aa_object(i, input_thing)
+        if isinstance(input_thing, tuple) else make_nuc_object(i, input_thing)
+        for i, input_thing in enumerate(all_mut_inputs)
+    ]
+    input_to_index = {
+        input_thing: i
+        for i, input_thing in enumerate(all_mut_inputs)
+    }
 
     first_json = {
         "aa_mutations": all_mut_objects,
@@ -262,14 +272,19 @@ def main():
     else:
         output_file = open(args.output, 'wt')
     output_file.write(json.dumps(first_json, separators=(',', ':')) + "\n")
-    for node in alive_it(nodes_sorted_by_y,
-                        title="Converting each node, and writing out in JSON"):
+    for node in alive_it(
+            nodes_sorted_by_y,
+            title="Converting each node, and writing out in JSON"):
         node_object = get_node_object(node, node_to_index, metadata_dict,
-                                    input_to_index, metadata_cols)
-        output_file.write(json.dumps(node_object, separators=(',', ':')) + "\n")
+                                      input_to_index, metadata_cols)
+        output_file.write(
+            json.dumps(node_object, separators=(',', ':')) + "\n")
     output_file.close()
 
-    print(f"Done. Output written to {args.output}, with {len(nodes_sorted_by_y)} nodes.")
+    print(
+        f"Done. Output written to {args.output}, with {len(nodes_sorted_by_y)} nodes."
+    )
+
 
 if __name__ == "__main__":
     main()
