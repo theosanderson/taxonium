@@ -6,8 +6,9 @@ from Bio import SeqIO
 from dataclasses import dataclass
 from collections import defaultdict
 
+
 @dataclass
-class AnnotatedMutation: #not-hashable atm
+class AnnotatedMutation:  #not-hashable atm
     genome_position: int  #0-based
     genome_residue: str
     cds: lambda: "CDS"
@@ -16,10 +17,11 @@ class AnnotatedMutation: #not-hashable atm
     codon_end: int  #0-based
     gene: str
 
+
 @dataclass(eq=True, frozen=True)
-class NucMutation: #hashable
+class NucMutation:  #hashable
     one_indexed_position: int
-    par_nuc : str
+    par_nuc: str
     mut_nuc: str
     chromosome: str = "chrom"
 
@@ -31,11 +33,14 @@ def get_codon_table():
     return dict(zip(codons, amino_acids))
 
 
-
 codon_table = get_codon_table()
 
 
-def get_mutations(past_nuc_muts_dict, new_nuc_mutations_here, seq, cdses, disable_check_for_differences = False):
+def get_mutations(past_nuc_muts_dict,
+                  new_nuc_mutations_here,
+                  seq,
+                  cdses,
+                  disable_check_for_differences=False):
 
     annotated_mutations = []
 
@@ -45,13 +50,14 @@ def get_mutations(past_nuc_muts_dict, new_nuc_mutations_here, seq, cdses, disabl
             codon_number, codon_start, codon_end = find_codon(
                 mutation.one_indexed_position - 1, cds)
             annotated_mutations.append(
-                AnnotatedMutation(genome_position=mutation.one_indexed_position - 1,
-                                  genome_residue=mutation.mut_nuc,
-                                  gene=cds.qualifiers["gene"][0],
-                                  codon_number=codon_number,
-                                  codon_start=codon_start,
-                                  codon_end=codon_end,
-                                  cds=cds))
+                AnnotatedMutation(
+                    genome_position=mutation.one_indexed_position - 1,
+                    genome_residue=mutation.mut_nuc,
+                    gene=cds.qualifiers["gene"][0],
+                    codon_number=codon_number,
+                    codon_start=codon_start,
+                    codon_end=codon_end,
+                    cds=cds))
 
     by_gene_codon = defaultdict(list)
 
@@ -134,6 +140,7 @@ def find_codon(position, cds):
 
 
 class UsherMutationAnnotatedTree:
+
     def __init__(self, tree_file, genbank_file=None):
         self.data = parsimony_pb2.data()
         self.data.ParseFromString(tree_file.read())
@@ -157,20 +164,26 @@ class UsherMutationAnnotatedTree:
         ref_muts = []
         for i, character in enumerate(self.genbank.seq):
             ref_muts.append(
-                NucMutation(one_indexed_position=i + 1, mut_nuc=character, par_nuc = "X"))
+                NucMutation(one_indexed_position=i + 1,
+                            mut_nuc=character,
+                            par_nuc="X"))
         return ref_muts
 
-
     def perform_aa_analysis(self):
-        
+
         seq = str(self.genbank.seq)
         with alive_bar(self.tree.num_nodes(),
                        title="Annotating amino acids") as pbar:
             recursive_mutation_analysis(self.tree.root, {}, seq, self.cdses,
                                         pbar)
-        reference_muts = self.create_mutation_like_objects_to_record_reference_seq()
-        self.tree.root.aa_muts = get_mutations({},
-                                 reference_muts, seq, self.cdses, disable_check_for_differences = True)
+        reference_muts = self.create_mutation_like_objects_to_record_reference_seq(
+        )
+        self.tree.root.aa_muts = get_mutations(
+            {},
+            reference_muts,
+            seq,
+            self.cdses,
+            disable_check_for_differences=True)
         self.tree.root.nuc_mutations = reference_muts
 
     def load_genbank_file(self, genbank_file):
@@ -187,25 +200,27 @@ class UsherMutationAnnotatedTree:
 
     def convert_nuc_mutation(self, usher_mutation):
         new_mut = NucMutation(one_indexed_position=usher_mutation.position,
-                              par_nuc = NUC_ENUM[usher_mutation.par_nuc],
-                              mut_nuc = NUC_ENUM[usher_mutation.mut_nuc[0]])
+                              par_nuc=NUC_ENUM[usher_mutation.par_nuc],
+                              mut_nuc=NUC_ENUM[usher_mutation.mut_nuc[0]])
         return new_mut
 
     def annotate_mutations(self):
         for i, node in alive_it(list(
                 enumerate(preorder_traversal(self.tree.root))),
                                 title="Annotating nuc muts"):
-            node.nuc_mutations = [self.convert_nuc_mutation(x) for x in self.data.node_mutations[i].mutation]
+            node.nuc_mutations = [
+                self.convert_nuc_mutation(x)
+                for x in self.data.node_mutations[i].mutation
+            ]
 
     def set_branch_lengths(self):
-        for node in alive_it(list(
-                preorder_traversal(self.tree.root)),
-                                title="Setting branch length"):
+        for node in alive_it(list(preorder_traversal(self.tree.root)),
+                             title="Setting branch length"):
             node.edge_length = len(node.nuc_mutations)
 
     def expand_condensed_nodes(self):
         for node in alive_it(list(self.tree.traverse_leaves()),
-                                title="Expanding condensed nodes"):
+                             title="Expanding condensed nodes"):
 
             if node.label and node.label in self.condensed_nodes_dict:
 
@@ -231,4 +246,3 @@ class UsherMutationAnnotatedTree:
                 node.num_tips = 1
             else:
                 node.num_tips = sum(child.num_tips for child in node.children)
-
