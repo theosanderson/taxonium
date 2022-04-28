@@ -154,10 +154,9 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
 
   const root = new_data.nodes.find((node) => node.parent_id === node.node_id);
   const rootMutations = root.mutations;
-  root.mutations = []
+  root.mutations = [];
 
   console.log("Creating output obj");
-
 
   const output = {
     nodes: new_data.nodes,
@@ -169,7 +168,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     mutations: new_data.header.aa_mutations,
     node_to_mut: new_data.node_to_mut,
     rootMutations: rootMutations,
-    rootId: root.node_id
+    rootId: root.node_id,
   };
 
   return output;
