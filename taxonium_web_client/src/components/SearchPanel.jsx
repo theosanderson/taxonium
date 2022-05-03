@@ -2,7 +2,7 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
-const prettify_x_types = { x: "Distance", x_time: "Time" };
+const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
   return num ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";

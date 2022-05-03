@@ -138,9 +138,10 @@ const getConfig = async () => {
     "time_x",
   ];
 
-  config.x_accessors = processedUploadedData.nodes[0].time_x
-    ? ["x", "time_x"]
-    : ["x"];
+  config.x_accessors = processedUploadedData.nodes[0].x_time
+    ? ["x_dist", "x_time"]
+    : ["x_dist"];
+  console.log("config is ", config);
 
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)

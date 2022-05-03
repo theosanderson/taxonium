@@ -20,5 +20,5 @@
       "None": "None"
     }
   },
-  "x_accessors": ["x", "x_time"]
+  "x_accessors": ["x_dist", "x_time"]
 }
