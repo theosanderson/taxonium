@@ -12,6 +12,12 @@ import os
 import sys
 import warnings
 
+try:
+    from . import _version
+    version = _version.version
+except ImportError:
+    version = "dev"
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -38,6 +44,12 @@ def main():
     parser.add_argument("--columns",
                         type=str,
                         help="Columns to include in the metadata")
+
+    parser.add_argument("--config_json",
+                        type=str,
+                        help="A JSON file to use as a config file",
+                        default=None)
+
     parser.add_argument("--taxonium_date_file_output",
                         type=str,
                         help="Output file for the taxonium date file, if any")
@@ -50,6 +62,11 @@ def main():
     parser.add_argument('--gzlevel', type=int, help='Gzip level', default=6)
 
     args = parser.parse_args()
+
+    if args.config_json is not None:
+        config = json.load(open(args.config_json))
+    else:
+        config = {}
 
     must_have_cols = ['strain']
     cols_of_interest = set(args.columns.split(",")) if args.columns else set()
@@ -261,8 +278,10 @@ def main():
     }
 
     first_json = {
-        "aa_mutations": all_mut_objects,
+        "version": version,
+        "mutations": all_mut_objects,
         "total_nodes": len(nodes_sorted_by_y),
+        "config": config
     }
 
     node_to_index = {node: i for i, node in enumerate(nodes_sorted_by_y)}

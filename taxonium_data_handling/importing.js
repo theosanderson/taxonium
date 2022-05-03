@@ -165,7 +165,9 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     overallMinX,
     overallMinY,
     y_positions,
-    mutations: new_data.header.aa_mutations,
+    mutations: new_data.header.mutations
+      ? new_data.header.mutations
+      : new_data.header.aa_mutations,
     node_to_mut: new_data.node_to_mut,
     rootMutations: rootMutations,
     rootId: root.node_id,
