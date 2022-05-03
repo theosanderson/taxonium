@@ -142,7 +142,6 @@ const getConfig = async () => {
     ? ["x_dist", "x_time"]
     : ["x_dist"];
 
-
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
   );
@@ -216,8 +215,10 @@ const getDetails = async (node_id) => {
   const { nodes } = processedUploadedData;
   const node = nodes[node_id];
   console.log("node is ", node);
-  const details = {...node};
-  details.mutations = processedUploadedData.node_to_mut[node_id].map( (x) => processedUploadedData.mutations[x]);
+  const details = { ...node };
+  details.mutations = processedUploadedData.node_to_mut[node_id].map(
+    (x) => processedUploadedData.mutations[x]
+  );
   console.log("details is ", details);
   return details;
 };

@@ -25,7 +25,6 @@ function SearchPanel({
   xType,
   setxType,
 }) {
-
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className="mt-3 mb-3 text-gray-500 text-sm">
@@ -158,9 +157,11 @@ function SearchPanel({
                 </div>
               )
           )}
-          <h3 className="text-xs font-bold mt-4 text-gray-700">Mutations at this node:</h3>
+          <h3 className="text-xs font-bold mt-4 text-gray-700">
+            Mutations at this node:
+          </h3>
           <div className="text-xs mt-1 text-gray-700">
-          {selectedDetails.nodeDetails.mutations.map((mutation, i) => (
+            {selectedDetails.nodeDetails.mutations.map((mutation, i) => (
               <span key={mutation.mutation_id}>
                 {i > 0 && <>, </>}
                 <div className="inline-block">
@@ -173,8 +174,7 @@ function SearchPanel({
             {selectedDetails.nodeDetails.mutations.length === 0 && (
               <span className="italic">No mutations at this node</span>
             )}
-            </div>
-
+          </div>
 
           {
             <div>
