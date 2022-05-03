@@ -34,7 +34,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);
   const colorBy = useColorBy(config, query, updateQuery);
-  const xType = query.xType
+  const xType = query.xType;
   const setxType = (xType) => {
     updateQuery({ xType });
   };

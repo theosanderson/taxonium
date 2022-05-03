@@ -25,7 +25,7 @@ const useLayers = ({
 
   const layers = [];
 
-  const getX =  useCallback((node) => (node[xType]), [xType]);
+  const getX = useCallback((node) => node[xType], [xType]);
 
   const init_combo = useMemo(() => {
     if (
@@ -60,7 +60,6 @@ const useLayers = ({
   }, [data.data, data.base_data, data.status]);
 
   const combo = useMemo(() => {
-  
     init_combo.nodes.forEach((node) => {
       console.log("node", node);
       node.parent_x = getX(init_combo.nodeLookup[node.parent_id]);
@@ -71,7 +70,6 @@ const useLayers = ({
 
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {
-    
       data.base_data.nodes.forEach((node) => {
         node.parent_x = getX(data.base_data.nodeLookup[node.parent_id]);
         node.parent_y = data.base_data.nodeLookup[node.parent_id].y;
