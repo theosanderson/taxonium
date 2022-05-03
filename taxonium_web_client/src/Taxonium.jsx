@@ -34,7 +34,10 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef);
   const colorBy = useColorBy(config, query, updateQuery);
-  const [xAccessor, setXAccessor] = useState("x");
+  const xType = query.xType
+  const setxType = (xType) => {
+    updateQuery({ xType });
+  };
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
     colorBy,
@@ -69,7 +72,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             ariaHideApp={false} // sadly with or without this the app is not suitable for screen readers
             hoverDetails={hoverDetails}
             selectedDetails={selectedDetails}
-            xAccessor={xAccessor}
+            xType={xType}
             minimapEnabled={minimapEnabled}
             setMinimapEnabled={setMinimapEnabled}
             setDeckSize={setDeckSize}
@@ -83,8 +86,8 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             colorHook={colorHook}
             config={config}
             selectedDetails={selectedDetails}
-            xAccessor={xAccessor}
-            setXAccessor={setXAccessor}
+            xType={xType}
+            setxType={setxType}
           />
         </div>
       </div>
