@@ -22,8 +22,8 @@ function SearchPanel({
   config,
   selectedDetails,
   colorHook,
-  xAccessor,
-  setXAccessor,
+  xType,
+  setxType,
 }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
@@ -34,8 +34,8 @@ function SearchPanel({
       <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
         Tree type:{" "}
         <select
-          value={xAccessor}
-          onChange={(e) => setXAccessor(e.target.value)}
+          value={xType}
+          onChange={(e) => setxType(e.target.value)}
           className="border py-1 px-1 text-grey-darkest text-sm"
         >
           {config.x_accessors &&
