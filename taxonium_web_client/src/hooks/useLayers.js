@@ -61,7 +61,6 @@ const useLayers = ({
 
   const combo = useMemo(() => {
     init_combo.nodes.forEach((node) => {
-
       node.parent_x = getX(init_combo.nodeLookup[node.parent_id]);
       node.parent_y = init_combo.nodeLookup[node.parent_id].y;
     });
