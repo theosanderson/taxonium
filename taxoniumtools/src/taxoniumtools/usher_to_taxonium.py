@@ -19,7 +19,6 @@ except ImportError:
     version = "dev"
 
 
-
 def main():
     parser = argparse.ArgumentParser(
         description='Convert a Usher pb to Taxonium jsonl format')
@@ -68,7 +67,6 @@ def main():
         config = json.load(open(args.config_json))
     else:
         config = {}
-
 
     must_have_cols = ['strain']
     cols_of_interest = set(args.columns.split(",")) if args.columns else set()
