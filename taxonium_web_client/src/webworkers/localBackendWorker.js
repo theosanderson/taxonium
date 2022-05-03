@@ -141,7 +141,6 @@ const getConfig = async () => {
   config.x_accessors = processedUploadedData.nodes[0].x_time
     ? ["x_dist", "x_time"]
     : ["x_dist"];
-  console.log("config is ", config);
 
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
@@ -216,7 +215,12 @@ const getDetails = async (node_id) => {
   const { nodes } = processedUploadedData;
   const node = nodes[node_id];
   console.log("node is ", node);
-  return node;
+  const details = { ...node };
+  details.mutations = processedUploadedData.node_to_mut[node_id].map(
+    (x) => processedUploadedData.mutations[x]
+  );
+  console.log("details is ", details);
+  return details;
 };
 
 onmessage = async (event) => {
