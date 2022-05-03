@@ -37,7 +37,7 @@ function Deck({
   hoverDetails,
   config,
   statusMessage,
-  xAccessor,
+  xType,
   minimapEnabled,
   setMinimapEnabled,
   selectedDetails,
@@ -137,7 +137,7 @@ function Deck({
     colorHook,
     setHoverInfo,
     colorBy,
-    xAccessor,
+    xType,
     modelMatrix: view.modelMatrix,
     selectedDetails,
   });

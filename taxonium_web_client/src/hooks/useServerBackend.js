@@ -103,7 +103,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
 
   const getConfig = useCallback(
     (setResult) => {
-      let url = backend_url + "/config/" + "?sid=" + sid;
+      let url = backend_url + "/config/?sid=" + sid;
       axios.get(url).then(function (response) {
         console.log("got config", response.data);
         if (response.data.error) {
@@ -115,7 +115,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         setResult(response.data);
       });
     },
-    [backend_url, sid]
+    [backend_url, sid, url_on_fail]
   );
 
   return useMemo(() => {

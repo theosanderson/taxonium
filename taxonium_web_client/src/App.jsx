@@ -45,6 +45,7 @@ function App() {
     srch: JSON.stringify([first_search]),
     enabled: JSON.stringify({ [first_search.key]: true }),
     backend: process.env.REACT_APP_DEFAULT_BACKEND,
+    xType: "x_dist",
   });
 
   const [beingDragged, setBeingDragged] = useState(false);
