@@ -3,6 +3,7 @@
 import json
 import pandas as pd
 from alive_progress import config_handler, alive_it, alive_bar
+from pyparsing import col
 
 from . import ushertools
 from . import utils
@@ -16,6 +17,42 @@ except ImportError:
     version = "dev"
 
 
+FLOAT_FIELDS = ['x_dist', "x_time", 'y']
+INT_FIELDS  = ['node_id','parent_id','num_tips']
+LIST_INT_FIELDS = ['mutations']
+from avro.datafile import DataFileWriter
+from avro.io import DatumWriter
+import avro.schema
+
+
+def get_avro_fields(node_obj, metadata_vocabs):
+    fields = []
+    for field in node_obj.keys():
+        if field in FLOAT_FIELDS:
+            fields.append({"name": field, "type": "float"})
+        elif field in INT_FIELDS:
+            fields.append({"name": field, "type": "int"})
+        elif field in LIST_INT_FIELDS:
+            fields.append({"name": field, "type": {"type": "array", "items": "int"}})
+        elif field.replace("meta_","") in metadata_vocabs:
+            fields.append({"name": field, "type": "int"})
+        else:
+            fields.append({"name": field, "type": "string"})
+        
+    return fields
+
+def make_schema_json(node_obj, metadata_vocabs):
+    fields = get_avro_fields(node_obj, metadata_vocabs)
+    return {
+        "type": "record",
+        "name": "node",
+        "fields": fields
+    }
+
+
+        
+
+
 def do_processing(input_file,
                   output_file,
                   metadata_file=None,
@@ -27,7 +64,7 @@ def do_processing(input_file,
                   chronumental_reference_node=None,
                   config_file=None):
 
-    metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
+    metadata_dict, metadata_cols, metadata_vocabs, vocab_lookups = utils.read_metadata(metadata_file, columns)
 
     if config_file is not None:
         config = json.load(open(config_file))
@@ -86,7 +123,13 @@ def do_processing(input_file,
         output_file = gzip.open(output_file, 'wt')
     else:
         output_file = open(output_file, 'wt')
-    output_file.write(json.dumps(first_json, separators=(',', ':')) + "\n")
+    initial_string = json.dumps(first_json, separators=(',', ':')) + "\n"
+    output_file.write(initial_string)
+
+    schema_dict = make_schema_json(utils.get_node_object(mat.tree.root, node_to_index=node_to_index, metadata=metadata_dict, input_to_index=input_to_index, columns = metadata_cols, chronumental_enabled=chronumental_enabled, vocab_lookups=vocab_lookups), metadata_vocabs)
+    schema = avro.schema.parse(json.dumps(schema_dict))
+    writer = DataFileWriter(output_file, DatumWriter(), schema)
+
     for node in alive_it(
             nodes_sorted_by_y,
             title="Converting each node, and writing out in JSON"):
@@ -96,14 +139,17 @@ def do_processing(input_file,
             metadata_dict,
             input_to_index,
             metadata_cols,
-            chronumental_enabled=chronumental_enabled)
-        output_file.write(
-            json.dumps(node_object, separators=(',', ':')) + "\n")
+            chronumental_enabled=chronumental_enabled,
+            vocab_lookups= vocab_lookups)
+        writer.append(node_object)
+
+    writer.close()
     output_file.close()
 
     print(
         f"Done. Output written to {output_file}, with {len(nodes_sorted_by_y)} nodes."
     )
+
 
 
 def main():
