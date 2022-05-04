@@ -10,3 +10,9 @@ data_processing_tools/public-latest.all.masked.pb.gz
 taxonium_backend/latest_public.jsonl.gz
 taxonium_backend/latest_public.jsonl.gz.1
 **/.pyc
+taxoniumtools/src/hu1.gb
+taxoniumtools/src/public-latest.all.masked.pb
+taxoniumtools/src/public-latest.metadata.tsv.gz
+taxoniumtools/src/tfci-taxonium.jsonl.gz
+taxoniumtools/src/tfci.meta.tsv.gz
+taxoniumtools/src/tfci.pb

@@ -6,6 +6,13 @@ import treeswift
 from . import ushertools
 
 
+def nan_to_empty_string(x):
+    if pd.isna(x):
+        return ""
+    else:
+        return x
+
+
 def read_metadata(metadata_file, columns):
     must_have_cols = ['strain']
     cols_of_interest = set(columns.split(",")) if columns else set()
@@ -29,13 +36,33 @@ def read_metadata(metadata_file, columns):
 
         metadata_dict = metadata.to_dict("index")
         metadata_cols = metadata.columns
+        metadata_vocabs = {}
+        for col in metadata_cols:
+            # If the number of unique values is less than 10% of the total number of rows, then make a vocab with the unique values as a list
+            if len(metadata[col].unique()) < 0.1 * metadata.shape[0]:
+                initial_list = metadata[col].unique().tolist()
+                as_strings = [
+                    str(nan_to_empty_string(x)) for x in initial_list
+                ] + ['']
+                as_sorted_set = sorted(set(as_strings))
+                metadata_vocabs[col] = as_sorted_set
+
         del metadata
         print("Metadata loaded")
-        return metadata_dict, metadata_cols
+        vocab_lookups = {}
+        for col in metadata_vocabs:
+            vocab_lookups[col] = {
+                x: i
+                for i, x in enumerate(metadata_vocabs[col])
+            }
+        #raise ValueError(vocab_lookups)
+        return metadata_dict, metadata_cols, metadata_vocabs, vocab_lookups
     else:
         metadata_dict = {}
         metadata_cols = []
-        return metadata_dict, metadata_cols
+        metadata_vocabs = {}
+        vocab_lookups = {}
+        return metadata_dict, metadata_cols, metadata_vocabs, vocab_lookups
 
 
 def do_chronumental(mat, chronumental_reference_node, metadata_file,
@@ -155,7 +182,7 @@ def make_nuc_object(i, nuc_mut):
 
 
 def get_node_object(node, node_to_index, metadata, input_to_index, columns,
-                    chronumental_enabled):
+                    chronumental_enabled, vocab_lookups):
 
     object = {}
     object["name"] = node.label if node.label else ""
@@ -179,6 +206,10 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
     except KeyError:
         for key in columns:
             object["meta_" + key] = ""
+
+    for key in columns:
+        if key in vocab_lookups:
+            object["meta_" + key] = vocab_lookups[key][object["meta_" + key]]
 
     object['parent_id'] = node_to_index[
         node.parent] if node.parent else node_to_index[node]
