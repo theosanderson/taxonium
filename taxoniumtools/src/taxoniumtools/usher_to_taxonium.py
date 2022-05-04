@@ -10,17 +10,15 @@ import argparse
 import gzip
 
 
-
-
 def do_processing(input_file,
-         output_file,
-         metadata_file=None,
-         genbank_file=None,
-         columns=None,
-         chronumental_enabled=False,
-         chronumental_steps=100,
-         chronumental_date_output=None,
-         chronumental_reference_node=None):
+                  output_file,
+                  metadata_file=None,
+                  genbank_file=None,
+                  columns=None,
+                  chronumental_enabled=False,
+                  chronumental_steps=100,
+                  chronumental_date_output=None,
+                  chronumental_reference_node=None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -90,50 +88,51 @@ def do_processing(input_file,
 
 
 def main():
-        parser = argparse.ArgumentParser(
-            description='Convert a Usher pb to Taxonium jsonl format')
-        parser.add_argument('--input',
-                            type=str,
-                            help='Input Usher pb file',
-                            required=True)
-        parser.add_argument('--output',
-                            type=str,
-                            help='Output jsonl file',
-                            required=True)
-        parser.add_argument('--metadata', type=str, help='Metadata file')
-        parser.add_argument('--genbank',
-                            type=str,
-                            help='Genbank file',
-                            required=True)
-        parser.add_argument('--chronumental',
-                            action='store_true',
-                            help='If set, we will run chronumental')
-        parser.add_argument('--chronumental_steps',
-                            type=int,
-                            help='Number of steps to run chronumental for')
-        parser.add_argument("--columns",
-                            type=str,
-                            help="Columns to include in the metadata")
-        parser.add_argument(
-            "--chronumental_date_output",
-            type=str,
-            help="Output file for the chronumental date file, if any")
+    parser = argparse.ArgumentParser(
+        description='Convert a Usher pb to Taxonium jsonl format')
+    parser.add_argument('--input',
+                        type=str,
+                        help='Input Usher pb file',
+                        required=True)
+    parser.add_argument('--output',
+                        type=str,
+                        help='Output jsonl file',
+                        required=True)
+    parser.add_argument('--metadata', type=str, help='Metadata file')
+    parser.add_argument('--genbank',
+                        type=str,
+                        help='Genbank file',
+                        required=True)
+    parser.add_argument('--chronumental',
+                        action='store_true',
+                        help='If set, we will run chronumental')
+    parser.add_argument('--chronumental_steps',
+                        type=int,
+                        help='Number of steps to run chronumental for')
+    parser.add_argument("--columns",
+                        type=str,
+                        help="Columns to include in the metadata")
+    parser.add_argument(
+        "--chronumental_date_output",
+        type=str,
+        help="Output file for the chronumental date file, if any")
 
-        parser.add_argument("--chronumental_reference_node",
-                            type=str,
-                            help="Taxonium reference node",
-                            default=None)
+    parser.add_argument("--chronumental_reference_node",
+                        type=str,
+                        help="Taxonium reference node",
+                        default=None)
 
-        args = parser.parse_args()
-        do_processing(args.input,
-            args.output,
-            metadata_file=args.metadata,
-            genbank_file=args.genbank,
-            chronumental_enabled=args.chronumental,
-            chronumental_steps=args.chronumental_steps,
-            columns=args.columns,
-            chronumental_date_output=args.chronumental_date_output,
-            chronumental_reference_node=args.chronumental_reference_node)
+    args = parser.parse_args()
+    do_processing(args.input,
+                  args.output,
+                  metadata_file=args.metadata,
+                  genbank_file=args.genbank,
+                  chronumental_enabled=args.chronumental,
+                  chronumental_steps=args.chronumental_steps,
+                  columns=args.columns,
+                  chronumental_date_output=args.chronumental_date_output,
+                  chronumental_reference_node=args.chronumental_reference_node)
+
 
 if __name__ == "__main__":
     main()
