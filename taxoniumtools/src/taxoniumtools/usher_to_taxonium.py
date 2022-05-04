@@ -91,8 +91,13 @@ def do_processing(input_file,
     for node in alive_it(
             nodes_sorted_by_y,
             title="Converting each node, and writing out in JSON"):
-        node_object = utils.get_node_object(node, node_to_index, metadata_dict,
-                                            input_to_index, metadata_cols, chronumental_enabled=chronumental_enabled)
+        node_object = utils.get_node_object(
+            node,
+            node_to_index,
+            metadata_dict,
+            input_to_index,
+            metadata_cols,
+            chronumental_enabled=chronumental_enabled)
         output_file.write(
             json.dumps(node_object, separators=(',', ':')) + "\n")
     output_file.close()
