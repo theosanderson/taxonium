@@ -83,6 +83,7 @@ const search = async (search, bounds) => {
     y_positions,
     node_to_mut,
     mutations,
+    rootId
   } = processedUploadedData;
   const spec = JSON.parse(search);
   console.log(spec);
@@ -98,6 +99,7 @@ const search = async (search, bounds) => {
     y_positions,
     mutations,
     node_to_mut,
+    rootId
   });
   console.log("mutations var is ", mutations);
   console.log("got search result", result);

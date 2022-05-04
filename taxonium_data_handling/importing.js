@@ -153,6 +153,15 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "min");
 
   const root = new_data.nodes.find((node) => node.parent_id === node.node_id);
+  // Add children
+  for (const node of new_data.nodes) {
+    if (node.parent_id !== node.node_id) {
+      parent_node = new_data.nodes[node.parent_id];
+      parent_node.children = parent_node.children || [];
+      parent_node.children.push(node);
+    }
+    
+  }
   const rootMutations = root.mutations;
   root.mutations = [];
 

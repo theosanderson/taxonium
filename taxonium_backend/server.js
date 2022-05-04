@@ -83,6 +83,7 @@ app.get("/search", function (req, res) {
     y_positions: processedData.y_positions,
     mutations: processedData.mutations,
     node_to_mut: processedData.node_to_mut,
+    rootId: processedData.rootId,
   });
   validateSIDandSend(result, req.query.sid, res);
   console.log(

@@ -137,7 +137,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
   return reduced;
 }
 
-function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
+function searchFiltering({ data, spec, mutations, node_to_mut, all_data, rootId }) {
   //console.log("SEARCHFILTER", data);
   console.log(spec);
   let filtered;
@@ -205,7 +205,59 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     );
     console.log("filtered:", filtered);
     return filtered;
-  } else if (spec.method === "revertant") {
+  } else if (spec.method === "genotype") {
+    const relevant_mutations = mutations
+      .filter((mutation) => {
+        return (
+          mutation &&
+          mutation.gene === spec.gene &&
+          mutation.residue_pos === spec.position
+        );
+      })
+      .map((mutation) => mutation.mutation_id);
+
+    const positive_mutations = relevant_mutations.filter((mutation_id) => {
+      return mutations[mutation_id].new_residue === spec.new_residue;
+    });
+    const negative_mutations = relevant_mutations.filter((mutation_id) => {
+      return mutations[mutation_id].new_residue !== spec.new_residue;
+    });
+    const recursive_analysis = (node, currently_positive, storage_set) => {
+      const mutations_here = node_to_mut[node.node_id];
+      const now_positive = mutations_here.some((mutation_id) =>
+        positive_mutations.includes(mutation_id)
+      );
+      const now_negative = mutations_here.some((mutation_id) =>
+        negative_mutations.includes(mutation_id)
+      );
+      let current_state = currently_positive;
+      if (now_positive) {
+        current_state = true;
+      }
+      if (now_negative) {
+        current_state = false;
+      }
+      if(node.children.length>0){
+        for (let child of node.children) {
+          recursive_analysis(child, current_state, storage_set);
+        }
+      }
+      else{
+        if (current_state) {
+          storage_set.add(node.node_id);
+        }
+
+      }
+      
+
+    };
+
+    const storage_set = new Set();
+    recursive_analysis(data[rootId], false, storage_set);
+
+
+  }
+  else if (spec.method === "revertant") {
     if (!all_data) {
       all_data = data;
     }
@@ -238,6 +290,7 @@ function singleSearch({
   y_positions,
   mutations,
   node_to_mut,
+  rootId
 }) {
   const text_spec = JSON.stringify(spec);
   const max_to_return = 10000;
@@ -248,7 +301,7 @@ function singleSearch({
     .slice(0, 8);
   let filtered = null;
   if (count_per_hash[hash_spec] === undefined) {
-    filtered = searchFiltering({ data, spec, mutations, node_to_mut });
+    filtered = searchFiltering({ data, spec, mutations, node_to_mut,rootId });
     count_per_hash[hash_spec] = filtered.length;
   }
   const num_returned = count_per_hash[hash_spec];
@@ -261,6 +314,7 @@ function singleSearch({
       mutations,
       node_to_mut,
       all_data: data,
+      rootId
     });
 
     const reduced = reduceOverPlotting(
@@ -274,7 +328,7 @@ function singleSearch({
     };
   } else {
     if (filtered === null) {
-      filtered = searchFiltering({ data, spec, mutations, node_to_mut });
+      filtered = searchFiltering({ data, spec, mutations, node_to_mut,rootId });
     }
     result = {
       type: "complete",
