@@ -9,6 +9,13 @@ from . import utils
 import argparse
 import gzip
 
+try:
+    from . import _version
+    version = _version.version
+except ImportError:
+    version = "dev"
+
+
 
 def do_processing(input_file,
                   output_file,
@@ -18,9 +25,15 @@ def do_processing(input_file,
                   chronumental_enabled=False,
                   chronumental_steps=100,
                   chronumental_date_output=None,
-                  chronumental_reference_node=None):
+                  chronumental_reference_node=None,
+                  config_file = None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
+
+    if config_file is not None:
+        config = json.load(open(config_file))
+    else:
+        config = {}
 
     if "gz" in input_file:
         f = gzip.open(input_file, 'rb')
@@ -62,8 +75,10 @@ def do_processing(input_file,
     }
 
     first_json = {
-        "aa_mutations": all_mut_objects,
+        "version": version,
+        "mutations": all_mut_objects,
         "total_nodes": len(nodes_sorted_by_y),
+        "config": config
     }
 
     node_to_index = {node: i for i, node in enumerate(nodes_sorted_by_y)}
@@ -121,6 +136,10 @@ def main():
                         type=str,
                         help="Taxonium reference node",
                         default=None)
+    parser.add_argument("--config_json",
+                        type=str,
+                        help="A JSON file to use as a config file",
+                        default=None)
 
     args = parser.parse_args()
     do_processing(args.input,
@@ -131,7 +150,8 @@ def main():
                   chronumental_steps=args.chronumental_steps,
                   columns=args.columns,
                   chronumental_date_output=args.chronumental_date_output,
-                  chronumental_reference_node=args.chronumental_reference_node)
+                  chronumental_reference_node=args.chronumental_reference_node,
+                    config_file=args.config_json)
 
 
 if __name__ == "__main__":
