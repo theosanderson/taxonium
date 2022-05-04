@@ -57,7 +57,7 @@ def do_chronumental(mat, chronumental_reference_node, metadata_file,
 
         command = f"chronumental --tree {os.path.join(tmpdirname, 'distance_tree.nwk')} --dates {metadata_file} --steps {chronumental_steps} --tree_out {os.path.join(tmpdirname, 'timetree.nwk')}"
         if chronumental_reference_node:
-            command += f" --reference_node {chronumental_reference_node}"
+            command += f" --reference_node '{chronumental_reference_node}'"
 
         if chronumental_date_output:
             command += f" --dates_out {chronumental_date_output}"
