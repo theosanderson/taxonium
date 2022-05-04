@@ -123,8 +123,8 @@ if __name__ == "__main__":
                         default=None)
 
     args = parser.parse_args()
-    main(input_file=args.input,
-         output_file=args.output,
+    main(args.input,
+         args.output,
          metadata_file=args.metadata,
          genbank_file=args.genbank,
          chronumental_enabled=args.chronumental,
