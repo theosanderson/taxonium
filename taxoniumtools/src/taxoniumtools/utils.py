@@ -5,12 +5,12 @@ import os, tempfile, sys
 import treeswift
 from . import ushertools
 
+
 def nan_to_empty_string(x):
     if pd.isna(x):
         return ""
     else:
         return x
-
 
 
 def read_metadata(metadata_file, columns):
@@ -41,17 +41,20 @@ def read_metadata(metadata_file, columns):
             # If the number of unique values is less than 10% of the total number of rows, then make a vocab with the unique values as a list
             if len(metadata[col].unique()) < 0.1 * metadata.shape[0]:
                 initial_list = metadata[col].unique().tolist()
-                as_strings = [str(nan_to_empty_string(x)) for x in initial_list] + ['']
+                as_strings = [
+                    str(nan_to_empty_string(x)) for x in initial_list
+                ] + ['']
                 as_sorted_set = sorted(set(as_strings))
                 metadata_vocabs[col] = as_sorted_set
 
-
-        
         del metadata
         print("Metadata loaded")
         vocab_lookups = {}
         for col in metadata_vocabs:
-            vocab_lookups[col] = {x: i for i, x in enumerate(metadata_vocabs[col])}
+            vocab_lookups[col] = {
+                x: i
+                for i, x in enumerate(metadata_vocabs[col])
+            }
         #raise ValueError(vocab_lookups)
         return metadata_dict, metadata_cols, metadata_vocabs, vocab_lookups
     else:
