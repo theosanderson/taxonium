@@ -16,7 +16,6 @@ except ImportError:
     version = "dev"
 
 
-
 def do_processing(input_file,
                   output_file,
                   metadata_file=None,
@@ -26,7 +25,7 @@ def do_processing(input_file,
                   chronumental_steps=100,
                   chronumental_date_output=None,
                   chronumental_reference_node=None,
-                  config_file = None):
+                  config_file=None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -156,7 +155,7 @@ def main():
                   columns=args.columns,
                   chronumental_date_output=args.chronumental_date_output,
                   chronumental_reference_node=args.chronumental_reference_node,
-                    config_file=args.config_json)
+                  config_file=args.config_json)
 
 
 if __name__ == "__main__":
