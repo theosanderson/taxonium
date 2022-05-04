@@ -15,8 +15,15 @@ import sys
 import warnings
 
 
-def main(input_file, output_file, metadata_file = None, genbank_file = None, columns = None, chronumental_enabled = False, chronumental_steps = 100, chronumental_date_output = None, chronumental_reference_node = None):
-    
+def main(input_file,
+         output_file,
+         metadata_file=None,
+         genbank_file=None,
+         columns=None,
+         chronumental_enabled=False,
+         chronumental_steps=100,
+         chronumental_date_output=None,
+         chronumental_reference_node=None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -29,27 +36,28 @@ def main(input_file, output_file, metadata_file = None, genbank_file = None, col
     f.close()
 
     if chronumental_enabled:
-        utils.do_chronumental(mat=mat, chronumental_reference_node=chronumental_reference_node, metadata_file=metadata_file, chronumental_steps=chronumental_steps, chronumental_date_output=chronumental_date_output)
-
-
-
-
+        utils.do_chronumental(
+            mat=mat,
+            chronumental_reference_node=chronumental_reference_node,
+            metadata_file=metadata_file,
+            chronumental_steps=chronumental_steps,
+            chronumental_date_output=chronumental_date_output)
 
     print("Ladderizing tree..")
     mat.tree.ladderize(ascending=False)
     print("Ladderizing done")
-    utils.set_x_coords(mat.tree.root,chronumental_enabled=chronumental_enabled)
+    utils.set_x_coords(mat.tree.root,
+                       chronumental_enabled=chronumental_enabled)
     utils.set_terminal_y_coords(mat.tree.root)
     utils.set_internal_y_coords(mat.tree.root)
-
 
     nodes_sorted_by_y = utils.sort_on_y(mat)
     all_aa_muts_tuples = utils.get_all_aa_muts(mat.tree.root)
     all_nuc_muts = utils.get_all_nuc_muts(mat.tree.root)
     all_mut_inputs = all_aa_muts_tuples + all_nuc_muts
     all_mut_objects = [
-        utils.make_aa_object(i, input_thing)
-        if isinstance(input_thing, tuple) else utils.make_nuc_object(i, input_thing)
+        utils.make_aa_object(i, input_thing) if isinstance(input_thing, tuple)
+        else utils.make_nuc_object(i, input_thing)
         for i, input_thing in enumerate(all_mut_inputs)
     ]
 
@@ -74,7 +82,7 @@ def main(input_file, output_file, metadata_file = None, genbank_file = None, col
             nodes_sorted_by_y,
             title="Converting each node, and writing out in JSON"):
         node_object = utils.get_node_object(node, node_to_index, metadata_dict,
-                                      input_to_index, metadata_cols)
+                                            input_to_index, metadata_cols)
         output_file.write(
             json.dumps(node_object, separators=(',', ':')) + "\n")
     output_file.close()
@@ -109,9 +117,10 @@ if __name__ == "__main__":
     parser.add_argument("--columns",
                         type=str,
                         help="Columns to include in the metadata")
-    parser.add_argument("--chronumental_date_output",
-                        type=str,
-                        help="Output file for the chronumental date file, if any")
+    parser.add_argument(
+        "--chronumental_date_output",
+        type=str,
+        help="Output file for the chronumental date file, if any")
 
     parser.add_argument("--chronumental_reference_node",
                         type=str,
@@ -120,11 +129,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(input_file=args.input,
-            output_file=args.output,
-            metadata_file=args.metadata,
-            genbank_file=args.genbank,
-            chronumental_enabled=args.chronumental,
-            chronumental_steps=args.chronumental_steps,
-            columns=args.columns,
-            chronumental_date_output=args.chronumental_date_output,
-            chronumental_reference_node=args.chronumental_reference_node)
+         output_file=args.output,
+         metadata_file=args.metadata,
+         genbank_file=args.genbank,
+         chronumental_enabled=args.chronumental,
+         chronumental_steps=args.chronumental_steps,
+         columns=args.columns,
+         chronumental_date_output=args.chronumental_date_output,
+         chronumental_reference_node=args.chronumental_reference_node)
