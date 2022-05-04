@@ -1,6 +1,5 @@
 #python usher_to_taxonium.py --input public-latest.all.masked.pb.gz --output ../taxonium_web_client/public/public2.jsonl.gz --metadata public-latest.metadata.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
 
-
 import json
 import pandas as pd
 from alive_progress import config_handler, alive_it, alive_bar
@@ -9,7 +8,6 @@ from . import ushertools
 from . import utils
 import argparse
 import gzip
-
 
 
 def main(input_file,
