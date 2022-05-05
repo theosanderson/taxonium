@@ -79,7 +79,7 @@ const useView = ({ minimapEnabled, deckSize }) => {
     target: [700, 1000],
     pitch: 0,
     bearing: 0,
-     minimap: { zoom: -3, target: [250, 1000] }
+    minimap: { zoom: -3, target: [250, 1000] },
   });
 
   const views = useMemo(() => {
