@@ -7,4 +7,5 @@ jobs:
   python:
     uses:  ./.github/workflows/python-test.yml
   selenium:
+    needs: [build, python]
     uses:  ./.github/workflows/selenium-test.yml
