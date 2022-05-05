@@ -9,6 +9,23 @@ jobs:
     steps:      
       - name: Installed package list
         run: apt list --installed
+      - uses: actions/download-artifact@v3
+        with:
+          name: tfci-taxonium-config
+          path: ./data/
+      - uses: actions/download-artifact@v3
+        with:
+          name: taxonium_web_client_build
+          path: ./web/
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'
+      - name: Start server
+        run: python -m http.server &
+        working-directory: ./web/
+      - name: Start server
+        run: python -m http.server 3000 &
+        working-directory: ./data/
       - name: Remove Chrome
         run: sudo apt purge google-chrome-stable
       - name: Install all necessary packages
