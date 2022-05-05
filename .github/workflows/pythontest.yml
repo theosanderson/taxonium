@@ -55,3 +55,12 @@ jobs:
         with:
           name: tfci-taxonium-config
           path: tfci-taxonium-config.jsonl.gz
+      - name: Installed package list
+        run: apt list --installed
+      - name: Remove Chrome
+        run: sudo apt purge google-chrome-stable
+      - name: Install all necessary packages
+        run: pip install requests beautifulsoup4 pandas webdriver-manager selenium
+      - name: Run the scraping script
+        run: python .github/selenium/selenium.py
+
