@@ -204,7 +204,10 @@ const getConfig = async () => {
 
   config.mutations = processedUploadedData.mutations;
 
-  const merged_config = {...config, ...processedUploadedData.overwrite_config};
+  const merged_config = {
+    ...config,
+    ...processedUploadedData.overwrite_config,
+  };
 
   //console.log("config is ", config);
 
