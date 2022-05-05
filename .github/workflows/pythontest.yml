@@ -32,6 +32,7 @@ jobs:
           wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.meta.tsv.gz
           wget https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb
           wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.pb
+          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/test_config.json
       - name: Basic test
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
@@ -47,3 +48,11 @@ jobs:
         with:
           name: tfci-taxonium-chron
           path: tfci-taxonium-chron.jsonl.gz
+      - name: Test with config
+        run: |
+          pip install chronumental
+          usher_to_taxonium --input tfci.pb --output tfci-taxonium-config.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --config_file test_config.json
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tfci-taxonium-config
+          path: tfci-taxonium-config.jsonl.gz

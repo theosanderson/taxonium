@@ -171,6 +171,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     node_to_mut: new_data.node_to_mut,
     rootMutations: rootMutations,
     rootId: root.node_id,
+    overwrite_config: new_data.header.config ? new_data.header.config : {},
   };
 
   return output;

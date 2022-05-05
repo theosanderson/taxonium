@@ -204,9 +204,11 @@ const getConfig = async () => {
 
   config.mutations = processedUploadedData.mutations;
 
+  const merged_config = {...config, ...processedUploadedData.overwrite_config};
+
   //console.log("config is ", config);
 
-  return config;
+  return merged_config;
 };
 
 const getDetails = async (node_id) => {
