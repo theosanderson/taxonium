@@ -15,7 +15,7 @@ function useColorBy(config, query, updateQuery) {
 
   const { colorByOptions } = config.colorBy
     ? config.colorBy
-    : { colorByOptions: []};
+    : { colorByOptions: [] };
 
   window.cc = colorCache;
 
@@ -101,7 +101,6 @@ function useColorBy(config, query, updateQuery) {
       setColorByPosition,
       colorByGene,
       setColorByGene,
-     
     };
   }, [
     colorByField,
@@ -109,7 +108,6 @@ function useColorBy(config, query, updateQuery) {
     getNodeColorField,
     colorByPosition,
     colorByGene,
-   
   ]);
 }
 export default useColorBy;
