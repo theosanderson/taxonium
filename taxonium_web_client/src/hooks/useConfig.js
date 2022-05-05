@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useConfig = (backend, view, overlayRef) => {
+const useConfig = (backend, view, overlayRef, setTitle) => {
   const [config, setConfig] = useState({
     title: "loading",
     source: "",
@@ -18,8 +18,13 @@ const useConfig = (backend, view, overlayRef) => {
 
       const oldViewState = { ...viewState };
 
+      if (results.title) {
+        setTitle(results.title);
+        console.log("setting title to ", config.title);
+      }
+
       setConfig(results);
-      console.log(results);
+      console.log("CONFIG", results);
       view.onViewStateChange({
         viewState,
         oldViewState,

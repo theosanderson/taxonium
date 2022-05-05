@@ -204,6 +204,8 @@ const getConfig = async () => {
 
   config.mutations = processedUploadedData.mutations;
 
+  console.log("overwrite with", processedUploadedData.overwrite_config);
+
   const merged_config = {
     ...config,
     ...processedUploadedData.overwrite_config,
