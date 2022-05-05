@@ -12,7 +12,7 @@ import { useCallback, useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
-function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
+function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto, setTitle }) {
   const [deckSize, setDeckSize] = useState(null);
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const view = useView({ minimapEnabled, deckSize });
@@ -32,7 +32,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   );
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
-  const config = useConfig(backend, view, overlayRef);
+  const config = useConfig(backend, view, overlayRef, setTitle);
   const colorBy = useColorBy(config, query, updateQuery);
   const xType = query.xType;
   const setxType = (xType) => {
