@@ -3,8 +3,8 @@ name: Integration Test
 on: push
 jobs:
   build:
-    uses: ./frontend-test.yml
+    uses:  ./.github/workflows/frontend-test.yml
   python:
-    uses: ./python-test.yml
+    uses:  ./.github/workflows/python-test.yml
   selenium:
-    uses: ./selenium-test.yml
+    uses:  ./.github/workflows/selenium-test.yml
