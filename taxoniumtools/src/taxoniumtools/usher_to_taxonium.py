@@ -25,7 +25,9 @@ def do_processing(input_file,
                   chronumental_steps=100,
                   chronumental_date_output=None,
                   chronumental_reference_node=None,
-                  config_file=None):
+                  config_file=None,
+                  title=None
+                 ):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -33,6 +35,9 @@ def do_processing(input_file,
         config = json.load(open(config_file))
     else:
         config = {}
+        
+    if title is not None:
+        config['title']=title
 
     if "gz" in input_file:
         f = gzip.open(input_file, 'rb')
@@ -144,6 +149,10 @@ def main():
                         type=str,
                         help="A JSON file to use as a config file",
                         default=None)
+    parser.add_argument("--title",
+                        type=str,
+                        help="A title for the tree",
+                        default=None)
 
     args = parser.parse_args()
     do_processing(args.input,
@@ -155,7 +164,8 @@ def main():
                   columns=args.columns,
                   chronumental_date_output=args.chronumental_date_output,
                   chronumental_reference_node=args.chronumental_reference_node,
-                  config_file=args.config_json)
+                  config_file=args.config_json,
+                  title=args.title)
 
 
 if __name__ == "__main__":
