@@ -197,10 +197,7 @@ const getConfig = async () => {
 
   const colorByOptions = [...config.keys_to_display, "genotype", "none"];
 
-  const prettyColorByOptions = Object.fromEntries(
-    colorByOptions.map((x) => [x, prettyName(x)])
-  );
-  config.colorBy = { colorByOptions, prettyColorByOptions };
+  config.colorBy = { colorByOptions };
 
   config.mutations = processedUploadedData.mutations;
 

@@ -20,13 +20,8 @@
   ],
 
   "colorBy": {
-    "colorByOptions": ["meta_Lineage", "meta_Country", "genotype", "None"],
-    "prettyColorByOptions": {
-      "meta_Lineage": "Lineage",
-      "meta_Country": "Country",
-      "genotype": "Genotype",
-      "None": "None"
-    }
+    "colorByOptions": ["meta_Lineage", "meta_Country", "genotype", "None"]
+    
   },
   "x_accessors": ["x_dist", "x_time"]
 }

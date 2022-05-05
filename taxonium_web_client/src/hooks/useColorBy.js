@@ -13,9 +13,9 @@ function useColorBy(config, query, updateQuery) {
   const colorByGene = colorByConfig.gene ? colorByConfig.gene : "S";
   const colorByPosition = colorByConfig.pos ? colorByConfig.pos : 501;
 
-  const { colorByOptions, prettyColorByOptions } = config.colorBy
+  const { colorByOptions } = config.colorBy
     ? config.colorBy
-    : { colorByOptions: [], prettyColorByOptions: {} };
+    : { colorByOptions: [] };
 
   window.cc = colorCache;
 
@@ -101,7 +101,6 @@ function useColorBy(config, query, updateQuery) {
       setColorByPosition,
       colorByGene,
       setColorByGene,
-      prettyColorByOptions,
     };
   }, [
     colorByField,
@@ -109,7 +108,6 @@ function useColorBy(config, query, updateQuery) {
     getNodeColorField,
     colorByPosition,
     colorByGene,
-    prettyColorByOptions,
   ]);
 }
 export default useColorBy;
