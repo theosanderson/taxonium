@@ -6,6 +6,8 @@ on:
 
 jobs:
   test:
+    env:
+      CI: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
