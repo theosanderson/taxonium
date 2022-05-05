@@ -129,7 +129,10 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x) {
   const time2 = Date.now();
   console.log("Filtering took " + (time2 - start_time) + "ms.");
   const precision = getPrecision(min_y, max_y);
-  const reduced_leaves = reduceOverPlotting(filtered.filter(node=>node.num_tips==1), precision);
+  const reduced_leaves = reduceOverPlotting(
+    filtered.filter((node) => node.num_tips == 1),
+    precision
+  );
   const time3 = Date.now();
   console.log("Reducing took " + (time3 - time2) + "ms.");
   const reduced = addParents(data, reduced_leaves);
