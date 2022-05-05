@@ -61,11 +61,12 @@ jobs:
         run: sudo apt purge google-chrome-stable
       - name: Install all necessary packages
         run: pip install requests beautifulsoup4 pandas webdriver-manager selenium
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 17.5
       - name: Start NPM server
         run: |
-          cd taxoniumtools/taxonium_web_client
-          nvm install 17.5
-          nvm use 17.5
+          cd taxonium_web_client
           npm install -g yarn
           yarn install
           yarn start &
