@@ -69,8 +69,9 @@ jobs:
           cd taxonium_web_client
           npm install -g yarn
           yarn install
-          yarn start &
-          curl localhost:3000 &&
+          yarn build
+          cd build
+          python -m http.server &
       - name: Run Selenium tests
         run: python .github/selenium_tests/selenium_tests.py
 
