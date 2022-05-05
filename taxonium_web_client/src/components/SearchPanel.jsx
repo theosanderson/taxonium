@@ -19,7 +19,7 @@ const fixAuthors = (authors) => {
 const prettifyName = (name) => {
   const new_name = name.replace("meta_", "").replace("_", " ");
   return new_name.charAt(0).toUpperCase() + new_name.slice(1);
-}
+};
 
 function SearchPanel({
   search,
