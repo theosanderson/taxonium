@@ -26,8 +26,7 @@ def do_processing(input_file,
                   chronumental_date_output=None,
                   chronumental_reference_node=None,
                   config_file=None,
-                  title=None
-                 ):
+                  title=None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -35,9 +34,9 @@ def do_processing(input_file,
         config = json.load(open(config_file))
     else:
         config = {}
-        
+
     if title is not None:
-        config['title']=title
+        config['title'] = title
 
     if "gz" in input_file:
         f = gzip.open(input_file, 'rb')
