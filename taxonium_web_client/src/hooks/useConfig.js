@@ -18,13 +18,13 @@ const useConfig = (backend, view, overlayRef, setTitle) => {
 
       const oldViewState = { ...viewState };
 
-      if(results.title){
+      if (results.title) {
         setTitle(results.title);
         console.log("setting title to ", config.title);
       }
 
       setConfig(results);
-      console.log("CONFIG",results);
+      console.log("CONFIG", results);
       view.onViewStateChange({
         viewState,
         oldViewState,

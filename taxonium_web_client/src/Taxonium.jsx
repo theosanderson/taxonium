@@ -12,7 +12,14 @@ import { useCallback, useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
-function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto, setTitle }) {
+function Taxonium({
+  uploadedData,
+  query,
+  updateQuery,
+  overlayRef,
+  proto,
+  setTitle,
+}) {
   const [deckSize, setDeckSize] = useState(null);
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const view = useView({ minimapEnabled, deckSize });

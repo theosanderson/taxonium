@@ -164,8 +164,23 @@ function App() {
         <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
           <div className="flex justify-between">
             <h1 className="text-xl p-4  pb-5 text-white ">
-              {title ? <>{title} <span className="text-sm"><CgListTree className="inline-block h-4 w-4 mr-1 " /> powered by <a href="//taxonium.org" className="underline">Taxonium</a></span></>  : (<><CgListTree className="inline-block h-8 w-8 pr-2 " />
-              <span className="font-bold">Taxonium</span></>)}
+              {title ? (
+                <>
+                  {title}{" "}
+                  <span className="text-sm">
+                    <CgListTree className="inline-block h-4 w-4 mr-1 " />{" "}
+                    powered by{" "}
+                    <a href="//taxonium.org" className="underline">
+                      Taxonium
+                    </a>
+                  </span>
+                </>
+              ) : (
+                <>
+                  <CgListTree className="inline-block h-8 w-8 pr-2 " />
+                  <span className="font-bold">Taxonium</span>
+                </>
+              )}
             </h1>
             <div className="inline-block p-4 pr-0">
               <button
