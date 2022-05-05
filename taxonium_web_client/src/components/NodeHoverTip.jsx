@@ -12,7 +12,7 @@ const NodeHoverTip = ({
   colorHook,
   colorBy,
   config,
-  filterMutations
+  filterMutations,
 }) => {
   const initial_mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
@@ -100,7 +100,15 @@ const NodeHoverTip = ({
               </span>
             ))}
             {mutations.length === 0 && (
-              <div className="text-xs italic">No {filterMutations([{type:"nt"}]).length===0? (<>coding</>): <></>} mutations</div>
+              <div className="text-xs italic">
+                No{" "}
+                {filterMutations([{ type: "nt" }]).length === 0 ? (
+                  <>coding</>
+                ) : (
+                  <></>
+                )}{" "}
+                mutations
+              </div>
             )}
           </div>
         </div>

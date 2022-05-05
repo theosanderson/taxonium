@@ -30,7 +30,7 @@ const settingsModalStyle = {
 const prettifyMutationTypes = {
   aa: "Amino acid",
   nt: "Nucleotide",
-}
+};
 
 function Deck({
   data,
@@ -50,7 +50,7 @@ function Deck({
   deckSize,
   mutationTypesEnabled,
   setMutationTypeEnabled,
-  filterMutations
+  filterMutations,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -220,22 +220,25 @@ function Deck({
           <h3 className="mt-5 font-medium">Mutation types enabled</h3>
           <div className="mt-2">
             {Object.keys(mutationTypesEnabled).map((key) => (
-              <div><label key={key}>
-                <input
-                  type="checkbox"
-                  className="mr-1"
-                  checked={mutationTypesEnabled[key]}
-                  onChange={() =>
-                    setMutationTypeEnabled(key, !mutationTypesEnabled[key])
-                  }
-                />{" "}
-                {prettifyMutationTypes[key]? prettifyMutationTypes[key]: key}
-              </label></div>
+              <div>
+                <label key={key}>
+                  <input
+                    type="checkbox"
+                    className="mr-1"
+                    checked={mutationTypesEnabled[key]}
+                    onChange={() =>
+                      setMutationTypeEnabled(key, !mutationTypesEnabled[key])
+                    }
+                  />{" "}
+                  {prettifyMutationTypes[key]
+                    ? prettifyMutationTypes[key]
+                    : key}
+                </label>
+              </div>
             ))}
-
+          </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
       <DeckGL
         pickingRadius={10}
         ref={deckRef}

@@ -42,10 +42,14 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
     return JSON.parse(query.mutationTypesEnabled);
   }, [query.mutationTypesEnabled]);
 
-  const filterMutations = useCallback( (mutations) => {
-    return mutations.filter( (mutation) => mutationTypesEnabled[mutation.type] );
-  }, [mutationTypesEnabled]);
-
+  const filterMutations = useCallback(
+    (mutations) => {
+      return mutations.filter(
+        (mutation) => mutationTypesEnabled[mutation.type]
+      );
+    },
+    [mutationTypesEnabled]
+  );
 
   const setMutationTypeEnabled = (key, enabled) => {
     const newMutationTypesEnabled = { ...mutationTypesEnabled };
@@ -54,8 +58,6 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
       mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
     });
   };
-
-  
 
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
@@ -99,7 +101,6 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             mutationTypesEnabled={mutationTypesEnabled}
             setMutationTypeEnabled={setMutationTypeEnabled}
             filterMutations={filterMutations}
-
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
