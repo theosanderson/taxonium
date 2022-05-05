@@ -76,7 +76,7 @@ const useView = ({ minimapEnabled, deckSize }) => {
 
   const [viewState, setViewState] = useState({
     zoom: -2,
-    target: [500, 1000],
+    target: [700, 1000],
     pitch: 0,
     bearing: 0,
   });
