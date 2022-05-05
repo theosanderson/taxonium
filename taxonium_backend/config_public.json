@@ -12,13 +12,8 @@
     { "name": "revertant", "label": "Revertant", "type": "revertant" }
   ],
   "colorBy": {
-    "colorByOptions": ["meta_pangolin_lineage", "meta_country", "genotype", "None"],
-    "prettyColorByOptions": {
-      "meta_pangolin_lineage": "Lineage",
-      "meta_country": "Country",
-      "genotype": "Genotype",
-      "None": "None"
-    }
+    "colorByOptions": ["meta_pangolin_lineage", "meta_country", "genotype", "None"]
+    
   },
   "x_accessors": ["x_dist", "x_time"]
 }
