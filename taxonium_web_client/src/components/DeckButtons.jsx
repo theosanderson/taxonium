@@ -9,11 +9,12 @@ import {
 import { TiZoom, TiCog } from "react-icons/ti";
 import { ClipLoader } from "react-spinners";
 
-const TaxButton = ({ children, onClick }) => {
+const TaxButton = ({ children, onClick, title }) => {
   return (
     <button
       className=" w-12 h-10 bg-gray-100 ml-1 p-1 rounded border-gray-300 text-gray-700  opacity-70  hover:opacity-100 mr-1 z-50"
       onClick={onClick}
+      title={title}
     >
       {children}
     </button>
@@ -46,6 +47,7 @@ export const DeckButtons = ({
         onClick={() => {
           requestOpenSettings();
         }}
+        title="Settings"
       >
         <TiCog className="mx-auto w-5 h-5 inline-block" />
       </TaxButton>
@@ -73,6 +75,7 @@ export const DeckButtons = ({
         onClick={() => {
           snapshot();
         }}
+        title="Take screenshot"
       >
         <BiCamera className="mx-auto  w-5 h-5 inline-block" />
       </TaxButton>
@@ -80,6 +83,7 @@ export const DeckButtons = ({
         onClick={() => {
           zoomIncrement(0.6);
         }}
+        title="Zoom in"
       >
         <BiZoomIn className="mx-auto  w-5 h-5 inline-block" />
       </TaxButton>
@@ -87,6 +91,7 @@ export const DeckButtons = ({
         onClick={() => {
           zoomIncrement(-0.6);
         }}
+        title="Zoom out"
       >
         <BiZoomOut className="mx-auto w-5 h-5 inline-block" />
       </TaxButton>
