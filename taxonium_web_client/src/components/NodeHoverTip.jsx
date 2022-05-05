@@ -1,6 +1,6 @@
-import { filter } from "compression";
+
 import { useMemo } from "react";
-import { BeatLoader } from "react-spinners";
+
 
 const fixName = (name) => {
   return name.replace("hCoV-19/", "hCoV-19/\n");

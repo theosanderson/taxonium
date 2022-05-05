@@ -154,6 +154,7 @@ const useView = ({ minimapEnabled, deckSize }) => {
       //const temp_viewport = new OrthographicViewport(viewS
       const oldScaleY = 2 ** oldViewState.zoom;
       const newScaleY = 2 ** viewState.zoom;
+      // eslint-disable-line no-unused-vars
       const oldScaleX = 2 ** xzoom;
       let newScaleX = 2 ** xzoom;
 

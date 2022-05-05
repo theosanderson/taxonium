@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useEffect, useCallback } from "react";
 
 let colorCache = {};
 
@@ -108,6 +108,9 @@ function useColorBy(config, query, updateQuery) {
     getNodeColorField,
     colorByPosition,
     colorByGene,
+    setColorByField,
+    setColorByGene,
+    setColorByPosition
   ]);
 }
 export default useColorBy;
