@@ -24,6 +24,7 @@ function SearchPanel({
   colorHook,
   xType,
   setxType,
+  filterMutations,
 }) {
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
@@ -161,7 +162,7 @@ function SearchPanel({
             Mutations at this node:
           </h3>
           <div className="text-xs mt-1 text-gray-700">
-            {selectedDetails.nodeDetails.mutations.map((mutation, i) => (
+            {filterMutations(selectedDetails.nodeDetails.mutations).map((mutation, i) => (
               <span key={mutation.mutation_id}>
                 {i > 0 && <>, </>}
                 <div className="inline-block">
@@ -172,7 +173,7 @@ function SearchPanel({
               </span>
             ))}
             {selectedDetails.nodeDetails.mutations.length === 0 && (
-              <span className="italic">No mutations at this node</span>
+                <div className=" italic">No {filterMutations([{type:"nt"}]).length===0? (<>coding</>): <></>} mutations</div>
             )}
           </div>
 

@@ -46,6 +46,8 @@ function App() {
     enabled: JSON.stringify({ [first_search.key]: true }),
     backend: process.env.REACT_APP_DEFAULT_BACKEND,
     xType: "x_dist",
+    mutationTypesEnabled: JSON.stringify({'aa': true,'nt':true})
+    
   });
 
   const [beingDragged, setBeingDragged] = useState(false);

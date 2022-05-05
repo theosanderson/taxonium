@@ -8,7 +8,7 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 
@@ -38,6 +38,25 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
   const setxType = (xType) => {
     updateQuery({ xType });
   };
+  const mutationTypesEnabled = useMemo(() => {
+    return JSON.parse(query.mutationTypesEnabled);
+  }, [query.mutationTypesEnabled]);
+
+  const filterMutations = useCallback( (mutations) => {
+    return mutations.filter( (mutation) => mutationTypesEnabled[mutation.type] );
+  }, [mutationTypesEnabled]);
+
+
+  const setMutationTypeEnabled = (key, enabled) => {
+    const newMutationTypesEnabled = { ...mutationTypesEnabled };
+    newMutationTypesEnabled[key] = enabled;
+    updateQuery({
+      mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
+    });
+  };
+
+  
+
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
     colorBy,
@@ -77,6 +96,10 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             setMinimapEnabled={setMinimapEnabled}
             setDeckSize={setDeckSize}
             deckSize={deckSize}
+            mutationTypesEnabled={mutationTypesEnabled}
+            setMutationTypeEnabled={setMutationTypeEnabled}
+            filterMutations={filterMutations}
+
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
@@ -88,6 +111,7 @@ function Taxonium({ uploadedData, query, updateQuery, overlayRef, proto }) {
             selectedDetails={selectedDetails}
             xType={xType}
             setxType={setxType}
+            filterMutations={filterMutations}
           />
         </div>
       </div>

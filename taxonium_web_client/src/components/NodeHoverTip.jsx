@@ -1,3 +1,4 @@
+import { filter } from "compression";
 import { useMemo } from "react";
 import { BeatLoader } from "react-spinners";
 
@@ -11,8 +12,9 @@ const NodeHoverTip = ({
   colorHook,
   colorBy,
   config,
+  filterMutations
 }) => {
-  const mutations = useMemo(() => {
+  const initial_mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
       const starting = hoverInfo.object.mutations;
       // sort by gene and then by residue_pos
@@ -26,6 +28,10 @@ const NodeHoverTip = ({
       return [];
     }
   }, [hoverInfo]);
+
+  const mutations = useMemo(() => {
+    return filterMutations(initial_mutations);
+  }, [initial_mutations, filterMutations]);
 
   if (!hoverInfo) {
     return null;
@@ -94,7 +100,7 @@ const NodeHoverTip = ({
               </span>
             ))}
             {mutations.length === 0 && (
-              <div className="text-xs italic">No coding mutations</div>
+              <div className="text-xs italic">No {filterMutations([{type:"nt"}]).length===0? (<>coding</>): <></>} mutations</div>
             )}
           </div>
         </div>
