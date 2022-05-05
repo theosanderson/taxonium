@@ -26,7 +26,8 @@ def do_processing(input_file,
                   chronumental_date_output=None,
                   chronumental_reference_node=None,
                   config_file=None,
-                  title=None):
+                  title=None,
+                  overlay_html=None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -37,6 +38,10 @@ def do_processing(input_file,
 
     if title is not None:
         config['title'] = title
+
+    if overlay_html is not None:
+        html_content = open(overlay_html).read()
+        config['overlay'] = html_content
 
     if "gz" in input_file:
         f = gzip.open(input_file, 'rb')
@@ -152,6 +157,10 @@ def main():
                         type=str,
                         help="A title for the tree",
                         default=None)
+    parser.add_argument("--overlay_html",
+                        type=str,
+                        help="A file containing HTML to put in the overlay",
+                        default=None)
 
     args = parser.parse_args()
     do_processing(args.input,
@@ -164,7 +173,8 @@ def main():
                   chronumental_date_output=args.chronumental_date_output,
                   chronumental_reference_node=args.chronumental_reference_node,
                   config_file=args.config_json,
-                  title=args.title)
+                  title=args.title,
+                  overlay_html=args.overlay_html)
 
 
 if __name__ == "__main__":

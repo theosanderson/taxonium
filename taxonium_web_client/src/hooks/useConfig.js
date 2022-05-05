@@ -20,6 +20,8 @@ const useConfig = (backend, view, overlayRef, setTitle) => {
 
       if (results.title) {
         setTitle(results.title);
+        // set the title with window
+        window.document.title = results.title;
         console.log("setting title to ", config.title);
       }
 
