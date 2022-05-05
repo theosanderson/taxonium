@@ -100,7 +100,7 @@ function SearchPanel({
               {config.genes &&
                 config.genes.map((item) => (
                   <option key={item} value={item}>
-                    {prettifyName(item)}
+                    {item}
                   </option>
                 ))}
             </select>
