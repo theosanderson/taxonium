@@ -16,6 +16,11 @@ const fixAuthors = (authors) => {
   return authors.replace(/,([^\s])/g, ", $1");
 };
 
+const prettifyName = (name) => {
+  const new_name = name.replace("meta_", "").replace("_", " ");
+  return new_name.charAt(0).toUpperCase() + new_name.slice(1);
+}
+
 function SearchPanel({
   search,
   colorBy,
@@ -115,7 +120,7 @@ function SearchPanel({
         </>
       )}
       {selectedDetails.nodeDetails && (
-        <div>
+        <div className="text-gray-700">
           <hr className="mt-4 mb-4" />
           <h2 className="font-bold whitespace-pre-wrap text-sm">
             {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
@@ -141,6 +146,7 @@ function SearchPanel({
             (key) =>
               selectedDetails.nodeDetails[key] && (
                 <div className="text-sm mt-1" key={key}>
+                  <span className="font-semibold">{prettifyName(key)}:</span>{" "}
                   {/*<span className="text-gray-800">{prettify_key[key]}</span>:{" "}*/}
                   {colorBy.colorByField === key ? (
                     <span
