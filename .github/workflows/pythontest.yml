@@ -61,6 +61,6 @@ jobs:
         run: sudo apt purge google-chrome-stable
       - name: Install all necessary packages
         run: pip install requests beautifulsoup4 pandas webdriver-manager selenium
-      - name: Run the scraping script
-        run: python .github/selenium/selenium.py
+      - name: Run Selenium tests
+        run: python .github/selenium/selenium_tests.py
 
