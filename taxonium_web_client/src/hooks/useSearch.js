@@ -187,7 +187,7 @@ const useSearch = ({
       console.log("Doing zoom", min_y, max_y, min_x, max_x);
 
       const oldViewState = { ...view.viewState };
-      const newZoom = 9 - Math.log2(max_y - min_y + 0.00001);
+      const newZoom = 9 - Math.log2(max_y - min_y + 0.01);
       const new_target = [(min_x + max_x) / 2, (min_y + max_y) / 2];
       console.log("NEW TARGET", new_target);
 

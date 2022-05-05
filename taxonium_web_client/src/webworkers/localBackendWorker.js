@@ -195,7 +195,7 @@ const getConfig = async () => {
     type: typeFromKey(x),
   }));
 
-  const colorByOptions = [...config.keys_to_display, "genotype","none"];
+  const colorByOptions = [...config.keys_to_display, "genotype", "none"];
 
   const prettyColorByOptions = Object.fromEntries(
     colorByOptions.map((x) => [x, prettyName(x)])
