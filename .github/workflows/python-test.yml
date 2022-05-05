@@ -1,6 +1,7 @@
 name: Testing Python
 
 on:
+  workflow_call:
   repository_dispatch:
   workflow_dispatch:
   push:
