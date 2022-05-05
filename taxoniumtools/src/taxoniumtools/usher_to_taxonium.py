@@ -159,9 +159,8 @@ def main():
                         default=None)
     parser.add_argument("--overlay_html",
                         type=str,
-                       help= "A file containing HTML to put in the overlay",
+                        help="A file containing HTML to put in the overlay",
                         default=None)
-
 
     args = parser.parse_args()
     do_processing(args.input,
@@ -175,8 +174,7 @@ def main():
                   chronumental_reference_node=args.chronumental_reference_node,
                   config_file=args.config_json,
                   title=args.title,
-                    overlay_html=args.overlay_html)
-                  
+                  overlay_html=args.overlay_html)
 
 
 if __name__ == "__main__":
