@@ -19,3 +19,9 @@ jobs:
           yarn install
           yarn build
           cd build
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: taxonium_web_client_build
+          path: taxonium_web_client/build
+          retention-days: 5
