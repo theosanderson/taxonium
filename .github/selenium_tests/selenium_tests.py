@@ -3,7 +3,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.utils import ChromeType
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 chrome_service = Service(
     ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 
@@ -21,5 +23,16 @@ driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 driver.get('http://nytimes.com')
 print(driver.title)
 
-driver.get('http://localhost:8000/')
+driver.get('http://localhost:8000/?protoUrl=http://localhost:3000/tfci-taxonium-config.jsonl.gz')
+
+time.sleep(20)
+
 print(driver.title)
+print(driver.quit)
+print(driver.get_log("browser"))
+
+if driver.find_elements_by_css_selector('#view-main'):
+    print "Element exists"
+else:
+    raise ValueError("Could not find element")
+    
