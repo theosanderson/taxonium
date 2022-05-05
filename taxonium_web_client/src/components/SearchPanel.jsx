@@ -84,7 +84,7 @@ function SearchPanel({
       >
         {colorBy.colorByOptions.map((item) => (
           <option key={item} value={item}>
-            {colorBy.prettyColorByOptions[item]}
+            {prettifyName(item)}
           </option>
         ))}
       </select>
@@ -100,7 +100,7 @@ function SearchPanel({
               {config.genes &&
                 config.genes.map((item) => (
                   <option key={item} value={item}>
-                    {item}
+                    {prettifyName(item)}
                   </option>
                 ))}
             </select>
