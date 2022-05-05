@@ -55,23 +55,3 @@ jobs:
         with:
           name: tfci-taxonium-config
           path: tfci-taxonium-config.jsonl.gz
-      - name: Installed package list
-        run: apt list --installed
-      - name: Remove Chrome
-        run: sudo apt purge google-chrome-stable
-      - name: Install all necessary packages
-        run: pip install requests beautifulsoup4 pandas webdriver-manager selenium
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 17.5
-      - name: Start NPM server
-        run: |
-          cd taxonium_web_client
-          npm install -g yarn
-          yarn install
-          yarn build
-          cd build
-          python -m http.server &
-      - name: Run Selenium tests
-        run: python .github/selenium_tests/selenium_tests.py
-
