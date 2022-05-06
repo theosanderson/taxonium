@@ -60,7 +60,7 @@ export const queryNodes = async (boundsForQueries) => {
   console.log("filtering");
 
   result = {
-    nodes: filtering.getNodes(nodes, y_positions, min_y, max_y, min_x, max_x),
+    nodes: filtering.getNodes(nodes, y_positions, min_y, max_y, min_x, max_x, boundsForQueries.xType),
   };
 
   console.log("result is done");
@@ -89,15 +89,21 @@ const search = async (search, bounds) => {
 
   const min_y = bounds && bounds.min_y ? bounds.min_y : overallMinY;
   const max_y = bounds && bounds.max_y ? bounds.max_y : overallMaxY;
+  const min_x = bounds && bounds.min_x ? bounds.min_x : overallMinX;
+  const max_x = bounds && bounds.max_x ? bounds.max_x : overallMaxX;
+  const xType = bounds && bounds.xType ? bounds.xType : "x_dist";
 
   const result = filtering.singleSearch({
     data: nodes,
     spec,
     min_y,
     max_y,
+    min_x,
+    max_x,
     y_positions,
     mutations,
     node_to_mut,
+    xType: xType
   });
   console.log("mutations var is ", mutations);
   console.log("got search result", result);
