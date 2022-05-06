@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 17.5
-      - name: Start NPM server
+      - name: NPM build
         run: |
           cd taxonium_web_client
           npm install -g yarn
