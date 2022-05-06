@@ -25,7 +25,9 @@ jobs:
         run: python -m http.server &
         working-directory: ./web/
       - name: Start server
-        run: python -m http.server 3000 &
+        run: |
+            ls
+            python -m http.server 3000 &
         working-directory: ./data/
       - name: Remove Chrome
         run: sudo apt purge google-chrome-stable
