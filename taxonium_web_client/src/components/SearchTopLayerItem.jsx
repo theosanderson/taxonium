@@ -49,8 +49,8 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       >
         Your permalink is:
         <br />
-        <textarea>
-          {window.location.href}&setZoomToSearch={getMyIndex()}
+        <textarea value={window.location.href+"&setZoomToSearch="+getMyIndex()}>
+          
         </textarea>
       </Modal>
       <div className="border-gray-100 border-b mb-3 pb-3">
@@ -90,7 +90,9 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                 title="Zoom to this search"
               >
                 <FaSearch />
-              </button>{" "}
+              </button>{" "}{ // check if window href includes 'protoUrl'
+                window.location.href.includes("protoUrl") && (
+               
               <button
                 className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
                 onClick={() => {
@@ -99,7 +101,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                 title="Get permalink"
               >
                 <FaLink />
-              </button>
+              </button>)}
             </>
           )}
         </div>
