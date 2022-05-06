@@ -1,7 +1,7 @@
 name: Testing Python
 
 on:
-
+  workflow_call:
 
 jobs:
   test:
