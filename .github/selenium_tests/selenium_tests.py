@@ -6,6 +6,10 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import sys
+
+url = sys.argv[1]
+
 
 chrome_service = Service(
     ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
@@ -24,7 +28,7 @@ driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 driver.get('http://nytimes.com')
 
 driver.get(
-    'http://localhost:8000/?protoUrl=http://localhost:3000/tfci-taxonium-config.jsonl.gz'
+    url
 )
 
 time.sleep(20)
