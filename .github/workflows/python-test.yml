@@ -48,3 +48,9 @@ jobs:
         with:
           name: tfci-taxonium-config
           path: tfci-taxonium-config.jsonl.gz
+      - uses: LouisBrunner/checks-action@v1.1.1
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Python tests
+          conclusion: ${{ job.status }}
