@@ -56,6 +56,7 @@ function App() {
 
   function onDrop(ev) {
     console.log("File(s) dropped");
+    setBeingDragged(false);
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -67,13 +68,13 @@ function App() {
         if (ev.dataTransfer.items[i].kind === "file") {
           var file = ev.dataTransfer.items[i].getAsFile();
           readFile(file);
-          setBeingDragged(false);
+          
         }
       }
     } else {
       // Use DataTransfer interface to access the file(s)
       readFile(ev.dataTransfer.files[0]);
-      setBeingDragged(false);
+   
     }
   }
 
