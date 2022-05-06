@@ -21,6 +21,7 @@ wget https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtoo
 wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.pb
 ```
 
+Then convert from UShER pb format to Taxonium jsonl format:
 
 ```
 usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb \
