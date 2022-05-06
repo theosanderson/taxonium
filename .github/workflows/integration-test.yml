@@ -10,6 +10,7 @@ on:
     - cron: "0 0 * * *"
 jobs:
   build:
+    runs-on: ubuntu-latest
     steps:
       - uses:  ./.github/workflows/frontend-test.yml
       - uses: LouisBrunner/checks-action@v1.1.1
@@ -19,6 +20,7 @@ jobs:
           name: Building front-end
           conclusion: ${{ job.status }}
   python:
+    runs-on: ubuntu-latest
     steps:
       - uses:  ./.github/workflows/python-test.yml
       - uses: LouisBrunner/checks-action@v1.1.1
@@ -28,6 +30,7 @@ jobs:
           name: Basic Python Test
           conclusion: ${{ job.status }}
   selenium:
+    runs-on: ubuntu-latest
     needs: [build, python]
     steps:
       - uses:  ./.github/workflows/selenium-test.yml
