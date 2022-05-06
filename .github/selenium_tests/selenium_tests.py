@@ -10,7 +10,6 @@ import sys
 
 url = sys.argv[1]
 
-
 chrome_service = Service(
     ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
 
@@ -27,9 +26,7 @@ driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
 driver.get('http://nytimes.com')
 
-driver.get(
-    url
-)
+driver.get(url)
 
 time.sleep(20)
 
