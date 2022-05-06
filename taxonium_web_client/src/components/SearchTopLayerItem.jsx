@@ -47,11 +47,11 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
         isOpen={permaLinkModalOpen}
         onRequestClose={() => setPermaLinkModalOpen(false)}
       >
-        Your permalink is:
+        A permalink that will link to a tree zoomed to this search is below:
         <br />
-        <textarea
+        <textarea onclick="this.focus();this.select()"
           value={window.location.href + "&zoomToSearch=" + getMyIndex()}
-          className="border-1 p-2 m-4 text-xs w-full"
+          className="border p-2 m-4 text-xs w-full bg-neutral-100"
           readOnly={true}
         ></textarea>
       </Modal>
