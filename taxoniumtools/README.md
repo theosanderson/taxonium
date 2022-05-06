@@ -28,7 +28,6 @@ usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfc
 --columns genbank_accession,country,date,pangolin_lineage
 ```
 
-
 You can then open that `tfci-taxonium.jsonl.gz` file at [taxonium.org](http://taxonium.org)
 
 ### Use Chronumental to infer a time tree

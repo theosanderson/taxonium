@@ -36,7 +36,13 @@ const count_per_hash = {};
 const reduceOverPlotting = (input, precisionX, precisionY, xType) => {
   const included_points = {};
   precisionX = precisionX / 5;
-  console.log("REDUCING20", "precisionX:", precisionX, "precisionY:", precisionY);
+  console.log(
+    "REDUCING20",
+    "precisionX:",
+    precisionX,
+    "precisionY:",
+    precisionY
+  );
 
   const filtered = input.filter((node) => {
     const rounded_x = Math.round(node[xType] * precisionX) / precisionX;
@@ -130,10 +136,12 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
     min_y !== undefined ? filter(data, y_positions, min_y, max_y) : data;
   const time2 = Date.now();
   console.log("Filtering took " + (time2 - start_time) + "ms.");
- 
+
   const reduced_leaves = reduceOverPlotting(
-    filtered.filter((node) => node.num_tips == 1),getPrecision(min_x, max_x),
-    getPrecision(min_y, max_y), xType
+    filtered.filter((node) => node.num_tips == 1),
+    getPrecision(min_x, max_x),
+    getPrecision(min_y, max_y),
+    xType
   );
   const time3 = Date.now();
   console.log("Reducing took " + (time3 - time2) + "ms.");
@@ -242,9 +250,10 @@ function singleSearch({
   max_y,
   y_positions,
   mutations,
-  node_to_mut, xType,
+  node_to_mut,
+  xType,
   min_x,
-  max_x
+  max_x,
 }) {
   const text_spec = JSON.stringify(spec);
   const max_to_return = 10000;
@@ -271,8 +280,10 @@ function singleSearch({
     });
 
     const reduced = reduceOverPlotting(
-      filtered_cut,getPrecision(min_x, max_x),
-      getPrecision(min_y, max_y),  xType
+      filtered_cut,
+      getPrecision(min_x, max_x),
+      getPrecision(min_y, max_y),
+      xType
     );
     result = {
       type: "filtered",

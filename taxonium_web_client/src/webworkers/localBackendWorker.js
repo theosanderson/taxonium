@@ -60,7 +60,15 @@ export const queryNodes = async (boundsForQueries) => {
   console.log("filtering");
 
   result = {
-    nodes: filtering.getNodes(nodes, y_positions, min_y, max_y, min_x, max_x, boundsForQueries.xType),
+    nodes: filtering.getNodes(
+      nodes,
+      y_positions,
+      min_y,
+      max_y,
+      min_x,
+      max_x,
+      boundsForQueries.xType
+    ),
   };
 
   console.log("result is done");
@@ -103,7 +111,7 @@ const search = async (search, bounds) => {
     y_positions,
     mutations,
     node_to_mut,
-    xType: xType
+    xType: xType,
   });
   console.log("mutations var is ", mutations);
   console.log("got search result", result);

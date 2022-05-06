@@ -23,7 +23,8 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
 
   useEffect(() => {
     if (
-      !boundsForQueries || xType !== boundsForQueries.xType ||
+      !boundsForQueries ||
+      xType !== boundsForQueries.xType ||
       (true &&
         (viewState.min_x < boundsForQueries.min_x + viewState.real_width / 2 ||
           viewState.max_x > boundsForQueries.max_x - viewState.real_width / 2 ||

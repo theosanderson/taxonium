@@ -85,7 +85,7 @@ app.get("/search", function (req, res) {
     y_positions: processedData.y_positions,
     mutations: processedData.mutations,
     node_to_mut: processedData.node_to_mut,
-    xType: req.query.xType
+    xType: req.query.xType,
   });
   validateSIDandSend(result, req.query.sid, res);
   console.log(
