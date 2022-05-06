@@ -1,10 +1,15 @@
 import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
-import { FaSearch } from "react-icons/fa";
-import { useCallback } from "react";
+import { FaSearch , FaLink} from "react-icons/fa";
+import { useCallback, useState } from "react";
 import { formatNumber } from "../utils/formatNumber";
+import Modal from "react-modal";
+
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
+
+  const permaLinkModalOpen = useState(false);
+
   const this_result = search.searchResults[myKey];
 
   const num_results =
@@ -40,6 +45,14 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
   const thecolor = search.getLineColor(getMyIndex());
 
   return (
+    <>
+    <Modal isOpen={permaLinkModalOpen} onRequestClose={() => setPermaLinkModalOpen(false)}>
+      Your permalink is:
+      <br />
+      <textarea>
+        {window.location.href}&setZoomToSearch={getMyIndex()}
+      </textarea>
+      </Modal>
     <div className="border-gray-100 border-b mb-3 pb-3">
       <input
         name="isGoing"
@@ -67,7 +80,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
             {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}
           </>
         )}{" "}
-        {num_results > 0 && (
+        {num_results > 0 && (<>
           <button
             className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
             onClick={() => {
@@ -76,7 +89,16 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
             title="Zoom to this search"
           >
             <FaSearch />
-          </button>
+          </button> <button
+            className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
+            onClick={() => {
+              setPermaLinkModalOpen(true);
+            }
+            }
+            title="Get permalink"
+          >
+            <FaLink />
+          </button></>
         )}
       </div>
       <button
@@ -87,6 +109,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
         Delete this search
       </button>
     </div>
+    </>
   );
 }
 
