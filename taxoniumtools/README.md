@@ -22,7 +22,9 @@ wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_dat
 ```
 
 
-`usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage`
+```
+usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
+```
 
 
 You can then open that `tfci-taxonium.jsonl.gz` file at [taxonium.org](http://taxonium.org)
