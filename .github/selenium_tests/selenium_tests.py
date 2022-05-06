@@ -22,7 +22,6 @@ for option in options:
 driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
 driver.get('http://nytimes.com')
-print(driver.title)
 
 driver.get(
     'http://localhost:8000/?protoUrl=http://localhost:3000/tfci-taxonium-config.jsonl.gz'
