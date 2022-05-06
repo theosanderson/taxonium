@@ -24,10 +24,12 @@ for option in options:
 
 driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
-driver.get('http://nytimes.com')
+#driver.get('http://nytimes.com')
 
 driver.get(url)
 
+print(url)
+print("###")
 time.sleep(20)
 
 print(driver.get_log("browser"))
