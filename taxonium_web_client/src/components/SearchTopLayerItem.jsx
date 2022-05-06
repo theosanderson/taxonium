@@ -8,8 +8,7 @@ import Modal from "react-modal";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
 
-  const permaLinkModalOpen = useState(false);
-
+  const [permaLinkModalOpen, setPermaLinkModalOpen] = useState(false);
   const this_result = search.searchResults[myKey];
 
   const num_results =
