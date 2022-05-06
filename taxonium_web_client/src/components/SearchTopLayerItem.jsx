@@ -49,9 +49,11 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       >
         Your permalink is:
         <br />
-        <textarea value={window.location.href+"&zoomToSearch="+getMyIndex()} className="border-1 p-2 m-4 text-xs w-full" readOnly={true}>
-          
-        </textarea>
+        <textarea
+          value={window.location.href + "&zoomToSearch=" + getMyIndex()}
+          className="border-1 p-2 m-4 text-xs w-full"
+          readOnly={true}
+        ></textarea>
       </Modal>
       <div className="border-gray-100 border-b mb-3 pb-3">
         <input
@@ -90,18 +92,22 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                 title="Zoom to this search"
               >
                 <FaSearch />
-              </button>{" "}{ // check if window href includes 'protoUrl'
-                (window.location.href.includes("protoUrl") || window.location.href.includes("backend")) && (
-               
-              <button
-                className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
-                onClick={() => {
-                  setPermaLinkModalOpen(true);
-                }}
-                title="Get permalink"
-              >
-                <FaLink />
-              </button>)}
+              </button>{" "}
+              {
+                // check if window href includes 'protoUrl'
+                (window.location.href.includes("protoUrl") ||
+                  window.location.href.includes("backend")) && (
+                  <button
+                    className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
+                    onClick={() => {
+                      setPermaLinkModalOpen(true);
+                    }}
+                    title="Get permalink"
+                  >
+                    <FaLink />
+                  </button>
+                )
+              }
             </>
           )}
         </div>
