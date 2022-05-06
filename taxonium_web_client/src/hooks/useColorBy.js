@@ -110,7 +110,7 @@ function useColorBy(config, query, updateQuery) {
     colorByGene,
     setColorByField,
     setColorByGene,
-    setColorByPosition
+    setColorByPosition,
   ]);
 }
 export default useColorBy;

@@ -1,13 +1,11 @@
 import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
-import { FaSearch , FaLink} from "react-icons/fa";
+import { FaSearch, FaLink } from "react-icons/fa";
 import { useCallback, useState } from "react";
 import { formatNumber } from "../utils/formatNumber";
 import Modal from "react-modal";
 
-
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
-
   const [permaLinkModalOpen, setPermaLinkModalOpen] = useState(false);
   const this_result = search.searchResults[myKey];
 
@@ -45,69 +43,74 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
 
   return (
     <>
-    <Modal isOpen={permaLinkModalOpen} onRequestClose={() => setPermaLinkModalOpen(false)}>
-      Your permalink is:
-      <br />
-      <textarea>
-        {window.location.href}&setZoomToSearch={getMyIndex()}
-      </textarea>
-      </Modal>
-    <div className="border-gray-100 border-b mb-3 pb-3">
-      <input
-        name="isGoing"
-        type="checkbox"
-        style={{
-          outline:
-            enabled && num_results > 0
-              ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
-              : "0px",
-          outlineOffset: "2px",
-        }}
-        className="w-3 h-3 m-3 inline-block"
-        checked={enabled}
-        onChange={(event) => search.setEnabled(myKey, event.target.checked)}
-      />
-      <SearchItem
-        config={config}
-        singleSearchSpec={singleSearchSpec}
-        setThisSearchSpec={setThisSearchSpec}
-      />
-      <div className="text-black  pr-2 text-sm">
-        {" "}
-        {num_results !== "Loading" && (
-          <>
-            {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}
-          </>
-        )}{" "}
-        {num_results > 0 && (<>
-          <button
-            className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
-            onClick={() => {
-              search.setZoomToSearch({ index: getMyIndex() });
-            }}
-            title="Zoom to this search"
-          >
-            <FaSearch />
-          </button> <button
-            className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
-            onClick={() => {
-              setPermaLinkModalOpen(true);
-            }
-            }
-            title="Get permalink"
-          >
-            <FaLink />
-          </button></>
-        )}
-      </div>
-      <button
-        className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
-        onClick={() => search.deleteTopLevelSearch(myKey)}
+      <Modal
+        isOpen={permaLinkModalOpen}
+        onRequestClose={() => setPermaLinkModalOpen(false)}
       >
-        <BsTrash className="inline-block mr-2" />
-        Delete this search
-      </button>
-    </div>
+        Your permalink is:
+        <br />
+        <textarea>
+          {window.location.href}&setZoomToSearch={getMyIndex()}
+        </textarea>
+      </Modal>
+      <div className="border-gray-100 border-b mb-3 pb-3">
+        <input
+          name="isGoing"
+          type="checkbox"
+          style={{
+            outline:
+              enabled && num_results > 0
+                ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
+                : "0px",
+            outlineOffset: "2px",
+          }}
+          className="w-3 h-3 m-3 inline-block"
+          checked={enabled}
+          onChange={(event) => search.setEnabled(myKey, event.target.checked)}
+        />
+        <SearchItem
+          config={config}
+          singleSearchSpec={singleSearchSpec}
+          setThisSearchSpec={setThisSearchSpec}
+        />
+        <div className="text-black  pr-2 text-sm">
+          {" "}
+          {num_results !== "Loading" && (
+            <>
+              {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}
+            </>
+          )}{" "}
+          {num_results > 0 && (
+            <>
+              <button
+                className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
+                onClick={() => {
+                  search.setZoomToSearch({ index: getMyIndex() });
+                }}
+                title="Zoom to this search"
+              >
+                <FaSearch />
+              </button>{" "}
+              <button
+                className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
+                onClick={() => {
+                  setPermaLinkModalOpen(true);
+                }}
+                title="Get permalink"
+              >
+                <FaLink />
+              </button>
+            </>
+          )}
+        </div>
+        <button
+          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+          onClick={() => search.deleteTopLevelSearch(myKey)}
+        >
+          <BsTrash className="inline-block mr-2" />
+          Delete this search
+        </button>
+      </div>
     </>
   );
 }

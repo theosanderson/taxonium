@@ -1,6 +1,4 @@
-
 import { useMemo } from "react";
-
 
 const fixName = (name) => {
   return name.replace("hCoV-19/", "hCoV-19/\n");
