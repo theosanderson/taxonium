@@ -23,7 +23,8 @@ wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_dat
 
 
 ```
-usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
+usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb \
+--columns genbank_accession,country,date,pangolin_lineage
 ```
 
 
@@ -38,5 +39,6 @@ pip install chronumental
 ```
 
 ```
-usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --chronumental --chronumental_steps 300
+usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb \
+--columns genbank_accession,country,date,pangolin_lineage --chronumental --chronumental_steps 300
 ```
