@@ -10,9 +10,30 @@ on:
     - cron: "0 0 * * *"
 jobs:
   build:
-    uses:  ./.github/workflows/frontend-test.yml
+    steps:
+      - uses:  ./.github/workflows/frontend-test.yml
+      - uses: LouisBrunner/checks-action@v1.1.1
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Building front-end
+          conclusion: ${{ job.status }}
   python:
-    uses:  ./.github/workflows/python-test.yml
+    steps:
+      - uses:  ./.github/workflows/python-test.yml
+      - uses: LouisBrunner/checks-action@v1.1.1
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Basic Python Test
+          conclusion: ${{ job.status }}
   selenium:
     needs: [build, python]
-    uses:  ./.github/workflows/selenium-test.yml
+    steps:
+      - uses:  ./.github/workflows/selenium-test.yml
+      - uses: LouisBrunner/checks-action@v1.1.1
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Building front-end
+          conclusion: ${{ job.status }}
