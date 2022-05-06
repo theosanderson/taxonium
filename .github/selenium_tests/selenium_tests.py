@@ -29,8 +29,6 @@ driver.get(
 
 time.sleep(20)
 
-print(driver.title)
-print(driver.quit)
 print(driver.get_log("browser"))
 
 if driver.find_elements_by_css_selector('#view-main'):
