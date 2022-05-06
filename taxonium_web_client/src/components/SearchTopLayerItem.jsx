@@ -91,7 +91,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
               >
                 <FaSearch />
               </button>{" "}{ // check if window href includes 'protoUrl'
-                window.location.href.includes("protoUrl") && (
+                (window.location.href.includes("protoUrl") || window.location.href.includes("backend")) && (
                
               <button
                 className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
