@@ -3,7 +3,6 @@ import React, { useState, Suspense, useRef, useEffect } from "react";
 import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
-//import {FaGithub} from  "react-icons/fa";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
 
@@ -68,13 +67,11 @@ function App() {
         if (ev.dataTransfer.items[i].kind === "file") {
           var file = ev.dataTransfer.items[i].getAsFile();
           readFile(file);
-          
         }
       }
     } else {
       // Use DataTransfer interface to access the file(s)
       readFile(ev.dataTransfer.files[0]);
-   
     }
   }
 
