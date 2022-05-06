@@ -49,7 +49,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       >
         Your permalink is:
         <br />
-        <textarea value={window.location.href+"&setZoomToSearch="+getMyIndex()}>
+        <textarea value={window.location.href+"&zoomToSearch="+getMyIndex()} className="border-1 p-2 m-4 text-xs w-full" readOnly={true}>
           
         </textarea>
       </Modal>
