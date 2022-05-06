@@ -22,7 +22,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           "&min_y=" +
           boundsForQueries.min_y +
           "&max_y=" +
-          boundsForQueries.max_y+
+          boundsForQueries.max_y +
           "&xType=" +
           boundsForQueries.xType;
       }
