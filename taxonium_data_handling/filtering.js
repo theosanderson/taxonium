@@ -129,6 +129,7 @@ function getPrecision(min_y, max_y) {
 }
 
 function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
+  console.log("GETNODES", min_y, max_y, min_x, max_x, xType)
   const start_time = Date.now();
   // get min_x, max_x, min_y, max_y from URL
 
