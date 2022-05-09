@@ -180,9 +180,9 @@ const useSearch = ({
       const min_y = reduceMaxOrMin(overview, (d) => d.y, "min");
       const max_y = reduceMaxOrMin(overview, (d) => d.y, "max");
       // eslint-disable-next-line no-unused-vars
-      const min_x = reduceMaxOrMin(overview, (d) => d.x, "min");
+      const min_x = reduceMaxOrMin(overview, (d) => d[xType], "min");
       // eslint-disable-next-line no-unused-vars
-      const max_x = reduceMaxOrMin(overview, (d) => d.x, "max");
+      const max_x = reduceMaxOrMin(overview, (d) => d[xType], "max");
 
       console.log("Doing zoom", min_y, max_y, min_x, max_x);
 
