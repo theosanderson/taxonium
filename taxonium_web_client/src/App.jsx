@@ -266,7 +266,7 @@ function App() {
                 , or the experimental{" "}
                 <a
                   className="text-blue-500"
-                  href="/?backend=https://api.taxonium.org:8080"
+                  href="/?backend=https://api.cov2tree.org"
                 >
                   server-backed version
                 </a>
