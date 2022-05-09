@@ -75,7 +75,7 @@ app.get("/search", function (req, res) {
     req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
   req.query.max_y =
     req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
-  
+
   req.query.min_x =
     req.query.min_x !== undefined ? req.query.min_x : processedData.overallMinX;
   req.query.max_y =
@@ -143,7 +143,7 @@ app.get("/nodes/", function (req, res) {
   if (max_y > processedData.overallMaxY) {
     max_y = processedData.overallMaxY;
   }
-    if (min_x < processedData.overallMinX) {
+  if (min_x < processedData.overallMinX) {
     min_x = processedData.overallMinX;
   }
   if (max_x > processedData.overallMaxX) {
@@ -154,7 +154,7 @@ app.get("/nodes/", function (req, res) {
   if (
     min_y === processedData.overallMinY &&
     max_y === processedData.overallMaxY &&
-     min_x === processedData.overallMinX &&
+    min_x === processedData.overallMinX &&
     max_x === processedData.overallMaxX &&
     req.query.xType === "x_dist"
   ) {
