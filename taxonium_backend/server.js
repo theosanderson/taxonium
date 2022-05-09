@@ -75,6 +75,11 @@ app.get("/search", function (req, res) {
     req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
   req.query.max_y =
     req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
+  
+  req.query.min_x =
+    req.query.min_x !== undefined ? req.query.min_x : processedData.overallMinX;
+  req.query.max_y =
+    req.query.max_x !== undefined ? req.query.max_x : processedData.overallMaxX;
 
   const result = filtering.singleSearch({
     data: processedData.nodes,
