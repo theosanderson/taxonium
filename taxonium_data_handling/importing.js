@@ -137,7 +137,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   console.log("Scaling");
   for (const node of new_data.nodes) {
     node.x_dist = node.x_dist * scale_x;
-    node.x = node.x_dist;
+
     // numerically round to the nearest 0.1
 
     node.y = roundToDp(node.y * scale_y, 6);
@@ -149,8 +149,8 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
 
   const overallMaxY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "max");
   const overallMinY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "min");
-  const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "max");
-  const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x, "min");
+  const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x_dist, "max");
+  const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x_dist, "min");
 
   const root = new_data.nodes.find((node) => node.parent_id === node.node_id);
   const rootMutations = root.mutations;
