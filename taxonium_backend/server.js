@@ -141,7 +141,7 @@ app.get("/nodes/", function (req, res) {
   if (
     min_y === processedData.overallMinY &&
     max_y === processedData.overallMaxY &&
-    req.query.xType = "x_dist"
+    req.query.xType === "x_dist"
   ) {
     result = cached_starting_values;
 
