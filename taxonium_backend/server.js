@@ -129,23 +129,33 @@ app.get("/config", function (req, res) {
 
 app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
-  const min_x = req.query.min_x;
-  const max_x = req.query.max_x;
   let min_y =
     req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
   let max_y =
     req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
+  let min_x =
+    req.query.min_x !== undefined ? req.query.min_x : processedData.overallMinX;
+  let max_x =
+    req.query.max_x !== undefined ? req.query.max_x : processedData.overallMaxX;
   if (min_y < processedData.overallMinY) {
     min_y = processedData.overallMinY;
   }
   if (max_y > processedData.overallMaxY) {
     max_y = processedData.overallMaxY;
   }
+    if (min_x < processedData.overallMinX) {
+    min_x = processedData.overallMinX;
+  }
+  if (max_x > processedData.overallMaxX) {
+    max_x = processedData.overallMaxX;
+  }
   let result;
 
   if (
     min_y === processedData.overallMinY &&
     max_y === processedData.overallMaxY &&
+     min_x === processedData.overallMinX &&
+    max_x === processedData.overallMaxX &&
     req.query.xType === "x_dist"
   ) {
     result = cached_starting_values;
