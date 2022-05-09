@@ -10,7 +10,7 @@ const useSearch = ({
   query,
   updateQuery,
   deckSize,
-  xType
+  xType,
 }) => {
   const { singleSearch } = backend;
 

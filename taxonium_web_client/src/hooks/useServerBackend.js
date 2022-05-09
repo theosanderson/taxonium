@@ -10,7 +10,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         boundsForQueries.min_x &&
         boundsForQueries.max_x &&
         boundsForQueries.min_y &&
-        boundsForQueries.max_y 
+        boundsForQueries.max_y
       ) {
         url =
           url +
@@ -21,15 +21,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           "&min_y=" +
           boundsForQueries.min_y +
           "&max_y=" +
-          boundsForQueries.max_y 
+          boundsForQueries.max_y;
       }
-      
-      if(boundsForQueries &&
-        boundsForQueries.xType){
-        url =
-          url +
-          "&xType=" +
-          boundsForQueries.xType
+
+      if (boundsForQueries && boundsForQueries.xType) {
+        url = url + "&xType=" + boundsForQueries.xType;
       }
 
       axios

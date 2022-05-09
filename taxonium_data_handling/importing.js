@@ -149,8 +149,16 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
 
   const overallMaxY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "max");
   const overallMinY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "min");
-  const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x_dist, "max");
-  const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x_dist, "min");
+  const overallMaxX = reduceMaxOrMin(
+    new_data.nodes,
+    (node) => node.x_dist,
+    "max"
+  );
+  const overallMinX = reduceMaxOrMin(
+    new_data.nodes,
+    (node) => node.x_dist,
+    "min"
+  );
 
   const root = new_data.nodes.find((node) => node.parent_id === node.node_id);
   const rootMutations = root.mutations;
