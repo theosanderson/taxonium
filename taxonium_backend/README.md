@@ -20,3 +20,7 @@ If you need to regenerate the data run `make_pandas.py`:
 cd data_processing
 python3 make_pandas.py
 ```
+
+## Docker
+
+```docker run -e "DATA_URL=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz" -e CONFIG_JSON=config_public.json theosanderson/taxonium```
