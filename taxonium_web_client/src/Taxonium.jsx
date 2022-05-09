@@ -70,7 +70,8 @@ function Taxonium({
     backend,
     colorBy,
     view.viewState,
-    config
+    config,
+    xType
   );
 
   const search = useSearch({

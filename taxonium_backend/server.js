@@ -9,6 +9,7 @@ var axios = require("axios");
 var pako = require("pako");
 var importing;
 var filtering;
+
 import("taxonium_data_handling/importing.js").then((imported) => {
   importing = imported.default;
   console.log("imported importing");
@@ -80,9 +81,12 @@ app.get("/search", function (req, res) {
     spec,
     min_y: req.query.min_y,
     max_y: req.query.max_y,
+    min_x: req.query.min_x,
+    max_x: req.query.max_x,
     y_positions: processedData.y_positions,
     mutations: processedData.mutations,
     node_to_mut: processedData.node_to_mut,
+    xType: req.query.xType,
   });
   validateSIDandSend(result, req.query.sid, res);
   console.log(
@@ -148,7 +152,8 @@ app.get("/nodes/", function (req, res) {
       min_y,
       max_y,
       min_x,
-      max_x
+      max_x,
+      req.query.xType
     );
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");

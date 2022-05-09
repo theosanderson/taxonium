@@ -10,7 +10,7 @@ function addNodeLookup(data) {
   console.log("cc");
   return output;
 }
-function useGetDynamicData(backend, colorBy, viewState, config) {
+function useGetDynamicData(backend, colorBy, viewState, config, xType) {
   const { queryNodes } = backend;
   const [dynamicData, setDynamicData] = useState({
     status: "not_started",
@@ -24,6 +24,7 @@ function useGetDynamicData(backend, colorBy, viewState, config) {
   useEffect(() => {
     if (
       !boundsForQueries ||
+      xType !== boundsForQueries.xType ||
       (true &&
         (viewState.min_x < boundsForQueries.min_x + viewState.real_width / 2 ||
           viewState.max_x > boundsForQueries.max_x - viewState.real_width / 2 ||
@@ -45,12 +46,13 @@ function useGetDynamicData(backend, colorBy, viewState, config) {
         min_y: viewState.min_y - viewState.real_height,
         max_y: viewState.max_y + viewState.real_height,
         zoom: viewState.zoom,
+        xType: xType,
       };
 
       setBoundsForQueries(newBoundForQuery);
       console.log("updating bounds", newBoundForQuery);
     }
-  }, [viewState, boundsForQueries, triggerRefresh]);
+  }, [viewState, boundsForQueries, triggerRefresh, xType]);
 
   useEffect(() => {
     if (config.title !== "loading") {
