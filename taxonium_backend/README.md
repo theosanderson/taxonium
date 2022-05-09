@@ -22,5 +22,5 @@ python3 make_pandas.py
 ```
 
 ## Docker
-
-```docker run -e "DATA_URL=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz" -e CONFIG_JSON=config_public.json theosanderson/taxonium```
+```docker pull theosanderson/taxonium:master```
+```docker run -p 80:80 -e "DATA_URL=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz" -e "CONFIG_JSON=config_public.json" theosanderson/taxonium:master```
