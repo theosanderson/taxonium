@@ -24,3 +24,4 @@ python3 make_pandas.py
 ## Docker
 ```docker pull theosanderson/taxonium:master```
 ```docker run -p 80:80 -e "DATA_URL=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz" -e "CONFIG_JSON=config_public.json" theosanderson/taxonium:master```
+Deployment on Vultr with SSL. I used: https://www.vultr.com/docs/how-to-deploy-a-next-js-application-with-vultr-kubernetes-engine-and-vultr-load-balancer/#Part_3___Expose_the_Next_js_application_with_secure_SSL_certificates
