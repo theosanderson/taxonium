@@ -82,6 +82,7 @@ function Taxonium({
     query,
     updateQuery,
     deckSize,
+    xType
   });
 
   //
