@@ -47,6 +47,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         })
         .catch(function (error) {
           console.log(error);
+          window.alert(error);
           setResult([]);
           setTriggerRefresh({});
         });
@@ -89,6 +90,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         })
         .catch(function (error) {
           console.log(error);
+        window.alert(error);
           setResult([]);
         });
     },
