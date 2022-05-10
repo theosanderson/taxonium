@@ -123,6 +123,7 @@ app.get("/config", function (req, res) {
   config.initial_zoom = -2;
   config.genes = processedData.genes;
   config.mutations = processedData.mutations;
+  config = {...config, ...processedData.overwrite_config}
 
   validateSIDandSend(config, req.query.sid, res);
 });
