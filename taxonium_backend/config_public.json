@@ -1,6 +1,6 @@
 {
   "source": "INSDC",
-  "title": "Phylo",
+  "title": "Cov2Tree",
   "name_accessor": "name",
   "keys_to_display": ["genotype","meta_date", "meta_pangolin_lineage", "meta_country"],
   "overlay": "TODO",
