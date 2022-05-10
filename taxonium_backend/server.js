@@ -124,6 +124,7 @@ app.get("/config", function (req, res) {
   config.genes = processedData.genes;
   config.mutations = processedData.mutations;
   config = {...config, ...processedData.overwrite_config}
+  config.rootMutations = processedData.rootMutations
 
   validateSIDandSend(config, req.query.sid, res);
 });
