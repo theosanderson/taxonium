@@ -248,7 +248,7 @@ onmessage = async (event) => {
   if (data.type === "upload" && data.data && data.data.filename && data.data.filename.includes("jsonl")) {
     processedUploadedData = await processJsonl(data.data, sendStatusMessage);
     console.log("processedUploadedData is ", processedUploadedData);
-  } else if (data.type === "upload") {
+  } else if (data.type === "upload" && data.data && data.data.filename) {
     sendStatusMessage({
       error:
         "Only Taxonium jsonl files are supported (could not find 'jsonl' in filename)",
