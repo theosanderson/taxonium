@@ -266,8 +266,15 @@ onmessage = async (event) => {
     console.log("got nwk file", data.data);
     data.data.useDistances = true;
     data.data.ladderize = true;
-    data.data.metadata = {filename: "https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/2021/10/02/public-2021-10-02.metadata.tsv.gz", status: "url_supplied"}
-    processedUploadedData = await processNewickAndMetadata(data.data, sendStatusMessage);
+    data.data.metadata = {
+      filename:
+        "https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/2021/10/02/public-2021-10-02.metadata.tsv.gz",
+      status: "url_supplied",
+    };
+    processedUploadedData = await processNewickAndMetadata(
+      data.data,
+      sendStatusMessage
+    );
   } else if (data.type === "upload" && data.data && data.data.filename) {
     sendStatusMessage({
       error:

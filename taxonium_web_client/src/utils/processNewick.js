@@ -21,13 +21,13 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
       responseType: "arraybuffer",
       onDownloadProgress: (progress) => {
         sendStatusMessage({
-          message: "Downloading compressed "+whatIsBeingDownloaded,
+          message: "Downloading compressed " + whatIsBeingDownloaded,
           percentage: (progress.loaded / progress.total) * 100,
         });
       },
     });
     sendStatusMessage({
-      message: "Decompressing compressed "+whatIsBeingDownloaded,
+      message: "Decompressing compressed " + whatIsBeingDownloaded,
     });
     const inflated = pako.ungzip(response.data);
     const text = new TextDecoder("utf-8").decode(inflated);
@@ -36,7 +36,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
     const response = await axios.get(url, {
       onDownloadProgress: (progress) => {
         sendStatusMessage({
-          message: "Downloading "+whatIsBeingDownloaded,
+          message: "Downloading " + whatIsBeingDownloaded,
           percentage: (progress.loaded / progress.total) * 100,
         });
       },
@@ -58,14 +58,14 @@ async function cleanup(tree) {
     node.x_dist = node.x;
     delete node.x;
     node.mutations = [];
-    
+
     delete node.child;
-    delete node.miny
-    delete node.maxy
-    delete node.d
-    delete node.hidden
-    delete node.hl
-    delete node.meta
+    delete node.miny;
+    delete node.maxy;
+    delete node.d;
+    delete node.hidden;
+    delete node.hl;
+    delete node.meta;
   });
 
   const scale_x = 900;
@@ -82,8 +82,8 @@ export async function processNewick(data, sendStatusMessage) {
   if (data.status === "url_supplied") {
     console.log("url_supplied");
     the_data = await do_fetch(data.filename, sendStatusMessage, "tree");
-  }else{
-    throw("Unknown status: " + data.status);
+  } else {
+    throw "Unknown status: " + data.status;
   }
 
   sendStatusMessage({
@@ -166,42 +166,43 @@ export async function processNewick(data, sendStatusMessage) {
   return output;
 }
 
-
 export async function processMetadataFile(data, sendStatusMessage) {
   const logStatusToConsole = (message) => {
     console.log(message.message);
-  }
-  let the_data
-  
+  };
+  let the_data;
+
   if (data.status === "url_supplied") {
     console.log("url_supplied");
     the_data = await do_fetch(data.filename, logStatusToConsole, "metadata");
-  }else{
-    throw("Unknown status: " + data.status);
+  } else {
+    throw "Unknown status: " + data.status;
   }
-  console.log("Got metadata file")
+  console.log("Got metadata file");
 
   const lines = the_data.split("\n");
   const output = {};
-  let separator
+  let separator;
   if (data.filename.includes("tsv")) {
     separator = "\t";
   } else if (data.filename.includes("csv")) {
     separator = ",";
   } else {
-    sendStatusMessage({ error: "Unknown file type for metadata, should be csv or tsv" });
+    sendStatusMessage({
+      error: "Unknown file type for metadata, should be csv or tsv",
+    });
     throw new Error("Unknown file type");
   }
 
-  let headers
+  let headers;
 
   lines.forEach((line, i) => {
-
-    if (i % 1000 === 0) {sendStatusMessage({
-      message: "Parsing metadata file",
-      percentage: (i / lines.length) * 100,
-    });
-  }
+    if (i % 1000 === 0) {
+      sendStatusMessage({
+        message: "Parsing metadata file",
+        percentage: (i / lines.length) * 100,
+      });
+    }
     if (i === 0) {
       headers = line.split(separator);
     } else {
@@ -209,13 +210,11 @@ export async function processMetadataFile(data, sendStatusMessage) {
       const name = values[0];
       const as_obj = {};
       values.slice(1).forEach((value, j) => {
-        as_obj["meta_"+headers[j + 1]] = value;
-      }
-      );
+        as_obj["meta_" + headers[j + 1]] = value;
+      });
       output[name] = as_obj;
     }
-  }
-  );
+  });
   return output;
 }
 
@@ -229,31 +228,21 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     });
   }
   );*/
-  const metadataInput = data.metadata
-  if (!metadataInput){
+  const metadataInput = data.metadata;
+  if (!metadataInput) {
     return await treePromise;
   }
   // Wait for both promises to resolve
-  const [tree, metadata] = await Promise.all([treePromise, processMetadataFile(metadataInput, sendStatusMessage)]);
+  const [tree, metadata] = await Promise.all([
+    treePromise,
+    processMetadataFile(metadataInput, sendStatusMessage),
+  ]);
   tree.nodes.forEach((node) => {
     const this_metadata = metadata[node.name];
     if (this_metadata) {
       Object.assign(node, this_metadata);
     }
     delete metadata[node.name];
-  }
-  );
+  });
   return tree;
 }
-    
-
-
-
-
-
-
-
-
-
-
-
