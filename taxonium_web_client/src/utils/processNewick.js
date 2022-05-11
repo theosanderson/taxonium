@@ -17,11 +17,18 @@ async function cleanup(tree) {
 
   tree.node.forEach((node) => {
     node.parent_id = node.parent ? node.parent.node_id : node.node_id;
-    node.parent = undefined;
+    delete node.parent;
     node.x_dist = node.x;
-    node.x = undefined;
+    delete node.x
     node.mutations = [];
     node.num_tips = node.child.length + 1; // This isn't accurate but ensures leaves have 1 tip and others have more
+  });
+
+  const scale_x = 200;
+  const scale_y = 2000;
+  tree.node.forEach((node) => {
+    node.x_dist = node.x_dist * scale_x;
+    node.y = node.y * scale_y;
   });
 }
 
