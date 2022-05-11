@@ -19,7 +19,7 @@ async function cleanup(tree) {
     node.parent_id = node.parent ? node.parent.node_id : node.node_id;
     delete node.parent;
     node.x_dist = node.x;
-    delete node.x
+    delete node.x;
     node.mutations = [];
     node.num_tips = node.child.length + 1; // This isn't accurate but ensures leaves have 1 tip and others have more
   });
