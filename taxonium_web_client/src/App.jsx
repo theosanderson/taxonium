@@ -259,17 +259,17 @@ function App() {
                 or{" "}
                 <a
                   className="text-blue-500"
-                  href="/?protoUrl=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
+                  href="/?backend=https://api.cov2tree.org"
                 >
                   load the public SARS-CoV-2 tree
                 </a>
-                , or the experimental{" "}
+                , or the {" "}
                 <a
                   className="text-blue-500"
-                  href="/?backend=https://api.cov2tree.org"
+                  href="/latest_public.jsonl.gz"
                 >
-                  server-backed version
-                </a>
+                  full-download
+                </a> (slower to start) version
                 .
               </p>{" "}
             </div>
