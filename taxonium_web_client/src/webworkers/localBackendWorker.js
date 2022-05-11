@@ -1,6 +1,6 @@
 import filtering from "taxonium_data_handling/filtering.js";
 import { processJsonl } from "taxonium_data_handling/importing.js";
-import {processNewick} from "../utils/processNewick.js";
+import { processNewick } from "../utils/processNewick.js";
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
@@ -43,7 +43,6 @@ export const queryNodes = async (boundsForQueries) => {
     y_positions,
   } = processedUploadedData;
 
-  
   let min_y = isNaN(boundsForQueries.min_y)
     ? overallMinY
     : boundsForQueries.min_y;
@@ -252,15 +251,23 @@ onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
-  if (data.type === "upload" && data.data && data.data.filename && data.data.filename.includes("jsonl")) {
+  if (
+    data.type === "upload" &&
+    data.data &&
+    data.data.filename &&
+    data.data.filename.includes("jsonl")
+  ) {
     processedUploadedData = await processJsonl(data.data, sendStatusMessage);
     console.log("processedUploadedData is ", processedUploadedData);
-  } else if (data.type === "upload" && data.data && data.data.filename && data.data.filename.includes("nwk")) {
+  } else if (
+    data.type === "upload" &&
+    data.data &&
+    data.data.filename &&
+    data.data.filename.includes("nwk")
+  ) {
     console.log("got nwk file", data.data);
-    processedUploadedData =  await processNewick(data.data);
-
-
-  }else if (data.type === "upload" && data.data && data.data.filename) {
+    processedUploadedData = await processNewick(data.data);
+  } else if (data.type === "upload" && data.data && data.data.filename) {
     sendStatusMessage({
       error:
         "Only Taxonium jsonl files are supported (could not find 'jsonl' in filename)",
