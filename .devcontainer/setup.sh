@@ -1,2 +1,2 @@
-cd taxoniumtools
-yarn install
+cd taxonium_web_client
+yarn install &
