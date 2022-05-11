@@ -154,7 +154,6 @@ const getConfig = async () => {
     "y",
     "mutations",
     "name",
-    "num_tips",
     "time_x",
   ];
 
@@ -266,7 +265,9 @@ onmessage = async (event) => {
     data.data.filename.includes("nwk")
   ) {
     console.log("got nwk file", data.data);
-    processedUploadedData = await processNewick(data.data);
+    data.data.useDistances = true;
+    data.data.ladderize = true;
+    processedUploadedData = await processNewick(data.data, sendStatusMessage);
   } else if (data.type === "upload" && data.data && data.data.filename) {
     sendStatusMessage({
       error:

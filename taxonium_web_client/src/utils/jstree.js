@@ -413,7 +413,7 @@ function kn_multifurcate(p) {
 }
 
 function kn_reorder(root) {
-  sort_leaf = function (a, b) {
+  const sort_leaf = function (a, b) {
     if (a.depth < b.depth) return 1;
     if (a.depth > b.depth) return -1;
     return String(a.name) < String(b.name)
@@ -422,8 +422,52 @@ function kn_reorder(root) {
       ? 1
       : 0;
   };
-  sort_weight = function (a, b) {
+  const sort_weight = function (a, b) {
     return a.weight / a.n_tips - b.weight / b.n_tips;
+  };
+
+  var x = new Array();
+  var i,
+    node = kn_expand_node(root);
+  // get depth
+  node[node.length - 1].depth = 0;
+  for (let i = node.length - 2; i >= 0; --i) {
+    var q = node[i];
+    q.depth = q.parent.depth + 1;
+    if (q.child.length == 0) x.push(q);
+  }
+  // set weight for leaves
+  x.sort(sort_leaf);
+  for (let i = 0; i < x.length; ++i) (x[i].weight = i), (x[i].n_tips = 1);
+  // set weight for internal nodes
+  for (let i = 0; i < node.length; ++i) {
+    var q = node[i];
+    if (q.child.length) {
+      // internal
+      var j,
+        n = 0,
+        w = 0;
+      for (j = 0; j < q.child.length; ++j) {
+        n += q.child[j].n_tips;
+        w += q.child[j].weight;
+      }
+      q.n_tips = n;
+      q.weight = w;
+    }
+  }
+  // swap children
+  for (let i = 0; i < node.length; ++i)
+    if (node[i].child.length >= 2) node[i].child.sort(sort_weight);
+}
+
+
+function kn_reorder_num_tips(root) {
+  const sort_leaf = function (a, b) {
+    return a.num_tips - b.num_tips;
+  }
+    
+  const sort_weight = function (a, b) {
+    return a.num_tips - b.num_tips;
   };
 
   var x = new Array();
@@ -547,4 +591,4 @@ function kn_get_node(tree, conf, x, y) {
   return tree.node.length;
 }
 
-export { kn_expand_node, kn_reorder, kn_parse, kn_calxy };
+export { kn_expand_node, kn_reorder, kn_parse, kn_calxy, kn_reorder_num_tips };
