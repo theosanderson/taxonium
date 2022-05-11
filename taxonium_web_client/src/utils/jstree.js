@@ -460,12 +460,11 @@ function kn_reorder(root) {
     if (node[i].child.length >= 2) node[i].child.sort(sort_weight);
 }
 
-
 function kn_reorder_num_tips(root) {
   const sort_leaf = function (a, b) {
     return a.num_tips - b.num_tips;
-  }
-    
+  };
+
   const sort_weight = function (a, b) {
     return a.num_tips - b.num_tips;
   };
