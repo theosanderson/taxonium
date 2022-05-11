@@ -270,7 +270,6 @@ function App() {
                 >
                   full-download
                 </a> (slower to start) version
-                .
               </p>{" "}
             </div>
           )}
