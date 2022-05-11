@@ -123,9 +123,9 @@ app.get("/config", function (req, res) {
   config.initial_zoom = -2;
   config.genes = processedData.genes;
   config.mutations = processedData.mutations;
-  config = {...config, ...processedData.overwrite_config}
-  config.rootMutations = processedData.rootMutations
-  config.rootId = processedData.rootId
+  config = { ...config, ...processedData.overwrite_config };
+  config.rootMutations = processedData.rootMutations;
+  config.rootId = processedData.rootId;
 
   validateSIDandSend(config, req.query.sid, res);
 });

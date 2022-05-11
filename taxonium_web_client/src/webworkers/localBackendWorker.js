@@ -42,7 +42,6 @@ export const queryNodes = async (boundsForQueries) => {
     y_positions,
   } = processedUploadedData;
 
-  
   let min_y = isNaN(boundsForQueries.min_y)
     ? overallMinY
     : boundsForQueries.min_y;
@@ -251,7 +250,12 @@ onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
-  if (data.type === "upload" && data.data && data.data.filename && data.data.filename.includes("jsonl")) {
+  if (
+    data.type === "upload" &&
+    data.data &&
+    data.data.filename &&
+    data.data.filename.includes("jsonl")
+  ) {
     processedUploadedData = await processJsonl(data.data, sendStatusMessage);
     console.log("processedUploadedData is ", processedUploadedData);
   } else if (data.type === "upload" && data.data && data.data.filename) {
