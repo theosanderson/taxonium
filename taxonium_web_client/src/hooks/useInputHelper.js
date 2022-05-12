@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 
 function guessIfCompressed(file_object) {
   //return true if gzipped and false if not
@@ -87,6 +87,7 @@ export const useInputHelper = ({
     if (inputs.length === 0) {
       return ["invalid", "No files selected"];
     }
+
     // if there is a jsonl file, it must be the only file
     if (
       inputs.some((input) => input.filetype === "jsonl") &&
@@ -126,7 +127,7 @@ export const useInputHelper = ({
     addInput(file_obj);
   }
 
-  function finaliseInputs() {
+  const finaliseInputs = useCallback(() => {
     // if everything is a URL:
     if (inputs.every((input) => input.supplyType === "url")) {
       // if the input is a taxonium file
@@ -154,6 +155,7 @@ export const useInputHelper = ({
           data: inputs[0].data,
           filetype: inputs[0].filetype,
         });
+        return;
       }
 
       const upload_obj = {};
@@ -179,7 +181,14 @@ export const useInputHelper = ({
       upload_obj.ladderize = tree_file.ladderize;
       setUploadedData(upload_obj);
     }
-  }
+  }, [inputs, updateQuery, setUploadedData]);
+
+  useEffect(() => {
+    // if there is a single file and it is a jsonl file, then finalise
+    if (inputs.length === 1 && inputs[0].filetype === "jsonl") {
+      finaliseInputs();
+    }
+  }, [inputs, finaliseInputs]);
 
   useEffect(() => {
     if (query.protoUrl && !uploadedData) {

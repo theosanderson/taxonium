@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { BsTrash } from "react-icons/bs";
+
 import { BiFile, BiLink } from "react-icons/bi";
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
@@ -35,14 +36,14 @@ export const InputSupplier = ({ inputHelper }) => {
       {inputs.length > 0 && <h2>Input files</h2>}
       {inputs.map((input, index) => {
         return (
-          <div key={index} className="p-3 m-3 border">
+          <div key={index} className="p-3 m-3 border  text-sm">
             <div>
               <div className="inline-block">
                 {input.supplyType === "file" ? <BiFile /> : <BiLink />}
               </div>
               {input.name}
               {input.size ? (
-                <span className="text-sm text-gray-500">
+                <span className="text-xs text-gray-500">
                   ({formatBytes(input.size)})
                 </span>
               ) : (
@@ -52,7 +53,7 @@ export const InputSupplier = ({ inputHelper }) => {
             <div>
               <select
                 value={input.filetype}
-                className="border p-1 mr-4"
+                className="border p-1 mr-4 text-sm"
                 onChange={(e) => {
                   setInputs(
                     inputs.map((input, the_index) => {
@@ -98,16 +99,16 @@ export const InputSupplier = ({ inputHelper }) => {
                   inputHelper.removeInput(index);
                 }}
               >
-                <BsTrash className="inline-block mr-2" />
+                <BsTrash className="inline-block mx-1" />
               </button>
             </div>{" "}
             {input.filetype === "nwk" && (
               <div>
                 <label>
-                  Ladderize tree{" "}
                   <input
                     type="checkbox"
                     checked={input.ladderize}
+                    className="mr-1"
                     onChange={(e) => {
                       setInputs(
                         inputs.map((input, this_index) => {
@@ -118,7 +119,8 @@ export const InputSupplier = ({ inputHelper }) => {
                         })
                       );
                     }}
-                  />
+                  />{" "}
+                  Ladderize tree
                 </label>
               </div>
             )}
@@ -150,9 +152,13 @@ export const InputSupplier = ({ inputHelper }) => {
           </div>
         </div>
       )}
-      Drop or select a file, or the URL to a file:
+      <div className="mb-3">
+        Select, drag-and-drop, or enter the URL for a file (jsonl, newick or
+        tsv):
+      </div>
       <div>
         <input
+          className="text-sm mb-3"
           type="file"
           onChange={(e) => {
             inputHelper.readFile(e.target.files[0]);
@@ -162,13 +168,15 @@ export const InputSupplier = ({ inputHelper }) => {
         />
       </div>
       <div>
-        <label>URL:</label>
         <input
+          placeholder="https://"
           type="text"
           value={tempURL}
-          className="border p-1 mr-4"
+          className="border p-1 mr-1 text-sm "
           onChange={(e) => {
-            setTempURL(e.target.value);
+            setTempURL(
+              e.target.value.replace("http://", "").replace("https://", "")
+            );
           }}
           onKeyUp={(e) => {
             if (e.key === "Enter") {
@@ -178,7 +186,7 @@ export const InputSupplier = ({ inputHelper }) => {
         />{" "}
         <button
           onClick={addFromTempURL}
-          className="border border-gray-300 rounded p-1 m-3 mb-5 bg-gray-200"
+          className="border border-gray-300 rounded p-1 m-1 mb-5 bg-gray-200 text-sm"
         >
           Add
         </button>
