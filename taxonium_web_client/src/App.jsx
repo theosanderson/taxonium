@@ -15,11 +15,8 @@ const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
-
-
 function App() {
   const inputHelper = useInputHelper();
-  
 
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),
@@ -191,9 +188,7 @@ function App() {
               <p className="text-lg text-gray-700 mb-5">
                 Welcome to Taxonium, a tool for exploring large trees
               </p>
-        
-                <InputSupplier inputHelper={inputHelper}/>
-             
+              <InputSupplier inputHelper={inputHelper} />
               <p className="text-md text-gray-700 font-semibold mb-2">
                 or{" "}
                 <a
