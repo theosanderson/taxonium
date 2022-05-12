@@ -26,7 +26,12 @@ function App() {
     mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
   });
 
-  const inputHelper = useInputHelper({ setUploadedData, updateQuery , query, uploadedData});
+  const inputHelper = useInputHelper({
+    setUploadedData,
+    updateQuery,
+    query,
+    uploadedData,
+  });
   const [title, setTitle] = useState(null);
   const [beingDragged, setBeingDragged] = useState(false);
 
@@ -113,8 +118,6 @@ function App() {
         protoUrl;
     }
   }
-
-  
 
   return (
     <Router>

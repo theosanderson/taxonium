@@ -72,7 +72,7 @@ export const InputSupplier = ({ inputHelper }) => {
                   );
                 })}
               </select>
-{/*}
+              {/*}
               <label>
                 Is Gzipped{" "}
                 <input

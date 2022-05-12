@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 function guessIfCompressed(file_object) {
   //return true if gzipped and false if not
@@ -35,7 +35,12 @@ function guessType(file_object) {
   }
 }
 
-export const useInputHelper = ({ setUploadedData, updateQuery , query, uploadedData}) => {
+export const useInputHelper = ({
+  setUploadedData,
+  updateQuery,
+  query,
+  uploadedData,
+}) => {
   const [inputs, setInputs] = useState([]);
 
   function addInput(file_object, data) {
@@ -124,65 +129,73 @@ export const useInputHelper = ({ setUploadedData, updateQuery , query, uploadedD
   function finaliseInputs() {
     // if everything is a URL:
     if (inputs.every((input) => input.supplyType === "url")) {
-        // if the input is a taxonium file
-        if (inputs[0].filetype === "jsonl") {
-            updateQuery({protoUrl: inputs[0].name});
-        }
-        else{
-
-            const meta_file = inputs.find((input) => input.filetype.startsWith("meta_"));
-            const tree_file = inputs.find((input) => input.filetype === "nwk");
-            const newQuery = {treeUrl: tree_file.name,  ladderizeTree: tree_file.ladderize};
-            if(meta_file){
-                newQuery.metaUrl = meta_file.name;
-            }
-            updateQuery(newQuery);
-
-            
-        }
-    }
-    else{
-        if (inputs[0].filetype === "jsonl") {
-            setUploadedData({status: "loaded", filename: inputs[0].name, data: inputs[0].data});
-        }
-
-        
-        const upload_obj = {}
-        // if there is some metadata find it
-        const meta_file = inputs.find((input) => input.filetype.startsWith("meta_"));
+      // if the input is a taxonium file
+      if (inputs[0].filetype === "jsonl") {
+        updateQuery({ protoUrl: inputs[0].name });
+      } else {
+        const meta_file = inputs.find((input) =>
+          input.filetype.startsWith("meta_")
+        );
+        const tree_file = inputs.find((input) => input.filetype === "nwk");
+        const newQuery = {
+          treeUrl: tree_file.name,
+          ladderizeTree: tree_file.ladderize,
+        };
         if (meta_file) {
-            upload_obj.metadata = {
-                filename: meta_file.name,
-                data: meta_file.data,
-                status: meta_file.supplyType === "url"?  "url_supplied" : "loaded",
-              };
+          newQuery.metaUrl = meta_file.name;
+        }
+        updateQuery(newQuery);
+      }
+    } else {
+      if (inputs[0].filetype === "jsonl") {
+        setUploadedData({
+          status: "loaded",
+          filename: inputs[0].name,
+          data: inputs[0].data,
+        });
+      }
 
+      const upload_obj = {};
+      // if there is some metadata find it
+      const meta_file = inputs.find((input) =>
+        input.filetype.startsWith("meta_")
+      );
+      if (meta_file) {
+        upload_obj.metadata = {
+          filename: meta_file.name,
+          data: meta_file.data,
+          status: meta_file.supplyType === "url" ? "url_supplied" : "loaded",
+        };
+      }
+
+      // if there is a tree file find it
+      const tree_file = inputs.find((input) => input.filetype === "nwk");
+      upload_obj.filename = tree_file.name;
+      upload_obj.data = tree_file.data;
+      upload_obj.status =
+        tree_file.supplyType === "url" ? "url_supplied" : "loaded";
+      setUploadedData(upload_obj);
     }
-
-    // if there is a tree file find it
-    const tree_file = inputs.find((input) => input.filetype === "nwk");
-    upload_obj.filename = tree_file.name;
-    upload_obj.data = tree_file.data;
-    upload_obj.status = tree_file.supplyType === "url" ? "url_supplied" : "loaded";
-    setUploadedData(upload_obj);
-}
   }
 
   useEffect(() => {
     if (query.protoUrl && !uploadedData) {
       setUploadedData({ status: "url_supplied", filename: query.protoUrl });
     }
-    if(query.treeUrl && !uploadedData){
-        console.log("tree url set");
-        const extra = {}
-        if(query.metaUrl){
-            extra.metadata = {filename: query.metaUrl, status: "url_supplied"}
-            
-        }
-        setUploadedData({status: "url_supplied", filename: query.treeUrl, ladderize:query.ladderizeTree, ...extra});
+    if (query.treeUrl && !uploadedData) {
+      console.log("tree url set");
+      const extra = {};
+      if (query.metaUrl) {
+        extra.metadata = { filename: query.metaUrl, status: "url_supplied" };
+      }
+      setUploadedData({
+        status: "url_supplied",
+        filename: query.treeUrl,
+        ladderize: query.ladderizeTree,
+        ...extra,
+      });
     }
   }, [query, setUploadedData, uploadedData]);
-
 
   return {
     inputs,
