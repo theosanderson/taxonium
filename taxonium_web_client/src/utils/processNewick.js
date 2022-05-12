@@ -91,8 +91,18 @@ async function cleanup(tree) {
     delete node.meta;
   });
 
-  const scale_x = 900;
-  const scale_y = 2000;
+  
+  const scale_y =  2200000* 24e2 / tree.node.length
+
+  const all_xes = tree.node.map((node) => node.x_dist);
+  all_xes.sort((a, b) => a - b);
+  const ref_x_percentile = 0.99;
+  const ref_x = all_xes[Math.floor(all_xes.length * ref_x_percentile)];
+ 
+
+  const scale_x = 450/ref_x;
+
+  console.log(scale_y,"scale_y")
   tree.node.forEach((node) => {
     node.x_dist = node.x_dist * scale_x;
     node.y = node.y * scale_y;
@@ -157,7 +167,7 @@ export async function processNewick(data, sendStatusMessage) {
   tree.node.sort((a, b) => a.y - b.y);
 
   sendStatusMessage({
-    message: "Doing some rescaling",
+    message: "Cleaning up objects",
   });
 
   cleanup(tree);
