@@ -98,7 +98,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
               {
                 // check if window href includes 'protoUrl'
                 (window.location.href.includes("protoUrl") ||
-                  window.location.href.includes("treeurl") ||
+                  window.location.href.includes("treeUrl") ||
                   window.location.href.includes("backend")) &&
                   config &&
                   !config.disable_permalink && (
