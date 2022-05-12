@@ -162,8 +162,7 @@ function App() {
                 onClick={() => setAboutEnabled(true)}
                 className="mr-5 text-white font-bold hover:underline"
               >
-                <BsInfoSquare className="inline-block h-7 w-8" /> About /
-                Acknowledgements
+                <BsInfoSquare className="inline-block h-7 w-8" /> About
               </button>
               {/*<a className="text-white" href="https://github.com/theosanderson/taxonium">
         <FaGithub className="inline-block text-white h-7 w-8" />
