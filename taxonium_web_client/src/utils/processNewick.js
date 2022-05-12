@@ -91,7 +91,7 @@ async function cleanup(tree) {
     delete node.meta;
   });
 
-  const scale_y = (2200000 * 24e2) / tree.node.length;
+  const scale_y = 2000;
 
   const all_xes = tree.node.map((node) => node.x_dist);
   all_xes.sort((a, b) => a - b);
