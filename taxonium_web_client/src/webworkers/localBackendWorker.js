@@ -1,6 +1,6 @@
 import filtering from "taxonium_data_handling/filtering.js";
 import { processJsonl } from "taxonium_data_handling/importing.js";
-
+import { processNewickAndMetadata } from "../utils/processNewick.js";
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
@@ -42,7 +42,6 @@ export const queryNodes = async (boundsForQueries) => {
     y_positions,
   } = processedUploadedData;
 
-  
   let min_y = isNaN(boundsForQueries.min_y)
     ? overallMinY
     : boundsForQueries.min_y;
@@ -154,7 +153,6 @@ const getConfig = async () => {
     "y",
     "mutations",
     "name",
-    "num_tips",
     "time_x",
   ];
 
@@ -251,9 +249,33 @@ onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
-  if (data.type === "upload" && data.data && data.data.filename && data.data.filename.includes("jsonl")) {
+  if (
+    data.type === "upload" &&
+    data.data &&
+    data.data.filename &&
+    data.data.filename.includes("jsonl")
+  ) {
     processedUploadedData = await processJsonl(data.data, sendStatusMessage);
     console.log("processedUploadedData is ", processedUploadedData);
+  } else if (
+    data.type === "upload" &&
+    data.data &&
+    data.data.filename &&
+    (data.data.filename.includes("nwk") ||
+      data.data.filename.includes("newick"))
+  ) {
+    console.log("got nwk file", data.data);
+    data.data.useDistances = true;
+    data.data.ladderize = true;
+    data.data.metadata = {
+      filename:
+        "https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/2021/10/02/public-2021-10-02.metadata.tsv.gz",
+      status: "url_supplied",
+    };
+    processedUploadedData = await processNewickAndMetadata(
+      data.data,
+      sendStatusMessage
+    );
   } else if (data.type === "upload" && data.data && data.data.filename) {
     sendStatusMessage({
       error:

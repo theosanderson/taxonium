@@ -263,13 +263,14 @@ function App() {
                 >
                   load the public SARS-CoV-2 tree
                 </a>
-                , or the {" "}
+                , or the{" "}
                 <a
                   className="text-blue-500"
                   href="/?protoUrl=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
                 >
                   full-download
-                </a> (slower to start) version
+                </a>{" "}
+                (slower to start) version
               </p>{" "}
             </div>
           )}
