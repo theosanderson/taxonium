@@ -148,6 +148,7 @@ function Deck({
     xType,
     modelMatrix: view.modelMatrix,
     selectedDetails,
+    xzoom,
   });
   // console.log("deck refresh");
 

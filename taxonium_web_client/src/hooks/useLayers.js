@@ -17,6 +17,7 @@ const useLayers = ({
   xType,
   modelMatrix,
   selectedDetails,
+  xzoom
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -207,11 +208,13 @@ const useLayers = ({
   const max_text_number = 400;
   // If leaves are fewer than max_text_number, add a text layer
   if (data.data.nodes && data.data.nodes.length < max_text_number) {
+    const text_x_gap = 15/(2**xzoom)
+    console.log(text_x_gap, "gap")
     const node_label_layer = new TextLayer({
       id: "main-text-node",
 
       data: data.data.nodes,
-      getPosition: (d) => [getX(d) + 10, d.y],
+      getPosition: (d) => [getX(d) + text_x_gap, d.y],
       getText: (d) => d.name,
 
       getColor: [180, 180, 180],
@@ -222,6 +225,10 @@ const useLayers = ({
       getAlignmentBaseline: "center",
       getSize: data.data.nodes.length < 200 ? 12 : 9.5,
       modelMatrix: modelMatrix,
+      updateTriggers: {
+        getPosition: [text_x_gap],
+      }, 
+
     });
 
     layers.push(node_label_layer);
