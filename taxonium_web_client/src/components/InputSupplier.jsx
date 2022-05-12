@@ -105,7 +105,7 @@ export const InputSupplier = ({ inputHelper }) => {
             {input.filetype === "nwk" && (
               <div>
                 <label>
-                <input
+                  <input
                     type="checkbox"
                     checked={input.ladderize}
                     className="mr-1"
@@ -119,8 +119,8 @@ export const InputSupplier = ({ inputHelper }) => {
                         })
                       );
                     }}
-                  /> Ladderize tree
-                  
+                  />{" "}
+                  Ladderize tree
                 </label>
               </div>
             )}
@@ -152,10 +152,13 @@ export const InputSupplier = ({ inputHelper }) => {
           </div>
         </div>
       )}
-      <div className="mb-3">Select, drag-and-drop, or enter the URL for a file (jsonl, newick or tsv):</div>
+      <div className="mb-3">
+        Select, drag-and-drop, or enter the URL for a file (jsonl, newick or
+        tsv):
+      </div>
       <div>
         <input
-        className="text-sm mb-3"
+          className="text-sm mb-3"
           type="file"
           onChange={(e) => {
             inputHelper.readFile(e.target.files[0]);
@@ -168,11 +171,12 @@ export const InputSupplier = ({ inputHelper }) => {
         <input
           placeholder="https://"
           type="text"
-          
           value={tempURL}
           className="border p-1 mr-1 text-sm "
           onChange={(e) => {
-            setTempURL(e.target.value.replace("http://", "").replace("https://", ""));
+            setTempURL(
+              e.target.value.replace("http://", "").replace("https://", "")
+            );
           }}
           onKeyUp={(e) => {
             if (e.key === "Enter") {

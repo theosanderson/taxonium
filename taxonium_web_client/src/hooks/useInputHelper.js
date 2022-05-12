@@ -87,7 +87,7 @@ export const useInputHelper = ({
     if (inputs.length === 0) {
       return ["invalid", "No files selected"];
     }
-    
+
     // if there is a jsonl file, it must be the only file
     if (
       inputs.some((input) => input.filetype === "jsonl") &&
@@ -127,7 +127,7 @@ export const useInputHelper = ({
     addInput(file_obj);
   }
 
-   const finaliseInputs= useCallback (() => {
+  const finaliseInputs = useCallback(() => {
     // if everything is a URL:
     if (inputs.every((input) => input.supplyType === "url")) {
       // if the input is a taxonium file
@@ -155,9 +155,8 @@ export const useInputHelper = ({
           data: inputs[0].data,
           filetype: inputs[0].filetype,
         });
-        return
+        return;
       }
-      
 
       const upload_obj = {};
       // if there is some metadata find it
@@ -182,8 +181,7 @@ export const useInputHelper = ({
       upload_obj.ladderize = tree_file.ladderize;
       setUploadedData(upload_obj);
     }
-  }
-  , [inputs, updateQuery, setUploadedData]);
+  }, [inputs, updateQuery, setUploadedData]);
 
   useEffect(() => {
     // if there is a single file and it is a jsonl file, then finalise
