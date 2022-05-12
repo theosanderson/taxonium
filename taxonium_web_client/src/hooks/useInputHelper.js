@@ -152,6 +152,7 @@ export const useInputHelper = ({
           status: "loaded",
           filename: inputs[0].name,
           data: inputs[0].data,
+          filetype: inputs[0].filetype,
         });
       }
 
@@ -174,24 +175,26 @@ export const useInputHelper = ({
       upload_obj.data = tree_file.data;
       upload_obj.status =
         tree_file.supplyType === "url" ? "url_supplied" : "loaded";
+      upload_obj.filetype = tree_file.filetype;
       setUploadedData(upload_obj);
     }
   }
 
   useEffect(() => {
     if (query.protoUrl && !uploadedData) {
-      setUploadedData({ status: "url_supplied", filename: query.protoUrl });
+      setUploadedData({ status: "url_supplied", filename: query.protoUrl, filetype:"jsonl" });
     }
     if (query.treeUrl && !uploadedData) {
       console.log("tree url set");
       const extra = {};
       if (query.metaUrl) {
-        extra.metadata = { filename: query.metaUrl, status: "url_supplied" };
+        extra.metadata = { filename: query.metaUrl, status: "url_supplied", };
       }
       setUploadedData({
         status: "url_supplied",
         filename: query.treeUrl,
         ladderize: query.ladderizeTree,
+        filetype:"nwk",
         ...extra,
       });
     }
