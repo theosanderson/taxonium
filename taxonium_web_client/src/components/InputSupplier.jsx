@@ -118,6 +118,11 @@ export const InputSupplier = ({ inputHelper }) => {
                
 
           </div>)}
+          {input.filetype.startsWith("meta_")&&(
+              <div className="text-italic">
+                  The left-most column in your metadata must be the name of the taxon.
+                </div>
+          )}
           </div>
         );
       })}

@@ -35,7 +35,7 @@ function guessType(file_object) {
   }
 }
 
-export const useInputHelper = () => {
+export const useInputHelper = ({setUploadedData, updateQuery}) => {
   const [inputs, setInputs] = useState([]);
 
   function addInput(file_object, data) {
@@ -113,6 +113,7 @@ export const useInputHelper = () => {
 
   function finaliseInputs() {
     setInputs([]);
+
   }
 
   return {

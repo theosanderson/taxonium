@@ -16,7 +16,8 @@ const first_search = getDefaultSearch("aa1");
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
 function App() {
-  const inputHelper = useInputHelper();
+  const [uploadedData, setUploadedData] = useState(null);
+  
 
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),
@@ -25,6 +26,8 @@ function App() {
     xType: "x_dist",
     mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
   });
+
+  const inputHelper = useInputHelper({setUploadedData, updateQuery});
   const [title, setTitle] = useState(null);
   const [beingDragged, setBeingDragged] = useState(false);
 
@@ -81,7 +84,7 @@ function App() {
     }, 500);
   }
 
-  const [uploadedData, setUploadedData] = useState(null);
+  
   const [aboutEnabled, setAboutEnabled] = useState(false);
 
   const protoUrl = query.protoUrl;
