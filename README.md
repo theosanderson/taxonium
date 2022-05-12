@@ -8,7 +8,11 @@ Taxonium is a tool for exploring extremely large trees. It is currently used for
 
 Visit [Cov2Tree.org](http://Cov2Tree.org) which uses Taxonium to allow you to explore a tree built by researchers at UCSC using public data contributed by researchers across the world to the INSDC databases.
 
-### build my own phylogeny to explore in Taxonium, or add my own metadata to an existing phylogeny?
+### visualise my own Newick phylogeny
+
+Upload a Newick file to [taxonium.org](http://taxonium.org), and optionally a metadata file in CSV or TSV format. If using a metadata file the leftmost column must contain names of the nodes as in the tree.
+
+### build my own mutation-annotated tree to explore in Taxonium, or add my own metadata to an existing phylogeny?
 
 Use [UShER](https://github.com/yatisht/usher/) to build a mutation-annotated tree. Then use [taxoniumtools](./taxoniumtools/) to convert it to a Taxonium format you can upload to the interface at [Taxonium.org](Taxonium.org)
 
