@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function guessIfCompressed(file_object) {
   //return true if gzipped and false if not
@@ -51,6 +51,7 @@ export const useInputHelper = () => {
         filetype: filetype,
         gzipped: gzipped,
         supplyType: file_object.supplyType,
+        ladderize: true
       },
     ]);
   }
@@ -77,6 +78,30 @@ export const useInputHelper = () => {
     reader.readAsArrayBuffer(file);
   }
 
+  const [validity, validityMessage]= useMemo(() => {
+    if (inputs.length === 0) {
+        return ["invalid", "No files selected"];
+    } 
+    // if there is a jsonl file, it must be the only file
+    if (inputs.some((input) => input.filetype === "jsonl") && inputs.length > 1) {
+        return ["invalid", "If using Taxonium JSONL files, you can only use a single file at present"];
+    }
+    // can't have more than one metadata file
+    if (inputs.filter((input) => input.filetype.startsWith("meta_")).length > 1) {
+        return ["invalid", "You can only use a single metadata file"];
+    }
+    // can't have more than one tree file
+    if (inputs.filter((input) => input.filetype === "nwk").length > 1) {
+        return ["invalid", "You can only use a single tree file"];
+    }
+    // must have a tree file or a jsonl
+    if (inputs.filter((input) => input.filetype === "jsonl").length === 0 && inputs.filter((input) => input.filetype === "nwk").length === 0) {
+        return ["invalid", "You must include a tree, not just metadata"];
+    }
+    return ["valid", ""];
+}, [inputs]);
+
+
   function removeInput(index) {
     setInputs(inputs.filter((_, i) => i !== index));
   }
@@ -98,5 +123,7 @@ export const useInputHelper = () => {
     addInput,
     addFromURL,
     finaliseInputs,
+    validity,
+    validityMessage
   };
 };
