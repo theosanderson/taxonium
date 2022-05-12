@@ -13,7 +13,7 @@ Visit [Cov2Tree.org](http://Cov2Tree.org) which uses Taxonium to allow you to ex
 
 ### visualise my own Newick phylogeny?
 
-Upload a Newick file to [taxonium.org](http://taxonium.org), and optionally a metadata file in CSV or TSV format. If using a metadata file the leftmost column must contain names of the nodes as in the tree.
+Upload a Newick file to [Taxonium.org](http://taxonium.org), and optionally a metadata file in CSV or TSV format. If using a metadata file the leftmost column must contain names of the nodes as in the tree.
 
 ### build my own mutation-annotated tree to explore in Taxonium, or add my own metadata to an existing phylogeny?
 
