@@ -39,6 +39,11 @@ const useSearch = ({
   const [jsonSearch, setJsonSearch] = useState({});
 
   const timeouts = useRef({});
+  const [searchLoadingStatus, setSearchLoadingStatus] = useState({});
+
+  const setIndividualSearchLoadingStatus = (key, status) => {
+    setSearchLoadingStatus((prev) => ({ ...prev, [key]: status }));
+  }
 
   useEffect(() => {
     // Remove search results which are no longer in the search spec
@@ -87,6 +92,8 @@ const useSearch = ({
         console.log("performing search");
 
         const do_search = () => {
+          setIndividualSearchLoadingStatus(key, "loading");
+
           singleSearch(this_json, boundsForQueries, (result) => {
             setSearchResults((prevState) => {
               const new_result = {
@@ -125,7 +132,9 @@ const useSearch = ({
               };
             });
             console.log(searchResults);
+            setIndividualSearchLoadingStatus(key, "loaded");
           });
+
         };
 
         // debounce the search
@@ -221,6 +230,7 @@ const useSearch = ({
     setZoomToSearch,
     searchesEnabled,
     setEnabled,
+    searchLoadingStatus,
   };
 };
 

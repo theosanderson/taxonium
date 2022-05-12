@@ -176,6 +176,7 @@ export const useInputHelper = ({
       upload_obj.status =
         tree_file.supplyType === "url" ? "url_supplied" : "loaded";
       upload_obj.filetype = tree_file.filetype;
+      upload_obj.ladderize = tree_file.ladderize;
       setUploadedData(upload_obj);
     }
   }

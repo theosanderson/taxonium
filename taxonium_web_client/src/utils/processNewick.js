@@ -100,6 +100,7 @@ async function cleanup(tree) {
 }
 
 export async function processNewick(data, sendStatusMessage) {
+  console.log("got data",data)
   let the_data;
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");

@@ -3,6 +3,7 @@ import { BsTrash } from "react-icons/bs";
 import { FaSearch, FaLink } from "react-icons/fa";
 import { useCallback, useState } from "react";
 import { formatNumber } from "../utils/formatNumber";
+import { ClipLoader } from "react-spinners";
 import Modal from "react-modal";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
@@ -78,6 +79,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
         />
         <div className="text-black  pr-2 text-sm">
           {" "}
+          
           {num_results !== "Loading" && (
             <>
               {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}
@@ -96,7 +98,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
               </button>{" "}
               {
                 // check if window href includes 'protoUrl'
-                (window.location.href.includes("protoUrl") ||
+                (window.location.href.includes("protoUrl") ||window.location.href.includes("treeurl") ||
                   window.location.href.includes("backend")) &&
                   config &&
                   !config.disable_permalink && (
@@ -110,7 +112,10 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                       <FaLink />
                     </button>
                   )
-              }
+              }{search.searchLoadingStatus[myKey]==="loading" && (
+                <ClipLoader size={12} color="#444444" className="mr-3" />
+    
+              )}
             </>
           )}
         </div>
