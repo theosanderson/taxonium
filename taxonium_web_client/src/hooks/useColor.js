@@ -1,16 +1,15 @@
 import { useCallback, useMemo } from "react";
-import scale  from 'scale-color-perceptual'
+import scale from "scale-color-perceptual";
 
 let rgb_cache = {};
 
 const useColor = (colorMapping) => {
   const toRGB_uncached = useCallback(
     (string) => {
-      
       if (typeof string === "number") {
         const log10 = Math.log10(string);
-        
-        const color = scale.plasma(log10/10);
+
+        const color = scale.plasma(log10 / 10);
         // convert from hex to rgb
         const rgb = [
           parseInt(color.slice(1, 3), 16),
@@ -19,7 +18,6 @@ const useColor = (colorMapping) => {
         ];
         console.log(rgb);
         return rgb;
-
       }
 
       if (string in colorMapping) {

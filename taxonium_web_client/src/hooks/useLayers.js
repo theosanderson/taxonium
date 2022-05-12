@@ -88,7 +88,9 @@ const useLayers = ({
   }, [combo]);
 
   const minimap_scatter_data = useMemo(() => {
-    return base_data ? base_data.nodes.filter((node) => node.num_tips ===1 ) : [];
+    return base_data
+      ? base_data.nodes.filter((node) => node.num_tips === 1)
+      : [];
   }, [base_data]);
 
   const outer_bounds = [
