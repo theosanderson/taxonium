@@ -6,39 +6,17 @@ import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
 
+import { useInputHelper } from "./hooks/useInputHelper";
+
 import { getDefaultSearch } from "./utils/searchUtil";
+import InputSupplier from "./components/InputSupplier";
 
 const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
-const TaxoniumUploader = React.lazy(() =>
-  import("./components/TaxoniumUploader")
-);
 
 function App() {
-  function readFile(file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      //setUploadedData(reader.result);
-
-      if (file.name.includes(".pb")) {
-        // V1 format
-        window.alert(
-          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there."
-        );
-        window.location.href =
-          "https://cov2tree-git-v1-theosanderson.vercel.app/";
-      } else {
-        setUploadedData({
-          status: "loaded",
-          filename: file.name,
-          data: reader.result,
-        });
-      }
-    };
-
-    reader.readAsArrayBuffer(file);
-  }
+  const [uploadedData, setUploadedData] = useState(null);
 
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),
@@ -46,6 +24,13 @@ function App() {
     backend: process.env.REACT_APP_DEFAULT_BACKEND,
     xType: "x_dist",
     mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
+  });
+
+  const inputHelper = useInputHelper({
+    setUploadedData,
+    updateQuery,
+    query,
+    uploadedData,
   });
   const [title, setTitle] = useState(null);
   const [beingDragged, setBeingDragged] = useState(false);
@@ -66,12 +51,12 @@ function App() {
         // If dropped items aren't files, reject them
         if (ev.dataTransfer.items[i].kind === "file") {
           var file = ev.dataTransfer.items[i].getAsFile();
-          readFile(file);
+          inputHelper.readFile(file);
         }
       }
     } else {
       // Use DataTransfer interface to access the file(s)
-      readFile(ev.dataTransfer.files[0]);
+      inputHelper.readFile(ev.dataTransfer.files[0]);
     }
   }
 
@@ -103,9 +88,7 @@ function App() {
     }, 500);
   }
 
-  const [uploadedData, setUploadedData] = useState(null);
   const [aboutEnabled, setAboutEnabled] = useState(false);
-  const [currentUrl, setCurrentUrl] = useState("");
 
   const protoUrl = query.protoUrl;
   if (protoUrl && protoUrl.includes(".pb")) {
@@ -135,12 +118,6 @@ function App() {
         protoUrl;
     }
   }
-
-  useEffect(() => {
-    if (protoUrl && !uploadedData) {
-      setUploadedData({ status: "url_supplied", filename: protoUrl });
-    }
-  }, [protoUrl, uploadedData]);
 
   return (
     <Router>
@@ -211,50 +188,7 @@ function App() {
               <p className="text-lg text-gray-700 mb-5">
                 Welcome to Taxonium, a tool for exploring large trees
               </p>
-              <div className="grid grid-cols-2  divide-x divide-gray-300">
-                <div className="p-5">
-                  <h3 className="text-md text-gray-700 font-semibold mb-2">
-                    Import a Taxonium JSONL file
-                  </h3>
-                  <TaxoniumUploader
-                    readFile={readFile}
-                    protoUrl={query.protoUrl}
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="text-md text-gray-700 font-semibold mb-2">
-                    Provide a URL to a Taxonium protobuf file
-                  </h3>
-                  URL:{" "}
-                  <input
-                    type="text"
-                    className="border-gray-300 p-1 w-60 border"
-                    value={currentUrl}
-                    onChange={(event) => setCurrentUrl(event.target.value)}
-                    // submit on enter
-                    onKeyPress={(event) => {
-                      if (event.key === "Enter") {
-                        updateQuery({
-                          ...query,
-                          protoUrl: currentUrl.replace("http://", "https://"),
-                        });
-                      }
-                    }}
-                  />
-                  <br />
-                  <button
-                    className="  bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border  text-gray-700 ml-8 h-8 mt-5"
-                    onClick={() =>
-                      updateQuery({
-                        ...query,
-                        protoUrl: currentUrl.replace("http://", "https://"),
-                      })
-                    }
-                  >
-                    Load
-                  </button>
-                </div>
-              </div>
+              <InputSupplier inputHelper={inputHelper} />
               <p className="text-md text-gray-700 font-semibold mb-2">
                 or{" "}
                 <a

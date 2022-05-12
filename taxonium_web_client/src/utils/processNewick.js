@@ -8,7 +8,6 @@ import {
 import pako from "pako";
 import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
-import { flatMapDeep } from "lodash";
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
@@ -47,6 +46,30 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
+function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
+  if (file_obj.status === "url_supplied") {
+    return do_fetch(
+      file_obj.filename,
+      sendStatusMessage,
+      whatIsBeingDownloaded
+    );
+  } else if (file_obj.status === "loaded") {
+    if (file_obj.filename.includes(".gz")) {
+      const compressed_data = file_obj.data;
+      sendStatusMessage({
+        message: "Decompressing compressed " + whatIsBeingDownloaded,
+      });
+      const inflated = pako.ungzip(compressed_data);
+      const text = new TextDecoder("utf-8").decode(inflated);
+      return text;
+    } else {
+      // convert array buffer to string
+      const text = new TextDecoder("utf-8").decode(file_obj.data);
+      return text;
+    }
+  }
+}
+
 async function cleanup(tree) {
   tree.node.forEach((node, i) => {
     node.node_id = i;
@@ -79,12 +102,7 @@ async function cleanup(tree) {
 export async function processNewick(data, sendStatusMessage) {
   let the_data;
 
-  if (data.status === "url_supplied") {
-    console.log("url_supplied");
-    the_data = await do_fetch(data.filename, sendStatusMessage, "tree");
-  } else {
-    throw "Unknown status: " + data.status;
-  }
+  the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
   sendStatusMessage({
     message: "Parsing Newick file",
@@ -115,8 +133,12 @@ export async function processNewick(data, sendStatusMessage) {
   assignNumTips(tree.root);
   console.log("tree.root.num_tips", tree.root.num_tips);
 
-  sortWithNumTips(tree.root);
-  tree.node = kn_expand_node(tree.root);
+  if (data.ladderize) {
+    console.log("ladderizing");
+
+    sortWithNumTips(tree.root);
+    tree.node = kn_expand_node(tree.root);
+  }
 
   console.log("TREE", tree);
 
@@ -172,12 +194,8 @@ export async function processMetadataFile(data, sendStatusMessage) {
   };
   let the_data;
 
-  if (data.status === "url_supplied") {
-    console.log("url_supplied");
-    the_data = await do_fetch(data.filename, logStatusToConsole, "metadata");
-  } else {
-    throw "Unknown status: " + data.status;
-  }
+  the_data = await fetch_or_extract(data, logStatusToConsole, "metadata");
+
   console.log("Got metadata file");
 
   const lines = the_data.split("\n");
