@@ -72,7 +72,7 @@ export const InputSupplier = ({ inputHelper }) => {
                   );
                 })}
               </select>
-
+{/*}
               <label>
                 Is Gzipped{" "}
                 <input
@@ -90,7 +90,7 @@ export const InputSupplier = ({ inputHelper }) => {
                     );
                   }}
                 />
-              </label>
+                </label>*/}
 
               <button
                 className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
@@ -142,7 +142,7 @@ export const InputSupplier = ({ inputHelper }) => {
             <button
               className="border border-gray-300 rounded p-2 m-3 mb-7 bg-gray-200"
               onClick={() => {
-                inputHelper.finalizeInputs();
+                inputHelper.finaliseInputs();
               }}
             >
               Launch Taxonium

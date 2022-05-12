@@ -26,7 +26,7 @@ function App() {
     mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
   });
 
-  const inputHelper = useInputHelper({ setUploadedData, updateQuery });
+  const inputHelper = useInputHelper({ setUploadedData, updateQuery , query, uploadedData});
   const [title, setTitle] = useState(null);
   const [beingDragged, setBeingDragged] = useState(false);
 
@@ -114,11 +114,7 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    if (protoUrl && !uploadedData) {
-      setUploadedData({ status: "url_supplied", filename: protoUrl });
-    }
-  }, [protoUrl, uploadedData]);
+  
 
   return (
     <Router>
