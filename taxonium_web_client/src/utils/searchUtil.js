@@ -5,8 +5,8 @@ export function getDefaultSearch(key) {
   }
   return {
     key,
-    type: "meta_pangolin_lineage",
-    method: "text_exact",
+    type: "name",
+    method: "text_match",
     text: "",
     gene: "S",
     position: 484,
