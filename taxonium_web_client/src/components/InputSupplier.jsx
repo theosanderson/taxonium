@@ -101,39 +101,41 @@ export const InputSupplier = ({ inputHelper }) => {
                 <BsTrash className="inline-block mr-2" />
               </button>
             </div>{" "}
-            {input.filetype==="nwk"&&(
-                <div>
-                    <label>Ladderize tree <input type="checkbox" checked={input.ladderize} onChange={(e)=>{
-                        setInputs(
-                            inputs.map((input,this_index)=>{
-                                if(this_index===index){
-                                    input.ladderize=e.target.checked;
-                                }
-                                return input;
-                            }
-                        )
-                        );
-                    } }/></label>
-
-               
-
-          </div>)}
-          {input.filetype.startsWith("meta_")&&(
+            {input.filetype === "nwk" && (
+              <div>
+                <label>
+                  Ladderize tree{" "}
+                  <input
+                    type="checkbox"
+                    checked={input.ladderize}
+                    onChange={(e) => {
+                      setInputs(
+                        inputs.map((input, this_index) => {
+                          if (this_index === index) {
+                            input.ladderize = e.target.checked;
+                          }
+                          return input;
+                        })
+                      );
+                    }}
+                  />
+                </label>
+              </div>
+            )}
+            {input.filetype.startsWith("meta_") && (
               <div className="text-italic">
-                  The left-most column in your metadata must be the name of the taxon.
-                </div>
-          )}
+                The left-most column in your metadata must be the name of the
+                taxon.
+              </div>
+            )}
           </div>
         );
       })}
-
       {inputs.length > 0 && inputHelper.validityMessage && (
-          <div>
-                <div className="text-red-500">{inputHelper.validityMessage}</div>
-            </div>
+        <div>
+          <div className="text-red-500">{inputHelper.validityMessage}</div>
+        </div>
       )}
-
-
       {inputs.length > 0 && inputHelper.validity === "valid" && (
         <div className="border-b mb-2">
           <div>

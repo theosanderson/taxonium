@@ -35,7 +35,7 @@ function guessType(file_object) {
   }
 }
 
-export const useInputHelper = ({setUploadedData, updateQuery}) => {
+export const useInputHelper = ({ setUploadedData, updateQuery }) => {
   const [inputs, setInputs] = useState([]);
 
   function addInput(file_object, data) {
@@ -51,7 +51,7 @@ export const useInputHelper = ({setUploadedData, updateQuery}) => {
         filetype: filetype,
         gzipped: gzipped,
         supplyType: file_object.supplyType,
-        ladderize: true
+        ladderize: true,
       },
     ]);
   }
@@ -78,29 +78,39 @@ export const useInputHelper = ({setUploadedData, updateQuery}) => {
     reader.readAsArrayBuffer(file);
   }
 
-  const [validity, validityMessage]= useMemo(() => {
+  const [validity, validityMessage] = useMemo(() => {
     if (inputs.length === 0) {
-        return ["invalid", "No files selected"];
-    } 
+      return ["invalid", "No files selected"];
+    }
     // if there is a jsonl file, it must be the only file
-    if (inputs.some((input) => input.filetype === "jsonl") && inputs.length > 1) {
-        return ["invalid", "If using Taxonium JSONL files, you can only use a single file at present"];
+    if (
+      inputs.some((input) => input.filetype === "jsonl") &&
+      inputs.length > 1
+    ) {
+      return [
+        "invalid",
+        "If using Taxonium JSONL files, you can only use a single file at present",
+      ];
     }
     // can't have more than one metadata file
-    if (inputs.filter((input) => input.filetype.startsWith("meta_")).length > 1) {
-        return ["invalid", "You can only use a single metadata file"];
+    if (
+      inputs.filter((input) => input.filetype.startsWith("meta_")).length > 1
+    ) {
+      return ["invalid", "You can only use a single metadata file"];
     }
     // can't have more than one tree file
     if (inputs.filter((input) => input.filetype === "nwk").length > 1) {
-        return ["invalid", "You can only use a single tree file"];
+      return ["invalid", "You can only use a single tree file"];
     }
     // must have a tree file or a jsonl
-    if (inputs.filter((input) => input.filetype === "jsonl").length === 0 && inputs.filter((input) => input.filetype === "nwk").length === 0) {
-        return ["invalid", "You must include a tree, not just metadata"];
+    if (
+      inputs.filter((input) => input.filetype === "jsonl").length === 0 &&
+      inputs.filter((input) => input.filetype === "nwk").length === 0
+    ) {
+      return ["invalid", "You must include a tree, not just metadata"];
     }
     return ["valid", ""];
-}, [inputs]);
-
+  }, [inputs]);
 
   function removeInput(index) {
     setInputs(inputs.filter((_, i) => i !== index));
@@ -113,7 +123,6 @@ export const useInputHelper = ({setUploadedData, updateQuery}) => {
 
   function finaliseInputs() {
     setInputs([]);
-
   }
 
   return {
@@ -125,6 +134,6 @@ export const useInputHelper = ({setUploadedData, updateQuery}) => {
     addFromURL,
     finaliseInputs,
     validity,
-    validityMessage
+    validityMessage,
   };
 };
