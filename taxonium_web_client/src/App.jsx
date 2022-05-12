@@ -266,7 +266,7 @@ function App() {
                 , or the {" "}
                 <a
                   className="text-blue-500"
-                  href="/latest_public.jsonl.gz"
+                  href="/?protoUrl=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
                 >
                   full-download
                 </a> (slower to start) version
