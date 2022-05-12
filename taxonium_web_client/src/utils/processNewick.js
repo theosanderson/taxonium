@@ -8,7 +8,7 @@ import {
 import pako from "pako";
 import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
-import { flatMapDeep } from "lodash";
+
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
