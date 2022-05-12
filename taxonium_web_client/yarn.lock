@@ -11255,6 +11255,11 @@ saxes@^5.0.1:
   dependencies:
     xmlchars "^2.2.0"
 
+scale-color-perceptual@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/scale-color-perceptual/-/scale-color-perceptual-1.1.2.tgz#370fb1aa1fc48261d3048f34edfe6155fb0a52d5"
+  integrity sha1-Nw+xqh/EgmHTBI807f5hVfsKUtU=
+
 scheduler@^0.20.2:
   version "0.20.2"
   resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.20.2.tgz"
