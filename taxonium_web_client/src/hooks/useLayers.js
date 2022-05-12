@@ -84,7 +84,7 @@ const useLayers = ({
 
   const combo_scatter = useMemo(() => {
     console.log("new scatter");
-    return combo.nodes.filter((d) => d.num_tips ===1);
+    return combo.nodes.filter((d) => d.num_tips === 1);
   }, [combo]);
 
   const minimap_scatter_data = useMemo(() => {

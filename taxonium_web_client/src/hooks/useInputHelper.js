@@ -182,19 +182,23 @@ export const useInputHelper = ({
 
   useEffect(() => {
     if (query.protoUrl && !uploadedData) {
-      setUploadedData({ status: "url_supplied", filename: query.protoUrl, filetype:"jsonl" });
+      setUploadedData({
+        status: "url_supplied",
+        filename: query.protoUrl,
+        filetype: "jsonl",
+      });
     }
     if (query.treeUrl && !uploadedData) {
       console.log("tree url set");
       const extra = {};
       if (query.metaUrl) {
-        extra.metadata = { filename: query.metaUrl, status: "url_supplied", };
+        extra.metadata = { filename: query.metaUrl, status: "url_supplied" };
       }
       setUploadedData({
         status: "url_supplied",
         filename: query.treeUrl,
         ladderize: query.ladderizeTree,
-        filetype:"nwk",
+        filetype: "nwk",
         ...extra,
       });
     }
