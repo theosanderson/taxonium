@@ -43,7 +43,7 @@ const useSearch = ({
 
   const setIndividualSearchLoadingStatus = (key, status) => {
     setSearchLoadingStatus((prev) => ({ ...prev, [key]: status }));
-  }
+  };
 
   useEffect(() => {
     // Remove search results which are no longer in the search spec
@@ -134,7 +134,6 @@ const useSearch = ({
             console.log(searchResults);
             setIndividualSearchLoadingStatus(key, "loaded");
           });
-
         };
 
         // debounce the search
