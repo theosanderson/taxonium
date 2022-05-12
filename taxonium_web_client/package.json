@@ -32,6 +32,7 @@
     "react-scripts": "5.0.0",
     "react-spinners": "^0.11.0",
     "readable-web-to-node-stream": "^3.0.2",
+    "scale-color-perceptual": "^1.1.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "taxonium_data_handling": "file:../taxonium_data_handling",
     "web-vitals": "^1.0.1",

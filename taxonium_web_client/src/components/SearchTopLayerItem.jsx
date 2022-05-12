@@ -3,6 +3,7 @@ import { BsTrash } from "react-icons/bs";
 import { FaSearch, FaLink } from "react-icons/fa";
 import { useCallback, useState } from "react";
 import { formatNumber } from "../utils/formatNumber";
+import { ClipLoader } from "react-spinners";
 import Modal from "react-modal";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
@@ -97,6 +98,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
               {
                 // check if window href includes 'protoUrl'
                 (window.location.href.includes("protoUrl") ||
+                  window.location.href.includes("treeUrl") ||
                   window.location.href.includes("backend")) &&
                   config &&
                   !config.disable_permalink && (
@@ -111,6 +113,9 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                     </button>
                   )
               }
+              {search.searchLoadingStatus[myKey] === "loading" && (
+                <ClipLoader size={12} color="#444444" className="mr-3" />
+              )}
             </>
           )}
         </div>

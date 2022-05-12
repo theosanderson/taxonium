@@ -238,9 +238,11 @@ const getDetails = async (node_id) => {
   const node = nodes[node_id];
   console.log("node is ", node);
   const details = { ...node };
-  details.mutations = processedUploadedData.node_to_mut[node_id].map(
-    (x) => processedUploadedData.mutations[x]
-  );
+  details.mutations = processedUploadedData.node_to_mut[node_id]
+    ? processedUploadedData.node_to_mut[node_id].map(
+        (x) => processedUploadedData.mutations[x]
+      )
+    : [];
   console.log("details is ", details);
   return details;
 };
