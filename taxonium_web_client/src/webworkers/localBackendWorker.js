@@ -261,7 +261,7 @@ onmessage = async (event) => {
     data.type === "upload" &&
     data.data &&
     data.data.filename &&
-    data.data.filename.includes("nwk")
+    (data.data.filename.includes("nwk") || data.data.filename.includes("newick"))
   ) {
     console.log("got nwk file", data.data);
     data.data.useDistances = true;
