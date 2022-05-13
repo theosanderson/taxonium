@@ -142,7 +142,6 @@ const getConfig = async () => {
 
   config.rootMutations = processedUploadedData.rootMutations;
   config.rootId = processedUploadedData.rootId;
-  
 
   config.name_accessor = "name";
   const to_remove = [
@@ -165,7 +164,6 @@ const getConfig = async () => {
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
   );
-
 
   /*config.search_types = [
     { name: "name", label: "Name", type: "text_match" },
@@ -205,20 +203,16 @@ const getConfig = async () => {
     }
     return "text_match";
   };
-  const initial_search_types = [
-    "name",
-    ...config.keys_to_display,
-  ]
+  const initial_search_types = ["name", ...config.keys_to_display];
 
-  if(processedUploadedData.mutations.length>0){
-    initial_search_types.push("mutation")
+  if (processedUploadedData.mutations.length > 0) {
+    initial_search_types.push("mutation");
   }
 
-  if(processedUploadedData.rootMutations.length>0){
-    initial_search_types.push("revertant")
+  if (processedUploadedData.rootMutations.length > 0) {
+    initial_search_types.push("revertant");
   }
-  
-  
+
   config.search_types = initial_search_types.map((x) => ({
     name: x,
     label: prettyName(x),
@@ -226,18 +220,18 @@ const getConfig = async () => {
   }));
 
   const colorByOptions = [...config.keys_to_display];
-  if(processedUploadedData.mutations.length>0){
-    colorByOptions.push("genotype")
+  if (processedUploadedData.mutations.length > 0) {
+    colorByOptions.push("genotype");
   }
-  colorByOptions.push("none")
+  colorByOptions.push("none");
 
   config.colorBy = { colorByOptions };
 
   //check if 'meta_pangolin_lineage' is in options
 
-
-  config.defaultColorByField = colorByOptions.includes('meta_pangolin_lineage')? 'meta_pangolin_lineage' : colorByOptions[0];
-
+  config.defaultColorByField = colorByOptions.includes("meta_pangolin_lineage")
+    ? "meta_pangolin_lineage"
+    : colorByOptions[0];
 
   config.mutations = processedUploadedData.mutations;
 

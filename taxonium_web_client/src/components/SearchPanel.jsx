@@ -142,7 +142,7 @@ function SearchPanel({
             </span>
           )}
 
-          {[...config.keys_to_display,"num_tips"].map(
+          {[...config.keys_to_display, "num_tips"].map(
             (key) =>
               selectedDetails.nodeDetails[key] && (
                 <div className="text-sm mt-1" key={key}>
@@ -164,36 +164,38 @@ function SearchPanel({
                 </div>
               )
           )}
-          {config.mutations.length>0 && (<>
-          <h3 className="text-xs font-bold mt-4 text-gray-700">
-            Mutations at this node:
-          </h3>
-          <div className="text-xs mt-1 text-gray-700">
-            {settings
-              .filterMutations(selectedDetails.nodeDetails.mutations)
-              .map((mutation, i) => (
-                <span key={mutation.mutation_id}>
-                  {i > 0 && <>, </>}
-                  <div className="inline-block">
-                    {mutation.gene}:{mutation.previous_residue}
-                    {mutation.residue_pos}
-                    {mutation.new_residue}
+          {config.mutations.length > 0 && (
+            <>
+              <h3 className="text-xs font-bold mt-4 text-gray-700">
+                Mutations at this node:
+              </h3>
+              <div className="text-xs mt-1 text-gray-700">
+                {settings
+                  .filterMutations(selectedDetails.nodeDetails.mutations)
+                  .map((mutation, i) => (
+                    <span key={mutation.mutation_id}>
+                      {i > 0 && <>, </>}
+                      <div className="inline-block">
+                        {mutation.gene}:{mutation.previous_residue}
+                        {mutation.residue_pos}
+                        {mutation.new_residue}
+                      </div>
+                    </span>
+                  ))}
+                {selectedDetails.nodeDetails.mutations.length === 0 && (
+                  <div className=" italic">
+                    No{" "}
+                    {settings.filterMutations([{ type: "nt" }]).length === 0 ? (
+                      <>coding</>
+                    ) : (
+                      <></>
+                    )}{" "}
+                    mutations
                   </div>
-                </span>
-              ))}
-            {selectedDetails.nodeDetails.mutations.length === 0 && (
-              <div className=" italic">
-                No{" "}
-                {settings.filterMutations([{ type: "nt" }]).length === 0 ? (
-                  <>coding</>
-                ) : (
-                  <></>
-                )}{" "}
-                mutations
+                )}
               </div>
-            )}
-          </div>
-          </>)}
+            </>
+          )}
 
           {
             <div>
