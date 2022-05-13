@@ -24,10 +24,10 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
         window.document.title = results.title;
         console.log("setting title to ", config.title);
       }
-      
-      if(query.config){
-        delete query.config.validate_SID
-        Object.assign(results, query.config)
+
+      if (query.config) {
+        delete query.config.validate_SID;
+        Object.assign(results, query.config);
       }
 
       setConfig(results);
