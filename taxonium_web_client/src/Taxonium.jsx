@@ -24,10 +24,7 @@ function Taxonium({
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
   const view = useView({ settings, deckSize });
-  const colourMapping = useMemo(() => {
-    return {};
-  }, []);
-  const colorHook = useColor(colourMapping);
+
   const url_on_fail = process.env.REACT_APP_URL_ON_FAIL
     ? process.env.REACT_APP_URL_ON_FAIL
     : null;
@@ -42,7 +39,11 @@ function Taxonium({
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, overlayRef, setTitle);
   const colorBy = useColorBy(config, query, updateQuery);
-  
+  const colorMapping = useMemo(() => {
+    return config.colorMapping ? config.colorMapping : {};
+  }, [config.colorMapping]);
+  const colorHook = useColor(colorMapping);
+
   const xType = query.xType;
   const setxType = (xType) => {
     updateQuery({ xType });
