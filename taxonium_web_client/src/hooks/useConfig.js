@@ -26,8 +26,9 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
       }
 
       if (query.config) {
-        delete query.config.validate_SID;
-        Object.assign(results, query.config);
+        const unpacked = JSON.parse(query.config);
+        delete unpacked.validate_SID;
+        Object.assign(results, unpacked);
       }
 
       setConfig(results);
