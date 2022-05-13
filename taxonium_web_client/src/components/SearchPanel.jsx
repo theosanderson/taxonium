@@ -164,6 +164,7 @@ function SearchPanel({
                 </div>
               )
           )}
+          {config.mutations.length>0 && (<>
           <h3 className="text-xs font-bold mt-4 text-gray-700">
             Mutations at this node:
           </h3>
@@ -192,6 +193,7 @@ function SearchPanel({
               </div>
             )}
           </div>
+          </>)}
 
           {
             <div>

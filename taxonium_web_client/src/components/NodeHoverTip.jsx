@@ -84,7 +84,7 @@ const NodeHoverTip = ({
           )
       )}
 
-      {
+      {config.mutations.length > 0 && (
         <div>
           <div className="mutations text-xs">
             {mutations.map((mutation, i) => (
@@ -110,7 +110,7 @@ const NodeHoverTip = ({
             )}
           </div>
         </div>
-      }
+      )}
       {window.show_ids ? (
         <div className="mt-3 text-xs text-gray-400">{hoveredNode.node_id}</div>
       ) : null}
