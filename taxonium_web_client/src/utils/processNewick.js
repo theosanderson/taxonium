@@ -227,7 +227,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
   let headers;
 
   lines.forEach((line, i) => {
-    if (i % 1000 === 0) {
+    if (i % 10000 === 0) {
       sendStatusMessage({
         message: "Parsing metadata file",
         percentage: (i / lines.length) * 100,
@@ -245,6 +245,11 @@ export async function processMetadataFile(data, sendStatusMessage) {
       output[name] = as_obj;
     }
   });
+  sendStatusMessage({
+        message: "Finalising",
+     
+      });
+  
   return output;
 }
 
