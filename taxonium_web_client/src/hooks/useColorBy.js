@@ -9,7 +9,7 @@ function useColorBy(config, query, updateQuery) {
 
   const colorByField = colorByConfig.field
     ? colorByConfig.field
-    : "meta_pangolin_lineage";
+    : (config.defaultColorByField ? config.defaultColorByField : "meta_pangolin_lineage");
   const colorByGene = colorByConfig.gene ? colorByConfig.gene : "S";
   const colorByPosition = colorByConfig.pos ? colorByConfig.pos : 501;
 
