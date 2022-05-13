@@ -12,25 +12,7 @@ import "react-circular-progressbar/dist/styles.css";
 import useSnapshot from "./hooks/useSnapshot";
 import NodeHoverTip from "./components/NodeHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
-import Modal from "react-modal";
-
-const settingsModalStyle = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    //width: '50%',
-    backgroundColor: "#fafafa",
-  },
-};
-
-const prettifyMutationTypes = {
-  aa: "Amino acid",
-  nt: "Nucleotide",
-};
+import DeckSettingsModal from "./components/DeckSettingsModal";
 
 function Deck({
   data,
@@ -43,14 +25,10 @@ function Deck({
   config,
   statusMessage,
   xType,
-  minimapEnabled,
-  setMinimapEnabled,
+  settings,
   selectedDetails,
   setDeckSize,
   deckSize,
-  mutationTypesEnabled,
-  setMutationTypeEnabled,
-  filterMutations,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -149,6 +127,7 @@ function Deck({
     modelMatrix: view.modelMatrix,
     selectedDetails,
     xzoom,
+    settings,
   });
   // console.log("deck refresh");
 
@@ -204,46 +183,11 @@ function Deck({
           </div>
         </div>
       )}{" "}
-      <Modal
-        isOpen={deckSettingsOpen}
-        style={settingsModalStyle}
-        onRequestClose={() => setDeckSettingsOpen(false)}
-        contentLabel="Example Modal"
-      >
-        <h2 className="font-medium mb-3">Settings</h2>
-        <div className="text-sm">
-          <label>
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={minimapEnabled}
-              onChange={() => setMinimapEnabled(!minimapEnabled)}
-            />{" "}
-            Enable minimap
-          </label>
-
-          <h3 className="mt-5 font-medium">Mutation types enabled</h3>
-          <div className="mt-2">
-            {Object.keys(mutationTypesEnabled).map((key) => (
-              <div>
-                <label key={key}>
-                  <input
-                    type="checkbox"
-                    className="mr-1"
-                    checked={mutationTypesEnabled[key]}
-                    onChange={() =>
-                      setMutationTypeEnabled(key, !mutationTypesEnabled[key])
-                    }
-                  />{" "}
-                  {prettifyMutationTypes[key]
-                    ? prettifyMutationTypes[key]
-                    : key}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Modal>
+      <DeckSettingsModal
+        deckSettingsOpen={deckSettingsOpen}
+        setDeckSettingsOpen={setDeckSettingsOpen}
+        settings={settings}
+      />
       <DeckGL
         pickingRadius={10}
         ref={deckRef}
@@ -268,7 +212,7 @@ function Deck({
           colorHook={colorHook}
           colorBy={colorBy}
           config={config}
-          filterMutations={filterMutations}
+          filterMutations={settings.filterMutations}
         />
         <DeckButtons
           zoomIncrement={zoomIncrement}

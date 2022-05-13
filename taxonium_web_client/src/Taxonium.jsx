@@ -11,6 +11,7 @@ import useHoverDetails from "./hooks/useHoverDetails";
 import { useCallback, useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
+import { useSettings } from "./hooks/useSettings";
 
 function Taxonium({
   uploadedData,
@@ -21,8 +22,8 @@ function Taxonium({
   setTitle,
 }) {
   const [deckSize, setDeckSize] = useState(null);
-  const [minimapEnabled, setMinimapEnabled] = useState(true);
-  const view = useView({ minimapEnabled, deckSize });
+  const settings = useSettings({ query, updateQuery });
+  const view = useView({ settings, deckSize });
   const colourMapping = useMemo(() => {
     return {};
   }, []);
@@ -44,26 +45,6 @@ function Taxonium({
   const xType = query.xType;
   const setxType = (xType) => {
     updateQuery({ xType });
-  };
-  const mutationTypesEnabled = useMemo(() => {
-    return JSON.parse(query.mutationTypesEnabled);
-  }, [query.mutationTypesEnabled]);
-
-  const filterMutations = useCallback(
-    (mutations) => {
-      return mutations.filter(
-        (mutation) => mutationTypesEnabled[mutation.type]
-      );
-    },
-    [mutationTypesEnabled]
-  );
-
-  const setMutationTypeEnabled = (key, enabled) => {
-    const newMutationTypesEnabled = { ...mutationTypesEnabled };
-    newMutationTypesEnabled[key] = enabled;
-    updateQuery({
-      mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
-    });
   };
 
   const { data, boundsForQueries } = useGetDynamicData(
@@ -103,13 +84,9 @@ function Taxonium({
             hoverDetails={hoverDetails}
             selectedDetails={selectedDetails}
             xType={xType}
-            minimapEnabled={minimapEnabled}
-            setMinimapEnabled={setMinimapEnabled}
+            settings={settings}
             setDeckSize={setDeckSize}
             deckSize={deckSize}
-            mutationTypesEnabled={mutationTypesEnabled}
-            setMutationTypeEnabled={setMutationTypeEnabled}
-            filterMutations={filterMutations}
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
@@ -121,7 +98,7 @@ function Taxonium({
             selectedDetails={selectedDetails}
             xType={xType}
             setxType={setxType}
-            filterMutations={filterMutations}
+            settings={settings}
           />
         </div>
       </div>

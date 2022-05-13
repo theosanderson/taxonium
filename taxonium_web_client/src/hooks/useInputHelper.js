@@ -83,7 +83,7 @@ export const useInputHelper = ({
     reader.readAsArrayBuffer(file);
   }
 
-  const [validity, validityMessage, ] = useMemo(() => {
+  const [validity, validityMessage] = useMemo(() => {
     if (inputs.length === 0) {
       return ["invalid", "No files selected"];
     }
@@ -113,7 +113,10 @@ export const useInputHelper = ({
       inputs.filter((input) => input.filetype === "jsonl").length === 0 &&
       inputs.filter((input) => input.filetype === "nwk").length === 0
     ) {
-      return ["invalid", "You must also add a tree file to go with your metadata"];
+      return [
+        "invalid",
+        "You must also add a tree file to go with your metadata",
+      ];
     }
     return ["valid", ""];
   }, [inputs]);
