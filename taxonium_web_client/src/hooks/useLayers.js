@@ -214,7 +214,7 @@ const useLayers = ({
     const node_label_layer = new TextLayer({
       id: "main-text-node",
 
-      data: data.data.nodes,
+      data: data.data.nodes.filter( node => settings.displayTextForInternalNodes ? true : node.num_tips === 1),
       getPosition: (d) => [getX(d) + text_x_gap, d.y],
       getText: (d) => d.name,
 
