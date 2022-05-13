@@ -9,5 +9,4 @@ RUN yarn --frozen-lockfile
 
 
 EXPOSE 80
-# Use env var for port
-CMD node --experimental-fetch --max-old-space-size=5000 server.js --port 80 --data_url $DATA_URL --config_json $CONFIG_JSON
+CMD node --experimental-fetch --max-old-space-size=5000 server.js --port 80 --data_url="$DATA_URL" --data_file="$DATA_FILE" --config_json="$CONFIG_JSON"
