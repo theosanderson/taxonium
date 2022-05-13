@@ -5,7 +5,7 @@ export const useSettings = ({ query, updateQuery }) => {
     useState(false);
 
   const [thresholdForDisplayingText, setThresholdForDisplayingText] =
-    useState(2.5);
+    useState(2.9);
 
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
     useState(false);
