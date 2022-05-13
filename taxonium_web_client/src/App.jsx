@@ -15,7 +15,7 @@ const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
-process.env.REACT_APP_DEFAULT_BACKEND = window.location.hostname.includes(
+const DEFAULT_BACKEND = window.location.hostname.includes(
   ".epicov.org") ? "https://tree.epicov.org:8443/" : process.env.REACT_APP_DEFAULT_BACKEND;
 
   
@@ -27,7 +27,7 @@ function App() {
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),
     enabled: JSON.stringify({ [first_search.key]: true }),
-    backend: process.env.REACT_APP_DEFAULT_BACKEND,
+    backend: DEFAULT_BACKEND,
     xType: "x_dist",
     mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
   });
