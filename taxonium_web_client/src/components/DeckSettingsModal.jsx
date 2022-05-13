@@ -1,5 +1,6 @@
 import Modal from "react-modal";
 const settingsModalStyle = {
+
     content: {
       top: "50%",
       left: "50%",
@@ -48,29 +49,30 @@ const DeckSettingsModal = ({settings, deckSettingsOpen, setDeckSettingsOpen}) =>
           </label>
           </div>
 
-          <h3 className="mt-5 font-medium">Mutation types enabled</h3>
-          <div className="mt-2">
-            {Object.keys(settings.mutationTypesEnabled).map((key) => (
-              <div>
-                <label key={key}>
-                  <input
-                    type="checkbox"
-                    className="mr-1"
-                    checked={settings.mutationTypesEnabled[key]}
-                    onChange={() =>
-                      settings.setMutationTypeEnabled(
-                        key,
-                        !settings.mutationTypesEnabled[key]
-                      )
-                    }
-                  />{" "}
-                  {prettifyMutationTypes[key]
-                    ? prettifyMutationTypes[key]
-                    : key}
-                </label>
-              </div>
-            ))}
-          </div>
+
+        <h3 className="mt-5 font-medium">Mutation types enabled</h3>
+        <div className="mt-2">
+          {Object.keys(settings.mutationTypesEnabled).map((key) => (
+            <div>
+              <label key={key}>
+                <input
+                  type="checkbox"
+                  className="mr-1"
+                  checked={settings.mutationTypesEnabled[key]}
+                  onChange={() =>
+                    settings.setMutationTypeEnabled(
+                      key,
+                      !settings.mutationTypesEnabled[key]
+                    )
+                  }
+                />{" "}
+                {prettifyMutationTypes[key] ? prettifyMutationTypes[key] : key}
+              </label>
+            </div>
+          ))}
         </div>
-      </Modal>)}
+      </div>
+    </Modal>
+  );
+};
 export default DeckSettingsModal;
