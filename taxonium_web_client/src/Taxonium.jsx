@@ -13,10 +13,9 @@ import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 
-
-const URL_ON_FAIL = window.location.hostname.includes(
-  ".epicov.org") ? "https://www.epicov.org/epi3/frontend" : process.env.REACT_APP_URL_ON_FAIL;
-
+const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
+  ? "https://www.epicov.org/epi3/frontend"
+  : process.env.REACT_APP_URL_ON_FAIL;
 
 function Taxonium({
   uploadedData,
@@ -30,11 +29,8 @@ function Taxonium({
   const settings = useSettings({ query, updateQuery });
   const view = useView({ settings, deckSize });
 
-  const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL
-    : null;
+  const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 
-  
-  
   const backend = useBackend(
     query.backend,
     query.sid,
@@ -44,7 +40,7 @@ function Taxonium({
   );
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
-  const config = useConfig(backend, view, overlayRef, setTitle);
+  const config = useConfig(backend, view, overlayRef, setTitle, query);
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {
     return config.colorMapping ? config.colorMapping : {};

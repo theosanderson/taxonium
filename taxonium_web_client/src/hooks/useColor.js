@@ -19,7 +19,6 @@ const useColor = (colorMapping) => {
         console.log(rgb);
         return rgb;
       }
-     
 
       if (string in colorMapping) {
         return colorMapping[string];

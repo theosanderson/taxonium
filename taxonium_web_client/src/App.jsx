@@ -15,10 +15,12 @@ const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
-const DEFAULT_BACKEND = window.location.hostname.includes(
-  ".epicov.org") ? "https://tree.epicov.org:8443" : process.env.REACT_APP_DEFAULT_BACKEND;
+const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
+  ? "https://tree.epicov.org:8443"
+  : window.location.hostname.includes("cov2tree.org")
+  ? "https://api.cov2tree.org"
+  : process.env.REACT_APP_DEFAULT_BACKEND;
 
-  
 function App() {
   const [uploadedData, setUploadedData] = useState(null);
 

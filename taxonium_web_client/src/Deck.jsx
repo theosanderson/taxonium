@@ -175,8 +175,10 @@ function Deck({
               </CircularProgressbarWithChildren>
             ) : (
               <div className="text-center text-gray-700  text-lg wt font-medium">
-                <div classname="pb-3">{statusMessage && statusMessage.message}</div>
-               
+                <div classname="pb-3">
+                  {statusMessage && statusMessage.message}
+                </div>
+
                 <ClipLoader size={100} color={"#666"} />
               </div>
             )}
