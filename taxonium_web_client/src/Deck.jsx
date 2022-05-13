@@ -43,14 +43,12 @@ function Deck({
   config,
   statusMessage,
   xType,
-  minimapEnabled,
-  setMinimapEnabled,
+  settings,
   selectedDetails,
   setDeckSize,
   deckSize,
-  mutationTypesEnabled,
-  setMutationTypeEnabled,
-  filterMutations,
+
+ 
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -216,23 +214,23 @@ function Deck({
             <input
               type="checkbox"
               className="mr-1"
-              checked={minimapEnabled}
-              onChange={() => setMinimapEnabled(!minimapEnabled)}
+              checked={settings.minimapEnabled}
+              onChange={() => settings.toggleMinimapEnabled()}
             />{" "}
             Enable minimap
           </label>
 
           <h3 className="mt-5 font-medium">Mutation types enabled</h3>
           <div className="mt-2">
-            {Object.keys(mutationTypesEnabled).map((key) => (
+            {Object.keys(settings.mutationTypesEnabled).map((key) => (
               <div>
                 <label key={key}>
                   <input
                     type="checkbox"
                     className="mr-1"
-                    checked={mutationTypesEnabled[key]}
+                    checked={settings.mutationTypesEnabled[key]}
                     onChange={() =>
-                      setMutationTypeEnabled(key, !mutationTypesEnabled[key])
+                      settings.setMutationTypeEnabled(key, !settings.mutationTypesEnabled[key])
                     }
                   />{" "}
                   {prettifyMutationTypes[key]
@@ -268,7 +266,7 @@ function Deck({
           colorHook={colorHook}
           colorBy={colorBy}
           config={config}
-          filterMutations={filterMutations}
+          filterMutations={settings.filterMutations}
         />
         <DeckButtons
           zoomIncrement={zoomIncrement}
