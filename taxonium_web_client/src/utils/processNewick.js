@@ -76,8 +76,9 @@ async function cleanup(tree) {
   });
 
   tree.node.forEach((node) => {
-    if node.name:
+    if (node.name){
       node.name = node.name.replace("'","");
+    }
     node.parent_id = node.parent ? node.parent.node_id : node.node_id;
     delete node.parent;
     node.x_dist = node.x;
