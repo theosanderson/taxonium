@@ -211,9 +211,9 @@ const useLayers = ({
     );
   }
 
-  const max_text_number = 400;
+
   // If leaves are fewer than max_text_number, add a text layer
-  if (data.data.nodes && data.data.nodes.length < max_text_number) {
+  if (data.data.nodes && data.data.nodes.length < (10**settings.thresholdForDisplayingText)) {
     const text_x_gap = 15 / 2 ** xzoom;
     console.log(text_x_gap, "gap");
     const node_label_layer = new TextLayer({

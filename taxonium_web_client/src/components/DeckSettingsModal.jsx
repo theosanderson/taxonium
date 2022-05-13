@@ -73,6 +73,12 @@ const DeckSettingsModal = ({
           </label>
         </div>
 
+        <div>
+          <label>
+            Max density of text: <input type="number" value={settings.thresholdForDisplayingText} onChange={(e) => settings.setThresholdForDisplayingText(parseFloat(e.target.value))} step="0.1" min="0" max="10" className="border py-1 px-1 text-grey-darkest text-sm" />
+          </label>
+        </div>
+
         <h3 className="mt-5 font-medium">Mutation types enabled</h3>
         <div className="mt-2">
           {Object.keys(settings.mutationTypesEnabled).map((key) => (
