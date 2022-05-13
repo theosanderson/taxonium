@@ -16,7 +16,7 @@ const first_search = getDefaultSearch("aa1");
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
 const DEFAULT_BACKEND = window.location.hostname.includes(
-  ".epicov.org") ? "https://tree.epicov.org:8443/" : process.env.REACT_APP_DEFAULT_BACKEND;
+  ".epicov.org") ? "https://tree.epicov.org:8443" : process.env.REACT_APP_DEFAULT_BACKEND;
 
   
 function App() {
