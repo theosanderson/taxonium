@@ -6,7 +6,7 @@
   "keys_to_display": [
     "name",
     "meta_date",
-    "meta_lineage",
+    "meta_pangolin_lineage",
     "meta_country",
     "meta_subregion",
     "genotype"
