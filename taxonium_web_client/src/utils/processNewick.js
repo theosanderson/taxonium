@@ -246,10 +246,9 @@ export async function processMetadataFile(data, sendStatusMessage) {
     }
   });
   sendStatusMessage({
-        message: "Finalising",
-     
-      });
-  
+    message: "Finalising",
+  });
+
   return output;
 }
 
