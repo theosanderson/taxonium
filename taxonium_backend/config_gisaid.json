@@ -14,14 +14,14 @@
   "overlay": "<h1 class='font-bold mb-3 text-xl'>The sequences</h1>\n\n     <p>\n       This website displays sequence data contributed to the GISAID database by contributors around the world. You can find the acknowledgements for a specific sequence by clicking on it.\n     \n         We gratefully acknowledge all data contributors, i.e. the Authors and their Originating laboratories responsible for obtaining the specimens, and their Submitting laboratories for generating the genetic sequence and metadata and sharing via the GISAID Initiative<sup>1</sup> on which this research is based.\n       </p>\n       <p class='mt-3 text-sm'>\n         1. Elbe, S., and Buckland-Merrett, G. (2017) Data, disease and diplomacy: GISAID’s innovative contribution to global health. Global Challenges, 1:33-46. DOI: <a class='underline' href='https://doi.org/10.1002/gch2.1018'>10.1002/gch2.1018</a> PMCID: <a class='underline' href='https://pubmed.ncbi.nlm.nih.gov/31565258/'>31565258</a>\n       </p>\n\n       <h1 class='font-bold mb-3 text-xl mt-5'>The tree</h1>\n       <p>This tree is built by the GISAID Initiative.</p> \n\n       <h1 class='font-bold mb-3 text-xl mt-5'>This visualisation</h1>\n       <p>This visualisation uses <a href='https://github.com/theosanderson/taxodium' class='text-blue-800 underline' >Taxonium</a> built by Theo Sanderson. Taxonium is an open-source project.</p>",
   "search_types": [
     { "name": "name", "label": "Name", "type": "text_match" },
-    { "name": "meta_lineage", "label": "PANGO lineage", "type": "text_exact" },
+    { "name": "meta_pangolin_lineage", "label": "PANGO lineage", "type": "text_exact" },
     { "name": "meta_country", "label": "Country", "type": "text_match" },
     { "name": "mutation", "label": "Mutation", "type": "mutation" },
     { "name": "revertant", "label": "Revertant", "type": "revertant" }
   ],
 
   "colorBy": {
-    "colorByOptions": ["meta_lineage", "meta_country", "genotype", "None"]
+    "colorByOptions": ["meta_pangolin_lineage", "meta_country", "genotype", "None"]
     
   },
   "x_accessors": ["x_dist", "x_time"]
