@@ -15,8 +15,14 @@ const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
+process.env.REACT_APP_DEFAULT_BACKEND = window.location.hostname.includes(
+  ".epicov.org") ? "https://tree.epicov.org:8443/" : process.env.REACT_APP_DEFAULT_BACKEND;
+
+  
 function App() {
   const [uploadedData, setUploadedData] = useState(null);
+
+  // check if .epicov.org is in the URL
 
   const [query, updateQuery] = useQueryAsState({
     srch: JSON.stringify([first_search]),

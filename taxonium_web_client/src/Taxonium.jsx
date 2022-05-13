@@ -13,6 +13,11 @@ import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 
+
+process.env.REACT_APP_URL_ON_FAIL = window.location.hostname.includes(
+  ".epicov.org") ? "https://www.epicov.org/epi3/frontend" : process.env.REACT_APP_URL_ON_FAIL;
+
+
 function Taxonium({
   uploadedData,
   query,
@@ -28,6 +33,9 @@ function Taxonium({
   const url_on_fail = process.env.REACT_APP_URL_ON_FAIL
     ? process.env.REACT_APP_URL_ON_FAIL
     : null;
+
+  
+  
   const backend = useBackend(
     query.backend,
     query.sid,
