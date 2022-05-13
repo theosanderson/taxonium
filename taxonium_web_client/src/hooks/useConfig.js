@@ -18,6 +18,15 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
 
       const oldViewState = { ...viewState };
 
+    
+      if (query.config) {
+        console.log("FOUND QUERY", query.config);
+        const unpacked = JSON.parse(query.config);
+        console.log("UNPACKED", unpacked);
+        delete unpacked.validate_SID;
+        Object.assign(results, unpacked);
+      }
+
       if (results.title) {
         setTitle(results.title);
         // set the title with window
@@ -25,11 +34,6 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
         console.log("setting title to ", config.title);
       }
 
-      if (query.config) {
-        const unpacked = JSON.parse(query.config);
-        delete unpacked.validate_SID;
-        Object.assign(results, unpacked);
-      }
 
       setConfig(results);
       console.log("CONFIG", results);
