@@ -142,7 +142,7 @@ function SearchPanel({
             </span>
           )}
 
-          {config.keys_to_display.map(
+          {[...config.keys_to_display,"num_tips"].map(
             (key) =>
               selectedDetails.nodeDetails[key] && (
                 <div className="text-sm mt-1" key={key}>
