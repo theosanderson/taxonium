@@ -1,33 +1,37 @@
 import Modal from "react-modal";
 const settingsModalStyle = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    //width: '50%',
+    backgroundColor: "#fafafa",
+  },
+};
 
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      //width: '50%',
-      backgroundColor: "#fafafa",
-    },
-  };
-  
-  const prettifyMutationTypes = {
-    aa: "Amino acid",
-    nt: "Nucleotide",
-  };
-  
-const DeckSettingsModal = ({settings, deckSettingsOpen, setDeckSettingsOpen}) => {
-    return (<Modal
-        isOpen={deckSettingsOpen}
-        style={settingsModalStyle}
-        onRequestClose={() => setDeckSettingsOpen(false)}
-        contentLabel="Example Modal"
-      >
-        <h2 className="font-medium mb-3">Settings</h2>
-        <div className="text-sm">
-            <div>
+const prettifyMutationTypes = {
+  aa: "Amino acid",
+  nt: "Nucleotide",
+};
+
+const DeckSettingsModal = ({
+  settings,
+  deckSettingsOpen,
+  setDeckSettingsOpen,
+}) => {
+  return (
+    <Modal
+      isOpen={deckSettingsOpen}
+      style={settingsModalStyle}
+      onRequestClose={() => setDeckSettingsOpen(false)}
+      contentLabel="Example Modal"
+    >
+      <h2 className="font-medium mb-3">Settings</h2>
+      <div className="text-sm">
+        <div>
           <label>
             <input
               type="checkbox"
@@ -36,19 +40,23 @@ const DeckSettingsModal = ({settings, deckSettingsOpen, setDeckSettingsOpen}) =>
               onChange={() => settings.toggleMinimapEnabled()}
             />{" "}
             Enable minimap
-          </label></div>
-          <div>
+          </label>
+        </div>
+        <div>
           <label>
             <input
               type="checkbox"
               className="mr-1"
               checked={settings.displayTextForInternalNodes}
-              onChange={() => settings.setDisplayTextForInternalNodes(!settings.displayTextForInternalNodes)}
+              onChange={() =>
+                settings.setDisplayTextForInternalNodes(
+                  !settings.displayTextForInternalNodes
+                )
+              }
             />{" "}
             Display labels for internal nodes if present
           </label>
-          </div>
-
+        </div>
 
         <h3 className="mt-5 font-medium">Mutation types enabled</h3>
         <div className="mt-2">
