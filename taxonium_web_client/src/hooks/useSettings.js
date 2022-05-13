@@ -4,8 +4,8 @@ export const useSettings = ({ query, updateQuery }) => {
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
     useState(false);
 
-
-const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] = useState(false);
+  const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
+    useState(false);
   const toggleMinimapEnabled = () => {
     setMinimapEnabled(!minimapEnabled);
   };

@@ -84,15 +84,19 @@ const useLayers = ({
     }
   }, [data.base_data, getX]);
 
-
   const combo_scatter = useMemo(() => {
     console.log("new scatter");
-    return combo.nodes.filter((d) => d.num_tips === 1 || settings.displayPointsForInternalNodes);
+    return combo.nodes.filter(
+      (d) => d.num_tips === 1 || settings.displayPointsForInternalNodes
+    );
   }, [combo, settings.displayPointsForInternalNodes]);
 
   const minimap_scatter_data = useMemo(() => {
     return base_data
-      ? base_data.nodes.filter((node) => node.num_tips === 1|| settings.displayPointsForInternalNodes)
+      ? base_data.nodes.filter(
+          (node) =>
+            node.num_tips === 1 || settings.displayPointsForInternalNodes
+        )
       : [];
   }, [base_data, settings.displayPointsForInternalNodes]);
 
@@ -206,7 +210,6 @@ const useLayers = ({
       selectedLayer
     );
   }
-
 
   const max_text_number = 400;
   // If leaves are fewer than max_text_number, add a text layer
