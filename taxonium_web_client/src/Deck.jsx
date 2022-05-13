@@ -147,6 +147,7 @@ function Deck({
     modelMatrix: view.modelMatrix,
     selectedDetails,
     xzoom,
+    settings
   });
   // console.log("deck refresh");
 

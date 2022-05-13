@@ -17,7 +17,8 @@ const useLayers = ({
   xType,
   modelMatrix,
   selectedDetails,
-  xzoom
+  xzoom,
+  settings
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;

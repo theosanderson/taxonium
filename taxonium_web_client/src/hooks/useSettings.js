@@ -1,6 +1,7 @@
 import {useState, useMemo, useCallback} from 'react';
 export const useSettings = ({query,updateQuery})=> {
     const [minimapEnabled, setMinimapEnabled] = useState(true);
+    const [displayTextForInternalNodes, setDisplayTextForInternalNodes] = useState(false);
     const toggleMinimapEnabled = () => {
         setMinimapEnabled(!minimapEnabled);
     }
@@ -26,7 +27,7 @@ export const useSettings = ({query,updateQuery})=> {
         });
       };
 
-    return {minimapEnabled, toggleMinimapEnabled, mutationTypesEnabled, filterMutations, setMutationTypeEnabled};
+    return {minimapEnabled, toggleMinimapEnabled, mutationTypesEnabled, filterMutations, setMutationTypeEnabled, displayTextForInternalNodes, setDisplayTextForInternalNodes};
 
 
 
