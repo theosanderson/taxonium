@@ -223,7 +223,11 @@ const getConfig = async () => {
   if (processedUploadedData.mutations.length > 0) {
     colorByOptions.push("genotype");
   }
-  colorByOptions.push("none");
+  colorByOptions.push("None");
+
+  if (colorByOptions.length<2) {
+    config.colorMapping = {"None": [50,50,150]}
+  }
 
   config.colorBy = { colorByOptions };
 
