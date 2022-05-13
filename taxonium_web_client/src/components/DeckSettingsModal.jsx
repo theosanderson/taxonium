@@ -26,6 +26,7 @@ const DeckSettingsModal = ({settings, deckSettingsOpen, setDeckSettingsOpen}) =>
       >
         <h2 className="font-medium mb-3">Settings</h2>
         <div className="text-sm">
+            <div>
           <label>
             <input
               type="checkbox"
@@ -34,7 +35,18 @@ const DeckSettingsModal = ({settings, deckSettingsOpen, setDeckSettingsOpen}) =>
               onChange={() => settings.toggleMinimapEnabled()}
             />{" "}
             Enable minimap
+          </label></div>
+          <div>
+          <label>
+            <input
+              type="checkbox"
+              className="mr-1"
+              checked={settings.displayTextForInternalNodes}
+              onChange={() => settings.setDisplayTextForInternalNodes(!settings.displayTextForInternalNodes)}
+            />{" "}
+            Display labels for internal nodes if present
           </label>
+          </div>
 
           <h3 className="mt-5 font-medium">Mutation types enabled</h3>
           <div className="mt-2">
