@@ -14,7 +14,6 @@ import NodeHoverTip from "./components/NodeHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
 
-
 function Deck({
   data,
   search,
@@ -184,8 +183,11 @@ function Deck({
           </div>
         </div>
       )}{" "}
-<DeckSettingsModal deckSettingsOpen={deckSettingsOpen} setDeckSettingsOpen={setDeckSettingsOpen} settings={settings} />
-
+      <DeckSettingsModal
+        deckSettingsOpen={deckSettingsOpen}
+        setDeckSettingsOpen={setDeckSettingsOpen}
+        settings={settings}
+      />
       <DeckGL
         pickingRadius={10}
         ref={deckRef}
