@@ -24,7 +24,7 @@ function Taxonium({
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
   const view = useView({ settings, deckSize });
-  
+
   const url_on_fail = process.env.REACT_APP_URL_ON_FAIL
     ? process.env.REACT_APP_URL_ON_FAIL
     : null;
