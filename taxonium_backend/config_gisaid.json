@@ -5,6 +5,7 @@
   "name_accessor": "meta_name2",
   "keys_to_display": [
     "name",
+    "meta_date",
     "meta_lineage",
     "meta_country",
     "meta_subregion",
