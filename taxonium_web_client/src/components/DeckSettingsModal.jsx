@@ -57,6 +57,21 @@ const DeckSettingsModal = ({
             Display labels for internal nodes if present
           </label>
         </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              className="mr-1"
+              checked={settings.displayPointsForInternalNodes}
+              onChange={() =>
+                settings.setDisplayPointsForInternalNodes(
+                  !settings.displayPointsForInternalNodes
+                )
+              }
+            />{" "}
+            Display points for internal nodes
+          </label>
+        </div>
 
         <h3 className="mt-5 font-medium">Mutation types enabled</h3>
         <div className="mt-2">

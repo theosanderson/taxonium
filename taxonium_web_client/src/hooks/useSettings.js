@@ -3,6 +3,9 @@ export const useSettings = ({ query, updateQuery }) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
     useState(false);
+
+
+const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] = useState(false);
   const toggleMinimapEnabled = () => {
     setMinimapEnabled(!minimapEnabled);
   };
@@ -36,5 +39,7 @@ export const useSettings = ({ query, updateQuery }) => {
     setMutationTypeEnabled,
     displayTextForInternalNodes,
     setDisplayTextForInternalNodes,
+    displayPointsForInternalNodes,
+    setDisplayPointsForInternalNodes,
   };
 };
