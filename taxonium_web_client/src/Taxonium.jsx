@@ -22,7 +22,7 @@ function Taxonium({
   setTitle,
 }) {
   const [deckSize, setDeckSize] = useState(null);
-  const settings = useSettings({query,updateQuery});
+  const settings = useSettings({ query, updateQuery });
   const view = useView({ settings, deckSize });
   const colourMapping = useMemo(() => {
     return {};
@@ -46,7 +46,6 @@ function Taxonium({
   const setxType = (xType) => {
     updateQuery({ xType });
   };
-  
 
   const { data, boundsForQueries } = useGetDynamicData(
     backend,
@@ -88,7 +87,6 @@ function Taxonium({
             settings={settings}
             setDeckSize={setDeckSize}
             deckSize={deckSize}
- 
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">

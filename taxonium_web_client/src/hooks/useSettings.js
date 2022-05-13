@@ -1,37 +1,40 @@
-import {useState, useMemo, useCallback} from 'react';
-export const useSettings = ({query,updateQuery})=> {
-    const [minimapEnabled, setMinimapEnabled] = useState(true);
-    const [displayTextForInternalNodes, setDisplayTextForInternalNodes] = useState(false);
-    const toggleMinimapEnabled = () => {
-        setMinimapEnabled(!minimapEnabled);
-    }
+import { useState, useMemo, useCallback } from "react";
+export const useSettings = ({ query, updateQuery }) => {
+  const [minimapEnabled, setMinimapEnabled] = useState(true);
+  const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
+    useState(false);
+  const toggleMinimapEnabled = () => {
+    setMinimapEnabled(!minimapEnabled);
+  };
 
-    const mutationTypesEnabled = useMemo(() => {
-        return JSON.parse(query.mutationTypesEnabled);
-      }, [query.mutationTypesEnabled]);
-    
-      const filterMutations = useCallback(
-        (mutations) => {
-          return mutations.filter(
-            (mutation) => mutationTypesEnabled[mutation.type]
-          );
-        },
-        [mutationTypesEnabled]
+  const mutationTypesEnabled = useMemo(() => {
+    return JSON.parse(query.mutationTypesEnabled);
+  }, [query.mutationTypesEnabled]);
+
+  const filterMutations = useCallback(
+    (mutations) => {
+      return mutations.filter(
+        (mutation) => mutationTypesEnabled[mutation.type]
       );
-    
-      const setMutationTypeEnabled = (key, enabled) => {
-        const newMutationTypesEnabled = { ...mutationTypesEnabled };
-        newMutationTypesEnabled[key] = enabled;
-        updateQuery({
-          mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
-        });
-      };
+    },
+    [mutationTypesEnabled]
+  );
 
-    return {minimapEnabled, toggleMinimapEnabled, mutationTypesEnabled, filterMutations, setMutationTypeEnabled, displayTextForInternalNodes, setDisplayTextForInternalNodes};
+  const setMutationTypeEnabled = (key, enabled) => {
+    const newMutationTypesEnabled = { ...mutationTypesEnabled };
+    newMutationTypesEnabled[key] = enabled;
+    updateQuery({
+      mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
+    });
+  };
 
-
-
-
-
+  return {
+    minimapEnabled,
+    toggleMinimapEnabled,
+    mutationTypesEnabled,
+    filterMutations,
+    setMutationTypeEnabled,
+    displayTextForInternalNodes,
+    setDisplayTextForInternalNodes,
+  };
 };
-       

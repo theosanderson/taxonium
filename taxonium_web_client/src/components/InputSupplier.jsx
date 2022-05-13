@@ -175,7 +175,9 @@ export const InputSupplier = ({ inputHelper }) => {
           className="border p-1 mr-1 text-sm "
           onChange={(e) => {
             setTempURL(
-              e.target.value.replace("http://", "").replace("http://", "https://")
+              e.target.value
+                .replace("http://", "")
+                .replace("http://", "https://")
             );
           }}
           onKeyUp={(e) => {

@@ -47,8 +47,6 @@ function Deck({
   selectedDetails,
   setDeckSize,
   deckSize,
-
- 
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -147,7 +145,7 @@ function Deck({
     modelMatrix: view.modelMatrix,
     selectedDetails,
     xzoom,
-    settings
+    settings,
   });
   // console.log("deck refresh");
 
@@ -231,7 +229,10 @@ function Deck({
                     className="mr-1"
                     checked={settings.mutationTypesEnabled[key]}
                     onChange={() =>
-                      settings.setMutationTypeEnabled(key, !settings.mutationTypesEnabled[key])
+                      settings.setMutationTypeEnabled(
+                        key,
+                        !settings.mutationTypesEnabled[key]
+                      )
                     }
                   />{" "}
                   {prettifyMutationTypes[key]
