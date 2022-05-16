@@ -37,6 +37,7 @@ function SearchPanel({
         Displaying {formatNumber(config.num_nodes)} nodes
         {config.source && ` from ${config.source}`}
       </div>
+      {config.x_accessors && config.x_accessors.length>1 &&
       <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
         Tree type:{" "}
         <select
@@ -44,14 +45,13 @@ function SearchPanel({
           onChange={(e) => setxType(e.target.value)}
           className="border py-1 px-1 text-grey-darkest text-sm"
         >
-          {config.x_accessors &&
+           
             config.x_accessors.map((x) => (
               <option key={x} value={x}>
                 {prettify_x_types[x]}
               </option>
-            ))}
         </select>
-      </div>
+      </div>}
       <h2 className="text-xl mt-5 mb-4 text-gray-700">
         <FaSearch className="inline-block mr-2" />
         Search
