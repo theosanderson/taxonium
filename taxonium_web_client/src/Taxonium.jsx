@@ -52,13 +52,8 @@ function Taxonium({
     updateQuery({ xType });
   };
 
-  const { data, boundsForQueries } = useGetDynamicData(
-    backend,
-    colorBy,
-    view.viewState,
-    config,
-    xType
-  );
+  const { data, boundsForQueries, isCurrentlyOutsideBounds } =
+    useGetDynamicData(backend, colorBy, view.viewState, config, xType);
 
   const search = useSearch({
     data,
@@ -92,6 +87,7 @@ function Taxonium({
             settings={settings}
             setDeckSize={setDeckSize}
             deckSize={deckSize}
+            isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
           />
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">

@@ -19,6 +19,7 @@ const useLayers = ({
   selectedDetails,
   xzoom,
   settings,
+  isCurrentlyOutsideBounds,
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -29,45 +30,20 @@ const useLayers = ({
 
   const getX = useCallback((node) => node[xType], [xType]);
 
-  const init_combo = useMemo(() => {
-    if (
-      data.data &&
-      data.base_data &&
-      data.data.nodes &&
-      data.base_data.nodes &&
-      (data.status === "loading" || data.status === "pending")
-    ) {
-      // add data.data.nodes and data.base_data.nodes and dedupe
-      const nodes_deduped = [
-        ...new Set([...data.data.nodes, ...data.base_data.nodes]),
-      ];
-      return {
-        nodes: nodes_deduped,
-        nodeLookup: { ...data.data.nodeLookup, ...data.base_data.nodeLookup },
-      };
-    } else if (data.data.nodes && data.status === "loaded" && data.base_data) {
-      // add data.data.nodes and data.base_data.nodes and dedupe
-
-      const nodes_deduped = [
-        ...new Set([...data.data.nodes, ...data.base_data.nodes]),
-      ];
-      return {
-        nodes: nodes_deduped,
-        nodeLookup: { ...data.data.nodeLookup, ...data.base_data.nodeLookup },
-      };
+  const detailed_data = useMemo(() => {
+    if (data.data && data.data.nodes) {
+      data.data.nodes.forEach((node) => {
+        node.parent_x = getX(data.data.nodeLookup[node.parent_id]);
+        node.parent_y = data.data.nodeLookup[node.parent_id].y;
+      });
+      return data.data;
     } else {
-      console.log("C", data.data, data.base_data);
       return { nodes: [], nodeLookup: {} };
     }
-  }, [data.data, data.base_data, data.status]);
+  }, [data.data, getX]);
 
-  const combo = useMemo(() => {
-    init_combo.nodes.forEach((node) => {
-      node.parent_x = getX(init_combo.nodeLookup[node.parent_id]);
-      node.parent_y = init_combo.nodeLookup[node.parent_id].y;
-    });
-    return { nodes: init_combo.nodes, nodeLookup: init_combo.nodeLookup };
-  }, [init_combo, getX]);
+  console.log("DETAILED", detailed_data);
+  console.log("DATA", data);
 
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {
@@ -84,12 +60,12 @@ const useLayers = ({
     }
   }, [data.base_data, getX]);
 
-  const combo_scatter = useMemo(() => {
+  const detailed_scatter_data = useMemo(() => {
     console.log("new scatter");
-    return combo.nodes.filter(
+    return detailed_data.nodes.filter(
       (d) => d.num_tips === 1 || settings.displayPointsForInternalNodes
     );
-  }, [combo, settings.displayPointsForInternalNodes]);
+  }, [detailed_data, settings.displayPointsForInternalNodes]);
 
   const minimap_scatter_data = useMemo(() => {
     return base_data
@@ -116,27 +92,64 @@ const useLayers = ({
 
   const bound_contour = [[outer_bounds, inner_bounds]];
 
-  if (data.data.nodes) {
-    const main_scatter_layer = new ScatterplotLayer({
-      id: "main-scatter",
-      data: combo_scatter,
-      getPosition: (d) => [getX(d), d.y],
-      getFillColor: (d) => toRGB(getNodeColorField(d, combo)),
+  const scatter_layer_common_props = {
+    getPosition: (d) => [getX(d), d.y],
+    getFillColor: (d) => toRGB(getNodeColorField(d, detailed_scatter_data)),
 
-      // radius in pixels
-      getRadius: 3,
-      getLineColor: [100, 100, 100],
-      opacity: 0.6,
-      stroked: data.data.nodes && data.data.nodes.length < 3000,
-      lineWidthUnits: "pixels",
-      lineWidthScale: 1,
-      pickable: true,
-      radiusUnits: "pixels",
-      onHover: (info) => setHoverInfo(info),
-      modelMatrix: modelMatrix,
-      updateTriggers: {
-        getFillColor: [combo, getNodeColorField],
-      },
+    // radius in pixels
+    getRadius: 3,
+    getLineColor: [100, 100, 100],
+    opacity: 0.6,
+    stroked: data.data.nodes && data.data.nodes.length < 3000,
+    lineWidthUnits: "pixels",
+    lineWidthScale: 1,
+    pickable: true,
+    radiusUnits: "pixels",
+    onHover: (info) => setHoverInfo(info),
+    modelMatrix: modelMatrix,
+    updateTriggers: {
+      getFillColor: [detailed_scatter_data, getNodeColorField],
+    },
+  };
+
+  const line_layer_horiz_common_props = {
+    getSourcePosition: (d) => [getX(d), d.y],
+    getTargetPosition: (d) => [d.parent_x, d.y],
+    getColor: lineColor,
+    pickable: true,
+    onHover: (info) => setHoverInfo(info),
+
+    modelMatrix: modelMatrix,
+    updateTriggers: {
+      getSourcePosition: [detailed_data, xType],
+      getTargetPosition: [detailed_data, xType],
+    },
+  };
+
+  const line_layer_vert_common_props = {
+    getSourcePosition: (d) => [d.parent_x, d.y],
+    getTargetPosition: (d) => [d.parent_x, d.parent_y],
+    onHover: (info) => setHoverInfo(info),
+    getColor: lineColor,
+    pickable: true,
+    modelMatrix: modelMatrix,
+    updateTriggers: {
+      getSourcePosition: [detailed_data, xType],
+      getTargetPosition: [detailed_data, xType],
+    },
+  };
+
+  if (detailed_data.nodes) {
+    const main_scatter_layer = new ScatterplotLayer({
+      ...scatter_layer_common_props,
+      id: "main-scatter",
+      data: detailed_scatter_data,
+    });
+
+    const fillin_scatter_layer = new ScatterplotLayer({
+      ...scatter_layer_common_props,
+      id: "fillin-scatter",
+      data: minimap_scatter_data,
     });
 
     const bound_layer = new ScatterplotLayer({
@@ -151,35 +164,28 @@ const useLayers = ({
       modelMatrix: modelMatrix,
     });
 
-    const temp_line_layer = new LineLayer({
+    const main_line_layer = new LineLayer({
+      ...line_layer_horiz_common_props,
       id: "main-line-horiz",
-      data: combo.nodes,
-      getSourcePosition: (d) => [getX(d), d.y],
-      getTargetPosition: (d) => [d.parent_x, d.y],
-      getColor: lineColor,
-      pickable: true,
-      onHover: (info) => setHoverInfo(info),
-
-      modelMatrix: modelMatrix,
-      updateTriggers: {
-        getSourcePosition: [combo, xType],
-        getTargetPosition: [combo, xType],
-      },
+      data: detailed_data.nodes,
     });
 
-    const temp_line_layer2 = new LineLayer({
+    const main_line_layer2 = new LineLayer({
+      ...line_layer_vert_common_props,
       id: "main-line-vert",
-      data: combo.nodes,
-      getSourcePosition: (d) => [d.parent_x, d.y],
-      getTargetPosition: (d) => [d.parent_x, d.parent_y],
-      onHover: (info) => setHoverInfo(info),
-      getColor: lineColor,
-      pickable: true,
-      modelMatrix: modelMatrix,
-      updateTriggers: {
-        getSourcePosition: [combo, xType],
-        getTargetPosition: [combo, xType],
-      },
+      data: detailed_data.nodes,
+    });
+
+    const fillin_line_layer = new LineLayer({
+      ...line_layer_horiz_common_props,
+      id: "fillin-line-horiz",
+      data: base_data.nodes,
+    });
+
+    const fillin_line_layer2 = new LineLayer({
+      ...line_layer_vert_common_props,
+      id: "fillin-line-vert",
+      data: base_data.nodes,
     });
 
     const selectedLayer = new ScatterplotLayer({
@@ -204,10 +210,13 @@ const useLayers = ({
 
     layers.push(
       bound_layer,
-      temp_line_layer,
-      temp_line_layer2,
+      main_line_layer,
+      main_line_layer2,
       main_scatter_layer,
-      selectedLayer
+      selectedLayer,
+      fillin_line_layer,
+      fillin_line_layer2,
+      fillin_scatter_layer
     );
   }
 
@@ -265,28 +274,28 @@ const useLayers = ({
   const minimap_line_horiz = new LineLayer({
     id: "minimap-line-horiz",
     getPolygonOffset: ({ layerIndex }) => [0, -4000],
-    data: base_data ? base_data.nodes : [],
+    data: base_data.nodes,
     getSourcePosition: (d) => [getX(d), d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
     getColor: lineColor,
 
     updateTriggers: {
-      getSourcePosition: [combo, xType],
-      getTargetPosition: [combo, xType],
+      getSourcePosition: [base_data, xType],
+      getTargetPosition: [base_data, xType],
     },
   });
 
   const minimap_line_vert = new LineLayer({
     id: "minimap-line-vert",
     getPolygonOffset: ({ layerIndex }) => [0, -4000],
-    data: base_data ? base_data.nodes : [],
+    data: base_data.nodes,
     getSourcePosition: (d) => [d.parent_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.parent_y],
     getColor: lineColor,
 
     updateTriggers: {
-      getSourcePosition: [combo, xType],
-      getTargetPosition: [combo, xType],
+      getSourcePosition: [base_data, xType],
+      getTargetPosition: [base_data, xType],
     },
   });
 
@@ -380,13 +389,19 @@ const useLayers = ({
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
   layers.push(minimap_bound_polygon);
 
-  const layerFilter = useCallback(({ layer, viewport }) => {
-    const first_bit =
-      (layer.id.startsWith("main") && viewport.id === "main") ||
-      (layer.id.startsWith("mini") && viewport.id === "minimap");
+  const layerFilter = useCallback(
+    ({ layer, viewport }) => {
+      const first_bit =
+        (layer.id.startsWith("main") && viewport.id === "main") ||
+        (layer.id.startsWith("mini") && viewport.id === "minimap") ||
+        (layer.id.startsWith("fillin") &&
+          viewport.id === "main" &&
+          isCurrentlyOutsideBounds);
 
-    return first_bit;
-  }, []);
+      return first_bit;
+    },
+    [isCurrentlyOutsideBounds]
+  );
 
   return { layers, layerFilter };
 };

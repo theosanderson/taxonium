@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const DEBOUNCE_TIME = 100;
 const CHECK_AGAIN_TIME = 100;
@@ -54,6 +54,17 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
     }
   }, [viewState, boundsForQueries, triggerRefresh, xType]);
 
+  const isCurrentlyOutsideBounds = useMemo(
+    () =>
+      viewState.min_x &&
+      dynamicData.lastBounds.min_x &&
+      (viewState.min_x < dynamicData.lastBounds.min_x ||
+        viewState.max_x > dynamicData.lastBounds.max_x ||
+        viewState.min_y < dynamicData.lastBounds.min_y ||
+        viewState.max_y > dynamicData.lastBounds.max_y),
+    [viewState, dynamicData]
+  );
+
   useEffect(() => {
     if (config.title !== "loading") {
       clearTimeout(timeoutRef);
@@ -91,6 +102,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
                   ...prevData,
                   status: "loaded",
                   data: addNodeLookup(result),
+                  lastBounds: boundsForQueries,
                 };
                 if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
                   new_result.base_data = addNodeLookup(result);
@@ -126,7 +138,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
     }
   }, [boundsForQueries, queryNodes, triggerRefresh, config]);
 
-  return { data: dynamicData, boundsForQueries };
+  return { data: dynamicData, boundsForQueries, isCurrentlyOutsideBounds };
 }
 
 export default useGetDynamicData;

@@ -18,7 +18,6 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
 
       const oldViewState = { ...viewState };
 
-    
       if (query.config) {
         console.log("FOUND QUERY", query.config);
         const unpacked = JSON.parse(query.config);
@@ -33,7 +32,6 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
         window.document.title = results.title;
         console.log("setting title to ", config.title);
       }
-
 
       setConfig(results);
       console.log("CONFIG", results);
