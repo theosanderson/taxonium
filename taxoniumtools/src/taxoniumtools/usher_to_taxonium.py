@@ -166,7 +166,7 @@ def main():
                         default=None)
     parser.add_argument('--remove_after_pipe',
                         action='store_true',
-                        help='If set, remove anything after a pipe (|) in each node's name')
+                        help='If set, remove anything after a pipe (|) in each node\'s name')
 
     args = parser.parse_args()
     do_processing(args.input,
