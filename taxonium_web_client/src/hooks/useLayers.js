@@ -94,7 +94,7 @@ const useLayers = ({
 
   const scatter_layer_common_props = {
     getPosition: (d) => [getX(d), d.y],
-    getFillColor: (d) => toRGB(getNodeColorField(d, detailed_scatter_data)),
+    getFillColor: (d) => toRGB(getNodeColorField(d, detailed_data)),
 
     // radius in pixels
     getRadius: 3,
