@@ -109,6 +109,7 @@ const useLayers = ({
     modelMatrix: modelMatrix,
     updateTriggers: {
       getFillColor: [detailed_scatter_data, getNodeColorField],
+      getPosition: [xType]
     },
   };
 
