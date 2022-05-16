@@ -28,7 +28,7 @@ def do_processing(input_file,
                   config_file=None,
                   title=None,
                   overlay_html=None,
-                 remove_after_pipe = False):
+                  remove_after_pipe=False):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -164,9 +164,10 @@ def main():
                         type=str,
                         help="A file containing HTML to put in the overlay",
                         default=None)
-    parser.add_argument('--remove_after_pipe',
-                        action='store_true',
-                        help='If set, remove anything after a pipe (|) in each node\'s name')
+    parser.add_argument(
+        '--remove_after_pipe',
+        action='store_true',
+        help='If set, remove anything after a pipe (|) in each node\'s name')
 
     args = parser.parse_args()
     do_processing(args.input,
@@ -181,7 +182,7 @@ def main():
                   config_file=args.config_json,
                   title=args.title,
                   overlay_html=args.overlay_html,
-                 remove_after_pipe= args.remove_after_pipe)
+                  remove_after_pipe=args.remove_after_pipe)
 
 
 if __name__ == "__main__":
