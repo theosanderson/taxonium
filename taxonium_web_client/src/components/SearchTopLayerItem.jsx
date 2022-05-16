@@ -120,7 +120,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
           )}
         </div>
         <button
-          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border my-2 text-gray-700"
           onClick={() => search.deleteTopLevelSearch(myKey)}
         >
           <BsTrash className="inline-block mr-2" />
