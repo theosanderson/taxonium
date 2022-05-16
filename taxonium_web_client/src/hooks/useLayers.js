@@ -212,11 +212,11 @@ const useLayers = ({
       bound_layer,
       main_line_layer,
       main_line_layer2,
-      main_scatter_layer,
-      selectedLayer,
       fillin_line_layer,
       fillin_line_layer2,
-      fillin_scatter_layer
+      main_scatter_layer,
+      fillin_scatter_layer,
+      selectedLayer
     );
   }
 
