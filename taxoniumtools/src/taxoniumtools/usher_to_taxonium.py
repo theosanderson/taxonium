@@ -27,7 +27,8 @@ def do_processing(input_file,
                   chronumental_reference_node=None,
                   config_file=None,
                   title=None,
-                  overlay_html=None):
+                  overlay_html=None,
+                 remove_after_pipe = False):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -106,6 +107,8 @@ def do_processing(input_file,
             input_to_index,
             metadata_cols,
             chronumental_enabled=chronumental_enabled)
+        if remove_after_pipe and node_object.name:
+            node_object.name = node_object.name.split("|")[0]
         output_file.write(
             json.dumps(node_object, separators=(',', ':')) + "\n")
     output_file.close()
@@ -161,6 +164,9 @@ def main():
                         type=str,
                         help="A file containing HTML to put in the overlay",
                         default=None)
+    parser.add_argument('--remove_after_pipe',
+                        action='store_true',
+                        help='If set, remove anything after a pipe (|) in each node's name')
 
     args = parser.parse_args()
     do_processing(args.input,
@@ -174,7 +180,8 @@ def main():
                   chronumental_reference_node=args.chronumental_reference_node,
                   config_file=args.config_json,
                   title=args.title,
-                  overlay_html=args.overlay_html)
+                  overlay_html=args.overlay_html,
+                 remove_after_pipe= args.remove_after_pipe)
 
 
 if __name__ == "__main__":
