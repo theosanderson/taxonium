@@ -40,10 +40,9 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
         oldViewState,
         interactionState: "isZooming",
       });
-      
-      if (results.overlay){
 
-      overlayRef.current.innerHTML = results.overlay;
+      if (results.overlay) {
+        overlayRef.current.innerHTML = results.overlay;
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
