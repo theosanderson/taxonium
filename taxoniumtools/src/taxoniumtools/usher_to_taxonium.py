@@ -107,8 +107,8 @@ def do_processing(input_file,
             input_to_index,
             metadata_cols,
             chronumental_enabled=chronumental_enabled)
-        if remove_after_pipe and node_object.name:
-            node_object.name = node_object.name.split("|")[0]
+        if remove_after_pipe and 'name' in node_object and node_object['name']:
+            node_object['name'] = node_object['name'].split("|")[0]
         output_file.write(
             json.dumps(node_object, separators=(',', ':')) + "\n")
     output_file.close()
