@@ -56,7 +56,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
 
   const isCurrentlyOutsideBounds = useMemo(
     () =>
-      viewState.min_x &&
+      viewState.min_x && dynamicData && dynamicData.lastBounds &&
       dynamicData.lastBounds.min_x &&
       (viewState.min_x < dynamicData.lastBounds.min_x ||
         viewState.max_x > dynamicData.lastBounds.max_x ||
