@@ -46,9 +46,10 @@ function SearchPanel({
             className="border py-1 px-1 text-grey-darkest text-sm"
           >
             {config.x_accessors.map((x) => (
-            <option key={x} value={x}>
-              {prettify_x_types[x]}
-            </option>))}
+              <option key={x} value={x}>
+                {prettify_x_types[x]}
+              </option>
+            ))}
           </select>
         </div>
       )}
