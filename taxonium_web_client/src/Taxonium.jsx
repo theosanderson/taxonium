@@ -52,13 +52,8 @@ function Taxonium({
     updateQuery({ xType });
   };
 
-  const { data, boundsForQueries, isCurrentlyOutsideBounds } = useGetDynamicData(
-    backend,
-    colorBy,
-    view.viewState,
-    config,
-    xType
-  );
+  const { data, boundsForQueries, isCurrentlyOutsideBounds } =
+    useGetDynamicData(backend, colorBy, view.viewState, config, xType);
 
   const search = useSearch({
     data,

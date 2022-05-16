@@ -29,7 +29,7 @@ function Deck({
   selectedDetails,
   setDeckSize,
   deckSize,
-  isCurrentlyOutsideBounds
+  isCurrentlyOutsideBounds,
 }) {
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
@@ -129,7 +129,7 @@ function Deck({
     selectedDetails,
     xzoom,
     settings,
-    isCurrentlyOutsideBounds
+    isCurrentlyOutsideBounds,
   });
   // console.log("deck refresh");
 

@@ -21,8 +21,6 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
   let [triggerRefresh, setTriggerRefresh] = useState({});
   let [timeoutRef, setTimeoutRef] = useState(null);
 
-  
-
   useEffect(() => {
     if (
       !boundsForQueries ||
@@ -57,12 +55,13 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
   }, [viewState, boundsForQueries, triggerRefresh, xType]);
 
   const isCurrentlyOutsideBounds = useMemo(
-    () => viewState.min_x && dynamicData.lastBounds.min_x && (
-      viewState.min_x < dynamicData.lastBounds.min_x ||
-      viewState.max_x > dynamicData.lastBounds.max_x ||
-      viewState.min_y < dynamicData.lastBounds.min_y ||
-      viewState.max_y > dynamicData.lastBounds.max_y
-    ),
+    () =>
+      viewState.min_x &&
+      dynamicData.lastBounds.min_x &&
+      (viewState.min_x < dynamicData.lastBounds.min_x ||
+        viewState.max_x > dynamicData.lastBounds.max_x ||
+        viewState.min_y < dynamicData.lastBounds.min_y ||
+        viewState.max_y > dynamicData.lastBounds.max_y),
     [viewState, dynamicData]
   );
 
