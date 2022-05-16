@@ -153,7 +153,11 @@ function App() {
                   <span className="text-sm">
                     <CgListTree className="inline-block h-4 w-4 mr-1 " />{" "}
                     powered by{" "}
-                    <a href="//taxonium.org" className="underline" target="_top">
+                    <a
+                      href="//taxonium.org"
+                      className="underline"
+                      target="_top"
+                    >
                       Taxonium
                     </a>
                   </span>
