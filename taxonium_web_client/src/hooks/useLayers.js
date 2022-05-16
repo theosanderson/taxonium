@@ -42,8 +42,7 @@ const useLayers = ({
     }
   }, [data.data, getX]);
 
-  console.log("DETAILED", detailed_data);
-  console.log("DATA", data);
+
 
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {
