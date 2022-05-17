@@ -2,6 +2,7 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
+import {BsBoxArrowInUpRight} from "react-icons/bs";
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
@@ -15,6 +16,8 @@ const fixAuthors = (authors) => {
   // make sure comma is always followed by space
   return authors.replace(/,([^\s])/g, ", $1");
 };
+
+
 
 
 
@@ -35,6 +38,37 @@ function SearchPanel({
     const new_name = name.replace("meta_", "").replace("_", " ");
     return new_name.charAt(0).toUpperCase() + new_name.slice(1);
   };
+
+  const formatMetadataItem = (key) => {
+
+    // if matches a markdown link "[abc](https://abc.com)" then..
+    if (selectedDetails.nodeDetails && selectedDetails.nodeDetails[key] && selectedDetails.nodeDetails[key].match(/\[.*\]\(.*\)/)) {
+      const [, text, url] = selectedDetails.nodeDetails[key].match(/\[(.*)\]\((.*)\)/);
+      return (<div className="text-sm mt-1" key={key}>
+        <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-800 underline">
+          {text} <BsBoxArrowInUpRight className="inline-block ml-1" />
+        </a></div>
+      );
+    }
+  
+    return  <div className="text-sm mt-1" key={key}>
+        <span className="font-semibold">{prettifyName(key)}:</span>{" "}
+        {colorBy.colorByField === key ? (
+          <span
+            style={{
+              color: colorHook.toRGBCSS(
+                selectedDetails.nodeDetails[key]
+              ),
+            }}
+          >
+            {selectedDetails.nodeDetails[key]}
+          </span>
+        ) : (
+          selectedDetails.nodeDetails[key]
+        )}
+      </div>
+    
+        }
 
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
@@ -150,25 +184,7 @@ function SearchPanel({
 
           {[...config.keys_to_display, "num_tips"].map(
             (key) =>
-              selectedDetails.nodeDetails[key] && (
-                <div className="text-sm mt-1" key={key}>
-                  <span className="font-semibold">{prettifyName(key)}:</span>{" "}
-                  {/*<span className="text-gray-800">{prettify_key[key]}</span>:{" "}*/}
-                  {colorBy.colorByField === key ? (
-                    <span
-                      style={{
-                        color: colorHook.toRGBCSS(
-                          selectedDetails.nodeDetails[key]
-                        ),
-                      }}
-                    >
-                      {selectedDetails.nodeDetails[key]}
-                    </span>
-                  ) : (
-                    selectedDetails.nodeDetails[key]
-                  )}
-                </div>
-              )
+              selectedDetails.nodeDetails[key] && formatMetadataItem(key,selectedDetails)
           )}
           {config.mutations.length > 0 && (
             <>
