@@ -16,10 +16,7 @@ const fixAuthors = (authors) => {
   return authors.replace(/,([^\s])/g, ", $1");
 };
 
-const prettifyName = (name) => {
-  const new_name = name.replace("meta_", "").replace("_", " ");
-  return new_name.charAt(0).toUpperCase() + new_name.slice(1);
-};
+
 
 function SearchPanel({
   search,
@@ -31,6 +28,14 @@ function SearchPanel({
   setxType,
   settings,
 }) {
+  const prettifyName = (name) => {
+    if(config.customNames && config.customNames[name]){
+      return config.customNames[name];
+    }
+    const new_name = name.replace("meta_", "").replace("_", " ");
+    return new_name.charAt(0).toUpperCase() + new_name.slice(1);
+  };
+
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className="mt-3 mb-3 text-gray-500 text-sm">
