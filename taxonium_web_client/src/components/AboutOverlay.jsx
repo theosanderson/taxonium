@@ -1,26 +1,26 @@
 import React from "react";
+import Modal from "react-modal";
+
+const settingsModalStyle = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    //width: '50%',
+    backgroundColor: "#fafafa",
+  },
+};
+
 
 function AboutOverlay({ enabled, setEnabled, overlayRef }) {
   return (
-    <div className={`w-full ${enabled ? "" : "hidden"}`}>
-      <div
-        onClick={() => setEnabled(false)}
-        className="fixed w-full h-full bg-black opacity-80 z-40"
-      ></div>
-      <div
-        onClick={() => setEnabled(false)}
-        className="fixed w-full h-full  opacity-100 z-40"
-      >
-        <div
-          className=" relative mx-auto mt-5 p-5 bg-white shadow-md z-100 w-4/5 overflow-y-auto opacity-100 "
-          style={{ height: "90vh" }}
-        >
-          <button
-            className="absolute top-5 right-5 text-xl font-bold"
-            onClick={() => setEnabled(false)}
-          >
-            X
-          </button>
+    <Modal isOpen={enabled} style={settingsModalStyle} onRequestClose={() => setEnabled(false)} >
+      
+    
+          
 
           <div ref={overlayRef}>
             <div className="m-5">
@@ -38,10 +38,9 @@ function AboutOverlay({ enabled, setEnabled, overlayRef }) {
               </p>
               <p>Taxonium was created by Theo Sanderson.</p>
             </div>
-          </div>
-        </div>{" "}
+         
       </div>
-    </div>
+    </Modal>
   );
 }
 
