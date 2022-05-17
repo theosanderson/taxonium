@@ -182,7 +182,7 @@ function App() {
             </div>
           </div>
         </div>
-        <Suspense fallback={<div>Loading..</div>}>
+        <Suspense fallback={<div></div>}>
           {query.backend ||
           (uploadedData &&
             (uploadedData.status === "loaded" ||
