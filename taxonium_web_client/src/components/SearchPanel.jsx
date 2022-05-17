@@ -42,7 +42,9 @@ function SearchPanel({
   const formatMetadataItem = (key) => {
 
     // if matches a markdown link "[abc](https://abc.com)" then..
-    if (selectedDetails.nodeDetails && selectedDetails.nodeDetails[key] && selectedDetails.nodeDetails[key].match(/\[.*\]\(.*\)/)) {
+    if (selectedDetails.nodeDetails && selectedDetails.nodeDetails[key] &&
+      selectedDetails.nodeDetails[key].match &&
+      selectedDetails.nodeDetails[key].match(/\[.*\]\(.*\)/)) {
       const [, text, url] = selectedDetails.nodeDetails[key].match(/\[(.*)\]\((.*)\)/);
       return (<div className="text-sm mt-1" key={key}>
         <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-800 underline">
