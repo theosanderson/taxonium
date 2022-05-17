@@ -249,7 +249,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
     message: "Finalising",
   });
 
-  return output;
+  return [output, headers];
 }
 
 export async function processNewickAndMetadata(data, sendStatusMessage) {
@@ -267,14 +267,19 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     return await treePromise;
   }
   // Wait for both promises to resolve
-  const [tree, metadata] = await Promise.all([
+  const [tree, metadata_double] = await Promise.all([
     treePromise,
     processMetadataFile(metadataInput, sendStatusMessage),
   ]);
+  const [metadata, headers] = metadata_double;
+  const blanks =  Object.fromEntries(headers.slice(1).map((x) => ["meta_"+x, ""]));
   tree.nodes.forEach((node) => {
     const this_metadata = metadata[node.name];
     if (this_metadata) {
       Object.assign(node, this_metadata);
+    }
+    else{
+      Object.assign(node, blanks);
     }
     delete metadata[node.name];
   });
