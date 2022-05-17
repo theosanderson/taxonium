@@ -160,8 +160,12 @@ export const InputSupplier = ({ inputHelper }) => {
         <input
           className="text-sm mb-3"
           type="file"
+          multiple="multiple"
           onChange={(e) => {
-            inputHelper.readFile(e.target.files[0]);
+            for (const file of e.target.files) {
+              inputHelper.readFile(file);
+            }
+
             // empty this
             e.target.value = "";
           }}
