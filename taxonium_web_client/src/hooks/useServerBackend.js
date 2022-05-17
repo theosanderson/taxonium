@@ -1,7 +1,8 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import axios from "axios";
 
 function useServerBackend(backend_url, sid, url_on_fail) {
+  const [statusMessage, setStatusMessage] = useState({ message: null });
   const queryNodes = useCallback(
     (boundsForQueries, setResult, setTriggerRefresh, config) => {
       let url = backend_url + "/nodes/?type=leaves&sid=" + sid;
@@ -125,8 +126,8 @@ function useServerBackend(backend_url, sid, url_on_fail) {
   );
 
   return useMemo(() => {
-    return { queryNodes, singleSearch, getDetails, getConfig };
-  }, [queryNodes, singleSearch, getDetails, getConfig]);
+    return { queryNodes, singleSearch, getDetails, getConfig, setStatusMessage, statusMessage };
+  }, [queryNodes, singleSearch, getDetails, getConfig, setStatusMessage, statusMessage]);
 }
 
 export default useServerBackend;
