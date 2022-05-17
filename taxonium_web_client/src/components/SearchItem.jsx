@@ -5,7 +5,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const types = config.search_types ? config.search_types : [];
 
   let all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
-  all_amino_acids = ["any"].concat(all_amino_acids);
+  all_amino_acids = ["any"].concat(all_amino_acids).concat(["*"]);
 
   const text_types = ["text_exact", "text_match"];
 
