@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { BsTrash } from "react-icons/bs";
-import {Button, Select} from "../components/Basic"
+import { Button, Select } from "../components/Basic";
 import { BiFile, BiLink } from "react-icons/bi";
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
@@ -190,10 +190,7 @@ export const InputSupplier = ({ inputHelper }) => {
             }
           }}
         />{" "}
-        <Button
-          onClick={addFromTempURL}
-          className=""
-        >
+        <Button onClick={addFromTempURL} className="">
           Add
         </Button>
       </div>

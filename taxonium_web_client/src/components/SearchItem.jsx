@@ -1,6 +1,6 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
-import {Select} from "./Basic"
+import { Select } from "./Basic";
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const types = config.search_types ? config.search_types : [];
 

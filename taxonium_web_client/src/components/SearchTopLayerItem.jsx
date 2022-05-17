@@ -2,7 +2,7 @@ import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
 import { FaSearch, FaLink } from "react-icons/fa";
 import { useCallback, useState } from "react";
-import {Button} from "../components/Basic"
+import { Button } from "../components/Basic";
 import { formatNumber } from "../utils/formatNumber";
 import { ClipLoader } from "react-spinners";
 import Modal from "react-modal";

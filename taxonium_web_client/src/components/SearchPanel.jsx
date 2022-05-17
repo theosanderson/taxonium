@@ -1,10 +1,10 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
-import {Button} from "../components/Basic"
+import { Button } from "../components/Basic";
 import { FaSearch } from "react-icons/fa";
 import { BsBoxArrowInUpRight } from "react-icons/bs";
-import {Select} from "./Basic"
+import { Select } from "./Basic";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
