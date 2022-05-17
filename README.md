@@ -1,6 +1,6 @@
 # Taxonium
 
-Taxonium is a tool for exploring extremely large trees.
+Taxonium is a tool for exploring extremely large trees. 
 
 It is used in part for Cov2Tree, a display of the global SARS-CoV-2 phylogeny: 🌳 http://cov2tree.org
 
