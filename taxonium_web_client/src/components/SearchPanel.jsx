@@ -29,7 +29,7 @@ function SearchPanel({
   settings,
 }) {
   const prettifyName = (name) => {
-    if(config.customNames && config.customNames[name]){
+    if(config && config.customNames && config.customNames[name]){
       return config.customNames[name];
     }
     const new_name = name.replace("meta_", "").replace("_", " ");
