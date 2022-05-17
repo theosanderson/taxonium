@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useConfig = (backend, view, overlayRef, setTitle, query) => {
+const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
   const [config, setConfig] = useState({
     title: "loading",
     source: "",
@@ -42,7 +42,7 @@ const useConfig = (backend, view, overlayRef, setTitle, query) => {
       });
 
       if (results.overlay) {
-        overlayRef.current.innerHTML = results.overlay;
+        setOverlayContent(results.overlay);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

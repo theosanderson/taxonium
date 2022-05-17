@@ -21,7 +21,7 @@ function Taxonium({
   uploadedData,
   query,
   updateQuery,
-  overlayRef,
+  setOverlayContent,
   proto,
   setTitle,
 }) {
@@ -40,7 +40,7 @@ function Taxonium({
   );
   const hoverDetails = useHoverDetails();
   const selectedDetails = useNodeDetails("selected", backend);
-  const config = useConfig(backend, view, overlayRef, setTitle, query);
+  const config = useConfig(backend, view, setOverlayContent, setTitle, query);
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {
     return config.colorMapping ? config.colorMapping : {};

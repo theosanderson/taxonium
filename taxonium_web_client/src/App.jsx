@@ -43,7 +43,7 @@ function App() {
   const [title, setTitle] = useState(null);
   const [beingDragged, setBeingDragged] = useState(false);
 
-  const overlayRef = useRef(null);
+ 
   const dragTimeout = useRef(null);
 
   function onDrop(ev) {
@@ -126,13 +126,14 @@ function App() {
         protoUrl;
     }
   }
+  const [overlayContent,setOverlayContent] = useState(null);
 
   return (
     <Router>
       <AboutOverlay
         enabled={aboutEnabled}
         setEnabled={setAboutEnabled}
-        overlayRef={overlayRef}
+        overlayContent={overlayContent}
       />
 
       <div
@@ -191,7 +192,7 @@ function App() {
               uploadedData={uploadedData}
               query={query}
               updateQuery={updateQuery}
-              overlayRef={overlayRef}
+              setOverlayContent={setOverlayContent}
               setTitle={setTitle}
             />
           ) : (

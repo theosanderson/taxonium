@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import Modal from "react-modal";
 
 const settingsModalStyle = {
@@ -14,14 +14,17 @@ const settingsModalStyle = {
   },
 };
 
-function AboutOverlay({ enabled, setEnabled, overlayRef }) {
+function AboutOverlay({ enabled, setEnabled, overlayContent }) {
+
   return (
     <Modal
       isOpen={enabled}
       style={settingsModalStyle}
       onRequestClose={() => setEnabled(false)}
     >
-      <div ref={overlayRef}>
+      <div dangerouslySetInnerHTML={{ __html: overlayContent }} />
+       {!overlayContent && 
+        <div>
         <div className="m-5">
           <h2 className="font-bold mb-3">Welcome to Taxonium</h2>
           <p className="mb-1">
@@ -37,7 +40,7 @@ function AboutOverlay({ enabled, setEnabled, overlayRef }) {
           </p>
           <p>Taxonium was created by Theo Sanderson.</p>
         </div>
-      </div>
+      </div>}
     </Modal>
   );
 }
