@@ -105,7 +105,7 @@ const useLayers = ({
     onHover: (info) => setHoverInfo(info),
     modelMatrix: modelMatrix,
     updateTriggers: {
-      getFillColor: [detailed_scatter_data, getNodeColorField],
+      getFillColor: [detailed_data, getNodeColorField],
       getPosition: [xType],
     },
   };
@@ -142,12 +142,15 @@ const useLayers = ({
       ...scatter_layer_common_props,
       id: "main-scatter",
       data: detailed_scatter_data,
+      
+      
     });
 
     const fillin_scatter_layer = new ScatterplotLayer({
       ...scatter_layer_common_props,
       id: "fillin-scatter",
       data: minimap_scatter_data,
+      getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
     });
 
     const bound_layer = new ScatterplotLayer({
