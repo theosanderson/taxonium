@@ -70,7 +70,11 @@ const NodeHoverTip = ({
 
       {config.keys_to_display.map(
         (key) =>
-          hoveredNode[key] && !(typeof(hoveredNode[key])==="string" && hoveredNode[key].match(/\[.*\]\(.*\)/)) && (
+          hoveredNode[key] &&
+          !(
+            typeof hoveredNode[key] === "string" &&
+            hoveredNode[key].match(/\[.*\]\(.*\)/)
+          ) && (
             <div key={key}>
               {/*<span className="text-gray-800">{prettify_key[key]}</span>:{" "}*/}
               {colorBy.colorByField === key ? (

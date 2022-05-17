@@ -165,7 +165,7 @@ export const InputSupplier = ({ inputHelper }) => {
             for (const file of e.target.files) {
               inputHelper.readFile(file);
             }
-            
+
             // empty this
             e.target.value = "";
           }}

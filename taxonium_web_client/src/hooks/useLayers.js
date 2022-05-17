@@ -142,8 +142,6 @@ const useLayers = ({
       ...scatter_layer_common_props,
       id: "main-scatter",
       data: detailed_scatter_data,
-      
-      
     });
 
     const fillin_scatter_layer = new ScatterplotLayer({
@@ -227,7 +225,7 @@ const useLayers = ({
     data.data.nodes.length < 10 ** settings.thresholdForDisplayingText
   ) {
     const text_x_gap = 15 / 2 ** xzoom;
-    
+
     const node_label_layer = new TextLayer({
       id: "main-text-node",
 
