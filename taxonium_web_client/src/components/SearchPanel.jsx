@@ -1,8 +1,11 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
+import { Button } from "../components/Basic";
 import { FaSearch } from "react-icons/fa";
 import { BsBoxArrowInUpRight } from "react-icons/bs";
+import { Select } from "./Basic";
+
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
@@ -112,19 +115,19 @@ function SearchPanel({
           config={config}
         />
       ))}
-      <button
-        className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
+      <Button
+        className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700 mb-3 mt-3"
         onClick={search.addNewTopLevelSearch}
       >
         <RiAddCircleLine className="inline-block mr-2" />
         Add a new search
-      </button>
+      </Button>
       <hr />
       <h2 className="text-xl mt-5 mb-4 text-gray-700">
         <BiPalette className="inline-block mr-2" />
         Colour by{" "}
       </h2>
-      <select
+      <Select
         value={colorBy.colorByField}
         onChange={(e) => colorBy.setColorByField(e.target.value)}
         className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
@@ -134,12 +137,12 @@ function SearchPanel({
             {prettifyName(item)}
           </option>
         ))}
-      </select>
+      </Select>
       {colorBy.colorByField === "genotype" && (
         <>
           <div>
             <label className="text-sm">Gene</label>
-            <select
+            <Select
               value={colorBy.colorByGene}
               onChange={(e) => colorBy.setColorByGene(e.target.value)}
               className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
@@ -150,7 +153,7 @@ function SearchPanel({
                     {item}
                   </option>
                 ))}
-            </select>
+            </Select>
           </div>
           <div>
             <label className="text-sm">Residue</label>

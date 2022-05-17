@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { BsTrash } from "react-icons/bs";
-
+import { Button, Select } from "../components/Basic";
 import { BiFile, BiLink } from "react-icons/bi";
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
@@ -51,7 +51,7 @@ export const InputSupplier = ({ inputHelper }) => {
               )}
             </div>
             <div>
-              <select
+              <Select
                 value={input.filetype}
                 className="border p-1 mr-4 text-sm"
                 onChange={(e) => {
@@ -72,7 +72,7 @@ export const InputSupplier = ({ inputHelper }) => {
                     </option>
                   );
                 })}
-              </select>
+              </Select>
               {/*}
               <label>
                 Is Gzipped{" "}
@@ -93,14 +93,14 @@ export const InputSupplier = ({ inputHelper }) => {
                 />
                 </label>*/}
 
-              <button
+              <Button
                 className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
                 onClick={() => {
                   inputHelper.removeInput(index);
                 }}
               >
                 <BsTrash className="inline-block mx-1" />
-              </button>
+              </Button>
             </div>{" "}
             {input.filetype === "nwk" && (
               <div>
@@ -141,14 +141,14 @@ export const InputSupplier = ({ inputHelper }) => {
       {inputs.length > 0 && inputHelper.validity === "valid" && (
         <div className="border-b mb-2">
           <div>
-            <button
-              className="border border-gray-300 rounded p-2 m-3 mb-7 bg-gray-200"
+            <Button
+              className="text-md p-3"
               onClick={() => {
                 inputHelper.finaliseInputs();
               }}
             >
               Launch Taxonium
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -190,12 +190,9 @@ export const InputSupplier = ({ inputHelper }) => {
             }
           }}
         />{" "}
-        <button
-          onClick={addFromTempURL}
-          className="border border-gray-300 rounded p-1 m-1 mb-5 bg-gray-200 text-sm"
-        >
+        <Button onClick={addFromTempURL} className="">
           Add
-        </button>
+        </Button>
       </div>
     </div>
   );

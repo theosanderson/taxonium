@@ -1,6 +1,6 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
-
+import { Select } from "./Basic";
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const types = config.search_types ? config.search_types : [];
 
@@ -19,7 +19,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   return (
     <>
-      <select
+      <Select
         className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm mr-1"
         value={singleSearchSpec.type}
         onChange={(e) =>
@@ -35,7 +35,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
             {type.label}
           </option>
         ))}
-      </select>
+      </Select>
       {is_text && (
         <DebounceInput
           className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
@@ -66,7 +66,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
         <div className="pl-11 pt-2 text-gray-700">
           <div>
             <label className="text-sm mr-2">Gene: </label>
-            <select
+            <Select
               value={singleSearchSpec.gene}
               onChange={(e) =>
                 setThisSearchSpec({ ...singleSearchSpec, gene: e.target.value })
@@ -79,7 +79,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                     {item}
                   </option>
                 ))}
-            </select>
+            </Select>
           </div>
           <div className="pt-2">
             <label className="text-sm">Mutation at residue </label>
@@ -95,7 +95,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />
             <label className="text-sm">&nbsp;to&nbsp;</label>
-            <select
+            <Select
               value={singleSearchSpec.new_residue}
               onChange={(e) => {
                 setThisSearchSpec({
@@ -110,7 +110,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                   {aa}
                 </option>
               ))}
-            </select>
+            </Select>
             <br />
           </div>
         </div>

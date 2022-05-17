@@ -150,8 +150,22 @@ function useLocalBackend(uploaded_data, proto) {
   }, []);
 
   return useMemo(() => {
-    return { queryNodes, singleSearch, getDetails, getConfig, statusMessage };
-  }, [queryNodes, singleSearch, getDetails, getConfig, statusMessage]);
+    return {
+      queryNodes,
+      singleSearch,
+      getDetails,
+      getConfig,
+      statusMessage,
+      setStatusMessage,
+    };
+  }, [
+    queryNodes,
+    singleSearch,
+    getDetails,
+    getConfig,
+    statusMessage,
+    setStatusMessage,
+  ]);
 }
 
 export default useLocalBackend;
