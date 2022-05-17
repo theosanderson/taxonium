@@ -126,8 +126,22 @@ function useServerBackend(backend_url, sid, url_on_fail) {
   );
 
   return useMemo(() => {
-    return { queryNodes, singleSearch, getDetails, getConfig, setStatusMessage, statusMessage };
-  }, [queryNodes, singleSearch, getDetails, getConfig, setStatusMessage, statusMessage]);
+    return {
+      queryNodes,
+      singleSearch,
+      getDetails,
+      getConfig,
+      setStatusMessage,
+      statusMessage,
+    };
+  }, [
+    queryNodes,
+    singleSearch,
+    getDetails,
+    getConfig,
+    setStatusMessage,
+    statusMessage,
+  ]);
 }
 
 export default useServerBackend;

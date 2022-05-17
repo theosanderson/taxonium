@@ -34,7 +34,7 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
       }
 
       setConfig(results);
-      backend.setStatusMessage({message: "Connecting"});
+      backend.setStatusMessage({ message: "Connecting" });
       console.log("CONFIG", results);
       view.onViewStateChange({
         viewState,
