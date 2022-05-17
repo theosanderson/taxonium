@@ -223,12 +223,14 @@ class UsherMutationAnnotatedTree:
                              title="Expanding condensed nodes"):
 
             if node.label and node.label in self.condensed_nodes_dict:
+                assert len(node.nuc_mutations)==0
 
                 for new_node_label in self.condensed_nodes_dict[node.label]:
                     new_node = treeswift.Node(label=new_node_label)
-                    new_node.nuc_mutations = []
-                    node.add_child(new_node)
+                    new_node.nuc_mutations = node.nuc_mutations
+                    node.parent.add_child(new_node)
                 node.label = ""
+                node.parent.remove_child(node)
             else:
                 pass
 
