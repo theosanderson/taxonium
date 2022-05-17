@@ -43,7 +43,6 @@ function App() {
   const [title, setTitle] = useState(null);
   const [beingDragged, setBeingDragged] = useState(false);
 
- 
   const dragTimeout = useRef(null);
 
   function onDrop(ev) {
@@ -126,7 +125,7 @@ function App() {
         protoUrl;
     }
   }
-  const [overlayContent,setOverlayContent] = useState(null);
+  const [overlayContent, setOverlayContent] = useState(null);
 
   return (
     <Router>
