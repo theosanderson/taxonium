@@ -227,7 +227,7 @@ const useLayers = ({
     data.data.nodes.length < 10 ** settings.thresholdForDisplayingText
   ) {
     const text_x_gap = 15 / 2 ** xzoom;
-    console.log(text_x_gap, "gap");
+    
     const node_label_layer = new TextLayer({
       id: "main-text-node",
 
