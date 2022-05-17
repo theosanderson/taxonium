@@ -46,7 +46,7 @@ export const useInputHelper = ({
   function addInput(file_object, data) {
     const gzipped = guessIfCompressed(file_object);
     const filetype = guessType(file_object);
-    setInputs([
+    setInputs((inputs) => [
       ...inputs,
       {
         name: file_object.name,
