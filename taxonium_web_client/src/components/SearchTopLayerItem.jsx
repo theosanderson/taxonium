@@ -2,6 +2,7 @@ import SearchItem from "./SearchItem";
 import { BsTrash } from "react-icons/bs";
 import { FaSearch, FaLink } from "react-icons/fa";
 import { useCallback, useState } from "react";
+import {Button} from "../components/Basic"
 import { formatNumber } from "../utils/formatNumber";
 import { ClipLoader } from "react-spinners";
 import Modal from "react-modal";
@@ -86,7 +87,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
           )}{" "}
           {num_results > 0 && (
             <>
-              <button
+              <Button
                 className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
                 onClick={() => {
                   search.setZoomToSearch({ index: getMyIndex() });
@@ -94,7 +95,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                 title="Zoom to this search"
               >
                 <FaSearch />
-              </button>{" "}
+              </Button>{" "}
               {
                 // check if window href includes 'protoUrl'
                 (window.location.href.includes("protoUrl") ||
@@ -103,7 +104,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                   window.location.href.includes("backend")) &&
                   config &&
                   !config.disable_permalink && (
-                    <button
+                    <Button
                       className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
                       onClick={() => {
                         setPermaLinkModalOpen(true);
@@ -111,7 +112,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                       title="Get permalink"
                     >
                       <FaLink />
-                    </button>
+                    </Button>
                   )
               }
               {search.searchLoadingStatus[myKey] === "loading" && (
@@ -120,13 +121,13 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
             </>
           )}
         </div>
-        <button
-          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border my-2 text-gray-700"
+        <Button
+          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border my-2 text-gray-700 mb-1 mt-1"
           onClick={() => search.deleteTopLevelSearch(myKey)}
         >
-          <BsTrash className="inline-block mr-2" />
+          <BsTrash className="inline-block mr-2 " />
           Delete this search
-        </button>
+        </Button>
       </div>
     </>
   );
