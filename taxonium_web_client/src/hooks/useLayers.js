@@ -42,8 +42,6 @@ const useLayers = ({
     }
   }, [data.data, getX]);
 
-
-
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {
       data.base_data.nodes.forEach((node) => {
