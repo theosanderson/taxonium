@@ -151,17 +151,6 @@ const useLayers = ({
       getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
     });
 
-    const bound_layer = new ScatterplotLayer({
-      id: "main-bounds",
-      data: outer_bounds,
-      getPosition: (d) => [d[0], d[1]],
-      getColor: (d) => [255, 0, 0, 255],
-      // radius in pixels
-      getRadius: 4,
-      pickable: true,
-      radiusUnits: "pixels",
-      modelMatrix: modelMatrix,
-    });
 
     const main_line_layer = new LineLayer({
       ...line_layer_horiz_common_props,
@@ -208,7 +197,6 @@ const useLayers = ({
     });
 
     layers.push(
-      bound_layer,
       main_line_layer,
       main_line_layer2,
       fillin_line_layer,
