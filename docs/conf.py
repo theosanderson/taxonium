@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Chronumental'
+project = 'Taxonium'
 copyright = '2022, Theo Sanderson'
 author = 'Theo Sanderson'
 
