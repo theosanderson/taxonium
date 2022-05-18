@@ -131,48 +131,70 @@ def get_parser():
                         type=str,
                         help='File path for output Taxonium jsonl file',
                         required=True)
-    parser.add_argument('--metadata', type=str, help='File path for input metadata file (CSV/TSV)')
-    parser.add_argument('--genbank',
+    parser.add_argument('--metadata',
                         type=str,
-                        help='File path for GenBank file containing reference genome (N.B. currently only forward genes are supported, and only one chromosome, and no compound features)',
-                        required=True)
-    parser.add_argument("--columns",
-                        type=str,
-                        help="Column names to include in the metadata, separated by columns, e.g. `pangolin_lineage,country`")
-    parser.add_argument('--chronumental',
-                        action='store_true',
-                        help='Runs Chronumental to build a time tree. The metadata TSV must include a date column.')
+                        help='File path for input metadata file (CSV/TSV)')
+    parser.add_argument(
+        '--genbank',
+        type=str,
+        help=
+        'File path for GenBank file containing reference genome (N.B. currently only forward genes are supported, and only one chromosome, and no compound features)',
+        required=True)
+    parser.add_argument(
+        "--columns",
+        type=str,
+        help=
+        "Column names to include in the metadata, separated by columns, e.g. `pangolin_lineage,country`"
+    )
+    parser.add_argument(
+        '--chronumental',
+        action='store_true',
+        help=
+        'Runs Chronumental to build a time tree. The metadata TSV must include a date column.'
+    )
     parser.add_argument('--chronumental_steps',
                         type=int,
                         help='Number of steps to run Chronumental for')
     parser.add_argument(
         "--chronumental_date_output",
         type=str,
-        help="Optional output file for the chronumental date table if you want to keep it (a table mapping nodes to their inferred dates).")
+        help=
+        "Optional output file for the chronumental date table if you want to keep it (a table mapping nodes to their inferred dates)."
+    )
     parser.add_argument(
         "--chronumental_tree_output",
         type=str,
-        help="Optional output file for the chronumental time tree file in nwk format.")
-    parser.add_argument("--chronumental_reference_node",
-                        type=str,
-                        help="A reference node to be used for Chronumental. This should be earlier in the outbreak and have a good defined date. If not set the oldest sample will be automatically picked by Chronumental.",
-                        default=None)
-    parser.add_argument("--config_json",
-                        type=str,
-                        help="A JSON file to use as a config file containing things such as search parameters",
-                        default=None)
+        help=
+        "Optional output file for the chronumental time tree file in nwk format."
+    )
+    parser.add_argument(
+        "--chronumental_reference_node",
+        type=str,
+        help=
+        "A reference node to be used for Chronumental. This should be earlier in the outbreak and have a good defined date. If not set the oldest sample will be automatically picked by Chronumental.",
+        default=None)
+    parser.add_argument(
+        "--config_json",
+        type=str,
+        help=
+        "A JSON file to use as a config file containing things such as search parameters",
+        default=None)
     parser.add_argument("--title",
                         type=str,
                         help="A title for the tree",
                         default=None)
-    parser.add_argument("--overlay_html",
-                        type=str,
-                        help="A file containing HTML to put in the About box when this tree is loaded",
-                        default=None)
+    parser.add_argument(
+        "--overlay_html",
+        type=str,
+        help=
+        "A file containing HTML to put in the About box when this tree is loaded",
+        default=None)
     parser.add_argument(
         '--remove_after_pipe',
         action='store_true',
-        help='If set, we will remove anything after a pipe (|) in each node\'s name, _after_ joining to metadata')
+        help=
+        'If set, we will remove anything after a pipe (|) in each node\'s name, _after_ joining to metadata'
+    )
     return parser
 
 
