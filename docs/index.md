@@ -64,9 +64,9 @@ You can read in detail about [how to use usher_to_taxonium](./taxoniumtools.md).
 
 ## Getting around
 
-Once you have loaded a tree into the Taxonium interface you can explore it. You can **pan** by clicking and dragging the tree. You can zoom by scrolling with the scroll wheel, or with the zoom buttons at the bottom right of the tree.
+Once you have loaded a tree into the Taxonium interface you can explore it. You can **pan** by clicking and dragging the tree. You can **zoom** by scrolling with the scroll wheel or with the zoom buttons at the bottom right of the tree.
 
-By default you will zoom the tree vertically. You can press the toggle-zoom-axis button in the bottom right to toggle to zooming horizontally (but you will probably only want to do this briefly).
+By default you will zoom the tree **vertically**. You can press the toggle-zoom-axis button in the bottom right to toggle to zooming **horizontally** (but you will probably only want to do this briefly).
 
 ## Using the minimap
 
@@ -97,6 +97,16 @@ You can add one or more searches to the tree in the right hand search panel. The
 ```{note}
 For MATs you can search for **mutations**. Note that this will identify the internal node at which a mutation is said to have occurred in the tree.
 ```
+
+
+## Custom settings
+
+You can click the settings icon at the bottom right of the tree to:
+
+* Enable/disable the minimap
+* Change the density of text
+* Toggle mutation types (by default only amino acid changes are shown, but nucleotide changes can be enabled)
+
 
 # Advanced topics
 
