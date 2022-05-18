@@ -33,7 +33,7 @@ Once you have an UShER-annotated tree, we provide a tool for converting it to a 
 
 ```{eval-rst}
 .. argparse::
-   :module: taxoniumtools.src.taxoniumtools.__main__
+   :module: taxoniumtools.src.taxoniumtools.usher_to_taxonium
    :func: get_parser
    :prog: usher_to_taxonium
 ```
