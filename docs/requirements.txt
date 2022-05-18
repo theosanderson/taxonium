@@ -1,7 +1,7 @@
 
 sphinx-argparse
 sphinx-rtd-theme
-myst-parser
+myst-parser[linkify]
 sphinx-book-theme
 furo
 treeswift
