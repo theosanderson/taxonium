@@ -60,8 +60,45 @@ Once you have an UShER-annotated tree, we provide a tool for converting it to a 
 
 You can read in detail about [how to use usher_to_taxonium](./taxoniumtools.md).
 
+# Browsing a tree
 
-### Advanced topics
+## Getting around
+
+Once you have loaded a tree into the Taxonium interface you can explore it. You can **pan** by clicking and dragging the tree. You can zoom by scrolling with the scroll wheel, or with the zoom buttons at the bottom right of the tree.
+
+By default you will zoom the tree vertically. You can press the toggle-zoom-axis button in the bottom right to toggle to zooming horizontally (but you will probably only want to do this briefly).
+
+## Using the minimap
+
+At the top right of the tree is a minimap showing the whole tree, with a box showing the viewport you are currently looking at. You can click on a spot on the minimap to jump the view to a particular place on the minimap.
+
+```{note}
+When you zoom in very far on a big tree the view box may look like a horizontal line, but that's just because you are zoomed in on such a small vertical part of the tree.
+```
+
+If you want to turn off the minimap you can do so under the settings.
+
+## Hovering hover a node
+
+Hovering over a node will display some metadata about it.
+
+## Selecting a node
+
+Clicking on a node will select it and display its metadata in the bottom region of the right panel (you might have to scroll down in the right panel to reach this).
+
+## Colouring the tree
+
+You can use the **Color by** option to color the tree. You can color by any metadata item, and for MATs you can also colour by the genotype at any desired position.
+
+## Searching the tree
+
+You can add one or more searches to the tree in the right hand search panel. These can include searches on most metadata items.
+
+```{note}
+For MATs you can search for **mutations**. Note that this will identify the internal node at which a mutation is said to have occurred in the tree.
+```
+
+# Advanced topics
 
 #### Permalinks with the Taxonium web interface
 
