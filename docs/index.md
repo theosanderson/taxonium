@@ -59,17 +59,17 @@ Sometimes you might just want to annotate an existing SARS-CoV-2 tree. You can d
 
 Once you have an UShER-annotated tree, we provide a tool for converting it to a format that Taxonium can use. The Taxonium format is a JSONL file with a list of nodes, each with all of its metadata, and a position. To create such a file we can use the `usher_to_taxonium` tool, from the `taxoniumtools` package.
 
-You can read in detail about [how to use usher_to_taxonium](./taxoniumtools.md).
+**We have a more detailed page on [how to use `usher_to_taxonium`](./taxoniumtools.md)**
 
 # Browsing a tree
 
-## Getting around
+### Getting around
 
 Once you have loaded a tree into the Taxonium interface you can explore it. You can **pan** by clicking and dragging the tree. You can **zoom** by scrolling with the scroll wheel or with the zoom buttons at the bottom right of the tree.
 
 By default you will zoom the tree **vertically**. You can press the toggle-zoom-axis button in the bottom right to toggle to zooming **horizontally** (but you will probably only want to do this briefly).
 
-## Using the minimap
+### Using the minimap
 
 At the top right of the tree is a minimap showing the whole tree, with a box showing the viewport you are currently looking at. You can click on a spot on the minimap to jump the view to a particular place on the minimap.
 
@@ -79,30 +79,30 @@ When you zoom in very far on a big tree the view box may look like a horizontal 
 
 If you want to turn off the minimap you can do so under the settings.
 
-## Hovering over a node
+### Hovering over a node
 
 Hovering over a node will display some metadata about it.
 
-## Selecting a node
+### Selecting a node
 
 Clicking on a node will select it and display its metadata in the bottom region of the right panel (you might have to scroll down in the right panel to reach this).
 
-## Colouring the tree
+### Colouring the tree
 
 You can use the **Color by** option to color the tree. You can color by any metadata item, and for MATs you can also colour by the genotype at any desired position.
 
-## Searching the tree
+### Searching the tree
 
 You can add one or more searches to the tree in the right hand search panel. These can include searches on most metadata items.
 
 ```{note}
 For MATs you can search for **mutations**. Note that this will identify the internal node at which a mutation is said to have occurred in the tree.
 ```
-## Changing the tree type
+### Changing the tree type
 
 If the tree has a time tree, inferred with [Chronumental](https://github.com/theosanderson/chronumental), a drop-down menu on the right hand side will allow you to toggle the x-axis between **time** and **genetic distance**.
 
-## Custom settings
+### Custom settings
 
 You can click the settings icon at the bottom right of the tree to:
 
