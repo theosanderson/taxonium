@@ -4,6 +4,12 @@ import Modal from "react-modal";
 function AboutOverlay({ enabled, setEnabled, overlayContent }) {
   return (
     <Modal isOpen={enabled} onRequestClose={() => setEnabled(false)}>
+      <button
+        className="absolute text-lg font-bold top-0 right-0 m-2"
+        onClick={() => setEnabled(false)}
+      >
+        X
+      </button>
       <div dangerouslySetInnerHTML={{ __html: overlayContent }} />
       {!overlayContent && (
         <div className="m-5">
