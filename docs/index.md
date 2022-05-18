@@ -10,6 +10,7 @@ If you have a tree in Newick format and you just want to view it, you can just g
 
 ```{image} https://user-images.githubusercontent.com/19732295/169146746-4a31799a-66cf-4490-b925-ca17abf6af61.png
 :width: 80em
+:class: no-scaled-link
 ```
 
 Or just drag and drop the file into the Taxonium window.
@@ -20,6 +21,7 @@ Optionally, you can also upload a metadata file with your tree. This file should
 
 ```{image} https://user-images.githubusercontent.com/19732295/169146935-6f40721a-7457-480a-85ed-185e5daaa205.png
 :width: 80em
+:class: no-scaled-link
 ```
 
 
@@ -34,6 +36,7 @@ We maintain an instance of Taxonium that displays a version of the UShER-built S
 
 ```{image} https://user-images.githubusercontent.com/19732295/169147139-8f67e297-9d0c-4707-9e92-95827498e24d.png
 :width: 80em
+:class: no-scaled-link
 ```
 
 
