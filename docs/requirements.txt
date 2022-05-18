@@ -1,0 +1,11 @@
+
+sphinx-argparse
+sphinx-rtd-theme
+myst-parser[linkify]
+sphinx-book-theme
+furo
+treeswift
+alive-progress
+biopython
+pandas
+google-api-python-client

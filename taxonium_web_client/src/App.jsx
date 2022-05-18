@@ -146,9 +146,19 @@ function App() {
         {beingDragged && (
           <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>
         )}
-        <div className={classNames("from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md z-20",isGisaid ? "h-11" : "h-15")}>
+        <div
+          className={classNames(
+            "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md z-20",
+            isGisaid ? "h-11" : "h-15"
+          )}
+        >
           <div className="flex justify-between">
-            <h1 className={classNames("text-xl pl-4 pb-5 text-white ", isGisaid ? "pt-1.5" : "py-4")}>
+            <h1
+              className={classNames(
+                "text-xl pl-4 pb-5 text-white ",
+                isGisaid ? "pt-1.5" : "py-4"
+              )}
+            >
               {title ? (
                 <>
                   {title}{" "}
@@ -171,12 +181,23 @@ function App() {
                 </>
               )}
             </h1>
-            <div className={classNames("inline-block pr-4 pr-0", isGisaid? "pt-1.5":"py-4")}>
+            <div
+              className={classNames(
+                "inline-block pr-4 pr-0",
+                isGisaid ? "pt-1.5" : "py-4"
+              )}
+            >
               <button
                 onClick={() => setAboutEnabled(true)}
                 className="mr-5 text-white font-bold hover:underline"
               >
-                <BsInfoSquare className={classNames("inline-block", isGisaid?"w-6 h-6" :"w-7 h-8")} /> About
+                <BsInfoSquare
+                  className={classNames(
+                    "inline-block",
+                    isGisaid ? "w-6 h-6" : "w-7 h-8"
+                  )}
+                />{" "}
+                About
               </button>
               {/*<a className="text-white" href="https://github.com/theosanderson/taxonium">
         <FaGithub className="inline-block text-white h-7 w-8" />

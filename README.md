@@ -2,7 +2,7 @@
 
 Taxonium is a tool for exploring extremely large trees.
 
-It is used in part for Cov2Tree, a display of the global SARS-CoV-2 phylogeny: 🌳 http://cov2tree.org
+### [📚 Read our documentation](https://taxonium.readthedocs.io/en/latest/)
 
 ## How do I..
 
