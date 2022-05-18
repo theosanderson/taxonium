@@ -1,6 +1,14 @@
 ### Welcome to the Taxonium documentation
 
-Taxonium is a powerful tool for exploring phylogenetic trees. The web interface can be accessed at [taxonium.org](https://taxonium.org/) and the source code repository at [https://github.com/theosanderson/taxonium](https://github.com/theosanderson/taxonium).
+```{toctree}
+:hidden:
+:caption: Reference
+
+index.md
+taxoniumtools.md
+```
+
+Taxonium is a tool for exploring phylogenetic trees. The web interface can be accessed at [taxonium.org](https://taxonium.org/) and the source code repository at [https://github.com/theosanderson/taxonium](https://github.com/theosanderson/taxonium).
 
 ## Getting started
 
@@ -9,7 +17,7 @@ Taxonium is a powerful tool for exploring phylogenetic trees. The web interface 
 If you have a tree in Newick format and you just want to view it, you can just go to [Taxonium.org](http://taxonium.org), and select your tree file. 
 
 ```{image} https://user-images.githubusercontent.com/19732295/169146746-4a31799a-66cf-4490-b925-ca17abf6af61.png
-:width: 80em
+:width: 60em
 :class: no-scaled-link
 ```
 
@@ -20,7 +28,7 @@ Or just drag and drop the file into the Taxonium window.
 Optionally, you can also upload a metadata file with your tree. This file should be in TSV or CSV format. It should have a heading with column names. The left-most column should contain the node names as used in the Newick file. The remaining columns should contain metadata for each node.
 
 ```{image} https://user-images.githubusercontent.com/19732295/169146935-6f40721a-7457-480a-85ed-185e5daaa205.png
-:width: 80em
+:width: 60em
 :class: no-scaled-link
 ```
 
@@ -35,7 +43,7 @@ Optionally, you can also upload a metadata file with your tree. This file should
 We maintain an instance of Taxonium that displays a version of the UShER-built SARS-CoV-2 global tree, at [Cov2Tree.org](http://cov2tree.org).
 
 ```{image} https://user-images.githubusercontent.com/19732295/169147139-8f67e297-9d0c-4707-9e92-95827498e24d.png
-:width: 80em
+:width: 60em
 :class: no-scaled-link
 ```
 
@@ -50,49 +58,12 @@ Sometimes you might just want to annotate an existing SARS-CoV-2 tree. You can d
 
 Once you have an UShER-annotated tree, we provide a tool for converting it to a format that Taxonium can use. The Taxonium format is a JSONL file with a list of nodes, each with all of its metadata, and a position. To create such a file we can use the `usher_to_taxonium` tool, from the `taxoniumtools` package.
 
-#### Installing taxoniumtools
+You can read in detail about [how to use usher_to_taxonium](./taxoniumtools.md).
 
-Taxoniumtools is available from PyPI. You can install it with pip.
 
-```bash
-pip install taxoniumtools
-```
+### Advanced topics
 
-The `usher_to_taxonium` utility will then be available for use.
-
-#### Using usher_to_taxonium from taxoniumtools
-
-#### Example
-
-First get some files:
-
-```bash
-wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.meta.tsv.gz
-wget https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb
-wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.pb
-```
-
-Then convert from UShER pb format to Taxonium jsonl format:
-
-```bash
-usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb \
---columns genbank_accession,country,date,pangolin_lineage
-```
-
-You can then open that `tfci-taxonium.jsonl.gz` file at [taxonium.org](http://taxonium.org)
-
-#### Full documentation for `usher_to_taxonium`
-
-```{eval-rst}
-.. argparse::
-   :module: taxoniumtools.src.taxoniumtools.usher_to_taxonium
-   :func: get_parser
-   :prog: usher_to_taxonium
-```
-
-Using the parameters above you can trigger `usher_to_taxonium` to launch [Chronumental](https://github.com/theosanderson/chronumental) and create a time tree which will be packaged into your tree.
-
-## Permalinks with the Taxonium web interface
+#### Permalinks with the Taxonium web interface
 
 You can supply files locally to the Taxonium web interface, or you can supply URLs for the files.
 
@@ -102,7 +73,7 @@ Any files must be uploaded to somewhere that allows Cross-Origin Resource Sharin
 
 If you supply purely URLs, then you will find that the Taxonium.org interface encodes them in the URL as it loads the tree, meaning you can share your tree with other people by copying the URL. In addition, any searches or colouring of the tree will also be stored in the URL. Each search will have a permalink button that will create a URL that zooms in on those particular nodes.
 
-## Deploying your own Taxonium backend
+#### Deploying your own Taxonium backend
 
 All of the description above involves the full tree being processed wholly locally in your own browser. For very large trees, this can mean a lot of memory and that the initial loading process is quite slow. To solve this issue, you can deploy your own Taxonium backend which will run continually in some cloud server, ready to receive traffic and emit a small part of the tree to a client.
 
