@@ -165,6 +165,9 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   root.mutations = [];
 
   console.log("Creating output obj");
+  
+  const overwrite_config = new_data.header.config ? new_data.header.config : {}
+  overwrite_config.num_tips = root.num_tips
 
   const output = {
     nodes: new_data.nodes,
@@ -179,7 +182,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     node_to_mut: new_data.node_to_mut,
     rootMutations: rootMutations,
     rootId: root.node_id,
-    overwrite_config: new_data.header.config ? new_data.header.config : {},
+    overwrite_config,
   };
 
   return output;
