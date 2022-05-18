@@ -1,4 +1,4 @@
-# Taxonium
+# 🌳 Taxonium
 
 Taxonium is a tool for exploring extremely large trees.
 
@@ -20,7 +20,7 @@ Use [UShER](https://github.com/yatisht/usher/) to build a mutation-annotated tre
 
 You can also use taxoniumtools to add your own metadata to the existing public phylogeny.
 
-Find out more in ### [📚 the documentation](https://taxonium.readthedocs.io/en/latest/).
+Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/latest/).
 
 ## Structure
 
