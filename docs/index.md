@@ -1,7 +1,7 @@
 ##### Welcome to the Taxonium documentation
 
 ```{toctree}
-:maxdepth: 2
+:titlesonly:
 
 index.md
 taxoniumtools.md
