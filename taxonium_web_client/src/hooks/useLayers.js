@@ -151,7 +151,6 @@ const useLayers = ({
       getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
     });
 
-
     const main_line_layer = new LineLayer({
       ...line_layer_horiz_common_props,
       id: "main-line-horiz",
