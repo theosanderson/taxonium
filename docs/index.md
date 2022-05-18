@@ -30,7 +30,8 @@ Optionally, you can also upload a metadata file with your tree. This file should
 
 We maintain an instance of Taxonium that displays a version of the UShER-built SARS-CoV-2 global tree, at [Cov2Tree.org](http://cov2tree.org).
 
-<img width="1120" alt="image" src="https://user-images.githubusercontent.com/19732295/169147139-8f67e297-9d0c-4707-9e92-95827498e24d.png">
+```{image} https://user-images.githubusercontent.com/19732295/169147139-8f67e297-9d0c-4707-9e92-95827498e24d.png
+```
 
 
 ### Using an UShER mutation annotated tree
