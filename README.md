@@ -2,7 +2,7 @@
 
 Taxonium is a tool for exploring extremely large trees.
 
-### [📚 Read our documentation](https://taxonium.readthedocs.io/en/latest/)
+### [📚 Read the documentation](https://taxonium.readthedocs.io/en/latest/)
 
 ## How do I..
 
