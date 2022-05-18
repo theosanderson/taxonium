@@ -14,6 +14,11 @@ If you have a tree in Newick format and you just want to view it, you can just g
 
 Optionally, you can also upload a metadata file with your tree. This file should be in TSV or CSV format. It should have a heading with column names. The left-most column should contain the node names as used in the Newick file. The remaining columns should contain metadata for each node.
 
+```{eval-rst}
+.. note::
+    All files supplied to Taxonium can also have .gz extensions, indicating they are gzipped.
+```
+
 ### Viewing the global SARS-CoV-2 tree
 
 We maintain an instance of Taxonium that displays a version of the UShER-built SARS-CoV-2 global tree, at [Cov2Tree.org](http://cov2tree.org).
