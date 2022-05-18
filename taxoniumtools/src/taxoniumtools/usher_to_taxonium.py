@@ -65,6 +65,7 @@ def do_processing(input_file,
     print("Ladderizing tree..")
     mat.tree.ladderize(ascending=False)
     print("Ladderizing done")
+    total_tips = mat.tree.root.num_tips
     utils.set_x_coords(mat.tree.root,
                        chronumental_enabled=chronumental_enabled)
     utils.set_terminal_y_coords(mat.tree.root)
@@ -89,6 +90,7 @@ def do_processing(input_file,
         "version": version,
         "mutations": all_mut_objects,
         "total_nodes": len(nodes_sorted_by_y),
+        "total_tips":total_tips,
         "config": config
     }
 
