@@ -83,7 +83,7 @@ function SearchPanel({
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className="mt-3 mb-3 text-gray-500 text-sm">
-        Displaying {formatNumber(config.num_nodes)} nodes
+        Displaying {formatNumber(config.num_tips)} tips
         {config.source && ` from ${config.source}`}
       </div>
       {config.x_accessors && config.x_accessors.length > 1 && (
