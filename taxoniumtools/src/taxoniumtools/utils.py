@@ -3,6 +3,7 @@ import pandas as pd
 import warnings
 import os, tempfile, sys
 import treeswift
+import shutil
 from . import ushertools
 
 
@@ -39,7 +40,7 @@ def read_metadata(metadata_file, columns):
 
 
 def do_chronumental(mat, chronumental_reference_node, metadata_file,
-                    chronumental_steps, chronumental_date_output):
+                    chronumental_steps, chronumental_date_output,chronumental_tree_output):
     chronumental_is_available = os.system(
         "which chronumental > /dev/null") == 0
     if not chronumental_is_available:
@@ -73,6 +74,9 @@ def do_chronumental(mat, chronumental_reference_node, metadata_file,
         time_tree = treeswift.read_tree(os.path.join(tmpdirname,
                                                      "timetree.nwk"),
                                         schema="newick")
+        if chronumental_tree_output:
+            shutil.copy2(os.path.join(tmpdirname,
+                                                     "timetree.nwk"), chronumental_tree_output)
         time_tree_iter = ushertools.preorder_traversal(time_tree.root)
         for i, node in alive_it(enumerate(
                 ushertools.preorder_traversal(mat.tree.root)),

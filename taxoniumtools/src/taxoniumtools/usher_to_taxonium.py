@@ -24,6 +24,7 @@ def do_processing(input_file,
                   chronumental_enabled=False,
                   chronumental_steps=100,
                   chronumental_date_output=None,
+                  chronumental_tree_output=None,
                   chronumental_reference_node=None,
                   config_file=None,
                   title=None,
@@ -58,7 +59,8 @@ def do_processing(input_file,
             chronumental_reference_node=chronumental_reference_node,
             metadata_file=metadata_file,
             chronumental_steps=chronumental_steps,
-            chronumental_date_output=chronumental_date_output)
+            chronumental_date_output=chronumental_date_output,
+            chronumental_tree_output=chronumental_tree_output)
 
     print("Ladderizing tree..")
     mat.tree.ladderize(ascending=False)
@@ -147,7 +149,10 @@ def main():
         "--chronumental_date_output",
         type=str,
         help="Output file for the chronumental date file, if any")
-
+    parser.add_argument(
+        "--chronumental_tree_output",
+        type=str,
+        help="Output file for the chronumental tree file, if any")
     parser.add_argument("--chronumental_reference_node",
                         type=str,
                         help="Taxonium reference node",
@@ -178,6 +183,7 @@ def main():
                   chronumental_steps=args.chronumental_steps,
                   columns=args.columns,
                   chronumental_date_output=args.chronumental_date_output,
+                  chronumental_tree_output=args.chronumental_tree_output,
                   chronumental_reference_node=args.chronumental_reference_node,
                   config_file=args.config_json,
                   title=args.title,
