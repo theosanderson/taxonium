@@ -5,7 +5,7 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
   return (
     <Modal isOpen={enabled} onRequestClose={() => setEnabled(false)}>
       <button
-        className="absolute top-0 right-0 m-2"
+        className="absolute text-xs text-xl font-bold top-0 right-0 m-2"
         onClick={() => setEnabled(false)}
       >
         X
