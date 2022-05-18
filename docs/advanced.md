@@ -1,4 +1,3 @@
-
 # Advanced topics
 
 #### Permalinks with the Taxonium web interface

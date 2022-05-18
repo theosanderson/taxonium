@@ -15,7 +15,7 @@ Taxonium is a tool for exploring phylogenetic trees. The web interface can be ac
 
 ### Viewing a Newick tree
 
-If you have a tree in Newick format and you just want to view it, you can just go to [Taxonium.org](http://taxonium.org), and select your tree file. 
+If you have a tree in Newick format and you just want to view it, you can just go to [Taxonium.org](http://taxonium.org), and select your tree file.
 
 ```{image} https://user-images.githubusercontent.com/19732295/169146746-4a31799a-66cf-4490-b925-ca17abf6af61.png
 :width: 60em
@@ -33,7 +33,6 @@ Optionally, you can also upload a metadata file with your tree. This file should
 :class: no-scaled-link
 ```
 
-
 ```{eval-rst}
 .. note::
     All files supplied to Taxonium can also have .gz extensions, indicating they are gzipped.
@@ -47,7 +46,6 @@ We maintain an instance of Taxonium that displays a version of the UShER-built S
 :width: 60em
 :class: no-scaled-link
 ```
-
 
 ### Using an UShER mutation annotated tree
 
@@ -98,6 +96,7 @@ You can add one or more searches to the tree in the right hand search panel. The
 ```{note}
 For MATs you can search for **mutations**. Note that this will identify the internal node at which a mutation is said to have occurred in the tree.
 ```
+
 ### Changing the tree type
 
 If the tree has a time tree, inferred with [Chronumental](https://github.com/theosanderson/chronumental), a drop-down menu on the right hand side will allow you to toggle the x-axis between **time** and **genetic distance**.
@@ -106,7 +105,6 @@ If the tree has a time tree, inferred with [Chronumental](https://github.com/the
 
 You can click the settings icon at the bottom right of the tree to:
 
-* Enable/disable the minimap
-* Change the density of text
-* Toggle mutation types (by default only amino acid changes are shown, but nucleotide changes can be enabled)
-
+- Enable/disable the minimap
+- Change the density of text
+- Toggle mutation types (by default only amino acid changes are shown, but nucleotide changes can be enabled)

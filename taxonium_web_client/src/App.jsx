@@ -231,13 +231,15 @@ function App() {
                 >
                   load the public SARS-CoV-2 tree
                 </a>
-                , or {" "}
+                , or{" "}
                 <a
                   className="text-blue-500"
                   href="https://taxonium.readthedocs.io/en/latest/"
                 >
                   read more
-                </a> about how to use Taxonium</p>{" "}
+                </a>{" "}
+                about how to use Taxonium
+              </p>{" "}
             </div>
           )}
         </Suspense>
