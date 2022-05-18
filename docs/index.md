@@ -33,7 +33,7 @@ Sometimes you might just want to annotate an existing SARS-CoV-2 tree. You can d
 
 Once you have an UShER-annotated tree, we provide a tool for converting it to a format that Taxonium can use. The Taxonium format is a JSONL file with a list of nodes, each with all of its metadata, and a position. To create such a file we can use the `usher_to_taxonium` tool, from the `taxoniumtools` package.
 
-### Installing taxoniumtools
+#### Installing taxoniumtools
 
 Taxoniumtools is available from PyPI. You can install it with pip.
 
@@ -43,7 +43,7 @@ pip install taxoniumtools
 
 The `usher_to_taxonium` utility will then be available for use.
 
-### Using usher_to_taxonium from taxoniumtools
+#### Using usher_to_taxonium from taxoniumtools
 
 ```{eval-rst}
 .. argparse::
