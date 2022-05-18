@@ -6,11 +6,18 @@ Taxonium is a powerful tool for exploring phylogenetic trees. The web interface 
 
 ### Viewing a Newick tree
 
-If you have a tree in Newick format and you just want to view it, you can just go to [Taxonium.org](http://taxonium.org), and select your tree file.
+If you have a tree in Newick format and you just want to view it, you can just go to [Taxonium.org](http://taxonium.org), and select your tree file. 
+
+<img width="650" alt="image" src="https://user-images.githubusercontent.com/19732295/169146746-4a31799a-66cf-4490-b925-ca17abf6af61.png">
+
+Or just drag and drop the file into the Taxonium window.
 
 #### Adding metadata to your tree
 
 Optionally, you can also upload a metadata file with your tree. This file should be in TSV or CSV format. It should have a heading with column names. The left-most column should contain the node names as used in the Newick file. The remaining columns should contain metadata for each node.
+
+<img width="636" alt="image" src="https://user-images.githubusercontent.com/19732295/169146935-6f40721a-7457-480a-85ed-185e5daaa205.png">
+
 
 ```{eval-rst}
 .. note::
