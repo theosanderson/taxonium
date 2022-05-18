@@ -1,10 +1,8 @@
 # Welcome to the Taxonium documentation
 
-Taxonium is a powerful tool for exploring phylogenetic trees.
+Taxonium is a powerful tool for exploring phylogenetic trees. The web interface can be accessed at [taxonium.org](https://taxonium.org/) and the source code repository at [https://github.com/theosanderson/taxonium](https://github.com/theosanderson/taxonium).
 
 ## Getting started
-
-How you use Taxonium depends on what you want to do.
 
 ### Viewing a Newick tree
 
