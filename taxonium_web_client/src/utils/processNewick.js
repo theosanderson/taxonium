@@ -8,6 +8,7 @@ import {
 import pako from "pako";
 import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
+const emptyList = [];
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
@@ -70,6 +71,8 @@ function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
+
+
 async function cleanup(tree) {
   tree.node.forEach((node, i) => {
     node.node_id = i;
@@ -83,7 +86,7 @@ async function cleanup(tree) {
     delete node.parent;
     node.x_dist = node.x;
     delete node.x;
-    node.mutations = [];
+    node.mutations = emptyList;
 
     delete node.child;
     delete node.miny;
