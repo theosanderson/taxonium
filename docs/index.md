@@ -37,7 +37,7 @@ Once you have an UShER-annotated tree, we provide a tool for converting it to a 
 
 Taxoniumtools is available from PyPI. You can install it with pip.
 
-```{bash}
+```bash
 pip install taxoniumtools
 ```
 
@@ -49,7 +49,7 @@ The `usher_to_taxonium` utility will then be available for use.
 
 First get some files:
 
-```
+```bash
 wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.meta.tsv.gz
 wget https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb
 wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.pb
@@ -57,7 +57,7 @@ wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_dat
 
 Then convert from UShER pb format to Taxonium jsonl format:
 
-```
+```bash
 usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb \
 --columns genbank_accession,country,date,pangolin_lineage
 ```
