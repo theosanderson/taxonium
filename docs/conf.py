@@ -20,8 +20,6 @@ sys.path.insert(0, os.path.abspath('../'))
 project = 'Taxonium'
 author = 'Theo Sanderson'
 
-# The full version, including alpha/beta/rc tags
-release = '2022'
 
 # -- General configuration ---------------------------------------------------
 
