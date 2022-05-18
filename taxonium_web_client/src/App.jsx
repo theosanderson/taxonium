@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 import useQueryAsState from "./hooks/useQueryAsState";
+import classNames from "classnames";
 
 import { useInputHelper } from "./hooks/useInputHelper";
 
@@ -126,7 +127,8 @@ function App() {
     }
   }
   const [overlayContent, setOverlayContent] = useState(null);
-
+  // does the window location contain epicov anywhere
+  const isGisaid = window.location.toString().includes("epicov.org");
   return (
     <Router>
       <AboutOverlay
@@ -144,9 +146,9 @@ function App() {
         {beingDragged && (
           <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>
         )}
-        <div className="from-gray-500 to-gray-600 bg-gradient-to-bl h-15 shadow-md z-20">
+        <div className={classNames("from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md z-20",isGisaid ? "h-11" : "h-15")}>
           <div className="flex justify-between">
-            <h1 className="text-xl p-4  pb-5 text-white ">
+            <h1 className={classNames("text-xl pl-4 pb-5 text-white ", isGisaid ? "pt-1.5" : "py-4")}>
               {title ? (
                 <>
                   {title}{" "}
@@ -169,12 +171,12 @@ function App() {
                 </>
               )}
             </h1>
-            <div className="inline-block p-4 pr-0">
+            <div className={classNames("inline-block pr-4 pr-0", isGisaid? "pt-1.5":"py-4")}>
               <button
                 onClick={() => setAboutEnabled(true)}
                 className="mr-5 text-white font-bold hover:underline"
               >
-                <BsInfoSquare className="inline-block h-7 w-8" /> About
+                <BsInfoSquare className={classNames("inline-block", isGisaid?"w-6 h-6" :"w-7 h-8")} /> About
               </button>
               {/*<a className="text-white" href="https://github.com/theosanderson/taxonium">
         <FaGithub className="inline-block text-white h-7 w-8" />
