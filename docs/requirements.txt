@@ -4,3 +4,8 @@ sphinx-rtd-theme
 myst-parser
 sphinx-book-theme
 furo
+treeswift
+alive-progress
+biopython
+pandas
+google-api-python-client
