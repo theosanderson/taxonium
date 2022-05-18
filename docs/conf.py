@@ -20,7 +20,6 @@ sys.path.insert(0, os.path.abspath('../'))
 project = 'Taxonium'
 author = 'Theo Sanderson'
 
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
