@@ -1,9 +1,10 @@
 ##### Welcome to the Taxonium documentation
 
 ```{toctree}
-:titlesonly:
+:includehidden:
 
 index.md
+taxoniumtools.md
 ```
 
 Taxonium is a tool for exploring phylogenetic trees. The web interface can be accessed at [taxonium.org](https://taxonium.org/) and the source code repository at [https://github.com/theosanderson/taxonium](https://github.com/theosanderson/taxonium).
