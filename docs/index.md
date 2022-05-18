@@ -25,6 +25,3 @@ Taxonium is especially powerful when applied to a tree that has been annotated w
 Once you have an UShER-annotated tree, we provide a tool for converting it to a format that Taxonium can use. The Taxonium format is a JSONL file with a list of nodes, each with all of its metadata, and a position. To create such a file we can use the `usher_to_taxonium` tool, from the `taxoniumtools` package.
 
 <!--- use argparse>
-
-
-
