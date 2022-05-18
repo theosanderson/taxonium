@@ -32,4 +32,3 @@ Once you have an UShER-annotated tree, we provide a tool for converting it to a 
    :func: get_parser
    :prog: usher_to_taxonium
 ```
-
