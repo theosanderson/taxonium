@@ -119,7 +119,7 @@ You can supply files locally to the Taxonium web interface, or you can supply UR
 Any files must be uploaded to somewhere that allows Cross-Origin Resource Sharing (CORS).
 :::
 
-If you supply purely URLs, then you will find that the Taxonium.org interface encodes them in the URL as it loads the tree, meaning you can share your tree with other people by copying the URL. In addition, any searches or colouring of the tree will also be stored in the URL. Each search will have a permalink button that will create a URL that zooms in on those particular nodes.
+If you supply only remote files, then you will find that the Taxonium.org interface encodes them in its URL as it loads the tree, meaning you can share your tree with other people by copying the current URL. In addition, any searches or colouring of the tree will also be stored in the URL. Each search will have a permalink button that will create a URL that zooms in on those particular nodes.
 
 #### Deploying your own Taxonium backend
 
