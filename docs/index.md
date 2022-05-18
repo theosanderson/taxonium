@@ -76,7 +76,7 @@ When you zoom in very far on a big tree the view box may look like a horizontal 
 
 If you want to turn off the minimap you can do so under the settings.
 
-## Hovering hover a node
+## Hovering over a node
 
 Hovering over a node will display some metadata about it.
 
