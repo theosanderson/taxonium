@@ -127,12 +127,12 @@ All of the description above involves the full tree being processed wholly local
 
 This is probably best done with Docker:
 
-```{bash}
+```bash
 docker run -p 80:80 -e "DATA_URL=https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz" -e "CONFIG_JSON=config_public.json" theosanderson/taxonium_backend:master
 ```
 
 or
 
-```{bash}
+```bash
 docker run -p 80:80 -v myfile.jsonl.gz:/data/myfile.jsonl.gz -v myconfig.json:/data/myconfig.json -e "DATA_FILE=/data/myfile.jsonl.gz" -e "CONFIG_JSON=/data/myconfig.json" theosanderson/taxonium_backend:master
 ```
