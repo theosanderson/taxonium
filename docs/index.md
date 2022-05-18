@@ -1,4 +1,4 @@
-### Welcome to the Taxonium documentation
+##### Welcome to the Taxonium documentation
 
 ```{toctree}
 :hidden:
