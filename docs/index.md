@@ -95,7 +95,9 @@ You can add one or more searches to the tree in the right hand search panel. The
 ```{note}
 For MATs you can search for **mutations**. Note that this will identify the internal node at which a mutation is said to have occurred in the tree.
 ```
+## Changing the tree type
 
+If the tree has a time tree, inferred with [Chronumental](https://github.com/theosanderson/chronumental), a drop-down menu on the right hand side will allow you to toggle the x-axis between **time** and **genetic distance**.
 
 ## Custom settings
 
