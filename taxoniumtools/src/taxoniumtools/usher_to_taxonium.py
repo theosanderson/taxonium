@@ -119,8 +119,7 @@ def do_processing(input_file,
         f"Done. Output written to {output_file}, with {len(nodes_sorted_by_y)} nodes."
     )
 
-
-def main():
+def get_parser():
     parser = argparse.ArgumentParser(
         description='Convert a Usher pb to Taxonium jsonl format')
     parser.add_argument('--input',
@@ -173,6 +172,11 @@ def main():
         '--remove_after_pipe',
         action='store_true',
         help='If set, remove anything after a pipe (|) in each node\'s name')
+    return parser
+
+def main():
+    parser = get_parser()
+
 
     args = parser.parse_args()
     do_processing(args.input,
