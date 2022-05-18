@@ -1,6 +1,6 @@
 # Welcome to the Taxonium documentation
 
-Taxonium is a powerful tool for exploring phylogenetic trees.  
+Taxonium is a powerful tool for exploring phylogenetic trees.
 
 ## Getting started
 
