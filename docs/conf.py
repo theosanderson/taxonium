@@ -18,7 +18,6 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'Taxonium'
-copyright = '2022, Theo Sanderson'
 author = 'Theo Sanderson'
 
 # The full version, including alpha/beta/rc tags
