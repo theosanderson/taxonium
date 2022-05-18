@@ -71,8 +71,6 @@ function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
-
-
 async function cleanup(tree) {
   tree.node.forEach((node, i) => {
     node.node_id = i;
