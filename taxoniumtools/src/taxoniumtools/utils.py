@@ -121,7 +121,7 @@ def get_all_aa_muts(root):
     all_aa_muts = set()
     for node in alive_it(list(root.traverse_preorder()),
                          title="Collecting all AA mutations"):
-        if node.aa_muts:
+        if hasattr(node,'aa_muts'):
             all_aa_muts.update(node.aa_muts)
     return list(all_aa_muts)
 
