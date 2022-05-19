@@ -10,8 +10,8 @@ import("readable-web-to-node-stream").then(function (module) {
   ReadableWebToNodeStream = module.ReadableWebToNodeStream;
 });
 export const formatNumber = (num) => {
-  return num !== null
-    ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+  return num !== null && typeof(num) === "number"
+    ? num.toLocaleString()
     : "";
 };
 
