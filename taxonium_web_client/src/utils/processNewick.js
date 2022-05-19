@@ -82,7 +82,9 @@ async function cleanup(tree) {
       name: node.name.replace(/\'/g, ""),
       parent_id : node.parent ? node.parent.node_id : node.node_id,
       x_dist :node.x,
-      mutations : emptyList
+      mutations : emptyList,
+      y: node.y,
+      num_tips: node.num_tips
 
     }
     
