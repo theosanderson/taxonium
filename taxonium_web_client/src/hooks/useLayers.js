@@ -224,7 +224,7 @@ const useLayers = ({
       billboard: true,
       getTextAnchor: "end",
       getAlignmentBaseline: "center",
-      getSize: 14,
+      getSize: 11,
       modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [getX],
