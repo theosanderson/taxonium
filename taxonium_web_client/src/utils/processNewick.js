@@ -191,7 +191,7 @@ export async function processNewick(data, sendStatusMessage) {
     node_to_mut: {},
     rootMutations: [],
     rootId: 0,
-    overwrite_config: {},
+    overwrite_config: {num_tips:tree.node[rootId].num_tips},
   };
 
   sendStatusMessage({
