@@ -10,7 +10,7 @@ export function getDefaultSearch(key) {
     text: "",
     gene: "S",
     position: 484,
-    new_residue: "K",
+    new_residue: "any",
     min_tips: 0,
   };
 }
