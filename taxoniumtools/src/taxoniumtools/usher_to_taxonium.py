@@ -225,7 +225,7 @@ def main():
                   config_file=args.config_json,
                   title=args.title,
                   overlay_html=args.overlay_html,
-                  remove_after_pipe=args.remove_after_pipe
+                  remove_after_pipe=args.remove_after_pipe,
                  name_internal_nodes = args.name_internal_nodes)
 
 
