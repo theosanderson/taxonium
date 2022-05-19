@@ -9,16 +9,12 @@ import { Select } from "./Basic";
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
-  return num !== null && typeof(num) === "number"
-    ? num.toLocaleString()
-    : "";
+  return num !== null && typeof num === "number" ? num.toLocaleString() : "";
 };
 
 const formatNumberIfNumber = (possNum) => {
-    return typeof(possNum) === "number"
-    ? possNum.toLocaleString()
-    : possNum;
-}
+  return typeof possNum === "number" ? possNum.toLocaleString() : possNum;
+};
 const fixName = (name) => {
   return name.replace("hCoV-19/", "hCoV-19/\n");
 };
@@ -48,7 +44,7 @@ function SearchPanel({
 
   const formatMetadataItem = (key) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
-    if(key=="num_tips" && selectedDetails.nodeDetails[key] ==1) return
+    if (key == "num_tips" && selectedDetails.nodeDetails[key] == 1) return;
     if (
       selectedDetails.nodeDetails &&
       selectedDetails.nodeDetails[key] &&
