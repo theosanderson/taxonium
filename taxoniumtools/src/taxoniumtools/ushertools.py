@@ -179,7 +179,7 @@ class UsherMutationAnnotatedTree:
                 this_thing = self.data.metadata[i]
                 node.clades = {
                     clade_types[index]: part
-                    for index, part in enumerate(this_thing)
+                    for index, part in enumerate(this_thing.clade_annotations )
                 }
 
     def perform_aa_analysis(self):
