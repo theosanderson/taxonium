@@ -66,6 +66,16 @@ function SearchPanel({
         </div>
       );
     }
+    if (config.metadataTypes && config.metadataTypes[key] == "sequence") {
+      return (
+        <div className="text-sm mt-1" key={key}>
+          <span className="font-semibold">{prettifyName(key)}:</span>{" "}
+          <div className="text-sm font-mono break-all">
+            {selectedDetails.nodeDetails[key]}
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="text-sm mt-1" key={key}>
