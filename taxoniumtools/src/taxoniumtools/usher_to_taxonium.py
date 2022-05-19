@@ -29,7 +29,8 @@ def do_processing(input_file,
                   config_file=None,
                   title=None,
                   overlay_html=None,
-                  remove_after_pipe=False):
+                  remove_after_pipe=False,
+                  name_internal_nodes=False):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -50,7 +51,7 @@ def do_processing(input_file,
     else:
         f = open(input_file, 'rb')
 
-    mat = ushertools.UsherMutationAnnotatedTree(f, genbank_file)
+    mat = ushertools.UsherMutationAnnotatedTree(f, genbank_file, name_internal_nodes=name_internal_nodes)
     f.close()
 
     if chronumental_enabled:
@@ -197,6 +198,13 @@ def get_parser():
         help=
         'If set, we will remove anything after a pipe (|) in each node\'s name, _after_ joining to metadata'
     )
+    parser.add_argument(
+        '--name_internal_nodes',
+        action='store_true',
+        help=
+        'If set, we will name internal nodes node_xxx'
+    )
+    
     return parser
 
 
@@ -217,7 +225,8 @@ def main():
                   config_file=args.config_json,
                   title=args.title,
                   overlay_html=args.overlay_html,
-                  remove_after_pipe=args.remove_after_pipe)
+                  remove_after_pipe=args.remove_after_pipe
+                 name_internal_nodes = args.name_internal_nodes)
 
 
 if __name__ == "__main__":
