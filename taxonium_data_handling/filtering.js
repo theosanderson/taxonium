@@ -6,17 +6,20 @@ import("crypto").then((c) => {
 let revertant_mutations_set = null;
 
 const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
-  const all_genes = [...new Set(mutations.map(m=>m.gene))]
-  const gene_sequence = Object.fromEntries(all_genes.map(g=>[g, {}]))
+  const all_genes = [...new Set(mutations.map((m) => m.gene))];
+  const gene_sequence = Object.fromEntries(all_genes.map((g) => [g, {}]));
   const root = all_data.find((node) => node.node_id === node.parent_id);
   const root_mutations = node_to_mut[root.node_id];
-  root_mutations.forEach(m=>{
-      gene_sequence[m.gene][m.residue_pos] = m.new_residue;
-  })
-  revertant_mutations = mutations.filter(m=>m.gene in gene_sequence && gene_sequence[m.gene][m.residue_pos] == m.new_residue);
-  return new Set(revertant_mutations.map(m=>m.mutation_id));
-}
-      
+  root_mutations.forEach((m) => {
+    gene_sequence[m.gene][m.residue_pos] = m.new_residue;
+  });
+  revertant_mutations = mutations.filter(
+    (m) =>
+      m.gene in gene_sequence &&
+      gene_sequence[m.gene][m.residue_pos] == m.new_residue
+  );
+  return new Set(revertant_mutations.map((m) => m.mutation_id));
+};
 
 const count_per_hash = {};
 const reduceOverPlotting = (input, precisionX, precisionY, xType) => {

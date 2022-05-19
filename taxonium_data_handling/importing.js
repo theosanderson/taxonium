@@ -10,9 +10,7 @@ import("readable-web-to-node-stream").then(function (module) {
   ReadableWebToNodeStream = module.ReadableWebToNodeStream;
 });
 export const formatNumber = (num) => {
-  return num !== null && typeof(num) === "number"
-    ? num.toLocaleString()
-    : "";
+  return num !== null && typeof num === "number" ? num.toLocaleString() : "";
 };
 
 export const modules = { zlib, stream, buffer };
@@ -165,9 +163,9 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   root.mutations = [];
 
   console.log("Creating output obj");
-  
-  const overwrite_config = new_data.header.config ? new_data.header.config : {}
-  overwrite_config.num_tips = root.num_tips
+
+  const overwrite_config = new_data.header.config ? new_data.header.config : {};
+  overwrite_config.num_tips = root.num_tips;
 
   const output = {
     nodes: new_data.nodes,
