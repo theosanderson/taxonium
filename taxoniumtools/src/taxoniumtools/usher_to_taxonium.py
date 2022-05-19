@@ -211,7 +211,7 @@ def get_parser():
         "--clade_types",
         type=str,
         help=
-        "Clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'",
+        "Optionally specify clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'. Order must match that used in the UShER pb file.",
         default=None)
     parser.add_argument('--name_internal_nodes',
                         action='store_true',
