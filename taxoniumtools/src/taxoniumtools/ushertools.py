@@ -140,10 +140,12 @@ def find_codon(position, cds):
 
 
 class UsherMutationAnnotatedTree:
+
     def __init__(self,
                  tree_file,
                  genbank_file=None,
-                 name_internal_nodes=False, clade_types=[]):
+                 name_internal_nodes=False,
+                 clade_types=[]):
         self.data = parsimony_pb2.data()
         self.data.ParseFromString(tree_file.read())
         self.condensed_nodes_dict = self.get_condensed_nodes_dict(

@@ -56,9 +56,11 @@ def do_processing(input_file,
         clade_types = clade_types.split(",")
     else:
         clade_types = []
-    mat = ushertools.UsherMutationAnnotatedTree(f,
-                                                genbank_file,
-                                                clade_types=clade_types, name_internal_nodes=name_internal_nodes)
+    mat = ushertools.UsherMutationAnnotatedTree(
+        f,
+        genbank_file,
+        clade_types=clade_types,
+        name_internal_nodes=name_internal_nodes)
     f.close()
 
     if chronumental_enabled:
