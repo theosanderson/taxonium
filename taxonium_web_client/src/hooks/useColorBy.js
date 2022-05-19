@@ -12,8 +12,13 @@ function useColorBy(config, query, updateQuery) {
     : config.defaultColorByField
     ? config.defaultColorByField
     : "meta_pangolin_lineage";
-  const colorByGene = colorByConfig.gene  ? colorByConfig.gene : config.genes && config.genes=="S" ? "S" : "nt";
-  const colorByPosition = colorByConfig.pos !== undefined ? colorByConfig.pos : 501;
+  const colorByGene = colorByConfig.gene
+    ? colorByConfig.gene
+    : config.genes && config.genes.includes("S")
+    ? "S"
+    : "nt";
+  const colorByPosition =
+    colorByConfig.pos !== undefined ? colorByConfig.pos : 501;
 
   const { colorByOptions } = config.colorBy
     ? config.colorBy
