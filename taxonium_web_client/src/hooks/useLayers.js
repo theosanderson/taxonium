@@ -143,6 +143,8 @@ const useLayers = ({
     },
   };
 
+  const text_x_gap = 15 / 2 ** xzoom;
+
   if (detailed_data.nodes) {
     const main_scatter_layer = new ScatterplotLayer({
       ...scatter_layer_common_props,
@@ -201,8 +203,7 @@ const useLayers = ({
       lineWidthScale: 2,
     });
 
-    const text_x_gap = 15 / 2 ** xzoom;
-
+    
     const clade_label_layer = new TextLayer({
       id: "main-clade-node",
 
