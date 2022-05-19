@@ -43,10 +43,17 @@ const useLayers = ({
   }, [data.data, getX]);
 
   const clade_accessor = "pango";
+  const minTipsForCladeText = 100;
+
   const clade_data = useMemo(
     () =>
-      detailed_data.nodes.filter((n) => n.clades && n.clades[clade_accessor]),
-    [detailed_data.nodes]
+      detailed_data.nodes.filter(
+        (n) =>
+          n.clades &&
+          n.clades[clade_accessor] &&
+          n.num_tips > minTipsForCladeText
+      ),
+    [detailed_data.nodes, minTipsForCladeText, clade_accessor]
   );
 
   const base_data = useMemo(() => {
@@ -144,8 +151,6 @@ const useLayers = ({
     },
   };
 
-  const text_x_gap = 15 / 2 ** xzoom;
-
   if (detailed_data.nodes) {
     const main_scatter_layer = new ScatterplotLayer({
       ...scatter_layer_common_props,
@@ -206,13 +211,15 @@ const useLayers = ({
 
     const clade_label_layer = new TextLayer({
       id: "main-clade-node",
-
+      getPixelOffset: [-5, -6],
       data: clade_data,
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d.clades[clade_accessor],
 
       getColor: [100, 100, 100],
       getAngle: 0,
+      fontFamily: "Roboto, sans-serif",
+      fontWeight: 700,
 
       billboard: true,
       getTextAnchor: "end",
@@ -243,11 +250,12 @@ const useLayers = ({
   ) {
     const node_label_layer = new TextLayer({
       id: "main-text-node",
-
+      fontFamily: "Roboto, sans-serif",
+      fontWeight: 100,
       data: data.data.nodes.filter((node) =>
         settings.displayTextForInternalNodes ? true : node.num_tips === 1
       ),
-      getPosition: (d) => [getX(d) + text_x_gap, d.y],
+      getPosition: (d) => [getX(d), d.y],
       getText: (d) => d.name,
 
       getColor: [180, 180, 180],
@@ -258,9 +266,7 @@ const useLayers = ({
       getAlignmentBaseline: "center",
       getSize: data.data.nodes.length < 200 ? 12 : 9.5,
       modelMatrix: modelMatrix,
-      updateTriggers: {
-        getPosition: [text_x_gap],
-      },
+      getPixelOffset: [10, 0],
     });
 
     layers.push(node_label_layer);
