@@ -40,7 +40,7 @@ Optionally, you can also upload a metadata file with your tree. This file should
 
 ### Viewing the global SARS-CoV-2 tree
 
-We maintain an instance of Taxonium that displays a version of the UShER-built SARS-CoV-2 global tree, at [Cov2Tree.org](http://cov2tree.org).
+We maintain an instance of Taxonium that displays a version of the SARS-CoV-2 global public tree built by the UShER team, at [Cov2Tree.org](http://cov2tree.org).
 
 ```{image} https://user-images.githubusercontent.com/19732295/169147139-8f67e297-9d0c-4707-9e92-95827498e24d.png
 :width: 60em
