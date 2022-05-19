@@ -77,15 +77,12 @@ async function cleanup(tree) {
   });
 
   tree.node = tree.node.map((node) => {
-
-    return{
+    return {
       name: node.name.replace(/\'/g, ""),
-      parent_id : node.parent ? node.parent.node_id : node.node_id,
-      x_dist :node.x,
-      mutations : emptyList
-
-    }
-    
+      parent_id: node.parent ? node.parent.node_id : node.node_id,
+      x_dist: node.x,
+      mutations: emptyList,
+    };
   });
 
   const scale_y = 2000;
@@ -277,7 +274,6 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     } else {
       Object.assign(node, blanks);
     }
-    
   });
   return tree;
 }
