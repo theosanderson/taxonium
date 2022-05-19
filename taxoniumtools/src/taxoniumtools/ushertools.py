@@ -141,7 +141,7 @@ def find_codon(position, cds):
 
 class UsherMutationAnnotatedTree:
 
-    def __init__(self, tree_file, genbank_file=None, clade_types= []):
+    def __init__(self, tree_file, genbank_file=None, clade_types=[]):
         self.data = parsimony_pb2.data()
         self.data.ParseFromString(tree_file.read())
         self.condensed_nodes_dict = self.get_condensed_nodes_dict(
@@ -177,7 +177,10 @@ class UsherMutationAnnotatedTree:
                                     title="Annotating nuc muts"):
 
                 this_thing = self.data.metadata[i]
-                node.clades = {clade_types[index]:part for index, part in enumerate(this_thing)}
+                node.clades = {
+                    clade_types[index]: part
+                    for index, part in enumerate(this_thing)
+                }
 
     def perform_aa_analysis(self):
 

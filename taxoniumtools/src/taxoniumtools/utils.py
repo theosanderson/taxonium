@@ -191,11 +191,10 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
         node]  # We don't strictly need this, but it doesn't add much to the space
 
     object['num_tips'] = node.num_tips
-    
+
     if hasattr(node, 'clades'):
         for key in node.clades:
-            object['clade_'+key] = node.clades[key]
-
+            object['clade_' + key] = node.clades[key]
 
     return object
 

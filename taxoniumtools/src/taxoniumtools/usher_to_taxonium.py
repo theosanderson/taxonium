@@ -30,7 +30,7 @@ def do_processing(input_file,
                   title=None,
                   overlay_html=None,
                   remove_after_pipe=False,
-                  clade_types = None):
+                  clade_types=None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -50,12 +50,14 @@ def do_processing(input_file,
         f = gzip.open(input_file, 'rb')
     else:
         f = open(input_file, 'rb')
-    
+
     if clade_types:
         clade_types = clade_types.split(",")
     else:
         clade_types = []
-    mat = ushertools.UsherMutationAnnotatedTree(f, genbank_file, clade_types = clade_types)
+    mat = ushertools.UsherMutationAnnotatedTree(f,
+                                                genbank_file,
+                                                clade_types=clade_types)
     f.close()
 
     if chronumental_enabled:
