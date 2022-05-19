@@ -170,9 +170,13 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
         object["x_time"] = round(node.x_time, 5)
     object["y"] = node.y
     object['mutations'] = []
-    if hasattr(node,'aa_muts'):
-        object['mutations'] += [ input_to_index[my_input] for my_input in node.aa_muts  ] 
-    object['mutations'] += [input_to_index[my_input] for my_input in node.nuc_mutations]
+    if hasattr(node, 'aa_muts'):
+        object['mutations'] += [
+            input_to_index[my_input] for my_input in node.aa_muts
+        ]
+    object['mutations'] += [
+        input_to_index[my_input] for my_input in node.nuc_mutations
+    ]
     # check if label is in metadata's index
     try:
         my_dict = metadata[node.label]
