@@ -141,13 +141,18 @@ def find_codon(position, cds):
 
 class UsherMutationAnnotatedTree:
 
-    def __init__(self, tree_file, genbank_file=None):
+    def __init__(self,
+                 tree_file,
+                 genbank_file=None,
+                 name_internal_nodes=False):
         self.data = parsimony_pb2.data()
         self.data.ParseFromString(tree_file.read())
         self.condensed_nodes_dict = self.get_condensed_nodes_dict(
             self.data.condensed_nodes)
         print("Loading tree, this may take a while...")
         self.tree = treeswift.read_tree(self.data.newick, schema="newick")
+        if name_internal_nodes:
+            self.name_internal_nodes()
         self.data.newick = ''
 
         self.annotate_mutations()
@@ -212,6 +217,13 @@ class UsherMutationAnnotatedTree:
                 self.convert_nuc_mutation(x)
                 for x in self.data.node_mutations[i].mutation
             ]
+
+    def name_internal_nodes(self):
+        for i, node in alive_it(list(
+                enumerate(preorder_traversal(self.tree.root))),
+                                title="Naming internal nodes"):
+            if not node.label:
+                node.label = "node_" + str(i)
 
     def set_branch_lengths(self):
         for node in alive_it(list(preorder_traversal(self.tree.root)),
