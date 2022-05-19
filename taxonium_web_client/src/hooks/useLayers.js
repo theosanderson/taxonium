@@ -42,10 +42,10 @@ const useLayers = ({
     }
   }, [data.data, getX]);
 
-  const clade_data = useMemo( () =>
-  detailed_data.nodes.filter(n=> n.meta_clade_string)
-  ,[detailed_data.nodes]
-  )
+  const clade_data = useMemo(
+    () => detailed_data.nodes.filter((n) => n.meta_clade_string),
+    [detailed_data.nodes]
+  );
 
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {
@@ -204,7 +204,7 @@ const useLayers = ({
       id: "main-clade-node",
 
       data: clade_data,
-      getPosition: (d) => [getX(d) , d.y],
+      getPosition: (d) => [getX(d), d.y],
       getText: (d) => d.meta_clade_string,
 
       getColor: [100, 100, 100],
@@ -220,7 +220,6 @@ const useLayers = ({
       },
     });
 
-
     layers.push(
       main_line_layer,
       main_line_layer2,
@@ -232,7 +231,6 @@ const useLayers = ({
       selectedLayer
     );
   }
-
 
   // If leaves are fewer than max_text_number, add a text layer
   if (
