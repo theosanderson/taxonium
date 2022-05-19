@@ -15,7 +15,7 @@ const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
     const m = mutations[mut]
     gene_sequence[m.gene][m.residue_pos] = m.new_residue;
   });
-  revertant_mutations = mutations.filter(
+  const revertant_mutations = mutations.filter(
     (m) =>
       m.gene in gene_sequence &&
       gene_sequence[m.gene][m.residue_pos] === m.new_residue &&
