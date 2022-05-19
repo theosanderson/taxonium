@@ -211,7 +211,7 @@ function SearchPanel({
               <h3 className="text-xs font-bold mt-4 text-gray-700">
                 Mutations at this node:
               </h3>
-              <div className="text-xs mt-1 text-gray-700">
+              <div className="text-xs mt-1 text-gray-700 mr-1">
                 {settings
                   .filterMutations(selectedDetails.nodeDetails.mutations)
                   .map((mutation, i) => (
