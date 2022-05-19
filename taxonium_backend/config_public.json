@@ -1,6 +1,7 @@
 {
   "source": "INSDC",
   "title": "Cov2Tree",
+  "customNames":{"num_tips": "Descendant sequences" },
   "name_accessor": "name",
   "keys_to_display": ["genotype","meta_date","meta_genbank_accession", "meta_pangolin_lineage", "meta_country"],
   "overlay": "TODO",
