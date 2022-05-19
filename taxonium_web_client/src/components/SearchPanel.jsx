@@ -16,7 +16,7 @@ const formatNumber = (num) => {
 
 const formatNumberIfNumber = (possNum) => {
     return typeof(possNum) === "number"
-    ? num.toLocaleString()
+    ? possNum.toLocaleString()
     : possNum;
 }
 const fixName = (name) => {
