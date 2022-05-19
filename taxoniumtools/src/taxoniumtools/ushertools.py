@@ -169,6 +169,14 @@ class UsherMutationAnnotatedTree:
                             par_nuc="X"))
         return ref_muts
 
+    def annotate_clades(self):
+        for i, node in alive_it(list(
+                enumerate(preorder_traversal(self.tree.root))),
+                                title="Annotating nuc muts"):
+                    
+            this_thing = self.data.metadata[i]
+            node.meta_clade_string = ", ".join(this_thing.clade_annotations)
+
     def perform_aa_analysis(self):
 
         seq = str(self.genbank.seq)
