@@ -191,6 +191,7 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
         node]  # We don't strictly need this, but it doesn't add much to the space
 
     object['num_tips'] = node.num_tips
+    object['meta_clade_string'] = node.meta_clade_string
     return object
 
 
