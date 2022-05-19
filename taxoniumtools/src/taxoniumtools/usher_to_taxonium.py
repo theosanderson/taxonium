@@ -142,8 +142,8 @@ def get_parser():
         '--genbank',
         type=str,
         help=
-        'File path for GenBank file containing reference genome (N.B. currently only forward genes are supported, and only one chromosome, and no compound features)',
-        required=True)
+        'File path for GenBank file containing reference genome (N.B. currently only forward genes are supported, and only one chromosome, and no compound features)'
+        )
     parser.add_argument(
         "--columns",
         type=str,
