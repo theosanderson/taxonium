@@ -79,15 +79,13 @@ async function cleanup(tree) {
   tree.node = tree.node.map((node) => {
     return {
       name: node.name.replace(/\'/g, ""),
-      parent_id : node.parent ? node.parent.node_id : node.node_id,
-      x_dist :node.x,
-      mutations : emptyList,
+      parent_id: node.parent ? node.parent.node_id : node.node_id,
+      x_dist: node.x,
+      mutations: emptyList,
       y: node.y,
-      num_tips: node.num_tips
-
-    }
-  }
-  );
+      num_tips: node.num_tips,
+    };
+  });
 
   const scale_y = 2000;
 
