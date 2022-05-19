@@ -151,6 +151,7 @@ class UsherMutationAnnotatedTree:
         self.data.newick = ''
 
         self.annotate_mutations()
+        self.annotate_clades()
 
         self.expand_condensed_nodes()
         self.set_branch_lengths()
