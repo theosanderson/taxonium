@@ -144,6 +144,7 @@ export async function processNewick(data, sendStatusMessage) {
     });
   }
   assignNumTips(tree.root);
+  const total_tips = tree.root.num_tips
   console.log("tree.root.num_tips", tree.root.num_tips);
 
   if (data.ladderize) {
@@ -191,7 +192,7 @@ export async function processNewick(data, sendStatusMessage) {
     node_to_mut: {},
     rootMutations: [],
     rootId: 0,
-    overwrite_config: {num_tips:tree.node[rootId].num_tips},
+    overwrite_config: {num_tips:total_tips},
   };
 
   sendStatusMessage({
