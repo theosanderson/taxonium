@@ -42,6 +42,11 @@ const useLayers = ({
     }
   }, [data.data, getX]);
 
+  const clade_data = useMemo( () =>
+  detailed_data.nodes.filter(n=> n.meta_clade_string)
+  ,[detailed_data.nodes]
+  )
+
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {
       data.base_data.nodes.forEach((node) => {
@@ -195,6 +200,27 @@ const useLayers = ({
       lineWidthScale: 2,
     });
 
+    const clade_label_layer = new TextLayer({
+      id: "main-clade-node",
+
+      data: clade_data,
+      getPosition: (d) => [getX(d) , d.y],
+      getText: (d) => d.meta_clade_string,
+
+      getColor: [100, 100, 100],
+      getAngle: 0,
+
+      billboard: true,
+      getTextAnchor: "start",
+      getAlignmentBaseline: "center",
+      getSize: 14,
+      modelMatrix: modelMatrix,
+      updateTriggers: {
+        getPosition: [getX],
+      },
+    });
+
+
     layers.push(
       main_line_layer,
       main_line_layer2,
@@ -202,9 +228,11 @@ const useLayers = ({
       fillin_line_layer2,
       main_scatter_layer,
       fillin_scatter_layer,
+      clade_label_layer,
       selectedLayer
     );
   }
+
 
   // If leaves are fewer than max_text_number, add a text layer
   if (
