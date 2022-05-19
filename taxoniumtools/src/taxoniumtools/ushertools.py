@@ -173,7 +173,7 @@ class UsherMutationAnnotatedTree:
         for i, node in alive_it(list(
                 enumerate(preorder_traversal(self.tree.root))),
                                 title="Annotating nuc muts"):
-                    
+
             this_thing = self.data.metadata[i]
             node.meta_clade_string = ", ".join(this_thing.clade_annotations)
 
