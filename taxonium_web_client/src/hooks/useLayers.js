@@ -203,7 +203,6 @@ const useLayers = ({
       lineWidthScale: 2,
     });
 
-    
     const clade_label_layer = new TextLayer({
       id: "main-clade-node",
 
