@@ -198,8 +198,7 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
     object['num_tips'] = node.num_tips
 
     if hasattr(node, 'clades'):
-        for key in node.clades:
-            object['clade_' + key] = node.clades[key]
+        object['clades'] = node.clades
 
     return object
 
