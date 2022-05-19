@@ -42,8 +42,9 @@ const useLayers = ({
     }
   }, [data.data, getX]);
 
+  const clade_accessor = "clade_pango"
   const clade_data = useMemo(
-    () => detailed_data.nodes.filter((n) => n.meta_clade_string),
+    () => detailed_data.nodes.filter((n) => n[clade_accessor]),
     [detailed_data.nodes]
   );
 
@@ -205,7 +206,7 @@ const useLayers = ({
 
       data: clade_data,
       getPosition: (d) => [getX(d), d.y],
-      getText: (d) => d.meta_clade_string,
+      getText: (d) => d[clade_accessor],
 
       getColor: [100, 100, 100],
       getAngle: 0,
