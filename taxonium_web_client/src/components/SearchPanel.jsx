@@ -66,11 +66,12 @@ function SearchPanel({
         </div>
       );
     }
+    console.log("metadata types", config.metadataTypes);
     if (config.metadataTypes && config.metadataTypes[key] == "sequence") {
       return (
         <div className="text-sm mt-1" key={key}>
           <span className="font-semibold">{prettifyName(key)}:</span>{" "}
-          <div className="text-sm font-mono break-all">
+          <div className="text-xs font-mono break-all">
             {selectedDetails.nodeDetails[key]}
           </div>
         </div>
