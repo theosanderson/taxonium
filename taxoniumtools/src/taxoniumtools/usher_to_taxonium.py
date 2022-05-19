@@ -29,7 +29,8 @@ def do_processing(input_file,
                   config_file=None,
                   title=None,
                   overlay_html=None,
-                  remove_after_pipe=False):
+                  remove_after_pipe=False,
+                  clade_types = None):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -49,8 +50,12 @@ def do_processing(input_file,
         f = gzip.open(input_file, 'rb')
     else:
         f = open(input_file, 'rb')
-
-    mat = ushertools.UsherMutationAnnotatedTree(f, genbank_file)
+    
+    if clade_types:
+        clade_types = clade_types.split(",")
+    else:
+        clade_types = []
+    mat = ushertools.UsherMutationAnnotatedTree(f, genbank_file, clade_types = clade_types)
     f.close()
 
     if chronumental_enabled:
@@ -197,6 +202,12 @@ def get_parser():
         help=
         'If set, we will remove anything after a pipe (|) in each node\'s name, _after_ joining to metadata'
     )
+    parser.add_argument(
+        "--clade_types",
+        type=str,
+        help=
+        "Clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'",
+        default=None)
     return parser
 
 
@@ -217,7 +228,8 @@ def main():
                   config_file=args.config_json,
                   title=args.title,
                   overlay_html=args.overlay_html,
-                  remove_after_pipe=args.remove_after_pipe)
+                  remove_after_pipe=args.remove_after_pipe,
+                  clade_types=args.clade_types)
 
 
 if __name__ == "__main__":
