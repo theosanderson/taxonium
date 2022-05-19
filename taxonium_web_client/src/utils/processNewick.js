@@ -76,23 +76,16 @@ async function cleanup(tree) {
     node.node_id = i;
   });
 
-  tree.node.forEach((node) => {
-    if (node.name) {
-      node.name = node.name.replace(/\'/g, "");
-    }
-    node.parent_id = node.parent ? node.parent.node_id : node.node_id;
-    delete node.parent;
-    node.x_dist = node.x;
-    delete node.x;
-    node.mutations = emptyList;
-
-    delete node.child;
-    delete node.miny;
-    delete node.maxy;
-    delete node.d;
-    delete node.hidden;
-    delete node.hl;
-    delete node.meta;
+  tree.node = tree.node.map((node, i) => {
+    return {
+      name: node.name.replace(/\'/g, ""),
+      parent_id: node.parent ? node.parent.node_id : node.node_id,
+      x_dist: node.x,
+      mutations: emptyList,
+      y: node.y,
+      num_tips: node.num_tips,
+      node_id: node.node_id,
+    };
   });
 
   const scale_y = 2000;
@@ -284,7 +277,6 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     } else {
       Object.assign(node, blanks);
     }
-    delete metadata[node.name];
   });
   return tree;
 }
