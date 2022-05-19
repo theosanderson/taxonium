@@ -28,11 +28,9 @@ function App() {
   // check if .epicov.org is in the URL
 
   const [query, updateQuery] = useQueryAsState({
-    srch: JSON.stringify(
-      [
-        //first_search
-      ]
-    ),
+    srch: JSON.stringify([
+      //first_search
+    ]),
     enabled: JSON.stringify({ [first_search.key]: true }),
     backend: DEFAULT_BACKEND,
     xType: "x_dist",
