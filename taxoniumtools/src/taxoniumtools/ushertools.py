@@ -176,7 +176,7 @@ class UsherMutationAnnotatedTree:
                                 title="Annotating nuc muts"):
 
             this_thing = self.data.metadata[i]
-            node.meta_clade_string = ", ".join(this_thing.clade_annotations)
+            node.meta_clade_string = "".join(this_thing.clade_annotations)
 
     def perform_aa_analysis(self):
 
