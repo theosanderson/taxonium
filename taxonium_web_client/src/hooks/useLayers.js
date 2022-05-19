@@ -42,7 +42,7 @@ const useLayers = ({
     }
   }, [data.data, getX]);
 
-  const clade_accessor = "clade_pango"
+  const clade_accessor = "clade_pango";
   const clade_data = useMemo(
     () => detailed_data.nodes.filter((n) => n[clade_accessor]),
     [detailed_data.nodes]
