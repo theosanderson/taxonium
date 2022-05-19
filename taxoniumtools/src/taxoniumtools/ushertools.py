@@ -241,7 +241,7 @@ class UsherMutationAnnotatedTree:
                 for new_node_label in self.condensed_nodes_dict[node.label]:
                     new_node = treeswift.Node(label=new_node_label)
                     new_node.nuc_mutations = node.nuc_mutations
-                    new_node.meta_clade_string = node.meta_clade_string
+                    new_node.clades = node.clades
                     node.parent.add_child(new_node)
                 node.label = ""
                 node.parent.remove_child(node)
