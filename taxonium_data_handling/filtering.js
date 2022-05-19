@@ -12,7 +12,7 @@ const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
   const gene_sequence = Object.fromEntries(all_genes.map((g) => [g, {}]));
 
   root_mutations.forEach((mut) => {
-    const m = mutations[mut]
+    const m = mutations[mut];
     gene_sequence[m.gene][m.residue_pos] = m.new_residue;
   });
   const revertant_mutations = mutations.filter(
