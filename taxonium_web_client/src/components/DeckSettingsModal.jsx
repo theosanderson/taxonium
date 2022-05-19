@@ -95,7 +95,7 @@ const DeckSettingsModal = ({
         <h3 className="mt-5 font-medium">Mutation types enabled</h3>
         <div className="mt-2">
           {Object.keys(settings.mutationTypesEnabled).map((key) => (
-            <div>
+            <div key={key}>
               <label key={key}>
                 <input
                   type="checkbox"

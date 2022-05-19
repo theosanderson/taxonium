@@ -4,6 +4,7 @@ import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
 const useSearch = ({
   data,
+  config,
   boundsForQueries,
   view,
   backend,
@@ -196,7 +197,11 @@ const useSearch = ({
       console.log("Doing zoom", min_y, max_y, min_x, max_x);
 
       const oldViewState = { ...view.viewState };
-      const newZoom = 9 - Math.log2(max_y - min_y + 0.01);
+      const newZoom =
+        9 -
+        Math.log2(
+          max_y - min_y + 50000 / (config.num_nodes ? config.num_nodes : 10000)
+        );
       const new_target = [(min_x + max_x) / 2, (min_y + max_y) / 2];
       console.log("NEW TARGET", new_target);
 

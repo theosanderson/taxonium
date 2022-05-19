@@ -57,6 +57,7 @@ function Taxonium({
 
   const search = useSearch({
     data,
+    config,
     boundsForQueries,
     view,
     backend,
