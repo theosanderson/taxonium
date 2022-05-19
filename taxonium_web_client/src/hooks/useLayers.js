@@ -201,18 +201,20 @@ const useLayers = ({
       lineWidthScale: 2,
     });
 
+    const text_x_gap = 15 / 2 ** xzoom;
+
     const clade_label_layer = new TextLayer({
       id: "main-clade-node",
 
       data: clade_data,
-      getPosition: (d) => [getX(d), d.y],
+      getPosition: (d) => [getX(d) - text_x_gap , d.y],
       getText: (d) => d[clade_accessor],
 
       getColor: [100, 100, 100],
       getAngle: 0,
 
       billboard: true,
-      getTextAnchor: "start",
+      getTextAnchor: "end",
       getAlignmentBaseline: "center",
       getSize: 14,
       modelMatrix: modelMatrix,
@@ -232,13 +234,13 @@ const useLayers = ({
       selectedLayer
     );
   }
-
+  
   // If leaves are fewer than max_text_number, add a text layer
   if (
     data.data.nodes &&
     data.data.nodes.length < 10 ** settings.thresholdForDisplayingText
   ) {
-    const text_x_gap = 15 / 2 ** xzoom;
+    
 
     const node_label_layer = new TextLayer({
       id: "main-text-node",
