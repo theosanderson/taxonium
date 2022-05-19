@@ -156,15 +156,16 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
   if (spec.method === "text_match") {
     // case insensitive
     spec.text = spec.text.toLowerCase();
-    filtered = data.filter((node) =>
-      node[spec.type].toLowerCase().includes(spec.text)
+    filtered = data.filter(
+      (node) =>
+        node[spec.type] && node[spec.type].toLowerCase().includes(spec.text)
     );
     return filtered;
   } else if (spec.method === "text_exact") {
     // case insensitive
     spec.text = spec.text.toLowerCase();
     filtered = data.filter(
-      (node) => node[spec.type].toLowerCase() === spec.text
+      (node) => node[spec.type] && node[spec.type].toLowerCase() === spec.text
     );
     return filtered;
   } else if (spec.method === "text_per_line") {
@@ -180,10 +181,14 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     );
 
     filtered = data.filter((node) => {
-      const to_test = node[spec.type].toLowerCase().trim();
-      //console.log(to_test);
-      // check if node's spec type is in possible_matches
-      return possible_matches.has(to_test);
+      if (node[spec.type]) {
+        const to_test = node[spec.type].toLowerCase().trim();
+        //console.log(to_test);
+        // check if node's spec type is in possible_matches
+        return possible_matches.has(to_test);
+      } else {
+        return false;
+      }
     });
     return filtered;
   } else if (spec.method === "mutation") {

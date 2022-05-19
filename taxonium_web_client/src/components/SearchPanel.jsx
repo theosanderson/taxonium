@@ -38,6 +38,9 @@ function SearchPanel({
     if (config && config.customNames && config.customNames[name]) {
       return config.customNames[name];
     }
+    if (name === "num_tips") {
+      return "Number of descendants";
+    }
     const new_name = name.replace("meta_", "").replace("_", " ");
     return new_name.charAt(0).toUpperCase() + new_name.slice(1);
   };
@@ -63,6 +66,17 @@ function SearchPanel({
           >
             {text} <BsBoxArrowInUpRight className="inline-block ml-1" />
           </a>
+        </div>
+      );
+    }
+    console.log("metadata types", config.metadataTypes);
+    if (config.metadataTypes && config.metadataTypes[key] == "sequence") {
+      return (
+        <div className="text-sm mt-1" key={key}>
+          <span className="font-semibold">{prettifyName(key)}:</span>{" "}
+          <div className="text-xs font-mono break-all">
+            {selectedDetails.nodeDetails[key]}
+          </div>
         </div>
       );
     }

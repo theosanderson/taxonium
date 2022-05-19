@@ -71,6 +71,7 @@ const NodeHoverTip = ({
       {config.keys_to_display.map(
         (key) =>
           hoveredNode[key] &&
+          !(config.metadataTypes && config.metadataTypes[key] === "sequence") &&
           !(
             typeof hoveredNode[key] === "string" &&
             hoveredNode[key].match(/\[.*\]\(.*\)/)
