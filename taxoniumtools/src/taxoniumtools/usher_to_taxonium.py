@@ -30,6 +30,7 @@ def do_processing(input_file,
                   title=None,
                   overlay_html=None,
                   remove_after_pipe=False,
+                  clade_types=None,
                   name_internal_nodes=False):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
@@ -51,8 +52,15 @@ def do_processing(input_file,
     else:
         f = open(input_file, 'rb')
 
+    if clade_types:
+        clade_types = clade_types.split(",")
+    else:
+        clade_types = []
     mat = ushertools.UsherMutationAnnotatedTree(
-        f, genbank_file, name_internal_nodes=name_internal_nodes)
+        f,
+        genbank_file,
+        clade_types=clade_types,
+        name_internal_nodes=name_internal_nodes)
     f.close()
 
     if chronumental_enabled:
@@ -199,6 +207,12 @@ def get_parser():
         help=
         'If set, we will remove anything after a pipe (|) in each node\'s name, _after_ joining to metadata'
     )
+    parser.add_argument(
+        "--clade_types",
+        type=str,
+        help=
+        "Optionally specify clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'. Order must match that used in the UShER pb file.",
+        default=None)
     parser.add_argument('--name_internal_nodes',
                         action='store_true',
                         help='If set, we will name internal nodes node_xxx')
@@ -224,6 +238,7 @@ def main():
                   title=args.title,
                   overlay_html=args.overlay_html,
                   remove_after_pipe=args.remove_after_pipe,
+                  clade_types=args.clade_types,
                   name_internal_nodes=args.name_internal_nodes)
 
 

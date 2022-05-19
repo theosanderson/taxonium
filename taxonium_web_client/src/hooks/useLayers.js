@@ -42,6 +42,20 @@ const useLayers = ({
     }
   }, [data.data, getX]);
 
+  const clade_accessor = "pango";
+  const minTipsForCladeText = 100;
+
+  const clade_data = useMemo(
+    () =>
+      detailed_data.nodes.filter(
+        (n) =>
+          n.clades &&
+          n.clades[clade_accessor] &&
+          n.num_tips > minTipsForCladeText
+      ),
+    [detailed_data.nodes, minTipsForCladeText, clade_accessor]
+  );
+
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {
       data.base_data.nodes.forEach((node) => {
@@ -195,6 +209,28 @@ const useLayers = ({
       lineWidthScale: 2,
     });
 
+    const clade_label_layer = new TextLayer({
+      id: "main-clade-node",
+      getPixelOffset: [-5, -6],
+      data: clade_data,
+      getPosition: (d) => [getX(d), d.y],
+      getText: (d) => d.clades[clade_accessor],
+
+      getColor: [100, 100, 100],
+      getAngle: 0,
+      fontFamily: "Roboto, sans-serif",
+      fontWeight: 700,
+
+      billboard: true,
+      getTextAnchor: "end",
+      getAlignmentBaseline: "center",
+      getSize: 11,
+      modelMatrix: modelMatrix,
+      updateTriggers: {
+        getPosition: [getX],
+      },
+    });
+
     layers.push(
       main_line_layer,
       main_line_layer2,
@@ -202,6 +238,7 @@ const useLayers = ({
       fillin_line_layer2,
       main_scatter_layer,
       fillin_scatter_layer,
+      clade_label_layer,
       selectedLayer
     );
   }
@@ -211,15 +248,14 @@ const useLayers = ({
     data.data.nodes &&
     data.data.nodes.length < 10 ** settings.thresholdForDisplayingText
   ) {
-    const text_x_gap = 15 / 2 ** xzoom;
-
     const node_label_layer = new TextLayer({
       id: "main-text-node",
-
+      fontFamily: "Roboto, sans-serif",
+      fontWeight: 100,
       data: data.data.nodes.filter((node) =>
         settings.displayTextForInternalNodes ? true : node.num_tips === 1
       ),
-      getPosition: (d) => [getX(d) + text_x_gap, d.y],
+      getPosition: (d) => [getX(d), d.y],
       getText: (d) => d.name,
 
       getColor: [180, 180, 180],
@@ -230,9 +266,7 @@ const useLayers = ({
       getAlignmentBaseline: "center",
       getSize: data.data.nodes.length < 200 ? 12 : 9.5,
       modelMatrix: modelMatrix,
-      updateTriggers: {
-        getPosition: [text_x_gap],
-      },
+      getPixelOffset: [10, 0],
     });
 
     layers.push(node_label_layer);

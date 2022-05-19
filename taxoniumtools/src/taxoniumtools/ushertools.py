@@ -144,7 +144,8 @@ class UsherMutationAnnotatedTree:
     def __init__(self,
                  tree_file,
                  genbank_file=None,
-                 name_internal_nodes=False):
+                 name_internal_nodes=False,
+                 clade_types=[]):
         self.data = parsimony_pb2.data()
         self.data.ParseFromString(tree_file.read())
         self.condensed_nodes_dict = self.get_condensed_nodes_dict(
@@ -156,6 +157,7 @@ class UsherMutationAnnotatedTree:
         self.data.newick = ''
 
         self.annotate_mutations()
+        self.annotate_clades(clade_types)
 
         self.expand_condensed_nodes()
         self.set_branch_lengths()
@@ -173,6 +175,18 @@ class UsherMutationAnnotatedTree:
                             mut_nuc=character,
                             par_nuc="X"))
         return ref_muts
+
+    def annotate_clades(self, clade_types):
+        if clade_types:
+            for i, node in alive_it(list(
+                    enumerate(preorder_traversal(self.tree.root))),
+                                    title="Annotating nuc muts"):
+
+                this_thing = self.data.metadata[i]
+                node.clades = {
+                    clade_types[index]: part
+                    for index, part in enumerate(this_thing.clade_annotations)
+                }
 
     def perform_aa_analysis(self):
 
@@ -240,6 +254,8 @@ class UsherMutationAnnotatedTree:
                 for new_node_label in self.condensed_nodes_dict[node.label]:
                     new_node = treeswift.Node(label=new_node_label)
                     new_node.nuc_mutations = node.nuc_mutations
+                    if hasattr(node, "clades"):
+                        new_node.clades = node.clades
                     node.parent.add_child(new_node)
                 node.label = ""
                 node.parent.remove_child(node)
