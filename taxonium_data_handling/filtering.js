@@ -6,11 +6,13 @@ import("crypto").then((c) => {
 let revertant_mutations_set = null;
 
 const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
-  const all_genes = [...new Set(mutations.map((m) => m.gene))];
-  const gene_sequence = Object.fromEntries(all_genes.map((g) => [g, {}]));
   const root = all_data.find((node) => node.node_id === node.parent_id);
   const root_mutations = node_to_mut[root.node_id];
-  root_mutations.forEach((m) => {
+  const all_genes = [...new Set(mutations.map((m) => m.gene))];
+  const gene_sequence = Object.fromEntries(all_genes.map((g) => [g, {}]));
+
+  root_mutations.forEach((mut) => {
+    const m = mutations[mut]
     gene_sequence[m.gene][m.residue_pos] = m.new_residue;
   });
   revertant_mutations = mutations.filter(
