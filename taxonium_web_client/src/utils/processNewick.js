@@ -77,8 +77,7 @@ async function cleanup(tree) {
   });
 
   tree.node = tree.node.map((node) => {
-
-    return{
+    return {
       name: node.name.replace(/\'/g, ""),
       parent_id : node.parent ? node.parent.node_id : node.node_id,
       x_dist :node.x,
@@ -87,8 +86,8 @@ async function cleanup(tree) {
       num_tips: node.num_tips
 
     }
-    
-  });
+  }
+  );
 
   const scale_y = 2000;
 
@@ -279,7 +278,6 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     } else {
       Object.assign(node, blanks);
     }
-    
   });
   return tree;
 }
