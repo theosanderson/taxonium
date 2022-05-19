@@ -9,8 +9,16 @@ import { Select } from "./Basic";
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
-  return num ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : "";
+  return num !== null && typeof(num) === "number"
+    ? num.toLocaleString()
+    : "";
 };
+
+const formatNumberIfNumber = (possNum) => {
+    return typeof(possNum) === "number"
+    ? num.toLocaleString()
+    : possNum;
+}
 const fixName = (name) => {
   return name.replace("hCoV-19/", "hCoV-19/\n");
 };
@@ -75,7 +83,7 @@ function SearchPanel({
             {selectedDetails.nodeDetails[key]}
           </span>
         ) : (
-          selectedDetails.nodeDetails[key]
+          formatNumberIfNumber(selectedDetails.nodeDetails[key])
         )}
       </div>
     );
