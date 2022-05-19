@@ -2,7 +2,7 @@
   "validate_SID": true,
   "source": "GISAID",
   "title": "Audacity",
-  "customNames":{"name":"GISAID accession","meta_pangolin_lineage": "PANGO lineage" },
+  "customNames":{"name":"GISAID accession","meta_pangolin_lineage": "PANGO lineage","num_tips": "Descendant sequences" },
   "name_accessor": "meta_name2",
   "keys_to_display": [
     "name",
