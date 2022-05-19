@@ -12,7 +12,7 @@ The `usher_to_taxonium` utility will then be available for use.
 
 #### Using usher_to_taxonium from taxoniumtools
 
-#### Example
+##### Example
 
 First get some files:
 
@@ -31,7 +31,11 @@ usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfc
 
 You can then open that `tfci-taxonium.jsonl.gz` file at [taxonium.org](http://taxonium.org)
 
-#### Full documentation for `usher_to_taxonium`
+```{note}
+Right now Taxoniumtools is limited in the types of genome annotations it can support, for SARS-CoV-2 we recommend using the exact [modified .gb file we use in the example](https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb).
+```
+
+##### Full parameters for `usher_to_taxonium`
 
 ```{eval-rst}
 .. argparse::

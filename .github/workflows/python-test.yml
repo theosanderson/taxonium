@@ -43,11 +43,18 @@ jobs:
           path: tfci-taxonium-chron.jsonl.gz
       - name: Test with config
         run: |
-          usher_to_taxonium --input tfci.pb --output tfci-taxonium-config.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --config_json test_config.json
+          usher_to_taxonium --input tfci.pb --output tfci-taxonium-config.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --config_json test_config.json --name_internal_nodes
       - uses: actions/upload-artifact@v3
         with:
           name: tfci-taxonium-config
           path: tfci-taxonium-config.jsonl.gz
+      - name: Test no genbank, no metadata
+        run: |
+          usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tfci-bare
+          path: tfci-bare.jsonl.gz
       - uses: LouisBrunner/checks-action@v1.1.1
         if: always()
         with:

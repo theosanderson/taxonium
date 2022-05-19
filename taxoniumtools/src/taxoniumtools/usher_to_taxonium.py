@@ -30,7 +30,8 @@ def do_processing(input_file,
                   title=None,
                   overlay_html=None,
                   remove_after_pipe=False,
-                  clade_types=None):
+                  clade_types=None,
+                  name_internal_nodes=False):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -57,7 +58,7 @@ def do_processing(input_file,
         clade_types = []
     mat = ushertools.UsherMutationAnnotatedTree(f,
                                                 genbank_file,
-                                                clade_types=clade_types)
+                                                clade_types=clade_types, name_internal_nodes=name_internal_nodes)
     f.close()
 
     if chronumental_enabled:
@@ -147,8 +148,8 @@ def get_parser():
         '--genbank',
         type=str,
         help=
-        'File path for GenBank file containing reference genome (N.B. currently only forward genes are supported, and only one chromosome, and no compound features)',
-        required=True)
+        'File path for GenBank file containing reference genome (N.B. currently only forward genes are supported, and only one chromosome, and no compound features)'
+    )
     parser.add_argument(
         "--columns",
         type=str,
@@ -210,6 +211,10 @@ def get_parser():
         help=
         "Clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'",
         default=None)
+    parser.add_argument('--name_internal_nodes',
+                        action='store_true',
+                        help='If set, we will name internal nodes node_xxx')
+
     return parser
 
 
@@ -231,7 +236,8 @@ def main():
                   title=args.title,
                   overlay_html=args.overlay_html,
                   remove_after_pipe=args.remove_after_pipe,
-                  clade_types=args.clade_types)
+                  clade_types=args.clade_types,
+                  name_internal_nodes=args.name_internal_nodes)
 
 
 if __name__ == "__main__":

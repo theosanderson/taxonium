@@ -18,7 +18,7 @@ Taxonium is a tool for exploring phylogenetic trees. The web interface can be ac
 If you have a tree in Newick format and you just want to view it, you can just go to [Taxonium.org](http://taxonium.org), and select your tree file.
 
 ```{image} https://user-images.githubusercontent.com/19732295/169146746-4a31799a-66cf-4490-b925-ca17abf6af61.png
-:width: 60em
+:width: 30em
 :class: no-scaled-link
 ```
 
@@ -29,7 +29,7 @@ Or just drag and drop the file into the Taxonium window.
 Optionally, you can also upload a metadata file with your tree. This file should be in TSV or CSV format. It should have a heading with column names. The left-most column should contain the node names as used in the Newick file. The remaining columns should contain metadata for each node.
 
 ```{image} https://user-images.githubusercontent.com/19732295/169146935-6f40721a-7457-480a-85ed-185e5daaa205.png
-:width: 60em
+:width: 30em
 :class: no-scaled-link
 ```
 
@@ -40,10 +40,10 @@ Optionally, you can also upload a metadata file with your tree. This file should
 
 ### Viewing the global SARS-CoV-2 tree
 
-We maintain an instance of Taxonium that displays a version of the UShER-built SARS-CoV-2 global tree, at [Cov2Tree.org](http://cov2tree.org).
+We maintain an instance of Taxonium that displays a version of the SARS-CoV-2 global public tree built by the UShER team, at [Cov2Tree.org](http://cov2tree.org).
 
 ```{image} https://user-images.githubusercontent.com/19732295/169147139-8f67e297-9d0c-4707-9e92-95827498e24d.png
-:width: 60em
+:width: 40em
 :class: no-scaled-link
 ```
 
