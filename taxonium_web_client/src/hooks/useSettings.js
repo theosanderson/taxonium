@@ -34,6 +34,8 @@ export const useSettings = ({ query, updateQuery }) => {
     });
   };
 
+  const [maxCladeTexts, setMaxCladeTexts] = useState(0);
+
   return {
     minimapEnabled,
     toggleMinimapEnabled,
@@ -46,5 +48,7 @@ export const useSettings = ({ query, updateQuery }) => {
     setDisplayPointsForInternalNodes,
     thresholdForDisplayingText,
     setThresholdForDisplayingText,
+    maxCladeTexts,
+    setMaxCladeTexts,
   };
 };
