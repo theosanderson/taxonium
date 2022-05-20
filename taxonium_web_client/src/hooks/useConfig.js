@@ -50,9 +50,9 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
         }
       }
 
-      if (query.config_url) {
-        console.log("FOUND QUERY", query.config_url);
-        fetch(query.config_url)
+      if (query.configUrl) {
+        console.log("FOUND QUERY", query.configUrl);
+        fetch(query.configUrl)
           .then((response) => response.json())
           .then((data) => {
             console.log("FOUND CONFIG URL", data);
