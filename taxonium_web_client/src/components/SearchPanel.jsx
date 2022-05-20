@@ -16,7 +16,7 @@ const formatNumberIfNumber = (possNum) => {
   return typeof possNum === "number" ? possNum.toLocaleString() : possNum;
 };
 const fixName = (name) => {
-  return name.replace("hCoV-19/", "hCoV-19/\n");
+  return typeof(name) == "string" ? name.replace("hCoV-19/", "hCoV-19/\n") : name;
 };
 
 const fixAuthors = (authors) => {
