@@ -256,7 +256,7 @@ const useLayers = ({
       fontFamily: "Roboto, sans-serif",
       fontWeight: 100,
       data: data.data.nodes.filter((node) =>
-        settings.displayTextForInternalNodes ? true : node.num_tips === 1
+        settings.displayTextForInternalNodes ? true : (node.is_tip || (node.is_tip === undefined && node.num_tips === 1))
       ),
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d[config.name_accessor],
