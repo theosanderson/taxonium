@@ -20,6 +20,7 @@ const useLayers = ({
   xzoom,
   settings,
   isCurrentlyOutsideBounds,
+  config
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -258,7 +259,7 @@ const useLayers = ({
         settings.displayTextForInternalNodes ? true : node.num_tips === 1
       ),
       getPosition: (d) => [getX(d), d.y],
-      getText: (d) => d.name,
+      getText: (d) => d[config.name_accessor],
 
       getColor: [180, 180, 180],
       getAngle: 0,

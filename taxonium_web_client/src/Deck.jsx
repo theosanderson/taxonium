@@ -130,6 +130,7 @@ function Deck({
     xzoom,
     settings,
     isCurrentlyOutsideBounds,
+    config,
   });
   // console.log("deck refresh");
 
