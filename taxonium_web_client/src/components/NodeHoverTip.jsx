@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 
 const fixName = (name) => {
-  return typeof(name) == "string" ? name.replace("hCoV-19/", "hCoV-19/\n") : name;
+  return typeof name == "string"
+    ? name.replace("hCoV-19/", "hCoV-19/\n")
+    : name;
 };
 
 const NodeHoverTip = ({
