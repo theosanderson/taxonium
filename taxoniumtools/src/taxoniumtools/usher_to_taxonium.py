@@ -1,6 +1,5 @@
 #python usher_to_taxonium.py --input public-latest.all.masked.pb.gz --output ../taxonium_web_client/public/public2.jsonl.gz --metadata public-latest.metadata.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
 
-
 import orjson
 import pandas as pd
 from alive_progress import config_handler, alive_it, alive_bar
@@ -124,8 +123,7 @@ def do_processing(input_file,
             chronumental_enabled=chronumental_enabled)
         if remove_after_pipe and 'name' in node_object and node_object['name']:
             node_object['name'] = node_object['name'].split("|")[0]
-        output_file.write(
-            orjson.dumps(node_object) + b"\n")
+        output_file.write(orjson.dumps(node_object) + b"\n")
     output_file.close()
 
     print(
