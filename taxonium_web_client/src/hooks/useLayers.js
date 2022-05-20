@@ -43,18 +43,20 @@ const useLayers = ({
   }, [data.data, getX]);
 
   const clade_accessor = "pango";
-  const minTipsForCladeText = 100;
 
-  const clade_data = useMemo(
-    () =>
-      detailed_data.nodes.filter(
-        (n) =>
-          n.clades &&
-          n.clades[clade_accessor] &&
-          n.num_tips > minTipsForCladeText
-      ),
-    [detailed_data.nodes, minTipsForCladeText, clade_accessor]
-  );
+  const clade_data = useMemo(() => {
+    const initial_data = detailed_data.nodes.filter(
+      (n) => n.clades && n.clades[clade_accessor]
+    );
+
+    const rev_sorted_by_num_tips = initial_data.sort(
+      (a, b) => b.num_tips - a.num_tips
+    );
+
+    // pick top settings.minTipsForCladeText
+    const top_nodes = rev_sorted_by_num_tips.slice(0, settings.maxCladeTexts);
+    return top_nodes;
+  }, [detailed_data.nodes, settings.maxCladeTexts, clade_accessor]);
 
   const base_data = useMemo(() => {
     if (data.base_data && data.base_data.nodes) {

@@ -75,7 +75,7 @@ const DeckSettingsModal = ({
 
         <div>
           <label>
-            Max density of text:{" "}
+            Max density of node label text:{" "}
             <input
               type="number"
               value={settings.thresholdForDisplayingText}
@@ -87,6 +87,22 @@ const DeckSettingsModal = ({
               step="0.1"
               min="0"
               max="10"
+              className="border py-1 px-1 text-grey-darkest text-sm"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Max clade labels to show
+            <input
+              type="number"
+              value={settings.maxCladeTexts}
+              onChange={(e) =>
+                settings.setMaxCladeTexts(parseInt(e.target.value))
+              }
+              step="1"
+              min="0"
+              max="10000000"
               className="border py-1 px-1 text-grey-darkest text-sm"
             />
           </label>
