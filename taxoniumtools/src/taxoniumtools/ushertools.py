@@ -180,7 +180,7 @@ class UsherMutationAnnotatedTree:
         if clade_types:
             for i, node in alive_it(list(
                     enumerate(preorder_traversal(self.tree.root))),
-                                    title="Annotating nuc muts"):
+                                    title="Annotating clades"):
 
                 this_thing = self.data.metadata[i]
                 node.clades = {
