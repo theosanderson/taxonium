@@ -20,7 +20,7 @@ const useLayers = ({
   xzoom,
   settings,
   isCurrentlyOutsideBounds,
-  config
+  config,
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
