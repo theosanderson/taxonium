@@ -16,7 +16,9 @@ const formatNumberIfNumber = (possNum) => {
   return typeof possNum === "number" ? possNum.toLocaleString() : possNum;
 };
 const fixName = (name) => {
-  return typeof(name) == "string" ? name.replace("hCoV-19/", "hCoV-19/\n") : name;
+  return typeof name == "string"
+    ? name.replace("hCoV-19/", "hCoV-19/\n")
+    : name;
 };
 
 const fixAuthors = (authors) => {
@@ -102,8 +104,13 @@ function SearchPanel({
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
       <div className="mt-3 mb-3 text-gray-500 text-sm">
-        {config.num_tips && <>Displaying {formatNumber(config.num_tips)} {config.tipPluralNoun?config.tipPluralNoun:"sequences"}
-        {config.source && ` from ${config.source}`}</>}
+        {config.num_tips && (
+          <>
+            Displaying {formatNumber(config.num_tips)}{" "}
+            {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
+            {config.source && ` from ${config.source}`}
+          </>
+        )}
       </div>
       {config.x_accessors && config.x_accessors.length > 1 && (
         <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
