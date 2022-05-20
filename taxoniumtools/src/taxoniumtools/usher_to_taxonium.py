@@ -1,6 +1,7 @@
 #python usher_to_taxonium.py --input public-latest.all.masked.pb.gz --output ../taxonium_web_client/public/public2.jsonl.gz --metadata public-latest.metadata.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
 
-import json
+
+import orjson
 import pandas as pd
 from alive_progress import config_handler, alive_it, alive_bar
 
@@ -107,10 +108,10 @@ def do_processing(input_file,
     node_to_index = {node: i for i, node in enumerate(nodes_sorted_by_y)}
 
     if "gz" in output_file:
-        output_file = gzip.open(output_file, 'wt')
+        output_file = gzip.open(output_file, 'wb')
     else:
-        output_file = open(output_file, 'wt')
-    output_file.write(json.dumps(first_json, separators=(',', ':')) + "\n")
+        output_file = open(output_file, 'wb')
+    output_file.write(orjson.dumps(first_json) + b"\n")
     for node in alive_it(
             nodes_sorted_by_y,
             title="Converting each node, and writing out in JSON"):
@@ -124,11 +125,11 @@ def do_processing(input_file,
         if remove_after_pipe and 'name' in node_object and node_object['name']:
             node_object['name'] = node_object['name'].split("|")[0]
         output_file.write(
-            json.dumps(node_object, separators=(',', ':')) + "\n")
+            orjson.dumps(node_object) + b"\n")
     output_file.close()
 
     print(
-        f"Done. Output written to {output_file.name}, with {len(nodes_sorted_by_y)} nodes."
+        f"Done. Output written to {output_file}, with {len(nodes_sorted_by_y)} nodes."
     )
 
 
