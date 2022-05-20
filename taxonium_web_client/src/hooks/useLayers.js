@@ -77,7 +77,7 @@ const useLayers = ({
   const detailed_scatter_data = useMemo(() => {
     console.log("new scatter");
     return detailed_data.nodes.filter(
-      (d) => d.num_tips === 1 || settings.displayPointsForInternalNodes
+      (d) => (node.is_tip || (node.is_tip === undefined && node.num_tips === 1)) || settings.displayPointsForInternalNodes
     );
   }, [detailed_data, settings.displayPointsForInternalNodes]);
 
@@ -85,7 +85,7 @@ const useLayers = ({
     return base_data
       ? base_data.nodes.filter(
           (node) =>
-            node.num_tips === 1 || settings.displayPointsForInternalNodes
+            (node.is_tip || (node.is_tip === undefined && node.num_tips === 1)) || settings.displayPointsForInternalNodes
         )
       : [];
   }, [base_data, settings.displayPointsForInternalNodes]);
