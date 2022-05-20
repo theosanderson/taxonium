@@ -7,8 +7,6 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
     num_nodes: 0,
   });
 
-
-
   useEffect(() => {
     console.log("GETTING CONFIG");
     backend.getConfig((results) => {
@@ -20,9 +18,9 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
 
       const oldViewState = { ...viewState };
 
-      let fromFile = {}
+      let fromFile = {};
 
-      function afterPossibleGet(){
+      function afterPossibleGet() {
         if (query.config) {
           console.log("FOUND QUERY", query.config);
           const unpacked = JSON.parse(query.config);
@@ -37,7 +35,7 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
           window.document.title = results.title;
           console.log("setting title to ", config.title);
         }
-  
+
         setConfig(results);
         backend.setStatusMessage({ message: "Connecting" });
         console.log("CONFIG", results);
@@ -46,7 +44,7 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
           oldViewState,
           interactionState: "isZooming",
         });
-  
+
         if (results.overlay) {
           setOverlayContent(results.overlay);
         }
@@ -68,7 +66,6 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
       } else {
         afterPossibleGet();
       }
-      
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [backend.getConfig]);
