@@ -9,3 +9,4 @@ alive-progress
 biopython
 pandas
 google-api-python-client
+orjson
