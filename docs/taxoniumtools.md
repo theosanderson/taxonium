@@ -35,7 +35,7 @@ You can then open that `tfci-taxonium.jsonl.gz` file at [taxonium.org](http://ta
 Right now Taxoniumtools is limited in the types of genome annotations it can support, for SARS-CoV-2 we recommend using the exact [modified .gb file we use in the example](https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb).
 ```
 
-##### Full parameters for `usher_to_taxonium`
+##### usher_to_taxonium
 
 ```{eval-rst}
 .. argparse::
@@ -45,10 +45,10 @@ Right now Taxoniumtools is limited in the types of genome annotations it can sup
 
    This tool with convert an UShER protobuf file into a Taxonium file. At its simplest it just takes the `-i` and `-o` parameters, describing the input and output files. But for the most complete results you can add metadata, a reference genome, or even create a time tree.
 
-   config_json
+   j
       This file controls many aspects of the UI for Taxonium, such as what searches are available. You can see an example file at https://github.com/theosanderson/taxonium/blob/master/taxonium_backend/config_public.json.
 
-   chronumental
+   C
       You must have (https://github.com/theosanderson/chronumental) installed to use this (pip install chronumental). Below are several parameters that are only used if Chronumental is called. Refer to the Chronumental documentation for more details
 ```
 
