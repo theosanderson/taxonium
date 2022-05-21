@@ -132,7 +132,7 @@ def do_processing(input_file,
     output_file.close()
 
     print(
-        f"Done. Output written to {output_file}, with {len(nodes_sorted_by_y)} nodes."
+        f"Done. Output written to {output_file.name}, with {len(nodes_sorted_by_y)} nodes."
     )
 
 
