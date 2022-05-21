@@ -32,8 +32,9 @@ def do_processing(input_file,
                   overlay_html=None,
                   remove_after_pipe=False,
                   clade_types=None,
-                  name_internal_nodes=False,shear =False
-                 ,shear_threshold = 1000):
+                  name_internal_nodes=False,
+                  shear=False,
+                  shear_threshold=1000):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -72,7 +73,9 @@ def do_processing(input_file,
             metadata_file=metadata_file,
             chronumental_steps=chronumental_steps,
             chronumental_date_output=chronumental_date_output,
-            chronumental_tree_output=chronumental_tree_output,shear=shear,shear_threshold=shear_threshold)
+            chronumental_tree_output=chronumental_tree_output,
+            shear=shear,
+            shear_threshold=shear_threshold)
 
     print("Ladderizing tree..")
     mat.tree.ladderize(ascending=False)
@@ -255,8 +258,8 @@ def main():
                   remove_after_pipe=args.remove_after_pipe,
                   clade_types=args.clade_types,
                   name_internal_nodes=args.name_internal_nodes,
-                 shear = args.shear,
-                 shear_threshold = args.shear_threshold)
+                  shear=args.shear,
+                  shear_threshold=args.shear_threshold)
 
 
 if __name__ == "__main__":
