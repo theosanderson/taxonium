@@ -84,7 +84,7 @@ async function cleanup(tree) {
       mutations: emptyList,
       y: node.y,
       num_tips: node.num_tips,
-      is_tip: node.child.length==0,
+      is_tip: node.child.length == 0,
       node_id: node.node_id,
     };
   });
