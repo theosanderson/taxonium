@@ -184,18 +184,21 @@ class UsherMutationAnnotatedTree:
         elif len(parent.children) == 1:
             child = parent.children[0]
             for mutation in parent.nuc_mutations:
-                if mutation.one_indexed_position not in [x.one_indexed_position for x in child.nuc_mutations]:
+                if mutation.one_indexed_position not in [
+                        x.one_indexed_position for x in child.nuc_mutations
+                ]:
                     child.nuc_mutations.append(mutation)
-            if hasattr(parent,"clades"):
+            if hasattr(parent, "clades"):
                 for clade_type, clade_annotation in parent.clades.items():
-                    if clade_type not in child.clades or child.clades[clade_type] == "":
+                    if clade_type not in child.clades or child.clades[
+                            clade_type] == "":
                         child.clades[clade_type] = clade_annotation
             grandparent = parent.parent
             grandparent.remove_child(parent)
             parent.remove_child(child)
             grandparent.add_child(child)
 
-    def shear_tree(self, theshold = 1000):
+    def shear_tree(self, theshold=1000):
         """Consider each node. If at any point a child has fewer than 1/threshold proportion of the num_tips, then prune it"""
         for node in alive_it(self.tree.traverse_postorder()):
             if len(node.children) > 1:
@@ -203,8 +206,6 @@ class UsherMutationAnnotatedTree:
                 for child in node.children:
                     if total_tips / child.num_tips > theshold:
                         self.prune_node(child)
-
-
 
     def create_mutation_like_objects_to_record_reference_seq(self):
         """Hacky way of recording the reference"""

@@ -224,12 +224,9 @@ def get_parser():
     parser.add_argument('--name_internal_nodes',
                         action='store_true',
                         help='If set, we will name internal nodes node_xxx')
-    parser.add_argument(
-        "--shear",
-        action='store_true',
-        help=
-        "If set, we will shear the tree"
-        )
+    parser.add_argument("--shear",
+                        action='store_true',
+                        help="If set, we will shear the tree")
     parser.add_argument('--shear_threshold',
                         type=float,
                         help='How to shear tree',
