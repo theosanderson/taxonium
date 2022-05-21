@@ -189,9 +189,7 @@ export async function processNewick(data, sendStatusMessage) {
     overwrite_config: { num_tips: total_tips },
   };
 
-  sendStatusMessage({
-    message: "Finalising for display",
-  });
+  
 
   return output;
 }
@@ -251,13 +249,6 @@ export async function processMetadataFile(data, sendStatusMessage) {
 export async function processNewickAndMetadata(data, sendStatusMessage) {
   const treePromise = processNewick(data, sendStatusMessage);
 
-  //fake promise
-  /*const treePromise = new Promise((resolve, reject) => {
-    resolve({
-      nodes: [],
-    });
-  }
-  );*/
   const metadataInput = data.metadata;
   if (!metadataInput) {
     return await treePromise;
@@ -271,6 +262,9 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
   const blanks = Object.fromEntries(
     headers.slice(1).map((x) => ["meta_" + x, ""])
   );
+  sendStatusMessage({
+    message: "Assigning metadata to nodes",
+  });
   tree.nodes.forEach((node) => {
     const this_metadata = metadata[node.name];
     if (this_metadata) {
