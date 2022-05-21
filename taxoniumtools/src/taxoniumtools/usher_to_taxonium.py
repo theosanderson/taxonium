@@ -64,9 +64,8 @@ def do_processing(input_file,
         genbank_file,
         clade_types=clade_types,
         name_internal_nodes=name_internal_nodes,
-        
-            shear=shear,
-            shear_threshold=shear_threshold)
+        shear=shear,
+        shear_threshold=shear_threshold)
     f.close()
 
     if chronumental_enabled:
