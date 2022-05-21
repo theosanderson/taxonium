@@ -42,9 +42,7 @@ Right now Taxoniumtools is limited in the types of genome annotations it can sup
    :module: taxoniumtools.src.taxoniumtools.usher_to_taxonium
    :func: get_parser
    :prog: usher_to_taxonium
-```
-
-```
+   
    This tool with convert an UShER protobuf file into a Taxonium file. At its simplest it just takes the `-i` and `-o` parameters, describing the input and output files. But for the most complete results you can add metadata, a reference genome, or even create a time tree.
 
    config_json
