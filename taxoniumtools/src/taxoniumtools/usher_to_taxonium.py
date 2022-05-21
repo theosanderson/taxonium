@@ -63,7 +63,10 @@ def do_processing(input_file,
         f,
         genbank_file,
         clade_types=clade_types,
-        name_internal_nodes=name_internal_nodes)
+        name_internal_nodes=name_internal_nodes,
+        
+            shear=shear,
+            shear_threshold=shear_threshold)
     f.close()
 
     if chronumental_enabled:
@@ -73,9 +76,7 @@ def do_processing(input_file,
             metadata_file=metadata_file,
             chronumental_steps=chronumental_steps,
             chronumental_date_output=chronumental_date_output,
-            chronumental_tree_output=chronumental_tree_output,
-            shear=shear,
-            shear_threshold=shear_threshold)
+            chronumental_tree_output=chronumental_tree_output)
 
     print("Ladderizing tree..")
     mat.tree.ladderize(ascending=False)
