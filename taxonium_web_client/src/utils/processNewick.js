@@ -189,8 +189,6 @@ export async function processNewick(data, sendStatusMessage) {
     overwrite_config: { num_tips: total_tips },
   };
 
-  
-
   return output;
 }
 
