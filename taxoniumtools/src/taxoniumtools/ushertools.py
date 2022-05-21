@@ -162,8 +162,6 @@ class UsherMutationAnnotatedTree:
         self.annotate_mutations()
         self.annotate_clades(clade_types)
 
-
-
         self.expand_condensed_nodes()
         self.assign_num_tips()
         print(f"Loaded initial tree with {self.tree.root.num_tips} tips")
@@ -176,7 +174,6 @@ class UsherMutationAnnotatedTree:
         if genbank_file:
             self.load_genbank_file(genbank_file)
             self.perform_aa_analysis()
-
 
     def prune_node(self, node_to_prune):
         """Remove node from parent, then check if parent has zero descendants. If so remove it.
