@@ -135,30 +135,36 @@ def do_processing(input_file,
 def get_parser():
     parser = argparse.ArgumentParser(
         description='Convert a Usher pb to Taxonium jsonl format')
-    parser.add_argument('--input',
+    parser.add_argument('-i',
+                        '--input',
                         type=str,
                         help='File path to input Usher protobuf file (.pb)',
                         required=True)
-    parser.add_argument('--output',
+    parser.add_argument('-o',
+                        '--output',
                         type=str,
                         help='File path for output Taxonium jsonl file',
                         required=True)
-    parser.add_argument('--metadata',
+    parser.add_argument('-m',
+                        '--metadata',
                         type=str,
                         help='File path for input metadata file (CSV/TSV)')
     parser.add_argument(
+        '-g',
         '--genbank',
         type=str,
         help=
         'File path for GenBank file containing reference genome (N.B. currently only forward genes are supported, and only one chromosome, and no compound features)'
     )
     parser.add_argument(
+        '-g',
         "--columns",
         type=str,
         help=
         "Column names to include in the metadata, separated by columns, e.g. `pangolin_lineage,country`"
     )
     parser.add_argument(
+        '-C',
         '--chronumental',
         action='store_true',
         help=
@@ -186,12 +192,14 @@ def get_parser():
         "A reference node to be used for Chronumental. This should be earlier in the outbreak and have a good defined date. If not set the oldest sample will be automatically picked by Chronumental.",
         default=None)
     parser.add_argument(
+        '-j',
         "--config_json",
         type=str,
         help=
         "A JSON file to use as a config file containing things such as search parameters",
         default=None)
-    parser.add_argument("--title",
+    parser.add_argument('-t',
+                        "--title",
                         type=str,
                         help="A title for the tree",
                         default=None)
@@ -205,7 +213,7 @@ def get_parser():
         '--remove_after_pipe',
         action='store_true',
         help=
-        'If set, we will remove anything after a pipe (|) in each node\'s name, _after_ joining to metadata'
+        'If set, we will remove anything after a pipe (|) in each node\'s name, after joining to metadata'
     )
     parser.add_argument(
         "--clade_types",
