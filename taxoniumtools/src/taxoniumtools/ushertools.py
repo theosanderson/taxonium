@@ -161,16 +161,22 @@ class UsherMutationAnnotatedTree:
 
         self.annotate_mutations()
         self.annotate_clades(clade_types)
-        self.assign_num_tips()
-        if shear:
-            self.shear_tree(shear_threshold)
+
+
 
         self.expand_condensed_nodes()
+        self.assign_num_tips()
+        print(f"Loaded initial tree with {self.tree.root.num_tips} tips")
+        if shear:
+            print("Shearing tree...")
+            self.shear_tree(shear_threshold)
+        self.assign_num_tips()
+        print(f"Tree to use now has {self.tree.root.num_tips} tips")
         self.set_branch_lengths()
         if genbank_file:
             self.load_genbank_file(genbank_file)
             self.perform_aa_analysis()
-        self.assign_num_tips()
+
 
     def prune_node(self, node_to_prune):
         """Remove node from parent, then check if parent has zero descendants. If so remove it.
