@@ -1,3 +1,4 @@
+from concurrent.futures import thread
 from . import parsimony_pb2
 import treeswift
 from alive_progress import alive_it, alive_bar
@@ -145,7 +146,9 @@ class UsherMutationAnnotatedTree:
                  tree_file,
                  genbank_file=None,
                  name_internal_nodes=False,
-                 clade_types=[]):
+                 clade_types=[],
+                 shear=False,
+                 shear_threshold=1000):
         self.data = parsimony_pb2.data()
         self.data.ParseFromString(tree_file.read())
         self.condensed_nodes_dict = self.get_condensed_nodes_dict(
@@ -158,6 +161,9 @@ class UsherMutationAnnotatedTree:
 
         self.annotate_mutations()
         self.annotate_clades(clade_types)
+        self.assign_num_tips()
+        if shear:
+            self.shear_tree(shear_threshold)
 
         self.expand_condensed_nodes()
         self.set_branch_lengths()
@@ -165,6 +171,41 @@ class UsherMutationAnnotatedTree:
             self.load_genbank_file(genbank_file)
             self.perform_aa_analysis()
         self.assign_num_tips()
+
+    def prune_node(self, node_to_prune):
+        """Remove node from parent, then check if parent has zero descendants. If so remove it.
+        If parent has a single descendant, then give the parent's mutations to the descendant, unless they
+        conflict with the descendants own mutations. Also give the parent's clade annotations to the descendant,
+        unless they conflict. Then prune the parent, and instead add this child to parent's parent."""
+        parent = node_to_prune.parent
+        parent.remove_child(node_to_prune)
+        if len(parent.children) == 0:
+            self.prune_node(parent)
+        elif len(parent.children) == 1:
+            child = parent.children[0]
+            for mutation in parent.nuc_mutations:
+                if mutation.one_indexed_position not in [
+                        x.one_indexed_position for x in child.nuc_mutations
+                ]:
+                    child.nuc_mutations.append(mutation)
+            if hasattr(parent, "clades"):
+                for clade_type, clade_annotation in parent.clades.items():
+                    if clade_type not in child.clades or child.clades[
+                            clade_type] == "":
+                        child.clades[clade_type] = clade_annotation
+            grandparent = parent.parent
+            grandparent.remove_child(parent)
+            parent.remove_child(child)
+            grandparent.add_child(child)
+
+    def shear_tree(self, theshold=1000):
+        """Consider each node. If at any point a child has fewer than 1/threshold proportion of the num_tips, then prune it"""
+        for node in alive_it(self.tree.traverse_postorder()):
+            if len(node.children) > 1:
+                total_tips = node.num_tips
+                for child in node.children:
+                    if total_tips / child.num_tips > theshold:
+                        self.prune_node(child)
 
     def create_mutation_like_objects_to_record_reference_seq(self):
         """Hacky way of recording the reference"""
