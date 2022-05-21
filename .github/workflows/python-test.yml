@@ -51,7 +51,7 @@ jobs:
       - name: Test no genbank, no metadata
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
-      - name: Test no genbank, no metadata
+      - name: Test shear
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-shear.jsonl.gz --shear
       - uses: actions/upload-artifact@v3
