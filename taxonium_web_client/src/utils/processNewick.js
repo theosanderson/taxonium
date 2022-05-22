@@ -231,7 +231,14 @@ export async function processMetadataFile(data, sendStatusMessage) {
       headers = line.split(separator);
     } else {
       const values = line.split(separator);
-      const name = values[0];
+      let name
+      if(data.taxonColumn){
+        const taxon_column_index = headers.indexOf(data.taxonColumn);
+        name = values[taxon_column_index];
+      }
+      else{
+        name = values[0];
+      }
       const as_obj = {};
       values.slice(1).forEach((value, j) => {
         as_obj["meta_" + headers[j + 1]] = value;
