@@ -1,10 +1,12 @@
 # Taxonium
+
 Taxonium is a tool for exploring extremely large trees.
+
 <p align="center"><img src="https://user-images.githubusercontent.com/19732295/169698808-48204d73-c468-4e80-aff5-876e5df7eab4.png" width=250 /></p>
 
 ### [➡️ Launch Taxonium](https://taxonium.org)
-### [📚 Read the documentation](https://taxonium.readthedocs.io/en/latest/)
 
+### [📚 Read the documentation](https://taxonium.readthedocs.io/en/latest/)
 
 ## How do I..
 

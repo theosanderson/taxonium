@@ -205,7 +205,11 @@ export const useInputHelper = ({
       console.log("tree url set");
       const extra = {};
       if (query.metaUrl) {
-        extra.metadata = { filename: query.metaUrl, status: "url_supplied" };
+        extra.metadata = {
+          filename: query.metaUrl,
+          status: "url_supplied",
+          taxonColumn: query.taxonColumn,
+        };
       }
       setUploadedData({
         status: "url_supplied",
