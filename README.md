@@ -1,6 +1,6 @@
 # Taxonium
 
-Taxonium is a tool for exploring extremely large trees.
+Taxonium is a tool for exploring trees.
 
 <p align="center"><a href="https://taxonium.org"><img src="https://user-images.githubusercontent.com/19732295/169698808-48204d73-c468-4e80-aff5-876e5df7eab4.png" width=250 /></a></p>
 
