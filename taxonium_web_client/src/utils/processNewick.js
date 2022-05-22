@@ -189,8 +189,6 @@ export async function processNewick(data, sendStatusMessage) {
     overwrite_config: { num_tips: total_tips },
   };
 
-  
-
   return output;
 }
 
@@ -231,12 +229,11 @@ export async function processMetadataFile(data, sendStatusMessage) {
       headers = line.split(separator);
     } else {
       const values = line.split(separator);
-      let name
-      if(data.taxonColumn){
+      let name;
+      if (data.taxonColumn) {
         const taxon_column_index = headers.indexOf(data.taxonColumn);
         name = values[taxon_column_index];
-      }
-      else{
+      } else {
         name = values[0];
       }
       const as_obj = {};
