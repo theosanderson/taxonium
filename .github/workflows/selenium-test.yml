@@ -32,7 +32,7 @@ jobs:
       - name: Remove Chrome
         run: sudo apt purge google-chrome-stable
       - name: Install all necessary packages
-        run: pip install requests beautifulsoup4 pandas webdriver-manager selenium
+        run: pip install requests beautifulsoup4 pandas webdriver-manager==3.5.4 selenium
       - name: Run Selenium tests
         run: python .github/selenium_tests/selenium_tests.py "http://localhost:8000/?protoUrl=http://localhost:3000/tfci-taxonium-config.jsonl.gz"
 
