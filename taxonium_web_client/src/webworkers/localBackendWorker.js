@@ -156,6 +156,7 @@ const getConfig = async () => {
     "num_tips",
     "time_x",
     "clades",
+    "is_tip",
   ];
 
   config.x_accessors = processedUploadedData.nodes[0].x_time
