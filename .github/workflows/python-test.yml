@@ -51,13 +51,13 @@ jobs:
       - name: Test no genbank, no metadata
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
-      - name: Test shear
+      - name: Test only varaible sites
         run: |
-          usher_to_taxonium --input tfci.pb --output tfci-shear.jsonl.gz --shear
+          usher_to_taxonium --input tfci.pb --output tfci-var.jsonl.gz  --only_variable_sites --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage 
       - uses: actions/upload-artifact@v3
         with:
-          name: tfci-shear
-          path: tfci-shear.jsonl.gz
+          name: tfci-var
+          path: tfci-var.jsonl.gz
       - uses: LouisBrunner/checks-action@v1.1.1
         if: always()
         with:
