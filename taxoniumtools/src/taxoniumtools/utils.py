@@ -99,6 +99,19 @@ def set_x_coords(root, chronumental_enabled):
             node.x_dist = node.parent.x_dist + node.edge_length
             if chronumental_enabled:
                 node.x_time = node.parent.x_time + node.time_length
+    
+    normalise_specific_x_coords(root, "x_dist", fixed_val=100)
+    if chronumental_enabled:
+        normalise_specific_x_coords(root, "x_time", fixed_val=100)
+
+def normalise_specific_x_coords(root, attr, fixed_val=100):
+    """List all x-coordinates, then find the 95th percentile and normalise it to be the fixed val"""
+    x_coords = [getattr(node, attr) for node in root.traverse_preorder()]
+    x_coords = sorted(x_coords)
+    percentile_95 = x_coords[int(len(x_coords) * 0.95)]
+    for node in alive_it(list(root.traverse_preorder()),
+                         title="Normalising x coordinates"):
+        setattr(node, attr, fixed_val * (getattr(node, attr) / percentile_95))
 
 
 def set_terminal_y_coords(root):
