@@ -23,19 +23,18 @@ const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
   : process.env.REACT_APP_DEFAULT_BACKEND;
 
 const default_query = {
-    srch: JSON.stringify([
-      //first_search
-    ]),
-    enabled: JSON.stringify({ [first_search.key]: true }),
-    backend: DEFAULT_BACKEND,
-    xType: "x_dist",
-    mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
-  }
+  srch: JSON.stringify([
+    //first_search
+  ]),
+  enabled: JSON.stringify({ [first_search.key]: true }),
+  backend: DEFAULT_BACKEND,
+  xType: "x_dist",
+  mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
+};
 
-if(window.location.hostname.includes("mpxtree.taxonium.org")){
-  default_query.protoUrl = "https//mpx-tree.vercel.app/mpx.jsonl.gz"
-  defaultQUery.configUrl= "https//mpx-tree.vercel.app/config.json"
-  
+if (window.location.hostname.includes("mpxtree.taxonium.org")) {
+  default_query.protoUrl = "https//mpx-tree.vercel.app/mpx.jsonl.gz";
+  defaultQUery.configUrl = "https//mpx-tree.vercel.app/config.json";
 }
 
 function App() {
