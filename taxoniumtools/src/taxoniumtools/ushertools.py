@@ -40,6 +40,7 @@ def get_codon_table():
 
 codon_table = get_codon_table()
 
+
 def get_gene_name(cds):
     """Returns gene if available, otherwise locus tag"""
     if "gene" in cds.qualifiers:
