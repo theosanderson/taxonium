@@ -116,7 +116,7 @@ def do_processing(input_file,
         "version": version,
         "mutations": all_mut_objects,
         "total_nodes": len(nodes_sorted_by_y),
-        "total_tips": total_tips,
+        "num_tips": total_tips,
         "config": config
     }
 
