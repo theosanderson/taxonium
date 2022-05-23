@@ -103,6 +103,11 @@ const useColor = (colorMapping) => {
       if (string === "Denmark") {
         return [24, 112, 32]; // diff to UK
       }
+      
+      if (string === "Democratic Republic of the Congo") {
+        return [17, 58, 99]; // otherwise too similar to CAR
+      }
+      
 
       string = string.split("").reverse().join("");
       var hash = 0;
