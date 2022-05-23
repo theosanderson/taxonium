@@ -8,8 +8,6 @@ Taxonium is a tool for exploring trees.
 
 ### [📚 Read the documentation](https://taxonium.readthedocs.io/en/latest/)
 
-
-
 ## How do I..
 
 ### explore the global SARS-CoV-2 phylogeny?
