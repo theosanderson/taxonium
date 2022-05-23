@@ -32,7 +32,7 @@ const default_query = {
   mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
 };
 
-if (window.location.hostname.includes("mpxtree.taxonium.org")) {
+if (window.location.hostname.includes("mpx.taxonium.org")) {
   default_query.protoUrl = "https//mpx-tree.vercel.app/mpx.jsonl.gz";
   default_query.configUrl = "https//mpx-tree.vercel.app/config.json";
 }
