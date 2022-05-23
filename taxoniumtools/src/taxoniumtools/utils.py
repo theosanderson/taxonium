@@ -104,7 +104,7 @@ def set_x_coords(root, chronumental_enabled):
     if chronumental_enabled:
         normalise_specific_x_coords(root, "x_time", fixed_val=100)
 
-def normalise_specific_x_coords(root, attr, fixed_val=100):
+def normalise_specific_x_coords(root, attr, fixed_val=75):
     """List all x-coordinates, then find the 95th percentile and normalise it to be the fixed val"""
     x_coords = [getattr(node, attr) for node in root.traverse_preorder()]
     x_coords = sorted(x_coords)
