@@ -91,7 +91,7 @@ def do_processing(input_file,
     all_aa_muts_objects = utils.get_all_aa_muts(mat.tree.root)
     if only_variable_sites:
         variable_muts = [x for x in all_aa_muts_objects if x.initial_aa != x.final_aa]
-        variable_sites_aa = set((x.gene,x.one_indexed_codon) for x in variable_muts)
+        variable_sites = set((x.gene,x.one_indexed_codon) for x in variable_muts)
         all_aa_muts_objects = [x for x in all_aa_muts_objects if (x.gene,x.one_indexed_codon) in variable_sites]
         mat.tree.root.aa_muts = [x for x in mat.tree.root.aa_muts if (x.gene,x.one_indexed_codon) in variable_sites]
     all_nuc_muts = utils.get_all_nuc_muts(mat.tree.root)
