@@ -10,8 +10,6 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
   useEffect(() => {
     console.log("GETTING CONFIG");
     backend.getConfig((results) => {
-      
-
       let fromFile = {};
 
       function afterPossibleGet() {
@@ -34,10 +32,10 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
         backend.setStatusMessage({ message: "Connecting" });
         console.log("CONFIG", results);
         const viewState = {
-        ...view.viewState,
-        target: [2000, results.initial_y],
-        zoom: results.initial_zoom,
-      };
+          ...view.viewState,
+          target: [2000, results.initial_y],
+          zoom: results.initial_zoom,
+        };
 
         const oldViewState = { ...viewState };
         view.onViewStateChange({
