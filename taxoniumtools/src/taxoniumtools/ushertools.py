@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from collections import defaultdict
 
 
-@dataclass
-class AnnotatedMutation(eq=True, frozen=True):
+@dataclass(eq=True, frozen=True)
+class AnnotatedMutation:
     genome_position: int  #0-based
     genome_residue: str
     codon_number: int  #0-based
