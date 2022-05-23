@@ -7,9 +7,10 @@ from Bio import SeqIO
 from dataclasses import dataclass
 from collections import defaultdict
 
+
+
 def reverse_complement(input_string):
     return input_string.translate(str.maketrans("ATCG", "TAGC"))[::-1]
-
 
 @dataclass(eq=True, frozen=True)
 class AnnotatedMutation:
@@ -74,6 +75,8 @@ def get_mutations(past_nuc_muts_dict,
     for gene_codon, mutations in by_gene_codon.items():
         gene, codon_number, codon_start, codon_end, strand = gene_codon
         very_initial_codon = seq[codon_start:codon_end]
+        # For most of this function we ignore strand - so for negative strand we
+        # are actually collecting the reverse complement of the codon
         initial_codon = list(very_initial_codon)
 
         relevant_past_muts = [(x, past_nuc_muts_dict[x])
@@ -90,6 +93,11 @@ def get_mutations(past_nuc_muts_dict,
 
         initial_codon = "".join(initial_codon)
         final_codon = "".join(final_codon)
+
+        if strand == -1:
+            initial_codon = reverse_complement(initial_codon)
+            final_codon = reverse_complement(final_codon)
+
         initial_codon_trans = codon_table[initial_codon]
         final_codon_trans = codon_table[final_codon]
         if initial_codon_trans != final_codon_trans or disable_check_for_differences:
