@@ -66,7 +66,7 @@ def do_processing(input_file,
         clade_types=clade_types,
         name_internal_nodes=name_internal_nodes,
         shear=shear,
-        shear_threshold=shear_threshold
+        shear_threshold=shear_threshold,
         only_variable_sites=only_variable_sites)
     f.close()
 
