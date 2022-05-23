@@ -91,16 +91,15 @@ def do_processing(input_file,
     all_aa_muts_objects = utils.get_all_aa_muts(mat.tree.root)
     if only_variable_sites:
         variable_muts = [x for x in all_aa_muts_objects if x.initial_aa != x.final_aa]
-        variable_sites = set((x.gene,x.one_indexed_codon) for x in variable_muts)
+        variable_sites_aa = set((x.gene,x.one_indexed_codon) for x in variable_muts)
         all_aa_muts_objects = [x for x in all_aa_muts_objects if (x.gene,x.one_indexed_codon) in variable_sites]
+        mat.tree.root.aa_muts = [x for x in mat.tree.root.aa_muts if (x.gene,x.one_indexed_codon) in variable_sites]
     all_nuc_muts = utils.get_all_nuc_muts(mat.tree.root)
     if only_variable_sites:
         variable_muts = [x for x in all_nuc_muts if x.par_nuc != x.mut_nuc]
         variable_sites = set((x.chromosome,x.one_indexed_position) for x in variable_muts)
         all_nuc_muts = [x for x in all_nuc_muts if (x.chromosome,x.one_indexed_position) in variable_sites]
-    if only_variable_sites:
-        mat.tree.root.aa_muts = []
-        mat.tree.root.nuc_mutations = []
+        mat.tree.root.nuc_mutations = [x for x in mat.tree.root.nuc_mutations if (x.chromosome,x.one_indexed_position) in variable_sites]
     all_mut_inputs = all_aa_muts_objects + all_nuc_muts
     all_mut_objects = [
         utils.make_aa_object(i, input_thing) if input_thing.type == "aa"
