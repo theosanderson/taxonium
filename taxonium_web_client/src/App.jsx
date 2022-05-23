@@ -34,7 +34,7 @@ const default_query = {
 
 if (window.location.hostname.includes("mpxtree.taxonium.org")) {
   default_query.protoUrl = "https//mpx-tree.vercel.app/mpx.jsonl.gz";
-  defaultQUery.configUrl = "https//mpx-tree.vercel.app/config.json";
+  default_query.configUrl = "https//mpx-tree.vercel.app/config.json";
 }
 
 function App() {
