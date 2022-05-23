@@ -135,14 +135,14 @@ def get_all_nuc_muts(root):
     return list(all_nuc_muts)
 
 
-def make_aa_object(i, aa_tuple):
+def make_aa_object(i, aa_mutation):
     # Tuple format is gene, position, prev, next
-    gene, pos, prev, next = aa_tuple
+    
     return {
-        "gene": gene,
-        "previous_residue": prev,
-        "residue_pos": pos,
-        "new_residue": next,
+        "gene": aa_mutation.gene,
+        "previous_residue": aa_mutation.initial_aa,
+        "residue_pos": aa_mutation.one_indexed_codon,
+        "new_residue": aa_mutation.final_aa,
         "mutation_id": i,
         "type": "aa"
     }

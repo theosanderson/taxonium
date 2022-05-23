@@ -34,7 +34,8 @@ def do_processing(input_file,
                   clade_types=None,
                   name_internal_nodes=False,
                   shear=False,
-                  shear_threshold=1000):
+                  shear_threshold=1000,
+                  only_variable_sites=False):
 
     metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
 
@@ -65,7 +66,8 @@ def do_processing(input_file,
         clade_types=clade_types,
         name_internal_nodes=name_internal_nodes,
         shear=shear,
-        shear_threshold=shear_threshold)
+        shear_threshold=shear_threshold
+        only_variable_sites=only_variable_sites)
     f.close()
 
     if chronumental_enabled:
@@ -87,11 +89,19 @@ def do_processing(input_file,
     utils.set_internal_y_coords(mat.tree.root)
 
     nodes_sorted_by_y = utils.sort_on_y(mat)
-    all_aa_muts_tuples = utils.get_all_aa_muts(mat.tree.root)
+    all_aa_muts_objects = utils.get_all_aa_muts(mat.tree.root)
+    if only_variable_sites:
+        variable_muts = [x for x in all_aa_muts_objects if x.initial_aa != x.final_aa]
+        variable_sites = set((x.gene,x.one_indexed_codon) for x in variable_muts)
+        all_aa_muts_objects = [x for x in all_aa_muts_objects if (x.gene,x.one_indexed_codon) in variable_sites]
     all_nuc_muts = utils.get_all_nuc_muts(mat.tree.root)
-    all_mut_inputs = all_aa_muts_tuples + all_nuc_muts
+    if only_variable_sites:
+        variable_muts = [x for x in all_nuc_muts if x.par_nuc != x.mut_nuc]
+        variable_sites = set((x.chromosome,x.one_indexed_position) for x in variable_muts)
+        all_nuc_muts = [x for x in all_nuc_muts if (x.chromosome,x.one_indexed_position) in variable_sites]
+    all_mut_inputs = all_aa_muts_objects + all_nuc_muts
     all_mut_objects = [
-        utils.make_aa_object(i, input_thing) if isinstance(input_thing, tuple)
+        utils.make_aa_object(i, input_thing) if input_thing.type == "aa"
         else utils.make_nuc_object(i, input_thing)
         for i, input_thing in enumerate(all_mut_inputs)
     ]
@@ -230,11 +240,15 @@ def get_parser():
                         help='If set, we will name internal nodes node_xxx')
     parser.add_argument("--shear",
                         action='store_true',
-                        help="If set, we will shear the tree")
+                        help="If set, we will shear the tree [not working correctly atm]")
     parser.add_argument('--shear_threshold',
                         type=float,
-                        help='How to shear tree',
+                        help='How to shear tree [not working correctly atm]',
                         default=1000)
+    parser.add_argument('--only_variable_sites',
+                        action='store_true',
+                        help="Only store information about the root sequence if there is variation somewhere in the tree. This may be removed in future versions.")
+
     return parser
 
 
@@ -259,7 +273,8 @@ def main():
                   clade_types=args.clade_types,
                   name_internal_nodes=args.name_internal_nodes,
                   shear=args.shear,
-                  shear_threshold=args.shear_threshold)
+                  shear_threshold=args.shear_threshold,
+                  only_variable_sites = args.only_variable_sites)
 
 
 if __name__ == "__main__":

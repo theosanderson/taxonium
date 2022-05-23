@@ -3,6 +3,7 @@ from . import parsimony_pb2
 import treeswift
 from alive_progress import alive_it, alive_bar
 from Bio import SeqIO
+from typing import ClassVar
 
 from dataclasses import dataclass
 from collections import defaultdict
@@ -23,12 +24,24 @@ class AnnotatedMutation:
     strand: int
 
 
+
+@dataclass(eq=True, frozen=True)
+class AAMutation:
+    gene: str
+    one_indexed_codon: int
+    initial_aa: str
+    final_aa: str
+    type: str = "aa"
+    
+
+
 @dataclass(eq=True, frozen=True)
 class NucMutation:  #hashable
     one_indexed_position: int
     par_nuc: str
     mut_nuc: str
     chromosome: str = "chrom"
+    type: str = "nt"
 
 
 def get_codon_table():
@@ -111,8 +124,9 @@ def get_mutations(past_nuc_muts_dict,
         initial_codon_trans = codon_table[initial_codon]
         final_codon_trans = codon_table[final_codon]
         if initial_codon_trans != final_codon_trans or disable_check_for_differences:
-            mutations_here.append((gene, codon_number + 1, initial_codon_trans,
-                                   final_codon_trans))
+            #(gene, codon_number + 1, initial_codon_trans, final_codon_trans)
+                                  
+            mutations_here.append( AAMutation(gene=gene, one_indexed_codon=codon_number+1, initial_aa=initial_codon_trans, final_aa=final_codon_trans))
 
     # update past_nuc_muts_dict
     for mutation in annotated_mutations:
