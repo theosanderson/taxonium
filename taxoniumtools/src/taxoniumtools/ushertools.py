@@ -197,13 +197,14 @@ class UsherMutationAnnotatedTree:
                             clade_type] == "":
                         child.clades[clade_type] = clade_annotation
             grandparent = parent.parent
-            grandparent.remove_child(parent)
             parent.remove_child(child)
-            grandparent.add_child(child)
+            if grandparent:
+                grandparent.remove_child(parent)
+                grandparent.add_child(child)
 
     def shear_tree(self, theshold=1000):
         """Consider each node. If at any point a child has fewer than 1/threshold proportion of the num_tips, then prune it"""
-        for node in alive_it(self.tree.traverse_postorder()):
+        for node in alive_it(list(self.tree.traverse_postorder())):
             if len(node.children) > 1:
                 total_tips = node.num_tips
                 for child in node.children:
