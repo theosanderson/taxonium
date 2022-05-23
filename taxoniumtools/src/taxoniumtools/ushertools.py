@@ -40,6 +40,15 @@ def get_codon_table():
 
 codon_table = get_codon_table()
 
+def get_gene_name(cds):
+    """Returns gene if available, otherwise locus tag"""
+    if "gene" in cds.qualifiers:
+        return cds.qualifiers["gene"][0]
+    elif "locus_tag" in cds.qualifiers:
+        return cds.qualifiers["locus_tag"][0]
+    else:
+        raise ValueError(f"No gene name or locus tag for {cds}")
+
 
 def get_mutations(past_nuc_muts_dict,
                   new_nuc_mutations_here,
@@ -58,7 +67,7 @@ def get_mutations(past_nuc_muts_dict,
                 AnnotatedMutation(
                     genome_position=mutation.one_indexed_position - 1,
                     genome_residue=mutation.mut_nuc,
-                    gene=cds.qualifiers["gene"][0],
+                    gene=get_gene_name(cds),
                     codon_number=codon_number,
                     codon_start=codon_start,
                     codon_end=codon_end,
@@ -275,7 +284,7 @@ class UsherMutationAnnotatedTree:
 
         for cds in self.cdses:
 
-            assert cds.location.strand == 1
+            #assert cds.location.strand == 1
             assert len(cds.location.parts) == 1
             assert len(cds.location.parts[0]) % 3 == 0
 
