@@ -9,14 +9,14 @@ from collections import defaultdict
 
 
 @dataclass
-class AnnotatedMutation:  #not-hashable atm
+class AnnotatedMutation(eq=True, frozen=True):
     genome_position: int  #0-based
     genome_residue: str
-    cds: lambda: "CDS"
     codon_number: int  #0-based
     codon_start: int  #0-based
     codon_end: int  #0-based
     gene: str
+    strand: int
 
 
 @dataclass(eq=True, frozen=True)
@@ -58,7 +58,7 @@ def get_mutations(past_nuc_muts_dict,
                     codon_number=codon_number,
                     codon_start=codon_start,
                     codon_end=codon_end,
-                    cds=cds))
+                    strand=gene.strand))
 
     by_gene_codon = defaultdict(list)
 
@@ -133,10 +133,16 @@ def find_cds(position, cdses):
 
 
 def find_codon(position, cds):
-    # Get the codon number within the CDS
-    codon_number = (position - cds.location.start) // 3
-    codon_start = cds.location.start + codon_number * 3
-    codon_end = codon_start + 3
+    if cds.strand == 1:
+        # Get the codon number within the CDS
+        codon_number = (position - cds.location.start) // 3
+        codon_start = cds.location.start + codon_number * 3
+        codon_end = codon_start + 3
+    else:
+        # Get the codon number within the CDS
+        codon_number = (cds.location.end - position - 1) // 3
+        codon_end = cds.location.end - codon_number * 3
+        codon_start = codon_end - 3
     return codon_number, codon_start, codon_end
 
 
