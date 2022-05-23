@@ -96,8 +96,8 @@ def do_processing(input_file,
         mat.tree.root.aa_muts = [x for x in mat.tree.root.aa_muts if (x.gene,x.one_indexed_codon) in variable_sites]
     all_nuc_muts = utils.get_all_nuc_muts(mat.tree.root)
     if only_variable_sites:
-        variable_muts = [x for x in all_nuc_muts if x.par_nuc != x.mut_nuc]
-        variable_sites = set((x.chromosome,x.one_indexed_position) for x in variable_muts)
+        variable_muts = [x for x in all_nuc_muts if x.par_nuc != x.mut_nuc and x.par_nuc!="X"]
+        variable_sites = set((x.chromosome,x.one_indexed_position) for x in variable_muts )
         all_nuc_muts = [x for x in all_nuc_muts if (x.chromosome,x.one_indexed_position) in variable_sites]
         mat.tree.root.nuc_mutations = [x for x in mat.tree.root.nuc_mutations if (x.chromosome,x.one_indexed_position) in variable_sites]
     all_mut_inputs = all_aa_muts_objects + all_nuc_muts
