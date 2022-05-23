@@ -112,11 +112,12 @@ def do_processing(input_file,
         for i, input_thing in enumerate(all_mut_inputs)
     }
 
+    config['num_tips'] = total_tips
+    
     first_json = {
         "version": version,
         "mutations": all_mut_objects,
         "total_nodes": len(nodes_sorted_by_y),
-        "num_tips": total_tips,
         "config": config
     }
 
