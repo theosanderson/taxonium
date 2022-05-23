@@ -33,8 +33,8 @@ const default_query = {
 };
 
 if (window.location.hostname.includes("mpx.taxonium.org")) {
-  default_query.protoUrl = "https//mpx-tree.vercel.app/mpx.jsonl.gz";
-  default_query.configUrl = "https//mpx-tree.vercel.app/config.json";
+  default_query.protoUrl = "https://mpx-tree.vercel.app/mpx.jsonl.gz";
+  default_query.configUrl = "https://mpx-tree.vercel.app/config.json";
 }
 
 function App() {
