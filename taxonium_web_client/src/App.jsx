@@ -22,12 +22,7 @@ const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
   ? "https://api.cov2tree.org"
   : process.env.REACT_APP_DEFAULT_BACKEND;
 
-function App() {
-  const [uploadedData, setUploadedData] = useState(null);
-
-  // check if .epicov.org is in the URL
-
-  const [query, updateQuery] = useQueryAsState({
+const default_query = {
     srch: JSON.stringify([
       //first_search
     ]),
@@ -35,7 +30,20 @@ function App() {
     backend: DEFAULT_BACKEND,
     xType: "x_dist",
     mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
-  });
+  }
+
+if(window.location.hostname.includes("mpxtree.taxonium.org")){
+  default_query.protoUrl = "https//mpx-tree.vercel.app/mpx.jsonl.gz"
+  defaultQUery.configUrl= "https//mpx-tree.vercel.app/config.json:
+  
+}
+
+function App() {
+  const [uploadedData, setUploadedData] = useState(null);
+
+  // check if .epicov.org is in the URL
+
+  const [query, updateQuery] = useQueryAsState(default_query);
 
   const inputHelper = useInputHelper({
     setUploadedData,
