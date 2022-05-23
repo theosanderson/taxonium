@@ -7,6 +7,9 @@ from Bio import SeqIO
 from dataclasses import dataclass
 from collections import defaultdict
 
+def reverse_complement(input_string):
+    return input_string.translate(str.maketrans("ATCG", "TAGC"))[::-1]
+
 
 @dataclass(eq=True, frozen=True)
 class AnnotatedMutation:
@@ -58,18 +61,18 @@ def get_mutations(past_nuc_muts_dict,
                     codon_number=codon_number,
                     codon_start=codon_start,
                     codon_end=codon_end,
-                    strand=gene.strand))
+                    strand=cds.strand))
 
     by_gene_codon = defaultdict(list)
 
     for mutation in annotated_mutations:
         by_gene_codon[(mutation.gene, mutation.codon_number,
                        mutation.codon_start,
-                       mutation.codon_end)].append(mutation)
+                       mutation.codon_end, mutation.strand)].append(mutation)
 
     mutations_here = []
     for gene_codon, mutations in by_gene_codon.items():
-        gene, codon_number, codon_start, codon_end = gene_codon
+        gene, codon_number, codon_start, codon_end, strand = gene_codon
         very_initial_codon = seq[codon_start:codon_end]
         initial_codon = list(very_initial_codon)
 
