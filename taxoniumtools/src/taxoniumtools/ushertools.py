@@ -11,6 +11,7 @@ from collections import defaultdict
 def reverse_complement(input_string):
     return input_string.translate(str.maketrans("ATCG", "TAGC"))[::-1]
 
+
 @dataclass(eq=True, frozen=True)
 class AnnotatedMutation:
     genome_position: int  #0-based
