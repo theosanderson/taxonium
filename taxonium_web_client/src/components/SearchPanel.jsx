@@ -228,9 +228,10 @@ function SearchPanel({
       )}
       {selectedDetails.nodeDetails && (
         <ListOutputModal
+          ariaHideApp={false}
           nodeId={selectedDetails.nodeDetails.node_id}
           backend={backend}
-          possibleKeys={["name", "meta_genbank_accession"]}
+          possibleKeys={["name",...config.keys_to_display]}
           listOutputModalOpen={listOutputModalOpen}
           setListOutputModalOpen={setListOutputModalOpen}
         />
