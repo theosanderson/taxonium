@@ -323,6 +323,8 @@ class UsherMutationAnnotatedTree:
         collected_mutations = {}
         for i, node in alive_it(list(enumerate(self.tree.root.traverse_postorder())),
                                 title="Getting root sequence"):
+            if node == self.tree.root:
+                continue
             for mutation in node.nuc_mutations:
                 collected_mutations[mutation.one_indexed_position] = mutation.par_nuc
         self.root_sequence = list(str(self.genbank.seq))
