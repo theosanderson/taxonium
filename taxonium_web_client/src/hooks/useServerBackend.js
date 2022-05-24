@@ -64,6 +64,9 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         JSON.stringify(singleSearch) +
         "&sid=" +
         sid;
+
+        const xType = boundsForQueries && bounds.xType ? bounds.xType : "x_dist";
+
       if (
         boundsForQueries &&
         boundsForQueries.min_x &&
@@ -80,8 +83,10 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           "&min_y=" +
           boundsForQueries.min_y +
           "&max_y=" +
-          boundsForQueries.max_y;
+          boundsForQueries.max_y 
+
       }
+      url= url+ "&xType=" + xType
 
       axios
         .get(url)
