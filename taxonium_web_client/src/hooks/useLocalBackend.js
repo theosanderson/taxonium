@@ -153,7 +153,7 @@ function useLocalBackend(uploaded_data, proto) {
     };
   }, []);
 
-  const getTipAtts = useCallback( (nodeId,selectedKey, callback) => {
+  const getTipAtts = useCallback((nodeId, selectedKey, callback) => {
     console.log("getTipAtts", nodeId, selectedKey);
     worker.postMessage({
       type: "list",
@@ -163,10 +163,9 @@ function useLocalBackend(uploaded_data, proto) {
 
     onListReceipt = (receivedData) => {
       console.log("got list result", receivedData);
-      callback(null,receivedData);
+      callback(null, receivedData);
     };
-  }
-  , []);
+  }, []);
 
   return useMemo(() => {
     return {
@@ -176,7 +175,7 @@ function useLocalBackend(uploaded_data, proto) {
       getConfig,
       statusMessage,
       setStatusMessage,
-      getTipAtts
+      getTipAtts,
     };
   }, [
     queryNodes,
@@ -185,7 +184,7 @@ function useLocalBackend(uploaded_data, proto) {
     getConfig,
     statusMessage,
     setStatusMessage,
-    getTipAtts
+    getTipAtts,
   ]);
 }
 

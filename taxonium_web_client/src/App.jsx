@@ -38,14 +38,11 @@ if (window.location.hostname.includes("mpx.taxonium.org")) {
 }
 
 function App() {
-  
   const [uploadedData, setUploadedData] = useState(null);
 
   // check if .epicov.org is in the URL
 
   const [query, updateQuery] = useQueryAsState(default_query);
-  
- 
 
   const inputHelper = useInputHelper({
     setUploadedData,

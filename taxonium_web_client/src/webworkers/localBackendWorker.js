@@ -277,8 +277,6 @@ const getList = async (node_id, att) => {
   return atts;
 };
 
-
-
 onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
@@ -330,12 +328,9 @@ onmessage = async (event) => {
       const result = await getDetails(data.node_id);
       postMessage({ type: "details", data: result });
     }
-    if(data.type==="list"){
-     
+    if (data.type === "list") {
       const result = await getList(data.node_id, data.key);
       postMessage({ type: "list", data: result });
-
     }
   }
-
 };
