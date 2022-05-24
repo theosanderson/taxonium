@@ -100,9 +100,9 @@ def set_x_coords(root, chronumental_enabled):
             if chronumental_enabled:
                 node.x_time = node.parent.x_time + node.time_length
     
-    normalise_specific_x_coords(root, "x_dist", fixed_val=100)
+    normalise_specific_x_coords(root, "x_dist", fixed_val=600)
     if chronumental_enabled:
-        normalise_specific_x_coords(root, "x_time", fixed_val=100)
+        normalise_specific_x_coords(root, "x_time", fixed_val=600)
 
 def normalise_specific_x_coords(root, attr, fixed_val=75):
     """List all x-coordinates, then find the 95th percentile and normalise it to be the fixed val"""
