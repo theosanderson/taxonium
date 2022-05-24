@@ -65,7 +65,10 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         "&sid=" +
         sid;
 
-        const xType = boundsForQueries && boundsForQueries.xType ? boundsForQueries.xType : "x_dist";
+      const xType =
+        boundsForQueries && boundsForQueries.xType
+          ? boundsForQueries.xType
+          : "x_dist";
 
       if (
         boundsForQueries &&
@@ -83,10 +86,9 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           "&min_y=" +
           boundsForQueries.min_y +
           "&max_y=" +
-          boundsForQueries.max_y 
-
+          boundsForQueries.max_y;
       }
-      url= url+ "&xType=" + xType
+      url = url + "&xType=" + xType;
 
       axios
         .get(url)
@@ -130,6 +132,23 @@ function useServerBackend(backend_url, sid, url_on_fail) {
     [backend_url, sid, url_on_fail]
   );
 
+  const getTipAtts = useCallback(
+    (nodeId, selectedKey, callback) => {
+      let url =
+        backend_url +
+        "/tip_atts?id=" +
+        nodeId +
+        "&att=" +
+        selectedKey +
+        "&sid=" +
+        sid;
+      axios.get(url).then(function (response) {
+        callback(response.err, response.data);
+      });
+    },
+    [backend_url, sid]
+  );
+
   return useMemo(() => {
     return {
       queryNodes,
@@ -138,6 +157,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
       getConfig,
       setStatusMessage,
       statusMessage,
+      getTipAtts,
     };
   }, [
     queryNodes,
@@ -146,6 +166,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
     getConfig,
     setStatusMessage,
     statusMessage,
+    getTipAtts,
   ]);
 }
 

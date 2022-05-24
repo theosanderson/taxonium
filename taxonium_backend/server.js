@@ -14,7 +14,7 @@ const { program } = require("commander");
 
 program
   .option("--ssl", "use ssl")
-  .option("--port <port>", "port",8000)
+  .option("--port <port>", "port", 8000)
   .option("--config_json <config_json>", "config json")
   .option("--data_url <data url>", "data url")
   .option(
@@ -34,8 +34,6 @@ if (
   console.log("--data_url or --data_file must be supplied");
   process.exit(1);
 }
-
-
 
 import("taxonium_data_handling/importing.js").then((imported) => {
   importing = imported.default;
@@ -84,12 +82,16 @@ app.get("/search", function (req, res) {
   const spec = JSON.parse(JSON.parse(json));
   console.log(spec);
 
-  const minYbound = req.query.min_y!==undefined?req.query.min_y:processedData.overallMinY;
-  const maxYbound = req.query.max_y!==undefined?req.query.max_y:processedData.overallMaxY;
-  const minXbound = req.query.min_x!==undefined?req.query.min_x:processedData.overallMinX;
-  const maxXbound = req.query.max_x!==undefined?req.query.max_x:processedData.overallMaxX;
+  const minYbound =
+    req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
+  const maxYbound =
+    req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
+  const minXbound =
+    req.query.min_x !== undefined ? req.query.min_x : processedData.overallMinX;
+  const maxXbound =
+    req.query.max_x !== undefined ? req.query.max_x : processedData.overallMaxX;
 
-  const forSingleSearch= {
+  const forSingleSearch = {
     data: processedData.nodes,
     spec,
     min_y: minYbound,
@@ -338,7 +340,7 @@ app.get("/tip_atts", async (req, res) => {
   const start_time = Date.now();
   const node_id = req.query.id;
   const att = req.query.att;
-  const atts = filtering.getTipAtts(processedData.nodes,node_id, att);
+  const atts = filtering.getTipAtts(processedData.nodes, node_id, att);
   validateSIDandSend(atts, req.query.sid, res);
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + atts

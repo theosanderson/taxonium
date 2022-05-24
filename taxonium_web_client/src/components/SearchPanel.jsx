@@ -4,7 +4,10 @@ import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { FaSearch } from "react-icons/fa";
 import { BsBoxArrowInUpRight } from "react-icons/bs";
+import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
+import ListOutputModal from "./ListOutputModal";
+import { useState } from "react";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
@@ -35,7 +38,10 @@ function SearchPanel({
   xType,
   setxType,
   settings,
+  backend,
 }) {
+  const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
+
   const prettifyName = (name) => {
     if (config && config.customNames && config.customNames[name]) {
       return config.customNames[name];
@@ -96,6 +102,29 @@ function SearchPanel({
           </span>
         ) : (
           formatNumberIfNumber(selectedDetails.nodeDetails[key])
+        )}
+        {key === "num_tips" && (
+          <span className="ml-1">
+            <button
+              className=""
+              onClick={() => {
+                if (
+                  selectedDetails.nodeDetails.num_tips > 50000 &&
+                  !window.warning_shown
+                ) {
+                  // pop up a warning and ask if we want to continue
+                  alert(
+                    "WARNING: This node has a large number of descendants. Displaying them all may take a  or crash your computer. Are you sure you want to continue? If so press the button again."
+                  );
+                  window.warning_shown = true;
+                  return;
+                }
+                setListOutputModalOpen(true);
+              }}
+            >
+              <MdList className="inline-block" />
+            </button>
+          </span>
         )}
       </div>
     );
@@ -196,6 +225,16 @@ function SearchPanel({
             />
           </div>
         </>
+      )}
+      {selectedDetails.nodeDetails && (
+        <ListOutputModal
+          ariaHideApp={false}
+          nodeId={selectedDetails.nodeDetails.node_id}
+          backend={backend}
+          possibleKeys={["name", ...config.keys_to_display]}
+          listOutputModalOpen={listOutputModalOpen}
+          setListOutputModalOpen={setListOutputModalOpen}
+        />
       )}
       {selectedDetails.nodeDetails && (
         <div className="text-gray-700">

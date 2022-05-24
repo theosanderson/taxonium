@@ -4,7 +4,7 @@ import("crypto").then((c) => {
 });
 
 let revertant_mutations_set = null;
-let cachedChildrenArray =null;
+let cachedChildrenArray = null;
 
 const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
   const root = all_data.find((node) => node.node_id === node.parent_id);
@@ -312,49 +312,43 @@ function addMutations(input, mutations, node_to_mut) {
   return result;
 }
 
-
-function getChildrenArray(input){
-  if(cachedChildrenArray){
+function getChildrenArray(input) {
+  if (cachedChildrenArray) {
     return cachedChildrenArray;
   }
-const start_time = new Date();
-const childrenArray = input.map(x => [])
-input.forEach(node => {
-  if (node.parent_id !== node.node_id){
-    childrenArray[node.parent_id].push(node.node_id)
-  }
-})
-console.log("getChildrenArray:", new Date() - start_time);
-cachedChildrenArray = childrenArray;
-return childrenArray
+  const start_time = new Date();
+  const childrenArray = input.map((x) => []);
+  input.forEach((node) => {
+    if (node.parent_id !== node.node_id) {
+      childrenArray[node.parent_id].push(node.node_id);
+    }
+  });
+  console.log("getChildrenArray:", new Date() - start_time);
+  cachedChildrenArray = childrenArray;
+  return childrenArray;
 }
 
-const preOrder = (input, node_id) =>
-{
+const preOrder = (input, node_id) => {
   const output = [];
   const childrenArray = getChildrenArray(input);
   const stack = [node_id];
   while (stack.length > 0) {
     const node_id = stack.pop();
     output.push(node_id);
-    childrenArray[node_id].forEach(child_id => {
+    childrenArray[node_id].forEach((child_id) => {
       stack.push(child_id);
     });
   }
   return output;
-}
+};
 
-const getTipAtts= (input, node_id, attribute) =>
-{
+const getTipAtts = (input, node_id, attribute) => {
   const childrenArray = getChildrenArray(input);
   const allChildren = preOrder(input, node_id);
-  const allTips = allChildren.filter(x => childrenArray[x].length === 0);
-  const allAtts = allTips.map(x => input[x][attribute]);
+  const allTips = allChildren.filter((x) => childrenArray[x].length === 0);
+  const allAtts = allTips.map((x) => input[x][attribute]);
   return allAtts;
-}
-
-
-
+};
 
 export default {
   reduceOverPlotting,
@@ -364,5 +358,5 @@ export default {
   getNodes,
   singleSearch,
   addMutations,
-  getTipAtts
+  getTipAtts,
 };
