@@ -45,12 +45,7 @@ function App() {
 
   const [query, updateQuery] = useQueryAsState(default_query);
   
-  useEffect( ()=> {
-  if(query.backend){
-    window.alert("There is currently a bug with the search feature in server-backed Taxonium. We are working on a fix.")
-  }
-  }
-            , []);
+ 
 
   const inputHelper = useInputHelper({
     setUploadedData,
