@@ -65,7 +65,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         "&sid=" +
         sid;
 
-        const xType = boundsForQueries && bounds.xType ? bounds.xType : "x_dist";
+        const xType = boundsForQueries && boundsForQueries.xType ? boundsForQueries.xType : "x_dist";
 
       if (
         boundsForQueries &&
