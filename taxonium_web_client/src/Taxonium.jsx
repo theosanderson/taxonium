@@ -93,6 +93,7 @@ function Taxonium({
         </div>
         <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
           <SearchPanel
+            backend={backend}
             search={search}
             colorBy={colorBy}
             colorHook={colorHook}

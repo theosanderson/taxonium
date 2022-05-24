@@ -13,6 +13,7 @@ let onStatusReceipt = (receivedData) => {
 
 let onConfigReceipt = (receivedData) => {};
 let onDetailsReceipt = (receivedData) => {};
+let onListReceipt = (receivedData) => {};
 
 let searchSetters = {};
 
@@ -33,6 +34,9 @@ worker.onmessage = (event) => {
   }
   if (event.data.type === "details") {
     onDetailsReceipt(event.data.data);
+  }
+  if (event.data.type === "list") {
+    onListReceipt(event.data.data);
   }
 };
 
@@ -149,6 +153,21 @@ function useLocalBackend(uploaded_data, proto) {
     };
   }, []);
 
+  const getTipAtts = useCallback( (nodeId,selectedKey, callback) => {
+    console.log("getTipAtts", nodeId, selectedKey);
+    worker.postMessage({
+      type: "list",
+      node_id: nodeId,
+      key: selectedKey,
+    });
+
+    onListReceipt = (receivedData) => {
+      console.log("got list result", receivedData);
+      callback(null,receivedData);
+    };
+  }
+  , []);
+
   return useMemo(() => {
     return {
       queryNodes,
@@ -157,6 +176,7 @@ function useLocalBackend(uploaded_data, proto) {
       getConfig,
       statusMessage,
       setStatusMessage,
+      getTipAtts
     };
   }, [
     queryNodes,
@@ -165,6 +185,7 @@ function useLocalBackend(uploaded_data, proto) {
     getConfig,
     statusMessage,
     setStatusMessage,
+    getTipAtts
   ]);
 }
 
