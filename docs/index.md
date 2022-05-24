@@ -35,7 +35,7 @@ Optionally, you can also upload a metadata file with your tree. This file should
 
 ```{eval-rst}
 .. note::
-    All files supplied to Taxonium can also have .gz extensions, indicating they are gzipped.
+    All files supplied to Taxonium can also have .gz extensions, indicating they are gzipped: i.e. tree.nwk.gz, metadata.tsv.gz, taxonium.jsonl.gz
 ```
 
 ### Viewing the global SARS-CoV-2 tree
