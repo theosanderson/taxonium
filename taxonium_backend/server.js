@@ -101,7 +101,7 @@ app.get("/search", function (req, res) {
     node_to_mut: processedData.node_to_mut,
     xType: req.query.xType,
   };
-  
+
   const result = filtering.singleSearch(forSingleSearch);
   validateSIDandSend(result, req.query.sid, res);
   console.log(
@@ -331,6 +331,17 @@ app.get("/node_details/", async (req, res) => {
   validateSIDandSend(detailed_node, req.query.sid, res);
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + node
+  );
+});
+
+app.get("/tip_atts", async (req, res) => {
+  const start_time = Date.now();
+  const node_id = req.query.id;
+  const att = req.query.att;
+  const atts = filtering.getTipAtts(processedData.nodes,node_id, att);
+  validateSIDandSend(atts, req.query.sid, res);
+  console.log(
+    "Request took " + (Date.now() - start_time) + "ms, and output " + atts
   );
 });
 
