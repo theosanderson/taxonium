@@ -106,6 +106,7 @@ function SearchPanel({
         {key === "num_tips" && (
           <span className="ml-1">
             <button
+              title="List all tips"
               className=""
               onClick={() => {
                 if (
