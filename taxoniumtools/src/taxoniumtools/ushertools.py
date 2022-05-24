@@ -214,6 +214,7 @@ class UsherMutationAnnotatedTree:
         self.set_branch_lengths()
         if genbank_file:
             self.load_genbank_file(genbank_file)
+            self.get_root_sequence()
             self.perform_aa_analysis()
 
     def prune_node(self, node_to_prune):
