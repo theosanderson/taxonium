@@ -231,7 +231,7 @@ function SearchPanel({
           ariaHideApp={false}
           nodeId={selectedDetails.nodeDetails.node_id}
           backend={backend}
-          possibleKeys={["name",...config.keys_to_display]}
+          possibleKeys={["name", ...config.keys_to_display]}
           listOutputModalOpen={listOutputModalOpen}
           setListOutputModalOpen={setListOutputModalOpen}
         />

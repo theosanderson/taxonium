@@ -36,7 +36,7 @@ const ListOutputModal = ({
 
   return (
     <Modal
-    ariaHideApp={false}
+      ariaHideApp={false}
       isOpen={listOutputModalOpen}
       style={{
         content: {
