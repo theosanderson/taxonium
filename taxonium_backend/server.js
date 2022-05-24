@@ -72,9 +72,9 @@ app.get("/search", function (req, res) {
   const spec = JSON.parse(JSON.parse(json));
   console.log(spec);
   req.query.min_y =
-    req.query.min_y !== undefined ? req.query.min_y : processedData.overallMinY;
+    req.query.min_y !== undefined ? req.query.min_y : 0; // TODO TEMPOORARY FIX ATTEMPT
   req.query.max_y =
-    req.query.max_y !== undefined ? req.query.max_y : processedData.overallMaxY;
+    req.query.max_y !== undefined ? req.query.max_y : 2000; // TODO TEMPOORARY FIX ATTEMPT
 
   req.query.min_x =
     req.query.min_x !== undefined ? req.query.min_x : processedData.overallMinX;
