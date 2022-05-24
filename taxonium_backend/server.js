@@ -10,6 +10,33 @@ var pako = require("pako");
 var importing;
 var filtering;
 
+const { program } = require("commander");
+
+program
+  .option("--ssl", "use ssl")
+  .option("--port <port>", "port",8000)
+  .option("--config_json <config_json>", "config json")
+  .option("--data_url <data url>", "data url")
+  .option(
+    "--data_file <data file>",
+    "local data file, as alternative to data url"
+  );
+
+program.parse();
+
+const command_options = program.opts();
+
+// Either data_url or data_file must be defined, if not display error
+if (
+  command_options.data_url === undefined &&
+  command_options.data_file === undefined
+) {
+  console.log("--data_url or --data_file must be supplied");
+  process.exit(1);
+}
+
+
+
 import("taxonium_data_handling/importing.js").then((imported) => {
   importing = imported.default;
   console.log("imported importing");
@@ -38,21 +65,6 @@ var processedData = null;
 var cached_starting_values = null;
 
 let options;
-const { program } = require("commander");
-
-program
-  .option("--ssl", "use ssl")
-  .option("--port <port>", "port")
-  .option("--config_json <config_json>", "config json")
-  .option("--data_url <data url>", "data url")
-  .option(
-    "--data_file <data file>",
-    "local data file, as alternative to data url"
-  );
-
-program.parse();
-
-const command_options = program.opts();
 
 app.use(cors());
 app.use(compression());
@@ -71,28 +83,26 @@ app.get("/search", function (req, res) {
   const json = req.query.json;
   const spec = JSON.parse(JSON.parse(json));
   console.log(spec);
-  req.query.min_y =
-    req.query.min_y !== undefined ? req.query.min_y : 0; // TODO TEMPOORARY FIX ATTEMPT
-  req.query.max_y =
-    req.query.max_y !== undefined ? req.query.max_y : 2000; // TODO TEMPOORARY FIX ATTEMPT
 
-  req.query.min_x =
-    req.query.min_x !== undefined ? req.query.min_x : processedData.overallMinX;
-  req.query.max_y =
-    req.query.max_x !== undefined ? req.query.max_x : processedData.overallMaxX;
+  const minYbound = req.query.min_y!==undefined?req.query.min_y:processedData.overallMinY;
+  const maxYbound = req.query.max_y!==undefined?req.query.max_y:processedData.overallMaxY;
+  const minXbound = req.query.min_x!==undefined?req.query.min_x:processedData.overallMinX;
+  const maxXbound = req.query.max_x!==undefined?req.query.max_x:processedData.overallMaxX;
 
-  const result = filtering.singleSearch({
+  const forSingleSearch= {
     data: processedData.nodes,
     spec,
-    min_y: req.query.min_y,
-    max_y: req.query.max_y,
-    min_x: req.query.min_x,
-    max_x: req.query.max_x,
+    min_y: minYbound,
+    max_y: maxYbound,
+    min_x: minXbound,
+    max_x: maxXbound,
     y_positions: processedData.y_positions,
     mutations: processedData.mutations,
     node_to_mut: processedData.node_to_mut,
     xType: req.query.xType,
-  });
+  };
+  
+  const result = filtering.singleSearch(forSingleSearch);
   validateSIDandSend(result, req.query.sid, res);
   console.log(
     "Found " +
