@@ -123,6 +123,7 @@ function Deck({
     viewState,
     colorHook,
     setHoverInfo,
+    hoverInfo,
     colorBy,
     xType,
     modelMatrix: view.modelMatrix,
@@ -194,6 +195,7 @@ function Deck({
       />
       <DeckGL
         pickingRadius={10}
+        //getCursor={() => hoverInfo && hoverInfo.object ? "default" : "pointer"}
         ref={deckRef}
         views={views}
         viewState={viewState}
