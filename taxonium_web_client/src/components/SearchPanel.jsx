@@ -1,5 +1,5 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
-import { RiAddCircleLine } from "react-icons/ri";
+import { RiAddCircleLine,RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { FaSearch } from "react-icons/fa";
@@ -8,6 +8,7 @@ import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
+
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
@@ -107,7 +108,7 @@ function SearchPanel({
           <span className="ml-1">
             <button
               title="List all tips"
-              className=""
+              className="text-xs text-gray-600 hover:text-black"
               onClick={() => {
                 if (
                   selectedDetails.nodeDetails.num_tips > 50000 &&
@@ -246,6 +247,19 @@ function SearchPanel({
             ) : (
               <i>Internal node</i>
             )}
+            {selectedDetails.nodeDetails.parent_id !== selectedDetails.nodeDetails.node_id && (
+          
+              <button
+                className="inline-block text-sm text-gray-700 hover:text-black ml-2"
+                title="Select parent"
+                onClick={() => {
+                  selectedDetails.getNodeDetails(selectedDetails.nodeDetails.parent_id);
+                }}
+              >
+                <RiArrowLeftUpLine className="inline-block mr-2" />
+                </button>
+            )}
+
           </h2>
           {colorBy.colorByField === "genotype" && (
             <span
@@ -265,7 +279,7 @@ function SearchPanel({
               selectedDetails.nodeDetails[key] &&
               formatMetadataItem(key, selectedDetails)
           )}
-          {config.mutations.length > 0 && (
+          {config.mutations.length > 0 && selectedDetails.nodeDetails.node_id !== selectedDetails.nodeDetails.parent_id &&(
             <>
               <h3 className="text-xs font-bold mt-4 text-gray-700">
                 Mutations at this node:
