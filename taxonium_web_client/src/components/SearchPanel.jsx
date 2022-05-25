@@ -77,7 +77,7 @@ function SearchPanel({
         </div>
       );
     }
-   
+
     if (config.metadataTypes && config.metadataTypes[key] === "sequence") {
       return (
         <div className="text-sm mt-1" key={key}>

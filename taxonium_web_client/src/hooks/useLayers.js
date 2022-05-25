@@ -139,7 +139,13 @@ const useLayers = ({
     getColor: lineColor,
     pickable: true,
     widthUnits: "pixels",
-    getWidth: (d) => (d === (hoverInfo && hoverInfo.object) ? 3 : (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id === d.node_id) ? 3.5 : 1),
+    getWidth: (d) =>
+      d === (hoverInfo && hoverInfo.object)
+        ? 3
+        : selectedDetails.nodeDetails &&
+          selectedDetails.nodeDetails.node_id === d.node_id
+        ? 3.5
+        : 1,
 
     onHover: (info) => setHoverInfo(info),
 
@@ -151,14 +157,19 @@ const useLayers = ({
     },
   };
 
-
   const line_layer_vert_common_props = {
     getSourcePosition: (d) => [d.parent_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.parent_y],
     onHover: (info) => setHoverInfo(info),
     getColor: lineColor,
     pickable: true,
-    getWidth: (d) => (d === (hoverInfo && hoverInfo.object) ? 2 : (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id === d.node_id) ? 2.5 : 1),
+    getWidth: (d) =>
+      d === (hoverInfo && hoverInfo.object)
+        ? 2
+        : selectedDetails.nodeDetails &&
+          selectedDetails.nodeDetails.node_id === d.node_id
+        ? 2.5
+        : 1,
     modelMatrix: modelMatrix,
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
