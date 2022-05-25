@@ -132,14 +132,14 @@ const useLayers = ({
       getPosition: [xType],
     },
   };
-  
+
   const line_layer_horiz_common_props = {
     getSourcePosition: (d) => [getX(d), d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
     getColor: lineColor,
     pickable: true,
     widthUnits: "pixels",
-    getWidth: (d)=>d===(hoverInfo && hoverInfo.object)?3:1,
+    getWidth: (d) => (d === (hoverInfo && hoverInfo.object) ? 3 : 1),
 
     onHover: (info) => setHoverInfo(info),
 
@@ -147,7 +147,7 @@ const useLayers = ({
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
       getTargetPosition: [detailed_data, xType],
-      getWidth:[hoverInfo],
+      getWidth: [hoverInfo],
     },
   };
 
@@ -157,12 +157,12 @@ const useLayers = ({
     onHover: (info) => setHoverInfo(info),
     getColor: lineColor,
     pickable: true,
-    getWidth: (d)=>d===(hoverInfo && hoverInfo.object)?2:1,
+    getWidth: (d) => (d === (hoverInfo && hoverInfo.object) ? 2 : 1),
     modelMatrix: modelMatrix,
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
       getTargetPosition: [detailed_data, xType],
-      getWidth:[hoverInfo],
+      getWidth: [hoverInfo],
     },
   };
 
@@ -224,9 +224,8 @@ const useLayers = ({
       lineWidthScale: 2,
     });
 
-
     const hoveredLayer = new ScatterplotLayer({
-      data: (hoverInfo && hoverInfo.object) ? [hoverInfo.object] : [],
+      data: hoverInfo && hoverInfo.object ? [hoverInfo.object] : [],
       visible: true,
       opacity: 0.3,
       getRadius: 4,
@@ -337,7 +336,6 @@ const useLayers = ({
     getSourcePosition: (d) => [getX(d), d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
     getColor: lineColor,
-  
 
     updateTriggers: {
       getSourcePosition: [base_data, xType],
@@ -352,7 +350,6 @@ const useLayers = ({
     getSourcePosition: (d) => [d.parent_x, d.y],
     getTargetPosition: (d) => [d.parent_x, d.parent_y],
     getColor: lineColor,
-     
 
     updateTriggers: {
       getSourcePosition: [base_data, xType],
