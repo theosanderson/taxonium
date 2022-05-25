@@ -9,14 +9,13 @@ let globalSetZoomAxis = () => {};
 class MyOrthographicController extends OrthographicController {
   // on construction
   constructor(props) {
-  
     super(props);
   }
   // Default handler for the `wheel` event.
   onWheel(event) {
-    const controlKey = event.srcEvent.ctrlKey || event.srcEvent.metaKey || event.srcEvent.altKey;
+    const controlKey =
+      event.srcEvent.ctrlKey || event.srcEvent.metaKey || event.srcEvent.altKey;
 
-    
     if (!this.scrollZoom) {
       return false;
     }
@@ -28,10 +27,9 @@ class MyOrthographicController extends OrthographicController {
     }
 
     let { speed = 0.01, smooth = false, zoomAxis = "Y" } = this.scrollZoom;
-    if(controlKey) {
+    if (controlKey) {
       zoomAxis = "X";
       globalSetZoomAxis(zoomAxis);
-
     }
     const { delta } = event;
 
@@ -47,7 +45,6 @@ class MyOrthographicController extends OrthographicController {
     if (zoomAxis === "X") {
       transitionDuration = 0;
     }
-   
 
     this.updateViewport(
       newControllerState,
@@ -61,16 +58,14 @@ class MyOrthographicController extends OrthographicController {
       }
     );
 
-    if(controlKey) {
+    if (controlKey) {
       zoomAxis = "Y";
       globalSetZoomAxis(zoomAxis);
-
     }
     return true;
   }
 
   handleEvent(event) {
-  
     if (event.type === "wheel") {
       const { ControllerState } = this;
       this.controllerState = new ControllerState({
@@ -90,7 +85,6 @@ const useView = ({ settings, deckSize }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
   globalSetZoomAxis = setZoomAxis;
-
 
   const [viewState, setViewState] = useState({
     zoom: -2,
@@ -176,7 +170,6 @@ const useView = ({ settings, deckSize }) => {
       const oldScaleX = 2 ** xzoom;
       let newScaleX = 2 ** xzoom;
 
-
       if (basicTarget) {
         viewState.target[0] = (viewState.target[0] / newScaleY) * newScaleX;
       } else {
@@ -190,7 +183,7 @@ const useView = ({ settings, deckSize }) => {
             setXzoom((old) => old + difference);
 
             newScaleX = 2 ** (xzoom + difference);
-            
+
             viewState.zoom = oldViewState.zoom;
             viewState.target[0] =
               (oldViewState.target[0] / oldScaleY) * newScaleY;
