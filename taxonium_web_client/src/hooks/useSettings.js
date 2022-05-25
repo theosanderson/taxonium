@@ -34,7 +34,7 @@ export const useSettings = ({ query, updateQuery }) => {
     });
   };
 
-  const [maxCladeTexts, setMaxCladeTexts] = useState(0);
+  const [maxCladeTexts, setMaxCladeTexts] = useState(10);
 
   return {
     minimapEnabled,
