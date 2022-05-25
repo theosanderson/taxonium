@@ -77,8 +77,8 @@ function SearchPanel({
         </div>
       );
     }
-    console.log("metadata types", config.metadataTypes);
-    if (config.metadataTypes && config.metadataTypes[key] == "sequence") {
+   
+    if (config.metadataTypes && config.metadataTypes[key] === "sequence") {
       return (
         <div className="text-sm mt-1" key={key}>
           <span className="font-semibold">{prettifyName(key)}:</span>{" "}
