@@ -1,5 +1,5 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
-import { RiAddCircleLine,RiArrowLeftUpLine } from "react-icons/ri";
+import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { FaSearch } from "react-icons/fa";
@@ -8,7 +8,6 @@ import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
-
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
@@ -247,19 +246,20 @@ function SearchPanel({
             ) : (
               <i>Internal node</i>
             )}
-            {selectedDetails.nodeDetails.parent_id !== selectedDetails.nodeDetails.node_id && (
-          
+            {selectedDetails.nodeDetails.parent_id !==
+              selectedDetails.nodeDetails.node_id && (
               <button
                 className="inline-block text-sm text-gray-700 hover:text-black ml-2"
                 title="Select parent"
                 onClick={() => {
-                  selectedDetails.getNodeDetails(selectedDetails.nodeDetails.parent_id);
+                  selectedDetails.getNodeDetails(
+                    selectedDetails.nodeDetails.parent_id
+                  );
                 }}
               >
                 <RiArrowLeftUpLine className="inline-block mr-2" />
-                </button>
+              </button>
             )}
-
           </h2>
           {colorBy.colorByField === "genotype" && (
             <span
@@ -279,38 +279,41 @@ function SearchPanel({
               selectedDetails.nodeDetails[key] &&
               formatMetadataItem(key, selectedDetails)
           )}
-          {config.mutations.length > 0 && selectedDetails.nodeDetails.node_id !== selectedDetails.nodeDetails.parent_id &&(
-            <>
-              <h3 className="text-xs font-bold mt-4 text-gray-700">
-                Mutations at this node:
-              </h3>
-              <div className="text-xs mt-1 text-gray-700 mr-1">
-                {settings
-                  .filterMutations(selectedDetails.nodeDetails.mutations)
-                  .map((mutation, i) => (
-                    <span key={mutation.mutation_id}>
-                      {i > 0 && <>, </>}
-                      <div className="inline-block">
-                        {mutation.gene}:{mutation.previous_residue}
-                        {mutation.residue_pos}
-                        {mutation.new_residue}
-                      </div>
-                    </span>
-                  ))}
-                {selectedDetails.nodeDetails.mutations.length === 0 && (
-                  <div className=" italic">
-                    No{" "}
-                    {settings.filterMutations([{ type: "nt" }]).length === 0 ? (
-                      <>coding</>
-                    ) : (
-                      <></>
-                    )}{" "}
-                    mutations
-                  </div>
-                )}
-              </div>
-            </>
-          )}
+          {config.mutations.length > 0 &&
+            selectedDetails.nodeDetails.node_id !==
+              selectedDetails.nodeDetails.parent_id && (
+              <>
+                <h3 className="text-xs font-bold mt-4 text-gray-700">
+                  Mutations at this node:
+                </h3>
+                <div className="text-xs mt-1 text-gray-700 mr-1">
+                  {settings
+                    .filterMutations(selectedDetails.nodeDetails.mutations)
+                    .map((mutation, i) => (
+                      <span key={mutation.mutation_id}>
+                        {i > 0 && <>, </>}
+                        <div className="inline-block">
+                          {mutation.gene}:{mutation.previous_residue}
+                          {mutation.residue_pos}
+                          {mutation.new_residue}
+                        </div>
+                      </span>
+                    ))}
+                  {selectedDetails.nodeDetails.mutations.length === 0 && (
+                    <div className=" italic">
+                      No{" "}
+                      {settings.filterMutations([{ type: "nt" }]).length ===
+                      0 ? (
+                        <>coding</>
+                      ) : (
+                        <></>
+                      )}{" "}
+                      mutations
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
 
           {
             <div>
