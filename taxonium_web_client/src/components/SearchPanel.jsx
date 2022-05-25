@@ -110,12 +110,12 @@ function SearchPanel({
               className="text-xs text-gray-600 hover:text-black"
               onClick={() => {
                 if (
-                  selectedDetails.nodeDetails.num_tips > 50000 &&
+                  selectedDetails.nodeDetails.num_tips > 100000 &&
                   !window.warning_shown
                 ) {
                   // pop up a warning and ask if we want to continue
                   alert(
-                    "WARNING: This node has a large number of descendants. Displaying them all may take a  or crash your computer. Are you sure you want to continue? If so press the button again."
+                    "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again."
                   );
                   window.warning_shown = true;
                   return;
