@@ -1,6 +1,5 @@
 import SearchItem from "./SearchItem";
-import { BsTrash } from "react-icons/bs";
-import { FaSearch, FaLink } from "react-icons/fa";
+import { FaSearch, FaLink, FaTrash } from "react-icons/fa";
 import { useCallback, useState } from "react";
 import { Button } from "../components/Basic";
 import { formatNumber } from "../utils/formatNumber";
@@ -78,7 +77,9 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
           singleSearchSpec={singleSearchSpec}
           setThisSearchSpec={setThisSearchSpec}
         />
-        <div className="text-black  pr-2 text-sm">
+       
+        <div className="flex justify-between">
+        <div className="text-black  pr-2 text-sm  ">
           {" "}
           {num_results !== "Loading" && (
             <>
@@ -88,7 +89,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
           {num_results > 0 && (
             <>
               <Button
-                className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
+                className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border  text-gray-700 "
                 onClick={() => {
                   search.setZoomToSearch({ index: getMyIndex() });
                 }}
@@ -105,7 +106,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                   config &&
                   !config.disable_permalink && (
                     <Button
-                      className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border m-4 text-gray-700"
+                      className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border text-gray-700"
                       onClick={() => {
                         setPermaLinkModalOpen(true);
                       }}
@@ -118,16 +119,25 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
               {search.searchLoadingStatus[myKey] === "loading" && (
                 <ClipLoader size={12} color="#444444" className="mr-3" />
               )}
+             
             </>
           )}
+           <div className="inline-block h-5 w-0 mt-4 w-1">&nbsp;</div>
         </div>
+        <div>
         <Button
-          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border my-2 text-gray-700 mb-1 mt-1"
+        title="Delete this search"
+          className="inline-block bg-gray-100 text-xs mx-auto h-7 rounded border-gray-300 border text-gray-700 mr-2 text-gray-500 mt-3"
           onClick={() => search.deleteTopLevelSearch(myKey)}
         >
-          <BsTrash className="inline-block mr-2 " />
-          Delete this search
+          <FaTrash className="inline-block mx-2 " />
+          
         </Button>
+        </div>
+        </div>
+        
+
+        
       </div>
     </>
   );

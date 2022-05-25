@@ -1,7 +1,9 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Select } from "./Basic";
+import {getDefaultSearch} from "../utils/searchUtil"
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
+
   const types = config.search_types ? config.search_types : [];
 
   let all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
@@ -16,6 +18,11 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const is_text = text_types.includes(singleSearchSpec.method);
 
   const is_multi_text = singleSearchSpec.method === "text_per_line";
+
+  /* if this spec lacks subspecs, add an empty value */
+  if (!singleSearchSpec.subspecs) {
+    singleSearchSpec.subspecs = []
+  }
 
   return (
     <>
@@ -135,6 +142,65 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           </div>
         </div>
       )}
+      {(singleSearchSpec.type === "and" || singleSearchSpec.type === "or" ) && (
+          <div className="pl-5 pt-3 border-gray-300 border-solid border-2">
+            {singleSearchSpec.subspecs.map((subspec, i) => (
+              <div key={i} 
+              // divider style border at bottom
+              className="pt-2  border-b-2 border-solid border-grey-light pb-2 mb-2">
+
+              <SearchItem
+              
+                singleSearchSpec={subspec}
+                setThisSearchSpec={(new_subspec) => {
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    subspecs: singleSearchSpec.subspecs.map((foundsubspec, i) =>
+                      i === singleSearchSpec.subspecs.indexOf(subspec)
+                        ? new_subspec
+                        : foundsubspec
+                    ),
+                  });
+                }}
+                config={config}
+              />
+              {/* Deelete button */}
+              <button
+                className="text-red-500 text-sm hover:text-red-700 ml-3"
+                onClick={() => {
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    subspecs: singleSearchSpec.subspecs.filter(
+                      (compsubspec, i) =>
+                        i !== singleSearchSpec.subspecs.indexOf(subspec)
+                    ),
+                  });
+                }}
+              >
+                X
+              </button>
+              </div>
+            ))}
+            {/* Add a button to add a new subspec */}
+            <button
+              className="inline-block w-32 mb-3 border py-1 px-1 text-grey-darkest text-sm"
+              onClick={() => {
+                setThisSearchSpec({
+                  ...singleSearchSpec,
+                  subspecs: [
+                    ...singleSearchSpec.subspecs,
+                    getDefaultSearch()
+                  ],
+                });
+              }
+              }
+            >
+              Add sub-search
+            </button>
+
+          </div>)}
+
+
     </>
   );
 };

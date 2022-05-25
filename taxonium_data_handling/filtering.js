@@ -145,7 +145,28 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
 }
 
 function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
-  //console.log("SEARCHFILTER", data);
+  if(spec.type=="and"){
+    if (spec.subspecs.length == 0) {
+      return []
+    }
+    let workingData = data;
+    spec.subspecs.forEach((subspec) => {
+      workingData = searchFiltering({data: workingData, spec: subspec, mutations: mutations, node_to_mut: node_to_mut, all_data: all_data});
+    });
+    return workingData;
+  }
+  if(spec.type=="or"){
+    if (spec.subspecs.length == 0) {
+      return []
+    }
+    let workingData = new Set();
+    spec.subspecs.forEach((subspec) => {
+      const results = searchFiltering({data: data, spec: subspec, mutations: mutations, node_to_mut: node_to_mut, all_data: all_data});
+      workingData = new Set([...workingData, ...results]);
+    });
+    return Array.from(workingData);
+  }
+      
   console.log(spec);
   let filtered;
   if (["text_match", "text_exact"].includes(spec.method) && spec.text === "") {
@@ -269,7 +290,13 @@ function singleSearch({
   const num_returned = count_per_hash[hash_spec];
   let result;
   if (num_returned > max_to_return) {
+    // If there are too many results then we need to reduce overplotting before sending to the client to avoid sending too much data
+    // also we only need to search over the bounded area
+
+    // get nodes in which to search:
     const cut = filter(data, y_positions, min_y, max_y);
+
+    // do the actual search:
     const filtered_cut = searchFiltering({
       data: cut,
       spec,
@@ -278,6 +305,7 @@ function singleSearch({
       all_data: data,
     });
 
+    // reduce overplotting:
     const reduced = reduceOverPlotting(
       filtered_cut,
       getPrecision(min_x, max_x),
