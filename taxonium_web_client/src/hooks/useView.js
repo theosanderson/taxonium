@@ -4,14 +4,18 @@ import {
   OrthographicController,
   //OrthographicViewport,
 } from "@deck.gl/core";
+
+let globalSetZoomAxis = () => {};
 class MyOrthographicController extends OrthographicController {
   // on construction
   constructor(props) {
-    console.log("MyOrthographicController.constructor");
     super(props);
   }
   // Default handler for the `wheel` event.
   onWheel(event) {
+    const controlKey =
+      event.srcEvent.ctrlKey || event.srcEvent.metaKey || event.srcEvent.altKey;
+
     if (!this.scrollZoom) {
       return false;
     }
@@ -22,7 +26,11 @@ class MyOrthographicController extends OrthographicController {
       return false;
     }
 
-    const { speed = 0.01, smooth = false, zoomAxis = "Y" } = this.scrollZoom;
+    let { speed = 0.01, smooth = false, zoomAxis = "Y" } = this.scrollZoom;
+    if (controlKey) {
+      zoomAxis = "X";
+      globalSetZoomAxis(zoomAxis);
+    }
     const { delta } = event;
 
     // Map wheel delta to relative scale
@@ -37,7 +45,6 @@ class MyOrthographicController extends OrthographicController {
     if (zoomAxis === "X") {
       transitionDuration = 0;
     }
-    console.log("zoomAxis:", zoomAxis);
 
     this.updateViewport(
       newControllerState,
@@ -50,11 +57,15 @@ class MyOrthographicController extends OrthographicController {
         isPanning: true,
       }
     );
+
+    if (controlKey) {
+      zoomAxis = "Y";
+      globalSetZoomAxis(zoomAxis);
+    }
     return true;
   }
 
   handleEvent(event) {
-    // console.log("event:", event);
     if (event.type === "wheel") {
       const { ControllerState } = this;
       this.controllerState = new ControllerState({
@@ -73,6 +84,7 @@ class MyOrthographicController extends OrthographicController {
 const useView = ({ settings, deckSize }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
+  globalSetZoomAxis = setZoomAxis;
 
   const [viewState, setViewState] = useState({
     zoom: -2,
@@ -158,8 +170,6 @@ const useView = ({ settings, deckSize }) => {
       const oldScaleX = 2 ** xzoom;
       let newScaleX = 2 ** xzoom;
 
-      //console.log("old",oldViewState)
-
       if (basicTarget) {
         viewState.target[0] = (viewState.target[0] / newScaleY) * newScaleX;
       } else {
@@ -173,7 +183,7 @@ const useView = ({ settings, deckSize }) => {
             setXzoom((old) => old + difference);
 
             newScaleX = 2 ** (xzoom + difference);
-            console.log(xzoom, difference, newScaleX);
+
             viewState.zoom = oldViewState.zoom;
             viewState.target[0] =
               (oldViewState.target[0] / oldScaleY) * newScaleY;
