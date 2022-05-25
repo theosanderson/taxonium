@@ -13,6 +13,7 @@ const NodeHoverTip = ({
   colorBy,
   config,
   filterMutations,
+  deckSize
 }) => {
   const initial_mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
@@ -41,16 +42,32 @@ const NodeHoverTip = ({
     return null;
   }
 
+  const flip_vert = hoverInfo.y > deckSize.height*.66;
+  const flip_horiz = hoverInfo.x > deckSize.width*.66;
+
+  const style = {
+    position: "absolute",
+    zIndex: 1,
+    pointerEvents: "none",
+  }
+
+  if (!flip_vert) {
+    style.top = hoverInfo.y+5
+  } else {
+    style.bottom = deckSize.height - hoverInfo.y+5
+  }
+
+  if (!flip_horiz) {
+    style.left = hoverInfo.x+5
+  } else {
+    style.right = deckSize.width - hoverInfo.x+5
+  }
+    
+
   return (
     <div
       className="bg-gray-100 p-3 opacity-90 text-sm"
-      style={{
-        position: "absolute",
-        zIndex: 1,
-        pointerEvents: "none",
-        left: hoverInfo.x,
-        top: hoverInfo.y,
-      }}
+      style={style}
     >
       <h2 className="font-bold whitespace-pre-wrap">
         {hoveredNode[config.name_accessor] !== "" ? (

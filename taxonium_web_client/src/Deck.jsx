@@ -219,6 +219,7 @@ function Deck({
           colorBy={colorBy}
           config={config}
           filterMutations={settings.filterMutations}
+          deckSize={deckSize}
         />
         <DeckButtons
           zoomIncrement={zoomIncrement}
