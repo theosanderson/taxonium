@@ -248,11 +248,11 @@ class UsherMutationAnnotatedTree:
         """Consider each node. If at any point a child has fewer than 1/threshold proportion of the num_tips, then prune it"""
         for node in alive_it(list(self.tree.traverse_postorder())):
             if len(node.children) > 1:
-                total_tips = node.num_tips
-                for child in node.children:
-                    if total_tips / child.num_tips > theshold:
+                biggest_child = max(node.children, key=lambda x: x.num_tips)
+                for child in list(node.children):
+                    if biggest_child.num_tips / child.num_tips > theshold:
                         self.prune_node(child)
-
+                        
     def create_mutation_like_objects_to_record_root_seq(self):
         """Hacky way of recording the root sequence"""
         ref_muts = []
