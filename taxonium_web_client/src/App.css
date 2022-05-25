@@ -6,3 +6,41 @@
 .main_content {
   height: calc(100% - 68px);
 }
+
+/* JBrowse customization */
+.MuiPaper-root.MuiPaper-rounded {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+#view-browser-axis > div > div > div > div > div:nth-child(1) {
+  display: none !important;
+}
+.jss2 {
+  margin: 0px !important
+}
+
+/* div[class*=' makeStyles-trackLabel'],div[class^='makeStyles-trackLabel'] {
+  display: none !important;
+} */
+
+p[data-testid='refLabel-NC_045512v2'] {
+  display: none !important;
+}
+/* #view-browser-axis > div > div > div > div > div.MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded > div > div:nth-child(1) {
+  bottom: 0px !important;
+} */
+
+.sidebar-toggle {
+  border: 2px solid rgb(136, 135, 135) !important;
+  border-radius: 3px;
+}
+.sidebar-open {
+  transition: right 0.3s ease-in-out !important;
+}
+.sidebar-closed {
+  transition: right 0.3s ease-in-out !important;
+
+  position: absolute;
+  width: 60px;
+  right: 0px;
+}

@@ -229,32 +229,19 @@ function App() {
           ) : (
             <div className="m-10">
               <p className="text-lg text-gray-700 mb-5">
-                Welcome to Taxonium, a tool for exploring large trees
+               TREENOME BROWSER DEMO
               </p>
-              <InputSupplier inputHelper={inputHelper} />
               <p className="text-md text-gray-700 font-semibold mb-2">
-                or{" "}
+                {" "}
                 <a
                   className="text-blue-500"
                   href="/?backend=https://api.cov2tree.org"
                 >
                   load the public SARS-CoV-2 tree
-                </a>
-                ,{" "}
-                <a
-                  className="text-blue-500"
-                  href="/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json"
-                >
-                  an exploration of the NCBI taxonomy
-                </a>
-                , or{" "}
-                <a
-                  className="text-blue-500"
-                  href="https://taxonium.readthedocs.io/en/latest/"
-                >
-                  read more
-                </a>{" "}
-                about how to use Taxonium
+                </a><br></br>
+               This is a demo version which is unstable and buggy.
+               Click/drag/zoom on the left-hand side of the screen (on the next page)
+               to control the tree, and do the same in the genome browser panel on the upper right to control the genome. Select a genomic region by selecting a coordinate region at the very top of the genome browser. Resizing the web browser will require a page refresh.
               </p>{" "}
             </div>
           )}

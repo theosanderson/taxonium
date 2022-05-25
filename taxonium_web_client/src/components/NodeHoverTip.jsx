@@ -37,7 +37,7 @@ const NodeHoverTip = ({
     return null;
   }
   const hoveredNode = hoverInfo.object;
-  if (!hoveredNode) {
+  if (!hoveredNode || !hoveredNode.node_id) {
     return null;
   }
 
@@ -48,7 +48,7 @@ const NodeHoverTip = ({
         position: "absolute",
         zIndex: 1,
         pointerEvents: "none",
-        left: hoverInfo.x,
+        left: hoverInfo.x + 600, // TODO fix hack
         top: hoverInfo.y,
       }}
     >

@@ -36,8 +36,12 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const [maxCladeTexts, setMaxCladeTexts] = useState(0);
 
+  //Temp
+  const browserEnabled = true;
+  
   return {
     minimapEnabled,
+    browserEnabled,
     toggleMinimapEnabled,
     mutationTypesEnabled,
     filterMutations,
