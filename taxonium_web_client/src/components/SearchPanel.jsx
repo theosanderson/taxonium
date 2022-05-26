@@ -8,7 +8,7 @@ import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
-import FirefoxWarning from "./FirefoxWarning";
+
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 

@@ -13,6 +13,7 @@ import useSnapshot from "./hooks/useSnapshot";
 import NodeHoverTip from "./components/NodeHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
+import FirefoxWarning from "./FirefoxWarning";
 
 function Deck({
   data,
