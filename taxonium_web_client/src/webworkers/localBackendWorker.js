@@ -118,7 +118,7 @@ const search = async (search, bounds) => {
     node_to_mut,
     xType: xType,
   });
-  console.log("mutations var is ", mutations);
+  
   console.log("got search result", result);
   result.key = spec.key;
   return result;
@@ -195,6 +195,12 @@ const getConfig = async () => {
     if (x === "mutation") {
       return "mutation";
     }
+    if (x === "genotype") {
+      return "genotype";
+    }
+    if (x === "num_tips") {
+      return "number";
+    }
     if (x === "genbank") {
       return "text_per_line";
     }
@@ -212,11 +218,14 @@ const getConfig = async () => {
 
   if (processedUploadedData.mutations.length > 0) {
     initial_search_types.push("mutation");
+    initial_search_types.push("genotype");
   }
 
   if (processedUploadedData.rootMutations.length > 0) {
     initial_search_types.push("revertant");
   }
+
+  initial_search_types.push("num_tips");
 
   if (initial_search_types.length > 1) {
     initial_search_types.push("boolean");
