@@ -303,7 +303,7 @@ onmessage = async (event) => {
     data.data.filename.includes("jsonl")
   ) {
     processedUploadedData = await processJsonl(data.data, sendStatusMessage);
-    console.log("processedUploadedData is ", processedUploadedData);
+    console.log("processedUploadedData created")
   } else if (
     data.type === "upload" &&
     data.data &&
