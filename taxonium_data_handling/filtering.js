@@ -474,6 +474,11 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
       .map((m) => m.mutation_id)
   );
 
+  // if no positive mutations then return empty array
+  if (positive_mutations.size === 0) {
+    return [];
+  }
+
   const negative_mutations = new Set(
     relevant_mutations
       .filter((mutation) => mutation.new_residue !== new_residue)
