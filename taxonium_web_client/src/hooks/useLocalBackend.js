@@ -18,7 +18,8 @@ let onListReceipt = (receivedData) => {};
 let searchSetters = {};
 
 worker.onmessage = (event) => {
-  console.log("got message from worker", event.data);
+  console.log("got message from worker"//, event.data
+  );
   if (event.data.type === "status") {
     onStatusReceipt(event.data);
   }
@@ -87,7 +88,8 @@ function useLocalBackend(uploaded_data, proto) {
       });
       onQueryReceipt = (receivedData) => {
         //  console.log("CONFIG IS", config);
-        console.log("got query result", receivedData);
+        console.log("got query result"//, receivedData
+        );
         receivedData.nodes.forEach((node) => {
           if (node.node_id === config.rootId) {
             node.mutations = config.rootMutations.map(
