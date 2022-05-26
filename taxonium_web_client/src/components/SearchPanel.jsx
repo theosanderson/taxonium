@@ -134,7 +134,6 @@ function SearchPanel({
 
   return (
     <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
-      <FirefoxWarning className="text-xs font-bold text-gray-800 mt-3" />
       <div className="mt-3 mb-3 text-gray-500 text-sm">
         {config.num_tips && (
           <>

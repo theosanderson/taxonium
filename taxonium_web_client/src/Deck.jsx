@@ -176,6 +176,7 @@ function Deck({
                 <div className="text-center text-gray-700  text-lg wt font-medium">
                   {statusMessage && statusMessage.message}
                 </div>
+                <FirefoxWarning className="font-medium text-gray-700 mt-3" />
               </CircularProgressbarWithChildren>
             ) : (
               <div className="text-center text-gray-700  text-lg wt font-medium">

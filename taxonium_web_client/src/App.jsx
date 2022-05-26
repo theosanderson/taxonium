@@ -257,7 +257,7 @@ function App() {
                 </a>{" "}
                 about how to use Taxonium
               </p>{" "}
-              <FirefoxWarning className="text-md font-bold text-gray-700" />
+              <FirefoxWarning className="mt-8 text-gray-400" />
             </div>
           )}
         </Suspense>
