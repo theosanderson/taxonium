@@ -1,6 +1,9 @@
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Select } from "./Basic";
+import { getDefaultSearch } from "../utils/searchUtil";
+
+const bool_methods = ["and", "or", "not"];
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const types = config.search_types ? config.search_types : [];
 
@@ -16,6 +19,15 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const is_text = text_types.includes(singleSearchSpec.method);
 
   const is_multi_text = singleSearchSpec.method === "text_per_line";
+
+  /* if this spec type is boolean and it lacks subspecs, add an empty value */
+  if (singleSearchSpec.type === "boolean" && !singleSearchSpec.subspecs) {
+    singleSearchSpec.subspecs = [];
+  }
+  /* if this spec type is boolean and it lacks a boolean method, set it to and*/
+  if (singleSearchSpec.type === "boolean" && !singleSearchSpec.boolean_method) {
+    singleSearchSpec.boolean_method = "and";
+  }
 
   return (
     <>
@@ -134,6 +146,79 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
             <label className="text-sm">descendants</label>
           </div>
         </div>
+      )}
+      {singleSearchSpec.type === "boolean" && (
+        <>
+          <Select
+            value={singleSearchSpec.boolean_method}
+            onChange={(e) =>
+              setThisSearchSpec({
+                ...singleSearchSpec,
+                boolean_method: e.target.value,
+              })
+            }
+            className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm mr-1"
+          >
+            {bool_methods.map((method) => (
+              <option key={method} value={method}>
+                {method.toUpperCase()}
+              </option>
+            ))}
+          </Select>
+
+          <div className="pl-5 pt-3 border-gray-300 border-solid border-2">
+            {singleSearchSpec.subspecs.map((subspec, i) => (
+              <div
+                key={i}
+                // divider style border at bottom
+                className="pt-2  border-b-2 border-solid border-grey-light pb-2 mb-2"
+              >
+                <SearchItem
+                  singleSearchSpec={subspec}
+                  setThisSearchSpec={(new_subspec) => {
+                    setThisSearchSpec({
+                      ...singleSearchSpec,
+                      subspecs: singleSearchSpec.subspecs.map(
+                        (foundsubspec, i) =>
+                          i === singleSearchSpec.subspecs.indexOf(subspec)
+                            ? new_subspec
+                            : foundsubspec
+                      ),
+                    });
+                  }}
+                  config={config}
+                />
+                {/* Deelete button */}
+                <button
+                  className="text-red-500 text-sm hover:text-red-700 ml-3"
+                  onClick={() => {
+                    setThisSearchSpec({
+                      ...singleSearchSpec,
+                      subspecs: singleSearchSpec.subspecs.filter(
+                        (compsubspec, i) =>
+                          i !== singleSearchSpec.subspecs.indexOf(subspec)
+                      ),
+                    });
+                  }}
+                >
+                  X
+                </button>
+              </div>
+            ))}
+            {/* Add a button to add a new subspec */}
+            <button
+              className="inline-block w-32 mb-3 border py-1 px-1 text-grey-darkest text-sm"
+              onClick={() => {
+                setThisSearchSpec({
+                  ...singleSearchSpec,
+                  subspecs: [...singleSearchSpec.subspecs, getDefaultSearch()],
+                });
+              }}
+            >
+              Add sub-search
+            </button>
+          </div>
+        </>
       )}
     </>
   );
