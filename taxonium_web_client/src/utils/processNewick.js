@@ -148,7 +148,7 @@ export async function processNewick(data, sendStatusMessage) {
     tree.node = kn_expand_node(tree.root);
   }
 
-  console.log("TREE", tree);
+  
 
   sendStatusMessage({
     message: "Laying out the tree",
