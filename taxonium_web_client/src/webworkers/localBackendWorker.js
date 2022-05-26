@@ -186,12 +186,7 @@ const getConfig = async () => {
     if (x === "mutation") {
       return "Mutation";
     }
-    if (x === "and"){
-      return "AND";
-    }
-    if (x === "or"){
-      return "OR";
-    }
+  
     const capitalised_first_letter = x.charAt(0).toUpperCase() + x.slice(1);
     return capitalised_first_letter;
   };
@@ -209,10 +204,9 @@ const getConfig = async () => {
     if (x === "meta_Lineage") {
       return "text_exact";
     }
-    if (x === "and")
-      return "and";
-    if (x === "or")
-      return "or";
+    if (x === "boolean")
+      return "boolean";
+   
     return "text_match";
   };
   const initial_search_types = ["name", ...config.keys_to_display];
@@ -226,8 +220,8 @@ const getConfig = async () => {
   }
 
   if (initial_search_types.length > 1) {
-    initial_search_types.push("and");
-    initial_search_types.push("or");
+    initial_search_types.push("boolean");
+   
   }
 
 
