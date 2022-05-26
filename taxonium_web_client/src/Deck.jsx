@@ -145,7 +145,7 @@ function Deck({
     >
       {no_data && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-          <div className="text-center w-32 h-32">
+          <div className="text-center w-40 h-32">
             {statusMessage && statusMessage.percentage ? (
              <> <CircularProgressbarWithChildren
                 value={statusMessage.percentage}
