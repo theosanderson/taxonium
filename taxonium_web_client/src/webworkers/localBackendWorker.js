@@ -231,7 +231,7 @@ const getConfig = async () => {
   config.search_types.forEach((x) => {
     // if "text" is found in the type
     if (x.type.includes("text")) {
-      x.controls = true
+      x.controls = true;
     }
   });
 
