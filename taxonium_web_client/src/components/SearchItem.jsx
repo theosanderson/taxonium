@@ -5,7 +5,7 @@ import {getDefaultSearch} from "../utils/searchUtil"
 
 const bool_methods = ["and","or","not"];
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
-  console.log("singleSearchSpec is ", singleSearchSpec);
+  
 
   const types = config.search_types ? config.search_types : [];
 
