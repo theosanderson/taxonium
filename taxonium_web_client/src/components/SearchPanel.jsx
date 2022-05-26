@@ -107,7 +107,7 @@ function SearchPanel({
           <span className="ml-1">
             <button
               title="List all tips"
-              className="text-xs text-gray-600 hover:text-black"
+              className="text-gray-600 hover:text-black"
               onClick={() => {
                 if (
                   selectedDetails.nodeDetails.num_tips > 100000 &&
