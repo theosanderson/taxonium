@@ -77,67 +77,62 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
           singleSearchSpec={singleSearchSpec}
           setThisSearchSpec={setThisSearchSpec}
         />
-       
-        <div className="flex justify-between">
-        <div className="text-black  pr-2 text-sm  ">
-          {" "}
-          {num_results !== "Loading" && (
-            <>
-              {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}
-            </>
-          )}{" "}
-          {num_results > 0 && (
-            <>
-              <Button
-                className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border  text-gray-700 "
-                onClick={() => {
-                  search.setZoomToSearch({ index: getMyIndex() });
-                }}
-                title="Zoom to this search"
-              >
-                <FaSearch />
-              </Button>{" "}
-              {
-                // check if window href includes 'protoUrl'
-                (window.location.href.includes("protoUrl") ||
-                  window.location.href.includes("treeUrl") ||
-                  window.location.href.includes("cov2tree.org") ||
-                  window.location.href.includes("backend")) &&
-                  config &&
-                  !config.disable_permalink && (
-                    <Button
-                      className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border text-gray-700"
-                      onClick={() => {
-                        setPermaLinkModalOpen(true);
-                      }}
-                      title="Get permalink"
-                    >
-                      <FaLink />
-                    </Button>
-                  )
-              }
-              {search.searchLoadingStatus[myKey] === "loading" && (
-                <ClipLoader size={12} color="#444444" className="mr-3" />
-              )}
-             
-            </>
-          )}
-           <div className="inline-block h-5 w-0 mt-4 w-1">&nbsp;</div>
-        </div>
-        <div>
-        <Button
-        title="Delete this search"
-          className="inline-block bg-gray-100 text-xs mx-auto h-7 rounded border-gray-300 border text-gray-700 mr-2 text-gray-500 mt-3"
-          onClick={() => search.deleteTopLevelSearch(myKey)}
-        >
-          <FaTrash className="inline-block mx-2 " />
-          
-        </Button>
-        </div>
-        </div>
-        
 
-        
+        <div className="flex justify-between">
+          <div className="text-black  pr-2 text-sm  ">
+            {" "}
+            {num_results !== "Loading" && (
+              <>
+                {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}
+              </>
+            )}{" "}
+            {num_results > 0 && (
+              <>
+                <Button
+                  className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border  text-gray-700 "
+                  onClick={() => {
+                    search.setZoomToSearch({ index: getMyIndex() });
+                  }}
+                  title="Zoom to this search"
+                >
+                  <FaSearch />
+                </Button>{" "}
+                {
+                  // check if window href includes 'protoUrl'
+                  (window.location.href.includes("protoUrl") ||
+                    window.location.href.includes("treeUrl") ||
+                    window.location.href.includes("cov2tree.org") ||
+                    window.location.href.includes("backend")) &&
+                    config &&
+                    !config.disable_permalink && (
+                      <Button
+                        className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border text-gray-700"
+                        onClick={() => {
+                          setPermaLinkModalOpen(true);
+                        }}
+                        title="Get permalink"
+                      >
+                        <FaLink />
+                      </Button>
+                    )
+                }
+                {search.searchLoadingStatus[myKey] === "loading" && (
+                  <ClipLoader size={12} color="#444444" className="mr-3" />
+                )}
+              </>
+            )}
+            <div className="inline-block h-5 w-0 mt-4 w-1">&nbsp;</div>
+          </div>
+          <div>
+            <Button
+              title="Delete this search"
+              className="inline-block bg-gray-100 text-xs mx-auto h-7 rounded border-gray-300 border text-gray-700 mr-2 text-gray-500 mt-3"
+              onClick={() => search.deleteTopLevelSearch(myKey)}
+            >
+              <FaTrash className="inline-block mx-2 " />
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   );

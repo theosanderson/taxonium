@@ -186,7 +186,7 @@ const getConfig = async () => {
     if (x === "mutation") {
       return "Mutation";
     }
-  
+
     const capitalised_first_letter = x.charAt(0).toUpperCase() + x.slice(1);
     return capitalised_first_letter;
   };
@@ -204,9 +204,8 @@ const getConfig = async () => {
     if (x === "meta_Lineage") {
       return "text_exact";
     }
-    if (x === "boolean")
-      return "boolean";
-   
+    if (x === "boolean") return "boolean";
+
     return "text_match";
   };
   const initial_search_types = ["name", ...config.keys_to_display];
@@ -221,10 +220,7 @@ const getConfig = async () => {
 
   if (initial_search_types.length > 1) {
     initial_search_types.push("boolean");
-   
   }
-
-
 
   config.search_types = initial_search_types.map((x) => ({
     name: x,

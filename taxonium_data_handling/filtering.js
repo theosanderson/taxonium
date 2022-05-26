@@ -145,38 +145,56 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
 }
 
 function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
-  if(spec.type=="boolean"){
-  if(spec.boolean_method=="and"){
-    if (spec.subspecs.length == 0) {
-      return []
+  if (spec.type == "boolean") {
+    if (spec.boolean_method == "and") {
+      if (spec.subspecs.length == 0) {
+        return [];
+      }
+      let workingData = data;
+      spec.subspecs.forEach((subspec) => {
+        workingData = searchFiltering({
+          data: workingData,
+          spec: subspec,
+          mutations: mutations,
+          node_to_mut: node_to_mut,
+          all_data: all_data,
+        });
+      });
+      return workingData;
     }
-    let workingData = data;
-    spec.subspecs.forEach((subspec) => {
-      workingData = searchFiltering({data: workingData, spec: subspec, mutations: mutations, node_to_mut: node_to_mut, all_data: all_data});
-    });
-    return workingData;
-  }
-  if(spec.boolean_method=="or"){
-    if (spec.subspecs.length == 0) {
-      return []
+    if (spec.boolean_method == "or") {
+      if (spec.subspecs.length == 0) {
+        return [];
+      }
+      let workingData = new Set();
+      spec.subspecs.forEach((subspec) => {
+        const results = searchFiltering({
+          data: data,
+          spec: subspec,
+          mutations: mutations,
+          node_to_mut: node_to_mut,
+          all_data: all_data,
+        });
+        workingData = new Set([...workingData, ...results]);
+      });
+      return Array.from(workingData);
     }
-    let workingData = new Set();
-    spec.subspecs.forEach((subspec) => {
-      const results = searchFiltering({data: data, spec: subspec, mutations: mutations, node_to_mut: node_to_mut, all_data: all_data});
-      workingData = new Set([...workingData, ...results]);
-    });
-    return Array.from(workingData);
+    if (spec.boolean_method == "not") {
+      let negatives_set = new Set();
+      spec.subspecs.forEach((subspec) => {
+        const results = searchFiltering({
+          data: data,
+          spec: subspec,
+          mutations: mutations,
+          node_to_mut: node_to_mut,
+          all_data: all_data,
+        });
+        negatives_set = new Set([...negatives_set, ...results]);
+      });
+      return data.filter((node) => !negatives_set.has(node));
+    }
   }
-  if(spec.boolean_method=="not"){
-    let negatives_set = new Set();
-    spec.subspecs.forEach((subspec) => {
-      const results = searchFiltering({data: data, spec: subspec, mutations: mutations, node_to_mut: node_to_mut, all_data: all_data});
-      negatives_set = new Set([...negatives_set, ...results]);
-    });
-    return data.filter((node) => !negatives_set.has(node));
-  }
-}
-      
+
   console.log(spec);
   let filtered;
   if (["text_match", "text_exact"].includes(spec.method) && spec.text === "") {
