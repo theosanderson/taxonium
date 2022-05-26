@@ -259,7 +259,6 @@ function App() {
               </p>{" "}
               <FirefoxWarning className="text-md font-bold" />
             </div>
-            
           )}
         </Suspense>
       </div>
