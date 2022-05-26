@@ -63,9 +63,9 @@ Once you have an UShER-annotated tree, we provide a tool for converting it to a 
 
 ### Getting around
 
-Once you have loaded a tree into the Taxonium interface you can explore it. 
+Once you have loaded a tree into the Taxonium interface you can explore it.
 
-You can **pan** by clicking and dragging the tree, or using the arrow keys on your keyboard. 
+You can **pan** by clicking and dragging the tree, or using the arrow keys on your keyboard.
 
 You can **zoom vertically** by scrolling with your mouse, or with the buttons at the bottom right of the window, or with the + and - keys on your keyboard.
 
@@ -80,7 +80,6 @@ At the top right of the tree is a minimap showing the whole tree, with a box sho
 Click on a node to select it. The bottom of the right hand panel will display information about the node. You can click the arrow next to the nodes name to jump the selection up to this node's parent node.
 
 If this node has descendants, the number of them will be displayed. You can click the list icon next to this number to list these descendants.
-
 
 ```{note}
 When you zoom in very far on a big tree the view box may look like a horizontal line, but that's just because you are zoomed in on such a small vertical part of the tree.

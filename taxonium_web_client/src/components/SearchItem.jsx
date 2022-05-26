@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
@@ -12,9 +12,26 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   const text_types = ["text_exact", "text_match"];
 
-  const name_to_type = Object.fromEntries(
-    types.map((type) => [type.name, type.type])
+  const specific_configurations = Object.fromEntries(
+    types.map((type) => {
+      const obj = {
+        method: type.type,
+      };
+      if (type.controls) {
+        obj.controls = type.controls;
+      }
+
+      return [type.name, obj];
+    })
   );
+
+  const setTypeTo = (type) => {
+    setThisSearchSpec({
+      ...singleSearchSpec,
+      type: type,
+      ...specific_configurations[type],
+    });
+  };
 
   const is_text = text_types.includes(singleSearchSpec.method);
 
@@ -34,13 +51,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       <Select
         className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm mr-1"
         value={singleSearchSpec.type}
-        onChange={(e) =>
-          setThisSearchSpec({
-            ...singleSearchSpec,
-            type: e.target.value,
-            method: name_to_type[e.target.value],
-          })
-        }
+        onChange={(e) => setTypeTo(e.target.value)}
       >
         {types.map((type) => (
           <option key={type.name} value={type.name}>
@@ -50,7 +61,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       </Select>
       {is_text && (
         <DebounceInput
-          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
+          className="inline-block w-40 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
           onChange={(e) =>
             setThisSearchSpec({
@@ -72,6 +83,58 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
             })
           }
         />
+      )}
+      {(is_text || is_multi_text) && singleSearchSpec.controls && (
+        <>
+          <label
+            title="Exact match"
+            className="inline-block text-xs text-gray-400 pl-2 pr-3"
+          >
+            <input
+              type="checkbox"
+              checked={
+                singleSearchSpec.method === "text_exact" || is_multi_text
+              }
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    method: "text_exact",
+                  });
+                } else {
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    method: "text_match",
+                  });
+                }
+              }}
+            />{" "}
+            x{" "}
+          </label>
+          <label
+            title="Multi-line"
+            className="inline-block text-xs text-gray-400"
+          >
+            <input
+              type="checkbox"
+              checked={is_multi_text}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    method: "text_per_line",
+                  });
+                } else {
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    method: "text_match",
+                  });
+                }
+              }}
+            />{" "}
+            m{" "}
+          </label>
+        </>
       )}
 
       {singleSearchSpec.type === "mutation" && (
