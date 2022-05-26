@@ -17,39 +17,58 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   const types = config.search_types ? config.search_types : [];
 
   const all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
-  const mut_aa_options = ['any'].concat(all_amino_acids).concat(['*']);
-  const gen_aa_options = all_amino_acids.concat(['*']);
+  const mut_aa_options = ["any"].concat(all_amino_acids).concat(["*"]);
+  const gen_aa_options = all_amino_acids.concat(["*"]);
 
   useEffect(() => {
-    if (singleSearchSpec.type === "genotype" && (!singleSearchSpec.new_residue || !gen_aa_options.includes(singleSearchSpec.new_residue))) {
-      setThisSearchSpec({ ...singleSearchSpec, new_residue: 'A', position:0,
-      gene: config.genes[0]
-    });
-
+    if (
+      singleSearchSpec.type === "genotype" &&
+      (!singleSearchSpec.new_residue ||
+        !gen_aa_options.includes(singleSearchSpec.new_residue))
+    ) {
+      setThisSearchSpec({
+        ...singleSearchSpec,
+        new_residue: "A",
+        position: 0,
+        gene: config.genes[0],
+      });
     }
   }, [singleSearchSpec.type, singleSearchSpec.new_residue]);
 
   useEffect(() => {
-    if (singleSearchSpec.type === "mutation" && (!singleSearchSpec.new_residue || !mut_aa_options.includes(singleSearchSpec.new_residue)
-    || (config.genes && !config.genes.includes(singleSearchSpec.gene)))) {
-      setThisSearchSpec({ ...singleSearchSpec, new_residue: 'any', position:0,
-      gene: config.genes[0]
-    });
-
+    if (
+      singleSearchSpec.type === "mutation" &&
+      (!singleSearchSpec.new_residue ||
+        !mut_aa_options.includes(singleSearchSpec.new_residue) ||
+        (config.genes && !config.genes.includes(singleSearchSpec.gene)))
+    ) {
+      setThisSearchSpec({
+        ...singleSearchSpec,
+        new_residue: "any",
+        position: 0,
+        gene: config.genes[0],
+      });
     }
   }, [singleSearchSpec.type, singleSearchSpec.new_residue]);
 
-  
-
- // if method is number and number is not set and number_method is not set, set number_method to "="
+  // if method is number and number is not set and number_method is not set, set number_method to "="
   useEffect(() => {
-    if (singleSearchSpec.method === "number" && !singleSearchSpec.number && !singleSearchSpec.number_method) {
-      setThisSearchSpec({ ...singleSearchSpec, number_method: "==" , number: 0});
+    if (
+      singleSearchSpec.method === "number" &&
+      !singleSearchSpec.number &&
+      !singleSearchSpec.number_method
+    ) {
+      setThisSearchSpec({
+        ...singleSearchSpec,
+        number_method: "==",
+        number: 0,
+      });
     }
-  }, [singleSearchSpec.method, singleSearchSpec.number, singleSearchSpec.number_method]);
-
-
-
+  }, [
+    singleSearchSpec.method,
+    singleSearchSpec.number,
+    singleSearchSpec.number_method,
+  ]);
 
   const text_types = ["text_exact", "text_match"];
 
@@ -178,7 +197,8 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
         </>
       )}
 
-      {(singleSearchSpec.type === "mutation" ||  singleSearchSpec.type === "genotype") && (
+      {(singleSearchSpec.type === "mutation" ||
+        singleSearchSpec.type === "genotype") && (
         <div className="pl-11 pt-2 text-gray-700">
           <div>
             <label className="text-sm mr-2">Gene: </label>
@@ -198,7 +218,9 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
             </Select>
           </div>
           <div className="pt-2">
-            <label className="text-sm">{toTitleCase(singleSearchSpec.type)} at residue </label>
+            <label className="text-sm">
+              {toTitleCase(singleSearchSpec.type)} at residue{" "}
+            </label>
             <DebounceInput
               type="number"
               value={singleSearchSpec.position}
@@ -210,7 +232,10 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               }
               className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             />
-            <label className="text-sm">&nbsp;{singleSearchSpec.type === "mutation"?<>to</>:<>of</>}&nbsp;</label>
+            <label className="text-sm">
+              &nbsp;{singleSearchSpec.type === "mutation" ? <>to</> : <>of</>}
+              &nbsp;
+            </label>
             <Select
               value={singleSearchSpec.new_residue}
               onChange={(e) => {
@@ -221,7 +246,10 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               }}
               className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
             >
-              {(singleSearchSpec.type === "mutation" ? mut_aa_options : gen_aa_options).map((aa) => (
+              {(singleSearchSpec.type === "mutation"
+                ? mut_aa_options
+                : gen_aa_options
+              ).map((aa) => (
                 <option key={aa} value={aa}>
                   {aa}
                 </option>
@@ -329,7 +357,6 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
         // interface with select box for less than, greater than, greater than or equal to, less than or equal to, equal to
         // then a number input
         <div>
-        
           <Select
             value={singleSearchSpec.number_method}
             onChange={(e) =>
@@ -359,9 +386,6 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           />
         </div>
       )}
-      
-
-
     </>
   );
 };

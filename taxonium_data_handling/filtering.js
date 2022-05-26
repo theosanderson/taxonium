@@ -7,19 +7,19 @@ let revertant_mutations_set = null;
 let cachedChildrenArray = null;
 
 const getNumericFilterFunction = (number_method, number_value) => {
-  if(number_method === "==") {
+  if (number_method === "==") {
     return (x) => x === number_value;
   }
-  if(number_method === ">") {
+  if (number_method === ">") {
     return (x) => x > number_value;
   }
-  if(number_method === "<") {
+  if (number_method === "<") {
     return (x) => x < number_value;
   }
-  if(number_method === ">=") {
+  if (number_method === ">=") {
     return (x) => x >= number_value;
   }
-  if(number_method === "<=") {
+  if (number_method === "<=") {
     return (x) => x <= number_value;
   }
   throw new Error("Invalid number_method: " + number_method);
@@ -164,7 +164,6 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
 }
 
 function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
-  
   if (spec.type == "boolean") {
     if (spec.boolean_method == "and") {
       if (spec.subspecs.length == 0) {
@@ -308,22 +307,27 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     //console.log("filtered:", filtered);
     return filtered;
   } else if (spec.method === "genotype") {
-    const genotype = {gene: spec.gene, position: spec.position, new_residue: spec.new_residue};
-    return filterByGenotype(data,genotype,mutations,node_to_mut,all_data);
-  }else if(spec.method==="number"){
-    if (spec.number==""){
+    const genotype = {
+      gene: spec.gene,
+      position: spec.position,
+      new_residue: spec.new_residue,
+    };
+    return filterByGenotype(data, genotype, mutations, node_to_mut, all_data);
+  } else if (spec.method === "number") {
+    if (spec.number == "") {
       return [];
     }
-  
-    const number_value =  parseFloat(spec.number);
-    const filterFunc = getNumericFilterFunction(spec.number_method, number_value);
-    
+
+    const number_value = parseFloat(spec.number);
+    const filterFunc = getNumericFilterFunction(
+      spec.number_method,
+      number_value
+    );
+
     filtered = data.filter((node) => filterFunc(node[spec.type]));
     return filtered;
-  
   }
 
-  
   return [];
 }
 
@@ -348,7 +352,13 @@ function singleSearch({
     .slice(0, 8);
   let filtered = null;
   if (count_per_hash[hash_spec] === undefined) {
-    filtered = searchFiltering({ data, spec, mutations, node_to_mut, all_data: data });
+    filtered = searchFiltering({
+      data,
+      spec,
+      mutations,
+      node_to_mut,
+      all_data: data,
+    });
     count_per_hash[hash_spec] = filtered.length;
   }
   const num_returned = count_per_hash[hash_spec];
@@ -383,7 +393,13 @@ function singleSearch({
     };
   } else {
     if (filtered === null) {
-      filtered = searchFiltering({ data, spec, mutations, node_to_mut, all_data: data });
+      filtered = searchFiltering({
+        data,
+        spec,
+        mutations,
+        node_to_mut,
+        all_data: data,
+      });
     }
     result = {
       type: "complete",
@@ -442,55 +458,66 @@ const getTipAtts = (input, node_id, attribute) => {
   return allAtts;
 };
 
-const filterByGenotype = (data,genotype,mutations,node_to_mut,all_data) => {
-
+const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
   const genotype_cache = {};
-  const {gene, position, new_residue} = genotype;
-  console.log("mut",mutations);
-  console.log(genotype)
+  const { gene, position, new_residue } = genotype;
+  console.log("mut", mutations);
+  console.log(genotype);
   const relevant_mutations = mutations.filter((mutation) => {
     return (
       mutation && mutation.gene === gene && mutation.residue_pos === position
     );
   });
- 
+
   const positive_mutations = new Set(
-    relevant_mutations.filter((mutation) => mutation.new_residue === new_residue).map(m=> m.mutation_id)
+    relevant_mutations
+      .filter((mutation) => mutation.new_residue === new_residue)
+      .map((m) => m.mutation_id)
   );
   console.log("positive_mutations:", positive_mutations);
   const negative_mutations = new Set(
-    relevant_mutations.filter((mutation) => mutation.new_residue !== new_residue).map(m=> m.mutation_id)
+    relevant_mutations
+      .filter((mutation) => mutation.new_residue !== new_residue)
+      .map((m) => m.mutation_id)
   );
   const output = [];
   data.forEach((node) => {
- //   console.log("node:",node);
+    //   console.log("node:",node);
     let cur_node = node;
     const to_label = [];
-  
-    while(true) {
-     // console.log("cur_node:",cur_node);
+
+    while (true) {
+      // console.log("cur_node:",cur_node);
 
       to_label.push(cur_node.node_id);
       const cache_value = genotype_cache[cur_node.node_id];
-      const is_positive = cache_value === true || node_to_mut[cur_node.node_id].some((mutation_id) => positive_mutations.has(mutation_id));
-      if(is_positive) {
+      const is_positive =
+        cache_value === true ||
+        node_to_mut[cur_node.node_id].some((mutation_id) =>
+          positive_mutations.has(mutation_id)
+        );
+      if (is_positive) {
         output.push(node);
-       // console.log("positive");
+        // console.log("positive");
         to_label.forEach((node_id) => {
           genotype_cache[node_id] = true;
         });
-        return
+        return;
       }
-      const is_negative = cache_value === false ||  node_to_mut[cur_node.node_id].some((mutation_id) => negative_mutations.has(mutation_id));
-      if(is_negative) {
-       // console.log("negative");
+      const is_negative =
+        cache_value === false ||
+        node_to_mut[cur_node.node_id].some((mutation_id) =>
+          negative_mutations.has(mutation_id)
+        );
+      if (is_negative) {
+        // console.log("negative");
         to_label.forEach((node_id) => {
           genotype_cache[node_id] = false;
         });
-        return
+        return;
       }
-      if(cur_node.parent_id === cur_node.node_id){
-        break
+      if (cur_node.parent_id === cur_node.node_id) {
+        break;
       }
       cur_node = all_data[cur_node.parent_id];
     }
@@ -500,11 +527,6 @@ const filterByGenotype = (data,genotype,mutations,node_to_mut,all_data) => {
   });
   return output;
 };
-
-    
-
-
-
 
 export default {
   reduceOverPlotting,

@@ -118,7 +118,7 @@ const search = async (search, bounds) => {
     node_to_mut,
     xType: xType,
   });
-  
+
   console.log("got search result", result);
   result.key = spec.key;
   return result;
