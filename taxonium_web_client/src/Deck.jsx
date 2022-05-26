@@ -145,7 +145,7 @@ function Deck({
     >
       {no_data && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-          <div className="text-center w-40 h-32">
+          <div className="text-center w-60 h-60">
             {statusMessage && statusMessage.percentage ? (
              <> <CircularProgressbarWithChildren
                 value={statusMessage.percentage}
@@ -179,7 +179,7 @@ function Deck({
                 </div>
                 
               </CircularProgressbarWithChildren>
-             <div className="w-40"> <FirefoxWarning className="font-medium text-gray-700 mt-3" />
+             <div className="w-60"> <FirefoxWarning className="font-medium text-gray-700 mt-3" />
              </div></>
             ) : (
               <div className="text-center text-gray-700  text-lg wt font-medium">
