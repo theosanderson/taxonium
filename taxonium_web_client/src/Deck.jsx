@@ -179,7 +179,7 @@ function Deck({
                 </div>
                 
               </CircularProgressbarWithChildren>
-             <div className="w-60"> <FirefoxWarning className="font-medium text-gray-700 mt-3" />
+             <div className="w-60"> <FirefoxWarning className="font-bold text-xs text-gray-700 mt-3" />
              </div></>
             ) : (
               <div className="text-center text-gray-700  text-lg wt font-medium">
