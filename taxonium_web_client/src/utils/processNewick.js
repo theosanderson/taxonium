@@ -148,8 +148,6 @@ export async function processNewick(data, sendStatusMessage) {
     tree.node = kn_expand_node(tree.root);
   }
 
-  
-
   sendStatusMessage({
     message: "Laying out the tree",
   });
