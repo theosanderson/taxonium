@@ -228,6 +228,13 @@ const getConfig = async () => {
     type: typeFromKey(x),
   }));
 
+  config.search_types.forEach((x) => {
+    // if "text" is found in the type
+    if (x.type.includes("text")) {
+      x.controls = true
+    }
+  });
+
   const colorByOptions = [...config.keys_to_display];
   if (processedUploadedData.mutations.length > 0) {
     colorByOptions.push("genotype");
