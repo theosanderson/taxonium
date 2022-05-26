@@ -144,7 +144,7 @@ function SearchPanel({
           </>
         )}
       </div>
-      
+
       {config.x_accessors && config.x_accessors.length > 1 && (
         <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
           Tree type:{" "}
