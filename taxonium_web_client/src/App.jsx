@@ -11,6 +11,7 @@ import { useInputHelper } from "./hooks/useInputHelper";
 
 import { getDefaultSearch } from "./utils/searchUtil";
 import InputSupplier from "./components/InputSupplier";
+import FirefoxWarning from "./components/FirefoxWarning";
 
 const first_search = getDefaultSearch("aa1");
 
@@ -256,7 +257,9 @@ function App() {
                 </a>{" "}
                 about how to use Taxonium
               </p>{" "}
+              <FirefoxWarning className="text-md font-bold" />
             </div>
+            
           )}
         </Suspense>
       </div>
