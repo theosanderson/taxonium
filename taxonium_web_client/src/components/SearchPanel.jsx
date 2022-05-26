@@ -8,6 +8,7 @@ import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
+import FirefoxWarning from "./FirefoxWarning";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
@@ -142,6 +143,7 @@ function SearchPanel({
           </>
         )}
       </div>
+      <FirefoxWarning />
       {config.x_accessors && config.x_accessors.length > 1 && (
         <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
           Tree type:{" "}
