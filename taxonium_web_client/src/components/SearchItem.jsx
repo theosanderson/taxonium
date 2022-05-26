@@ -22,9 +22,24 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   useEffect(() => {
     if (singleSearchSpec.type === "genotype" && (!singleSearchSpec.new_residue || !gen_aa_options.includes(singleSearchSpec.new_residue))) {
-      setThisSearchSpec({ ...singleSearchSpec, new_residue: 'A' });
+      setThisSearchSpec({ ...singleSearchSpec, new_residue: 'A', position:0,
+      gene: config.genes[0]
+    });
+
     }
   }, [singleSearchSpec.type, singleSearchSpec.new_residue]);
+
+  useEffect(() => {
+    if (singleSearchSpec.type === "mutation" && (!singleSearchSpec.new_residue || !mut_aa_options.includes(singleSearchSpec.new_residue)
+    || (config.genes && !config.genes.includes(singleSearchSpec.gene)))) {
+      setThisSearchSpec({ ...singleSearchSpec, new_residue: 'any', position:0,
+      gene: config.genes[0]
+    });
+
+    }
+  }, [singleSearchSpec.type, singleSearchSpec.new_residue]);
+
+  
 
  // if method is number and number is not set and number_method is not set, set number_method to "="
   useEffect(() => {
