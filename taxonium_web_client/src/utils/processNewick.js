@@ -164,7 +164,7 @@ export async function processNewick(data, sendStatusMessage) {
   tree.node.sort((a, b) => a.y - b.y);
 
   sendStatusMessage({
-    message: "Cleaning up objects",
+    message: "Re-processing",
   });
 
   cleanup(tree);
