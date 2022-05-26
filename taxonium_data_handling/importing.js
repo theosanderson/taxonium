@@ -82,7 +82,8 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
 };
 
 export const processJsonl = async (jsonl, sendStatusMessage) => {
-  console.log("Worker processJsonl", jsonl);
+  console.log("Worker processJsonl"//, jsonl
+  );
   const data = jsonl.data;
   const status = jsonl.status;
   let the_stream;
