@@ -147,40 +147,44 @@ function Deck({
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
           <div className="text-center w-60 h-60">
             {statusMessage && statusMessage.percentage ? (
-             <> <CircularProgressbarWithChildren
-                value={statusMessage.percentage}
-                strokeWidth={2}
-                styles={buildStyles({
-                  // Rotation of path and trail, in number of turns (0-1)
-                  //rotation: 0.25,
+              <>
+                {" "}
+                <CircularProgressbarWithChildren
+                  value={statusMessage.percentage}
+                  strokeWidth={2}
+                  styles={buildStyles({
+                    // Rotation of path and trail, in number of turns (0-1)
+                    //rotation: 0.25,
 
-                  // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-                  //  strokeLinecap: 'butt',
+                    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+                    //  strokeLinecap: 'butt',
 
-                  // Text size
-                  textSize: "8px",
+                    // Text size
+                    textSize: "8px",
 
-                  // How long animation takes to go from one percentage to another, in seconds
-                  //pathTransitionDuration: 0.5,
+                    // How long animation takes to go from one percentage to another, in seconds
+                    //pathTransitionDuration: 0.5,
 
-                  // Can specify path transition in more detail, or remove it entirely
-                  // pathTransition: 'none',
+                    // Can specify path transition in more detail, or remove it entirely
+                    // pathTransition: 'none',
 
-                  // Colors
-                  pathColor: `#666`,
-                  textColor: "#666",
-                  trailColor: "#d6d6d6",
-                })}
-              >
-                {/* Put any JSX content in here that you'd like. It'll be vertically and horizonally centered. */}
+                    // Colors
+                    pathColor: `#666`,
+                    textColor: "#666",
+                    trailColor: "#d6d6d6",
+                  })}
+                >
+                  {/* Put any JSX content in here that you'd like. It'll be vertically and horizonally centered. */}
 
-                <div className="text-center text-gray-700  text-lg wt font-medium">
-                  {statusMessage && statusMessage.message}
+                  <div className="text-center text-gray-700  text-lg wt font-medium">
+                    {statusMessage && statusMessage.message}
+                  </div>
+                </CircularProgressbarWithChildren>
+                <div className="w-60">
+                  {" "}
+                  <FirefoxWarning className="font-bold text-xs text-gray-700 mt-3" />
                 </div>
-                
-              </CircularProgressbarWithChildren>
-             <div className="w-60"> <FirefoxWarning className="font-bold text-xs text-gray-700 mt-3" />
-             </div></>
+              </>
             ) : (
               <div className="text-center text-gray-700  text-lg wt font-medium">
                 <div>{statusMessage && statusMessage.message}</div>

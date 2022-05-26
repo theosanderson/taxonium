@@ -33,7 +33,7 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
 
 export const setUpStream = (the_stream, data, sendStatusMessage) => {
   function processLine(line, line_number) {
-    if ( (line_number % 100000 === 0 && line_number > 0) ||  line_number ==500)  {
+    if ((line_number % 100000 === 0 && line_number > 0) || line_number == 500) {
       console.log(`Processed ${formatNumber(line_number)} lines`);
       if (data.header.total_nodes) {
         const percentage = (line_number / data.header.total_nodes) * 100;
@@ -82,7 +82,8 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
 };
 
 export const processJsonl = async (jsonl, sendStatusMessage) => {
-  console.log("Worker processJsonl"//, jsonl
+  console.log(
+    "Worker processJsonl" //, jsonl
   );
   const data = jsonl.data;
   const status = jsonl.status;

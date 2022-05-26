@@ -6,8 +6,8 @@ const FirefoxWarning = ({ className }) => {
     return (
       <div className={className}>
         <p>
-          Warning: Taxonium loads large files more slowly in Firefox. Please
-          use Chrome or Safari for an optimal experience.
+          Warning: Taxonium loads large files more slowly in Firefox. Please use
+          Chrome or Safari for an optimal experience.
         </p>
       </div>
     );
