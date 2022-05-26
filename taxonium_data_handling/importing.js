@@ -114,7 +114,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
       return;
     }
     console.log("ALL FINE", response);
-    sendStatusMessage({ message: "Fetching data from URL" });
+    sendStatusMessage({ message: "Loading root genome" });
 
     const readableWebStream = response.body;
     const nodeStream = new ReadableWebToNodeStream(readableWebStream);
