@@ -461,7 +461,7 @@ const getTipAtts = (input, node_id, attribute) => {
 const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
   const genotype_cache = {};
   const { gene, position, new_residue } = genotype;
- 
+
   const relevant_mutations = mutations.filter((mutation) => {
     return (
       mutation && mutation.gene === gene && mutation.residue_pos === position
