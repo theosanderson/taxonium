@@ -116,8 +116,14 @@ const useSearch = ({
                   } else {
                     singleSearch(this_json, null, (result) => {
                       setSearchResults((prevState) => {
-                        const new_result = prevState[key];
-                        new_result.overview = result.data;
+                        let new_result = prevState[key];
+                        if (new_result){
+                          new_result.overview = result.data;
+                        }
+                        else{
+                          new_result = {overview:result.data}
+                          
+                        }
                         return {
                           ...prevState,
                           [key]: new_result,
