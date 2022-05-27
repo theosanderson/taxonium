@@ -29,23 +29,21 @@ tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
 
 const in_cache = set();
 
-const cache_helper = { retrieve_from_cache: (key) =>{
-  if (!in_cache.has(key)) {
-    return undefined;
-  }
-  else{
-    // get from tmpDir, parsing the JSON
-    return JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
-  }
-
-} ,
-  store_in_cache: (key, value) => { 
+const cache_helper = {
+  retrieve_from_cache: (key) => {
+    if (!in_cache.has(key)) {
+      return undefined;
+    } else {
+      // get from tmpDir, parsing the JSON
+      return JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
+    }
+  },
+  store_in_cache: (key, value) => {
     // store in tmpDir, serializing the JSON
     fs.writeFileSync(path.join(tmpDir, key), JSON.stringify(value));
     in_cache.add(key);
-  }
+  },
 };
-
 
 // Either data_url or data_file must be defined, if not display error
 if (
@@ -123,7 +121,7 @@ app.get("/search", function (req, res) {
     mutations: processedData.mutations,
     node_to_mut: processedData.node_to_mut,
     xType: req.query.xType,
-    cache_helper: cache_helper
+    cache_helper: cache_helper,
   };
 
   const result = filtering.singleSearch(forSingleSearch);

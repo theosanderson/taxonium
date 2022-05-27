@@ -28,7 +28,7 @@ worker.onmessage = (event) => {
     onQueryReceipt(event.data.data);
   }
   if (event.data.type === "search") {
-   // console.log("SEARCHRES", event.data.data);
+    // console.log("SEARCHRES", event.data.data);
     searchSetters[event.data.data.key](event.data.data);
   }
   if (event.data.type === "config") {
@@ -123,9 +123,9 @@ function useLocalBackend(uploaded_data, proto) {
         console.log(
           "got search result from ",
           key,
-       //   singleSearch,
-          "result",
-       //   receivedData
+          //   singleSearch,
+          "result"
+          //   receivedData
         );
         setResult(receivedData);
       };

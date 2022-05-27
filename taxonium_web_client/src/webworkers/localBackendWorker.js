@@ -6,9 +6,9 @@ postMessage({ data: "Worker starting" });
 
 const the_cache = {};
 
-const cache_helper = { retrieve_from_cache: (key) => the_cache[key] ,
-  store_in_cache: (key, value) => { 
-    
+const cache_helper = {
+  retrieve_from_cache: (key) => the_cache[key],
+  store_in_cache: (key, value) => {
     the_cache[key] = value;
 
     // Total size of the lists in the cache
@@ -23,11 +23,8 @@ const cache_helper = { retrieve_from_cache: (key) => the_cache[key] ,
       const random_key = keys[Math.floor(Math.random() * keys.length)];
       delete the_cache[random_key];
     }
-
-  
-  }
+  },
 };
-
 
 let processedUploadedData;
 
@@ -142,7 +139,7 @@ const search = async (search, bounds) => {
     mutations,
     node_to_mut,
     xType: xType,
-    cache_helper
+    cache_helper,
   });
 
   console.log("got search result", result);
