@@ -29,7 +29,7 @@ program.parse();
 const command_options = program.opts();
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "taxonium"));
 
-const in_cache = set();
+const in_cache = new Set()
 
 const cache_helper = {
   retrieve_from_cache: (key) => {
