@@ -131,7 +131,9 @@ function Deck({
       setHoverInfoRaw(info);
 
       if (info && info.object) {
-        hoverDetails.setNodeDetails(info.object);
+        if(hoverDetails.setNodeDetails){hoverDetails.setNodeDetails(info.object)}
+        else{hoverDetails.getNodeDetails(info.object.node_id)}
+
       } else {
         hoverDetails.clearNodeDetails();
       }
