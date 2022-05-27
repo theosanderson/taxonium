@@ -412,7 +412,7 @@ const useLayers = ({
       id: "main-search-scatter-" + spec.key,
       getPosition: (d) => [d[xType], d.y],
       getLineColor: lineColor,
-      getRadius: 10 + 2 * i,
+      getRadius: 5 + 2 * i,
       radiusUnits: "pixels",
       lineWidthUnits: "pixels",
       stroked: true,
