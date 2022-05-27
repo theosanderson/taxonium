@@ -149,7 +149,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
     min_y !== undefined ? filter(data, y_positions, min_y, max_y) : data;
   const time2 = Date.now();
   console.log("Filtering took " + (time2 - start_time) + "ms.");
-
+  console.log("Min_y:", min_y, "Max_y:", max_y);
   const reduced_leaves = reduceOverPlotting(
     filtered.filter((node) => node.num_tips == 1),
     getPrecision(min_x, max_x),
@@ -163,7 +163,54 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
   return reduced;
 }
 
-function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
+function searchFiltering({
+  data,
+  spec,
+  mutations,
+  node_to_mut,
+  all_data,
+  cache_helper,
+}) {
+  const spec_copy = { ...spec };
+  spec_copy.key = "cache";
+  const hash_spec = crypto
+    .createHash("md5")
+    .update(JSON.stringify(spec_copy))
+    .digest("hex")
+    .slice(0, 8);
+  if (cache_helper && cache_helper.retrieve_from_cache) {
+    const cached_ids = cache_helper.retrieve_from_cache(hash_spec);
+    if (cached_ids !== undefined) {
+      console.log("Found cached data");
+      return cached_ids.map((id) => all_data[id]);
+    }
+  }
+  const result = searchFilteringIfUncached({
+    data,
+    spec,
+    mutations,
+    node_to_mut,
+    all_data,
+    cache_helper,
+  });
+
+  if (cache_helper && cache_helper.store_in_cache) {
+    cache_helper.store_in_cache(
+      hash_spec,
+      result.map((node) => node.node_id)
+    );
+  }
+  return result;
+}
+
+function searchFilteringIfUncached({
+  data,
+  spec,
+  mutations,
+  node_to_mut,
+  all_data,
+  cache_helper,
+}) {
   if (spec.type == "boolean") {
     if (spec.boolean_method == "and") {
       if (spec.subspecs.length == 0) {
@@ -177,6 +224,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           mutations: mutations,
           node_to_mut: node_to_mut,
           all_data: all_data,
+          cache_helper: cache_helper,
         });
       });
       return workingData;
@@ -193,6 +241,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           mutations: mutations,
           node_to_mut: node_to_mut,
           all_data: all_data,
+          cache_helper: cache_helper,
         });
         workingData = new Set([...workingData, ...results]);
       });
@@ -207,6 +256,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           mutations: mutations,
           node_to_mut: node_to_mut,
           all_data: all_data,
+          cache_helper: cache_helper,
         });
         negatives_set = new Set([...negatives_set, ...results]);
       });
@@ -342,6 +392,7 @@ function singleSearch({
   xType,
   min_x,
   max_x,
+  cache_helper,
 }) {
   const text_spec = JSON.stringify(spec);
   const max_to_return = 10000;
@@ -358,26 +409,30 @@ function singleSearch({
       mutations,
       node_to_mut,
       all_data: data,
+      cache_helper,
     });
     count_per_hash[hash_spec] = filtered.length;
   }
   const num_returned = count_per_hash[hash_spec];
   let result;
   if (num_returned > max_to_return) {
-    // If there are too many results then we need to reduce overplotting before sending to the client to avoid sending too much data
-    // also we only need to search over the bounded area
-
-    // get nodes in which to search:
-    const cut = filter(data, y_positions, min_y, max_y);
-
-    // do the actual search:
-    const filtered_cut = searchFiltering({
-      data: cut,
+    const filtered = searchFiltering({
+      data,
       spec,
       mutations,
       node_to_mut,
       all_data: data,
+      cache_helper,
     });
+
+    // TODO if we ensured all searches maintained order we could use binary search here
+    const filtered_cut = filtered.filter(
+      (node) => node.y < max_y && node.y > min_y
+    );
+
+    console.log("length of filtered_cut:", filtered_cut.length);
+
+    console.log("min_y:", min_y, "max_y:", max_y);
 
     // reduce overplotting:
     const reduced = reduceOverPlotting(
@@ -399,6 +454,7 @@ function singleSearch({
         mutations,
         node_to_mut,
         all_data: data,
+        cache_helper,
       });
     }
     result = {

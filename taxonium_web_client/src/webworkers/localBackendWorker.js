@@ -4,6 +4,28 @@ import { processNewickAndMetadata } from "../utils/processNewick.js";
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
+const the_cache = {};
+
+const cache_helper = {
+  retrieve_from_cache: (key) => the_cache[key],
+  store_in_cache: (key, value) => {
+    the_cache[key] = value;
+
+    // Total size of the lists in the cache
+    let total_size = 0;
+    for (const key in the_cache) {
+      total_size += the_cache[key].length;
+    }
+
+    // If the cache is too big, remove a random item
+    if (total_size > 100e6) {
+      const keys = Object.keys(the_cache);
+      const random_key = keys[Math.floor(Math.random() * keys.length)];
+      delete the_cache[random_key];
+    }
+  },
+};
+
 let processedUploadedData;
 
 const sendStatusMessage = (status_obj) => {
@@ -117,6 +139,7 @@ const search = async (search, bounds) => {
     mutations,
     node_to_mut,
     xType: xType,
+    cache_helper,
   });
 
   console.log("got search result", result);

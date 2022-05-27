@@ -4,6 +4,8 @@ var compression = require("compression");
 
 var app = express();
 var fs = require("fs");
+const path = require("node:path");
+const os = require("node:os");
 var https = require("https");
 var axios = require("axios");
 var pako = require("pako");
@@ -25,6 +27,31 @@ program
 program.parse();
 
 const command_options = program.opts();
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "taxonium"));
+
+const in_cache = new Set();
+
+const cache_helper = {
+  retrieve_from_cache: (key) => {
+    console.log("retrieving ", key);
+    if (!in_cache.has(key)) {
+      console.log("not found");
+      return undefined;
+    } else {
+      // get from tmpDir, parsing the JSON
+      console.log("found");
+      const retrieved = JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
+
+      return retrieved;
+    }
+  },
+  store_in_cache: (key, value) => {
+    console.log("caching ", key);
+    // store in tmpDir, serializing the JSON
+    fs.writeFileSync(path.join(tmpDir, key), JSON.stringify(value));
+    in_cache.add(key);
+  },
+};
 
 // Either data_url or data_file must be defined, if not display error
 if (
@@ -102,6 +129,7 @@ app.get("/search", function (req, res) {
     mutations: processedData.mutations,
     node_to_mut: processedData.node_to_mut,
     xType: req.query.xType,
+    cache_helper: cache_helper,
   };
 
   const result = filtering.singleSearch(forSingleSearch);
