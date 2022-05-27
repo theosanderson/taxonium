@@ -164,14 +164,16 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
 }
 
 function searchFiltering({ data, spec, mutations, node_to_mut, all_data, cache_helper }) {
+  const spec_copy = { ...spec };
+  spec_copy.key="cache";
   const hash_spec = crypto
   .createHash("md5")
-  .update(JSON.stringify(spec))
+  .update(JSON.stringify(spec_copy))
   .digest("hex")
   .slice(0, 8);
   if (cache_helper&&cache_helper.retrieve_from_cache)
   {
-    const cached_ids = cache_helper.retrieve_from_cache(hash_spec);
+    const cached_ids = cache_helper.retrieve_from_cache(spec_copy);
     if (cached_ids!==undefined) {
       console.log("Found cached data");
       return cached_ids.map((id) => all_data[id]);
