@@ -33,14 +33,18 @@ const in_cache = new Set()
 
 const cache_helper = {
   retrieve_from_cache: (key) => {
+    console.log("retrieving ", key);
     if (!in_cache.has(key)) {
+      console.log ("not found")
       return undefined;
     } else {
       // get from tmpDir, parsing the JSON
+      console.log ("found")
       return JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
     }
   },
   store_in_cache: (key, value) => {
+    console.log("caching ", key);
     // store in tmpDir, serializing the JSON
     fs.writeFileSync(path.join(tmpDir, key), JSON.stringify(value));
     in_cache.add(key);
