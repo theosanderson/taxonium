@@ -426,7 +426,10 @@ function singleSearch({
       cache_helper,
     });
 
+    // TODO if we ensured all searches maintained order we could use binary search here
     const filtered_cut = filtered.filter((node) => node.y<max_y && node.y>min_y);
+
+
 
     console.log("length of filtered_cut:", filtered_cut.length);
 
