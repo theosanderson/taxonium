@@ -484,8 +484,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
       .filter((mutation) => mutation.new_residue !== new_residue)
       .map((m) => m.mutation_id)
   );
-  const output = [];
-  data.forEach((node) => {
+  const output = data.filter((node) => {
     //   console.log("node:",node);
     let cur_node = node;
     const to_label = [];
@@ -501,12 +500,11 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
           positive_mutations.has(mutation_id)
         );
       if (is_positive) {
-        output.push(node);
         // console.log("positive");
         to_label.forEach((node_id) => {
           genotype_cache[node_id] = true;
         });
-        return;
+        return true
       }
       const is_negative =
         cache_value === false ||
@@ -518,7 +516,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
         to_label.forEach((node_id) => {
           genotype_cache[node_id] = false;
         });
-        return;
+        return false;
       }
       if (cur_node.parent_id === cur_node.node_id) {
         break;
@@ -527,7 +525,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
     }
 
     // If we get to this point we reached the root node and still didn't find anything, so just return
-    return;
+    return false;
   });
   return output;
 };
