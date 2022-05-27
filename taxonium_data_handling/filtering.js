@@ -220,7 +220,7 @@ function searchFilteringIfUncached({
       spec.subspecs.forEach((subspec) => {
         const new_results = new Set(
           searchFiltering({
-            data: workingData,
+            data: all_data,
             spec: subspec,
             mutations: mutations,
             node_to_mut: node_to_mut,
@@ -239,7 +239,7 @@ function searchFilteringIfUncached({
       let workingData = new Set();
       spec.subspecs.forEach((subspec) => {
         const results = searchFiltering({
-          data: data,
+          data: all_data,
           spec: subspec,
           mutations: mutations,
           node_to_mut: node_to_mut,
@@ -254,7 +254,7 @@ function searchFilteringIfUncached({
       let negatives_set = new Set();
       spec.subspecs.forEach((subspec) => {
         const results = searchFiltering({
-          data: data,
+          data: all_data,
           spec: subspec,
           mutations: mutations,
           node_to_mut: node_to_mut,
