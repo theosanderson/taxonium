@@ -422,6 +422,8 @@ function singleSearch({
     // get nodes in which to search:
     const cut = filter(data, y_positions, min_y, max_y);
 
+    console.log("length of cut:", cut.length);
+
     // do the actual search:
     const filtered_cut = searchFiltering({
       data: cut,
@@ -431,6 +433,8 @@ function singleSearch({
       all_data: data,
       cache_helper,
     });
+
+    console.log("length of filtered_cut:", filtered_cut.length);
 
     console.log("min_y:", min_y, "max_y:", max_y);
 
