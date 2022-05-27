@@ -53,11 +53,32 @@ function Deck({
 
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
+  const mouseDownPos = useRef();
+
   const onClickOrMouseMove = useCallback(
     (event) => {
       if (event.buttons === 0 && event._reactName === "onPointerMove") {
         return false;
       }
+      if (event._reactName === "onPointerDown") {
+        mouseDownPos.current = [event.clientX, event.clientY];
+      }
+      const pan_threshold = 10;
+      // if we get a click event and the mouse has moved more than the threshold,
+      // then we assume that the user is panning and just return. Use Pythagorean
+      // theorem to calculate the distance
+      if (
+        event._reactName === "onClick" &&
+        mouseDownPos.current &&
+        Math.sqrt(
+          Math.pow(mouseDownPos.current[0] - event.clientX, 2) +
+            Math.pow(mouseDownPos.current[1] - event.clientY, 2)
+        ) > pan_threshold
+      ) {
+        return false;
+      }
+
+      console.log("onClickOrMouseMove", event);
 
       const pickInfo = deckRef.current.pickObject({
         x: event.nativeEvent.offsetX,

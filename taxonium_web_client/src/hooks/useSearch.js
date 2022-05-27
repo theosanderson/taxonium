@@ -168,7 +168,7 @@ const useSearch = ({
     [0, 255, 0],
     [255, 0, 255],
     [0, 255, 255],
-     [255, 255, 0],
+    [255, 255, 0],
   ];
 
   const getLineColor = (index) => lineColors[index % lineColors.length];
