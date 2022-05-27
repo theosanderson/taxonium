@@ -416,23 +416,17 @@ function singleSearch({
   const num_returned = count_per_hash[hash_spec];
   let result;
   if (num_returned > max_to_return) {
-    // If there are too many results then we need to reduce overplotting before sending to the client to avoid sending too much data
-    // also we only need to search over the bounded area
 
-    // get nodes in which to search:
-    const cut = filter(data, y_positions, min_y, max_y);
-
-    console.log("length of cut:", cut.length);
-
-    // do the actual search:
-    const filtered_cut = searchFiltering({
-      data: cut,
+    const filtered = searchFiltering({
+      data,
       spec,
       mutations,
       node_to_mut,
       all_data: data,
       cache_helper,
     });
+
+    const filtered_cut = filtered.filter((node) => node.y<max_y && node.y>min_y);
 
     console.log("length of filtered_cut:", filtered_cut.length);
 
