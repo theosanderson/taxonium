@@ -163,7 +163,36 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
   return reduced;
 }
 
-function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
+function searchFiltering({ data, spec, mutations, node_to_mut, all_data, cache_helper }) {
+  const hash_spec = crypto
+  .createHash("md5")
+  .update(JSON.stringify(spec))
+  .digest("hex")
+  .slice(0, 8);
+  if (cache_helper&&cache_helper.retrieve_from_cache)
+  {
+    const cached_ids = cache_helper.retrieve_from_cache(hash_spec);
+    if (cached_ids!==undefined) {
+      console.log("Found cached data");
+      return cached_ids.map((id) => all_data[id]);
+    }
+
+
+  }
+  const result = searchFilteringIfUncached({ data, spec, mutations, node_to_mut, all_data, cache_helper })
+
+  if (cache_helper&&cache_helper.store_in_cache)
+  {
+    cache_helper.store_in_cache(hash_spec, result.map((node) => node.node_id));
+  }
+  return result;
+}
+
+
+
+
+function searchFilteringIfUncached({ data, spec, mutations, node_to_mut, all_data, cache_helper }) {
+  
   if (spec.type == "boolean") {
     if (spec.boolean_method == "and") {
       if (spec.subspecs.length == 0) {
@@ -177,6 +206,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           mutations: mutations,
           node_to_mut: node_to_mut,
           all_data: all_data,
+          cache_helper: cache_helper
         });
       });
       return workingData;
@@ -193,6 +223,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           mutations: mutations,
           node_to_mut: node_to_mut,
           all_data: all_data,
+          cache_helper: cache_helper
         });
         workingData = new Set([...workingData, ...results]);
       });
@@ -207,6 +238,7 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
           mutations: mutations,
           node_to_mut: node_to_mut,
           all_data: all_data,
+          cache_helper: cache_helper
         });
         negatives_set = new Set([...negatives_set, ...results]);
       });
@@ -342,6 +374,7 @@ function singleSearch({
   xType,
   min_x,
   max_x,
+  cache_helper
 }) {
   const text_spec = JSON.stringify(spec);
   const max_to_return = 10000;
@@ -358,6 +391,7 @@ function singleSearch({
       mutations,
       node_to_mut,
       all_data: data,
+      cache_helper
     });
     count_per_hash[hash_spec] = filtered.length;
   }
@@ -377,6 +411,7 @@ function singleSearch({
       mutations,
       node_to_mut,
       all_data: data,
+      cache_helper
     });
 
     // reduce overplotting:
@@ -399,6 +434,7 @@ function singleSearch({
         mutations,
         node_to_mut,
         all_data: data,
+        cache_helper
       });
     }
     result = {

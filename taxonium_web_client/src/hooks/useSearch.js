@@ -132,7 +132,7 @@ const useSearch = ({
                 [key]: new_result,
               };
             });
-            console.log(searchResults);
+            //console.log(searchResults);
             setIndividualSearchLoadingStatus(key, "loaded");
           });
         };
