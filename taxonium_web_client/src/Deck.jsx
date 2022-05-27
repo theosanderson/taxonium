@@ -60,7 +60,7 @@ function Deck({
       if (event.buttons === 0 && event._reactName === "onPointerMove") {
         return false;
       }
-      if(event._reactName === "onPointerDown"){
+      if (event._reactName === "onPointerDown") {
         mouseDownPos.current = [event.clientX, event.clientY];
       }
       const pan_threshold = 10;

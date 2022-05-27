@@ -504,7 +504,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
         to_label.forEach((node_id) => {
           genotype_cache[node_id] = true;
         });
-        return true
+        return true;
       }
       const is_negative =
         cache_value === false ||
