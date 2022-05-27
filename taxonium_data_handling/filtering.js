@@ -416,7 +416,6 @@ function singleSearch({
   const num_returned = count_per_hash[hash_spec];
   let result;
   if (num_returned > max_to_return) {
-
     const filtered = searchFiltering({
       data,
       spec,
@@ -427,9 +426,9 @@ function singleSearch({
     });
 
     // TODO if we ensured all searches maintained order we could use binary search here
-    const filtered_cut = filtered.filter((node) => node.y<max_y && node.y>min_y);
-
-
+    const filtered_cut = filtered.filter(
+      (node) => node.y < max_y && node.y > min_y
+    );
 
     console.log("length of filtered_cut:", filtered_cut.length);
 

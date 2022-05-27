@@ -4,8 +4,8 @@ var compression = require("compression");
 
 var app = express();
 var fs = require("fs");
-const path = require('node:path');
-const os = require('node:os');
+const path = require("node:path");
+const os = require("node:os");
 var https = require("https");
 var axios = require("axios");
 var pako = require("pako");
@@ -29,17 +29,17 @@ program.parse();
 const command_options = program.opts();
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "taxonium"));
 
-const in_cache = new Set()
+const in_cache = new Set();
 
 const cache_helper = {
   retrieve_from_cache: (key) => {
     console.log("retrieving ", key);
     if (!in_cache.has(key)) {
-      console.log ("not found")
+      console.log("not found");
       return undefined;
     } else {
       // get from tmpDir, parsing the JSON
-      console.log ("found")
+      console.log("found");
       const retrieved = JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
       console.log("retrieved", retrieved);
       return retrieved;
