@@ -41,7 +41,7 @@ const cache_helper = {
       // get from tmpDir, parsing the JSON
       console.log("found");
       const retrieved = JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
-     
+
       return retrieved;
     }
   },
