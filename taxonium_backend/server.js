@@ -40,7 +40,9 @@ const cache_helper = {
     } else {
       // get from tmpDir, parsing the JSON
       console.log ("found")
-      return JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
+      const retrieved = JSON.parse(fs.readFileSync(path.join(tmpDir, key)));
+      console.log("retrieved", retrieved);
+      return retrieved;
     }
   },
   store_in_cache: (key, value) => {
