@@ -432,6 +432,8 @@ function singleSearch({
       cache_helper,
     });
 
+    console.log("min_y:", min_y, "max_y:", max_y);
+
     // reduce overplotting:
     const reduced = reduceOverPlotting(
       filtered_cut,
