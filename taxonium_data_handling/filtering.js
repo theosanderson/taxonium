@@ -149,7 +149,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
     min_y !== undefined ? filter(data, y_positions, min_y, max_y) : data;
   const time2 = Date.now();
   console.log("Filtering took " + (time2 - start_time) + "ms.");
-
+  console.log("Min_y:", min_y, "Max_y:", max_y);
   const reduced_leaves = reduceOverPlotting(
     filtered.filter((node) => node.num_tips == 1),
     getPrecision(min_x, max_x),
