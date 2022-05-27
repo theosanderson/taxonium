@@ -131,8 +131,8 @@ function SearchPanel({
     );
   };
 
-  return (
-    <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
+  return (<div>
+    <div className="overflow-y-auto" style={{ height: "calc( 0.65*(100vh - 5em))" }}>
       <div className="mt-3 mb-3 text-gray-500 text-sm">
         {config.num_tips && (
           <>
@@ -238,9 +238,14 @@ function SearchPanel({
           setListOutputModalOpen={setListOutputModalOpen}
         />
       )}
+      </div>
+      <div style={{ height: "calc( 0.35*(100vh - 5em))" }} 
+      // top border width 2
+      
+      className="overflow-y-auto border-t  border-gray-300 pb-2 mb-2 pt-3">
       {selectedDetails.nodeDetails && (
         <div className="text-gray-700">
-          <hr className="mt-4 mb-4" />
+         
           <h2 className="font-bold whitespace-pre-wrap text-sm">
             {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
               fixName(selectedDetails.nodeDetails[config.name_accessor])
@@ -340,7 +345,7 @@ function SearchPanel({
           }
         </div>
       )}
-    </div>
+    </div></div>
   );
 }
 
