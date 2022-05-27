@@ -101,7 +101,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   if (status === "loaded") {
     const dataAsArrayBuffer = data
     // In a Convert the arrayBuffer to a buffer in a series of chunks
-    let chunkSize = 50 * 1024 * 1024;
+    let chunkSize = 5 * 1024 * 1024;
     for(let i = 0; i < dataAsArrayBuffer.byteLength; i += chunkSize) {
       const chunk = dataAsArrayBuffer.slice(i, i + chunkSize);
       const chunkAsBuffer = buffer.Buffer.from(chunk);
