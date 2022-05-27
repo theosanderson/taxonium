@@ -27,7 +27,7 @@ program
 program.parse();
 
 const command_options = program.opts();
-tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "taxonium"));
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "taxonium"));
 
 const in_cache = set();
 
