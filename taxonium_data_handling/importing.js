@@ -99,10 +99,10 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   setUpStream(the_stream, new_data, sendStatusMessage);
 
   if (status === "loaded") {
-    const dataAsArrayBuffer = data
+    const dataAsArrayBuffer = data;
     // In a Convert the arrayBuffer to a buffer in a series of chunks
     let chunkSize = 5 * 1024 * 1024;
-    for(let i = 0; i < dataAsArrayBuffer.byteLength; i += chunkSize) {
+    for (let i = 0; i < dataAsArrayBuffer.byteLength; i += chunkSize) {
       const chunk = dataAsArrayBuffer.slice(i, i + chunkSize);
       const chunkAsBuffer = buffer.Buffer.from(chunk);
       // Pipe the chunkStream to the stream

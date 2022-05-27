@@ -78,7 +78,7 @@ function Deck({
         return false;
       }
 
-      console.log("onClickOrMouseMove", event);
+      //console.log("onClickOrMouseMove", event);
 
       const pickInfo = deckRef.current.pickObject({
         x: event.nativeEvent.offsetX,
