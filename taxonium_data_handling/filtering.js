@@ -179,7 +179,7 @@ function searchFiltering({
     .digest("hex")
     .slice(0, 8);
   if (cache_helper && cache_helper.retrieve_from_cache) {
-    const cached_ids = cache_helper.retrieve_from_cache(spec_copy);
+    const cached_ids = cache_helper.retrieve_from_cache(hash_spec);
     if (cached_ids !== undefined) {
       console.log("Found cached data");
       return cached_ids.map((id) => all_data[id]);
