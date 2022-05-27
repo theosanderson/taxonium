@@ -218,14 +218,17 @@ function searchFilteringIfUncached({
       }
       let workingData = data;
       spec.subspecs.forEach((subspec) => {
-        workingData = searchFiltering({
+        const new_results = new Set(searchFiltering({
           data: workingData,
           spec: subspec,
           mutations: mutations,
           node_to_mut: node_to_mut,
           all_data: all_data,
           cache_helper: cache_helper,
-        });
+        }));
+        workingData = workingData.filter(n=> new_results.has(n));
+        
+        
       });
       return workingData;
     }
