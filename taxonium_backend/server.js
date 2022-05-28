@@ -355,6 +355,9 @@ app.get("/node_details/", async (req, res) => {
       const data = response.data;
       detailed_node.acknowledgements = data;
     } catch (e) {
+      detailed_node.acknowledgements ={ covv_orig_lab:"The GISAID acknowledgements server did not return a valid response",covv_orig_lab:"The GISAID acknowledgements server did not return a valid response",
+      covv_authors:"The GISAID acknowledgements server did not return a valid response",
+      covv_subm_lab:"The GISAID acknowledgements server did not return a valid response"}
       console.log(e);
     }
   }
