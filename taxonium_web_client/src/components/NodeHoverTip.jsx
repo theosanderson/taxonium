@@ -7,6 +7,11 @@ const fixName = (name) => {
  //   : name;
 };
 
+const fixAuthors = (authors) => {
+  // make sure comma is always followed by space
+  return authors.replace(/,([^\s])/g, ", $1");
+};
+
 const NodeHoverTip = ({
   hoverInfo,
   hoverDetails,
