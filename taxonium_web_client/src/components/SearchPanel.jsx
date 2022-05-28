@@ -8,6 +8,11 @@ import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
+const fixAuthors = (authors) => {
+  // make sure comma is always followed by space
+  return authors.replace(/,([^\s])/g, ", $1");
+};
+
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
