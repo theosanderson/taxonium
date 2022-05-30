@@ -70,14 +70,9 @@ class MyOrthographicController extends OrthographicController {
     if (event.pointerType === "touch") {
       if(event.type === "pinchmove") {
         if (this.scrollZoom && this.scrollZoom.zoomAxis && this.scrollZoom.zoomAxis === "X") {
-          // prevent
-          if(!window.pinchWarning){
-          event.stopPropagation();
-          event.preventDefault();
-          window.alert("Please use zoom buttons to zoom horizontally")
-        }
-        window.pinchWarning = true;
-          return
+          return false;
+        
+       
         }
     }
   }
