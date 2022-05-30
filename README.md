@@ -10,13 +10,14 @@ Taxonium is a tool for exploring trees.
 
 ## How do I..
 
-### explore the global SARS-CoV-2 phylogeny?
-
-Visit [Cov2Tree.org](http://Cov2Tree.org) which uses Taxonium to allow you to explore a tree built by researchers at UCSC using public data contributed by researchers across the world to the INSDC databases.
 
 ### visualise my own Newick phylogeny?
 
 Upload a Newick file to [Taxonium.org](http://taxonium.org), and optionally a metadata file in CSV or TSV format. If using a metadata file the leftmost column must contain names of the nodes as in the tree.
+
+### explore the global SARS-CoV-2 phylogeny?
+
+Visit [Cov2Tree.org](http://Cov2Tree.org) which uses Taxonium to allow you to explore a tree built by researchers at UCSC using public data contributed by researchers across the world to the INSDC databases.
 
 ### build my own mutation-annotated tree to explore in Taxonium, or add my own metadata to an existing phylogeny?
 
