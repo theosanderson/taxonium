@@ -9,8 +9,6 @@ import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
 
-
-
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
@@ -21,7 +19,7 @@ const formatNumberIfNumber = (possNum) => {
   return typeof possNum === "number" ? possNum.toLocaleString() : possNum;
 };
 const fixName = (name) => {
-  return name
+  return name;
   //return typeof name == "string"
   //  ? name.replace("hCoV-19/", "hCoV-19/\n")
   //  : name;

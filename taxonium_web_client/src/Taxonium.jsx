@@ -39,9 +39,9 @@ function Taxonium({
     proto
   );
   let hoverDetails = useHoverDetails();
-  const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend)
-  if  (window.location.toString().includes("epicov.org")){
-    hoverDetails = gisaidHoverDetails
+  const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
+  if (window.location.toString().includes("epicov.org")) {
+    hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, setOverlayContent, setTitle, query);
