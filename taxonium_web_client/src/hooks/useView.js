@@ -68,19 +68,23 @@ class MyOrthographicController extends OrthographicController {
   handleEvent(event) {
     //console.log(event)
     if (event.pointerType === "touch") {
-      if(event.type === "pinchmove") {
-        if (this.scrollZoom && this.scrollZoom.zoomAxis && this.scrollZoom.zoomAxis === "X") {
+      if (event.type === "pinchmove") {
+        if (
+          this.scrollZoom &&
+          this.scrollZoom.zoomAxis &&
+          this.scrollZoom.zoomAxis === "X"
+        ) {
           // prevent
-          if(!window.pinchWarning){
-          event.stopPropagation();
-          event.preventDefault();
-          window.alert("Please use zoom buttons to zoom horizontally")
+          if (!window.pinchWarning) {
+            event.stopPropagation();
+            event.preventDefault();
+            window.alert("Please use zoom buttons to zoom horizontally");
+          }
+          window.pinchWarning = true;
+          return;
         }
-        window.pinchWarning = true;
-          return
-        }
+      }
     }
-  }
     if (event.type === "wheel") {
       const { ControllerState } = this;
       this.controllerState = new ControllerState({
