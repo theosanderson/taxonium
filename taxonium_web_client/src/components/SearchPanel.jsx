@@ -164,6 +164,59 @@ function SearchPanel({
             </select>
           </div>
         )}
+        <div className="border-b  border-gray-200 pb-2 mb-2 ">
+          <h2 className="text-xl mt-3 mb-4 text-gray-700 ">
+            <BiPalette className="inline-block mr-2" />
+            {
+              // if locale is US return "Color by" otherwise "Colour by"
+              window.navigator.language === "en-US" ? "Color by" : "Colour by"
+            }{" "}
+          </h2>
+          <Select
+            value={colorBy.colorByField}
+            onChange={(e) => colorBy.setColorByField(e.target.value)}
+            className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
+          >
+            {colorBy.colorByOptions.map((item) => (
+              <option key={item} value={item}>
+                {prettifyName(item)}
+              </option>
+            ))}
+          </Select>
+          {colorBy.colorByField === "genotype" && (
+            <>
+              <div>
+                <label className="text-sm">Gene</label>
+                <Select
+                  value={colorBy.colorByGene}
+                  onChange={(e) => colorBy.setColorByGene(e.target.value)}
+                  className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
+                >
+                  {config.genes &&
+                    config.genes.map((item) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm">Residue</label>
+                <input
+                  value={colorBy.colorByPosition}
+                  onChange={(e) =>
+                    colorBy.setColorByPosition(
+                      e.target.value !== "" ? parseInt(e.target.value) : ""
+                    )
+                  }
+                  type="number"
+                  min="0"
+                  className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
+                />
+              </div>
+            </>
+          )}
+        </div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <FaSearch className="inline-block mr-2" />
           Search
@@ -184,55 +237,7 @@ function SearchPanel({
           <RiAddCircleLine className="inline-block mr-2" />
           Add a new search
         </Button>
-        <hr />
-        <h2 className="text-xl mt-5 mb-4 text-gray-700">
-          <BiPalette className="inline-block mr-2" />
-          Colour by{" "}
-        </h2>
-        <Select
-          value={colorBy.colorByField}
-          onChange={(e) => colorBy.setColorByField(e.target.value)}
-          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
-        >
-          {colorBy.colorByOptions.map((item) => (
-            <option key={item} value={item}>
-              {prettifyName(item)}
-            </option>
-          ))}
-        </Select>
-        {colorBy.colorByField === "genotype" && (
-          <>
-            <div>
-              <label className="text-sm">Gene</label>
-              <Select
-                value={colorBy.colorByGene}
-                onChange={(e) => colorBy.setColorByGene(e.target.value)}
-                className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
-              >
-                {config.genes &&
-                  config.genes.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-              </Select>
-            </div>
-            <div>
-              <label className="text-sm">Residue</label>
-              <input
-                value={colorBy.colorByPosition}
-                onChange={(e) =>
-                  colorBy.setColorByPosition(
-                    e.target.value !== "" ? parseInt(e.target.value) : ""
-                  )
-                }
-                type="number"
-                min="0"
-                className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
-              />
-            </div>
-          </>
-        )}
+
         {selectedDetails.nodeDetails && (
           <ListOutputModal
             ariaHideApp={false}
@@ -296,7 +301,7 @@ function SearchPanel({
                 selectedDetails.nodeDetails.parent_id && (
                 <>
                   <h3 className="text-xs font-bold mt-4 text-gray-700">
-                    Mutations at this node:
+                    Mutations at this node: {settings.miniMutationsMenu()}
                   </h3>
                   <div className="text-xs mt-1 text-gray-700 mr-1">
                     {settings

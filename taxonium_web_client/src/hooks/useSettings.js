@@ -36,6 +36,28 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const [maxCladeTexts, setMaxCladeTexts] = useState(10);
 
+  const miniMutationsMenu = () => {
+    return (
+      <div className="inline-block ml-3  -mb-1 -pb-1 font-normal pt-1">
+        {Object.keys(mutationTypesEnabled).map((key) => (
+          <div key={key} className="inline-block mr-3  -mb-1 -pb-1">
+            <label key={key}>
+              <input
+                type="checkbox"
+                className="mr-1 -mb-1 -pb-1"
+                checked={mutationTypesEnabled[key]}
+                onChange={() =>
+                  setMutationTypeEnabled(key, !mutationTypesEnabled[key])
+                }
+              />{" "}
+              {key}
+            </label>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return {
     minimapEnabled,
     toggleMinimapEnabled,
@@ -50,5 +72,6 @@ export const useSettings = ({ query, updateQuery }) => {
     setThresholdForDisplayingText,
     maxCladeTexts,
     setMaxCladeTexts,
+    miniMutationsMenu,
   };
 };
