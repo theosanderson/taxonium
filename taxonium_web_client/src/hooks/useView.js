@@ -68,13 +68,13 @@ class MyOrthographicController extends OrthographicController {
   handleEvent(event) {
     //console.log(event)
     if (event.pointerType === "touch") {
-
-      if(event.type === "pinchmove") {
-        if (this.scrollZoom && this.scrollZoom.zoomAxis && this.scrollZoom.zoomAxis === "X") {
+      if (event.type === "pinchmove") {
+        if (
+          this.scrollZoom &&
+          this.scrollZoom.zoomAxis &&
+          this.scrollZoom.zoomAxis === "X"
+        ) {
           return false;
-        
-       
-
         }
       }
     }
