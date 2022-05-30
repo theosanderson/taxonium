@@ -9,8 +9,6 @@ import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
 
-
-
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
@@ -21,7 +19,7 @@ const formatNumberIfNumber = (possNum) => {
   return typeof possNum === "number" ? possNum.toLocaleString() : possNum;
 };
 const fixName = (name) => {
-  return name
+  return name;
   //return typeof name == "string"
   //  ? name.replace("hCoV-19/", "hCoV-19/\n")
   //  : name;
@@ -167,60 +165,57 @@ function SearchPanel({
           </div>
         )}
         <div className="border-b  border-gray-200 pb-2 mb-2 ">
-        <h2 className="text-xl mt-3 mb-4 text-gray-700 ">
-          <BiPalette className="inline-block mr-2" />
-          {
-          // if locale is US return "Color by" otherwise "Colour by"
-          (window.navigator.language === "en-US" ? "Color by" : "Colour by")
-
-
-
-          } {" "}
-        </h2>
-        <Select
-          value={colorBy.colorByField}
-          onChange={(e) => colorBy.setColorByField(e.target.value)}
-          className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
-        >
-          {colorBy.colorByOptions.map((item) => (
-            <option key={item} value={item}>
-              {prettifyName(item)}
-            </option>
-          ))}
-        </Select>
-        {colorBy.colorByField === "genotype" && (
-          <>
-            <div>
-              <label className="text-sm">Gene</label>
-              <Select
-                value={colorBy.colorByGene}
-                onChange={(e) => colorBy.setColorByGene(e.target.value)}
-                className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
-              >
-                {config.genes &&
-                  config.genes.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-              </Select>
-            </div>
-            <div>
-              <label className="text-sm">Residue</label>
-              <input
-                value={colorBy.colorByPosition}
-                onChange={(e) =>
-                  colorBy.setColorByPosition(
-                    e.target.value !== "" ? parseInt(e.target.value) : ""
-                  )
-                }
-                type="number"
-                min="0"
-                className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
-              />
-            </div>
-          </>
-        )}
+          <h2 className="text-xl mt-3 mb-4 text-gray-700 ">
+            <BiPalette className="inline-block mr-2" />
+            {
+              // if locale is US return "Color by" otherwise "Colour by"
+              window.navigator.language === "en-US" ? "Color by" : "Colour by"
+            }{" "}
+          </h2>
+          <Select
+            value={colorBy.colorByField}
+            onChange={(e) => colorBy.setColorByField(e.target.value)}
+            className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
+          >
+            {colorBy.colorByOptions.map((item) => (
+              <option key={item} value={item}>
+                {prettifyName(item)}
+              </option>
+            ))}
+          </Select>
+          {colorBy.colorByField === "genotype" && (
+            <>
+              <div>
+                <label className="text-sm">Gene</label>
+                <Select
+                  value={colorBy.colorByGene}
+                  onChange={(e) => colorBy.setColorByGene(e.target.value)}
+                  className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
+                >
+                  {config.genes &&
+                    config.genes.map((item) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm">Residue</label>
+                <input
+                  value={colorBy.colorByPosition}
+                  onChange={(e) =>
+                    colorBy.setColorByPosition(
+                      e.target.value !== "" ? parseInt(e.target.value) : ""
+                    )
+                  }
+                  type="number"
+                  min="0"
+                  className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
+                />
+              </div>
+            </>
+          )}
         </div>
         <h2 className="text-xl mt-5 mb-4 text-gray-700">
           <FaSearch className="inline-block mr-2" />
@@ -242,8 +237,7 @@ function SearchPanel({
           <RiAddCircleLine className="inline-block mr-2" />
           Add a new search
         </Button>
-     
-        
+
         {selectedDetails.nodeDetails && (
           <ListOutputModal
             ariaHideApp={false}
