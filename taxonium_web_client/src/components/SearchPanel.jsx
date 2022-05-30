@@ -307,7 +307,7 @@ function SearchPanel({
                 selectedDetails.nodeDetails.parent_id && (
                 <>
                   <h3 className="text-xs font-bold mt-4 text-gray-700">
-                    Mutations at this node:
+                    Mutations at this node: {settings.miniMutationsMenu()}
                   </h3>
                   <div className="text-xs mt-1 text-gray-700 mr-1">
                     {settings
