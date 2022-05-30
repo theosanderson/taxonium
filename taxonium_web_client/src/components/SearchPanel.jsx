@@ -166,30 +166,16 @@ function SearchPanel({
             </select>
           </div>
         )}
-        <h2 className="text-xl mt-5 mb-4 text-gray-700">
-          <FaSearch className="inline-block mr-2" />
-          Search
-        </h2>
-        {search.searchSpec.map((item) => (
-          <SearchTopLayerItem
-            key={item.key}
-            singleSearchSpec={item}
-            myKey={item.key}
-            search={search}
-            config={config}
-          />
-        ))}
-        <Button
-          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700 mb-3 mt-3"
-          onClick={search.addNewTopLevelSearch}
-        >
-          <RiAddCircleLine className="inline-block mr-2" />
-          Add a new search
-        </Button>
-        <hr />
-        <h2 className="text-xl mt-5 mb-4 text-gray-700">
+        <div className="border-b  border-gray-200 pb-2 mb-2 ">
+        <h2 className="text-xl mt-3 mb-4 text-gray-700 ">
           <BiPalette className="inline-block mr-2" />
-          Colour by{" "}
+          {
+          // if locale is US return "Color by" otherwise "Colour by"
+          (window.navigator.language === "en-US" ? "Color by" : "Colour by")
+
+
+
+          } {" "}
         </h2>
         <Select
           value={colorBy.colorByField}
@@ -235,6 +221,29 @@ function SearchPanel({
             </div>
           </>
         )}
+        </div>
+        <h2 className="text-xl mt-5 mb-4 text-gray-700">
+          <FaSearch className="inline-block mr-2" />
+          Search
+        </h2>
+        {search.searchSpec.map((item) => (
+          <SearchTopLayerItem
+            key={item.key}
+            singleSearchSpec={item}
+            myKey={item.key}
+            search={search}
+            config={config}
+          />
+        ))}
+        <Button
+          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700 mb-3 mt-3"
+          onClick={search.addNewTopLevelSearch}
+        >
+          <RiAddCircleLine className="inline-block mr-2" />
+          Add a new search
+        </Button>
+     
+        
         {selectedDetails.nodeDetails && (
           <ListOutputModal
             ariaHideApp={false}
