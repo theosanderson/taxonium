@@ -138,7 +138,7 @@ const NodeHoverTip = ({
         </div>
       )}
        {hoverDetails && hoverDetails.nodeDetails && hoverDetails.nodeDetails.acknowledgements && (
-                  <div className="text-xs mt-3  text-gray-700 mr-3">
+                  <div className="text-xs mt-3  mr-3">
                     <div className="mt-1">
                       <b className="font-semibold">Originating laboratory:</b>{" "}
                       {
