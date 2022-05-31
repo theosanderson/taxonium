@@ -3,7 +3,7 @@ export const Button = ({ onClick, className, children, title }) => {
   return (
     <button
       className={classNames(
-        "border border-gray-300 rounded p-1 m-3 mb-7 bg-gray-100 hover:bg-gray-200 text-sm",
+        "border border-gray-300 rounded p-1 m-3  bg-gray-100 hover:bg-gray-200 text-sm",
         className
       )}
       onClick={onClick}

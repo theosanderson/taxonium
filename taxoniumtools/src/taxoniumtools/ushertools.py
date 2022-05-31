@@ -247,6 +247,8 @@ class UsherMutationAnnotatedTree:
     def shear_tree(self, theshold=1000):
         """Consider each node. If at any point a child has fewer than 1/threshold proportion of the num_tips, then prune it"""
         for node in alive_it(list(self.tree.traverse_postorder())):
+            if (node == self.tree.root):
+                continue
             if len(node.children) > 1:
                 biggest_child = max(node.children, key=lambda x: x.num_tips)
                 for child in list(node.children):

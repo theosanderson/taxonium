@@ -148,8 +148,6 @@ export async function processNewick(data, sendStatusMessage) {
     tree.node = kn_expand_node(tree.root);
   }
 
-  console.log("TREE", tree);
-
   sendStatusMessage({
     message: "Laying out the tree",
   });
@@ -164,7 +162,7 @@ export async function processNewick(data, sendStatusMessage) {
   tree.node.sort((a, b) => a.y - b.y);
 
   sendStatusMessage({
-    message: "Cleaning up objects",
+    message: "Re-processing",
   });
 
   cleanup(tree);

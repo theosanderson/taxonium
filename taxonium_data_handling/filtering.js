@@ -6,6 +6,25 @@ import("crypto").then((c) => {
 let revertant_mutations_set = null;
 let cachedChildrenArray = null;
 
+const getNumericFilterFunction = (number_method, number_value) => {
+  if (number_method === "==") {
+    return (x) => x === number_value;
+  }
+  if (number_method === ">") {
+    return (x) => x > number_value;
+  }
+  if (number_method === "<") {
+    return (x) => x < number_value;
+  }
+  if (number_method === ">=") {
+    return (x) => x >= number_value;
+  }
+  if (number_method === "<=") {
+    return (x) => x <= number_value;
+  }
+  throw new Error("Invalid number_method: " + number_method);
+};
+
 const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
   const root = all_data.find((node) => node.node_id === node.parent_id);
   const root_mutations = node_to_mut[root.node_id];
@@ -130,7 +149,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
     min_y !== undefined ? filter(data, y_positions, min_y, max_y) : data;
   const time2 = Date.now();
   console.log("Filtering took " + (time2 - start_time) + "ms.");
-
+  console.log("Min_y:", min_y, "Max_y:", max_y);
   const reduced_leaves = reduceOverPlotting(
     filtered.filter((node) => node.num_tips == 1),
     getPrecision(min_x, max_x),
@@ -144,8 +163,110 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
   return reduced;
 }
 
-function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
-  //console.log("SEARCHFILTER", data);
+function searchFiltering({
+  data,
+  spec,
+  mutations,
+  node_to_mut,
+  all_data,
+  cache_helper,
+}) {
+  const spec_copy = { ...spec };
+  spec_copy.key = "cache";
+  const hash_spec = crypto
+    .createHash("md5")
+    .update(JSON.stringify(spec_copy))
+    .digest("hex")
+    .slice(0, 8);
+  if (cache_helper && cache_helper.retrieve_from_cache) {
+    const cached_ids = cache_helper.retrieve_from_cache(hash_spec);
+    if (cached_ids !== undefined) {
+      console.log("Found cached data");
+      return cached_ids.map((id) => all_data[id]);
+    }
+  }
+  const result = searchFilteringIfUncached({
+    data,
+    spec,
+    mutations,
+    node_to_mut,
+    all_data,
+    cache_helper,
+  });
+
+  if (cache_helper && cache_helper.store_in_cache) {
+    cache_helper.store_in_cache(
+      hash_spec,
+      result.map((node) => node.node_id)
+    );
+  }
+  return result;
+}
+
+function searchFilteringIfUncached({
+  data,
+  spec,
+  mutations,
+  node_to_mut,
+  all_data,
+  cache_helper,
+}) {
+  if (spec.type == "boolean") {
+    if (spec.boolean_method == "and") {
+      if (spec.subspecs.length == 0) {
+        return [];
+      }
+      let workingData = data;
+      spec.subspecs.forEach((subspec) => {
+        const new_results = new Set(
+          searchFiltering({
+            data: all_data,
+            spec: subspec,
+            mutations: mutations,
+            node_to_mut: node_to_mut,
+            all_data: all_data,
+            cache_helper: cache_helper,
+          })
+        );
+        workingData = workingData.filter((n) => new_results.has(n));
+      });
+      return workingData;
+    }
+    if (spec.boolean_method == "or") {
+      if (spec.subspecs.length == 0) {
+        return [];
+      }
+      let workingData = new Set();
+      spec.subspecs.forEach((subspec) => {
+        const results = searchFiltering({
+          data: all_data,
+          spec: subspec,
+          mutations: mutations,
+          node_to_mut: node_to_mut,
+          all_data: all_data,
+          cache_helper: cache_helper,
+        });
+        workingData = new Set([...workingData, ...results]);
+      });
+      return Array.from(workingData);
+    }
+    if (spec.boolean_method == "not") {
+      let negatives_set = new Set();
+      spec.subspecs.forEach((subspec) => {
+        const results = searchFiltering({
+          data: all_data,
+          spec: subspec,
+          mutations: mutations,
+          node_to_mut: node_to_mut,
+          all_data: all_data,
+          cache_helper: cache_helper,
+        });
+        negatives_set = new Set([...negatives_set, ...results]);
+      });
+      return data.filter((node) => !negatives_set.has(node));
+    }
+  }
+
   console.log(spec);
   let filtered;
   if (["text_match", "text_exact"].includes(spec.method) && spec.text === "") {
@@ -238,7 +359,28 @@ function searchFiltering({ data, spec, mutations, node_to_mut, all_data }) {
     );
     //console.log("filtered:", filtered);
     return filtered;
+  } else if (spec.method === "genotype") {
+    const genotype = {
+      gene: spec.gene,
+      position: spec.position,
+      new_residue: spec.new_residue,
+    };
+    return filterByGenotype(data, genotype, mutations, node_to_mut, all_data);
+  } else if (spec.method === "number") {
+    if (spec.number == "") {
+      return [];
+    }
+
+    const number_value = parseFloat(spec.number);
+    const filterFunc = getNumericFilterFunction(
+      spec.number_method,
+      number_value
+    );
+
+    filtered = data.filter((node) => filterFunc(node[spec.type]));
+    return filtered;
   }
+
   return [];
 }
 
@@ -253,6 +395,7 @@ function singleSearch({
   xType,
   min_x,
   max_x,
+  cache_helper,
 }) {
   const text_spec = JSON.stringify(spec);
   const max_to_return = 10000;
@@ -263,21 +406,38 @@ function singleSearch({
     .slice(0, 8);
   let filtered = null;
   if (count_per_hash[hash_spec] === undefined) {
-    filtered = searchFiltering({ data, spec, mutations, node_to_mut });
+    filtered = searchFiltering({
+      data,
+      spec,
+      mutations,
+      node_to_mut,
+      all_data: data,
+      cache_helper,
+    });
     count_per_hash[hash_spec] = filtered.length;
   }
   const num_returned = count_per_hash[hash_spec];
   let result;
   if (num_returned > max_to_return) {
-    const cut = filter(data, y_positions, min_y, max_y);
-    const filtered_cut = searchFiltering({
-      data: cut,
+    const filtered = searchFiltering({
+      data,
       spec,
       mutations,
       node_to_mut,
       all_data: data,
+      cache_helper,
     });
 
+    // TODO if we ensured all searches maintained order we could use binary search here
+    const filtered_cut = filtered.filter(
+      (node) => node.y < max_y && node.y > min_y
+    );
+
+    console.log("length of filtered_cut:", filtered_cut.length);
+
+    console.log("min_y:", min_y, "max_y:", max_y);
+
+    // reduce overplotting:
     const reduced = reduceOverPlotting(
       filtered_cut,
       getPrecision(min_x, max_x),
@@ -291,7 +451,14 @@ function singleSearch({
     };
   } else {
     if (filtered === null) {
-      filtered = searchFiltering({ data, spec, mutations, node_to_mut });
+      filtered = searchFiltering({
+        data,
+        spec,
+        mutations,
+        node_to_mut,
+        all_data: data,
+        cache_helper,
+      });
     }
     result = {
       type: "complete",
@@ -348,6 +515,78 @@ const getTipAtts = (input, node_id, attribute) => {
   const allTips = allChildren.filter((x) => childrenArray[x].length === 0);
   const allAtts = allTips.map((x) => input[x][attribute]);
   return allAtts;
+};
+
+const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
+  const genotype_cache = {};
+  const { gene, position, new_residue } = genotype;
+
+  const relevant_mutations = mutations.filter((mutation) => {
+    return (
+      mutation && mutation.gene === gene && mutation.residue_pos === position
+    );
+  });
+
+  const positive_mutations = new Set(
+    relevant_mutations
+      .filter((mutation) => mutation.new_residue === new_residue)
+      .map((m) => m.mutation_id)
+  );
+
+  // if no positive mutations then return empty array
+  if (positive_mutations.size === 0) {
+    return [];
+  }
+
+  const negative_mutations = new Set(
+    relevant_mutations
+      .filter((mutation) => mutation.new_residue !== new_residue)
+      .map((m) => m.mutation_id)
+  );
+  const output = data.filter((node) => {
+    //   console.log("node:",node);
+    let cur_node = node;
+    const to_label = [];
+
+    while (true) {
+      // console.log("cur_node:",cur_node);
+
+      to_label.push(cur_node.node_id);
+      const cache_value = genotype_cache[cur_node.node_id];
+      const is_positive =
+        cache_value === true ||
+        node_to_mut[cur_node.node_id].some((mutation_id) =>
+          positive_mutations.has(mutation_id)
+        );
+      if (is_positive) {
+        // console.log("positive");
+        to_label.forEach((node_id) => {
+          genotype_cache[node_id] = true;
+        });
+        return true;
+      }
+      const is_negative =
+        cache_value === false ||
+        node_to_mut[cur_node.node_id].some((mutation_id) =>
+          negative_mutations.has(mutation_id)
+        );
+      if (is_negative) {
+        // console.log("negative");
+        to_label.forEach((node_id) => {
+          genotype_cache[node_id] = false;
+        });
+        return false;
+      }
+      if (cur_node.parent_id === cur_node.node_id) {
+        break;
+      }
+      cur_node = all_data[cur_node.parent_id];
+    }
+
+    // If we get to this point we reached the root node and still didn't find anything, so just return
+    return false;
+  });
+  return output;
 };
 
 export default {

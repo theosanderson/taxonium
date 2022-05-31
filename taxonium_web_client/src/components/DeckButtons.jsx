@@ -58,7 +58,7 @@ export const DeckButtons = ({
         title={
           zoomAxis === "X"
             ? "Switch to vertical zoom"
-            : "Switch to horizontal zoom"
+            : "Switch to horizontal zoom (you can also hold Ctrl key)"
         }
       >
         <TiZoom className="mx-auto  w-5 h-5 inline-block m-0" />

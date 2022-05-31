@@ -4,6 +4,28 @@ import { processNewickAndMetadata } from "../utils/processNewick.js";
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
+const the_cache = {};
+
+const cache_helper = {
+  retrieve_from_cache: (key) => the_cache[key],
+  store_in_cache: (key, value) => {
+    the_cache[key] = value;
+
+    // Total size of the lists in the cache
+    let total_size = 0;
+    for (const key in the_cache) {
+      total_size += the_cache[key].length;
+    }
+
+    // If the cache is too big, remove a random item
+    if (total_size > 100e6) {
+      const keys = Object.keys(the_cache);
+      const random_key = keys[Math.floor(Math.random() * keys.length)];
+      delete the_cache[random_key];
+    }
+  },
+};
+
 let processedUploadedData;
 
 const sendStatusMessage = (status_obj) => {
@@ -117,8 +139,9 @@ const search = async (search, bounds) => {
     mutations,
     node_to_mut,
     xType: xType,
+    cache_helper,
   });
-  console.log("mutations var is ", mutations);
+
   console.log("got search result", result);
   result.key = spec.key;
   return result;
@@ -186,6 +209,7 @@ const getConfig = async () => {
     if (x === "mutation") {
       return "Mutation";
     }
+
     const capitalised_first_letter = x.charAt(0).toUpperCase() + x.slice(1);
     return capitalised_first_letter;
   };
@@ -193,6 +217,12 @@ const getConfig = async () => {
   const typeFromKey = (x) => {
     if (x === "mutation") {
       return "mutation";
+    }
+    if (x === "genotype") {
+      return "genotype";
+    }
+    if (x === "num_tips") {
+      return "number";
     }
     if (x === "genbank") {
       return "text_per_line";
@@ -203,16 +233,25 @@ const getConfig = async () => {
     if (x === "meta_Lineage") {
       return "text_exact";
     }
+    if (x === "boolean") return "boolean";
+
     return "text_match";
   };
   const initial_search_types = ["name", ...config.keys_to_display];
 
   if (processedUploadedData.mutations.length > 0) {
     initial_search_types.push("mutation");
+    initial_search_types.push("genotype");
   }
 
   if (processedUploadedData.rootMutations.length > 0) {
     initial_search_types.push("revertant");
+  }
+
+  initial_search_types.push("num_tips");
+
+  if (initial_search_types.length > 1) {
+    initial_search_types.push("boolean");
   }
 
   config.search_types = initial_search_types.map((x) => ({
@@ -220,6 +259,13 @@ const getConfig = async () => {
     label: prettyName(x),
     type: typeFromKey(x),
   }));
+
+  config.search_types.forEach((x) => {
+    // if "text" is found in the type
+    if (x.type.includes("text")) {
+      x.controls = true;
+    }
+  });
 
   const colorByOptions = [...config.keys_to_display];
   if (processedUploadedData.mutations.length > 0) {
@@ -281,7 +327,7 @@ onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
-  console.log(data, "data");
+  //console.log(data, "data");
   if (
     data.type === "upload" &&
     data.data &&
@@ -289,7 +335,7 @@ onmessage = async (event) => {
     data.data.filename.includes("jsonl")
   ) {
     processedUploadedData = await processJsonl(data.data, sendStatusMessage);
-    console.log("processedUploadedData is ", processedUploadedData);
+    console.log("processedUploadedData created");
   } else if (
     data.type === "upload" &&
     data.data &&

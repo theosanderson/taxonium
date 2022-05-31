@@ -33,8 +33,7 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
 
 export const setUpStream = (the_stream, data, sendStatusMessage) => {
   function processLine(line, line_number) {
-    // log every 1000
-    if (line_number % 10000 === 0 && line_number > 0) {
+    if ((line_number % 10000 === 0 && line_number > 0) || line_number == 500) {
       console.log(`Processed ${formatNumber(line_number)} lines`);
       if (data.header.total_nodes) {
         const percentage = (line_number / data.header.total_nodes) * 100;
@@ -83,7 +82,9 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
 };
 
 export const processJsonl = async (jsonl, sendStatusMessage) => {
-  console.log("Worker processJsonl", jsonl);
+  console.log(
+    "Worker processJsonl" //, jsonl
+  );
   const data = jsonl.data;
   const status = jsonl.status;
   let the_stream;
@@ -98,8 +99,16 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   setUpStream(the_stream, new_data, sendStatusMessage);
 
   if (status === "loaded") {
-    const my_buf = new buffer.Buffer(data);
-    the_stream.write(my_buf);
+    const dataAsArrayBuffer = data;
+    // In a Convert the arrayBuffer to a buffer in a series of chunks
+    let chunkSize = 5 * 1024 * 1024;
+    for (let i = 0; i < dataAsArrayBuffer.byteLength; i += chunkSize) {
+      const chunk = dataAsArrayBuffer.slice(i, i + chunkSize);
+      const chunkAsBuffer = buffer.Buffer.from(chunk);
+      // Pipe the chunkStream to the stream
+      the_stream.write(chunkAsBuffer);
+    }
+    console.log("Worker processJsonl", data);
     the_stream.end();
   } else if (status === "url_supplied") {
     const url = jsonl.filename;
@@ -114,7 +123,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
       return;
     }
     console.log("ALL FINE", response);
-    sendStatusMessage({ message: "Fetching data from URL" });
+    sendStatusMessage({ message: "Loading root genome" });
 
     const readableWebStream = response.body;
     const nodeStream = new ReadableWebToNodeStream(readableWebStream);

@@ -27,7 +27,9 @@ author = 'Theo Sanderson'
 # ones.
 extensions = ['myst_parser']
 extensions += ['sphinxarg.ext']
-
+extensions += [
+    'sphinxcontrib.gtagjs'
+]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -62,4 +64,8 @@ myst_enable_extensions = [
     "strikethrough",
     "substitution",
     "tasklist",
+]
+
+gtagjs_ids = [
+    "G-TDTSH11X4S",
 ]

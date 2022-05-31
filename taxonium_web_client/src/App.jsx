@@ -11,6 +11,7 @@ import { useInputHelper } from "./hooks/useInputHelper";
 
 import { getDefaultSearch } from "./utils/searchUtil";
 import InputSupplier from "./components/InputSupplier";
+import FirefoxWarning from "./components/FirefoxWarning";
 
 const first_search = getDefaultSearch("aa1");
 
@@ -243,6 +244,7 @@ function App() {
                Click/drag/zoom on the left-hand side of the screen (on the next page)
                to control the tree, and do the same in the genome browser panel on the upper right to control the genome. Select a genomic region by selecting a coordinate region at the very top of the genome browser. Resizing the web browser will require a page refresh.
               </p>{" "}
+              <FirefoxWarning className="mt-8 text-gray-400" />
             </div>
           )}
         </Suspense>

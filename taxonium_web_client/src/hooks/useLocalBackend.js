@@ -18,7 +18,9 @@ let onListReceipt = (receivedData) => {};
 let searchSetters = {};
 
 worker.onmessage = (event) => {
-  console.log("got message from worker", event.data);
+  console.log(
+    "got message from worker" //, event.data
+  );
   if (event.data.type === "status") {
     onStatusReceipt(event.data);
   }
@@ -26,7 +28,7 @@ worker.onmessage = (event) => {
     onQueryReceipt(event.data.data);
   }
   if (event.data.type === "search") {
-    console.log("SEARCHRES", event.data.data);
+    // console.log("SEARCHRES", event.data.data);
     searchSetters[event.data.data.key](event.data.data);
   }
   if (event.data.type === "config") {
@@ -87,7 +89,9 @@ function useLocalBackend(uploaded_data, proto) {
       });
       onQueryReceipt = (receivedData) => {
         //  console.log("CONFIG IS", config);
-        console.log("got query result", receivedData);
+        console.log(
+          "got query result" //, receivedData
+        );
         receivedData.nodes.forEach((node) => {
           if (node.node_id === config.rootId) {
             node.mutations = config.rootMutations.map(
@@ -119,9 +123,9 @@ function useLocalBackend(uploaded_data, proto) {
         console.log(
           "got search result from ",
           key,
-          singleSearch,
-          "result",
-          receivedData
+          //   singleSearch,
+          "result"
+          //   receivedData
         );
         setResult(receivedData);
       };

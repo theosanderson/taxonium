@@ -1,9 +1,15 @@
 import { useMemo } from "react";
 
 const fixName = (name) => {
-  return typeof name == "string"
-    ? name.replace("hCoV-19/", "hCoV-19/\n")
-    : name;
+  return name;
+  //return typeof name == "string"
+  //   ? name.replace("hCoV-19/", "hCoV-19/\n")
+  //   : name;
+};
+
+const fixAuthors = (authors) => {
+  // make sure comma is always followed by space
+  return authors.replace(/,([^\s])/g, ", $1");
 };
 
 const NodeHoverTip = ({
@@ -13,6 +19,7 @@ const NodeHoverTip = ({
   colorBy,
   config,
   filterMutations,
+  deckSize,
 }) => {
   const initial_mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
@@ -41,13 +48,32 @@ const NodeHoverTip = ({
     return null;
   }
 
+  const flip_vert = hoverInfo.y > deckSize.height * 0.66;
+  const flip_horiz = hoverInfo.x > deckSize.width * 0.66;
+
+  const style = {
+    position: "absolute",
+    zIndex: 1,
+    pointerEvents: "none",
+  };
+
+  if (!flip_vert) {
+    style.top = hoverInfo.y + 5;
+  } else {
+    style.bottom = deckSize.height - hoverInfo.y + 5;
+  }
+
+  if (!flip_horiz) {
+    style.left = hoverInfo.x + 5;
+  } else {
+    style.right = deckSize.width - hoverInfo.x + 5;
+  }
+
   return (
+
     <div
-      className="bg-gray-100 p-3 opacity-90 text-sm"
+      className="bg-gray-100 p-3 opacity-90 text-sm" style={style}>
       style={{
-        position: "absolute",
-        zIndex: 1,
-        pointerEvents: "none",
         left: hoverInfo.x + 600, // TODO fix hack
         top: hoverInfo.y,
       }}
@@ -118,6 +144,26 @@ const NodeHoverTip = ({
           </div>
         </div>
       )}
+      {hoverDetails &&
+        hoverDetails.nodeDetails &&
+        hoverDetails.nodeDetails.acknowledgements && (
+          <div className="text-xs mt-3  mr-3">
+            <div className="mt-1">
+              <b className="font-semibold">Originating laboratory:</b>{" "}
+              {hoverDetails.nodeDetails.acknowledgements.covv_orig_lab}
+            </div>
+            <div className="mt-1">
+              <b className="font-semibold">Submitting laboratory:</b>{" "}
+              {hoverDetails.nodeDetails.acknowledgements.covv_subm_lab}
+            </div>
+            <div className="mt-1 justify">
+              <b className="font-semibold">Authors:</b>{" "}
+              {fixAuthors(
+                hoverDetails.nodeDetails.acknowledgements.covv_authors
+              )}
+            </div>
+          </div>
+        )}
       {window.show_ids ? (
         <div className="mt-3 text-xs text-gray-400">{hoveredNode.node_id}</div>
       ) : null}
