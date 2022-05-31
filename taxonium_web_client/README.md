@@ -5,7 +5,7 @@ This is the client used at taxonium.org
 ### Dev instructions
 
 ```
-nvm use 17.5
+nvm use 18
 npm install -g yarn
 yarn install
 yarn start

@@ -11,7 +11,10 @@
     {"name" : "meta_genbank_accession", "label": "Genbank accession", "type" : "text_per_line"},
     { "name": "meta_country", "label": "Country", "type": "text_match" },
     { "name": "mutation", "label": "Mutation", "type": "mutation" },
-    { "name": "revertant", "label": "Revertant", "type": "revertant" }
+    { "name": "genotype", "label": "Genotype", "type": "genotype" },
+    { "name": "revertant", "label": "Revertant", "type": "revertant" },
+    { "name": "num_tips", "label": "Number of tips", "type": "number" },
+    { "name": "boolean", "label": "Boolean", "type": "boolean" }
   ],
   "colorBy": {
     "colorByOptions": ["meta_pangolin_lineage", "meta_country", "genotype", "None"]

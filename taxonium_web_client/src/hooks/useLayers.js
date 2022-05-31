@@ -14,6 +14,7 @@ const useLayers = ({
   viewState,
   colorHook,
   setHoverInfo,
+  hoverInfo,
   colorBy,
   xType,
   modelMatrix,
@@ -146,12 +147,22 @@ const useLayers = ({
     getTargetPosition: (d) => [d.parent_x, d.y],
     getColor: lineColor,
     pickable: true,
+    widthUnits: "pixels",
+    getWidth: (d) =>
+      d === (hoverInfo && hoverInfo.object)
+        ? 3
+        : selectedDetails.nodeDetails &&
+          selectedDetails.nodeDetails.node_id === d.node_id
+        ? 3.5
+        : 1,
+
     onHover: (info) => setHoverInfo(info),
 
     modelMatrix: modelMatrix,
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
       getTargetPosition: [detailed_data, xType],
+      getWidth: [hoverInfo, selectedDetails.nodeDetails],
     },
   };
 
@@ -161,10 +172,18 @@ const useLayers = ({
     onHover: (info) => setHoverInfo(info),
     getColor: lineColor,
     pickable: true,
+    getWidth: (d) =>
+      d === (hoverInfo && hoverInfo.object)
+        ? 2
+        : selectedDetails.nodeDetails &&
+          selectedDetails.nodeDetails.node_id === d.node_id
+        ? 2.5
+        : 1,
     modelMatrix: modelMatrix,
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
       getTargetPosition: [detailed_data, xType],
+      getWidth: [hoverInfo, selectedDetails.nodeDetails],
     },
   };
 
@@ -226,6 +245,26 @@ const useLayers = ({
       lineWidthScale: 2,
     });
 
+    const hoveredLayer = new ScatterplotLayer({
+      data: hoverInfo && hoverInfo.object ? [hoverInfo.object] : [],
+      visible: true,
+      opacity: 0.3,
+      getRadius: 4,
+      radiusUnits: "pixels",
+
+      id: "main-hovered",
+      filled: false,
+      stroked: true,
+      modelMatrix,
+
+      getLineColor: [0, 0, 0],
+      getPosition: (d) => {
+        return [d[xType], d.y];
+      },
+      lineWidthUnits: "pixels",
+      lineWidthScale: 2,
+    });
+
     const clade_label_layer = new TextLayer({
       id: "main-clade-node",
       getPixelOffset: [-5, -6],
@@ -256,7 +295,8 @@ const useLayers = ({
       main_scatter_layer,
       fillin_scatter_layer,
       clade_label_layer,
-      selectedLayer
+      selectedLayer,
+      hoveredLayer
     );
   }
 
@@ -381,7 +421,7 @@ const useLayers = ({
       id: "main-search-scatter-" + spec.key,
       getPosition: (d) => [d[xType], d.y],
       getLineColor: lineColor,
-      getRadius: 10 + 2 * i,
+      getRadius: 5 + 2 * i,
       radiusUnits: "pixels",
       lineWidthUnits: "pixels",
       stroked: true,

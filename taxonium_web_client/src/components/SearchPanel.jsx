@@ -1,5 +1,5 @@
 import SearchTopLayerItem from "./SearchTopLayerItem";
-import { RiAddCircleLine } from "react-icons/ri";
+import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { FaSearch } from "react-icons/fa";
@@ -19,9 +19,10 @@ const formatNumberIfNumber = (possNum) => {
   return typeof possNum === "number" ? possNum.toLocaleString() : possNum;
 };
 const fixName = (name) => {
-  return typeof name == "string"
-    ? name.replace("hCoV-19/", "hCoV-19/\n")
-    : name;
+  return name;
+  //return typeof name == "string"
+  //  ? name.replace("hCoV-19/", "hCoV-19/\n")
+  //  : name;
 };
 
 const fixAuthors = (authors) => {
@@ -77,8 +78,8 @@ function SearchPanel({
         </div>
       );
     }
-    console.log("metadata types", config.metadataTypes);
-    if (config.metadataTypes && config.metadataTypes[key] == "sequence") {
+
+    if (config.metadataTypes && config.metadataTypes[key] === "sequence") {
       return (
         <div className="text-sm mt-1" key={key}>
           <span className="font-semibold">{prettifyName(key)}:</span>{" "}
@@ -107,15 +108,15 @@ function SearchPanel({
           <span className="ml-1">
             <button
               title="List all tips"
-              className=""
+              className="text-gray-600 hover:text-black"
               onClick={() => {
                 if (
-                  selectedDetails.nodeDetails.num_tips > 50000 &&
+                  selectedDetails.nodeDetails.num_tips > 100000 &&
                   !window.warning_shown
                 ) {
                   // pop up a warning and ask if we want to continue
                   alert(
-                    "WARNING: This node has a large number of descendants. Displaying them all may take a  or crash your computer. Are you sure you want to continue? If so press the button again."
+                    "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again."
                   );
                   window.warning_shown = true;
                   return;
@@ -132,196 +133,237 @@ function SearchPanel({
   };
 
   return (
-    <div className="overflow-y-auto" style={{ height: "calc(100vh - 5em)" }}>
-      <div className="mt-3 mb-3 text-gray-500 text-sm">
-        {config.num_tips && (
-          <>
-            Displaying {formatNumber(config.num_tips)}{" "}
-            {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
-            {config.source && ` from ${config.source}`}
-          </>
+    <div>
+      <div
+        className="overflow-y-auto"
+        style={{ height: "calc( 0.65*(100vh - 5em))" }}
+      >
+        <div className="mt-3 mb-3 text-gray-500 text-sm">
+          {config.num_tips && (
+            <>
+              Displaying {formatNumber(config.num_tips)}{" "}
+              {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
+              {config.source && ` from ${config.source}`}
+            </>
+          )}
+        </div>
+
+        {config.x_accessors && config.x_accessors.length > 1 && (
+          <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
+            Tree type:{" "}
+            <select
+              value={xType}
+              onChange={(e) => setxType(e.target.value)}
+              className="border py-1 px-1 text-grey-darkest text-sm"
+            >
+              {config.x_accessors.map((x) => (
+                <option key={x} value={x}>
+                  {prettify_x_types[x]}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
-      </div>
-      {config.x_accessors && config.x_accessors.length > 1 && (
-        <div className="border-t md:border-t-0 border-b border-gray-300 pb-2 mb-2 text-gray-500">
-          Tree type:{" "}
-          <select
-            value={xType}
-            onChange={(e) => setxType(e.target.value)}
-            className="border py-1 px-1 text-grey-darkest text-sm"
+        <div className="border-b  border-gray-200 pb-2 mb-2 ">
+          <h2 className="text-xl mt-3 mb-4 text-gray-700 ">
+            <BiPalette className="inline-block mr-2" />
+            {
+              // if locale is US return "Color by" otherwise "Colour by"
+              window.navigator.language === "en-US" ? "Color by" : "Colour by"
+            }{" "}
+          </h2>
+          <Select
+            value={colorBy.colorByField}
+            onChange={(e) => colorBy.setColorByField(e.target.value)}
+            className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
           >
-            {config.x_accessors.map((x) => (
-              <option key={x} value={x}>
-                {prettify_x_types[x]}
+            {colorBy.colorByOptions.map((item) => (
+              <option key={item} value={item}>
+                {prettifyName(item)}
               </option>
             ))}
-          </select>
-        </div>
-      )}
-      <h2 className="text-xl mt-5 mb-4 text-gray-700">
-        <FaSearch className="inline-block mr-2" />
-        Search
-      </h2>
-      {search.searchSpec.map((item) => (
-        <SearchTopLayerItem
-          key={item.key}
-          singleSearchSpec={item}
-          myKey={item.key}
-          search={search}
-          config={config}
-        />
-      ))}
-      <Button
-        className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700 mb-3 mt-3"
-        onClick={search.addNewTopLevelSearch}
-      >
-        <RiAddCircleLine className="inline-block mr-2" />
-        Add a new search
-      </Button>
-      <hr />
-      <h2 className="text-xl mt-5 mb-4 text-gray-700">
-        <BiPalette className="inline-block mr-2" />
-        Colour by{" "}
-      </h2>
-      <Select
-        value={colorBy.colorByField}
-        onChange={(e) => colorBy.setColorByField(e.target.value)}
-        className="inline-block w-56 border py-1 px-1 text-grey-darkest text-sm"
-      >
-        {colorBy.colorByOptions.map((item) => (
-          <option key={item} value={item}>
-            {prettifyName(item)}
-          </option>
-        ))}
-      </Select>
-      {colorBy.colorByField === "genotype" && (
-        <>
-          <div>
-            <label className="text-sm">Gene</label>
-            <Select
-              value={colorBy.colorByGene}
-              onChange={(e) => colorBy.setColorByGene(e.target.value)}
-              className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
-            >
-              {config.genes &&
-                config.genes.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-            </Select>
-          </div>
-          <div>
-            <label className="text-sm">Residue</label>
-            <input
-              value={colorBy.colorByPosition}
-              onChange={(e) =>
-                colorBy.setColorByPosition(
-                  e.target.value !== "" ? parseInt(e.target.value) : ""
-                )
-              }
-              type="number"
-              min="0"
-              className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
-            />
-          </div>
-        </>
-      )}
-      {selectedDetails.nodeDetails && (
-        <ListOutputModal
-          ariaHideApp={false}
-          nodeId={selectedDetails.nodeDetails.node_id}
-          backend={backend}
-          possibleKeys={["name", ...config.keys_to_display]}
-          listOutputModalOpen={listOutputModalOpen}
-          setListOutputModalOpen={setListOutputModalOpen}
-        />
-      )}
-      {selectedDetails.nodeDetails && (
-        <div className="text-gray-700">
-          <hr className="mt-4 mb-4" />
-          <h2 className="font-bold whitespace-pre-wrap text-sm">
-            {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
-              fixName(selectedDetails.nodeDetails[config.name_accessor])
-            ) : (
-              <i>Internal node</i>
-            )}
-          </h2>
+          </Select>
           {colorBy.colorByField === "genotype" && (
-            <span
-              style={{
-                color: colorHook.toRGBCSS(
-                  colorBy.getNodeColorField(selectedDetails.nodeDetails)
-                ),
-              }}
-            >
-              {colorBy.colorByGene}:{colorBy.colorByPosition}
-              {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
-            </span>
-          )}
-
-          {[...config.keys_to_display, "num_tips"].map(
-            (key) =>
-              selectedDetails.nodeDetails[key] &&
-              formatMetadataItem(key, selectedDetails)
-          )}
-          {config.mutations.length > 0 && (
             <>
-              <h3 className="text-xs font-bold mt-4 text-gray-700">
-                Mutations at this node:
-              </h3>
-              <div className="text-xs mt-1 text-gray-700 mr-1">
-                {settings
-                  .filterMutations(selectedDetails.nodeDetails.mutations)
-                  .map((mutation, i) => (
-                    <span key={mutation.mutation_id}>
-                      {i > 0 && <>, </>}
-                      <div className="inline-block">
-                        {mutation.gene}:{mutation.previous_residue}
-                        {mutation.residue_pos}
-                        {mutation.new_residue}
-                      </div>
-                    </span>
-                  ))}
-                {selectedDetails.nodeDetails.mutations.length === 0 && (
-                  <div className=" italic">
-                    No{" "}
-                    {settings.filterMutations([{ type: "nt" }]).length === 0 ? (
-                      <>coding</>
-                    ) : (
-                      <></>
-                    )}{" "}
-                    mutations
-                  </div>
-                )}
+              <div>
+                <label className="text-sm">Gene</label>
+                <Select
+                  value={colorBy.colorByGene}
+                  onChange={(e) => colorBy.setColorByGene(e.target.value)}
+                  className="border py-1 px-1 text-grey-darkest text-sm h-7 w-20 m-3 my-1"
+                >
+                  {config.genes &&
+                    config.genes.map((item) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm">Residue</label>
+                <input
+                  value={colorBy.colorByPosition}
+                  onChange={(e) =>
+                    colorBy.setColorByPosition(
+                      e.target.value !== "" ? parseInt(e.target.value) : ""
+                    )
+                  }
+                  type="number"
+                  min="0"
+                  className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
+                />
               </div>
             </>
           )}
+        </div>
+        <h2 className="text-xl mt-5 mb-4 text-gray-700">
+          <FaSearch className="inline-block mr-2" />
+          Search
+        </h2>
+        {search.searchSpec.map((item) => (
+          <SearchTopLayerItem
+            key={item.key}
+            singleSearchSpec={item}
+            myKey={item.key}
+            search={search}
+            config={config}
+          />
+        ))}
+        <Button
+          className="block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700 mb-3 mt-3"
+          onClick={search.addNewTopLevelSearch}
+        >
+          <RiAddCircleLine className="inline-block mr-2" />
+          Add a new search
+        </Button>
 
-          {
-            <div>
-              {selectedDetails.nodeDetails.acknowledgements && (
-                <div className="text-xs mt-3  text-gray-700 mr-3">
-                  <div className="mt-1">
-                    <b className="font-semibold">Originating laboratory:</b>{" "}
-                    {selectedDetails.nodeDetails.acknowledgements.covv_orig_lab}
-                  </div>
-                  <div className="mt-1">
-                    <b className="font-semibold">Submitting laboratory:</b>{" "}
-                    {selectedDetails.nodeDetails.acknowledgements.covv_subm_lab}
-                  </div>
-                  <div className="mt-1 justify">
-                    <b className="font-semibold">Authors:</b>{" "}
-                    {fixAuthors(
-                      selectedDetails.nodeDetails.acknowledgements.covv_authors
+        {selectedDetails.nodeDetails && (
+          <ListOutputModal
+            ariaHideApp={false}
+            nodeId={selectedDetails.nodeDetails.node_id}
+            backend={backend}
+            possibleKeys={["name", ...config.keys_to_display]}
+            listOutputModalOpen={listOutputModalOpen}
+            setListOutputModalOpen={setListOutputModalOpen}
+          />
+        )}
+      </div>
+      <div
+        style={{ height: "calc( 0.35*(100vh - 5em))" }}
+        // top border width 2
+
+        className="overflow-y-auto border-t  border-gray-300 pb-2 mb-2 pt-3"
+      >
+        {selectedDetails.nodeDetails && (
+          <div className="text-gray-700">
+            <h2 className="font-bold whitespace-pre-wrap text-sm">
+              {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
+                fixName(selectedDetails.nodeDetails[config.name_accessor])
+              ) : (
+                <i>Internal node</i>
+              )}
+              {selectedDetails.nodeDetails.parent_id !==
+                selectedDetails.nodeDetails.node_id && (
+                <button
+                  className="inline-block text-sm text-gray-700 hover:text-black ml-2"
+                  title="Select parent"
+                  onClick={() => {
+                    selectedDetails.getNodeDetails(
+                      selectedDetails.nodeDetails.parent_id
+                    );
+                  }}
+                >
+                  <RiArrowLeftUpLine className="inline-block mr-2" />
+                </button>
+              )}
+            </h2>
+            {colorBy.colorByField === "genotype" && (
+              <span
+                style={{
+                  color: colorHook.toRGBCSS(
+                    colorBy.getNodeColorField(selectedDetails.nodeDetails)
+                  ),
+                }}
+              >
+                {colorBy.colorByGene}:{colorBy.colorByPosition}
+                {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
+              </span>
+            )}
+
+            {[...config.keys_to_display, "num_tips"].map(
+              (key) =>
+                selectedDetails.nodeDetails[key] &&
+                formatMetadataItem(key, selectedDetails)
+            )}
+            {config.mutations.length > 0 &&
+              selectedDetails.nodeDetails.node_id !==
+                selectedDetails.nodeDetails.parent_id && (
+                <>
+                  <h3 className="text-xs font-bold mt-4 text-gray-700">
+                    Mutations at this node: {settings.miniMutationsMenu()}
+                  </h3>
+                  <div className="text-xs mt-1 text-gray-700 mr-1">
+                    {settings
+                      .filterMutations(selectedDetails.nodeDetails.mutations)
+                      .map((mutation, i) => (
+                        <span key={mutation.mutation_id}>
+                          {i > 0 && <>, </>}
+                          <div className="inline-block">
+                            {mutation.gene}:{mutation.previous_residue}
+                            {mutation.residue_pos}
+                            {mutation.new_residue}
+                          </div>
+                        </span>
+                      ))}
+                    {selectedDetails.nodeDetails.mutations.length === 0 && (
+                      <div className=" italic">
+                        No{" "}
+                        {settings.filterMutations([{ type: "nt" }]).length ===
+                        0 ? (
+                          <>coding</>
+                        ) : (
+                          <></>
+                        )}{" "}
+                        mutations
+                      </div>
                     )}
                   </div>
-                </div>
+                </>
               )}
-            </div>
-          }
-        </div>
-      )}
+
+            {
+              <div>
+                {selectedDetails.nodeDetails.acknowledgements && (
+                  <div className="text-xs mt-3  text-gray-700 mr-3">
+                    <div className="mt-1">
+                      <b className="font-semibold">Originating laboratory:</b>{" "}
+                      {
+                        selectedDetails.nodeDetails.acknowledgements
+                          .covv_orig_lab
+                      }
+                    </div>
+                    <div className="mt-1">
+                      <b className="font-semibold">Submitting laboratory:</b>{" "}
+                      {
+                        selectedDetails.nodeDetails.acknowledgements
+                          .covv_subm_lab
+                      }
+                    </div>
+                    <div className="mt-1 justify">
+                      <b className="font-semibold">Authors:</b>{" "}
+                      {fixAuthors(
+                        selectedDetails.nodeDetails.acknowledgements
+                          .covv_authors
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            }
+          </div>
+        )}
+      </div>
     </div>
   );
 }

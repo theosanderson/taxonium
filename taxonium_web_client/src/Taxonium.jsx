@@ -42,7 +42,11 @@ function Taxonium({
     uploadedData,
     proto
   );
-  const hoverDetails = useHoverDetails();
+  let hoverDetails = useHoverDetails();
+  const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
+  if (window.location.toString().includes("epicov.org")) {
+    hoverDetails = gisaidHoverDetails;
+  }
   const selectedDetails = useNodeDetails("selected", backend);
   const config = useConfig(backend, view, setOverlayContent, setTitle, query);
   const colorBy = useColorBy(config, query, updateQuery);

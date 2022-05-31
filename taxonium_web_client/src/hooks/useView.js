@@ -4,14 +4,18 @@ import {
   OrthographicController,
   //OrthographicViewport,
 } from "@deck.gl/core";
+
+let globalSetZoomAxis = () => {};
 class MyOrthographicController extends OrthographicController {
   // on construction
   constructor(props) {
-    console.log("MyOrthographicController.constructor");
     super(props);
   }
   // Default handler for the `wheel` event.
   onWheel(event) {
+    const controlKey =
+      event.srcEvent.ctrlKey || event.srcEvent.metaKey || event.srcEvent.altKey;
+
     if (!this.scrollZoom) {
       return false;
     }
@@ -22,7 +26,11 @@ class MyOrthographicController extends OrthographicController {
       return false;
     }
 
-    const { speed = 0.01, smooth = false, zoomAxis = "Y" } = this.scrollZoom;
+    let { speed = 0.01, smooth = false, zoomAxis = "Y" } = this.scrollZoom;
+    if (controlKey) {
+      zoomAxis = "X";
+      globalSetZoomAxis(zoomAxis);
+    }
     const { delta } = event;
 
     // Map wheel delta to relative scale
@@ -37,7 +45,6 @@ class MyOrthographicController extends OrthographicController {
     if (zoomAxis === "X") {
       transitionDuration = 0;
     }
-    console.log("zoomAxis:", zoomAxis);
 
     this.updateViewport(
       newControllerState,
@@ -50,11 +57,27 @@ class MyOrthographicController extends OrthographicController {
         isPanning: true,
       }
     );
+
+    if (controlKey) {
+      zoomAxis = "Y";
+      globalSetZoomAxis(zoomAxis);
+    }
     return true;
   }
 
   handleEvent(event) {
-    // console.log("event:", event);
+    //console.log(event)
+    if (event.pointerType === "touch") {
+      if (event.type === "pinchmove") {
+        if (
+          this.scrollZoom &&
+          this.scrollZoom.zoomAxis &&
+          this.scrollZoom.zoomAxis === "X"
+        ) {
+          return false;
+        }
+      }
+    }
     if (event.type === "wheel") {
       const { ControllerState } = this;
       this.controllerState = new ControllerState({
@@ -73,6 +96,7 @@ class MyOrthographicController extends OrthographicController {
 const useView = ({ settings, deckSize, deckRef }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
+  globalSetZoomAxis = setZoomAxis;
 
 
   // TODO target needs to be [0,0]
@@ -89,6 +113,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
       bearing: 0,
     },
   });
+  //console.log("useView", viewState);
 
   const views = useMemo(() => {
     return [
@@ -190,8 +215,6 @@ const useView = ({ settings, deckSize, deckRef }) => {
       const oldScaleX = 2 ** xzoom;
       let newScaleX = 2 ** xzoom;
 
-      //console.log("old",oldViewState)
-
       if (basicTarget) {
         newViewState.target[0] = (newViewState.target[0] / newScaleY) * newScaleX;
       } else {
@@ -205,7 +228,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
             setXzoom((old) => old + difference);
 
             newScaleX = 2 ** (xzoom + difference);
-            console.log(xzoom, difference, newScaleX);
+
             newViewState.zoom = oldViewState.zoom;
             newViewState.target[0] =
               (oldViewState.target[0] / oldScaleY) * newScaleY;

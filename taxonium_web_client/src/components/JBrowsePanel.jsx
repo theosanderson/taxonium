@@ -162,6 +162,20 @@ function JBrowsePanel(props) {
             locationType: 'UriLocation',
           },
         },
+      },
+      {
+        type: "FeatureTrack",
+        trackId: "shannon-entropy",
+        name: "Shannon Entropy",
+        assemblyNames: ['NC_045512v2'],
+        category: ['Annotation'],
+        adapter: {
+          type: 'BigWigAdapter',
+          bigWigLocation: {
+            uri: 'https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/pyle/Full_Length_Shannon_Entropy.bw',
+            locationType: 'UriLocation',
+          }
+        }
       }
     ]
   }, []);

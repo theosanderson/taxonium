@@ -11,6 +11,7 @@ import { useInputHelper } from "./hooks/useInputHelper";
 
 import { getDefaultSearch } from "./utils/searchUtil";
 import InputSupplier from "./components/InputSupplier";
+import FirefoxWarning from "./components/FirefoxWarning";
 
 const first_search = getDefaultSearch("aa1");
 
