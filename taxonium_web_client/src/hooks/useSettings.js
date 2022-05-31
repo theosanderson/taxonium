@@ -58,8 +58,12 @@ export const useSettings = ({ query, updateQuery }) => {
     );
   };
 
+  //Temp
+  const browserEnabled = true;
+  
   return {
     minimapEnabled,
+    browserEnabled,
     toggleMinimapEnabled,
     mutationTypesEnabled,
     filterMutations,

@@ -1,6 +1,8 @@
 import "./App.css";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
+import BrowserOptionsPanel from "./components/BrowserOptionsPanel";
+import useBrowserState from "./hooks/useBrowserState";
 import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
@@ -8,10 +10,11 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
+import { MdArrowForward, MdArrowBack } from "react-icons/md";
 
 const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
   ? "https://www.epicov.org/epi3/frontend"
@@ -25,9 +28,10 @@ function Taxonium({
   proto,
   setTitle,
 }) {
+  const deckRef = useRef();
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
-  const view = useView({ settings, deckSize });
+  const view = useView({ settings, deckSize, deckRef });
 
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 
@@ -71,12 +75,38 @@ function Taxonium({
     xType,
   });
 
-  //
+  // Treenome 
+  const [browserEnabled, setBrowserEnabled] = useState(true);
+  const [updateBrowserBounds, setUpdateBrowserBounds] = useState(false);
+  const browserState = useBrowserState(data, deckRef, updateBrowserBounds, setUpdateBrowserBounds);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    // const tempView = view.viewState;
+    // view.setViewState({
+    //   ...tempView,
+    //   zoom: 0,
+    //   target: [0, 0],
+    //   pitch: 0,
+    //   bearing: 0,
+    //   minimap: { zoom: -3, target: [250, 1000] },
+    //   "browser-main": {
+    //     zoom: 0,
+    //     target: [0, 0],
+    //     pitch: 0,
+    //     bearing: 0,
+    //   },
+    // })
+    setSidebarOpen(!sidebarOpen);
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100); // is there a better way?
+
+  };
 
   return (
     <div className="main_content">
       <div className="md:grid md:grid-cols-12 h-full">
-        <div className="md:col-span-8 h-3/6 md:h-full w-full">
+        <div className={sidebarOpen ? "md:col-span-8 h-3/6 md:h-full w-full" : "md:col-span-12 h-3/6 md:h-full w-full"}>
           <Deck
             statusMessage={backend.statusMessage}
             data={data}
@@ -93,21 +123,32 @@ function Taxonium({
             setDeckSize={setDeckSize}
             deckSize={deckSize}
             isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
+            browserState={browserState}
+            deckRef={deckRef}
           />
         </div>
-        <div className="md:col-span-4 h-full bg-white  border-gray-600   pl-5 shadow-xl">
-          <SearchPanel
-            backend={backend}
-            search={search}
-            colorBy={colorBy}
-            colorHook={colorHook}
-            config={config}
-            selectedDetails={selectedDetails}
-            xType={xType}
-            setxType={setxType}
-            settings={settings}
-          />
-        </div>
+        {/* <div className={sidebarOpen ? "md:col-span-4 h-full bg-white border-gray-600 pl-5 shadow-xl sidebar-open" : "h-full bg-white border-gray-600 pl-5 shadow-xl sidebar-closed"}>
+          <button onClick={toggleSidebar}>
+                <br />
+                { sidebarOpen ? <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" /> : <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle"/> }
+              </button>
+              { 
+                sidebarOpen &&
+                <span>
+                <SearchPanel
+                  search={search}
+                  colorBy={colorBy}
+                  colorHook={colorHook}
+                  config={config}
+                  selectedDetails={selectedDetails}
+                  xType={xType}
+                  setxType={setxType}
+                  settings={settings}
+                />
+                <BrowserOptionsPanel browserState={browserState}  config={config}/>
+              </span>
+            }
+        </div> */}
       </div>
     </div>
   );

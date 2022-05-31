@@ -44,7 +44,7 @@ const NodeHoverTip = ({
     return null;
   }
   const hoveredNode = hoverInfo.object;
-  if (!hoveredNode) {
+  if (!hoveredNode || !hoveredNode.node_id) {
     return null;
   }
 
@@ -70,7 +70,14 @@ const NodeHoverTip = ({
   }
 
   return (
-    <div className="bg-gray-100 p-3 opacity-90 text-sm" style={style}>
+
+    <div
+      className="bg-gray-100 p-3 opacity-90 text-sm" style={style}>
+      style={{
+        left: hoverInfo.x + 600, // TODO fix hack
+        top: hoverInfo.y,
+      }}
+    >
       <h2 className="font-bold whitespace-pre-wrap">
         {hoveredNode[config.name_accessor] !== "" ? (
           fixName(hoveredNode[config.name_accessor])

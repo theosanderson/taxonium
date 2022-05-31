@@ -1,7 +1,9 @@
 /// app.js
 import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
+import { View } from "@deck.gl/core";
 import useLayers from "./hooks/useLayers";
+import JBrowsePanel from "./components/JBrowsePanel";
 import { ClipLoader } from "react-spinners";
 import {
   CircularProgressbarWithChildren,
@@ -11,6 +13,7 @@ import "react-circular-progressbar/dist/styles.css";
 
 import useSnapshot from "./hooks/useSnapshot";
 import NodeHoverTip from "./components/NodeHoverTip";
+import MutationHoverTip from "./components/MutationHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
 import FirefoxWarning from "./components/FirefoxWarning";
@@ -18,7 +21,7 @@ import FirefoxWarning from "./components/FirefoxWarning";
 function Deck({
   data,
   search,
-
+  browserState,
   view,
   colorHook,
   colorBy,
@@ -31,8 +34,8 @@ function Deck({
   setDeckSize,
   deckSize,
   isCurrentlyOutsideBounds,
+  deckRef
 }) {
-  const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
 
@@ -50,6 +53,10 @@ function Deck({
     setZoomAxis,
     xzoom,
   } = view;
+
+  // Treenome state
+  const setMouseXY = useCallback((info) => view.setMouseXY([info.x, info.y]), [view]);
+  const [reference, setReference] = useState(null);
 
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
@@ -122,7 +129,7 @@ function Deck({
         });
       }
     },
-    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, xzoom]
+    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, xzoom, deckRef]
   );
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
@@ -158,6 +165,9 @@ function Deck({
     settings,
     isCurrentlyOutsideBounds,
     config,
+    browserState,
+    reference,
+    setReference
   });
   // console.log("deck refresh");
 
@@ -235,6 +245,7 @@ function Deck({
         onViewStateChange={onViewStateChange}
         layerFilter={layerFilter}
         layers={layers}
+        onHover={setMouseXY}
         onResize={(size) => {
           setDeckSize(size);
           console.log("resize", size);
@@ -245,15 +256,29 @@ function Deck({
           }
         }}
       >
-        <NodeHoverTip
-          hoverInfo={hoverInfo}
-          hoverDetails={hoverDetails}
-          colorHook={colorHook}
-          colorBy={colorBy}
-          config={config}
-          filterMutations={settings.filterMutations}
-          deckSize={deckSize}
-        />
+        <View id="browser-axis">
+          <div style={{ width: "100%", position: "relative", zIndex: 1 }}>
+            <JBrowsePanel browserState={browserState}/>
+          </div>
+        </View>
+
+          <NodeHoverTip
+            hoverInfo={hoverInfo}
+            hoverDetails={hoverDetails}
+            colorHook={colorHook}
+            colorBy={colorBy}
+            config={config}
+            filterMutations={settings.filterMutations}
+            deckSize={deckSize}
+          />
+          <MutationHoverTip
+              hoverInfo={hoverInfo}
+              hoverDetails={hoverDetails}
+              colorHook={colorHook}
+              colorBy={colorBy}
+              config={config}
+              reference={reference}
+            />
         <DeckButtons
           zoomIncrement={zoomIncrement}
           zoomAxis={zoomAxis}
