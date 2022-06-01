@@ -311,7 +311,7 @@ const useLayers = ({
       getColor: [180, 180, 180],
       getAngle: 0,
       onHover: (info) => setHoverInfo(info),
-      pickable:true,
+      pickable: true,
       billboard: true,
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
