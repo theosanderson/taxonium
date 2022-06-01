@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
-import {AiFillEye} from 'react-icons/ai';
+import { AiFillEye } from "react-icons/ai";
+import { toast } from "react-hot-toast";
 export const useSettings = ({ query, updateQuery }) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
@@ -39,7 +40,8 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const miniMutationsMenu = () => {
     return (
-      <div className="block font-normal pt-1 mr-3"><AiFillEye className="mr-1 text-gray-400 inline-block w-5 h-4 mb-1" />
+      <div className="block font-normal pt-1 mr-3">
+        <AiFillEye className="mr-1 text-gray-400 inline-block w-5 h-4 mb-1" />
         {Object.keys(mutationTypesEnabled).map((key) => (
           <div key={key} className="inline-block mr-3  -mb-1 -pb-1">
             <label key={key}>
@@ -47,9 +49,19 @@ export const useSettings = ({ query, updateQuery }) => {
                 type="checkbox"
                 className="mr-1 -mb-1 -pb-1"
                 checked={mutationTypesEnabled[key]}
-                onChange={() =>
-                  setMutationTypeEnabled(key, !mutationTypesEnabled[key])
-                }
+                onChange={() => {
+                  const newValue = !mutationTypesEnabled[key];
+                  setMutationTypeEnabled(key, newValue);
+                  // toast at bottom center
+                  toast(
+                    `Display of ${key.toUpperCase()} mutations is now ${
+                      newValue ? "enabled" : "disabled"
+                    } for hovered and selected nodes`,
+                    {
+                      position: "bottom-center",
+                    }
+                  );
+                }}
               />{" "}
               {key}
             </label>
