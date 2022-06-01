@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import {AiFillEye} from 'react-icons/ai';
+import {toast} from 'react-hot-toast';
 export const useSettings = ({ query, updateQuery }) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
@@ -47,9 +48,16 @@ export const useSettings = ({ query, updateQuery }) => {
                 type="checkbox"
                 className="mr-1 -mb-1 -pb-1"
                 checked={mutationTypesEnabled[key]}
-                onChange={() =>
-                  setMutationTypeEnabled(key, !mutationTypesEnabled[key])
-                }
+                onChange={() =>{
+                  const newValue = !mutationTypesEnabled[key];
+                  setMutationTypeEnabled(key,newValue )
+                  // toast at bottom center
+                  toast(`Display of ${key.toUpperCase()} mutations is now ${newValue ? 'enabled' : 'disabled'} for hovered and selected nodes`, {
+                    position: "bottom-center",
+                  });
+
+
+                }}
               />{" "}
               {key}
             </label>
