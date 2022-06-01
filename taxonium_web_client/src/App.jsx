@@ -46,7 +46,7 @@ if (window.location.hostname.includes("taxonomy.taxonium.org")) {
   
   default_query.configUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
   
-  default_query.ladderizeTree = true;
+  default_query.ladderizeTree = "true";
 }
 
 function App() {
