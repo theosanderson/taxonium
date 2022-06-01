@@ -12,7 +12,7 @@ import { useInputHelper } from "./hooks/useInputHelper";
 import { getDefaultSearch } from "./utils/searchUtil";
 import InputSupplier from "./components/InputSupplier";
 import FirefoxWarning from "./components/FirefoxWarning";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
