@@ -7,7 +7,6 @@ import { ClipLoader } from "react-spinners";
 import Modal from "react-modal";
 
 function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
-
   const myLoadingStatus = search.searchLoadingStatus[myKey];
   console.log("myLoadingStatus", myLoadingStatus);
   const [permaLinkModalOpen, setPermaLinkModalOpen] = useState(false);
@@ -118,12 +117,12 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                         <FaLink />
                       </Button>
                     )
-                } </>
-                )}
-                {myLoadingStatus === "loading" && (
-                  <ClipLoader size={12} color="#444444" className="mr-3" />
-                )}
-             
+                }{" "}
+              </>
+            )}
+            {myLoadingStatus === "loading" && (
+              <ClipLoader size={12} color="#444444" className="mr-3" />
+            )}
             <div className="inline-block h-5 w-0 mt-4 w-1">&nbsp;</div>
           </div>
           <div>
