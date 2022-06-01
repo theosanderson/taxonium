@@ -8,10 +8,11 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
+
 
 const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
   ? "https://www.epicov.org/epi3/frontend"

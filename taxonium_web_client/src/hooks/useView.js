@@ -1,10 +1,16 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import {toast} from 'react-hot-toast'
 import {
   OrthographicView,
   OrthographicController,
   //OrthographicViewport,
 } from "@deck.gl/core";
+
+function useForceUpdate(){
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue(value => value + 1); // update the state to force render
+}
+
 
 let globalSetZoomAxis = () => {};
 class MyOrthographicController extends OrthographicController {
@@ -96,6 +102,8 @@ class MyOrthographicController extends OrthographicController {
 }
 
 const useView = ({ settings, deckSize }) => {
+
+  const forceUpdate = useForceUpdate();
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(0);
   globalSetZoomAxis = setZoomAxis;
@@ -107,7 +115,17 @@ const useView = ({ settings, deckSize }) => {
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
   });
-  //console.log("useView", viewState);
+
+  const zoomAnimation = useRef({
+    startTime: null,
+    endTime: null,
+    startZoom: null,
+    endZoom: null,
+    zooming: null,
+    zoomAxis: null,
+  });
+
+  
 
   const views = useMemo(() => {
     return [
@@ -238,7 +256,7 @@ const useView = ({ settings, deckSize }) => {
     [zoomAxis, xzoom, deckSize]
   );
 
-  const zoomIncrement = useCallback(
+  const zoomIncrementBasic = useCallback(
     (increment, overrideZoomAxis) => {
       const newViewState = { ...viewState };
       newViewState.zoom += increment;
@@ -252,6 +270,43 @@ const useView = ({ settings, deckSize }) => {
     },
     [viewState, onViewStateChange]
   );
+
+  const zoomIncrement = useCallback(
+    (increment, overrideZoomAxis) => {
+      const finalZoom = viewState.zoom + increment;
+      zoomAnimation.current.zooming = true;
+      zoomAnimation.current.zoomAxis = overrideZoomAxis;
+      zoomAnimation.current.startZoom = viewState.zoom;
+      zoomAnimation.current.endZoom = finalZoom;
+      zoomAnimation.current.startTime = Date.now();
+      zoomAnimation.current.endTime = zoomAnimation.current.startTime + 1000;
+      forceUpdate();
+    },
+    [viewState, onViewStateChange]
+  );
+
+
+  useEffect(() => {
+    if(zoomAnimation.current.zooming){
+       const {startTime, endTime, startZoom, endZoom, zoomAxis} = zoomAnimation.current;
+       const now = Date.now();
+       if(now > endTime){
+         const remaining_difference = endZoom - viewState.zoom;
+         zoomIncrementBasic(remaining_difference, zoomAxis);
+         zoomAnimation.current.zooming = false;
+       }
+       else{
+         const elapsed_time = now - startTime;
+         const target_zoom = startZoom + elapsed_time * (endZoom - startZoom) / (endTime - startTime);
+         const difference = target_zoom - viewState.zoom;
+         zoomIncrementBasic(difference, zoomAxis);
+         setTimeout(() => {
+           forceUpdate();
+         }
+         , 10);
+       }
+     }
+   }, [viewState.zoom, zoomAxis, forceUpdate, zoomAnimation.current.zooming, zoomIncrementBasic]);
 
   const output = useMemo(() => {
     return {

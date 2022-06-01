@@ -15,6 +15,12 @@ import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 
+//create your forceUpdate hook
+function useForceUpdate(){
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue(value => value + 1); // update the state to force render
+}
+
 function Deck({
   data,
   search,
@@ -32,6 +38,12 @@ function Deck({
   deckSize,
   isCurrentlyOutsideBounds,
 }) {
+  const zoomAnimation = useRef({
+    startTime: null,
+    endTime: null,
+    startZoom: null,
+    endZoom: null,
+  });
   const deckRef = useRef();
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
