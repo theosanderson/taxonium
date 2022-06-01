@@ -41,7 +41,6 @@ export const useSettings = ({ query, updateQuery }) => {
   const miniMutationsMenu = () => {
     return (
       <div className="block font-normal pt-1 mr-3">
-        <AiFillEye className="mr-1 text-gray-400 inline-block w-5 h-4 mb-1" />
         {Object.keys(mutationTypesEnabled).map((key) => (
           <div key={key} className="inline-block mr-3  -mb-1 -pb-1">
             <label key={key}>
