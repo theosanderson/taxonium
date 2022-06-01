@@ -72,10 +72,9 @@ const NodeHoverTip = ({
   return (
 
     <div
-      className="bg-gray-100 p-3 opacity-90 text-sm" style={style}>
-      style={{
+      className="bg-gray-100 p-3 opacity-90 text-sm" style={{
+        ...style,
         left: hoverInfo.x + 600, // TODO fix hack
-        top: hoverInfo.y,
       }}
     >
       <h2 className="font-bold whitespace-pre-wrap">

@@ -6,6 +6,21 @@ import {
 } from "@deck.gl/core";
 
 let globalSetZoomAxis = () => {};
+class BrowserController extends OrthographicController {
+// on construction
+constructor(props) {
+  super(props);
+}
+// Default handler for the `wheel` event.
+onWheel(event) {
+//  console.log('wheelasdf')
+
+  event.preventDefault();
+
+  return true;
+}
+}
+
 class MyOrthographicController extends OrthographicController {
   // on construction
   constructor(props) {
@@ -66,7 +81,6 @@ class MyOrthographicController extends OrthographicController {
   }
 
   handleEvent(event) {
-    //console.log(event)
     if (event.pointerType === "touch") {
       if (event.type === "pinchmove") {
         if (
@@ -153,7 +167,10 @@ const useView = ({ settings, deckSize, deckRef }) => {
           }),
           new OrthographicView({
             id: "browser-main",
-            controller: { doubleClickZoom: false },
+            controller: {
+              type: BrowserController,
+              doubleClickZoom: false,
+            },
             x: "40%",
             width: "60%",
           }),
@@ -189,7 +206,6 @@ const useView = ({ settings, deckSize, deckRef }) => {
 
   const onViewStateChange = useCallback(
     ({ viewState : newViewState, interactionState, viewId, oldViewState, basicTarget }) => {
-
 
       if (!deckSize) {
         setTimeout(() => {

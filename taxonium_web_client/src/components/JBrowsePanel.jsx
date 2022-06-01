@@ -238,11 +238,12 @@ function JBrowsePanel(props) {
     console.log("nav to " + 'NC_045512v2:' + props.browserState.ntBoundsExt[0] + '..' + props.browserState.ntBoundsExt[1])
     props.browserState.setNtBoundsExt(null);
 
-  }, [props.browserState.ntBoundsExt]);
+  }, [props.browserState]);
 
 
   // Read JBrowse state to determine nt bounds
   const onChange = (patch) => {
+    console.log(patch)
     if (patch.op != "replace") {
       return;
     }
@@ -262,6 +263,7 @@ function JBrowsePanel(props) {
     assembly,
     tracks,
     location: 'NC_045512v2:0-29903',
+    
     defaultSession,
     onChange: onChange
   }), [assembly, tracks, defaultSession]);
