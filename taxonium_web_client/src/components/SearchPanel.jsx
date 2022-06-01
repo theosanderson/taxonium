@@ -300,11 +300,9 @@ function SearchPanel({
               selectedDetails.nodeDetails.node_id !==
                 selectedDetails.nodeDetails.parent_id && (
                 <>
-                
-                
-                  <div
-                className="text-xs font-bold mt-4 mb-0 text-gray-700 justify-between flex">
-                    <div className="pt-1">Mutations at this node:</div> {settings.miniMutationsMenu()}
+                  <div className="text-xs font-bold mt-4 mb-0 text-gray-700 justify-between flex">
+                    <div className="pt-1">Mutations at this node:</div>{" "}
+                    {settings.miniMutationsMenu()}
                   </div>
                   <div className="text-xs mt-1 text-gray-700 mr-1">
                     {settings
