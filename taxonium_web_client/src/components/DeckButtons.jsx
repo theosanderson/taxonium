@@ -39,7 +39,6 @@ export const DeckButtons = ({
         zIndex: 10,
       }}
       className="flex justify-end"
-      
     >
       {loading && (
         <div className="mr-4 mt-auto inline-block">
@@ -84,46 +83,45 @@ export const DeckButtons = ({
       </TaxButton>
       <div className="">
         <div>
-      <TaxButton
-        onClick={() => {
-          zoomIncrement(0.6,"Y");
-        }}
-        title="Zoom in vertically"
-      >
-        <BiZoomIn className="mx-auto  w-5 h-5 inline-block" />
-        <BiMoveVertical className="mx-auto  w-3 h-3 inline-block" />
-      </TaxButton>
-      <TaxButton
-        onClick={() => {
-          zoomIncrement(-0.6,"Y");
-        }}
-        title="Zoom out vertically"
-      >
-        <BiZoomOut className="mx-auto w-5 h-5 inline-block" />
-        <BiMoveVertical className="mx-auto  w-3 h-3 inline-block" />
-      </TaxButton>
-      </div>
-      <div>
-      <TaxButton
-        onClick={() => {
-          zoomIncrement(0.6,"X");
-        }}
-        title="Zoom in horizontally"
-      >
-        <BiZoomIn className="mx-auto  w-5 h-5 inline-block" />
-        <BiMoveHorizontal className="mx-auto  w-3 h-3 inline-block" />
-        
-      </TaxButton>
-      <TaxButton
-        onClick={() => {
-          zoomIncrement(-0.6,"X");
-        }}
-        title="Zoom out horizontally"
-      >
-        <BiZoomOut className="mx-auto w-5 h-5 inline-block" />
-        <BiMoveHorizontal className="mx-auto  w-3 h-3 inline-block" />
-      </TaxButton>
-      </div>
+          <TaxButton
+            onClick={() => {
+              zoomIncrement(0.6, "Y");
+            }}
+            title="Zoom in vertically"
+          >
+            <BiZoomIn className="mx-auto  w-5 h-5 inline-block" />
+            <BiMoveVertical className="mx-auto  w-3 h-3 inline-block" />
+          </TaxButton>
+          <TaxButton
+            onClick={() => {
+              zoomIncrement(-0.6, "Y");
+            }}
+            title="Zoom out vertically"
+          >
+            <BiZoomOut className="mx-auto w-5 h-5 inline-block" />
+            <BiMoveVertical className="mx-auto  w-3 h-3 inline-block" />
+          </TaxButton>
+        </div>
+        <div>
+          <TaxButton
+            onClick={() => {
+              zoomIncrement(0.6, "X");
+            }}
+            title="Zoom in horizontally"
+          >
+            <BiZoomIn className="mx-auto  w-5 h-5 inline-block" />
+            <BiMoveHorizontal className="mx-auto  w-3 h-3 inline-block" />
+          </TaxButton>
+          <TaxButton
+            onClick={() => {
+              zoomIncrement(-0.6, "X");
+            }}
+            title="Zoom out horizontally"
+          >
+            <BiZoomOut className="mx-auto w-5 h-5 inline-block" />
+            <BiMoveHorizontal className="mx-auto  w-3 h-3 inline-block" />
+          </TaxButton>
+        </div>
       </div>
     </div>
   );

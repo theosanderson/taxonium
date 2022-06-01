@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import {toast} from 'react-hot-toast'
+import { toast } from "react-hot-toast";
 import {
   OrthographicView,
   OrthographicController,
@@ -75,7 +75,6 @@ class MyOrthographicController extends OrthographicController {
           this.scrollZoom.zoomAxis &&
           this.scrollZoom.zoomAxis === "X"
         ) {
-
           return false;
         }
       }
@@ -160,7 +159,14 @@ const useView = ({ settings, deckSize }) => {
   }, [viewState.zoom, xzoom]);
 
   const onViewStateChange = useCallback(
-    ({ viewState, interactionState, viewId, oldViewState, basicTarget, overrideZoomAxis }) => {
+    ({
+      viewState,
+      interactionState,
+      viewId,
+      oldViewState,
+      basicTarget,
+      overrideZoomAxis,
+    }) => {
       const localZoomAxis = overrideZoomAxis || zoomAxis;
       if (!deckSize) {
         setTimeout(() => {
@@ -247,7 +253,7 @@ const useView = ({ settings, deckSize }) => {
         viewState: newViewState,
         interactionState: "isZooming",
         oldViewState: viewState,
-        overrideZoomAxis
+        overrideZoomAxis,
       });
     },
     [viewState, onViewStateChange]
