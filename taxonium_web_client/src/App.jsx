@@ -38,6 +38,15 @@ if (window.location.hostname.includes("mpx.taxonium.org")) {
   default_query.configUrl = "https://mpx-tree.vercel.app/config.json";
 }
 
+if (window.location.hostname.includes("taxonomy.taxonium.org")) {
+  default_query.treeUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz";
+  
+  default_query.metaUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz";
+  
+  
+  default_query.configUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
+}
+
 function App() {
   const [uploadedData, setUploadedData] = useState(null);
 
