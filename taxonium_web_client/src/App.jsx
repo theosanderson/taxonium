@@ -25,7 +25,7 @@ const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
 
 const default_query = {
   srch: JSON.stringify([
-    //first_search
+    first_search
   ]),
   enabled: JSON.stringify({ [first_search.key]: true }),
   backend: DEFAULT_BACKEND,
