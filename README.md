@@ -10,7 +10,6 @@ Taxonium is a tool for exploring trees.
 
 ## How do I..
 
-
 ### visualise my own Newick phylogeny?
 
 Upload a Newick file to [Taxonium.org](http://taxonium.org), and optionally a metadata file in CSV or TSV format. If using a metadata file the leftmost column must contain names of the nodes as in the tree.

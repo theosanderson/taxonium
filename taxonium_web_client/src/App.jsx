@@ -12,7 +12,7 @@ import { useInputHelper } from "./hooks/useInputHelper";
 import { getDefaultSearch } from "./utils/searchUtil";
 import InputSupplier from "./components/InputSupplier";
 import FirefoxWarning from "./components/FirefoxWarning";
-
+import { Toaster } from "react-hot-toast";
 const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
@@ -25,7 +25,7 @@ const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
 
 const default_query = {
   srch: JSON.stringify([
-    //first_search
+    first_search
   ]),
   enabled: JSON.stringify({ [first_search.key]: true }),
   backend: DEFAULT_BACKEND,
@@ -36,6 +36,17 @@ const default_query = {
 if (window.location.hostname.includes("mpx.taxonium.org")) {
   default_query.protoUrl = "https://mpx-tree.vercel.app/mpx.jsonl.gz";
   default_query.configUrl = "https://mpx-tree.vercel.app/config.json";
+}
+
+if (window.location.hostname.includes("taxonomy.taxonium.org")) {
+  default_query.treeUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz";
+  
+  default_query.metaUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz";
+  
+  
+  default_query.configUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
+  
+  default_query.ladderizeTree = "true";
 }
 
 function App() {
@@ -153,6 +164,7 @@ function App() {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
+        <Toaster />
         {beingDragged && (
           <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>
         )}
