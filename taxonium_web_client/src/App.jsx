@@ -24,9 +24,7 @@ const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
   : process.env.REACT_APP_DEFAULT_BACKEND;
 
 const default_query = {
-  srch: JSON.stringify([
-    first_search
-  ]),
+  srch: JSON.stringify([first_search]),
   enabled: JSON.stringify({ [first_search.key]: true }),
   backend: DEFAULT_BACKEND,
   xType: "x_dist",
@@ -39,12 +37,14 @@ if (window.location.hostname.includes("mpx.taxonium.org")) {
 }
 
 if (window.location.hostname.includes("taxonomy.taxonium.org")) {
-  default_query.treeUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz";
+  default_query.treeUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz";
 
-  default_query.metaUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz";
+  default_query.metaUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz";
 
-
-  default_query.configUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
+  default_query.configUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
 
   default_query.ladderizeTree = "true";
 }
@@ -180,9 +180,7 @@ function App() {
               <>
                 <span className="font-medium pr-2">{title}</span>
                 <span className="flex flex-col text-center">
-                  <span className="text-xs">
-                    powered by
-                  </span>
+                  <span className="text-xs">powered by</span>
                   <a
                     href="//taxonium.org"
                     className="underline hover:no-underline text-sm flex items-center"
