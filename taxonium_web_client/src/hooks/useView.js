@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { toast } from "react-hot-toast";
 import {
   OrthographicView,
   OrthographicController,
@@ -205,8 +206,15 @@ const useView = ({ settings, deckSize, deckRef }) => {
 
 
   const onViewStateChange = useCallback(
-    ({ viewState : newViewState, interactionState, viewId, oldViewState, basicTarget }) => {
-
+    ({
+      viewState : newViewState,
+      interactionState,
+      viewId,
+      oldViewState,
+      basicTarget,
+      overrideZoomAxis,
+    }) => {
+      const localZoomAxis = overrideZoomAxis || zoomAxis;
       if (!deckSize) {
         setTimeout(() => {
           onViewStateChange({
@@ -235,7 +243,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
         newViewState.target[0] = (newViewState.target[0] / newScaleY) * newScaleX;
       } else {
         if (oldScaleY !== newScaleY) {
-          if (zoomAxis === "Y") {
+          if (localZoomAxis === "Y") {
             newViewState.target[0] =
               (oldViewState.target[0] / newScaleY) * oldScaleY;
           } else {
@@ -296,7 +304,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
   );
 
   const zoomIncrement = useCallback(
-    (increment) => {
+    (increment, overrideZoomAxis) => {
       const newViewState = { ...viewState };
       newViewState.zoom += increment;
 
@@ -304,6 +312,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
         viewState: newViewState,
         interactionState: "isZooming",
         oldViewState: viewState,
+        overrideZoomAxis,
       });
     },
     [viewState, onViewStateChange]

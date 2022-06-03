@@ -470,7 +470,7 @@ const useLayers = ({
 
 
   const layerFilter = useCallback(
-    ({ layer, viewport }) => {
+    ({ layer, viewport, renderPass }) => {
       const first_bit =
         (layer.id.startsWith("main") && viewport.id === "main") ||
         (layer.id.startsWith("mini") && viewport.id === "minimap") ||

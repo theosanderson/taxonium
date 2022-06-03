@@ -9,8 +9,9 @@
 
 /* JBrowse customization */
 .MuiPaper-root.MuiPaper-rounded {
-  padding: 0 !important;
-  margin: 0 !important;
+  box-shadow: none !important;
+  padding: 0px !important;
+  margin: 0px !important;
 }
 #view-browser-axis > div > div > div > div > div:nth-child(1) {
   display: none !important;
