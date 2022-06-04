@@ -24,9 +24,7 @@ const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
   : process.env.REACT_APP_DEFAULT_BACKEND;
 
 const default_query = {
-  srch: JSON.stringify([
-    first_search
-  ]),
+  srch: JSON.stringify([first_search]),
   enabled: JSON.stringify({ [first_search.key]: true }),
   backend: DEFAULT_BACKEND,
   xType: "x_dist",
@@ -39,13 +37,15 @@ if (window.location.hostname.includes("mpx.taxonium.org")) {
 }
 
 if (window.location.hostname.includes("taxonomy.taxonium.org")) {
-  default_query.treeUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz";
-  
-  default_query.metaUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz";
-  
-  
-  default_query.configUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
-  
+  default_query.treeUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz";
+
+  default_query.metaUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz";
+
+  default_query.configUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
+
   default_query.ladderizeTree = "true";
 }
 
@@ -171,61 +171,40 @@ function App() {
         <div
           className={classNames(
             "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md z-20",
-            isGisaid ? "h-11" : "h-15"
+            "flex justify-between items-center px-4",
+            isGisaid ? "h-11" : "h-16"
           )}
         >
-          <div className="flex justify-between">
-            <h1
-              className={classNames(
-                "text-xl pl-4 pb-5 text-white ",
-                isGisaid ? "pt-1.5" : "py-4"
-              )}
-            >
-              {title ? (
-                <>
-                  {title}{" "}
-                  <span className="text-sm">
-                    <CgListTree className="inline-block h-4 w-4 mr-1 " />{" "}
-                    powered by{" "}
-                    <a
-                      href="//taxonium.org"
-                      className="underline"
-                      target="_top"
-                    >
-                      Taxonium
-                    </a>
-                  </span>
-                </>
-              ) : (
-                <>
-                  <CgListTree className="inline-block h-8 w-8 pr-2 " />
-                  <span className="font-bold">Taxonium</span>
-                </>
-              )}
-            </h1>
-            <div
-              className={classNames(
-                "inline-block pr-4 pr-0",
-                isGisaid ? "pt-1.5" : "py-4"
-              )}
-            >
-              <button
-                onClick={() => setAboutEnabled(true)}
-                className="mr-5 text-white font-bold hover:underline"
-              >
-                <BsInfoSquare
-                  className={classNames(
-                    "inline-block",
-                    isGisaid ? "w-6 h-6" : "w-7 h-8"
-                  )}
-                />{" "}
-                About
-              </button>
-              {/*<a className="text-white" href="https://github.com/theosanderson/taxonium">
-        <FaGithub className="inline-block text-white h-7 w-8" />
-</a>*/}
-            </div>
-          </div>
+          <h1 className="text-xl text-white flex items-center space-x-2">
+            {title ? (
+              <>
+                <span className="font-medium pr-2">{title}</span>
+                <span className="flex flex-col text-center">
+                  <span className="text-xs">powered by</span>
+                  <a
+                    href="//taxonium.org"
+                    className="underline hover:no-underline text-sm flex items-center"
+                    target="_top"
+                  >
+                    <CgListTree className="h-4 w-4 mr-1 mt-0.5" />
+                    <span>Taxonium</span>
+                  </a>
+                </span>
+              </>
+            ) : (
+              <>
+                <CgListTree className="h-6 w-6" />
+                <span className="font-bold">Taxonium</span>
+              </>
+            )}
+          </h1>
+          <button
+            onClick={() => setAboutEnabled(true)}
+            className="text-white font-bold hover:underline flex items-center"
+          >
+            <BsInfoSquare className="w-6 h-6 opacity-80 mr-2" />
+            About
+          </button>
         </div>
         <Suspense fallback={<div></div>}>
           {query.backend ||
@@ -240,8 +219,8 @@ function App() {
               setTitle={setTitle}
             />
           ) : (
-            <div className="m-10">
-              <p className="text-lg text-gray-700 mb-5">
+            <div className="m-10 space-y-3">
+              <p className="text-lg text-gray-700 mb-5 font-bold">
                 Welcome to Taxonium, a tool for exploring large trees
               </p>
               <InputSupplier inputHelper={inputHelper} />
