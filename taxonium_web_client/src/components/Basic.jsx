@@ -1,9 +1,11 @@
 import classNames from "classnames";
+
 export const Button = ({ onClick, className, children, title }) => {
   return (
     <button
       className={classNames(
-        "border border-gray-300 rounded p-1 m-3  bg-gray-100 hover:bg-gray-200 text-sm",
+        "tx-button",
+        "border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700",
         className
       )}
       onClick={onClick}
@@ -18,7 +20,8 @@ export const Select = ({ onChange, className, children, value, title }) => {
   return (
     <select
       className={classNames(
-        "border border-gray-300  bg-white text-gray-900 text-sm hover:text-gray-700 p-1 mb-2 ",
+        "border bg-white text-gray-900 text-sm hover:text-gray-700 py-1 pl-2",
+        "focus:ring-gray-800 focus:border-gray-800",
         className
       )}
       onChange={onChange}
