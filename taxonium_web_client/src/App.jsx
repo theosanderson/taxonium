@@ -159,7 +159,7 @@ function App() {
       />
 
       <div
-        className="h-screen w-screen"
+        className="h-screen w-screen flex flex-col overflow-hidden"
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
@@ -170,8 +170,8 @@ function App() {
         )}
         <div
           className={classNames(
-            "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md z-20",
-            "flex justify-between items-center px-4",
+            "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md",
+            "flex justify-between items-center px-4 flex-shrink-0",
             isGisaid ? "h-11" : "h-16"
           )}
         >
