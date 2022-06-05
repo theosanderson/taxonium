@@ -95,7 +95,7 @@ function Taxonium({
         />
       </div>
       <SearchPanel
-        className="flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 lg:w-1/4 bg-white shadow-xl border-t md:border-0"
+        className="flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 lg:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
         backend={backend}
         search={search}
         colorBy={colorBy}

@@ -215,12 +215,12 @@ function SearchPanel({
           </div>
         )}
       </div>
-      <div className="py-3 flex flex-col min-h-0">
+      <div className="py-3 flex flex-col md:min-h-0">
         <h2 className="font-bold text-gray-700 flex items-center mb-2">
           <FaSearch className="ml-1 mr-1.5 text-gray-500 h-4 w-4" />
           Search
         </h2>
-        <div className="space-y-2 overflow-y-auto -mr-4 pr-4">
+        <div className="space-y-2 md:overflow-y-auto -mr-4 pr-4">
           {search.searchSpec.map((item) => (
             <SearchTopLayerItem
               key={item.key}
@@ -230,17 +230,17 @@ function SearchPanel({
               config={config}
             />
           ))}
+          <Button
+            className="mx-auto flex items-center font-medium leading-6 mt-2"
+            onClick={search.addNewTopLevelSearch}
+          >
+            <RiAddCircleLine className="mr-1 h-4 w-4 text-gray-500" />
+            <span>Add a new search</span>
+          </Button>
         </div>
-        <Button
-          className="mx-auto flex items-center font-medium leading-6 mt-2"
-          onClick={search.addNewTopLevelSearch}
-        >
-          <RiAddCircleLine className="mr-1 h-4 w-4 text-gray-500" />
-          <span>Add a new search</span>
-        </Button>
       </div>
       { selectedDetails.nodeDetails && (
-        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static">
+        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none">
           <ListOutputModal
             ariaHideApp={false}
             nodeId={selectedDetails.nodeDetails.node_id}
