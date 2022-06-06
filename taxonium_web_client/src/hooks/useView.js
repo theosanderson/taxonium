@@ -106,7 +106,6 @@ const useView = ({ settings, deckSize }) => {
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
   });
-  
 
   const views = useMemo(() => {
     return [
