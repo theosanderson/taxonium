@@ -142,7 +142,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
         <div className="border-b mb-2">
           <div>
             <Button
-              className="text-md p-3 mr-3 font-bold"
+              className="text-md p-3 mb-6 font-bold"
               onClick={() => {
                 inputHelper.finaliseInputs();
               }}
