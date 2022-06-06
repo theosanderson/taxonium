@@ -107,8 +107,6 @@ const useView = ({ settings, deckSize }) => {
     minimap: { zoom: -3, target: [250, 1000] },
   });
   
-  console.log("VS", viewState);
-  window.setVS = setViewState;
 
   const views = useMemo(() => {
     return [
