@@ -6,7 +6,7 @@ module.exports = {
     customForms: (theme) => ({
       default: {
         input: {
-          borderColor: theme("colors.gray.200" , colors.gray[200] ),
+          borderColor: theme("colors.gray.200", colors.gray[200]),
         },
       },
     }),
