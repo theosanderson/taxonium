@@ -10,7 +10,7 @@ import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
 import classNames from "classnames";
 
-const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
+const prettify_x_types = { x_dist: "distance", x_time: "time" };
 
 const formatNumber = (num) => {
   return num !== null && typeof num === "number" ? num.toLocaleString() : "";
@@ -148,8 +148,8 @@ function SearchPanel({
         )}
         {config.x_accessors && config.x_accessors.length > 1 && (
           <label className="space-x-2 text-sm block">
-            <span className="font-bold text-gray-700">Tree type:</span>
-            <Select value={xType} onChange={(e) => setxType(e.target.value)}>
+            <span className="text-gray-500 text-sm">Tree type:</span>
+            <Select value={xType} onChange={(e) => setxType(e.target.value)} className="text-gray-500 text-xs py-0.5">
               {config.x_accessors.map((x) => (
                 <option key={x} value={x}>
                   {prettify_x_types[x]}
