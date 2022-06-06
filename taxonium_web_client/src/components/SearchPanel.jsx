@@ -135,7 +135,9 @@ function SearchPanel({
   };
 
   return (
-    <div className={classNames('flex flex-col px-4 divide-y text-sm', className)}>
+    <div
+      className={classNames("flex flex-col px-4 divide-y text-sm", className)}
+    >
       <div className="space-y-2 py-3">
         {config.num_tips && (
           <p className="text-gray-500 text-sm">
@@ -147,10 +149,7 @@ function SearchPanel({
         {config.x_accessors && config.x_accessors.length > 1 && (
           <label className="space-x-2 text-sm block">
             <span className="font-bold text-gray-700">Tree type:</span>
-            <Select
-              value={xType}
-              onChange={(e) => setxType(e.target.value)}
-            >
+            <Select value={xType} onChange={(e) => setxType(e.target.value)}>
               {config.x_accessors.map((x) => (
                 <option key={x} value={x}>
                   {prettify_x_types[x]}
@@ -239,7 +238,7 @@ function SearchPanel({
           </Button>
         </div>
       </div>
-      { selectedDetails.nodeDetails && (
+      {selectedDetails.nodeDetails && (
         <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none">
           <ListOutputModal
             ariaHideApp={false}
@@ -271,7 +270,10 @@ function SearchPanel({
                 </button>
               )}
             </h2>
-            <button onClick={() => selectedDetails.clearNodeDetails()} className="text-gray-500">
+            <button
+              onClick={() => selectedDetails.clearNodeDetails()}
+              className="text-gray-500"
+            >
               close
             </button>
           </header>
@@ -329,33 +331,26 @@ function SearchPanel({
                 </div>
               </>
             )}
-            <div>
-              {selectedDetails.nodeDetails.acknowledgements && (
-                <div className="text-xs mt-3  text-gray-700 mr-3">
-                  <div className="mt-1">
-                    <b className="font-semibold">Originating laboratory:</b>{" "}
-                    {
-                      selectedDetails.nodeDetails.acknowledgements
-                        .covv_orig_lab
-                    }
-                  </div>
-                  <div className="mt-1">
-                    <b className="font-semibold">Submitting laboratory:</b>{" "}
-                    {
-                      selectedDetails.nodeDetails.acknowledgements
-                        .covv_subm_lab
-                    }
-                  </div>
-                  <div className="mt-1 justify">
-                    <b className="font-semibold">Authors:</b>{" "}
-                    {fixAuthors(
-                      selectedDetails.nodeDetails.acknowledgements
-                        .covv_authors
-                    )}
-                  </div>
+          <div>
+            {selectedDetails.nodeDetails.acknowledgements && (
+              <div className="text-xs mt-3  text-gray-700 mr-3">
+                <div className="mt-1">
+                  <b className="font-semibold">Originating laboratory:</b>{" "}
+                  {selectedDetails.nodeDetails.acknowledgements.covv_orig_lab}
                 </div>
-              )}
-            </div>
+                <div className="mt-1">
+                  <b className="font-semibold">Submitting laboratory:</b>{" "}
+                  {selectedDetails.nodeDetails.acknowledgements.covv_subm_lab}
+                </div>
+                <div className="mt-1 justify">
+                  <b className="font-semibold">Authors:</b>{" "}
+                  {fixAuthors(
+                    selectedDetails.nodeDetails.acknowledgements.covv_authors
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
