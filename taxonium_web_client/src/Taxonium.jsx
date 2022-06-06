@@ -75,7 +75,7 @@ function Taxonium({
 
   return (
     <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
-      <div className="h-1/2 md:h-full w-full md:w-2/3 xl:w-3/4 md:flex-grow">
+      <div className="h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow">
         <Deck
           statusMessage={backend.statusMessage}
           data={data}
@@ -95,7 +95,7 @@ function Taxonium({
         />
       </div>
       <SearchPanel
-        className="flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+        className="flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
         backend={backend}
         search={search}
         colorBy={colorBy}
