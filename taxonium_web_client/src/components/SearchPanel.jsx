@@ -10,7 +10,7 @@ import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
 import classNames from "classnames";
 
-const prettify_x_types = { x_dist: "distance", x_time: "time" };
+const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
 const formatNumber = (num) => {
   return num !== null && typeof num === "number" ? num.toLocaleString() : "";
