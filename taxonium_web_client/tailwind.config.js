@@ -1,19 +1,14 @@
 // tailwind.config.js
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
-  plugins: [
-    require('@tailwindcss/forms')
-  ],
+  plugins: [require("@tailwindcss/forms")],
   theme: {
-    customForms: theme => ({
+    customForms: (theme) => ({
       default: {
         input: {
-       
-          borderColor: theme('colors.gray.200'),
-        
+          borderColor: theme("colors.gray.200"),
         },
-    
       },
-    })
+    }),
   },
 };
