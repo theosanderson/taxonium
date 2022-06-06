@@ -178,40 +178,39 @@ function App() {
           <h1 className="text-xl text-white flex items-center space-x-2">
             {title ? (
               <>
-               
                 {window.screen.width < 600 && (
-                  <> <span className="font-medium pr-2">{title}</span>
-                <span className="flex flex-col text-center">
-                  <span className="text-xs">powered by</span>
-                  <a
-                    href="//taxonium.org"
-                    className="underline hover:no-underline text-sm flex items-center"
-                    target="_top"
-                  >
-                    <CgListTree className="h-4 w-4 mr-1 mt-0.5" />
-                    <span>Taxonium</span>
-                  </a>
-                </span>
-                </>
+                  <>
+                    {" "}
+                    <span className="font-medium pr-2">{title}</span>
+                    <span className="flex flex-col text-center">
+                      <span className="text-xs">powered by</span>
+                      <a
+                        href="//taxonium.org"
+                        className="underline hover:no-underline text-sm flex items-center"
+                        target="_top"
+                      >
+                        <CgListTree className="h-4 w-4 mr-1 mt-0.5" />
+                        <span>Taxonium</span>
+                      </a>
+                    </span>
+                  </>
                 )}
                 {window.screen.width >= 600 && (
                   <>
-                   <span className="font-medium ">{title}</span>
-                  <div className="flex flex-row mt-4">
-                    <CgListTree className="h- ml-1 w-4 mr-1" />
-                  <span className="text-xs ml-1">powered by{" "}</span>
-                  <a
-                    href="//taxonium.org"
-                    className="underline hover:no-underline text-xs ml-0.5"
-                    target="_top"
-                  >
-                    
-                    <span>Taxonium</span>
-                  </a>
-                  </div>
-                </>
+                    <span className="font-medium ">{title}</span>
+                    <div className="flex flex-row mt-4">
+                      <CgListTree className="h- ml-1 w-4 mr-1" />
+                      <span className="text-xs ml-1">powered by </span>
+                      <a
+                        href="//taxonium.org"
+                        className="underline hover:no-underline text-xs ml-0.5"
+                        target="_top"
+                      >
+                        <span>Taxonium</span>
+                      </a>
+                    </div>
+                  </>
                 )}
-
               </>
             ) : (
               <>
