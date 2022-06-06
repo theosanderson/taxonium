@@ -6,3 +6,5 @@
 .tx-button:focus-visible {
   @apply outline-none ring-offset-0 ring-1 ring-gray-800 border-gray-800;
 }
+
+input{ border-color:#c7ccd8}
