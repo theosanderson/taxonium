@@ -59,18 +59,18 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
           readOnly={true}
         ></textarea>
       </Modal>
-      <div className="border-gray-100 border-b mb-3 pb-3">
+      <div className="border-gray-100 border-b pb-2">
         <input
           name="isGoing"
           type="checkbox"
           style={{
             outline:
               enabled && num_results > 0
-                ? `1px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
+                ? `2px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
                 : "0px",
             outlineOffset: "2px",
           }}
-          className="w-3 h-3 m-3 inline-block"
+          className="m-3 inline-block"
           checked={enabled}
           onChange={(event) => search.setEnabled(myKey, event.target.checked)}
         />
@@ -80,8 +80,8 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
           setThisSearchSpec={setThisSearchSpec}
         />
 
-        <div className="flex justify-between">
-          <div className="text-black  pr-2 text-sm  ">
+        <div className="flex justify-between items-center mt-2">
+          <div className="text-black pr-2 text-sm">
             {" "}
             {num_results !== "Loading" && (
               <>
@@ -123,15 +123,13 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
             {myLoadingStatus === "loading" && (
               <ClipLoader size={12} color="#444444" className="mr-3" />
             )}
-            <div className="inline-block h-5 w-0 mt-4 w-1">&nbsp;</div>
           </div>
           <div>
             <Button
               title="Delete this search"
-              className="inline-block bg-gray-100 text-xs mx-auto h-7 rounded border-gray-300 border text-gray-700 mr-2 text-gray-500 mt-3"
               onClick={() => search.deleteTopLevelSearch(myKey)}
             >
-              <FaTrash className="inline-block mx-2 " />
+              <FaTrash className="text-gray-600" />
             </Button>
           </div>
         </div>

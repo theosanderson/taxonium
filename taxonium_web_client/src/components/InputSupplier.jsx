@@ -19,7 +19,7 @@ const prettyTypes = {
 };
 const fileTypes = Object.keys(prettyTypes);
 
-export const InputSupplier = ({ inputHelper }) => {
+export const InputSupplier = ({ inputHelper, className }) => {
   const [tempURL, setTempURL] = useState("");
 
   const { inputs, setInputs } = inputHelper;
@@ -32,7 +32,7 @@ export const InputSupplier = ({ inputHelper }) => {
   }, [tempURL, inputHelper]);
 
   return (
-    <div className="m-3">
+    <div className={className}>
       {inputs.length > 0 && <h2>Input files</h2>}
       {inputs.map((input, index) => {
         return (
@@ -142,7 +142,7 @@ export const InputSupplier = ({ inputHelper }) => {
         <div className="border-b mb-2">
           <div>
             <Button
-              className="text-md p-3"
+              className="text-md p-3 mb-6 font-bold"
               onClick={() => {
                 inputHelper.finaliseInputs();
               }}

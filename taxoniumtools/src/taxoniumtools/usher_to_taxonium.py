@@ -217,13 +217,13 @@ def get_parser():
     parser.add_argument('-t',
                         "--title",
                         type=str,
-                        help="A title for the tree",
+                        help="A title for the tree. This will be shown at the top of the window as \"[Title] - powered by Taxonium\"",
                         default=None)
     parser.add_argument(
         "--overlay_html",
         type=str,
         help=
-        "A file containing HTML to put in the About box when this tree is loaded",
+        "A file containing HTML to put in the About box when this tree is loaded. This could contain information about who you are who built the tree and what data you used.",
         default=None)
     parser.add_argument(
         '--remove_after_pipe',

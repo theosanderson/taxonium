@@ -104,52 +104,40 @@ function Taxonium({
   };
 
   return (
-    <div className="main_content">
-      <div className="md:grid md:grid-cols-12 h-full">
-        <div className={sidebarOpen ? "md:col-span-8 h-3/6 md:h-full w-full" : "md:col-span-12 h-3/6 md:h-full w-full"}>
-          <Deck
-            statusMessage={backend.statusMessage}
-            data={data}
-            search={search}
-            view={view}
-            colorHook={colorHook}
-            colorBy={colorBy}
-            config={config}
-            ariaHideApp={false} // sadly with or without this the app is not suitable for screen readers
-            hoverDetails={hoverDetails}
-            selectedDetails={selectedDetails}
-            xType={xType}
-            settings={settings}
-            setDeckSize={setDeckSize}
-            deckSize={deckSize}
-            isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
-            browserState={browserState}
-            deckRef={deckRef}
-          />
-        </div>
-        {/* <div className={sidebarOpen ? "md:col-span-4 h-full bg-white border-gray-600 pl-5 shadow-xl sidebar-open" : "h-full bg-white border-gray-600 pl-5 shadow-xl sidebar-closed"}>
-          <button onClick={toggleSidebar}>
-                <br />
-                { sidebarOpen ? <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" /> : <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle"/> }
-              </button>
-              { 
-                sidebarOpen &&
-                <span>
-                <SearchPanel
-                  search={search}
-                  colorBy={colorBy}
-                  colorHook={colorHook}
-                  config={config}
-                  selectedDetails={selectedDetails}
-                  xType={xType}
-                  setxType={setxType}
-                  settings={settings}
-                />
-                <BrowserOptionsPanel browserState={browserState}  config={config}/>
-              </span>
-            }
-        </div> */}
+    <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
+      <div className="h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow">
+        <Deck
+          statusMessage={backend.statusMessage}
+          data={data}
+          search={search}
+          view={view}
+          colorHook={colorHook}
+          colorBy={colorBy}
+          config={config}
+          ariaHideApp={false} // sadly with or without this the app is not suitable for screen readers
+          hoverDetails={hoverDetails}
+          selectedDetails={selectedDetails}
+          xType={xType}
+          settings={settings}
+          setDeckSize={setDeckSize}
+          deckSize={deckSize}
+          isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
+          browserState={browserState}
+          deckRef={deckRef}
+        />
       </div>
+      <SearchPanel
+        className="flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+        backend={backend}
+        search={search}
+        colorBy={colorBy}
+        colorHook={colorHook}
+        config={config}
+        selectedDetails={selectedDetails}
+        xType={xType}
+        setxType={setxType}
+        settings={settings}
+      />
     </div>
   );
 }
