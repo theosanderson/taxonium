@@ -257,7 +257,7 @@ function Deck({
         }}
       >
         <View id="browser-axis">
-          <div style={{ width: "100%", position: "relative", zIndex: 1 }}>
+          <div style={{ width: "100%", height: "100%", border: "1px solid black" , position: "relative", zIndex: 1}}>
             <JBrowsePanel browserState={browserState}/>
           </div>
         </View>
@@ -279,14 +279,16 @@ function Deck({
               config={config}
               reference={reference}
             />
-        <DeckButtons
-          zoomIncrement={zoomIncrement}
-          zoomAxis={zoomAxis}
-          setZoomAxis={setZoomAxis}
-          snapshot={snapshot}
-          loading={data.status === "loading"}
-          requestOpenSettings={() => setDeckSettingsOpen(true)}
-        />
+        <View id="main">
+          <DeckButtons
+            zoomIncrement={zoomIncrement}
+            zoomAxis={zoomAxis}
+            setZoomAxis={setZoomAxis}
+            snapshot={snapshot}
+            loading={data.status === "loading"}
+            requestOpenSettings={() => setDeckSettingsOpen(true)}
+          />
+        </View>
       </DeckGL>
     </div>
   );

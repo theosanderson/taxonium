@@ -210,6 +210,7 @@ const useBrowserLayers = (
         return genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
     }, [genes]);
 
+        
     const variation_layer = new SolidPolygonLayer({
         data: variation_data_filtered,
         id: "browser-variation-layer",
@@ -217,7 +218,7 @@ const useBrowserLayers = (
         pickable: true,
         getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
             ? colorHook.toRGB(d.m.new_residue)
-            : [255, 255, 255],
+            : genes[d.m.gene][2].map((c) => Math.min(255, c + 10)),
         getLineColor: (d) => [80, 80, 80],
         lineWidthUnits: "pixels",
         modelMatrix: modelMatrixFixedX,
@@ -240,31 +241,12 @@ const useBrowserLayers = (
         }
     });
 
-    const browser_boundary_lines_layer = new LineLayer({
-            id: "browser-boundary-lines",
-            data: [
-                {
-                    a: [browserState.xBounds[0], browserState.yBounds[0]],
-                    b: [browserState.xBounds[0], browserState.yBounds[1]]
-                }, {
-                    a: [browserState.xBounds[1], browserState.yBounds[0]],
-                    b: [browserState.xBounds[1], browserState.yBounds[1]],
-                },
-            ],
-            getSourcePosition: (d) => d.a,
-            getTargetPosition: (d) => d.b,
-            lineWidthUnits: "pixels",
-            getColor: [0, 0, 0],
-            getWidth: 2,
-            pickable: false,
-            modelMatrix: modelMatrixFixedX,
-        });
         const browser_background_layer = new PolygonLayer({
             id: "browser-background",
-            data: [[[browserState.xBounds[0], -1e10],
-            [browserState.xBounds[1], -1e10],
-            [browserState.xBounds[1], 1e10],
-            [browserState.xBounds[0], 1e10]]]
+            data: [[[browserState.xBounds[0], -1e5],
+            [browserState.xBounds[1], -1e5],
+            [browserState.xBounds[1], 1e5],
+            [browserState.xBounds[0], 1e5]]]
             ,
             // data: [ [[-1000, -1000], [-1000, 1000], [1000, 1000], [1000, -1000]] ] ,
             getPolygon: (d) => d,
@@ -273,12 +255,11 @@ const useBrowserLayers = (
             },
             modelMatrix: modelMatrixFixedX,
             lineWidthUnits: "pixels",
-            getLineWidth: 2,
+            getLineWidth: 0,
             filled: true,
             pickable: false,
             //extruded: true,
             //wireframe: true,
-            getLineColor: [50, 50, 50],
             getFillColor: [224, 224, 224],
         });
 
@@ -292,10 +273,10 @@ const useBrowserLayers = (
                 d.push(
                     {
                         x: [
-                            [ntToX(gene[0]), browserState.yBounds[0]],
-                            [ntToX(gene[0]), browserState.yBounds[1]],
-                            [ntToX(gene[1]), browserState.yBounds[1]],
-                            [ntToX(gene[1]), browserState.yBounds[0]]
+                            [ntToX(gene[0]), -1e5],
+                            [ntToX(gene[0]), 1e5],
+                            [ntToX(gene[1]), 11e5],
+                            [ntToX(gene[1]), -1e5],
                         ],
                         c: gene[2]
                     }
@@ -310,10 +291,10 @@ const useBrowserLayers = (
             data: [{
                 
                         x: [
-                            [ntToX(0), browserState.yBounds[0]],
-                            [ntToX(0), browserState.yBounds[1]],
-                            [ntToX(29903), browserState.yBounds[1]],
-                            [ntToX(29903), browserState.yBounds[0]],
+                            [ntToX(0), -1e5],
+                            [ntToX(0), 1e5],
+                            [ntToX(29903), 1e5],
+                            [ntToX(29903), -1e5],
                         ],
                         c: [255,255,255]
                     }
@@ -330,10 +311,8 @@ const useBrowserLayers = (
             getPolygon: (d) => d.x,
 //            filled: true,
 //            stroked: true,
-            lineWidthUnits: "pixels",
-            getLineWidth: 2,
             getFillColor: (d) => d.c,
-            opacity: 0.003
+            opacity: 0.02
         });
         const browser_outline_layer = new PolygonLayer({
             id: "browser-outline",
@@ -349,17 +328,17 @@ const useBrowserLayers = (
             getPolygon: (d) => d.x,
             modelMatrix: modelMatrixFixedX,
             lineWidthUnits: "pixels",
-            getLineWidth: 2,
-            getLineColor: [0, 0, 0],
+            getLineWidth: 1,
+            getLineColor: [100, 100, 100],
+            opacity: 0.1,
             filled: false,
             pickable: false,
         });
         layers.push(browser_background_layer);
         layers.push(dynamic_browser_background_sublayer);
         layers.push(dynamic_browser_background_layer);
-        layers.push(browser_boundary_lines_layer);
-        layers.push(variation_layer);
         layers.push(browser_outline_layer);
+        layers.push(variation_layer);
 
 
         return layers;

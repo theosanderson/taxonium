@@ -189,18 +189,18 @@ function JBrowsePanel(props) {
         hideHeader: true,
         hideCloseButton: true,
         tracks: [
-          {
-            type: 'ReferenceSequenceTrack',
-            configuration: 'NC_045512v2-ReferenceSequenceTrack',
-            displays: [
-              {
-                type: 'LinearReferenceSequenceDisplay',
-                configuration:
-                  'NC_045512v2-ReferenceSequenceTrack-LinearReferenceSequenceDisplay',
-                  height: 40
-              },
-            ],
-          },
+          // {
+          //   type: 'ReferenceSequenceTrack',
+          //   configuration: 'NC_045512v2-ReferenceSequenceTrack',
+          //   displays: [
+          //     {
+          //       type: 'LinearReferenceSequenceDisplay',
+          //       configuration:
+          //         'NC_045512v2-ReferenceSequenceTrack-LinearReferenceSequenceDisplay',
+          //         height: 40
+          //     },
+          //   ],
+          // },
           {
             type: 'FeatureTrack',
             configuration: 'nextstrain-annotations',
@@ -208,21 +208,22 @@ function JBrowsePanel(props) {
               {
                 type: 'LinearBasicDisplay',
                 configuration: 'nextstrain-color-display',
-                height: 100
+                height: 50,
               },
             ],
+            
           },
-          {
-            type: 'FeatureTrack',
-            configuration: 'ARTIC-v4.1',
-            displays: [
-              {
-                type: 'LinearBasicDisplay',
-        //        configuration: 'ARTIC-v4.1',
-                height: 100
-              },
-            ]
-          }
+        //   {
+        //     type: 'FeatureTrack',
+        //     configuration: 'ARTIC-v4.1',
+        //     displays: [
+        //       {
+        //         type: 'LinearBasicDisplay',
+        // //        configuration: 'ARTIC-v4.1',
+        //         height: 100
+        //       },
+        //     ]
+        //   }
         ],
       },
     }
