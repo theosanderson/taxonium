@@ -3,8 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.main_content {
-  height: calc(100% - 68px);
+.tx-button:focus-visible {
+  @apply outline-none ring-offset-0 ring-1 ring-gray-800 border-gray-800;
 }
 
 /* JBrowse customization */
@@ -45,3 +45,4 @@ p[data-testid='refLabel-NC_045512v2'] {
   width: 60px;
   right: 0px;
 }
+select, input{ border-color:#c7ccd8 !important}

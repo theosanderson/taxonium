@@ -38,7 +38,7 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
 
         setConfig(results);
         backend.setStatusMessage({ message: "Connecting" });
-        //console.log("CONFIG", results);
+        // THE BELOW IS NOT WORKING ATM
         view.onViewStateChange({
           viewState,
           oldViewState,
