@@ -6,7 +6,9 @@ Taxonium is a tool for exploring trees.
 
 ### [➡️ Launch Taxonium](https://taxonium.org)
 
-### [📚 Read the documentation](https://taxonium.readthedocs.io/en/latest/)
+### [📚 Consult the documentation](https://taxonium.readthedocs.io/en/latest/)
+
+### [📝 Read the preprint](https://www.biorxiv.org/content/10.1101/2022.06.03.494608v1)
 
 ## How do I..
 
