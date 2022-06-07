@@ -78,24 +78,11 @@ function Taxonium({
   // Treenome 
   const [browserEnabled, setBrowserEnabled] = useState(true);
   const [updateBrowserBounds, setUpdateBrowserBounds] = useState(false);
-  const browserState = useBrowserState(data, deckRef, updateBrowserBounds, setUpdateBrowserBounds);
+  const browserState = useBrowserState(data, deckRef, updateBrowserBounds, setUpdateBrowserBounds, view);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     // const tempView = view.viewState;
-    // view.setViewState({
-    //   ...tempView,
-    //   zoom: 0,
-    //   target: [0, 0],
-    //   pitch: 0,
-    //   bearing: 0,
-    //   minimap: { zoom: -3, target: [250, 1000] },
-    //   "browser-main": {
-    //     zoom: 0,
-    //     target: [0, 0],
-    //     pitch: 0,
-    //     bearing: 0,
-    //   },
-    // })
+
     setSidebarOpen(!sidebarOpen);
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
@@ -103,9 +90,12 @@ function Taxonium({
 
   };
 
+
+
   return (
-    <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
-      <div className="h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow">
+    <div className="flex-grow overflow-hidden flex flex-col md:flex-row" >
+      <div className={sidebarOpen ? "h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow"
+        : "md:col-span-12 h-3/6 md:h-full w-full"}>
         <Deck
           statusMessage={backend.statusMessage}
           data={data}
@@ -126,18 +116,30 @@ function Taxonium({
           deckRef={deckRef}
         />
       </div>
-      <SearchPanel
-        className="flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
-        backend={backend}
-        search={search}
-        colorBy={colorBy}
-        colorHook={colorHook}
-        config={config}
-        selectedDetails={selectedDetails}
-        xType={xType}
-        setxType={setxType}
-        settings={settings}
-      />
+      
+      <div>
+          <button onClick={toggleSidebar}>
+                <br />
+                { sidebarOpen ? <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" /> : <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle"/> }
+              </button>
+              { 
+                sidebarOpen &&
+                <span>
+                <SearchPanel
+                  className="search-panel flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+                  backend={backend}
+                  search={search}
+                  colorBy={colorBy}
+                  colorHook={colorHook}
+                  config={config}
+                  selectedDetails={selectedDetails}
+                  xType={xType}
+                  setxType={setxType}
+                  settings={settings}
+                />
+                </span>
+              }
+        </div>
     </div>
   );
 }

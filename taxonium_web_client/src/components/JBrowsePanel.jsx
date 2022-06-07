@@ -186,7 +186,7 @@ function JBrowsePanel(props) {
       view: {
         id: 'linearGenomeView',
         type: 'LinearGenomeView',
-        hideHeader: true,
+//        hideHeader: true,
         hideCloseButton: true,
         tracks: [
           // {
@@ -208,7 +208,7 @@ function JBrowsePanel(props) {
               {
                 type: 'LinearBasicDisplay',
                 configuration: 'nextstrain-color-display',
-                height: 50,
+                height: 60,
               },
             ],
             

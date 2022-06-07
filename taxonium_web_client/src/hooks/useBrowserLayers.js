@@ -201,7 +201,7 @@ const useBrowserLayers = (
         return browserState.xBounds[0] + (nt - browserState.ntBounds[0])
             / (browserState.ntBounds[1] - browserState.ntBounds[0])
             * (browserState.xBounds[1] - browserState.xBounds[0]) - 3;
-    }, [browserState]);
+    }, [browserState.xBounds, browserState.ntBounds]);
 
     const getNtPos = useCallback((mut) => {
         if (!genes[mut.gene]) {
@@ -237,21 +237,21 @@ const useBrowserLayers = (
                 [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
         },
         updateTriggers: {
-            getPolygon: [browserState.ntBounds, getNtPos, ntToX, aaWidth, variation_padding],
+            getPolygon: [browserState.ntBounds, browserState.xBounds, getNtPos, ntToX, aaWidth, variation_padding],
         }
     });
 
         const browser_background_layer = new PolygonLayer({
             id: "browser-background",
-            data: [[[browserState.xBounds[0], -1e5],
-            [browserState.xBounds[1], -1e5],
+            data: [[[browserState.xBounds[0], -1e4],
+            [browserState.xBounds[1], -1e4],
             [browserState.xBounds[1], 1e5],
             [browserState.xBounds[0], 1e5]]]
             ,
             // data: [ [[-1000, -1000], [-1000, 1000], [1000, 1000], [1000, -1000]] ] ,
             getPolygon: (d) => d,
             updateTriggers: {
-                getPolygon: browserState
+                getPolygon: browserState.xBounds
             },
             modelMatrix: modelMatrixFixedX,
             lineWidthUnits: "pixels",
@@ -273,10 +273,10 @@ const useBrowserLayers = (
                 d.push(
                     {
                         x: [
-                            [ntToX(gene[0]), -1e5],
+                            [ntToX(gene[0]), -1e4],
                             [ntToX(gene[0]), 1e5],
-                            [ntToX(gene[1]), 11e5],
-                            [ntToX(gene[1]), -1e5],
+                            [ntToX(gene[1]), 1e5],
+                            [ntToX(gene[1]), -1e4],
                         ],
                         c: gene[2]
                     }
@@ -291,10 +291,10 @@ const useBrowserLayers = (
             data: [{
                 
                         x: [
-                            [ntToX(0), -1e5],
+                            [ntToX(0), -1e4],
                             [ntToX(0), 1e5],
                             [ntToX(29903), 1e5],
-                            [ntToX(29903), -1e5],
+                            [ntToX(29903), -1e4],
                         ],
                         c: [255,255,255]
                     }

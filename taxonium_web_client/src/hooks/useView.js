@@ -116,17 +116,13 @@ const useView = ({ settings, deckSize, deckRef }) => {
 
   // TODO target needs to be [0,0]
   const [viewState, setViewState] = useState({
-    zoom: -2,
+    zoom: 0,
     target: [window.screen.width<600? 500:1400, 1000],
     pitch: 0,
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
-    "browser-main": {
-      zoom: 0,
-      target: [0, 0],
-      pitch: 0,
-      bearing: 0,
-    },
+    "browser-main": {zoom: 0, target: [0,0]},
+    "browser-axis": {zoom: 0, target: [0,0]},
   });
 
   const views = useMemo(() => {
@@ -134,7 +130,6 @@ const useView = ({ settings, deckSize, deckRef }) => {
       ...[
         new OrthographicView({
           id: "main",
-          x: -600, // TODO don't do this
           controller: {
             type: MyOrthographicController,
             scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
@@ -175,6 +170,8 @@ const useView = ({ settings, deckSize, deckRef }) => {
             width: "60%",
           }),
         ] : []),
+        
+  
     
     ];
   }, [viewState, zoomAxis, settings.minimapEnabled, settings.browserEnabled, xzoom]);

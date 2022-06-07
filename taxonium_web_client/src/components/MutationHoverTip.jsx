@@ -23,7 +23,7 @@ const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config,
         position: "absolute",
         zIndex: 1,
         pointerEvents: "none",
-        left: hoverInfo.x + 600, // TODO fix this
+        left: hoverInfo.x, // TODO fix this
         top: hoverInfo.y,
       }}
     >

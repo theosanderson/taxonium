@@ -34,6 +34,7 @@ p[data-testid='refLabel-NC_045512v2'] {
 .sidebar-toggle {
   border: 2px solid rgb(136, 135, 135) !important;
   border-radius: 3px;
+  margin: 10px;
 }
 .sidebar-open {
   transition: right 0.3s ease-in-out !important;
@@ -44,5 +45,9 @@ p[data-testid='refLabel-NC_045512v2'] {
   position: absolute;
   width: 60px;
   right: 0px;
+}
+
+.search-panel {
+  width: 100% !important;
 }
 select, input{ border-color:#c7ccd8 !important}
