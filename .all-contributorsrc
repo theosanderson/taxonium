@@ -38,6 +38,15 @@
         "design",
         "code"
       ]
+    },
+    {
+      "login": "chaoran-chen",
+      "name": "Chaoran Chen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18666552?v=4",
+      "profile": "https://github.com/chaoran-chen",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
