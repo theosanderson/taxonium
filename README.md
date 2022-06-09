@@ -50,6 +50,10 @@ Taxonium now consists of a number of components:
 ## Contributors
 
 Taxonium is built and maintained by Theo Sanderson at the Francis Crick Institute.
+
+
+We are very grateful to our contributors:
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -61,13 +65,6 @@ Taxonium is built and maintained by Theo Sanderson at the Francis Crick Institut
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-We are very grateful to our contributors:
-
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
