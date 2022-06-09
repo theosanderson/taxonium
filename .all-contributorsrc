@@ -1,0 +1,29 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "theosanderson",
+      "name": "Theo Sanderson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19732295?v=4",
+      "profile": "http://theo.io",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "infra",
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "taxonium",
+  "projectOwner": "theosanderson",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
