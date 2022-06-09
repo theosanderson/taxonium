@@ -149,7 +149,11 @@ function SearchPanel({
         {config.x_accessors && config.x_accessors.length > 1 && (
           <label className="space-x-2 text-sm block">
             <span className="text-gray-500 text-sm">Tree type:</span>
-            <Select value={xType} onChange={(e) => setxType(e.target.value)} className="text-gray-500 text-xs py-0.5">
+            <Select
+              value={xType}
+              onChange={(e) => setxType(e.target.value)}
+              className="text-gray-500 text-xs py-0.5"
+            >
               {config.x_accessors.map((x) => (
                 <option key={x} value={x}>
                   {prettify_x_types[x]}
