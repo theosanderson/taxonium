@@ -1,6 +1,9 @@
 # Taxonium
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Taxonium is a tool for exploring trees.
@@ -57,7 +60,6 @@ Taxonium is built and maintained by Theo Sanderson at the Francis Crick Institut
   </tr>
 </table>
 
-
 We are very grateful to our contributors:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -77,6 +79,3 @@ We are very grateful to our contributors:
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-
-
