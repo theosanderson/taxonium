@@ -18,6 +18,16 @@
         "infra",
         "maintenance"
       ]
+    },
+    {
+      "login": "AngieHinrichs",
+      "name": "Angie Hinrichs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/186983?v=4",
+      "profile": "http://genome.ucsc.edu/",
+      "contributions": [
+        "ideas",
+        "data"
+      ]
     }
   ],
   "contributorsPerLine": 7,
