@@ -110,14 +110,14 @@ class MyOrthographicController extends OrthographicController {
 
 const useView = ({ settings, deckSize, deckRef }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
-  const [xzoom, setXzoom] = useState(window.screen.width<600? -2:0);
+  const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -2 : 0);
   globalSetZoomAxis = setZoomAxis;
 
 
   // TODO target needs to be [0,0]
   const [viewState, setViewState] = useState({
     zoom: 0,
-    target: [window.screen.width<600? 500:1400, 1000],
+    target: [window.screen.width < 600 ? 500 : 1400, 1000],
     pitch: 0,
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },

@@ -1,0 +1,67 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "theosanderson",
+      "name": "Theo Sanderson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19732295?v=4",
+      "profile": "http://theo.io",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "infra",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "AngieHinrichs",
+      "name": "Angie Hinrichs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/186983?v=4",
+      "profile": "http://genome.ucsc.edu/",
+      "contributions": [
+        "ideas",
+        "data"
+      ]
+    },
+    {
+      "login": "richardgoater",
+      "name": "Richard Goater",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1429721?v=4",
+      "profile": "https://github.com/richardgoater",
+      "contributions": [
+        "design",
+        "code"
+      ]
+    },
+    {
+      "login": "chaoran-chen",
+      "name": "Chaoran Chen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18666552?v=4",
+      "profile": "https://github.com/chaoran-chen",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "corneliusroemer",
+      "name": "Cornelius Roemer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25161793?v=4",
+      "profile": "https://github.com/corneliusroemer",
+      "contributions": [
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "taxonium",
+  "projectOwner": "theosanderson",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
