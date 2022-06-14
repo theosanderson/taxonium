@@ -74,7 +74,7 @@ const NodeHoverTip = ({
     <div
       className="bg-gray-100 p-3 opacity-90 text-sm" style={{
         ...style,
-        left: hoverInfo.x, 
+        left: hoverInfo.x,
       }}
     >
       <h2 className="font-bold whitespace-pre-wrap">

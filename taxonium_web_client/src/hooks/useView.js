@@ -127,16 +127,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
 
   const views = useMemo(() => {
     return [
-      ...[
-        new OrthographicView({
-          id: "main",
-          controller: {
-            type: MyOrthographicController,
-            scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
-          },
-          initialViewState: viewState,
-        }),
-      ],
+    
       ...(settings.minimapEnabled && !settings.browserEnabled
         ? [
             new OrthographicView({
@@ -162,14 +153,21 @@ const useView = ({ settings, deckSize, deckRef }) => {
           }),
           new OrthographicView({
             id: "browser-main",
-            controller: {
-              type: BrowserController,
-              doubleClickZoom: false,
-            },
+            controller: false,
             x: "40%",
             width: "60%",
           }),
         ] : []),
+        ...[
+          new OrthographicView({
+            id: "main",
+            controller: {
+              type: MyOrthographicController,
+              scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
+            },
+            initialViewState: viewState,
+          }),
+        ],
         
   
     
@@ -224,7 +222,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
         return;
       }
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
-      if (viewId === "minimap") {
+      if (viewId === "minimap" || viewId == "browser-axis") {
         return;
       }
 

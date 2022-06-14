@@ -261,7 +261,7 @@ function Deck({
             <JBrowsePanel browserState={browserState}/>
           </div>
         </View>
-
+        <View id="main">
           <NodeHoverTip
             hoverInfo={hoverInfo}
             hoverDetails={hoverDetails}
@@ -279,7 +279,6 @@ function Deck({
               config={config}
               reference={reference}
             />
-        <View id="main">
           <DeckButtons
             zoomIncrement={zoomIncrement}
             zoomAxis={zoomAxis}
