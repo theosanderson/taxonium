@@ -218,7 +218,7 @@ const useBrowserLayers = (
         pickable: true,
         getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
             ? colorHook.toRGB(d.m.new_residue)
-            : genes[d.m.gene][2].map((c) => Math.min(255, c + 10)),
+            : genes[d.m.gene][2].map((c) => 255 - (0.2*(255-c))),
         getLineColor: (d) => [80, 80, 80],
         lineWidthUnits: "pixels",
         modelMatrix: modelMatrixFixedX,
@@ -311,8 +311,7 @@ const useBrowserLayers = (
             getPolygon: (d) => d.x,
 //            filled: true,
 //            stroked: true,
-            getFillColor: (d) => d.c,
-            opacity: 0.02
+            getFillColor: (d) => [...d.c, 0.2*255],
         });
         const browser_outline_layer = new PolygonLayer({
             id: "browser-outline",
