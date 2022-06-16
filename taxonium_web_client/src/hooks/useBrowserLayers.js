@@ -12,6 +12,7 @@ const useBrowserLayers = (
     modelMatrix
 ) => {
     
+    const myGetPolygonOffset = useCallback(({layerIndex}) => [0, -(layerIndex-999) * 100]);
     // TODO this is hack
     const modelMatrixFixedX = useMemo(() => {
         return [
@@ -238,7 +239,8 @@ const useBrowserLayers = (
         },
         updateTriggers: {
             getPolygon: [browserState.ntBounds, browserState.xBounds, getNtPos, ntToX, aaWidth, variation_padding],
-        }
+        },
+        getPolygonOffset: myGetPolygonOffset
     });
 
         const browser_background_layer = new PolygonLayer({
@@ -261,6 +263,7 @@ const useBrowserLayers = (
             //extruded: true,
             //wireframe: true,
             getFillColor: [224, 224, 224],
+            getPolygonOffset: myGetPolygonOffset
         });
 
         const dynamic_background_data = useMemo(() => {
@@ -301,6 +304,7 @@ const useBrowserLayers = (
             ],
             getPolygon: (d) => d.x,
             getFillColor: (d) => d.c,
+            getPolygonOffset: myGetPolygonOffset,
             modelMatrix: modelMatrixFixedX,
         });
 
@@ -312,6 +316,7 @@ const useBrowserLayers = (
 //            filled: true,
 //            stroked: true,
             getFillColor: (d) => [...d.c, 0.2*255],
+            getPolygonOffset: myGetPolygonOffset,
         });
         const browser_outline_layer = new PolygonLayer({
             id: "browser-outline",
@@ -332,6 +337,7 @@ const useBrowserLayers = (
             opacity: 0.1,
             filled: false,
             pickable: false,
+            getPolygonOffset: ({layerIndex}) => [0, -layerIndex * 100],
         });
         layers.push(browser_background_layer);
         layers.push(dynamic_browser_background_sublayer);

@@ -162,6 +162,19 @@ function SearchPanel({
             </Select>
           </label>
         )}
+        <label className="space-x-2 text-sm block">
+            <span className="text-gray-500 text-sm">Genome browser:</span>
+            <input
+              name="browserEnabled"
+              type="checkbox"
+              className="m-3 inline-block"
+              checked={settings.browserEnabled}
+              onChange={(event) => {
+                console.log(settings.browserEnabled)
+                settings.setBrowserEnabled(!settings.browserEnabled)}
+              }
+            />
+          </label>
       </div>
       <div className="py-3 space-y-2">
         <div className="flex space-x-2">

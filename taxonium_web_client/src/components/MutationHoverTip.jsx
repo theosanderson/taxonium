@@ -51,7 +51,7 @@ residue_pos: 2118
                 <div className="inline-block">
                 <span>{hoveredMutation.m.gene}:</span>
                 <span style={{ color: colorHook.toRGBCSS(reference[posKey]) }}>
-                    {hoveredMutation.m.previous_residue}
+                    {reference[posKey]}
                 </span>
                 <span>{hoveredMutation.m.residue_pos}</span>
                 <span style={{ color: colorHook.toRGBCSS(hoveredMutation.m.new_residue) }}>

@@ -286,7 +286,7 @@ function JBrowsePanel(props) {
   }, [props.browserState, state.session.view]);
 
   return (
-    <JBrowseLinearGenomeView viewState={state} />
+      <JBrowseLinearGenomeView viewState={state}/>
   );
 }
 

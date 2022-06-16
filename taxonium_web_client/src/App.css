@@ -13,7 +13,7 @@
   padding: 0px !important;
   margin: 0px !important;
 }
-#view-browser-axis > div > div > div > div > div:nth-child(1) {
+#view-browser-axis > div > span > div > div > div > div:nth-child(1) {
   display: none !important;
 }
 .jss2 {

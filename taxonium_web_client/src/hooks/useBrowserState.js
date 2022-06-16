@@ -5,9 +5,12 @@ const useBrowserState = (
     deckRef,
     updateBrowserBounds,
     setUpdateBrowserBounds,
-    view
+    view,
+    browserEnabled
 ) => {
-
+    // if (!browserEnabled) {
+    //     return;
+    // }
     const [yBounds, setYBounds] = useState([0, 0]);
     const [xBounds, setXbounds] = useState([0, 0]);
     const [ntBounds, setNtBounds] = useState([0, 29903]);

@@ -108,7 +108,7 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({ settings, deckSize, deckRef }) => {
+const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -2 : 0);
   globalSetZoomAxis = setZoomAxis;
@@ -165,6 +165,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
               type: MyOrthographicController,
               scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
             },
+            width: "100%",
             initialViewState: viewState,
           }),
         ],
@@ -208,6 +209,11 @@ const useView = ({ settings, deckSize, deckRef }) => {
       basicTarget,
       overrideZoomAxis,
     }) => {
+    if (jbrowseRef.current) {
+//      console.log(jbrowseRef.current)
+//      if (mouseXY[0] > jbrowseRef.current. mouseXY[1] < jbrowseRef.current.clientHeight)
+    }
+ //     console.log(vp);
       const localZoomAxis = overrideZoomAxis || zoomAxis;
       if (!deckSize) {
         setTimeout(() => {
@@ -222,7 +228,7 @@ const useView = ({ settings, deckSize, deckRef }) => {
         return;
       }
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
-      if (viewId === "minimap" || viewId == "browser-axis") {
+      if (viewId === "minimap") {
         return;
       }
 

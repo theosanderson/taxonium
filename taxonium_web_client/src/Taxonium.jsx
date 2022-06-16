@@ -29,9 +29,11 @@ function Taxonium({
   setTitle,
 }) {
   const deckRef = useRef();
+  const jbrowseRef = useRef();
+
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
-  const view = useView({ settings, deckSize, deckRef });
+  const view = useView({ settings, deckSize, deckRef, jbrowseRef });
 
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 
@@ -76,9 +78,7 @@ function Taxonium({
   });
 
   // Treenome 
-  const [browserEnabled, setBrowserEnabled] = useState(true);
   const [updateBrowserBounds, setUpdateBrowserBounds] = useState(false);
-  const browserState = useBrowserState(data, deckRef, updateBrowserBounds, setUpdateBrowserBounds, view);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     // const tempView = view.viewState;
@@ -90,6 +90,7 @@ function Taxonium({
 
   };
 
+  const browserState = useBrowserState(data, deckRef, updateBrowserBounds, setUpdateBrowserBounds, view, settings)
 
 
   return (
@@ -114,6 +115,7 @@ function Taxonium({
           isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
           browserState={browserState}
           deckRef={deckRef}
+          jbrowseRef={jbrowseRef}
         />
       </div>
       

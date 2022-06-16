@@ -34,7 +34,8 @@ function Deck({
   setDeckSize,
   deckSize,
   isCurrentlyOutsideBounds,
-  deckRef
+  deckRef,
+  jbrowseRef,
 }) {
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
@@ -258,7 +259,9 @@ function Deck({
       >
         <View id="browser-axis">
           <div style={{ width: "100%", height: "100%", border: "1px solid black" , position: "relative", zIndex: 1}}>
-            <JBrowsePanel browserState={browserState}/>
+            <span ref={jbrowseRef}>
+              <JBrowsePanel browserState={browserState}/>
+            </span>
           </div>
         </View>
         <View id="main">
