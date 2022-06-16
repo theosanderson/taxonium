@@ -209,10 +209,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       basicTarget,
       overrideZoomAxis,
     }) => {
-    if (jbrowseRef.current) {
-//      console.log(jbrowseRef.current)
-//      if (mouseXY[0] > jbrowseRef.current. mouseXY[1] < jbrowseRef.current.clientHeight)
-    }
+   
  //     console.log(vp);
       const localZoomAxis = overrideZoomAxis || zoomAxis;
       if (!deckSize) {
@@ -297,10 +294,17 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
         newViewState = viewState;
       }
 
+      if (jbrowseRef.current && viewId === "main") {
+        const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
+        const xBound = jbrowseRef.current.children[0].children[0].offsetParent.offsetParent.offsetLeft;
+        if (mouseXY[0] > xBound && mouseXY[1] < yBound) {
+          return;
+        }      
+      }
       setViewState(newViewState);
       return newViewState;
     },
-    [zoomAxis, xzoom, deckSize, viewState]
+    [zoomAxis, xzoom, deckSize, viewState, jbrowseRef, mouseXY]
   );
 
   const zoomIncrement = useCallback(
