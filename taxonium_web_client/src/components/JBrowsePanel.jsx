@@ -2,6 +2,7 @@ import React, { useMemo, useEffect, useState } from 'react'
 import '@fontsource/roboto'
 import { StylesProvider } from "@material-ui/core/styles";
 import "../App.css";
+import useBrowserAnnotations from '../hooks/useBrowserAnnotations';
 
 import {
   createViewState,
@@ -11,6 +12,8 @@ import {
 const referenceUrl = 'https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.2bit'
 
 function JBrowsePanel(props) {
+
+  const browserAnnotations = useBrowserAnnotations();
 
   const assembly = useMemo(() => {
     return {
@@ -149,36 +152,9 @@ function JBrowsePanel(props) {
           }
         ]
       },
-      {
-        type: "FeatureTrack",
-        trackId: "ARTIC-v4.1",
-        name: "ARTIC v4.1",
-        assemblyNames: ['NC_045512v2'],
-        category: ['Annotation'],
-        adapter: {
-          type: 'BigBedAdapter',
-          bigBedLocation: {
-            uri: 'https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/articV4.1.bb',
-            locationType: 'UriLocation',
-          },
-        },
-      },
-      {
-        type: "FeatureTrack",
-        trackId: "shannon-entropy",
-        name: "Shannon Entropy",
-        assemblyNames: ['NC_045512v2'],
-        category: ['Annotation'],
-        adapter: {
-          type: 'BigWigAdapter',
-          bigWigLocation: {
-            uri: 'https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/pyle/Full_Length_Shannon_Entropy.bw',
-            locationType: 'UriLocation',
-          }
-        }
-      }
+      ...browserAnnotations.json  
     ]
-  }, []);
+  }, [browserAnnotations.json]);
 
   const defaultSession = useMemo(() => {
     return {
@@ -186,21 +162,8 @@ function JBrowsePanel(props) {
       view: {
         id: 'linearGenomeView',
         type: 'LinearGenomeView',
-//        hideHeader: true,
         hideCloseButton: true,
         tracks: [
-          // {
-          //   type: 'ReferenceSequenceTrack',
-          //   configuration: 'NC_045512v2-ReferenceSequenceTrack',
-          //   displays: [
-          //     {
-          //       type: 'LinearReferenceSequenceDisplay',
-          //       configuration:
-          //         'NC_045512v2-ReferenceSequenceTrack-LinearReferenceSequenceDisplay',
-          //         height: 40
-          //     },
-          //   ],
-          // },
           {
             type: 'FeatureTrack',
             configuration: 'nextstrain-annotations',
@@ -213,17 +176,6 @@ function JBrowsePanel(props) {
             ],
             
           },
-        //   {
-        //     type: 'FeatureTrack',
-        //     configuration: 'ARTIC-v4.1',
-        //     displays: [
-        //       {
-        //         type: 'LinearBasicDisplay',
-        // //        configuration: 'ARTIC-v4.1',
-        //         height: 100
-        //       },
-        //     ]
-        //   }
         ],
       },
     }

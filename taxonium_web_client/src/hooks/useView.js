@@ -110,20 +110,21 @@ class MyOrthographicController extends OrthographicController {
 
 const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
-  const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -2 : 0);
+  const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -2 : -1);
   globalSetZoomAxis = setZoomAxis;
 
 
   // TODO target needs to be [0,0]
   const [viewState, setViewState] = useState({
-    zoom: 0,
-    target: [window.screen.width < 600 ? 500 : 1400, 1000],
+    zoom: -2,
+    target: [window.screen.width < 600 ? 500 : 2600, 1000],
     pitch: 0,
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
     "browser-main": {zoom: 0, target: [0,0]},
     "browser-axis": {zoom: 0, target: [0,0]},
   });
+  const [baseViewState, setBaseViewState] = useState(viewState);
 
   const views = useMemo(() => {
     return [
@@ -334,7 +335,8 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       zoomIncrement,
       xzoom,
       mouseXY,
-      setMouseXY
+      setMouseXY,
+      baseViewState
     };
   }, [
     viewState,
@@ -347,7 +349,8 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     zoomIncrement,
     xzoom,
     mouseXY,
-    setMouseXY
+    setMouseXY,
+    baseViewState
   ]);
 
   return output;

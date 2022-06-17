@@ -40,49 +40,28 @@ const useBrowserState = (
         if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager) {
             return;
         }
-        view.setViewState({
-            //      ...tempView,
-                  zoom: 0,
-                  target: [window.screen.width<600? 500:1400, 1000],
-                  pitch: 0,
-                  bearing: 0,
-                  minimap: { zoom: -3, target: [250, 1000] },
-                  "browser-main": {
-                    zoom: 0,
-                    target: [0, 0],
-                    pitch: 0,
-                    bearing: 0,
-                  },
-                  "browser-axis": {
-                    zoom: 0,
-                    target: [0, 0],
-                    pitch: 0,
-                    bearing: 0,
-                  },
-                })
-
-        console.log(deckRef.current.deck.getViewports())
+        const tempViewState = {...view.viewState};
+        console.log("tempViewState", tempViewState);
+        view.setViewState(view.baseViewState);
+        console.log("baseViewState", view.baseViewState);
         const vp = {
                 ...deckRef.current.deck.getViewports()[1],
-           //     target: [0, 0],
-             //   zoom: 0
             }
-        // if (Math.abs(vp.unproject([vp.width, 0])[0] - xBounds[1]) > ) {
             console.log("unprojecting:::resize")
-            console.log("width", vp.width)
-            console.log(vp)
-            console.log(vp.unproject([vp.width, 0]))
             vp && setXbounds([vp.unproject([0, 0])[0], vp.unproject([vp.width, 0])[0]]);
-      //  }
-    }, [deckRef, setXbounds]);
 
-    const [resizeListener, setResizeListener] = useState(null);
-    useEffect(() => {
-        console.log("adding resize listener")
-        window.removeEventListener("resize", resizeListener);
-        window.addEventListener('resize', handleResize);
-        setResizeListener(handleResize);
-    }, [handleResize]);
+        view.setViewState(tempViewState);
+        console.log("back to ", view.viewState);
+
+    }, [deckRef, setXbounds, view.viewState, view.baseViewState]);
+
+   // const [resizeListener, setResizeListener] = useState(null);
+    // useEffect(() => {
+    //     console.log("adding resize listener")
+    //     window.removeEventListener("resize", resizeListener);
+    //     window.addEventListener('resize', handleResize);
+    //     setResizeListener(handleResize);
+    // }, [handleResize]);
     
     // useEffect(() => {
     //     setUpdateBrowserBounds(false);
@@ -98,9 +77,7 @@ const useBrowserState = (
         if (xBounds[0] == 0 && xBounds[1] == 0) {
             const vp = {
                 ...deckRef.current.deck.getViewports()[1],
-       //         target: [0, 0],
-         //       zoom: 0,
-
+   
             }
             console.log("unprojecting:::start")
             console.log("width", vp.width)
@@ -116,8 +93,7 @@ const useBrowserState = (
         }
         const vp = {
             ...deckRef.current.deck.getViewports()[1],
-        //   target: [0, 0],
-         //  zoom: 0
+     
             }
         
         if (pxPerBp) {
@@ -136,9 +112,10 @@ const useBrowserState = (
             setNtBoundsExt,
             pxPerBp,
             setPxPerBp,
-            bpWidth
+            bpWidth,
+            handleResize
         }
-    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth]);
+    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize]);
 
     return state;
 };

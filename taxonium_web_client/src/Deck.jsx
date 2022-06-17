@@ -249,6 +249,7 @@ function Deck({
         onHover={setMouseXY}
         onResize={(size) => {
           setDeckSize(size);
+          browserState.handleResize();
           console.log("resize", size);
         }}
         onAfterRender={(event) => {
