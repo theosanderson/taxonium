@@ -9,11 +9,10 @@ const useBrowserLayers = (
     setHoverInfo,
     reference,
     setReference,
-    modelMatrix
+    settings
 ) => {
     
-    const myGetPolygonOffset = useCallback(({layerIndex}) => [0, -(layerIndex-999) * 100]);
-    // TODO this is hack
+    const myGetPolygonOffset = ({layerIndex}) => [0, -(layerIndex-999) * 100];
     const modelMatrixFixedX = useMemo(() => {
         return [
           1 / 2 ** (viewState.zoom),
@@ -72,6 +71,9 @@ const useBrowserLayers = (
     let layers = [];
 
     const post_order = useCallback((nodes) => {
+        if (!settings.browserEnabled) {
+            return;
+        }
         let to_children = {};
         let root_id = null;
         for (let i = 0; i < nodes.length; i++) {
@@ -87,7 +89,6 @@ const useBrowserLayers = (
         }
         let stack = [];
         let po = [];
-        console.log("root", root_id)
         stack.push(root_id);
         while (stack.length > 0) {
             const node_id = stack.pop();
@@ -100,16 +101,19 @@ const useBrowserLayers = (
         }
         console.log("done postorder", po)
         return po;
-    }, []);
+    }, [settings.browserEnabled]);
 
     // Might be a better way to do this. This let us use the zoomed out base_data unless we are
     // sufficiently zoomed in rather than zoomed in at all
     const [cachedVarData, setCachedVarData] = useState(null);
 
     const variation_data = useMemo(() => {
+        if (!settings.browserEnabled) {
+            return;
+        }
         // Assumes that nodes in data are in preorder.
         // We visit them in reverse order to traverse bottom up
-        console.log("start var")
+//        console.log("start var")
         let var_data = [];
         let nodes = null;
         let lookup = null;
@@ -119,7 +123,7 @@ const useBrowserLayers = (
 
         } else {
             if (cachedVarData) {
-                console.log("cached----")
+      //          console.log("cached----")
                 return cachedVarData;
             }
             if (!data.base_data || !data.base_data.nodes) {
@@ -136,7 +140,7 @@ const useBrowserLayers = (
             return var_data;
         }
         const postorder_nodes = post_order(nodes);
-        console.log("po", postorder_nodes)
+
         const root = postorder_nodes.find((id) =>  id == lookup[id].parent_id);
         let yspan = {};
         for (let i = postorder_nodes.length - 1; i >= 0; i--) {
@@ -183,11 +187,15 @@ const useBrowserLayers = (
             setCachedVarData(var_data);
         }
         console.log("stop var")
+        
         return var_data;
-    }, [data.data, data.base_data, setReference, cachedVarData, post_order]);
+    }, [data.data, data.base_data, setReference, cachedVarData, post_order, settings.browserEnablede]);
 
 
     const variation_data_filtered = useMemo(() => {
+        if (!settings.browserEnabled) {
+            return;
+        }
         if (!data.data || !data.data.nodes) {
             return [];
         }
@@ -196,7 +204,7 @@ const useBrowserLayers = (
         } else {
             return variation_data.filter((d) => (d.y[1] - d.y[0]) > .002)
         }
-    }, [variation_data, data.data, browserState.ntBounds]);
+    }, [variation_data, data.data, browserState.ntBounds, settings.browserEnabled]);
 
     const ntToX = useCallback((nt) => {
         return browserState.xBounds[0] + (nt - browserState.ntBounds[0])
@@ -211,7 +219,35 @@ const useBrowserLayers = (
         return genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
     }, [genes]);
 
-        
+    const dynamic_background_data = useMemo(() => {
+        if (!settings.browserEnabled) {
+            return;
+        }
+        let d = [];
+        for (let key of Object.keys(genes)) {
+            if (key == 'ORF1ab') {
+                continue;
+            }
+            const gene = genes[key];
+            d.push(
+                {
+                    x: [
+                        [ntToX(gene[0]), -1e4],
+                        [ntToX(gene[0]), 1e5],
+                        [ntToX(gene[1]), 1e5],
+                        [ntToX(gene[1]), -1e4],
+                    ],
+                    c: gene[2]
+                }
+            );
+        }
+        return d;
+    }, [genes, ntToX, browserState.yBounds, settings.browserEnabled]);
+
+    if (!settings.browserEnabled) {
+        return [];
+    }
+
     const variation_layer = new SolidPolygonLayer({
         data: variation_data_filtered,
         id: "browser-variation-layer",
@@ -219,7 +255,7 @@ const useBrowserLayers = (
         pickable: true,
         getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
             ? colorHook.toRGB(d.m.new_residue)
-            : genes[d.m.gene][2].map((c) => 255 - (0.2*(255-c))),
+            : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c))),
         getLineColor: (d) => [80, 80, 80],
         lineWidthUnits: "pixels",
         modelMatrix: modelMatrixFixedX,
@@ -243,7 +279,7 @@ const useBrowserLayers = (
         getPolygonOffset: myGetPolygonOffset
     });
 
-        const browser_background_layer = new PolygonLayer({
+     const browser_background_layer = new PolygonLayer({
             id: "browser-background",
             data: [[[browserState.xBounds[0], -1e4],
             [browserState.xBounds[1], -1e4],
@@ -264,30 +300,9 @@ const useBrowserLayers = (
             //wireframe: true,
             getFillColor: [224, 224, 224],
             getPolygonOffset: myGetPolygonOffset
-        });
+    });
 
-        const dynamic_background_data = useMemo(() => {
-            let d = [];
-            for (let key of Object.keys(genes)) {
-                if (key == 'ORF1ab') {
-                    continue;
-                }
-                const gene = genes[key];
-                d.push(
-                    {
-                        x: [
-                            [ntToX(gene[0]), -1e4],
-                            [ntToX(gene[0]), 1e5],
-                            [ntToX(gene[1]), 1e5],
-                            [ntToX(gene[1]), -1e4],
-                        ],
-                        c: gene[2]
-                    }
-                );
-            }
-            console.log(d)
-            return d;
-        }, [genes, ntToX, browserState.yBounds]);
+        
 
         const dynamic_browser_background_sublayer  = new SolidPolygonLayer({
             id: "browser-dynamic-background-sublayer",
@@ -299,7 +314,7 @@ const useBrowserLayers = (
                             [ntToX(29903), 1e5],
                             [ntToX(29903), -1e4],
                         ],
-                        c: [255,255,255]
+                        c: [245,245,245]
                     }
             ],
             getPolygon: (d) => d.x,

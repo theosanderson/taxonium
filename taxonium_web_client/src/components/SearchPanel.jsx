@@ -42,6 +42,7 @@ function SearchPanel({
   settings,
   backend,
   className,
+  browserState,
 }) {
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
 
@@ -170,9 +171,13 @@ function SearchPanel({
               className="m-3 inline-block"
               checked={settings.browserEnabled}
               onChange={(event) => {
-                console.log(settings.browserEnabled)
-                settings.setBrowserEnabled(!settings.browserEnabled)}
+                console.log(settings.browserEnabled);
+                settings.setBrowserEnabled(!settings.browserEnabled);
+                window.setTimeout(() => {
+                  browserState.handleResize();
+                }, 1000);
               }
+            }
             />
           </label>
       </div>

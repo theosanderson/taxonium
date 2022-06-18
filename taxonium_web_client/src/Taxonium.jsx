@@ -90,8 +90,7 @@ function Taxonium({
 
   };
 
-  const browserState = useBrowserState(data, deckRef, updateBrowserBounds, setUpdateBrowserBounds, view, settings)
-
+  const browserState = useBrowserState(data, deckRef, view, settings)
 
   return (
     <div className="flex-grow overflow-hidden flex flex-col md:flex-row" >
@@ -138,6 +137,7 @@ function Taxonium({
                   xType={xType}
                   setxType={setxType}
                   settings={settings}
+                  browserState={browserState}
                 />
                 </span>
               }

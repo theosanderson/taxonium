@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import {
   OrthographicView,
@@ -110,20 +110,33 @@ class MyOrthographicController extends OrthographicController {
 
 const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
-  const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -2 : -1);
+  const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -1 : 0);
   globalSetZoomAxis = setZoomAxis;
 
 
   // TODO target needs to be [0,0]
   const [viewState, setViewState] = useState({
     zoom: -2,
-    target: [window.screen.width < 600 ? 500 : 2600, 1000],
+    target: [window.screen.width < 600 ? 500 : 1400, 1000],
+
     pitch: 0,
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
     "browser-main": {zoom: 0, target: [0,0]},
     "browser-axis": {zoom: 0, target: [0,0]},
   });
+  useEffect(() => {
+    setViewState((prevState) => {
+      return {
+        ...prevState,
+        target: [window.screen.width < 600 ? 500 : 
+          settings.browserEnabled ? 2600 : 1400, 1000]
+        }
+    });
+    setXzoom(window.screen.width < 600 ? -1 : 
+      settings.browserEnabled ? -1 : 0);
+  }, [settings.browserEnabled]);
+
   const [baseViewState, setBaseViewState] = useState(viewState);
 
   const views = useMemo(() => {
@@ -295,10 +308,11 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
         newViewState = viewState;
       }
 
-      if (jbrowseRef.current && viewId === "main") {
+      if (jbrowseRef.current) {
+        console.log(mouseXY)
         const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
         const xBound = jbrowseRef.current.children[0].children[0].offsetParent.offsetParent.offsetLeft;
-        if (mouseXY[0] > xBound && mouseXY[1] < yBound) {
+        if (mouseXY[0] > xBound && mouseXY[1] < yBound || mouseXY[0] < 0 || mouseXY[1] < 0) {
           return;
         }      
       }
@@ -323,6 +337,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     [viewState, onViewStateChange]
   );
 
+ 
   const output = useMemo(() => {
     return {
       viewState,

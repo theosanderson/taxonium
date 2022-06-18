@@ -39,7 +39,7 @@ function JBrowsePanel(props) {
         trackId: 'nextstrain-annotations',
         name: 'Genes',
         assemblyNames: ['NC_045512v2'],
-        category: ['Annotation'],
+        category: [],
         adapter: {
           type: 'FromConfigAdapter',
           features: [
@@ -182,13 +182,11 @@ function JBrowsePanel(props) {
   }, []);
 
   useEffect(() => {
-    console.log("??")
     if (!props.browserState.ntBoundsExt) {
       return;
     }
     const v = state.session.view;
     v.navToLocString('NC_045512v2:' + props.browserState.ntBoundsExt[0] + '..' + props.browserState.ntBoundsExt[1]);
-    console.log("nav to " + 'NC_045512v2:' + props.browserState.ntBoundsExt[0] + '..' + props.browserState.ntBoundsExt[1])
     props.browserState.setNtBoundsExt(null);
 
   }, [props.browserState]);
@@ -196,7 +194,6 @@ function JBrowsePanel(props) {
 
   // Read JBrowse state to determine nt bounds
   const onChange = (patch) => {
-    console.log(patch)
     if (patch.op != "replace") {
       return;
     }
@@ -212,12 +209,32 @@ function JBrowsePanel(props) {
      props.browserState.setPxPerBp(pxPerBp);
    }
   };
+  const theme = {
+    configuration: {
+      theme: {
+        palette: {
+          primary: {
+            main: '#555e6c',
+          },
+          secondary: {
+            main: '#2463eb',
+          },
+          tertiary: {
+            main: '#bcbcbc',
+          },
+          quaternary: {
+            main: '#2463eb',
+          },
+        },
+      },
+    },
+  }
   const state = useMemo(() => createViewState({
     assembly,
     tracks,
     location: 'NC_045512v2:0-29903',
-    
     defaultSession,
+    ...theme,
     onChange: onChange
   }), [assembly, tracks, defaultSession]);
 

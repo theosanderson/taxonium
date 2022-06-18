@@ -3,14 +3,9 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 const useBrowserState = (
     data,
     deckRef,
-    updateBrowserBounds,
-    setUpdateBrowserBounds,
     view,
-    browserEnabled
+    settings
 ) => {
-    // if (!browserEnabled) {
-    //     return;
-    // }
     const [yBounds, setYBounds] = useState([0, 0]);
     const [xBounds, setXbounds] = useState([0, 0]);
     const [ntBounds, setNtBounds] = useState([0, 29903]);
@@ -18,9 +13,9 @@ const useBrowserState = (
     const [pxPerBp, setPxPerBp] = useState(0);
     const [bpWidth, setBpWidth] = useState(0);
 
-
+  
     useEffect(() => {
-        if (!data.data || !data.data.nodes) {
+        if (!data.data || !data.data.nodes || !settings.browserEnabled) {
             return;
         }
         const bounds = [0, 0];
@@ -33,11 +28,13 @@ const useBrowserState = (
             }
         }
         setYBounds(bounds);
-    }, [data.data]);
+    }, [data.data, settings.browserEnabled]);
+
+    
 
     const handleResize = useCallback(() => {
 
-        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager) {
+        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.browserEnabled) {
             return;
         }
         const tempViewState = {...view.viewState};
@@ -52,43 +49,32 @@ const useBrowserState = (
 
         view.setViewState(tempViewState);
         console.log("back to ", view.viewState);
+        
+       
+ 
+    }, [deckRef, setXbounds, view.viewState, view.setViewState, view.baseViewState, settings.browserEnabled]);
 
-    }, [deckRef, setXbounds, view.viewState, view.baseViewState]);
-
-   // const [resizeListener, setResizeListener] = useState(null);
     // useEffect(() => {
-    //     console.log("adding resize listener")
-    //     window.removeEventListener("resize", resizeListener);
-    //     window.addEventListener('resize', handleResize);
-    //     setResizeListener(handleResize);
-    // }, [handleResize]);
-    
-    // useEffect(() => {
-    //     setUpdateBrowserBounds(false);
-    //     window.dispatchEvent(new Event('resize'));
-
-    // }, [updateBrowserBounds, setUpdateBrowserBounds]);
-    useEffect(() => {
-
-        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager) {
-            return;
-        }
-
-        if (xBounds[0] == 0 && xBounds[1] == 0) {
-            const vp = {
-                ...deckRef.current.deck.getViewports()[1],
-   
-            }
-            console.log("unprojecting:::start")
-            console.log("width", vp.width)
-            console.log(vp)
-
-            vp && setXbounds([vp.unproject([0, 0])[0], vp.unproject([vp.width, 0])[0]]);
-        }
-    }, [deckRef, xBounds, yBounds]);
+    //     window.setInterval(() => {
+    //         handleResize();
+    //     }, 1000);
+    // }, []);
+    // useEffect(
+    //     () => {
+    //         console.log(calling)
+    //       const newViewState = { ...view.viewState };
+    //       view.onViewStateChange({
+    //         viewState: newViewState,
+    //  //       interactionState: "isZooming",
+    //         oldViewState: view.viewState,
+    //  //       overrideZoomAxis,
+    //       });
+    //     },
+    //     [xBounds, yBounds]
+    //   );
 
     useEffect(() => {
-        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager) {
+        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.browserEnabled) {
             return;
         }
         const vp = {
@@ -101,7 +87,7 @@ const useBrowserState = (
 
             setBpWidth(vp.unproject([pxPerBp, 0])[0] - vp.unproject([0, 0])[0]);
         }
-    }, [deckRef, pxPerBp]);
+    }, [deckRef, pxPerBp, settings.browserEnabled]);
 
     const state = useMemo(() => {
         return {
@@ -113,7 +99,7 @@ const useBrowserState = (
             pxPerBp,
             setPxPerBp,
             bpWidth,
-            handleResize
+            handleResize,
         }
     }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize]);
 

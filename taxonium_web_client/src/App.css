@@ -31,6 +31,9 @@ p[data-testid='refLabel-NC_045512v2'] {
   bottom: 0px !important;
 } */
 
+[class *= "PrivateSwitchBase-input-"] + svg {
+  color: "#2463eb" !important;
+}
 .sidebar-toggle {
   border: 2px solid rgb(136, 135, 135) !important;
   border-radius: 3px;

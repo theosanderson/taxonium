@@ -232,6 +232,7 @@ function Deck({
           </div>
         </div>
       )}{" "}
+      
       <DeckSettingsModal
         deckSettingsOpen={deckSettingsOpen}
         setDeckSettingsOpen={setDeckSettingsOpen}
@@ -249,7 +250,9 @@ function Deck({
         onHover={setMouseXY}
         onResize={(size) => {
           setDeckSize(size);
-          browserState.handleResize();
+          window.setTimeout(() => {
+            browserState.handleResize();
+          }, 50);
           console.log("resize", size);
         }}
         onAfterRender={(event) => {
