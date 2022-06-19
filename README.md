@@ -1,9 +1,7 @@
 # Taxonium
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
-
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Taxonium is a tool for exploring trees.
@@ -72,6 +70,7 @@ We are very grateful to our contributors:
     <td align="center"><a href="https://github.com/richardgoater"><img src="https://avatars.githubusercontent.com/u/1429721?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Richard Goater</b></sub></a><br /><a href="#design-richardgoater" title="Design">🎨</a> <a href="https://github.com/theosanderson/taxonium/commits?author=richardgoater" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/chaoran-chen"><img src="https://avatars.githubusercontent.com/u/18666552?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Chaoran Chen</b></sub></a><br /><a href="#ideas-chaoran-chen" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/corneliusroemer"><img src="https://avatars.githubusercontent.com/u/25161793?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Cornelius Roemer</b></sub></a><br /><a href="#ideas-corneliusroemer" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/sungyeonkwon"><img src="https://avatars.githubusercontent.com/u/25865179?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sung Kwon</b></sub></a><br /><a href="#infra-sungyeonkwon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
