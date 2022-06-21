@@ -189,7 +189,7 @@ const useBrowserLayers = (
         console.log("stop var")
         
         return var_data;
-    }, [data.data, data.base_data, setReference, cachedVarData, post_order, settings.browserEnablede]);
+    }, [data.data, data.base_data, setReference, cachedVarData, post_order, settings.browserEnabled]);
 
 
     const variation_data_filtered = useMemo(() => {
@@ -210,7 +210,7 @@ const useBrowserLayers = (
         return browserState.xBounds[0] + (nt - browserState.ntBounds[0])
             / (browserState.ntBounds[1] - browserState.ntBounds[0])
             * (browserState.xBounds[1] - browserState.xBounds[0]) - 3;
-    }, [browserState.xBounds, browserState.ntBounds]);
+    }, [browserState.xBounds, browserState.ntBounds, browserState.yBounds]);
 
     const getNtPos = useCallback((mut) => {
         if (!genes[mut.gene]) {
@@ -242,7 +242,7 @@ const useBrowserLayers = (
             );
         }
         return d;
-    }, [genes, ntToX, browserState.yBounds, settings.browserEnabled]);
+    }, [genes, ntToX, browserState.yBounds, browserState.xBounds, settings.browserEnabled]);
 
     if (!settings.browserEnabled) {
         return [];

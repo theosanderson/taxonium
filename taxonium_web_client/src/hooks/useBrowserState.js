@@ -31,12 +31,13 @@ const useBrowserState = (
     }, [data.data, settings.browserEnabled]);
 
     
-
     const handleResize = useCallback(() => {
-
+        console.log("calling handleResize");
+        console.log(deckRef.current, settings.browserEnabled);
         if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.browserEnabled) {
             return;
         }
+        console.log("here in handleResize");
         const tempViewState = {...view.viewState};
         console.log("tempViewState", tempViewState);
         view.setViewState(view.baseViewState);
@@ -52,26 +53,34 @@ const useBrowserState = (
         
        
  
-    }, [deckRef, setXbounds, view.viewState, view.setViewState, view.baseViewState, settings.browserEnabled]);
+    }, [deckRef, setXbounds, view, settings.browserEnabled]);
 
-    // useEffect(() => {
-    //     window.setInterval(() => {
-    //         handleResize();
-    //     }, 1000);
-    // }, []);
-    // useEffect(
-    //     () => {
-    //         console.log(calling)
-    //       const newViewState = { ...view.viewState };
-    //       view.onViewStateChange({
-    //         viewState: newViewState,
-    //  //       interactionState: "isZooming",
-    //         oldViewState: view.viewState,
-    //  //       overrideZoomAxis,
-    //       });
-    //     },
-    //     [xBounds, yBounds]
-    //   );
+    const [jbrowseLoaded, setJbrowseLoaded] = useState(false);
+    const [handled, setHandled] = useState(false);
+    useEffect(() => {
+        if (jbrowseLoaded && !handled) {
+            console.log("handle resize")
+            handleResize();
+            setHandled(true);
+        }
+    }, [jbrowseLoaded, handleResize]);
+
+    useEffect(() => {
+        const observer = new MutationObserver(function (mutations, mutationInstance) {
+            const jbrowse = document.getElementById('view-browser-axis');
+            if (jbrowse) {
+                console.log("set jbrowse loaded");
+                setJbrowseLoaded(jbrowse);
+                mutationInstance.disconnect();
+            }
+        });
+        
+        observer.observe(document, {
+            childList: true,
+            subtree:   true
+        });
+    }, []);
+
 
     useEffect(() => {
         if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.browserEnabled) {

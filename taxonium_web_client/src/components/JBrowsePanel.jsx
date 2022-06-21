@@ -181,6 +181,7 @@ function JBrowsePanel(props) {
     }
   }, []);
 
+  
   useEffect(() => {
     if (!props.browserState.ntBoundsExt) {
       return;
@@ -209,8 +210,9 @@ function JBrowsePanel(props) {
      props.browserState.setPxPerBp(pxPerBp);
    }
   };
-  const theme = {
-    configuration: {
+  const theme = useMemo(() => {
+    return {
+      configuration: {
       theme: {
         palette: {
           primary: {
@@ -228,7 +230,8 @@ function JBrowsePanel(props) {
         },
       },
     },
-  }
+  }}, []);
+  
   const state = useMemo(() => createViewState({
     assembly,
     tracks,
@@ -236,7 +239,8 @@ function JBrowsePanel(props) {
     defaultSession,
     ...theme,
     onChange: onChange
-  }), [assembly, tracks, defaultSession]);
+  }), [assembly, tracks, defaultSession, theme]);
+
 
   useEffect(() => {
     const v = state.session.view;

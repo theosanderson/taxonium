@@ -137,7 +137,10 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       settings.browserEnabled ? -1 : 0);
   }, [settings.browserEnabled]);
 
-  const [baseViewState, setBaseViewState] = useState(viewState);
+  const [baseViewState, setBaseViewState] = useState({...viewState,
+    "browser-main": {zoom: 0, target: [0,0]},
+    "browser-axis": {zoom: 0, target: [0,0]},
+  });
 
   const views = useMemo(() => {
     return [

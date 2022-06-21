@@ -86,7 +86,7 @@ function Taxonium({
     setSidebarOpen(!sidebarOpen);
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
-    }, 100); // is there a better way?
+    }, 100);
 
   };
 

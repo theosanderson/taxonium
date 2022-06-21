@@ -173,9 +173,6 @@ function SearchPanel({
               onChange={(event) => {
                 console.log(settings.browserEnabled);
                 settings.setBrowserEnabled(!settings.browserEnabled);
-                window.setTimeout(() => {
-                  browserState.handleResize();
-                }, 1000);
               }
             }
             />
