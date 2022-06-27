@@ -7,8 +7,8 @@ import shutil
 from . import ushertools
 
 
-def read_metadata(metadata_file, columns):
-    must_have_cols = ['strain']
+def read_metadata(metadata_file, columns, key_column):
+    must_have_cols = [key_column]
     cols_of_interest = set(columns.split(",")) if columns else set()
     cols_of_interest.update(must_have_cols)
     cols_of_interest = list(cols_of_interest)
@@ -25,7 +25,7 @@ def read_metadata(metadata_file, columns):
                                usecols=cols_of_interest)
         # Enable again
         warnings.filterwarnings("default")
-        metadata.set_index("strain", inplace=True)
+        metadata.set_index(key_column, inplace=True)
         # convert metadata to dict of rows
 
         metadata_dict = metadata.to_dict("index")
