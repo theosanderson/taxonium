@@ -9,5 +9,6 @@ alive-progress
 biopython
 pandas
 google-api-python-client
+protobuf<4
 orjson
 sphinxcontrib-gtagjs
