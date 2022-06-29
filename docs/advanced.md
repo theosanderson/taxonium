@@ -23,7 +23,7 @@ There are a number of things you can do customise Taxonium. They all ultimately 
 
 #### What you can configure
 
-You can configure many things. We only discuss some here.
+You can configure many things. We only discuss some here. For more information have a look at the [https://github.com/theosanderson/taxonium/blob/master/taxonium_backend/config_public.json](config used for Cov2Tree).
 
 ##### Colors
 
