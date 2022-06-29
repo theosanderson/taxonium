@@ -42,7 +42,7 @@ Theo Sanderson
 bioRxiv 2022.06.03.494608; doi: https://doi.org/10.1101/2022.06.03.494608
 ```
 
-N.B. If you are citing the *tree* displayed at Cov2Tree.org, rather than the tool please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too)
+N.B. If you are citing the *tree* displayed at Cov2Tree.org, please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too)
 
 ## Structure
 
