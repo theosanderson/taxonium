@@ -85,6 +85,12 @@ const useColor = (colorMapping) => {
       if (string === "Scotland") {
         return [255, 130, 82]; // UK all brick
       }
+      if (string === "North America") {
+        return [200, 200, 50]; 
+      }
+      if (string === "South America") {
+        return [200, 100, 50]; 
+      }
       if (string === "Wales") {
         return [148, 49, 22]; // UK all brick
       }
