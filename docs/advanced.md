@@ -15,7 +15,7 @@ If you supply only remote files, then you will find that the Taxonium.org interf
 
 There are a number of things you can do customise Taxonium. They all ultimately involve creating a "config" which Taxonium uses to define its behaviour. This config can be specified in several ways, which are listed here in rough order of the priority in which they are applied:
 
-1. As a `config` paramter supplied to the URL containing a JSON string, e.g. taxonium.org?protoUrl=xxxx&config={"title":"My tree"}
+1. As a `config` paramter supplied to the URL containing a JSON string, e.g. `taxonium.org?protoUrl=xxxx&config={"title":"My tree"}`
 2. As a `configUrl` supplied to the URL pointing to a JSON file, e.g. https://taxonium.org/?protoUrl=https%3A%2F%2Fmpx-tree.vercel.app%2Fmpx.jsonl.gz&configUrl=https://mpx-tree.vercel.app/config.json
 3. As one of several custom parameters to `usher_to_taxonium`, e.g. `--title`,`--overlay_html`.
 4. As a `--config_json` file passed to [taxoniumtools.md](usher_to_taxonium).
