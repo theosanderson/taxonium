@@ -34,6 +34,16 @@ You can also use taxoniumtools to add your own metadata to the existing public p
 
 Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/latest/).
 
+## Citing Taxonium
+
+```
+Taxonium: a web-based tool for exploring large phylogenetic trees
+Theo Sanderson
+bioRxiv 2022.06.03.494608; doi: https://doi.org/10.1101/2022.06.03.494608
+```
+
+N.B. If you are citing the *tree* displayed at Cov2Tree.org, rather than the tool please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too)
+
 ## Structure
 
 Taxonium now consists of a number of components:
