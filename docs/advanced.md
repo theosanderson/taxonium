@@ -23,7 +23,7 @@ There are a number of things you can do customise Taxonium. They all ultimately 
 
 #### What you can configure
 
-You can configure many things. We only discuss some here. For more information have a look at the [https://github.com/theosanderson/taxonium/blob/master/taxonium_backend/config_public.json](config used for Cov2Tree).
+You can configure many things. We only discuss some here. For more information have a look at the [config used for Cov2Tree](https://github.com/theosanderson/taxonium/blob/master/taxonium_backend/config_public.json).
 
 ##### Colors
 
@@ -44,7 +44,7 @@ The way that Taxonium handles colurs by default is that they are computed as a h
 }
 ```
 
-We can supply that config in the URL like this: https://cov2tree.org/?config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}
+We can supply that config in the URL like this: `https://cov2tree.org/?config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}`
 
 or make a JSON file containing
 
