@@ -35,9 +35,10 @@ def do_processing(input_file,
                   name_internal_nodes=False,
                   shear=False,
                   shear_threshold=1000,
-                  only_variable_sites=False):
+                  only_variable_sites=False,
+                  key_column = "strain"):
 
-    metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns)
+    metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns, key_column)
 
     if config_file is not None:
         config = json.load(open(config_file))
@@ -251,6 +252,13 @@ def get_parser():
                         action='store_true',
                         help="Only store information about the root sequence if there is variation somewhere in the tree. This may be removed in future versions.")
 
+    parser.add_argument(
+        "--key_column",
+        type=str,
+        help=
+        "The column in the metadata file which is the same as the names in the tree",
+        default="strain")
+
     return parser
 
 
@@ -276,7 +284,8 @@ def main():
                   name_internal_nodes=args.name_internal_nodes,
                   shear=args.shear,
                   shear_threshold=args.shear_threshold,
-                  only_variable_sites = args.only_variable_sites)
+                  only_variable_sites = args.only_variable_sites,
+                  key_column = args.key_column)
 
 
 if __name__ == "__main__":

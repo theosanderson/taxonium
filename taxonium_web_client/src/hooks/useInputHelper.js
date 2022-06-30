@@ -44,6 +44,12 @@ export const useInputHelper = ({
   const [inputs, setInputs] = useState([]);
 
   function addInput(file_object, data) {
+    if(window.gtag){
+    window.gtag('event', 'addInput', {
+       'event_category' : 'addInput',
+       'event_label' : data.name
+    });
+    }
     const gzipped = guessIfCompressed(file_object);
     const filetype = guessType(file_object);
     setInputs((inputs) => [

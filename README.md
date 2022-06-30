@@ -1,12 +1,14 @@
 # Taxonium
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Taxonium is a tool for exploring trees.
 
-<p align="center"><a href="https://taxonium.org"><img src="https://user-images.githubusercontent.com/19732295/169698808-48204d73-c468-4e80-aff5-876e5df7eab4.png" width=250 /></a></p>
+<!--<p align="center"><a href="https://taxonium.org"><img src="https://user-images.githubusercontent.com/19732295/169698808-48204d73-c468-4e80-aff5-876e5df7eab4.png" width=250 /></a></p>-->
 
 ### [➡️ Launch Taxonium](https://taxonium.org)
 
@@ -32,6 +34,23 @@ You can also use taxoniumtools to add your own metadata to the existing public p
 
 Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/latest/).
 
+## See Taxonium in action
+
+- [Cov2Tree](https://cov2tree.org/)
+- [Exploring the NCBI Taxonomy](https://taxonium.org/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json)
+- [Serratus](https://serratus.io/trees) (click Tree Viewer on any tree)
+- [mpxTree](http://mpxtree.taxonium.org/)
+
+## Citing Taxonium
+
+```
+Taxonium: a web-based tool for exploring large phylogenetic trees
+Theo Sanderson
+bioRxiv 2022.06.03.494608; doi: https://doi.org/10.1101/2022.06.03.494608
+```
+
+N.B. If you are citing the *tree* displayed at Cov2Tree.org, please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too if you relied on it for exploration)
+
 ## Structure
 
 Taxonium now consists of a number of components:
@@ -40,13 +59,6 @@ Taxonium now consists of a number of components:
 - [taxonium_web_client](./taxonium_web_client/) - the web client that is available at e.g. taxonium.org and let's you explore Taxonium files in your browser
 - [taxonium_backend](./taxonium_backend/) - a server-based backend that allows Taxonium trees to be explored without the user downloading the full tree (N.B. Taxonium can also be used without this backend, with static files acccessed in taxonium_web_client)
 - [taxonium_data_handling](./taxonium_data_handling/) - this is a node package upon which both the web client and the backend depend (it handles core logic common to both)
-
-## See Taxonium in action
-
-- [Cov2Tree](https://cov2tree.org/)
-- [Exploring the NCBI Taxonomy](https://taxonium.org/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json)
-- [Serratus](https://serratus.io/trees) (click Tree Viewer on any tree)
-- [mpxTree](http://mpxtree.taxonium.org/)
 
 ## Contributors
 
