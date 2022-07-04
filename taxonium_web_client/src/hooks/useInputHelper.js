@@ -47,7 +47,7 @@ export const useInputHelper = ({
     if(window.gtag){
     window.gtag('event', 'addInput', {
        'event_category' : 'addInput',
-       'event_label' : data.name
+       'event_label' : file_object.name
     });
     }
     const gzipped = guessIfCompressed(file_object);
