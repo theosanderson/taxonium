@@ -40,7 +40,9 @@ const useLayers = ({
     viewState,
     colorHook,
     setHoverInfo,
-    settings);
+    settings,
+    reference,
+    setReference);
   layers.push(...browserLayers);
   
 

@@ -8,10 +8,12 @@ const useBrowserLayers = (
     viewState,
     colorHook,
     setHoverInfo,
-    settings
+    settings,
+    reference,
+    setReference,
 ) => {
     
-    const myGetPolygonOffset = ({layerIndex}) => [0, -(layerIndex-999) * 100];
+    const myGetPolygonOffset = ({layerIndex}) => [0, -(layerIndex+999) * 100];
     const modelMatrixFixedX = useMemo(() => {
         return [
           1 / 2 ** (viewState.zoom),
@@ -106,14 +108,13 @@ const useBrowserLayers = (
 
 
 */
-    const [layerData, reference] = useBrowserLayerData(data, browserState);
+    const [layerData, computedReference] = useBrowserLayerData(data, browserState);
 
-    const [cachedLayerData, setCachedLayerData] = useState([]);
-
-    if (layerData != cachedLayerData) {
-        setCachedLayerData(layerData)
-    }
-    
+    useEffect(() => {
+        if(!reference) {
+            setReference(computedReference)
+        }
+    }, [computedReference])
     
     const ntToX = useCallback((nt) => {
         return browserState.xBounds[0] + (nt - browserState.ntBounds[0])
@@ -134,9 +135,9 @@ const useBrowserLayers = (
         id: "browser-main",
         onHover: (info) => setHoverInfo(info),
         pickable: true,
-       getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
-       ? colorHook.toRGB(d.m.new_residue)
-       : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c))),
+        getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
+        ? colorHook.toRGB(d.m.new_residue)
+        : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c))),
         getLineColor: (d) => [80, 80, 80],
         lineWidthUnits: "pixels",
         modelMatrix: modelMatrixFixedX,

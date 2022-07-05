@@ -23,9 +23,10 @@ const useBrowserLayerData = (data, browserState) => {
       new URL("../webworkers/browserWorker.js", import.meta.url)
     );
     setExistingWorker(worker);
-    if (data.data && data.data.nodes && data.data.nodes.length >= 90000 && cachedVarData.length > 0) {
-      setVarData(cachedVarData);
-    }
+    
+    // if (data.data && data.data.nodes && data.data.nodes.length >= 90000 && cachedVarData.length > 0) {
+    //   setVarData(cachedVarData);
+    // }
 
     worker.onmessage = (e) => {
       if (!reference && e.data.reference) {

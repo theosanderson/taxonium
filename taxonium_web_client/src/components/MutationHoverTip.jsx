@@ -2,11 +2,11 @@ import { useMemo } from "react";
 
 
 const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config, reference }) => {
-
   if (!hoverInfo || !reference) {
     return null;
   }
   const hoveredMutation = hoverInfo.object;
+
   if (!hoveredMutation || !hoveredMutation.m) {
     return null;
   }
