@@ -21,7 +21,7 @@ const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config,
       className="bg-gray-100 p-3 opacity-90 text-sm"
       style={{
         position: "absolute",
-        zIndex: 1,
+        zIndex: 0,
         pointerEvents: "none",
         left: hoverInfo.x,
         top: hoverInfo.y,
