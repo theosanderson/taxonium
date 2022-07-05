@@ -1,5 +1,6 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
+import useBrowserLayerData from "./useBrowserLayerData";
 
 const useBrowserLayers = (
     browserState,
@@ -7,8 +8,6 @@ const useBrowserLayers = (
     viewState,
     colorHook,
     setHoverInfo,
-    reference,
-    setReference,
     settings
 ) => {
     
@@ -102,110 +101,20 @@ const useBrowserLayers = (
         console.log("done postorder", po)
         return po;
     }, [settings.browserEnabled]);
-
-    // Might be a better way to do this. This let us use the zoomed out base_data unless we are
-    // sufficiently zoomed in rather than zoomed in at all
-    const [cachedVarData, setCachedVarData] = useState(null);
-
-    const variation_data = useMemo(() => {
-        if (!settings.browserEnabled) {
-            return;
-        }
-        // Assumes that nodes in data are in preorder.
-        // We visit them in reverse order to traverse bottom up
-//        console.log("start var")
-        let var_data = [];
-        let nodes = null;
-        let lookup = null;
-        if (data.data && data.data.nodes && data.data.nodes.length < 90000) {
-            nodes = data.data.nodes;
-            lookup = data.data.nodeLookup;
-
-        } else {
-            if (cachedVarData) {
-      //          console.log("cached----")
-                return cachedVarData;
-            }
-            if (!data.base_data || !data.base_data.nodes) {
-                return var_data;
-            }
-            nodes = data.base_data.nodes;
-            lookup = data.base_data.nodeLookup;
-        }
-
-        if (!nodes) {
-            return var_data;
-        }
-        if (!data.data.nodeLookup) {
-            return var_data;
-        }
-        const postorder_nodes = post_order(nodes);
-
-        const root = postorder_nodes.find((id) =>  id == lookup[id].parent_id);
-        let yspan = {};
-        for (let i = postorder_nodes.length - 1; i >= 0; i--) {
-            let node = lookup[postorder_nodes[i]];
-            let parent = node.parent_id;
-            if (!yspan[node.node_id]) { // Leaf 
-                yspan[node.node_id] = [node.y, node.y];
-            }
-            //console.log("node", node, parent, node.name)
-            let cur_yspan = yspan[node.node_id];
-            let par_yspan = yspan[parent];
-            //console.log("cur, par", cur_yspan, par_yspan);
-            if (par_yspan) {
-                if (cur_yspan[0] < par_yspan[0]) {
-                    yspan[parent][0] = cur_yspan[0];
-                }
-                if (cur_yspan[1] > par_yspan[1]) {
-                    yspan[parent][1] = cur_yspan[1];
-                }
-            } else {
-              //  console.log(cur_yspan)
-                yspan[parent] = [...cur_yspan];
-            }
-            const ref = {}
-            for (let mut of node.mutations) {
-                if (mut.gene == 'nt') {
-                    continue; // Skip nt mutations for now
-                }
-                if (node.node_id == root) {
-                    ref[mut.gene + ':' + mut.residue_pos] = mut.new_residue;
-                    continue;
-                }
-                var_data.unshift({
-                    y: yspan[node.node_id],
-                    m: mut
-                });
-            }
-            if (node.node_id == root) {
-                setReference(ref);
-            }
-        }
-        if (data.data && data.data.nodes.length >= 90000) {
-            console.log("caching...")
-            setCachedVarData(var_data);
-        }
-        console.log("stop var")
-        
-        return var_data;
-    }, [data.data, data.base_data, setReference, cachedVarData, post_order, settings.browserEnabled]);
+/*
 
 
-    const variation_data_filtered = useMemo(() => {
-        if (!settings.browserEnabled) {
-            return;
-        }
-        if (!data.data || !data.data.nodes) {
-            return [];
-        }
-        if (data.data.nodes.length < 10000 || browserState.ntBounds[1] - browserState.ntBounds[0] < 1000) {
-            return variation_data;
-        } else {
-            return variation_data.filter((d) => (d.y[1] - d.y[0]) > .002)
-        }
-    }, [variation_data, data.data, browserState.ntBounds, settings.browserEnabled]);
 
+*/
+    const [layerData, reference] = useBrowserLayerData(data, browserState);
+
+    const [cachedLayerData, setCachedLayerData] = useState([]);
+
+    if (layerData != cachedLayerData) {
+        setCachedLayerData(layerData)
+    }
+    
+    
     const ntToX = useCallback((nt) => {
         return browserState.xBounds[0] + (nt - browserState.ntBounds[0])
             / (browserState.ntBounds[1] - browserState.ntBounds[0])
@@ -219,6 +128,38 @@ const useBrowserLayers = (
         return genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
     }, [genes]);
 
+    //console.log("layerdata", layerData, reference);
+    const main_variation_layer = new SolidPolygonLayer({
+        data: layerData,
+        id: "browser-main",
+        onHover: (info) => setHoverInfo(info),
+        pickable: true,
+       getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
+       ? colorHook.toRGB(d.m.new_residue)
+       : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c))),
+        getLineColor: (d) => [80, 80, 80],
+        lineWidthUnits: "pixels",
+        modelMatrix: modelMatrixFixedX,
+        getPolygon: (d) => {
+            if (!browserState.ntBounds) {
+                return [[0, 0]];
+            }
+            let mut = d.m;
+            let ntPos = getNtPos(mut);
+            if (ntPos < browserState.ntBounds[0] || ntPos > browserState.ntBounds[1]) {
+                return [[0 , 0]];
+            }
+
+            let x = ntToX(ntPos);
+
+            return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
+                [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
+        },
+        updateTriggers: {
+            getPolygon: [browserState.ntBounds, getNtPos, ntToX, aaWidth, variation_padding],
+        },
+        getPolygonOffset: myGetPolygonOffset
+    });
     const dynamic_background_data = useMemo(() => {
         if (!settings.browserEnabled) {
             return;
@@ -248,36 +189,13 @@ const useBrowserLayers = (
         return [];
     }
 
-    const variation_layer = new SolidPolygonLayer({
-        data: variation_data_filtered,
-        id: "browser-variation-layer",
-        onHover: (info) => setHoverInfo(info),
-        pickable: true,
-        getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
-            ? colorHook.toRGB(d.m.new_residue)
-            : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c))),
-        getLineColor: (d) => [80, 80, 80],
-        lineWidthUnits: "pixels",
-        modelMatrix: modelMatrixFixedX,
-        getPolygon: (d) => {
-            if (!browserState.ntBounds) {
-                return [[0, 0]];
-            }
-            let mut = d.m;
-            let ntPos = getNtPos(mut);
-            if (ntPos < browserState.ntBounds[0] || ntPos > browserState.ntBounds[1]) {
-                return [[0 , 0]];
-            }
-            let x = ntToX(ntPos);
 
-            return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
-                [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
-        },
-        updateTriggers: {
-            getPolygon: [browserState.ntBounds, browserState.xBounds, getNtPos, ntToX, aaWidth, variation_padding],
-        },
-        getPolygonOffset: myGetPolygonOffset
-    });
+
+    // const fillin_variation_layer = new SolidPolygonLayer({
+    //     data: variation_data_filtered,
+    //     id: "browser-fillin-variation-layer",
+    //     ...variation_layer_common_props
+    // });
 
      const browser_background_layer = new PolygonLayer({
             id: "browser-background",
@@ -357,8 +275,8 @@ const useBrowserLayers = (
         layers.push(browser_background_layer);
         layers.push(dynamic_browser_background_sublayer);
         layers.push(dynamic_browser_background_layer);
-        layers.push(browser_outline_layer);
-        layers.push(variation_layer);
+       layers.push(browser_outline_layer);
+        layers.push(main_variation_layer);
 
 
         return layers;

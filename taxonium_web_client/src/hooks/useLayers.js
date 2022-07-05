@@ -35,13 +35,11 @@ const useLayers = ({
   const layers = [];
 
     // Treenome Browser layers
-  const browserLayers = useBrowserLayers(browserState,
+  const browserLayers = useBrowserLayers( browserState,
     data,
     viewState,
     colorHook,
     setHoverInfo,
-    reference,
-    setReference,
     settings);
   layers.push(...browserLayers);
   

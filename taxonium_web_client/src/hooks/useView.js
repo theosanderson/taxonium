@@ -312,7 +312,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       }
 
       if (jbrowseRef.current) {
-        console.log(mouseXY)
         const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
         const xBound = jbrowseRef.current.children[0].children[0].offsetParent.offsetParent.offsetLeft;
         if (mouseXY[0] > xBound && mouseXY[1] < yBound || mouseXY[0] < 0 || mouseXY[1] < 0) {
