@@ -122,8 +122,8 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     pitch: 0,
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
-    "browser-main": {zoom: 0, target: [0,0]},
-    "browser-axis": {zoom: 0, target: [0,0]},
+    "browser-main": {zoom: -2, target: [0,1000]},
+    "browser-axis": {zoom: -2, target: [0,1000]},
   });
   useEffect(() => {
     setViewState((prevState) => {
@@ -226,8 +226,9 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       basicTarget,
       overrideZoomAxis,
     }) => {
-   
- //     console.log(vp);
+      // console.log("FROM", oldViewState)
+      // console.log("TO", newViewState)
+
       const localZoomAxis = overrideZoomAxis || zoomAxis;
       if (!deckSize) {
         setTimeout(() => {

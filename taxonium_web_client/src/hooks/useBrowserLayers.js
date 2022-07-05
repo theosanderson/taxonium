@@ -192,12 +192,6 @@ const useBrowserLayers = (
 
 
 
-    // const fillin_variation_layer = new SolidPolygonLayer({
-    //     data: variation_data_filtered,
-    //     id: "browser-fillin-variation-layer",
-    //     ...variation_layer_common_props
-    // });
-
      const browser_background_layer = new PolygonLayer({
             id: "browser-background",
             data: [[[browserState.xBounds[0], -1e4],
@@ -271,12 +265,12 @@ const useBrowserLayers = (
             opacity: 0.1,
             filled: false,
             pickable: false,
-            getPolygonOffset: ({layerIndex}) => [0, -layerIndex * 100],
+            getPolygonOffset: myGetPolygonOffset
         });
         layers.push(browser_background_layer);
         layers.push(dynamic_browser_background_sublayer);
         layers.push(dynamic_browser_background_layer);
-       layers.push(browser_outline_layer);
+        layers.push(browser_outline_layer);
         layers.push(main_variation_layer);
 
 

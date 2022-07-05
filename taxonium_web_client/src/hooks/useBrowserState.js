@@ -55,12 +55,21 @@ const useBrowserState = (
  
     }, [deckRef, setXbounds, view, settings.browserEnabled]);
 
+    useEffect(() => {
+        if(!settings.browserEnabled) {
+            setJbrowseLoaded(false);
+            setHandled(false)
+        }
+    }, [settings.browserEnabled]);
+
     const [jbrowseLoaded, setJbrowseLoaded] = useState(false);
     const [handled, setHandled] = useState(false);
     useEffect(() => {
         if (jbrowseLoaded && !handled) {
             console.log("handle resize")
-            handleResize();
+            window.setTimeout(() => {
+                handleResize();
+            }, 200);
             setHandled(true);
         }
     }, [jbrowseLoaded, handleResize]);

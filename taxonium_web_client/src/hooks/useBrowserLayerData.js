@@ -14,8 +14,7 @@ const useBrowserLayerData = (data, browserState) => {
   useEffect(() => {
     if (existingWorker) {
       // Without this, memory blows up possibly due to garbage
-      // collection not running frequently enough? Probably a
-      // better solution than making a new worker each time
+      // collection not running frequently enough?
       existingWorker.terminate();
     }
 
@@ -23,10 +22,13 @@ const useBrowserLayerData = (data, browserState) => {
       new URL("../webworkers/browserWorker.js", import.meta.url)
     );
     setExistingWorker(worker);
+
+
+
     
-    // if (data.data && data.data.nodes && data.data.nodes.length >= 90000 && cachedVarData.length > 0) {
+    //  if (data.data && data.data.nodes && data.data.nodes.length >= 1500 && cachedVarData.length > 0) {
     //   setVarData(cachedVarData);
-    // }
+    //  }
 
     worker.onmessage = (e) => {
       if (!reference && e.data.reference) {
@@ -43,12 +45,25 @@ const useBrowserLayerData = (data, browserState) => {
       }
     };
 
+
     if (!(data.data && data.data.nodes)) {
       return;
     }
+
+    setNumNodes(data.data.nodes.length)
+
+    if (cachedVarData.length == 0 || !reference) {
+      worker.postMessage({
+        type: "variation_data",
+        data: data,
+        ntBounds: browserState.ntBounds
+      });
+    }
+
+
     if (data.data.nodes.length >= 90000) {
       if (cachedVarData.length > 0) {
-       // console.log("returning cached....");
+        console.log("returning cached....");
         setVarData(cachedVarData);
 
         return;
@@ -77,22 +92,7 @@ const useBrowserLayerData = (data, browserState) => {
 
 
 
-    setNumNodes(data.data.nodes.length)
-
-
   }, [data.data, browserState.ntBounds]);
-
-
-  useEffect(() => {
-    if (!reference && !cachedVarData && existingWorker) {
-      existingWorker.postMessage({
-        type: "variation_data",
-        data: data,
-        ntBounds: browserState.ntBounds
-      });
-    }
-  }, [reference, existingWorker, cachedVarData]);
-
 
 
   return [varData, reference]

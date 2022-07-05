@@ -118,16 +118,15 @@ function Taxonium({
         />
       </div>
       
-      <div>
+      <div className="md:w-1/3">
           <button onClick={toggleSidebar}>
                 <br />
                 { sidebarOpen ? <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" /> : <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle"/> }
               </button>
               { 
                 sidebarOpen &&
-                <span>
                 <SearchPanel
-                  className="search-panel flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+                  className="search-panel flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 md:overflow-hidden"
                   backend={backend}
                   search={search}
                   colorBy={colorBy}
@@ -139,7 +138,6 @@ function Taxonium({
                   settings={settings}
                   browserState={browserState}
                 />
-                </span>
               }
         </div>
     </div>
