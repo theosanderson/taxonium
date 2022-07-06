@@ -243,10 +243,10 @@ def get_parser():
                         help='If set, we will name internal nodes node_xxx')
     parser.add_argument("--shear",
                         action='store_true',
-                        help="If set, we will shear the tree [not working correctly atm]")
+                        help="If set, we will 'shear' the tree. This will iterate over all nodes. If a particular sub-branch makes up fewer than e.g. 1/1000 of the total descendants, then in most cases it represents a sequencing error. (But it also could represent recombinants, or a real, unfit branch.) We remove these to simplify the interpretation of the tree. ")
     parser.add_argument('--shear_threshold',
                         type=float,
-                        help='How to shear tree [not working correctly atm]',
+                        help='Threshold for shearing, default is 1000 meaning branches will be removed if they make up less than <1/1000 nodes. Has no effect unless --shear is set.',
                         default=1000)
     parser.add_argument('--only_variable_sites',
                         action='store_true',
