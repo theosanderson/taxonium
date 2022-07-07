@@ -2,7 +2,7 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 
 
-const useBrowserLayerData = (data, browserState) => {
+const useBrowserLayerData = (data, browserState, settings) => {
 
   const [existingWorker, setExistingWorker] = useState(null);
   const [varData, setVarData] = useState([]);
@@ -57,7 +57,9 @@ const useBrowserLayerData = (data, browserState) => {
         ntBounds: browserState.ntBounds
       });
     }
-
+    if (!settings.browserEnabled) {
+      return;
+    }
 
     if (data.data.nodes.length >= 90000) {
       if (cachedVarData.length > 0) {

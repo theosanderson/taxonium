@@ -108,7 +108,7 @@ const useBrowserLayers = (
 
 
 */
-    const [layerData, computedReference] = useBrowserLayerData(data, browserState);
+    const [layerData, computedReference] = useBrowserLayerData(data, browserState, settings);
 
     useEffect(() => {
         if(!reference) {
