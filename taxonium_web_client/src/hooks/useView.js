@@ -14,7 +14,6 @@ constructor(props) {
 }
 // Default handler for the `wheel` event.
 onWheel(event) {
-//  console.log('wheelasdf')
 
   event.preventDefault();
 
@@ -226,9 +225,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       basicTarget,
       overrideZoomAxis,
     }) => {
-      // console.log("FROM", oldViewState)
-      // console.log("TO", newViewState)
-
       const localZoomAxis = overrideZoomAxis || zoomAxis;
       if (!deckSize) {
         setTimeout(() => {
@@ -242,6 +238,8 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
         }, 100);
         return;
       }
+          
+
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
         return;
@@ -300,17 +298,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
 
       newViewState["minimap"] = { zoom: -3, target: [250, 1000] };
       
-      // Treenome view state
-      if (viewId === "main") {
-        newViewState["browser-main"] = {
-          ...viewState["browser-main"],
-          zoom: newViewState.zoom,
-          target: [viewState["browser-main"].target[0], newViewState.target[1]],
-        }
-      }
-      else {
-        newViewState = viewState;
-      }
+  
 
       if (jbrowseRef.current) {
         const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
@@ -319,6 +307,16 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
           return;
         }      
       }
+
+      // Treenome view state
+      if (viewId === "main" || !viewId) {
+        newViewState["browser-main"] = {
+          ...viewState["browser-main"],
+          zoom: newViewState.zoom,
+          target: [viewState["browser-main"].target[0], newViewState.target[1]],
+        }
+      }
+
       setViewState(newViewState);
       return newViewState;
     },
@@ -327,6 +325,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
 
   const zoomIncrement = useCallback(
     (increment, overrideZoomAxis) => {
+
       const newViewState = { ...viewState };
       newViewState.zoom += increment;
 

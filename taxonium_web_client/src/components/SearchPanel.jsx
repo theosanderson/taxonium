@@ -43,6 +43,7 @@ function SearchPanel({
   backend,
   className,
   browserState,
+  view
 }) {
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
 
@@ -173,6 +174,16 @@ function SearchPanel({
               onChange={(event) => {
                 console.log(settings.browserEnabled);
                 settings.setBrowserEnabled(!settings.browserEnabled);
+                view.setViewState({
+                  zoom: -2,
+                  target: [window.screen.width < 600 ? 500 : 1400, 1000],
+              
+                  pitch: 0,
+                  bearing: 0,
+                  minimap: { zoom: -3, target: [250, 1000] },
+                  "browser-main": {zoom: -2, target: [0,1000]},
+                  "browser-axis": {zoom: -2, target: [0,1000]},
+                });
               }
             }
             />
