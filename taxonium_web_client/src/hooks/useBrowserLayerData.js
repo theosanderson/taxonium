@@ -26,9 +26,7 @@ const useBrowserLayerData = (data, browserState) => {
 
 
     
-    //  if (data.data && data.data.nodes && data.data.nodes.length >= 1500 && cachedVarData.length > 0) {
-    //   setVarData(cachedVarData);
-    //  }
+    
 
     worker.onmessage = (e) => {
       if (!reference && e.data.reference) {
@@ -69,7 +67,6 @@ const useBrowserLayerData = (data, browserState) => {
         return;
       }
     }
-
     if (numNodes == data.data.nodes.length) { // only ntBounds changed 
       if (!data.data || !data.data.nodes || !(varData.length > 0)) {
         return;
@@ -83,6 +80,7 @@ const useBrowserLayerData = (data, browserState) => {
       }
 
     } else { // full computation
+      setVarData(cachedVarData); 
       worker.postMessage({
         type: "variation_data",
         data: data,

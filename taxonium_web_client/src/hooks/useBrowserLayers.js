@@ -161,6 +161,7 @@ const useBrowserLayers = (
         },
         getPolygonOffset: myGetPolygonOffset
     });
+ 
     const dynamic_background_data = useMemo(() => {
         if (!settings.browserEnabled) {
             return;
@@ -174,17 +175,17 @@ const useBrowserLayers = (
             d.push(
                 {
                     x: [
-                        [ntToX(gene[0]), -1e4],
-                        [ntToX(gene[0]), 1e5],
-                        [ntToX(gene[1]), 1e5],
-                        [ntToX(gene[1]), -1e4],
+                        [ntToX(gene[0]), viewState.zoom < 7 ? -1e6 : -1e3],
+                        [ntToX(gene[0]), viewState.zoom < 7 ? 1e6 : 1e3],
+                        [ntToX(gene[1]), viewState.zoom < 7 ? 1e6 : 1e3],
+                        [ntToX(gene[1]), viewState.zoom < 7 ? -1e6 : -1e3],
                     ],
                     c: gene[2]
                 }
             );
         }
         return d;
-    }, [genes, ntToX, browserState.yBounds, browserState.xBounds, settings.browserEnabled]);
+    }, [genes, ntToX, browserState.xBounds, viewState.zoom, settings.browserEnabled]);
 
     if (!settings.browserEnabled) {
         return [];
@@ -194,16 +195,14 @@ const useBrowserLayers = (
 
      const browser_background_layer = new PolygonLayer({
             id: "browser-background",
-            data: [[[browserState.xBounds[0], -1e4],
-            [browserState.xBounds[1], -1e4],
-            [browserState.xBounds[1], 1e5],
-            [browserState.xBounds[0], 1e5]]]
+            
+            data: [[[browserState.xBounds[0], viewState.zoom < 7 ? -1e6 : -1e3],
+            [browserState.xBounds[0], viewState.zoom < 7 ? 1e6 : 1e3],
+            [browserState.xBounds[1], viewState.zoom < 7 ? 1e6 : 1e3],
+            [browserState.xBounds[1], viewState.zoom < 7 ? -1e6 : -1e3]]]
             ,
             // data: [ [[-1000, -1000], [-1000, 1000], [1000, 1000], [1000, -1000]] ] ,
             getPolygon: (d) => d,
-            updateTriggers: {
-                getPolygon: browserState.xBounds
-            },
             modelMatrix: modelMatrixFixedX,
             lineWidthUnits: "pixels",
             getLineWidth: 0,
@@ -215,18 +214,16 @@ const useBrowserLayers = (
             getPolygonOffset: myGetPolygonOffset
     });
 
-        
 
         const dynamic_browser_background_sublayer  = new SolidPolygonLayer({
             id: "browser-dynamic-background-sublayer",
             data: [{
                 
-                        x: [
-                            [ntToX(0), -1e4],
-                            [ntToX(0), 1e5],
-                            [ntToX(29903), 1e5],
-                            [ntToX(29903), -1e4],
-                        ],
+                        x: [ [ntToX(0), viewState.zoom < 7 ? -1e6 : -1e3],
+                        [ntToX(0),  viewState.zoom < 7 ? 1e6 : 1e3],
+                        [ntToX(29903),  viewState.zoom < 7 ? 1e6 : 1e3],
+                        [ntToX(29903), viewState.zoom < 7 ? -1e6 : -1e3]
+                    ],   
                         c: [245,245,245]
                     }
             ],
