@@ -75,6 +75,7 @@ function Taxonium({
     updateQuery,
     deckSize,
     xType,
+    settings
   });
 
   // Treenome 

@@ -12,6 +12,7 @@ const useSearch = ({
   updateQuery,
   deckSize,
   xType,
+  settings
 }) => {
   const { singleSearch } = backend;
 
@@ -206,7 +207,10 @@ const useSearch = ({
         Math.log2(
           max_y - min_y + 50000 / (config.num_nodes ? config.num_nodes : 10000)
         );
-      const new_target = [(min_x + max_x) / 2, (min_y + max_y) / 2];
+      const new_target =
+        settings.browserEnabled ? [oldViewState.target[0], (min_y + max_y) / 2]
+          : [(min_x + max_x) / 2, (min_y + max_y) / 2];
+
       console.log("NEW TARGET", new_target);
 
       const viewState = {
@@ -221,7 +225,7 @@ const useSearch = ({
         viewState: viewState,
         interactionState: "isZooming",
         oldViewState,
-        basicTarget: true,
+        basicTarget: false,
       });
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
