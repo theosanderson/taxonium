@@ -9,25 +9,9 @@ const useBrowserLayerData = (data, browserState, settings) => {
   const [numNodes, setNumNodes] = useState(0);
   const [cachedVarData, setCachedVarData] = useState([]);
   const [reference, setReference] = useState(null);
-  // const worker = useMemo(() => new Worker(new URL("../webworkers/browserWorker.js", import.meta.url)), []);
+  const worker = useMemo(() => new Worker(new URL("../webworkers/browserWorker.js", import.meta.url)), []);
 
   useEffect(() => {
-    if (existingWorker) {
-      // Without this, memory blows up possibly due to garbage
-      // collection not running frequently enough?
-      existingWorker.terminate();
-    }
-
-    const worker = new Worker(
-      new URL("../webworkers/browserWorker.js", import.meta.url)
-    );
-    setExistingWorker(worker);
-
-
-
-    
-    
-
     worker.onmessage = (e) => {
       if (!reference && e.data.reference) {
         setReference(e.data.reference)
