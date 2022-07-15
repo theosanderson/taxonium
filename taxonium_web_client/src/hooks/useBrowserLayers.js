@@ -35,6 +35,7 @@ const useBrowserLayers = (
           1,
         ];
       }, [viewState.zoom]);
+      
     const variation_padding = useMemo(() => {
         if (!data.data.nodes) {
             return 0;
@@ -173,20 +174,22 @@ const useBrowserLayers = (
                 continue;
             }
             const gene = genes[key];
+            const yl = browserState.yBounds[0];
+            const yh = browserState.yBounds[1];
             d.push(
                 {
                     x: [
-                        [ntToX(gene[0]), viewState.zoom < 7 ? -1e6 : -1e3],
-                        [ntToX(gene[0]), viewState.zoom < 7 ? 1e6 : 1e3],
-                        [ntToX(gene[1]), viewState.zoom < 7 ? 1e6 : 1e3],
-                        [ntToX(gene[1]), viewState.zoom < 7 ? -1e6 : -1e3],
+                        [ntToX(gene[0]), -3000],
+                        [ntToX(gene[0]), yh * 4],
+                        [ntToX(gene[1]), yh * 4],
+                        [ntToX(gene[1]), -3000],
                     ],
                     c: gene[2]
-                }
+                },
             );
         }
         return d;
-    }, [genes, ntToX, browserState.xBounds, viewState.zoom, settings.browserEnabled]);
+    }, [genes, ntToX, browserState.xBounds, browserState.yBounds, viewState.zoom, settings.browserEnabled]);
 
     const selected_node_data = useMemo(() => {
         if (!selectedDetails.nodeDetails || variation_padding == 0 ) {
@@ -208,20 +211,40 @@ const useBrowserLayers = (
         ]
     }, [selectedDetails, ntToX, variation_padding, data.data])
 
+    const background_layer_data = useMemo(() => {
+        const yh = browserState.yBounds[1];
+        return [[
+            [browserState.xBounds[0], -3000],
+            [browserState.xBounds[0], yh * 4],
+            [browserState.xBounds[1], yh * 4],
+            [browserState.xBounds[1], -3000],
+            
+        ]]
+    }, [browserState.xBounds, browserState.yBounds]);
+
+    const dynamic_browser_background_data = useMemo(() => {
+        const yh = browserState.yBounds[1];
+        return [{
+            x: [ [ntToX(0), -3000],
+                [ntToX(0), yh * 4],
+                [ntToX(29903), yh * 4],
+                [ntToX(29903), -3000]
+            ],
+            c: [245, 245, 245]
+        }]
+    }, [browserState.yBounds, ntToX])
+
     if (!settings.browserEnabled) {
         return [];
     }
 
 
-
+  
      const browser_background_layer = new PolygonLayer({
             id: "browser-background",
             
-            data: [[[browserState.xBounds[0], viewState.zoom < 7 ? -1e6 : -1e3],
-            [browserState.xBounds[0], viewState.zoom < 7 ? 1e6 : 1e3],
-            [browserState.xBounds[1], viewState.zoom < 7 ? 1e6 : 1e3],
-            [browserState.xBounds[1], viewState.zoom < 7 ? -1e6 : -1e3]]]
-            ,
+            data: background_layer_data,
+            
             // data: [ [[-1000, -1000], [-1000, 1000], [1000, 1000], [1000, -1000]] ] ,
             getPolygon: (d) => d,
             modelMatrix: modelMatrixFixedX,
@@ -229,8 +252,8 @@ const useBrowserLayers = (
             getLineWidth: 0,
             filled: true,
             pickable: false,
-            //extruded: true,
-            //wireframe: true,
+            extruded: true,
+            wireframe: true,
             getFillColor: [224, 224, 224],
             getPolygonOffset: myGetPolygonOffset
     });
@@ -238,16 +261,7 @@ const useBrowserLayers = (
 
         const dynamic_browser_background_sublayer  = new SolidPolygonLayer({
             id: "browser-dynamic-background-sublayer",
-            data: [{
-                
-                        x: [ [ntToX(0), viewState.zoom < 7 ? -1e6 : -1e3],
-                        [ntToX(0),  viewState.zoom < 7 ? 1e6 : 1e3],
-                        [ntToX(29903),  viewState.zoom < 7 ? 1e6 : 1e3],
-                        [ntToX(29903), viewState.zoom < 7 ? -1e6 : -1e3]
-                    ],   
-                        c: [245,245,245]
-                    }
-            ],
+            data: dynamic_browser_background_data,
             getPolygon: (d) => d.x,
             getFillColor: (d) => d.c,
             getPolygonOffset: myGetPolygonOffset,
@@ -296,7 +310,7 @@ const useBrowserLayers = (
             // getLineColor: [100, 100, 100],
             opacity: 0.1,
             filled: true,
-            getFillColor: [220,220,220],
+            getFillColor: [240,240,240],
             pickable: false,
             getPolygonOffset: myGetPolygonOffset
 
