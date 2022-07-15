@@ -211,7 +211,6 @@ const useSearch = ({
         settings.browserEnabled ? [oldViewState.target[0], (min_y + max_y) / 2]
           : [(min_x + max_x) / 2, (min_y + max_y) / 2];
 
-      console.log("NEW TARGET", new_target);
 
       const viewState = {
         ...view.viewState,
@@ -219,18 +218,18 @@ const useSearch = ({
         target: new_target,
         zoom: newZoom,
       };
-      console.log("zoom to search new VS", viewState);
+      console.log("zoom to search new VS", viewState.target[0], viewState.target[1]);
 
       view.onViewStateChange({
         viewState: viewState,
         interactionState: "isZooming",
         oldViewState,
-        basicTarget: false,
+        basicTarget: settings.browserEnabled ? false : true,
       });
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
-  }, [zoomToSearch, searchResults, deckSize]);
+  }, [zoomToSearch, searchResults, deckSize, config.num_nodes, settings.browserEnabled, searchSpec, updateQuery, view, xType]);
 
   return {
     searchResults,

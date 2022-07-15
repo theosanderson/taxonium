@@ -165,7 +165,7 @@ function SearchPanel({
           </label>
         )}
         <label className="space-x-2 text-sm block">
-            <span className="text-gray-500 text-sm">Genome browser:</span>
+            <span className="text-gray-500 text-sm">Treenome Browser:</span>
             <input
               name="browserEnabled"
               type="checkbox"
