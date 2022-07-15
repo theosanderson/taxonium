@@ -2,7 +2,7 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 
 
-const useBrowserLayerData = (data, browserState, settings) => {
+const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
 
   const [existingWorker, setExistingWorker] = useState(null);
   const [varData, setVarData] = useState([]);

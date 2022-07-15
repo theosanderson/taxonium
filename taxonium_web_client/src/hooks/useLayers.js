@@ -42,7 +42,8 @@ const useLayers = ({
     setHoverInfo,
     settings,
     reference,
-    setReference);
+    setReference,
+    selectedDetails);
   layers.push(...browserLayers);
   
 

@@ -11,6 +11,7 @@ const useBrowserLayers = (
     settings,
     reference,
     setReference,
+    selectedDetails
 ) => {
     
     const myGetPolygonOffset = ({layerIndex}) => [0, -(layerIndex+999) * 100];
@@ -47,7 +48,7 @@ const useBrowserLayers = (
     const aaWidth = useMemo(() => {
         const browserWidth = browserState.xBounds[1] - browserState.xBounds[0];
         const numNt = browserState.ntBounds[1] - browserState.ntBounds[0];
-        return numNt > 150
+        return numNt > 600
             ? 2
             : (browserWidth / numNt) * 3;
     }, [browserState.ntBounds, browserState.xBounds]);
@@ -187,6 +188,26 @@ const useBrowserLayers = (
         return d;
     }, [genes, ntToX, browserState.xBounds, viewState.zoom, settings.browserEnabled]);
 
+    const selected_node_data = useMemo(() => {
+        if (!selectedDetails.nodeDetails || variation_padding == 0 ) {
+            return [];
+        }
+        if (data.data && data.data.nodes && data.data.nodes.length > 500) {
+            return [];
+        }
+        const y = selectedDetails.nodeDetails.y;
+   
+        return [
+            {
+                p: [ [ntToX(0), y - variation_padding],
+                    [ntToX(0), y + variation_padding],
+                    [ntToX(29903), y + variation_padding],
+                    [ntToX(29903), y - variation_padding]
+                ],   
+            }
+        ]
+    }, [selectedDetails, ntToX, variation_padding, data.data])
+
     if (!settings.browserEnabled) {
         return [];
     }
@@ -264,11 +285,28 @@ const useBrowserLayers = (
             pickable: false,
             getPolygonOffset: myGetPolygonOffset
         });
+
+        const selected_node_layer = new PolygonLayer({
+            id: "browser-selected-node",
+            data: selected_node_data,
+            getPolygon: (d) => d.p,
+            modelMatrix: modelMatrixFixedX,
+            lineWidthUnits: "pixels",
+            getLineWidth: .4,
+            // getLineColor: [100, 100, 100],
+            opacity: 0.1,
+            filled: true,
+            getFillColor: [220,220,220],
+            pickable: false,
+            getPolygonOffset: myGetPolygonOffset
+
+        })
         layers.push(browser_background_layer);
         layers.push(dynamic_browser_background_sublayer);
         layers.push(dynamic_browser_background_layer);
         layers.push(browser_outline_layer);
         layers.push(main_variation_layer);
+        layers.push(selected_node_layer)
 
 
         return layers;
