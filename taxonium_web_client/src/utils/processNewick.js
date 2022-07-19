@@ -100,7 +100,6 @@ function fetch_or_extract(
       file_obj.filename,
       sendStatusMessage,
       whatIsBeingDownloaded
-      
     );
   } else if (file_obj.status === "loaded") {
     if (file_obj.filename.includes(".gz")) {
