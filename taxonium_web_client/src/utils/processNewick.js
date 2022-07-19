@@ -89,12 +89,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
-function fetch_or_extract(
-  file_obj,
-  sendStatusMessage,
-  whatIsBeingDownloaded,
-  
-) {
+function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
   if (file_obj.status === "url_supplied") {
     return do_fetch(
       file_obj.filename,
@@ -295,10 +290,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
   return [output, headers];
 }
 
-export async function processNewickAndMetadata(
-  data,
-  sendStatusMessage,
-) {
+export async function processNewickAndMetadata(data, sendStatusMessage) {
   const treePromise = processNewick(data, sendStatusMessage);
 
   const metadataInput = data.metadata;
