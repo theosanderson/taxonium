@@ -15,7 +15,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
     sendStatusMessage = () => {};
   }
 
-  sendErrorMessage = (message) => {
+  const sendErrorMessage = (message) => {
     sendStatusMessage({ error: message });
   };
   // send progress on downloadProgress
