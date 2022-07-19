@@ -15,7 +15,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
     sendStatusMessage = () => {};
   }
 
-  const sendErrorMessage = (message) => {
+  sendErrorMessage = (message) => {
     sendStatusMessage({ error: message });
   };
   // send progress on downloadProgress
@@ -32,6 +32,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
         },
       })
       .catch(function (error) {
+        sendErrorMessage("Error loading "+url+". This may be a CORS config issue.")
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -46,6 +47,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
         } else {
           // Something happened in setting up the request that triggered an Error
           sendErrorMessage(error.message);
+          
         }
         console.log(error.config);
       });
@@ -66,6 +68,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
         },
       })
       .catch(function (error) {
+        sendErrorMessage("Error loading "+url+". This may be a CORS config issue." )
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -89,12 +92,18 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
-function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
+function fetch_or_extract(
+  file_obj,
+  sendStatusMessage,
+  whatIsBeingDownloaded,
+  
+) {
   if (file_obj.status === "url_supplied") {
     return do_fetch(
       file_obj.filename,
       sendStatusMessage,
       whatIsBeingDownloaded
+      
     );
   } else if (file_obj.status === "loaded") {
     if (file_obj.filename.includes(".gz")) {
@@ -290,7 +299,10 @@ export async function processMetadataFile(data, sendStatusMessage) {
   return [output, headers];
 }
 
-export async function processNewickAndMetadata(data, sendStatusMessage) {
+export async function processNewickAndMetadata(
+  data,
+  sendStatusMessage,
+) {
   const treePromise = processNewick(data, sendStatusMessage);
 
   const metadataInput = data.metadata;
