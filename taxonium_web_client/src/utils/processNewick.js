@@ -11,9 +11,16 @@ import reduceMaxOrMin from "./reduceMaxOrMin";
 const emptyList = [];
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
+  
   if (!sendStatusMessage) {
     sendStatusMessage = () => {};
+   
+
   }
+
+  sendErrorMessage = (message) => {
+    sendStatusMessage({error:message})
+  };
   // send progress on downloadProgress
 
   if (url.endsWith(".gz")) {
@@ -31,7 +38,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          window.alert(error.response.data);
+          sendErrorMessage(error.response.data);
           console.log(error.response.status);
           console.log(error.response.headers);
         } else if (error.request) {
@@ -41,7 +48,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
           console.log(error.request);
         } else {
           // Something happened in setting up the request that triggered an Error
-          window.alert("Error", error.message);
+          sendErrorMessage(error.message);
         }
         console.log(error.config);
       });
@@ -85,12 +92,13 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
-function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
+function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded, window) {
   if (file_obj.status === "url_supplied") {
     return do_fetch(
       file_obj.filename,
       sendStatusMessage,
-      whatIsBeingDownloaded
+      whatIsBeingDownloaded,
+      window
     );
   } else if (file_obj.status === "loaded") {
     if (file_obj.filename.includes(".gz")) {
@@ -143,11 +151,11 @@ async function cleanup(tree) {
   });
 }
 
-export async function processNewick(data, sendStatusMessage) {
+export async function processNewick(data, sendStatusMessage, window) {
   console.log("got data", data);
   let the_data;
 
-  the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
+  the_data = await fetch_or_extract(data, sendStatusMessage, "tree", window);
 
   sendStatusMessage({
     message: "Parsing Newick file",
@@ -286,8 +294,8 @@ export async function processMetadataFile(data, sendStatusMessage) {
   return [output, headers];
 }
 
-export async function processNewickAndMetadata(data, sendStatusMessage) {
-  const treePromise = processNewick(data, sendStatusMessage);
+export async function processNewickAndMetadata(data, sendStatusMessage, window) {
+  const treePromise = processNewick(data, sendStatusMessage, window);
 
   const metadataInput = data.metadata;
   if (!metadataInput) {
