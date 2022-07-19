@@ -93,7 +93,7 @@ function fetch_or_extract(
   file_obj,
   sendStatusMessage,
   whatIsBeingDownloaded,
-  window
+  
 ) {
   if (file_obj.status === "url_supplied") {
     return do_fetch(
@@ -298,9 +298,8 @@ export async function processMetadataFile(data, sendStatusMessage) {
 export async function processNewickAndMetadata(
   data,
   sendStatusMessage,
-  window
 ) {
-  const treePromise = processNewick(data, sendStatusMessage, window);
+  const treePromise = processNewick(data, sendStatusMessage);
 
   const metadataInput = data.metadata;
   if (!metadataInput) {
