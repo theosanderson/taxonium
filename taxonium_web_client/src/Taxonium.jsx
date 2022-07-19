@@ -80,7 +80,7 @@ function Taxonium({
 
   // Treenome 
   const [updateBrowserBounds, setUpdateBrowserBounds] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     // const tempView = view.viewState;
 

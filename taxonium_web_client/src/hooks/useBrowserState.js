@@ -8,12 +8,45 @@ const useBrowserState = (
 ) => {
     const [yBounds, setYBounds] = useState([0, 0]);
     const [xBounds, setXbounds] = useState([0, 0]);
-    const [ntBounds, setNtBounds] = useState([0, 29903]);
     const [ntBoundsExt, setNtBoundsExt] = useState(null);
     const [pxPerBp, setPxPerBp] = useState(0);
     const [bpWidth, setBpWidth] = useState(0);
+    const [isCov2Tree, setIsCov2Tree] = useState(false);
 
-  
+
+    const findGenomeSize = (nodes) => {
+        for (let node of nodes) {
+            if (node.parent_id == node.node_id) {
+                // root
+                let size = 0;
+                for (let mut of node.mutations) {
+                    if (mut.gene == 'nt') {
+                        size += 1;
+                    }
+                }
+                return size;
+            }
+        }
+    }
+    const [genomeSize, setGenomeSize] = useState(0);
+     
+    useEffect(() => {
+        if ((genomeSize == 0 || genomeSize == undefined) && data && data.base_data && data.base_data.nodes) {
+            setGenomeSize(findGenomeSize(data.base_data.nodes));
+        }
+    }, [findGenomeSize, setGenomeSize, data.base_data]);
+
+    useEffect(() => {
+        if (window.location.href.includes("cov2tree.org")) {
+            setIsCov2Tree(true);
+        }
+    }, [window.location])
+
+
+    
+    const [ntBounds, setNtBounds] = useState([0, genomeSize]);
+
+
     useEffect(() => {
         if (!data.data || !data.data.nodes || !settings.browserEnabled) {
             return;
@@ -118,8 +151,10 @@ const useBrowserState = (
             setPxPerBp,
             bpWidth,
             handleResize,
+            isCov2Tree,
+            genomeSize
         }
-    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize]);
+    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize, isCov2Tree, genomeSize]);
 
     return state;
 };

@@ -16,21 +16,31 @@ function JBrowsePanel(props) {
   const browserAnnotations = useBrowserAnnotations();
 
   const assembly = useMemo(() => {
-    return {
-      name: 'NC_045512v2',
-      sequence: {
-        type: 'ReferenceSequenceTrack',
-        trackId: 'NC_045512v2-ReferenceSequenceTrack',
-        adapter: {
-          type: 'TwoBitAdapter',
-          twoBitLocation: {
-            uri: referenceUrl,
-            locationType: 'UriLocation',
+    if (props.browserState.isCov2Tree)
+      return {
+        name: 'NC_045512v2',
+        sequence: {
+          type: 'ReferenceSequenceTrack',
+          trackId: 'NC_045512v2-ReferenceSequenceTrack',
+          adapter: {
+            type: 'TwoBitAdapter',
+            twoBitLocation: {
+              uri: referenceUrl,
+              locationType: 'UriLocation',
+            },
           },
         },
-      },
+      }
+    else {
+      return {
+        name: 'chromosome',
+        sequence: {
+          type: 'ReferenceSequenceTrack',
+          trackId: 'chromosome-ReferenceSequenceTrack',
+        }
+      }
     }
-  }, []);
+  }, [props.browserState.isCov2Tree]);
 
   const tracks = useMemo(() => {
     return [
@@ -235,11 +245,11 @@ function JBrowsePanel(props) {
   const state = useMemo(() => createViewState({
     assembly,
     tracks,
-    location: 'NC_045512v2:0-29903',
+    location: props.browserState.isCov2Tree ? 'NC_045512v2:0-29903' : '',
     defaultSession,
     ...theme,
     onChange: onChange
-  }), [assembly, tracks, defaultSession, theme]);
+  }), [assembly, tracks, defaultSession, theme, props.browserState.isCov2Tree]);
 
 
   useEffect(() => {

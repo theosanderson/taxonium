@@ -85,7 +85,6 @@ export const useSettings = ({ query, updateQuery }) => {
       </div>
     );
   };
-  
   return {
     minimapEnabled,
     browserEnabled,
