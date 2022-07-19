@@ -11,15 +11,12 @@ import reduceMaxOrMin from "./reduceMaxOrMin";
 const emptyList = [];
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
-  
   if (!sendStatusMessage) {
     sendStatusMessage = () => {};
-   
-
   }
 
   sendErrorMessage = (message) => {
-    sendStatusMessage({error:message})
+    sendStatusMessage({ error: message });
   };
   // send progress on downloadProgress
 
@@ -92,7 +89,12 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
-function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded, window) {
+function fetch_or_extract(
+  file_obj,
+  sendStatusMessage,
+  whatIsBeingDownloaded,
+  window
+) {
   if (file_obj.status === "url_supplied") {
     return do_fetch(
       file_obj.filename,
@@ -294,7 +296,11 @@ export async function processMetadataFile(data, sendStatusMessage) {
   return [output, headers];
 }
 
-export async function processNewickAndMetadata(data, sendStatusMessage, window) {
+export async function processNewickAndMetadata(
+  data,
+  sendStatusMessage,
+  window
+) {
   const treePromise = processNewick(data, sendStatusMessage, window);
 
   const metadataInput = data.metadata;
