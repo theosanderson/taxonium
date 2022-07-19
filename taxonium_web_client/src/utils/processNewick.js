@@ -69,7 +69,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          window.alert(error.response.data);
+          sendErrorMessage(error.response.data);
           console.log(error.response.status);
           console.log(error.response.headers);
         } else if (error.request) {
@@ -79,7 +79,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
           console.log(error.request);
         } else {
           // Something happened in setting up the request that triggered an Error
-          window.alert("Error", error.message);
+          sendErrorMessage(error.message);
         }
         console.log(error.config);
       });
@@ -99,8 +99,8 @@ function fetch_or_extract(
     return do_fetch(
       file_obj.filename,
       sendStatusMessage,
-      whatIsBeingDownloaded,
-      window
+      whatIsBeingDownloaded
+      
     );
   } else if (file_obj.status === "loaded") {
     if (file_obj.filename.includes(".gz")) {
@@ -153,11 +153,11 @@ async function cleanup(tree) {
   });
 }
 
-export async function processNewick(data, sendStatusMessage, window) {
+export async function processNewick(data, sendStatusMessage) {
   console.log("got data", data);
   let the_data;
 
-  the_data = await fetch_or_extract(data, sendStatusMessage, "tree", window);
+  the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
   sendStatusMessage({
     message: "Parsing Newick file",
