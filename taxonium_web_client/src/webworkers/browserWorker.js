@@ -39,6 +39,7 @@ const computeFilteredVariationData = (variation_data, ntBounds, data) => {
   if (data.data.nodes.length < 10000 || ntBounds[1] - ntBounds[0] < 1000) {
     return variation_data;
   } else {
+    console.log("FILTERING")
     return variation_data.filter((d) => (d.y[1] - d.y[0]) > .002)
   }
 }
@@ -113,7 +114,7 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
   postorder_nodes.reverse();
   let var_data = [];
 
-  for (let memoIndex = 0; memoIndex < postorder_nodes.length; memoIndex += chunkSize) {
+  for (let memoIndex = 0; memoIndex < postorder_nodes.length + chunkSize; memoIndex += chunkSize) {
     
     let this_var_data = [];
     let i;
