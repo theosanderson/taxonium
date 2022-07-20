@@ -5,27 +5,38 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
 
   const [existingWorker, setExistingWorker] = useState(null);
-  const [varData, setVarData] = useState([]);
+  const [varDataAa, setVarDataAa] = useState([]);
+  const [varDataNt, setVarDataNt] = useState([]);
   const [numNodes, setNumNodes] = useState(0);
-  const [cachedVarData, setCachedVarData] = useState([]);
+  const [cachedVarDataAa, setCachedVarDataAa] = useState([]);
+  const [cachedVarDataNt, setCachedVarDataNt] = useState([]);
   const [reference, setReference] = useState(null);
+  const [didFirst, setDidFirst] = useState(false);
+  const [currentJobId, setCurrentJobId] = useState(null)
   const worker = useMemo(() => new Worker(new URL("../webworkers/browserWorker.js", import.meta.url)), []);
 
+  worker.onmessage = useCallback((e) => {
+    if (!reference && e.data.reference) {
+      setReference(e.data.reference)
+    }
+
+    if (e.data.type == "variation_data_return_cache_aa") {
+      //     console.log("CACHE AA", e.data.filteredVarData)
+      setCachedVarDataAa(e.data.filteredVarData)
+      setVarDataAa(e.data.filteredVarData);
+    } else if (e.data.type == "variation_data_return_aa") {
+      //      console.log("SENDING AA")
+      setVarDataAa(e.data.filteredVarData)
+    } else if (e.data.type == "variation_data_return_cache_nt") {
+      setCachedVarDataNt(e.data.filteredVarData)
+      setVarDataNt(e.data.filteredVarData);
+    } else if (e.data.type == "variation_data_return_nt") {
+      console.log("got computer nuc")
+      setVarDataNt(e.data.filteredVarData)
+    }
+  }, [reference, setReference, setVarDataAa, setVarDataNt, setCachedVarDataAa, setCachedVarDataNt, currentJobId])
+
   useEffect(() => {
-    worker.onmessage = (e) => {
-      if (!reference && e.data.reference) {
-        setReference(e.data.reference)
-      }
-      //("got message from var worker", e.data);
-      if (e.data.type == "variation_data_return_cache") {
-       // console.log("caching zoomed out var data")
-        setCachedVarData(e.data.filteredVarData)
-        setVarData(e.data.filteredVarData );
-      } else if (e.data.type == "variation_data_return") {
-       // console.log("normal var data return");
-        setVarData(e.data.filteredVarData)
-      }
-    };
 
 
     if (!(data.data && data.data.nodes)) {
@@ -34,52 +45,95 @@ const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
 
     setNumNodes(data.data.nodes.length)
 
-    if (cachedVarData.length == 0 || !reference) {
-      worker.postMessage({
-        type: "variation_data",
-        data: data,
-        ntBounds: browserState.ntBounds
-      });
+    if (cachedVarDataAa.length == 0 && data.data && data.data.nodes && browserState.ntBounds != [0, 0]) {
+      if (settings.mutationTypesEnabled.aa) {
+        const jobId = data.data.nodes.length;
+        worker.postMessage({
+          type: "variation_data_aa",
+          data: data,
+          jobId: jobId,
+          ntBounds: browserState.ntBounds
+        });
+      }
     }
+    if (cachedVarDataNt.length == 0 && data.data && data.data.nodes && browserState.ntBounds != [0, 0]) {
+      if (settings.mutationTypesEnabled.nt) {
+        const jobId = data.data.nodes.length;
+        worker.postMessage({
+          type: "variation_data_nt",
+          data: data,
+          jobId: jobId,
+          ntBounds: browserState.ntBounds
+        });
+      }
+    }
+
+
     if (!settings.browserEnabled) {
       return;
     }
-
     if (data.data.nodes.length >= 90000) {
-      if (cachedVarData.length > 0) {
-        console.log("returning cached....");
-        setVarData(cachedVarData);
-
-        return;
+      
+      if (cachedVarDataAa.length > 0) {
+        console.log("cacheaa")
+        setVarDataAa(cachedVarDataAa);
+      }
+      if (cachedVarDataNt.length > 0) {
+        setVarDataNt(cachedVarDataNt);
+      }
+      if (settings.mutationTypesEnabled.aa && cachedVarDataAa.length > 0) {
+        if (cachedVarDataNt.length > 0 || !settings.mutationTypesEnabled.nt) {
+          return;
+        }
+      }
+      if (settings.mutationTypesEnabled.nt && cachedVarDataNt.length > 0) {
+        if (cachedVarDataAa.length > 0 || !settings.mutationTypesEnabled.aa) {
+          return;
+        }
       }
     }
     if (numNodes == data.data.nodes.length) { // only ntBounds changed 
-      if (!data.data || !data.data.nodes || !(varData.length > 0)) {
+      if (!data.data || !data.data.nodes || !(varDataAa) || !(varDataNt)) {
         return;
       }
-      // just doing filtering here seems to be faster than
-      // posting messages every time ntBounds changes
-      if (data.data.nodes.length < 10000 || browserState.ntBounds[1] - browserState.ntBounds[0] < 1000) {
-        setVarData(varData);
-      } else {
-        setVarData(varData.filter((d) => (d.y[1] - d.y[0]) > .002));
-      }
+      setVarDataAa(varDataAa);
+      setVarDataNt(varDataNt);
 
     } else { // full computation
-      setVarData(cachedVarData); 
-      worker.postMessage({
-        type: "variation_data",
-        data: data,
-        ntBounds: browserState.ntBounds
-      });
+
+      if (cachedVarDataAa.length > 0) {
+        setVarDataAa(cachedVarDataAa);
+        const jobId = data.data.nodes.length;
+        if (settings.mutationTypesEnabled.aa) {
+          worker.postMessage({
+            type: "variation_data_aa",
+            data: data,
+            jobId: jobId,
+            ntBounds: browserState.ntBounds
+          });
+        }
+      }
+      if (cachedVarDataNt.length > 0) {
+        setVarDataNt(cachedVarDataNt);
+        const jobId = data.data.nodes.length;
+        if (settings.mutationTypesEnabled.nt) {
+          worker.postMessage({
+            type: "variation_data_nt",
+            data: data,
+            jobId: jobId,
+            ntBounds: browserState.ntBounds
+          });
+        }
+
+      }
+
     }
 
 
 
-  }, [data.data, browserState.ntBounds]);
+  }, [data.data, settings.mutationTypesEnabled, browserState.ntBounds, currentJobId, setCurrentJobId]);
 
-
-  return [varData, reference]
+  return [varDataAa, varDataNt, reference]
 }
 
 export default useBrowserLayerData;

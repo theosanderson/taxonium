@@ -53,6 +53,9 @@ const useBrowserLayers = (
             ? 2
             : (browserWidth / numNt) * 3;
     }, [browserState.ntBounds, browserState.xBounds]);
+    const ntWidth = useMemo(() => {
+        return aaWidth / 3;
+    }, [aaWidth])
     const genes = useMemo(() => {
         return { // [start, end, [color]]
         'ORF1a': [266, 13469, [142, 188, 102]],
@@ -73,51 +76,13 @@ const useBrowserLayers = (
 
     let layers = [];
 
-    const post_order = useCallback((nodes) => {
-        if (!settings.browserEnabled) {
-            return;
-        }
-        let to_children = {};
-        let root_id = null;
-        for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i].parent_id == nodes[i].node_id) {
-                root_id = nodes[i].node_id;
-                continue;
-            }
-            if (to_children[nodes[i].parent_id] !== undefined) {
-                to_children[nodes[i].parent_id].push(nodes[i].node_id);
-            } else {
-                to_children[nodes[i].parent_id] = [nodes[i].node_id];
-            }
-        }
-        let stack = [];
-        let po = [];
-        stack.push(root_id);
-        while (stack.length > 0) {
-            const node_id = stack.pop();
-            if (to_children[node_id]) {
-                for (let child_id of to_children[node_id]) {
-                    stack.push(child_id);
-                }
-            }
-            po.push(node_id);
-        }
-        console.log("done postorder", po)
-        return po;
-    }, [settings.browserEnabled]);
-/*
 
-
-
-*/
-    const [layerData, computedReference] = useBrowserLayerData(data, browserState, settings);
-
+    const [layerDataAa, layerDataNt, computedReference] = useBrowserLayerData(data, browserState, settings);
     useEffect(() => {
         if(!reference) {
             setReference(computedReference)
         }
     }, [computedReference])
-    
     const ntToX = useCallback((nt) => {
         return browserState.xBounds[0] + (nt - browserState.ntBounds[0])
             / (browserState.ntBounds[1] - browserState.ntBounds[0])
@@ -125,21 +90,23 @@ const useBrowserLayers = (
     }, [browserState.xBounds, browserState.ntBounds, browserState.yBounds]);
 
     const getNtPos = useCallback((mut) => {
-        if (!genes[mut.gene]) {
-            console.log("undef gene", mut.gene)
+        if (mut.gene == 'nt') {
+            return mut.residue_pos - 1;
         }
         return genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
     }, [genes]);
 
-    //console.log("layerdata", layerData, reference);
-    const main_variation_layer = new SolidPolygonLayer({
-        data: layerData,
-        id: "browser-main",
+    const main_variation_layer_aa = new SolidPolygonLayer({
+        data: layerDataAa,
+        id: "browser-main-aa",
         onHover: (info) => setHoverInfo(info),
         pickable: true,
-        getFillColor: (d) => d.m.new_residue != reference[d.m.gene + ':' + d.m.residue_pos] 
-        ? colorHook.toRGB(d.m.new_residue)
-        : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c))),
+        getFillColor: (d) => {
+            return  d.m.new_residue != reference['aa'][d.m.gene + ':' + d.m.residue_pos] 
+            ? colorHook.toRGB(d.m.new_residue)
+            : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c)));
+        },
+           
         getLineColor: (d) => [80, 80, 80],
         lineWidthUnits: "pixels",
         modelMatrix: modelMatrixFixedX,
@@ -154,15 +121,68 @@ const useBrowserLayers = (
             }
 
             let x = ntToX(ntPos);
-
+            if (mut.gene == 'nt') {
+                return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
+                [x + ntWidth, d.y[1] + variation_padding], [x + ntWidth, d.y[0] - variation_padding] ];
+            }
             return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
-                [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
+            [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
         },
         updateTriggers: {
-            getPolygon: [browserState.ntBounds, getNtPos, ntToX, aaWidth, variation_padding],
+            getPolygon: [browserState.ntBounds, getNtPos, ntToX, aaWidth, ntWidth, variation_padding],
+            getFillColor: [reference, colorHook, genes]
         },
         getPolygonOffset: myGetPolygonOffset
     });
+
+    const main_variation_layer_nt = new SolidPolygonLayer({
+        data: layerDataNt,
+        id: "browser-main-nt",
+        onHover: (info) => setHoverInfo(info),
+        pickable: true,
+        getFillColor: (d) => {
+            switch(d.m.new_residue) {
+                case 'A':
+                    return [0, 0, 0];
+                case 'C':
+                    return [60, 60, 60];
+                case 'G':
+                    return [120, 120, 120];
+                case 'T':
+                    return [180, 180, 180];
+                default:
+                    return [0, 0, 0]
+            }
+        },
+           
+        getLineColor: (d) => [80, 80, 80],
+        lineWidthUnits: "pixels",
+        modelMatrix: modelMatrixFixedX,
+        getPolygon: (d) => {
+            if (!browserState.ntBounds) {
+                return [[0, 0]];
+            }
+            let mut = d.m;
+            let ntPos = getNtPos(mut);
+            if (ntPos < browserState.ntBounds[0] || ntPos > browserState.ntBounds[1]) {
+                return [[0 , 0]];
+            }
+
+            let x = ntToX(ntPos);
+            if (mut.gene == 'nt') {
+                return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
+                [x + ntWidth, d.y[1] + variation_padding], [x + ntWidth, d.y[0] - variation_padding] ];
+            }
+            return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
+            [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
+        },
+        updateTriggers: {
+            getPolygon: [browserState.ntBounds, getNtPos, ntToX, aaWidth, ntWidth, variation_padding],
+            getFillColor: [reference, colorHook, genes]
+        },
+        getPolygonOffset: myGetPolygonOffset
+    });
+ 
  
     const dynamic_background_data = useMemo(() => {
         if (!settings.browserEnabled) {
@@ -179,10 +199,10 @@ const useBrowserLayers = (
             d.push(
                 {
                     x: [
-                        [ntToX(gene[0]), -3000],
-                        [ntToX(gene[0]), yh * 4],
-                        [ntToX(gene[1]), yh * 4],
-                        [ntToX(gene[1]), -3000],
+                        [ntToX(gene[0]-1), -3000],
+                        [ntToX(gene[0]-1), yh * 4],
+                        [ntToX(gene[1]-1), yh * 4],
+                        [ntToX(gene[1]-1), -3000],
                     ],
                     c: gene[2]
                 },
@@ -204,12 +224,12 @@ const useBrowserLayers = (
             {
                 p: [ [ntToX(0), y - variation_padding],
                     [ntToX(0), y + variation_padding],
-                    [ntToX(29903), y + variation_padding],
-                    [ntToX(29903), y - variation_padding]
+                    [ntToX(browserState.genomeSize), y + variation_padding],
+                    [ntToX(browserState.genomeSize), y - variation_padding]
                 ],   
             }
         ]
-    }, [selectedDetails, ntToX, variation_padding, data.data])
+    }, [selectedDetails, ntToX, variation_padding, data.data, browserState.genomeSize])
 
     const background_layer_data = useMemo(() => {
         const yh = browserState.yBounds[1];
@@ -227,18 +247,16 @@ const useBrowserLayers = (
         return [{
             x: [ [ntToX(0), -3000],
                 [ntToX(0), yh * 4],
-                [ntToX(29903), yh * 4],
-                [ntToX(29903), -3000]
+                [ntToX(browserState.genomeSize), yh * 4],
+                [ntToX(browserState.genomeSize), -3000]
             ],
             c: [245, 245, 245]
         }]
-    }, [browserState.yBounds, ntToX])
+    }, [browserState.yBounds, browserState.genomeSize, ntToX])
 
     if (!settings.browserEnabled) {
         return [];
     }
-
-
   
      const browser_background_layer = new PolygonLayer({
             id: "browser-background",
@@ -252,8 +270,6 @@ const useBrowserLayers = (
             getLineWidth: 0,
             filled: true,
             pickable: false,
-            extruded: true,
-            wireframe: true,
             getFillColor: [224, 224, 224],
             getPolygonOffset: myGetPolygonOffset
     });
@@ -284,8 +300,8 @@ const useBrowserLayers = (
                 {
                     x: [ [ntToX(0), browserState.yBounds[0]],
                         [ntToX(0), browserState.yBounds[1]],
-                        [ntToX(29903), browserState.yBounds[1]],
-                        [ntToX(29903), browserState.yBounds[0]]
+                        [ntToX(browserState.genomeSize), browserState.yBounds[1]],
+                        [ntToX(browserState.genomeSize), browserState.yBounds[0]]
                     ],   
                 }
             ],
@@ -319,7 +335,12 @@ const useBrowserLayers = (
         layers.push(dynamic_browser_background_sublayer);
         layers.push(dynamic_browser_background_layer);
         layers.push(browser_outline_layer);
-        layers.push(main_variation_layer);
+        if (settings.mutationTypesEnabled.aa) {
+            layers.push(main_variation_layer_aa);
+        }
+        if (settings.mutationTypesEnabled.nt) {
+            layers.push(main_variation_layer_nt);
+        }
         layers.push(selected_node_layer)
 
 

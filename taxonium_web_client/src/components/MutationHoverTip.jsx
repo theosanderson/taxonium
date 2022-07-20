@@ -11,7 +11,7 @@ const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config,
     return null;
   }
   const posKey = hoveredMutation.m.gene + ':' + hoveredMutation.m.residue_pos;
-  if (hoveredMutation.m.new_residue == reference[posKey]) {
+  if (hoveredMutation.m.new_residue == reference['aa'][posKey]) {
     return null;
   }
 
@@ -50,11 +50,11 @@ residue_pos: 2118
           <div className="mutations text-xs">
                 <div className="inline-block">
                 <span>{hoveredMutation.m.gene}:</span>
-                <span style={{ color: colorHook.toRGBCSS(reference[posKey]) }}>
-                    {reference[posKey]}
+                <span style={{}}>
+                    {reference['aa'][posKey]}
                 </span>
                 <span>{hoveredMutation.m.residue_pos}</span>
-                <span style={{ color: colorHook.toRGBCSS(hoveredMutation.m.new_residue) }}>
+                <span style={{}}>
                     {hoveredMutation.m.new_residue}
                 </span>
 

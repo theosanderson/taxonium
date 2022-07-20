@@ -245,13 +245,6 @@ function App() {
               <p className="text-lg text-gray-700 mb-5 font-bold">
                 Welcome to Taxonium, a tool for exploring large trees
               </p>
-              <p>
-              TREENOME BROWSER DEMO:
-      
-             Click/drag/zoom on the left-hand side of the screen (on the next page)
-             to control the tree, and do the same in the genome browser panel on the upper right to control the genome. Select a genomic region by selecting a coordinate region at the very top of the genome browser. Resizing the web browser will require a page refresh.
-        
-            </p>
               <InputSupplier inputHelper={inputHelper} />
               <p className="text-md text-gray-700 font-semibold mb-2">
                 or{" "}

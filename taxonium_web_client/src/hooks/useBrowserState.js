@@ -8,12 +8,52 @@ const useBrowserState = (
 ) => {
     const [yBounds, setYBounds] = useState([0, 0]);
     const [xBounds, setXbounds] = useState([0, 0]);
-    const [ntBounds, setNtBounds] = useState([0, 29903]);
     const [ntBoundsExt, setNtBoundsExt] = useState(null);
     const [pxPerBp, setPxPerBp] = useState(0);
     const [bpWidth, setBpWidth] = useState(0);
+    const [isCov2Tree, setIsCov2Tree] = useState(false);
 
-  
+    const [genomeSize, setGenomeSize] = useState(0);
+    const [genome, setGenome] = useState(null);
+
+    const chromosomeName = useMemo(() => {
+        return isCov2Tree ? 'NC_045512v2' : 'chromosome';
+    })
+
+    useEffect(() => {
+        if ((genomeSize && genomeSize > 0) || !data || !data.base_data || !data.base_data.nodes) {
+            return;
+        }
+        const nodes = data.base_data.nodes;
+        for (let node of nodes) {
+            if (node.parent_id == node.node_id) {
+                // root
+                let size = 0;
+                let genome = '';
+                for (let mut of node.mutations) {
+                    if (mut.gene == 'nt') {
+                        size += 1;
+                        genome += mut.new_residue;
+                    }
+                }
+                setGenomeSize(size);
+                setGenome(genome);
+            }
+        }
+    }, [setGenomeSize, genomeSize, genome, setGenome, data]);
+
+
+    useEffect(() => {
+        if (window.location.href.includes("cov2tree.org")) {
+            setIsCov2Tree(true);
+        }
+    }, [window.location])
+
+
+    
+    const [ntBounds, setNtBounds] = useState([0, genomeSize]);
+
+
     useEffect(() => {
         if (!data.data || !data.data.nodes || !settings.browserEnabled) {
             return;
@@ -118,8 +158,12 @@ const useBrowserState = (
             setPxPerBp,
             bpWidth,
             handleResize,
+            isCov2Tree,
+            genome,
+            genomeSize,
+            chromosomeName
         }
-    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize]);
+    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize, isCov2Tree, genome, genomeSize, chromosomeName]);
 
     return state;
 };
