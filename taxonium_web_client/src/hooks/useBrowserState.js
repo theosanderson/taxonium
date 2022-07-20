@@ -16,10 +16,13 @@ const useBrowserState = (
     const [genomeSize, setGenomeSize] = useState(0);
     const [genome, setGenome] = useState(null);
 
+    const chromosomeName = useMemo(() => {
+        return isCov2Tree ? 'NC_045512v2' : 'chromosome';
+    })
 
     useEffect(() => {
         if ((genomeSize && genomeSize > 0) || !data || !data.base_data || !data.base_data.nodes) {
-            return
+            return;
         }
         const nodes = data.base_data.nodes;
         for (let node of nodes) {
@@ -37,9 +40,9 @@ const useBrowserState = (
                 setGenome(genome);
             }
         }
-    }, [setGenomeSize, genomeSize, genome, setGenome]);
+    }, [setGenomeSize, genomeSize, genome, setGenome, data]);
 
-    
+
     useEffect(() => {
         if (window.location.href.includes("cov2tree.org")) {
             setIsCov2Tree(true);
@@ -156,9 +159,11 @@ const useBrowserState = (
             bpWidth,
             handleResize,
             isCov2Tree,
-            genomeSize
+            genome,
+            genomeSize,
+            chromosomeName
         }
-    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize, isCov2Tree, genomeSize]);
+    }, [xBounds, yBounds, ntBounds, setNtBounds, setNtBoundsExt, pxPerBp, setPxPerBp, bpWidth, handleResize, isCov2Tree, genome, genomeSize, chromosomeName]);
 
     return state;
 };
