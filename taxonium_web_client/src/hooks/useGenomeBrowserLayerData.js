@@ -4,7 +4,6 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedDetails) => {
 
-  const [existingWorker, setExistingWorker] = useState(null);
   const [varDataAa, setVarDataAa] = useState([]);
   const [varDataNt, setVarDataNt] = useState([]);
   const [numNodes, setNumNodes] = useState(0);
