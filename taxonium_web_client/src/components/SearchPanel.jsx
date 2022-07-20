@@ -42,7 +42,7 @@ function SearchPanel({
   settings,
   backend,
   className,
-  browserState,
+  genomeBrowserState,
   view
 }) {
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
@@ -167,13 +167,13 @@ function SearchPanel({
         <label className="space-x-2 text-sm block">
             <span className="text-gray-500 text-sm">Treenome Browser:</span>
             <input
-              name="browserEnabled"
+              name="genomeBrowserEnabled"
               type="checkbox"
               className="m-3 inline-block"
-              checked={settings.browserEnabled}
+              checked={settings.genomeBrowserEnabled}
               onChange={(event) => {
-                console.log(settings.browserEnabled);
-                settings.setBrowserEnabled(!settings.browserEnabled);
+                console.log(settings.genomeBrowserEnabled);
+                settings.setGenomeBrowserEnabled(!settings.genomeBrowserEnabled);
                 view.setViewState({
                   zoom: -2,
                   target: [window.screen.width < 600 ? 500 : 1400, 1000],

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 
 
-const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
+const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedDetails) => {
 
   const [existingWorker, setExistingWorker] = useState(null);
   const [varDataAa, setVarDataAa] = useState([]);
@@ -15,7 +15,7 @@ const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
   const [didFirstNt, setDidFirstNt] = useState(false);
 
   const [currentJobId, setCurrentJobId] = useState(null)
-  const worker = useMemo(() => new Worker(new URL("../webworkers/browserWorker.js", import.meta.url)), []);
+  const worker = useMemo(() => new Worker(new URL("../webworkers/genomeBrowserWorker.js", import.meta.url)), []);
 
   worker.onmessage = useCallback((e) => {
     if (!reference && e.data.reference) {
@@ -46,22 +46,22 @@ const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
     }
 
 
-    if (!didFirstAa && data.data && data.data.nodes && browserState.genomeSize > 0 &&
-      browserState.ntBounds[0] == 0 && browserState.ntBounds[1] == browserState.genomeSize) {
+    if (!didFirstAa && data.data && data.data.nodes && genomeBrowserState.genomeSize > 0 &&
+      genomeBrowserState.ntBounds[0] == 0 && genomeBrowserState.ntBounds[1] == genomeBrowserState.genomeSize) {
       if (settings.mutationTypesEnabled.aa) {
         const jobId = data.data.nodes.length;
-        console.log("sending init aa", data.data.nodes, browserState.ntBounds)
+        console.log("sending init aa", data.data.nodes, genomeBrowserState.ntBounds)
         worker.postMessage({
           type: "variation_data_aa",
           data: data,
           jobId: jobId,
-          ntBounds: browserState.ntBounds
+          ntBounds: genomeBrowserState.ntBounds
         });
       }
       setDidFirstAa(true)
     }
-    if (!didFirstNt && data.data && data.data.nodes && browserState.genomeSize > 0 &&
-      browserState.ntBounds[0] == 0 && browserState.ntBounds[1] == browserState.genomeSize) {
+    if (!didFirstNt && data.data && data.data.nodes && genomeBrowserState.genomeSize > 0 &&
+      genomeBrowserState.ntBounds[0] == 0 && genomeBrowserState.ntBounds[1] == genomeBrowserState.genomeSize) {
       if (settings.mutationTypesEnabled.nt) {
         const jobId = data.data.nodes.length;
         console.log("sending init nt")
@@ -70,12 +70,12 @@ const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
           type: "variation_data_nt",
           data: data,
           jobId: jobId,
-          ntBounds: browserState.ntBounds
+          ntBounds: genomeBrowserState.ntBounds
         });
       }
       setDidFirstNt(true);
     }
-    if (!settings.browserEnabled) {
+    if (!settings.genomeBrowserEnabled) {
       return;
     }
 
@@ -127,7 +127,7 @@ const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
           type: "variation_data_aa",
           data: data,
           jobId: jobId,
-          ntBounds: browserState.ntBounds
+          ntBounds: genomeBrowserState.ntBounds
         });
       }
     }
@@ -137,13 +137,13 @@ const useBrowserLayerData = (data, browserState, settings, selectedDetails) => {
           type: "variation_data_nt",
           data: data,
           jobId: jobId,
-          ntBounds: browserState.ntBounds
+          ntBounds: genomeBrowserState.ntBounds
         });
       }
     }
-  }, [data.data, numNodes, settings.browserEnabled, varDataAa, varDataNt, worker, settings.mutationTypesEnabled, browserState.ntBounds, currentJobId, setCurrentJobId, cachedVarDataAa, cachedVarDataNt]);
+  }, [data.data, numNodes, settings.genomeBrowserEnabled, varDataAa, varDataNt, worker, settings.mutationTypesEnabled, genomeBrowserState.ntBounds, currentJobId, setCurrentJobId, cachedVarDataAa, cachedVarDataNt]);
 
   return [varDataAa, varDataNt, reference]
 }
 
-export default useBrowserLayerData;
+export default useGenomeBrowserLayerData;

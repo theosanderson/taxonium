@@ -1,8 +1,7 @@
 import "./App.css";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
-import BrowserOptionsPanel from "./components/BrowserOptionsPanel";
-import useBrowserState from "./hooks/useBrowserState";
+import useGenomeBrowserState from "./hooks/useGenomeBrowserState";
 import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
@@ -79,7 +78,6 @@ function Taxonium({
   });
 
   // Treenome 
-  const [updateBrowserBounds, setUpdateBrowserBounds] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     // const tempView = view.viewState;
@@ -91,7 +89,7 @@ function Taxonium({
 
   };
 
-  const browserState = useBrowserState(data, deckRef, view, settings)
+  const genomeBrowserState = useGenomeBrowserState(data, deckRef, view, settings)
 
   return (
     <div className="flex-grow overflow-hidden flex flex-col md:flex-row" >
@@ -113,7 +111,7 @@ function Taxonium({
           setDeckSize={setDeckSize}
           deckSize={deckSize}
           isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
-          browserState={browserState}
+          genomeBrowserState={genomeBrowserState}
           deckRef={deckRef}
           jbrowseRef={jbrowseRef}
         />
@@ -137,7 +135,7 @@ function Taxonium({
                   xType={xType}
                   setxType={setxType}
                   settings={settings}
-                  browserState={browserState}
+                  genomeBrowserState={genomeBrowserState}
                   view={view}
                 />
               }              

@@ -7,19 +7,6 @@ import {
 } from "@deck.gl/core";
 
 let globalSetZoomAxis = () => {};
-class BrowserController extends OrthographicController {
-// on construction
-constructor(props) {
-  super(props);
-}
-// Default handler for the `wheel` event.
-onWheel(event) {
-
-  event.preventDefault();
-
-  return true;
-}
-}
 
 class MyOrthographicController extends OrthographicController {
   // on construction
@@ -129,12 +116,12 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       return {
         ...prevState,
         target: [window.screen.width < 600 ? 500 : 
-          settings.browserEnabled ? 2600 : 1400, 1000]
+          settings.genomeBrowserEnabled ? 2600 : 1400, 1000]
         }
     });
     setXzoom(window.screen.width < 600 ? -1 : 
-      settings.browserEnabled ? -1 : 0);
-  }, [settings.browserEnabled]);
+      settings.genomeBrowserEnabled ? -1 : 0);
+  }, [settings.genomeBrowserEnabled]);
 
   const [baseViewState, setBaseViewState] = useState({...viewState,
     "browser-main": {zoom: 0, target: [0,0]},
@@ -144,7 +131,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   const views = useMemo(() => {
     return [
     
-      ...(settings.minimapEnabled && !settings.browserEnabled
+      ...(settings.minimapEnabled && !settings.genomeBrowserEnabled
         ? [
             new OrthographicView({
               id: "minimap",
@@ -158,7 +145,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
             }),
           ]
         : []),
-      ...(settings.browserEnabled
+      ...(settings.genomeBrowserEnabled
         ? [
           new OrthographicView({
             id: "browser-axis",
@@ -189,7 +176,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   
     
     ];
-  }, [viewState, zoomAxis, settings.minimapEnabled, settings.browserEnabled, xzoom]);
+  }, [viewState, zoomAxis, settings.minimapEnabled, settings.genomeBrowserEnabled, xzoom]);
 
   const [mouseXY, setMouseXY] = useState([0, 0]);
 

@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useState } from 'react'
 import '@fontsource/roboto'
 import { StylesProvider } from "@material-ui/core/styles";
 import "../App.css";
-import useBrowserAnnotations from '../hooks/useBrowserAnnotations';
+import useGenomeBrowserAnnotations from '../hooks/useGenomeBrowserAnnotations';
 
 import {
   createViewState,
@@ -13,28 +13,28 @@ const referenceUrl = 'https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips
 
 function JBrowsePanel(props) {
 
-  const browserAnnotations = useBrowserAnnotations();
+  const genomeBrowserAnnotations = useGenomeBrowserAnnotations();
 
   const assembly = useMemo(() => {
       return {
-        name: props.browserState.chromosomeName ? props.browserState.chromosomeName : 'chromosome',
+        name: props.genomeBrowserState.chromosomeName ? props.genomeBrowserState.chromosomeName : 'chromosome',
         sequence: {
           type: 'ReferenceSequenceTrack',
-          trackId: props.browserState.chromosomeName + '-ReferenceSequenceTrack',
+          trackId: props.genomeBrowserState.chromosomeName + '-ReferenceSequenceTrack',
           adapter: {
             type: 'FromConfigSequenceAdapter',
             features: [{
-              refName: props.browserState.chromosomeName,
-              uniqueId: props.browserState.chromosomeName,
+              refName: props.genomeBrowserState.chromosomeName,
+              uniqueId: props.genomeBrowserState.chromosomeName,
               start: 0,
-              end: props.browserState.genomeSize > 0 ? props.browserState.genomeSize : 1,
-              seq: props.browserState.genome ? props.browserState.genome : "A"
+              end: props.genomeBrowserState.genomeSize > 0 ? props.genomeBrowserState.genomeSize : 1,
+              seq: props.genomeBrowserState.genome ? props.genomeBrowserState.genome : "A"
             }]
           }
         }
       }
 
-}, [props.browserState.isCov2Tree, props.browserState.genome, props.browserState.genomeSize, props.browserState.chromosomeName]);
+}, [props.genomeBrowserState.isCov2Tree, props.genomeBrowserState.genome, props.genomeBrowserState.genomeSize, props.genomeBrowserState.chromosomeName]);
 
 const tracks = useMemo(() => {
   return [
@@ -156,9 +156,9 @@ const tracks = useMemo(() => {
         }
       ]
     },
-    ...browserAnnotations.json
+    ...genomeBrowserAnnotations.json
   ]
-}, [browserAnnotations.json]);
+}, [genomeBrowserAnnotations.json]);
 
 const defaultSession = useMemo(() => {
   return {
@@ -187,14 +187,14 @@ const defaultSession = useMemo(() => {
 
 
 useEffect(() => {
-  if (!props.browserState.ntBoundsExt) {
+  if (!props.genomeBrowserState.ntBoundsExt) {
     return;
   }
   const v = state.session.view;
-  v.navToLocString('NC_045512v2:' + props.browserState.ntBoundsExt[0] + '..' + props.browserState.ntBoundsExt[1]);
-  props.browserState.setNtBoundsExt(null);
+  v.navToLocString('NC_045512v2:' + props.genomeBrowserState.ntBoundsExt[0] + '..' + props.genomeBrowserState.ntBoundsExt[1]);
+  props.genomeBrowserState.setNtBoundsExt(null);
 
-}, [props.browserState]);
+}, [props.genomeBrowserState]);
 
 
 // Read JBrowse state to determine nt bounds
@@ -206,12 +206,12 @@ const onChange = (patch) => {
 
   const leftNtBound = v.offsetPx * v.bpPerPx;
   const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
-  if (leftNtBound != props.browserState.ntBounds[0] || rightNtBound != props.browserState.ntBounds[1]) {
-    props.browserState.setNtBounds([leftNtBound, rightNtBound]);
+  if (leftNtBound != props.genomeBrowserState.ntBounds[0] || rightNtBound != props.genomeBrowserState.ntBounds[1]) {
+    props.genomeBrowserState.setNtBounds([leftNtBound, rightNtBound]);
   }
   const pxPerBp = 1 / v.bpPerPx;
-  if (pxPerBp != props.browserState.pxPerBp) {
-    props.browserState.setPxPerBp(pxPerBp);
+  if (pxPerBp != props.genomeBrowserState.pxPerBp) {
+    props.genomeBrowserState.setPxPerBp(pxPerBp);
   }
 };
 const theme = useMemo(() => {
@@ -240,11 +240,11 @@ const theme = useMemo(() => {
 const state = useMemo(() => createViewState({
   assembly,
   tracks,
-  location: props.browserState.isCov2Tree ? 'NC_045512v2:0-29903' : '',
-  defaultSession: props.browserState.isCov2Tree ? defaultSession : {},
+  location: props.genomeBrowserState.isCov2Tree ? 'NC_045512v2:0-29903' : '',
+  defaultSession: props.genomeBrowserState.isCov2Tree ? defaultSession : {},
   ...theme,
   onChange: onChange
-}), [assembly, tracks, defaultSession, theme, props.browserState.isCov2Tree]);
+}), [assembly, tracks, defaultSession, theme, props.genomeBrowserState.isCov2Tree]);
 
 
 useEffect(() => {
@@ -254,14 +254,14 @@ useEffect(() => {
   }
   const leftNtBound = v.offsetPx * v.bpPerPx;
   const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
-  if (leftNtBound != props.browserState.ntBounds[0] || rightNtBound != props.browserState.ntBounds[1]) {
-    props.browserState.setNtBounds([leftNtBound, rightNtBound]);
+  if (leftNtBound != props.genomeBrowserState.ntBounds[0] || rightNtBound != props.genomeBrowserState.ntBounds[1]) {
+    props.genomeBrowserState.setNtBounds([leftNtBound, rightNtBound]);
   }
   const pxPerBp = 1 / v.bpPerPx;
-  if (pxPerBp != props.browserState.pxPerBp) {
-    props.browserState.setPxPerBp(pxPerBp);
+  if (pxPerBp != props.genomeBrowserState.pxPerBp) {
+    props.genomeBrowserState.setPxPerBp(pxPerBp);
   }
-}, [props.browserState, state.session.view]);
+}, [props.genomeBrowserState, state.session.view]);
 
 return (
   <JBrowseLinearGenomeView viewState={state} />

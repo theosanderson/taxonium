@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 
-const useBrowserState = (
+const useGenomeBrowserState = (
     data,
     deckRef,
     view,
@@ -55,7 +55,7 @@ const useBrowserState = (
 
 
     useEffect(() => {
-        if (!data.data || !data.data.nodes || !settings.browserEnabled) {
+        if (!data.data || !data.data.nodes || !settings.genomeBrowserEnabled) {
             return;
         }
         const bounds = [0, 0];
@@ -68,13 +68,13 @@ const useBrowserState = (
             }
         }
         setYBounds(bounds);
-    }, [data.data, settings.browserEnabled]);
+    }, [data.data, settings.genomeBrowserEnabled]);
 
     
     const handleResize = useCallback(() => {
         console.log("calling handleResize");
-        console.log(deckRef.current, settings.browserEnabled);
-        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.browserEnabled) {
+        console.log(deckRef.current, settings.genomeBrowserEnabled);
+        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.genomeBrowserEnabled) {
             return;
         }
         console.log("here in handleResize");
@@ -93,14 +93,14 @@ const useBrowserState = (
         
        
  
-    }, [deckRef, setXbounds, view, settings.browserEnabled]);
+    }, [deckRef, setXbounds, view, settings.genomeBrowserEnabled]);
 
     useEffect(() => {
-        if(!settings.browserEnabled) {
+        if(!settings.genomeBrowserEnabled) {
             setJbrowseLoaded(false);
             setHandled(false)
         }
-    }, [settings.browserEnabled]);
+    }, [settings.genomeBrowserEnabled]);
 
     const [jbrowseLoaded, setJbrowseLoaded] = useState(false);
     const [handled, setHandled] = useState(false);
@@ -132,7 +132,7 @@ const useBrowserState = (
 
 
     useEffect(() => {
-        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.browserEnabled) {
+        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.genomeBrowserEnabled) {
             return;
         }
         const vp = {
@@ -145,7 +145,7 @@ const useBrowserState = (
 
             setBpWidth(vp.unproject([pxPerBp, 0])[0] - vp.unproject([0, 0])[0]);
         }
-    }, [deckRef, pxPerBp, settings.browserEnabled]);
+    }, [deckRef, pxPerBp, settings.genomeBrowserEnabled]);
 
     const state = useMemo(() => {
         return {
@@ -168,4 +168,4 @@ const useBrowserState = (
     return state;
 };
 
-export default useBrowserState;
+export default useGenomeBrowserState;

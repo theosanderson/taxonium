@@ -21,7 +21,7 @@ import FirefoxWarning from "./components/FirefoxWarning";
 function Deck({
   data,
   search,
-  browserState,
+  genomeBrowserState,
   view,
   colorHook,
   colorBy,
@@ -166,7 +166,7 @@ function Deck({
     settings,
     isCurrentlyOutsideBounds,
     config,
-    browserState,
+    genomeBrowserState,
     reference,
     setReference
   });
@@ -251,7 +251,7 @@ function Deck({
         onResize={(size) => {
           setDeckSize(size);
           window.setTimeout(() => {
-            browserState.handleResize();
+            genomeBrowserState.handleResize();
           }, 50);
           console.log("resize", size);
         }}
@@ -264,7 +264,7 @@ function Deck({
         <View id="browser-axis">
           <div style={{ width: "100%", height: "100%", border: "1px solid black" , position: "relative", zIndex: 1}}>
             <span ref={jbrowseRef}>
-              <JBrowsePanel browserState={browserState}/>
+              <JBrowsePanel genomeBrowserState={genomeBrowserState}/>
             </span>
           </div>
         </View>
