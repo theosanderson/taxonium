@@ -82,7 +82,7 @@ const useBrowserLayers = (
         if(!reference) {
             setReference(computedReference)
         }
-    }, [computedReference])
+    }, [computedReference, reference, setReference])
     const ntToX = useCallback((nt) => {
         return browserState.xBounds[0] + (nt - browserState.ntBounds[0])
             / (browserState.ntBounds[1] - browserState.ntBounds[0])

@@ -16,10 +16,8 @@ function JBrowsePanel(props) {
   const browserAnnotations = useBrowserAnnotations();
 
   const assembly = useMemo(() => {
-    console.log(props.browserState.chromosomeName, props.browserState.genomeSize)
-    if (props.browserState.genome && props.browserState.genome.length > 0 && props.browserState.genomeSize > 0) {
       return {
-        name: props.browserState.chromosomeName,
+        name: props.browserState.chromosomeName ? props.browserState.chromosomeName : 'chromosome',
         sequence: {
           type: 'ReferenceSequenceTrack',
           trackId: props.browserState.chromosomeName + '-ReferenceSequenceTrack',
@@ -29,13 +27,13 @@ function JBrowsePanel(props) {
               refName: props.browserState.chromosomeName,
               uniqueId: props.browserState.chromosomeName,
               start: 0,
-              end: props.browserState.genomeSize,
-              seq: props.browserState.genome
+              end: props.browserState.genomeSize > 0 ? props.browserState.genomeSize : 1,
+              seq: props.browserState.genome ? props.browserState.genome : "A"
             }]
           }
         }
       }
-  }
+
 }, [props.browserState.isCov2Tree, props.browserState.genome, props.browserState.genomeSize, props.browserState.chromosomeName]);
 
 const tracks = useMemo(() => {
@@ -243,7 +241,7 @@ const state = useMemo(() => createViewState({
   assembly,
   tracks,
   location: props.browserState.isCov2Tree ? 'NC_045512v2:0-29903' : '',
-  defaultSession,
+  defaultSession: props.browserState.isCov2Tree ? defaultSession : {},
   ...theme,
   onChange: onChange
 }), [assembly, tracks, defaultSession, theme, props.browserState.isCov2Tree]);

@@ -15,7 +15,6 @@ const useBrowserState = (
 
     const [genomeSize, setGenomeSize] = useState(0);
     const [genome, setGenome] = useState(null);
-
     const chromosomeName = useMemo(() => {
         return isCov2Tree ? 'NC_045512v2' : 'chromosome';
     })
@@ -52,6 +51,7 @@ const useBrowserState = (
 
     
     const [ntBounds, setNtBounds] = useState([0, genomeSize]);
+
 
 
     useEffect(() => {
@@ -112,7 +112,7 @@ const useBrowserState = (
             }, 200);
             setHandled(true);
         }
-    }, [jbrowseLoaded, handleResize]);
+    }, [jbrowseLoaded, handleResize, setHandled, handled]);
 
     useEffect(() => {
         const observer = new MutationObserver(function (mutations, mutationInstance) {
