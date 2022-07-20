@@ -78,7 +78,6 @@ const useBrowserLayers = (
 
 
     const [layerDataAa, layerDataNt, computedReference] = useBrowserLayerData(data, browserState, settings);
-
     useEffect(() => {
         if(!reference) {
             setReference(computedReference)
@@ -97,10 +96,9 @@ const useBrowserLayers = (
         return genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
     }, [genes]);
 
-    //console.log("layerdata", layerData, reference);
-    const main_variation_layer = new SolidPolygonLayer({
+    const main_variation_layer_aa = new SolidPolygonLayer({
         data: layerDataAa,
-        id: "browser-main",
+        id: "browser-main-aa",
         onHover: (info) => setHoverInfo(info),
         pickable: true,
         getFillColor: (d) => {
@@ -136,6 +134,55 @@ const useBrowserLayers = (
         },
         getPolygonOffset: myGetPolygonOffset
     });
+
+    const main_variation_layer_nt = new SolidPolygonLayer({
+        data: layerDataNt,
+        id: "browser-main-nt",
+        onHover: (info) => setHoverInfo(info),
+        pickable: true,
+        getFillColor: (d) => {
+            switch(d.m.new_residue) {
+                case 'A':
+                    return [0, 0, 0];
+                case 'C':
+                    return [60, 60, 60];
+                case 'G':
+                    return [120, 120, 120];
+                case 'T':
+                    return [180, 180, 180];
+                default:
+                    return [0, 0, 0]
+            }
+        },
+           
+        getLineColor: (d) => [80, 80, 80],
+        lineWidthUnits: "pixels",
+        modelMatrix: modelMatrixFixedX,
+        getPolygon: (d) => {
+            if (!browserState.ntBounds) {
+                return [[0, 0]];
+            }
+            let mut = d.m;
+            let ntPos = getNtPos(mut);
+            if (ntPos < browserState.ntBounds[0] || ntPos > browserState.ntBounds[1]) {
+                return [[0 , 0]];
+            }
+
+            let x = ntToX(ntPos);
+            if (mut.gene == 'nt') {
+                return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
+                [x + ntWidth, d.y[1] + variation_padding], [x + ntWidth, d.y[0] - variation_padding] ];
+            }
+            return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
+            [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
+        },
+        updateTriggers: {
+            getPolygon: [browserState.ntBounds, getNtPos, ntToX, aaWidth, ntWidth, variation_padding],
+            getFillColor: [reference, colorHook, genes]
+        },
+        getPolygonOffset: myGetPolygonOffset
+    });
+ 
  
     const dynamic_background_data = useMemo(() => {
         if (!settings.browserEnabled) {
@@ -223,8 +270,6 @@ const useBrowserLayers = (
             getLineWidth: 0,
             filled: true,
             pickable: false,
-            extruded: true,
-            wireframe: true,
             getFillColor: [224, 224, 224],
             getPolygonOffset: myGetPolygonOffset
     });
@@ -290,7 +335,12 @@ const useBrowserLayers = (
         layers.push(dynamic_browser_background_sublayer);
         layers.push(dynamic_browser_background_layer);
         layers.push(browser_outline_layer);
-        layers.push(main_variation_layer);
+        if (settings.mutationTypesEnabled.aa) {
+            layers.push(main_variation_layer_aa);
+        }
+        if (settings.mutationTypesEnabled.nt) {
+            layers.push(main_variation_layer_nt);
+        }
         layers.push(selected_node_layer)
 
 

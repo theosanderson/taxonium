@@ -32,11 +32,10 @@ const post_order = (nodes) => {
 };
 
 
-const computeFilteredVariationData = async (variation_data, ntBounds, data) => {
-  if (!data.data || !data.data.nodes || !(variation_data.length > 0)) {
+const computeFilteredVariationData = (variation_data, ntBounds, data) => {
+  if (!data.data || !data.data.nodes || !(variation_data)) {
     return [];
   }
-  console.log("FILTERING")
   if (data.data.nodes.length < 10000 || ntBounds[1] - ntBounds[0] < 1000) {
     return variation_data;
   } else {
@@ -46,16 +45,14 @@ const computeFilteredVariationData = async (variation_data, ntBounds, data) => {
 
 const computeYSpan = (postorder_nodes, lookup, root) => {
 
-  console.log("MAKING yspan")
   let yspan = {};
-  let var_data = [];
   for (let i = postorder_nodes.length - 1; i >= 0; i--) {
     let node = lookup[postorder_nodes[i]];
-    let parent = node.parent_id;
     if (node.node_id == root) {
-      console.log("STOPEEF")
       continue;
     }
+    let parent = node.parent_id;
+
     if (!yspan[node.node_id]) { // Leaf 
       yspan[node.node_id] = [node.y, node.y];
     }
@@ -71,37 +68,24 @@ const computeYSpan = (postorder_nodes, lookup, root) => {
     } else {
       yspan[parent] = [...cur_yspan];
     }
-    for (let mut of node.mutations) {
-      if (mut.gene == 'nt') {
-        continue; // Skip nt mutations for now
-      }
-      var_data.unshift({
-        y: yspan[node.node_id],
-        m: mut
-      });
-    }
   }
-  return var_data;
+  return yspan;
 }
 
-const computeVariationData = async (data, type, memoIndex) => {
-  console.log("incompu")
+const computeVariationData = async (data, type, ntBounds, jobId) => {
   // compute in chunks starting at memoIndex
-  let var_data = [];
   let blank = [[], {}, false]
   let ref = { 'aa': {}, 'nt': {} };
   let shouldCache = false;
   let nodes = null;
   let lookup = null;
   if (data && data.data && data.data.nodes && data.data.nodes.length < 90000) {
-    console.log("smaller")
     nodes = data.data.nodes;
     lookup = data.data.nodeLookup;
   } else {
     if (!data.base_data || !data.base_data.nodes) {
       return blank;
     }
-    console.log("base data")
     nodes = data.base_data.nodes;
     lookup = data.base_data.nodeLookup;
     shouldCache = true;
@@ -124,71 +108,61 @@ const computeVariationData = async (data, type, memoIndex) => {
     }
   }
 
-  const rev_postorder_nodes = postorder_nodes.reverse();
-  var_data = computeYSpan(postorder_nodes, lookup, root);
-  console.log("Hear")
-  // for (let i = memoIndex; i < postorder_nodes.length; i++) {
-  //   const node = lookup[postorder_nodes[i]];
-  //   for (let mut of node.mutations) {
-  //     if (mut.gene == 'nt' && type == 'nt' || mut.gene != 'nt' && type == 'aa') {
-  //       var_data.unshift({
-  //         y: yspan[node.node_id],
-  //         m: mut
-  //       });
-  //     }
-  //   }
-  // }
-  console.log(var_data, ref, shouldCache)
-  return [var_data, ref, shouldCache];
+  const chunkSize = 10000;
+  const yspan = computeYSpan(postorder_nodes, lookup, root);
+  postorder_nodes.reverse();
+  let var_data = [];
+
+  for (let memoIndex = 0; memoIndex < postorder_nodes.length; memoIndex += chunkSize) {
+    
+    let this_var_data = [];
+    let i;
+    for (i = memoIndex; i < Math.min(memoIndex + chunkSize, postorder_nodes.length); i++) {
+      
+      const node = lookup[postorder_nodes[i]];
+      if (node.node_id == root) {
+        continue;
+      }
+      for (let mut of node.mutations) {
+        if (mut.gene == 'nt' && type == 'nt' || mut.gene != 'nt' && type == 'aa') {
+          this_var_data.push({
+            y: yspan[node.node_id],
+            m: mut
+          });
+        }
+      }
+    }
+    var_data.push(...this_var_data);
+    let filteredVarData = computeFilteredVariationData(var_data, ntBounds, data);
+    if (i == postorder_nodes.length && shouldCache) {
+      postMessage({
+        type: type == 'aa' ? "variation_data_return_cache_aa" : "variation_data_return_cache_nt",
+        filteredVarData: filteredVarData,
+        reference: ref,
+        jobId: jobId
+      });
+    } else {
+      postMessage({
+        type: type == 'aa' ? "variation_data_return_aa" : "variation_data_return_nt",
+        filteredVarData: filteredVarData,
+        reference: ref,
+        jobId: jobId
+      });
+    }
+  }
 }
 
 onmessage = async (event) => {
 
-  //Process uploaded data:
   if (!event.data) {
     return;
   }
-  let filteredVarData, ntBounds, varData, shouldCache;
-  let ref = null;
-  const data = event.data.data;
-  ({ ntBounds } = event.data);
-
+  let ntBounds, jobId, data
+  ({ ntBounds, jobId, data } = event.data);
 
   if (event.data.type == "variation_data_aa") {
-    const [varData, ref, shouldCache] = await computeVariationData(data, 'aa', 0);
-   // filteredVarData = await computeFilteredVariationData(varData, ntBounds, data);
-
-    if (shouldCache) {
-      postMessage({
-        type: "variation_data_return_cache_aa",
-        filteredVarData: varData,
-        reference: ref
-      })
-      return;
-    }
-    postMessage({
-      type: "variation_data_return_aa",
-      filteredVarData: filteredVarData,
-      reference: ref,
-    })
+    computeVariationData(data, 'aa', ntBounds, jobId);
   } else if (event.data.type == "variation_data_nt") {
-    const [varData, ref, shouldCache] = await computeVariationData(data, 'nt', 0);
-    filteredVarData = await computeFilteredVariationData(varData, ntBounds, data);
-
-    if (shouldCache) {
-      postMessage({
-        type: "variation_data_return_cache_nt",
-        filteredVarData: filteredVarData,
-        reference: ref
-      })
-      return;
-    }
-    postMessage({
-      type: "variation_data_return_nt",
-      filteredVarData: filteredVarData,
-      reference: ref,
-    })
+    computeVariationData(data, 'nt', ntBounds, jobId);
   }
 }
-
-//  }

@@ -13,29 +13,33 @@ const useBrowserState = (
     const [bpWidth, setBpWidth] = useState(0);
     const [isCov2Tree, setIsCov2Tree] = useState(false);
 
+    const [genomeSize, setGenomeSize] = useState(0);
+    const [genome, setGenome] = useState(null);
 
-    const findGenomeSize = (nodes) => {
+
+    useEffect(() => {
+        if ((genomeSize && genomeSize > 0) || !data || !data.base_data || !data.base_data.nodes) {
+            return
+        }
+        const nodes = data.base_data.nodes;
         for (let node of nodes) {
             if (node.parent_id == node.node_id) {
                 // root
                 let size = 0;
+                let genome = '';
                 for (let mut of node.mutations) {
                     if (mut.gene == 'nt') {
                         size += 1;
+                        genome += mut.new_residue;
                     }
                 }
-                return size;
+                setGenomeSize(size);
+                setGenome(genome);
             }
         }
-    }
-    const [genomeSize, setGenomeSize] = useState(0);
-     
-    useEffect(() => {
-        if ((genomeSize == 0 || genomeSize == undefined) && data && data.base_data && data.base_data.nodes) {
-            setGenomeSize(findGenomeSize(data.base_data.nodes));
-        }
-    }, [findGenomeSize, setGenomeSize, data.base_data]);
+    }, [setGenomeSize, genomeSize, genome, setGenome]);
 
+    
     useEffect(() => {
         if (window.location.href.includes("cov2tree.org")) {
             setIsCov2Tree(true);
