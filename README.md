@@ -30,7 +30,7 @@ Visit [Cov2Tree.org](http://Cov2Tree.org) which uses Taxonium to allow you to ex
 
 Use [UShER](https://github.com/yatisht/usher/) to build a mutation-annotated tree. Then use [taxoniumtools](./taxoniumtools/) to convert it to a Taxonium format you can upload to the interface at [Taxonium.org](Taxonium.org)
 
-You can also use taxoniumtools to add your own metadata to the existing public phylogeny.
+You can also use taxoniumtools to add your own metadata to [the existing public phylogeny](https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/).
 
 Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/latest/).
 
