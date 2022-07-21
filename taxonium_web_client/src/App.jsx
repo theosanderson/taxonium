@@ -226,7 +226,7 @@ function App() {
               className="text-white font-bold hover:underline flex items-center"
               title="Info"
             >
-              <BsInfoSquare className="w-6 h-6 opacity-80 mr-2" />
+              <BsInfoSquare className="w-6 h-6 opacity-80 mr-4" />
             </button>
             <a
               href="https://github.com/theosanderson/taxonium"
