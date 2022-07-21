@@ -30,7 +30,7 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
             </a>
             .
           </p>
-          <p>Taxonium was created by Theo Sanderson.</p>
+        
         </div>
       )}
     </Modal>

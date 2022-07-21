@@ -4,6 +4,7 @@ import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
+import {FaGithub} from "react-icons/fa";
 import useQueryAsState from "./hooks/useQueryAsState";
 import classNames from "classnames";
 
@@ -219,13 +220,19 @@ function App() {
               </>
             )}
           </h1>
+          <div className="flex ">
           <button
             onClick={() => setAboutEnabled(true)}
             className="text-white font-bold hover:underline flex items-center"
+            title="Info"
           >
             <BsInfoSquare className="w-6 h-6 opacity-80 mr-2" />
-            About
+            
           </button>
+          <a href="https://github.com/theosanderson/taxonium" className="text-white font-bold hover:underline flex items-center" title="Source code">
+          <FaGithub className="w-6 h-6 opacity-80 mr-2 " />
+          </a>
+          </div>
         </div>
         <Suspense fallback={<div></div>}>
           {query.backend ||
