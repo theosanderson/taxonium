@@ -1,7 +1,7 @@
 import "./App.css";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
-import useGenomeBrowserState from "./hooks/useGenomeBrowserState";
+import useTreenomeState from "./hooks/useTreenomeState";
 import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
@@ -86,7 +86,7 @@ function Taxonium({
 
   };
 
-  const genomeBrowserState = useGenomeBrowserState(data, deckRef, view, settings)
+  const treenomeState = useTreenomeState(data, deckRef, view, settings)
 
   return (
     <div className="flex-grow overflow-hidden flex flex-col md:flex-row" >
@@ -108,7 +108,7 @@ function Taxonium({
           setDeckSize={setDeckSize}
           deckSize={deckSize}
           isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
-          genomeBrowserState={genomeBrowserState}
+          treenomeState={treenomeState}
           deckRef={deckRef}
           jbrowseRef={jbrowseRef}
         />
@@ -132,7 +132,7 @@ function Taxonium({
                   xType={xType}
                   setxType={setxType}
                   settings={settings}
-                  genomeBrowserState={genomeBrowserState}
+                  treenomeState={treenomeState}
                   view={view}
                 />
               }              

@@ -1,9 +1,9 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
-import useGenomeBrowserLayerData from "./useGenomeBrowserLayerData";
+import useTreenomeLayerData from "./useTreenomeLayerData";
 
-const useGenomeBrowserLayers = (
-    genomeBrowserState,
+const useTreenomeLayers = (
+    treenomeState,
     data,
     viewState,
     colorHook,
@@ -45,14 +45,14 @@ const useGenomeBrowserLayers = (
         } else {
             return 0;
         }
-    }, [data.data, genomeBrowserState.ntBounds]);
+    }, [data.data, treenomeState.ntBounds]);
     const aaWidth = useMemo(() => {
-        const browserWidth = genomeBrowserState.xBounds[1] - genomeBrowserState.xBounds[0];
-        const numNt = genomeBrowserState.ntBounds[1] - genomeBrowserState.ntBounds[0];
+        const browserWidth = treenomeState.xBounds[1] - treenomeState.xBounds[0];
+        const numNt = treenomeState.ntBounds[1] - treenomeState.ntBounds[0];
         return numNt > 600
             ? 2
             : (browserWidth / numNt) * 3;
-    }, [genomeBrowserState.ntBounds, genomeBrowserState.xBounds]);
+    }, [treenomeState.ntBounds, treenomeState.xBounds]);
     const ntWidth = useMemo(() => {
         return aaWidth / 3;
     }, [aaWidth])
@@ -77,17 +77,17 @@ const useGenomeBrowserLayers = (
     let layers = [];
 
 
-    const [layerDataAa, layerDataNt, computedReference] = useGenomeBrowserLayerData(data, genomeBrowserState, settings);
+    const [layerDataAa, layerDataNt, computedReference] = useTreenomeLayerData(data, treenomeState, settings);
     useEffect(() => {
         if(!reference) {
             setReference(computedReference)
         }
     }, [computedReference, reference, setReference])
     const ntToX = useCallback((nt) => {
-        return genomeBrowserState.xBounds[0] + (nt - genomeBrowserState.ntBounds[0])
-            / (genomeBrowserState.ntBounds[1] - genomeBrowserState.ntBounds[0])
-            * (genomeBrowserState.xBounds[1] - genomeBrowserState.xBounds[0]) - 3;
-    }, [genomeBrowserState.xBounds, genomeBrowserState.ntBounds, genomeBrowserState.yBounds]);
+        return treenomeState.xBounds[0] + (nt - treenomeState.ntBounds[0])
+            / (treenomeState.ntBounds[1] - treenomeState.ntBounds[0])
+            * (treenomeState.xBounds[1] - treenomeState.xBounds[0]) - 3;
+    }, [treenomeState.xBounds, treenomeState.ntBounds, treenomeState.yBounds]);
 
     const getNtPos = useCallback((mut) => {
         if (mut.gene == 'nt') {
@@ -96,51 +96,59 @@ const useGenomeBrowserLayers = (
         return genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
     }, [genes]);
 
-    const main_variation_layer_aa = new SolidPolygonLayer({
+    const main_variation_layer_aa = new LineLayer({
         data: layerDataAa,
         id: "browser-main-aa",
         onHover: (info) => setHoverInfo(info),
         pickable: true,
-        getFillColor: (d) => {
+        getColor: (d) => {
             return  d.m.new_residue != reference['aa'][d.m.gene + ':' + d.m.residue_pos] 
             ? colorHook.toRGB(d.m.new_residue)
             : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c)));
         },
-           
-        getLineColor: (d) => [80, 80, 80],
-        lineWidthUnits: "pixels",
         modelMatrix: modelMatrixFixedX,
-        getPolygon: (d) => {
-            if (!genomeBrowserState.ntBounds) {
+        getSourcePosition: (d) => {
+            if (!treenomeState.ntBounds) {
                 return [[0, 0]];
             }
             let mut = d.m;
             let ntPos = getNtPos(mut);
-            if (ntPos < genomeBrowserState.ntBounds[0] || ntPos > genomeBrowserState.ntBounds[1]) {
+            if (ntPos < treenomeState.ntBounds[0] || ntPos > treenomeState.ntBounds[1]) {
                 return [[0 , 0]];
             }
-
             let x = ntToX(ntPos);
-            if (mut.gene == 'nt') {
-                return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
-                [x + ntWidth, d.y[1] + variation_padding], [x + ntWidth, d.y[0] - variation_padding] ];
+            return [x + aaWidth/2, d.y[0] - variation_padding]
+        },
+        getTargetPosition: (d) => {
+            if (!treenomeState.ntBounds) {
+                return [[0, 0]];
             }
-            return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
-            [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
+            let mut = d.m;
+            let ntPos = getNtPos(mut);
+            if (ntPos < treenomeState.ntBounds[0] || ntPos > treenomeState.ntBounds[1]) {
+                return [[0 , 0]];
+            }
+            let x = ntToX(ntPos);
+            return [x + aaWidth/2, d.y[1] + variation_padding]
+        },
+        getWidth: (d) => {
+            return aaWidth
         },
         updateTriggers: {
-            getPolygon: [genomeBrowserState.ntBounds, getNtPos, ntToX, aaWidth, ntWidth, variation_padding],
-            getFillColor: [reference, colorHook, genes]
+            getTargetPosition: [treenomeState.ntBounds, getNtPos, ntToX, variation_padding, aaWidth],
+            getSourcePosition: [treenomeState.ntBounds, getNtPos, ntToX, variation_padding, aaWidth],
+            getWidth: [aaWidth],
+            getColor: [reference, colorHook, genes]
         },
         getPolygonOffset: myGetPolygonOffset
     });
 
-    const main_variation_layer_nt = new SolidPolygonLayer({
+    const main_variation_layer_nt = new LineLayer({
         data: layerDataNt,
         id: "browser-main-nt",
         onHover: (info) => setHoverInfo(info),
         pickable: true,
-        getFillColor: (d) => {
+        getColor: (d) => {
             switch(d.m.new_residue) {
                 case 'A':
                     return [0, 0, 0];
@@ -154,38 +162,46 @@ const useGenomeBrowserLayers = (
                     return [0, 0, 0]
             }
         },
-           
-        getLineColor: (d) => [80, 80, 80],
-        lineWidthUnits: "pixels",
         modelMatrix: modelMatrixFixedX,
-        getPolygon: (d) => {
-            if (!genomeBrowserState.ntBounds) {
+        getSourcePosition: (d) => {
+            if (!treenomeState.ntBounds) {
                 return [[0, 0]];
             }
             let mut = d.m;
             let ntPos = getNtPos(mut);
-            if (ntPos < genomeBrowserState.ntBounds[0] || ntPos > genomeBrowserState.ntBounds[1]) {
+            if (ntPos < treenomeState.ntBounds[0] || ntPos > treenomeState.ntBounds[1]) {
                 return [[0 , 0]];
             }
-
             let x = ntToX(ntPos);
-            if (mut.gene == 'nt') {
-                return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
-                [x + ntWidth, d.y[1] + variation_padding], [x + ntWidth, d.y[0] - variation_padding] ];
+            return [x + ntWidth/2, d.y[0] - variation_padding]
+        },
+        getTargetPosition: (d) => {
+            if (!treenomeState.ntBounds) {
+                return [[0, 0]];
             }
-            return [ [x, d.y[0] - variation_padding], [x, d.y[1] + variation_padding],
-            [x + aaWidth, d.y[1] + variation_padding], [x + aaWidth, d.y[0] - variation_padding] ];
+            let mut = d.m;
+            let ntPos = getNtPos(mut);
+            if (ntPos < treenomeState.ntBounds[0] || ntPos > treenomeState.ntBounds[1]) {
+                return [[0 , 0]];
+            }
+            let x = ntToX(ntPos);
+            return [x + ntWidth/2, d.y[1] + variation_padding]
+        },
+        getWidth: (d) => {
+            return ntWidth
         },
         updateTriggers: {
-            getPolygon: [genomeBrowserState.ntBounds, getNtPos, ntToX, aaWidth, ntWidth, variation_padding],
-            getFillColor: [reference, colorHook, genes]
+            getTargetPosition: [treenomeState.ntBounds, getNtPos, ntToX, variation_padding, ntWidth],
+            getSourcePosition: [treenomeState.ntBounds, getNtPos, ntToX, variation_padding, ntWidth],
+            getWidth: [ntWidth],
+            getColor: [reference, colorHook, genes]
         },
         getPolygonOffset: myGetPolygonOffset
     });
- 
+
  
     const dynamic_background_data = useMemo(() => {
-        if (!settings.genomeBrowserEnabled) {
+        if (!settings.treenomeEnabled) {
             return;
         }
         let d = [];
@@ -194,8 +210,8 @@ const useGenomeBrowserLayers = (
                 continue;
             }
             const gene = genes[key];
-            const yl = genomeBrowserState.yBounds[0];
-            const yh = genomeBrowserState.yBounds[1];
+            const yl = treenomeState.yBounds[0];
+            const yh = treenomeState.yBounds[1];
             d.push(
                 {
                     x: [
@@ -209,7 +225,7 @@ const useGenomeBrowserLayers = (
             );
         }
         return d;
-    }, [genes, ntToX, genomeBrowserState.xBounds, genomeBrowserState.yBounds, viewState.zoom, settings.genomeBrowserEnabled]);
+    }, [genes, ntToX, treenomeState.xBounds, treenomeState.yBounds, viewState.zoom, settings.treenomeEnabled]);
 
     const selected_node_data = useMemo(() => {
         if (!selectedDetails.nodeDetails || variation_padding == 0 ) {
@@ -224,37 +240,37 @@ const useGenomeBrowserLayers = (
             {
                 p: [ [ntToX(0), y - variation_padding],
                     [ntToX(0), y + variation_padding],
-                    [ntToX(genomeBrowserState.genomeSize), y + variation_padding],
-                    [ntToX(genomeBrowserState.genomeSize), y - variation_padding]
+                    [ntToX(treenomeState.genomeSize), y + variation_padding],
+                    [ntToX(treenomeState.genomeSize), y - variation_padding]
                 ],   
             }
         ]
-    }, [selectedDetails, ntToX, variation_padding, data.data, genomeBrowserState.genomeSize])
+    }, [selectedDetails, ntToX, variation_padding, data.data, treenomeState.genomeSize])
 
     const background_layer_data = useMemo(() => {
-        const yh = genomeBrowserState.yBounds[1];
+        const yh = treenomeState.yBounds[1];
         return [[
-            [genomeBrowserState.xBounds[0], -3000],
-            [genomeBrowserState.xBounds[0], yh * 4],
-            [genomeBrowserState.xBounds[1], yh * 4],
-            [genomeBrowserState.xBounds[1], -3000],
+            [treenomeState.xBounds[0], -3000],
+            [treenomeState.xBounds[0], yh * 4],
+            [treenomeState.xBounds[1], yh * 4],
+            [treenomeState.xBounds[1], -3000],
             
         ]]
-    }, [genomeBrowserState.xBounds, genomeBrowserState.yBounds]);
+    }, [treenomeState.xBounds, treenomeState.yBounds]);
 
     const dynamic_browser_background_data = useMemo(() => {
-        const yh = genomeBrowserState.yBounds[1];
+        const yh = treenomeState.yBounds[1];
         return [{
             x: [ [ntToX(0), -3000],
                 [ntToX(0), yh * 4],
-                [ntToX(genomeBrowserState.genomeSize), yh * 4],
-                [ntToX(genomeBrowserState.genomeSize), -3000]
+                [ntToX(treenomeState.genomeSize), yh * 4],
+                [ntToX(treenomeState.genomeSize), -3000]
             ],
             c: [245, 245, 245]
         }]
-    }, [genomeBrowserState.yBounds, genomeBrowserState.genomeSize, ntToX])
+    }, [treenomeState.yBounds, treenomeState.genomeSize, ntToX])
 
-    if (!settings.genomeBrowserEnabled) {
+    if (!settings.treenomeEnabled) {
         return [];
     }
   
@@ -298,10 +314,10 @@ const useGenomeBrowserLayers = (
             id: "browser-outline",
             data: [
                 {
-                    x: [ [ntToX(0), genomeBrowserState.yBounds[0]],
-                        [ntToX(0), genomeBrowserState.yBounds[1]],
-                        [ntToX(genomeBrowserState.genomeSize), genomeBrowserState.yBounds[1]],
-                        [ntToX(genomeBrowserState.genomeSize), genomeBrowserState.yBounds[0]]
+                    x: [ [ntToX(0), treenomeState.yBounds[0]],
+                        [ntToX(0), treenomeState.yBounds[1]],
+                        [ntToX(treenomeState.genomeSize), treenomeState.yBounds[1]],
+                        [ntToX(treenomeState.genomeSize), treenomeState.yBounds[0]]
                     ],   
                 }
             ],
@@ -348,4 +364,4 @@ const useGenomeBrowserLayers = (
 
     };
 
-    export default useGenomeBrowserLayers;
+    export default useTreenomeLayers;

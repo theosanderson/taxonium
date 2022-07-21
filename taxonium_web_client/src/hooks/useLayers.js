@@ -6,7 +6,7 @@ import {
 } from "@deck.gl/layers";
 
 import { useMemo, useCallback } from "react";
-import useGenomeBrowserLayers from "./useGenomeBrowserLayers";
+import useTreenomeLayers from "./useTreenomeLayers";
 
 const useLayers = ({
   data,
@@ -23,7 +23,7 @@ const useLayers = ({
   settings,
   isCurrentlyOutsideBounds,
   config,
-  genomeBrowserState,
+  treenomeState,
   reference,
   setReference
 }) => {
@@ -35,7 +35,7 @@ const useLayers = ({
   const layers = [];
 
     // Treenome Browser layers
-  const genomeBrowserLayers = useGenomeBrowserLayers( genomeBrowserState,
+  const treenomeLayers = useTreenomeLayers( treenomeState,
     data,
     viewState,
     colorHook,
@@ -44,7 +44,7 @@ const useLayers = ({
     reference,
     setReference,
     selectedDetails);
-  layers.push(...genomeBrowserLayers);
+  layers.push(...treenomeLayers);
   
 
   const getX = useCallback((node) => node[xType], [xType]);

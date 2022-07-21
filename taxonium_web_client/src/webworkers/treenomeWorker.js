@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-const post_order = (nodes) => {
-  console.log("POST ORDERING")
+const pre_order = (nodes) => {
   let to_children = {};
   let root_id = null;
   for (let i = 0; i < nodes.length; i++) {
@@ -27,7 +26,6 @@ const post_order = (nodes) => {
     }
     po.push(node_id);
   }
-  //console.log("done postorder in worker", po)
   return po;
 };
 
@@ -44,11 +42,11 @@ const computeFilteredVariationData = (variation_data, ntBounds, data) => {
   }
 }
 
-const computeYSpan = (postorder_nodes, lookup, root) => {
+const computeYSpan = (preorder_nodes, lookup, root) => {
 
   let yspan = {};
-  for (let i = postorder_nodes.length - 1; i >= 0; i--) {
-    let node = lookup[postorder_nodes[i]];
+  for (let i = preorder_nodes.length - 1; i >= 0; i--) { // post order
+    let node = lookup[preorder_nodes[i]];
     if (node.node_id == root) {
       continue;
     }
@@ -99,8 +97,8 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
     return null;
   }
 
-  const postorder_nodes = post_order(nodes);
-  const root = postorder_nodes.find((id) => id == lookup[id].parent_id);
+  const preorder_nodes = pre_order(nodes);
+  const root = preorder_nodes.find((id) => id == lookup[id].parent_id);
   for (let mut of lookup[root].mutations) {
     if (mut.gene == 'nt') {
       ref['nt'][mut.residue_pos] = mut.new_residue
@@ -110,17 +108,16 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
   }
 
   const chunkSize = 10000;
-  const yspan = computeYSpan(postorder_nodes, lookup, root);
-  postorder_nodes.reverse();
+  const yspan = computeYSpan(preorder_nodes, lookup, root);
   let var_data = [];
 
-  for (let memoIndex = 0; memoIndex < postorder_nodes.length + chunkSize; memoIndex += chunkSize) {
+  for (let memoIndex = 0; memoIndex < preorder_nodes.length + chunkSize; memoIndex += chunkSize) {
     
     let this_var_data = [];
     let i;
-    for (i = memoIndex; i < Math.min(memoIndex + chunkSize, postorder_nodes.length); i++) {
+    for (i = memoIndex; i < Math.min(memoIndex + chunkSize, preorder_nodes.length); i++) {
       
-      const node = lookup[postorder_nodes[i]];
+      const node = lookup[preorder_nodes[i]];
       if (node.node_id == root) {
         continue;
       }
@@ -135,7 +132,7 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
     }
     var_data.push(...this_var_data);
     let filteredVarData = computeFilteredVariationData(var_data, ntBounds, data);
-    if (i == postorder_nodes.length && shouldCache) {
+    if (i == preorder_nodes.length && shouldCache) {
       postMessage({
         type: type == 'aa' ? "variation_data_return_cache_aa" : "variation_data_return_cache_nt",
         filteredVarData: filteredVarData,

@@ -208,7 +208,7 @@ const useSearch = ({
           max_y - min_y + 50000 / (config.num_nodes ? config.num_nodes : 10000)
         );
       const new_target =
-        settings.genomeBrowserEnabled ? [oldViewState.target[0], (min_y + max_y) / 2]
+        settings.treenomeEnabled ? [oldViewState.target[0], (min_y + max_y) / 2]
           : [(min_x + max_x) / 2, (min_y + max_y) / 2];
 
 
@@ -224,12 +224,12 @@ const useSearch = ({
         viewState: viewState,
         interactionState: "isZooming",
         oldViewState,
-        basicTarget: settings.genomeBrowserEnabled ? false : true,
+        basicTarget: settings.treenomeEnabled ? false : true,
       });
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
-  }, [zoomToSearch, searchResults, deckSize, config.num_nodes, settings.genomeBrowserEnabled, searchSpec, updateQuery, view, xType]);
+  }, [zoomToSearch, searchResults, deckSize, config.num_nodes, settings.treenomeEnabled, searchSpec, updateQuery, view, xType]);
 
   return {
     searchResults,

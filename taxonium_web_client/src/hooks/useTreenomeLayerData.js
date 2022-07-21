@@ -2,7 +2,7 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 
 
-const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedDetails) => {
+const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) => {
 
   const [varDataAa, setVarDataAa] = useState([]);
   const [varDataNt, setVarDataNt] = useState([]);
@@ -14,7 +14,7 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
   const [didFirstNt, setDidFirstNt] = useState(false);
 
   const [currentJobId, setCurrentJobId] = useState(null)
-  const worker = useMemo(() => new Worker(new URL("../webworkers/genomeBrowserWorker.js", import.meta.url)), []);
+  const worker = useMemo(() => new Worker(new URL("../webworkers/treenomeWorker.js", import.meta.url)), []);
 
   worker.onmessage = useCallback((e) => {
     if (!reference && e.data.reference) {
@@ -22,11 +22,9 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
     }
 
     if (e.data.type == "variation_data_return_cache_aa") {
-      //     console.log("CACHE AA", e.data.filteredVarData)
       setCachedVarDataAa(e.data.filteredVarData)
       setVarDataAa(e.data.filteredVarData);
     } else if (e.data.type == "variation_data_return_aa") {
-      //      console.log("SENDING AA")
       setVarDataAa(e.data.filteredVarData)
     } else if (e.data.type == "variation_data_return_cache_nt") {
       setCachedVarDataNt(e.data.filteredVarData)
@@ -44,23 +42,22 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
       return;
     }
 
-
-    if (!didFirstAa && data.data && data.data.nodes && genomeBrowserState.genomeSize > 0 &&
-      genomeBrowserState.ntBounds[0] == 0 && genomeBrowserState.ntBounds[1] == genomeBrowserState.genomeSize) {
+    if (!didFirstAa && data.data && data.data.nodes && treenomeState.genomeSize > 0 &&
+      treenomeState.ntBounds[0] == 0 && treenomeState.ntBounds[1] == treenomeState.genomeSize) {
       if (settings.mutationTypesEnabled.aa) {
         const jobId = data.data.nodes.length;
-        console.log("sending init aa", data.data.nodes, genomeBrowserState.ntBounds)
+        console.log("sending init aa", data.data.nodes, treenomeState.ntBounds)
         worker.postMessage({
           type: "variation_data_aa",
           data: data,
           jobId: jobId,
-          ntBounds: genomeBrowserState.ntBounds
+          ntBounds: treenomeState.ntBounds
         });
       }
       setDidFirstAa(true)
     }
-    if (!didFirstNt && data.data && data.data.nodes && genomeBrowserState.genomeSize > 0 &&
-      genomeBrowserState.ntBounds[0] == 0 && genomeBrowserState.ntBounds[1] == genomeBrowserState.genomeSize) {
+    if (!didFirstNt && data.data && data.data.nodes && treenomeState.genomeSize > 0 &&
+      treenomeState.ntBounds[0] == 0 && treenomeState.ntBounds[1] == treenomeState.genomeSize) {
       if (settings.mutationTypesEnabled.nt) {
         const jobId = data.data.nodes.length;
         console.log("sending init nt")
@@ -69,12 +66,12 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
           type: "variation_data_nt",
           data: data,
           jobId: jobId,
-          ntBounds: genomeBrowserState.ntBounds
+          ntBounds: treenomeState.ntBounds
         });
       }
       setDidFirstNt(true);
     }
-    if (!settings.genomeBrowserEnabled) {
+    if (!settings.treenomeEnabled) {
       return;
     }
 
@@ -102,7 +99,6 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
     let skipNt = false;
     if (numNodes == data.data.nodes.length) {
       // only ntBounds changed, need to recompute only if < 1000 nts are visible
-      console.log("sament")
       if (!data.data || !data.data.nodes) {
         return;
       }
@@ -112,7 +108,6 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
       }
       if (settings.mutationTypesEnabled.nt && varDataNt.length > 0) {
         setVarDataNt(varDataNt);
-        console.log("Skip nt" )
         skipNt = true;
       }
     }
@@ -121,12 +116,11 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
     let jobId = data.data.nodes.length;
     if (!skipAa) {
       if (settings.mutationTypesEnabled.aa) {
-        console.log("sending to be doing aa")
         worker.postMessage({
           type: "variation_data_aa",
           data: data,
           jobId: jobId,
-          ntBounds: genomeBrowserState.ntBounds
+          ntBounds: treenomeState.ntBounds
         });
       }
     }
@@ -136,13 +130,13 @@ const useGenomeBrowserLayerData = (data, genomeBrowserState, settings, selectedD
           type: "variation_data_nt",
           data: data,
           jobId: jobId,
-          ntBounds: genomeBrowserState.ntBounds
+          ntBounds: treenomeState.ntBounds
         });
       }
     }
-  }, [data.data, numNodes, settings.genomeBrowserEnabled, varDataAa, varDataNt, worker, settings.mutationTypesEnabled, genomeBrowserState.ntBounds, currentJobId, setCurrentJobId, cachedVarDataAa, cachedVarDataNt]);
+  }, [data.data, numNodes, settings.treenomeEnabled, varDataAa, varDataNt, worker, settings.mutationTypesEnabled, treenomeState.ntBounds, currentJobId, setCurrentJobId, cachedVarDataAa, cachedVarDataNt]);
 
   return [varDataAa, varDataNt, reference]
 }
 
-export default useGenomeBrowserLayerData;
+export default useTreenomeLayerData;

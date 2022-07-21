@@ -116,12 +116,12 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       return {
         ...prevState,
         target: [window.screen.width < 600 ? 500 : 
-          settings.genomeBrowserEnabled ? 2600 : 1400, 1000]
+          settings.treenomeEnabled ? 2600 : 1400, 1000]
         }
     });
     setXzoom(window.screen.width < 600 ? -1 : 
-      settings.genomeBrowserEnabled ? -1 : 0);
-  }, [settings.genomeBrowserEnabled]);
+      settings.treenomeEnabled ? -1 : 0);
+  }, [settings.treenomeEnabled]);
 
   const [baseViewState, setBaseViewState] = useState({...viewState,
     "browser-main": {zoom: 0, target: [0,0]},
@@ -131,7 +131,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   const views = useMemo(() => {
     return [
     
-      ...(settings.minimapEnabled && !settings.genomeBrowserEnabled
+      ...(settings.minimapEnabled && !settings.treenomeEnabled
         ? [
             new OrthographicView({
               id: "minimap",
@@ -145,7 +145,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
             }),
           ]
         : []),
-      ...(settings.genomeBrowserEnabled
+      ...(settings.treenomeEnabled
         ? [
           new OrthographicView({
             id: "browser-axis",
@@ -176,7 +176,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   
     
     ];
-  }, [viewState, zoomAxis, settings.minimapEnabled, settings.genomeBrowserEnabled, xzoom]);
+  }, [viewState, zoomAxis, settings.minimapEnabled, settings.treenomeEnabled, xzoom]);
 
   const [mouseXY, setMouseXY] = useState([0, 0]);
 

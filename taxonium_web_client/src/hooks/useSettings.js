@@ -19,12 +19,12 @@ export const useSettings = ({ query, updateQuery }) => {
     return JSON.parse(query.mutationTypesEnabled);
   }, [query.mutationTypesEnabled]);
 
-  const genomeBrowserEnabled = useMemo(() => {
-    return JSON.parse(query.genomeBrowserEnabled);
-  }, [query.genomeBrowserEnabled]);
+  const treenomeEnabled = useMemo(() => {
+    return JSON.parse(query.treenomeEnabled);
+  }, [query.treenomeEnabled]);
   
-  const setGenomeBrowserEnabled = useCallback((value) => {
-    updateQuery({ genomeBrowserEnabled: value });
+  const setTreenomeEnabled = useCallback((value) => {
+    updateQuery({ treenomeEnabled: value });
     toast(
       `Genome browser is now ${
         value ? "enabled" : "disabled"
@@ -87,8 +87,8 @@ export const useSettings = ({ query, updateQuery }) => {
   };
   return {
     minimapEnabled,
-    genomeBrowserEnabled,
-    setGenomeBrowserEnabled,
+    treenomeEnabled,
+    setTreenomeEnabled,
     toggleMinimapEnabled,
     mutationTypesEnabled,
     filterMutations,

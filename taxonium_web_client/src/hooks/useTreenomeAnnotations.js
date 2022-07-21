@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 
 
-const useGenomeBrowserAnnotations = () => {
+const useTreenomeAnnotations = () => {
 
     const [trackList, setTrackList] = useState([]);
     const baseUrl = 'https://hgdownload.soe.ucsc.edu';
@@ -93,4 +93,4 @@ const useGenomeBrowserAnnotations = () => {
     return output;
 };
 
-export default useGenomeBrowserAnnotations;
+export default useTreenomeAnnotations;
