@@ -24,6 +24,8 @@ function Taxonium({
   setOverlayContent,
   proto,
   setTitle,
+  overlayContent,
+  setAboutEnabled,
 }) {
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
@@ -105,6 +107,8 @@ function Taxonium({
         xType={xType}
         setxType={setxType}
         settings={settings}
+        overlayContent={overlayContent}
+        setAboutEnabled={setAboutEnabled}
       />
     </div>
   );

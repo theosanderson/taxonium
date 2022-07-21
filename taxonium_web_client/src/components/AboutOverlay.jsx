@@ -22,15 +22,13 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
               href="https://github.com/theosanderson/taxodium"
             >
               Github repository
-            </a> or <a
-              className="text-blue underline"
-              href="https://docs.taxonium.org"
-            >
+            </a>{" "}
+            or{" "}
+            <a className="text-blue underline" href="https://docs.taxonium.org">
               read the documentation
             </a>
             .
           </p>
-          <p>Taxonium was created by Theo Sanderson.</p>
         </div>
       )}
     </Modal>
