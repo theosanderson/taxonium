@@ -1,6 +1,7 @@
 import "./App.css";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
+import useTreenomeState from "./hooks/useTreenomeState";
 import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
@@ -8,10 +9,11 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
+import { MdArrowForward, MdArrowBack } from "react-icons/md";
 
 const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
   ? "https://www.epicov.org/epi3/frontend"
@@ -25,9 +27,12 @@ function Taxonium({
   proto,
   setTitle,
 }) {
+  const deckRef = useRef();
+  const jbrowseRef = useRef();
+
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
-  const view = useView({ settings, deckSize });
+  const view = useView({ settings, deckSize, deckRef, jbrowseRef });
 
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 
@@ -69,13 +74,24 @@ function Taxonium({
     updateQuery,
     deckSize,
     xType,
+    settings
   });
 
-  //
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
+
+  };
+
+  const treenomeState = useTreenomeState(data, deckRef, view, settings)
 
   return (
-    <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
-      <div className="h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow">
+    <div className="flex-grow overflow-hidden flex flex-col md:flex-row" >
+      <div className={sidebarOpen ? "h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow"
+        : "md:col-span-12 h-3/6 md:h-full w-full"}>
         <Deck
           statusMessage={backend.statusMessage}
           data={data}
@@ -92,20 +108,35 @@ function Taxonium({
           setDeckSize={setDeckSize}
           deckSize={deckSize}
           isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
+          treenomeState={treenomeState}
+          deckRef={deckRef}
+          jbrowseRef={jbrowseRef}
         />
       </div>
-      <SearchPanel
-        className="flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
-        backend={backend}
-        search={search}
-        colorBy={colorBy}
-        colorHook={colorHook}
-        config={config}
-        selectedDetails={selectedDetails}
-        xType={xType}
-        setxType={setxType}
-        settings={settings}
-      />
+      
+      <div className={ sidebarOpen ? "md:w-1/4" : "bg-white shadow-xl" }>
+          <button onClick={toggleSidebar}>
+                <br />
+                { sidebarOpen ? <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" /> : <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle"/> }
+              </button>
+              { 
+              sidebarOpen &&
+                <SearchPanel
+                  className="search-panel flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+                  backend={backend}
+                  search={search}
+                  colorBy={colorBy}
+                  colorHook={colorHook}
+                  config={config}
+                  selectedDetails={selectedDetails}
+                  xType={xType}
+                  setxType={setxType}
+                  settings={settings}
+                  treenomeState={treenomeState}
+                  view={view}
+                />
+              }              
+        </div>
     </div>
   );
 }

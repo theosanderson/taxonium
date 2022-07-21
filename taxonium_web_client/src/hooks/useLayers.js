@@ -6,6 +6,7 @@ import {
 } from "@deck.gl/layers";
 
 import { useMemo, useCallback } from "react";
+import useTreenomeLayers from "./useTreenomeLayers";
 
 const useLayers = ({
   data,
@@ -22,6 +23,9 @@ const useLayers = ({
   settings,
   isCurrentlyOutsideBounds,
   config,
+  treenomeState,
+  reference,
+  setReference
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -29,6 +33,19 @@ const useLayers = ({
   const { toRGB } = colorHook;
 
   const layers = [];
+
+    // Treenome Browser layers
+  const treenomeLayers = useTreenomeLayers( treenomeState,
+    data,
+    viewState,
+    colorHook,
+    setHoverInfo,
+    settings,
+    reference,
+    setReference,
+    selectedDetails);
+  layers.push(...treenomeLayers);
+  
 
   const getX = useCallback((node) => node[xType], [xType]);
 
@@ -459,14 +476,16 @@ const useLayers = ({
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
   layers.push(minimap_bound_polygon);
 
+
   const layerFilter = useCallback(
-    ({ layer, viewport }) => {
+    ({ layer, viewport, renderPass }) => {
       const first_bit =
         (layer.id.startsWith("main") && viewport.id === "main") ||
         (layer.id.startsWith("mini") && viewport.id === "minimap") ||
         (layer.id.startsWith("fillin") &&
           viewport.id === "main" &&
-          isCurrentlyOutsideBounds);
+          isCurrentlyOutsideBounds) ||
+        (layer.id.startsWith("browser") && viewport.id === "browser-main");
 
       return first_bit;
     },

@@ -42,6 +42,8 @@ function SearchPanel({
   settings,
   backend,
   className,
+  treenomeState,
+  view
 }) {
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
 
@@ -162,6 +164,30 @@ function SearchPanel({
             </Select>
           </label>
         )}
+        <label className="space-x-2 text-sm block">
+            <span className="text-gray-500 text-sm">Treenome Browser:</span>
+            <input
+              name="treenomeEnabled"
+              type="checkbox"
+              className="m-3 inline-block"
+              checked={settings.treenomeEnabled}
+              onChange={(event) => {
+                console.log(settings.treenomeEnabled);
+                settings.setTreenomeEnabled(!settings.treenomeEnabled);
+                view.setViewState({
+                  zoom: -2,
+                  target: [window.screen.width < 600 ? 500 : 1400, 1000],
+              
+                  pitch: 0,
+                  bearing: 0,
+                  minimap: { zoom: -3, target: [250, 1000] },
+                  "browser-main": {zoom: -2, target: [0,1000]},
+                  "browser-axis": {zoom: -2, target: [0,1000]},
+                });
+              }
+            }
+            />
+          </label>
       </div>
       <div className="py-3 space-y-2">
         <div className="flex space-x-2">

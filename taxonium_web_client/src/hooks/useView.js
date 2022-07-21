@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import {
   OrthographicView,
@@ -7,6 +7,7 @@ import {
 } from "@deck.gl/core";
 
 let globalSetZoomAxis = () => {};
+
 class MyOrthographicController extends OrthographicController {
   // on construction
   constructor(props) {
@@ -67,7 +68,6 @@ class MyOrthographicController extends OrthographicController {
   }
 
   handleEvent(event) {
-    //console.log(event)
     if (event.pointerType === "touch") {
       if (event.type === "pinchmove") {
         if (
@@ -94,32 +94,44 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({ settings, deckSize }) => {
+const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
-  const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -2 : 0);
+  const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -1 : 0);
   globalSetZoomAxis = setZoomAxis;
 
+
+  // TODO target needs to be [0,0]
   const [viewState, setViewState] = useState({
     zoom: -2,
     target: [window.screen.width < 600 ? 500 : 1400, 1000],
+
     pitch: 0,
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
+    "browser-main": {zoom: -2, target: [0,1000]},
+    "browser-axis": {zoom: -2, target: [0,1000]},
+  });
+  useEffect(() => {
+    setViewState((prevState) => {
+      return {
+        ...prevState,
+        target: [window.screen.width < 600 ? 500 : 
+          settings.treenomeEnabled ? 2600 : 1400, 1000]
+        }
+    });
+    setXzoom(window.screen.width < 600 ? -1 : 
+      settings.treenomeEnabled ? -1 : 0);
+  }, [settings.treenomeEnabled]);
+
+  const [baseViewState, setBaseViewState] = useState({...viewState,
+    "browser-main": {zoom: 0, target: [0,0]},
+    "browser-axis": {zoom: 0, target: [0,0]},
   });
 
   const views = useMemo(() => {
     return [
-      ...[
-        new OrthographicView({
-          id: "main",
-          controller: {
-            type: MyOrthographicController,
-            scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
-          },
-          initialViewState: viewState,
-        }),
-      ],
-      ...(settings.minimapEnabled
+    
+      ...(settings.minimapEnabled && !settings.treenomeEnabled
         ? [
             new OrthographicView({
               id: "minimap",
@@ -133,12 +145,45 @@ const useView = ({ settings, deckSize }) => {
             }),
           ]
         : []),
+      ...(settings.treenomeEnabled
+        ? [
+          new OrthographicView({
+            id: "browser-axis",
+            controller: false,
+            x: "40%",
+            y: "0%",
+            width: "60%",
+          }),
+          new OrthographicView({
+            id: "browser-main",
+            controller: false,
+            x: "40%",
+            width: "60%",
+          }),
+        ] : []),
+        ...[
+          new OrthographicView({
+            id: "main",
+            controller: {
+              type: MyOrthographicController,
+              scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
+            },
+            width: "100%",
+            initialViewState: viewState,
+          }),
+        ],
+        
+  
+    
     ];
-  }, [viewState, zoomAxis, settings.minimapEnabled, xzoom]);
+  }, [viewState, zoomAxis, settings.minimapEnabled, settings.treenomeEnabled, xzoom]);
 
+  const [mouseXY, setMouseXY] = useState([0, 0]);
+
+  // TODO this is hack
   const modelMatrix = useMemo(() => {
     return [
-      1 / 2 ** (viewState.zoom - xzoom),
+      (1 / 2 ** (viewState.zoom - xzoom)), 
       0,
       0,
       0,
@@ -157,9 +202,10 @@ const useView = ({ settings, deckSize }) => {
     ];
   }, [viewState.zoom, xzoom]);
 
+
   const onViewStateChange = useCallback(
     ({
-      viewState,
+      viewState : newViewState,
       interactionState,
       viewId,
       oldViewState,
@@ -170,7 +216,7 @@ const useView = ({ settings, deckSize }) => {
       if (!deckSize) {
         setTimeout(() => {
           onViewStateChange({
-            viewState,
+            newViewState,
             interactionState,
             viewId,
             oldViewState,
@@ -179,6 +225,8 @@ const useView = ({ settings, deckSize }) => {
         }, 100);
         return;
       }
+          
+
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
         return;
@@ -186,65 +234,87 @@ const useView = ({ settings, deckSize }) => {
 
       //const temp_viewport = new OrthographicViewport(viewS
       const oldScaleY = 2 ** oldViewState.zoom;
-      const newScaleY = 2 ** viewState.zoom;
+      const newScaleY = 2 ** newViewState.zoom;
       // eslint-disable-line no-unused-vars
       const oldScaleX = 2 ** xzoom;
       let newScaleX = 2 ** xzoom;
 
       if (basicTarget) {
-        viewState.target[0] = (viewState.target[0] / newScaleY) * newScaleX;
+        newViewState.target[0] = (newViewState.target[0] / newScaleY) * newScaleX;
       } else {
         if (oldScaleY !== newScaleY) {
           if (localZoomAxis === "Y") {
-            viewState.target[0] =
+            newViewState.target[0] =
               (oldViewState.target[0] / newScaleY) * oldScaleY;
           } else {
-            const difference = viewState.zoom - oldViewState.zoom;
+            const difference = newViewState.zoom - oldViewState.zoom;
 
             setXzoom((old) => old + difference);
 
             newScaleX = 2 ** (xzoom + difference);
 
-            viewState.zoom = oldViewState.zoom;
-            viewState.target[0] =
+            newViewState.zoom = oldViewState.zoom;
+            newViewState.target[0] =
               (oldViewState.target[0] / oldScaleY) * newScaleY;
           }
         }
       }
 
-      viewState.target = [...viewState.target];
+      newViewState.target = [...newViewState.target];
 
-      viewState.real_height = deckSize.height / newScaleY;
-      viewState.real_width = deckSize.width / newScaleX;
+      newViewState.real_height = deckSize.height / newScaleY;
+      newViewState.real_width = deckSize.width / newScaleX;
 
-      viewState.real_target = [...viewState.target];
-      viewState.real_target[0] =
-        (viewState.real_target[0] * newScaleY) / newScaleX;
+      newViewState.real_target = [...newViewState.target];
+      newViewState.real_target[0] =
+        (newViewState.real_target[0] * newScaleY) / newScaleX;
 
       const nw = [
-        viewState.real_target[0] - viewState.real_width / 2,
-        viewState.real_target[1] - viewState.real_height / 2,
+        newViewState.real_target[0] - newViewState.real_width / 2,
+        newViewState.real_target[1] - newViewState.real_height / 2,
       ];
       const se = [
-        viewState.real_target[0] + viewState.real_width / 2,
-        viewState.real_target[1] + viewState.real_height / 2,
+        newViewState.real_target[0] + newViewState.real_width / 2,
+        newViewState.real_target[1] + newViewState.real_height / 2,
       ];
 
-      viewState.min_x = nw[0];
-      viewState.max_x = se[0];
-      viewState.min_y = nw[1];
-      viewState.max_y = se[1];
+      newViewState.min_x = nw[0];
+      newViewState.max_x = se[0];
+      newViewState.min_y = nw[1];
+      newViewState.max_y = se[1];
 
-      viewState["minimap"] = { zoom: -3, target: [250, 1000] };
+      newViewState["minimap"] = { zoom: -3, target: [250, 1000] };
+      
+  
 
-      setViewState(viewState);
-      return viewState;
+      if (jbrowseRef.current) {
+        const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
+        const xBound = jbrowseRef.current.children[0].children[0].offsetParent.offsetParent.offsetLeft;
+        if (mouseXY[0] > xBound && mouseXY[1] < yBound || mouseXY[0] < 0 || mouseXY[1] < 0) {
+          if (!basicTarget && viewId) {
+            return;
+          }
+        }      
+      }
+
+      // Treenome view state
+      if (viewId === "main" || !viewId) {
+        newViewState["browser-main"] = {
+          ...viewState["browser-main"],
+          zoom: newViewState.zoom,
+          target: [viewState["browser-main"].target[0], newViewState.target[1]],
+        }
+      }
+
+      setViewState(newViewState);
+      return newViewState;
     },
-    [zoomAxis, xzoom, deckSize]
+    [zoomAxis, xzoom, deckSize, viewState, jbrowseRef, mouseXY]
   );
 
   const zoomIncrement = useCallback(
     (increment, overrideZoomAxis) => {
+
       const newViewState = { ...viewState };
       newViewState.zoom += increment;
 
@@ -258,10 +328,11 @@ const useView = ({ settings, deckSize }) => {
     [viewState, onViewStateChange]
   );
 
+ 
   const output = useMemo(() => {
     return {
       viewState,
-
+      setViewState,
       onViewStateChange,
       views,
       zoomAxis,
@@ -269,10 +340,13 @@ const useView = ({ settings, deckSize }) => {
       modelMatrix,
       zoomIncrement,
       xzoom,
+      mouseXY,
+      setMouseXY,
+      baseViewState
     };
   }, [
     viewState,
-
+    setViewState,
     onViewStateChange,
     views,
     zoomAxis,
@@ -280,6 +354,9 @@ const useView = ({ settings, deckSize }) => {
     modelMatrix,
     zoomIncrement,
     xzoom,
+    mouseXY,
+    setMouseXY,
+    baseViewState
   ]);
 
   return output;
