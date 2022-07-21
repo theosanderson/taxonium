@@ -36,6 +36,8 @@ function SearchPanel({
   colorBy,
   config,
   selectedDetails,
+  overlayContent,
+  setAboutEnabled,
   colorHook,
   xType,
   setxType,
@@ -58,7 +60,7 @@ function SearchPanel({
 
   const formatMetadataItem = (key) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
-    if (key == "num_tips" && selectedDetails.nodeDetails[key] == 1) return;
+    if (key === "num_tips" && selectedDetails.nodeDetails[key] === 1) return;
     if (
       selectedDetails.nodeDetails &&
       selectedDetails.nodeDetails[key] &&
@@ -141,9 +143,18 @@ function SearchPanel({
       <div className="space-y-2 py-3">
         {config.num_tips && (
           <p className="text-gray-500 text-sm">
-            Displaying {formatNumber(config.num_tips)}{" "}
+            {
+              overlayContent ? (<>Displaying <button className="underline" onClick={()=> {setAboutEnabled(true);}}>
+               {formatNumber(config.num_tips)}{" "}
             {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
-            {config.source && ` from ${config.source}`}
+            
+            </button> {config.source && ` from ${config.source}`}</>) :
+            <>
+            Displaying {formatNumber(config.num_tips)}{" "}
+          {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
+          {config.source && ` from ${config.source}`}
+          </>
+            }
           </p>
         )}
         {config.x_accessors && config.x_accessors.length > 1 && (

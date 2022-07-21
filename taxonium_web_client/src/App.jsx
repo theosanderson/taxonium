@@ -248,6 +248,8 @@ function App() {
               updateQuery={updateQuery}
               setOverlayContent={setOverlayContent}
               setTitle={setTitle}
+              overlayContent={overlayContent}
+              setAboutEnabled={setAboutEnabled}
             />
           ) : (
             <div className="m-10 space-y-3">
