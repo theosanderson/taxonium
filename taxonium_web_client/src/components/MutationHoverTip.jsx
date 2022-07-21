@@ -29,23 +29,6 @@ const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config,
     >
       <h2 className="font-bold whitespace-pre-wrap">
       </h2>
-      {/* {colorBy.colorByField === "genotype" && (
-        <span
-          style={{
-            color: colorHook.toRGBCSS(colorBy.getNodeColorField(hoveredNode)),
-          }}
-        >
-          {colorBy.colorByGene}:{colorBy.colorByPosition}
-          {colorBy.getNodeColorField(hoveredNode)}
-        </span>
-        gene: "ORF1a"
-mutation_id: 6384
-new_residue: "D"
-previous_residue: "G"
-residue_pos: 2118
-      )} */}
-
-
         <div>
           <div className="mutations text-xs">
                 <div className="inline-block">

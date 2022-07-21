@@ -77,11 +77,8 @@ function Taxonium({
     settings
   });
 
-  // Treenome 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
-    // const tempView = view.viewState;
-
     setSidebarOpen(!sidebarOpen);
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));

@@ -20,16 +20,9 @@
   margin: 0px !important
 }
 
-/* div[class*=' makeStyles-trackLabel'],div[class^='makeStyles-trackLabel'] {
-  display: none !important;
-} */
-
 p[data-testid='refLabel-NC_045512v2'] {
   display: none !important;
 }
-/* #view-browser-axis > div > div > div > div > div.MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded > div > div:nth-child(1) {
-  bottom: 0px !important;
-} */
 
 [class *= "PrivateSwitchBase-input-"] + svg {
   color: "#2463eb" !important;
