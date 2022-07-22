@@ -71,7 +71,7 @@ def do_processing(input_file,
     f.close()
 
     if hasattr(mat, "genes"):
-        config['genes'] = mat.genes
+        config['gene_details'] = mat.genes
 
     if chronumental_enabled:
         utils.do_chronumental(
