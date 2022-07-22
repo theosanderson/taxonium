@@ -31,7 +31,9 @@ class AAMutation:
     one_indexed_codon: int
     initial_aa: str
     final_aa: str
+    nuc_for_codon: int
     type: str = "aa"
+    
 
 
 
@@ -42,6 +44,13 @@ class NucMutation:  #hashable
     mut_nuc: str
     chromosome: str = "chrom"
     type: str = "nt"
+
+@dataclass(eq=True, frozen=True)
+class Gene:
+    name: str
+    strand: int
+    start: int
+    end: int
 
 
 def get_codon_table():
@@ -62,6 +71,13 @@ def get_gene_name(cds):
         return cds.qualifiers["locus_tag"][0]
     else:
         raise ValueError(f"No gene name or locus tag for {cds}")
+
+def get_genes_dict(cdses):
+    genes = {}
+    for cds in cdses:
+        genes[get_gene_name(cds)] = Gene(get_gene_name(cds), cds.strand,
+                                            cds.location.start, cds.location.end)
+    return genes
 
 
 def get_mutations(past_nuc_muts_dict,
@@ -126,7 +142,7 @@ def get_mutations(past_nuc_muts_dict,
         if initial_codon_trans != final_codon_trans or disable_check_for_differences:
             #(gene, codon_number + 1, initial_codon_trans, final_codon_trans)
 
-            mutations_here.append( AAMutation(gene=gene, one_indexed_codon=codon_number+1, initial_aa=initial_codon_trans, final_aa=final_codon_trans))
+            mutations_here.append( AAMutation(gene=gene, one_indexed_codon=codon_number+1, initial_aa=initial_codon_trans, final_aa=final_codon_trans, nuc_for_codon=codon_start+1))
 
     # update past_nuc_muts_dict
     for mutation in annotated_mutations:
@@ -305,6 +321,8 @@ class UsherMutationAnnotatedTree:
             #assert cds.location.strand == 1
             assert len(cds.location.parts) == 1
             assert len(cds.location.parts[0]) % 3 == 0
+        
+        self.genes = get_genes_dict(self.cdses)
 
     def convert_nuc_mutation(self, usher_mutation):
         new_mut = NucMutation(one_indexed_position=usher_mutation.position,

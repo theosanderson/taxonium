@@ -70,6 +70,9 @@ def do_processing(input_file,
         shear_threshold=shear_threshold)
     f.close()
 
+    if hasattr(mat, "genes"):
+        config['genes'] = mat.genes
+
     if chronumental_enabled:
         utils.do_chronumental(
             mat=mat,
