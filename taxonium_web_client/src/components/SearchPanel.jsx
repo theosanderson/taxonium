@@ -3,7 +3,7 @@ import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { FaSearch } from "react-icons/fa";
-import { BsBoxArrowInUpRight } from "react-icons/bs";
+import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
 import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
@@ -165,7 +165,7 @@ function SearchPanel({
           </label>
         )}
         <label className="space-x-2 text-sm block">
-            <span className="text-gray-500 text-sm">Treenome Browser:</span>
+            <span className="text-gray-500 text-sm">Treenome Browser:
             <input
               name="treenomeEnabled"
               type="checkbox"
@@ -177,7 +177,6 @@ function SearchPanel({
                 view.setViewState({
                   zoom: -2,
                   target: [window.screen.width < 600 ? 500 : 1400, 1000],
-              
                   pitch: 0,
                   bearing: 0,
                   minimap: { zoom: -3, target: [250, 1000] },
@@ -187,6 +186,10 @@ function SearchPanel({
               }
             }
             />
+            <span style={{display: "inline-block"}}>
+                <BsQuestionCircle/>
+              </span>
+            </span>
           </label>
       </div>
       <div className="py-3 space-y-2">

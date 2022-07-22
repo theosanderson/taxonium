@@ -43,7 +43,8 @@ const useLayers = ({
     settings,
     reference,
     setReference,
-    selectedDetails);
+    selectedDetails,
+    modelMatrix);
   layers.push(...treenomeLayers);
   
 

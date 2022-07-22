@@ -27,7 +27,7 @@ const useTreenomeAnnotations = () => {
             return null;
         }
         const ext = url.slice(-2);
-            if (ext != 'bb' && ext != 'bw') {
+            if (ext !== 'bb' && ext !== 'bw') {
                 return null;
             }
             const fullUrl = `${baseUrl}${url}`;
@@ -37,7 +37,7 @@ const useTreenomeAnnotations = () => {
                     assemblyNames: ['NC_045512v2'],
                     category: category,
                 }
-            if (ext == 'bb') {
+            if (ext === 'bb') {
                 output.type = 'FeatureTrack';
                 output.adapter = {
                     type: 'BigBedAdapter',
@@ -46,7 +46,7 @@ const useTreenomeAnnotations = () => {
                         locationType: 'UriLocation',
                     },
                 }
-            } else if (ext == 'bw') {
+            } else if (ext ==='bw') {
                 output.type = 'QuantitativeTrack';
                 output.adapter = {
                     type: 'BigWigAdapter',
@@ -75,9 +75,7 @@ const useTreenomeAnnotations = () => {
                         allJson.push(childJson);
                     }
                 }
-            }
-            const title = track.longLabel;
-            
+            }            
             let thisJson = getJson(track, key, track.longLabel, ['UCSC Tracks']);
             if (thisJson) {
                 allJson.push(thisJson);

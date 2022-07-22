@@ -1,12 +1,11 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { toast } from "react-hot-toast";
 import {
   OrthographicView,
   OrthographicController,
   //OrthographicViewport,
 } from "@deck.gl/core";
 
-let globalSetZoomAxis = () => {};
+let globalSetZoomAxis = () => { };
 
 class MyOrthographicController extends OrthographicController {
   // on construction
@@ -108,42 +107,45 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     pitch: 0,
     bearing: 0,
     minimap: { zoom: -3, target: [250, 1000] },
-    "browser-main": {zoom: -2, target: [0,1000]},
-    "browser-axis": {zoom: -2, target: [0,1000]},
+    "browser-main": { zoom: -2, target: [0, 1000] },
+    "browser-axis": { zoom: -2, target: [0, 1000] },
   });
   useEffect(() => {
     setViewState((prevState) => {
       return {
         ...prevState,
-        target: [window.screen.width < 600 ? 500 : 
+        target: [window.screen.width < 600 ? 500 :
           settings.treenomeEnabled ? 2600 : 1400, 1000]
-        }
+      }
     });
-    setXzoom(window.screen.width < 600 ? -1 : 
+    setXzoom(window.screen.width < 600 ? -1 :
       settings.treenomeEnabled ? -1 : 0);
   }, [settings.treenomeEnabled]);
 
-  const [baseViewState, setBaseViewState] = useState({...viewState,
-    "browser-main": {zoom: 0, target: [0,0]},
-    "browser-axis": {zoom: 0, target: [0,0]},
-  });
+  const baseViewState = useMemo(() => {
+    return {
+      ...viewState,
+      "browser-main": { zoom: 0, target: [0, 0] },
+      "browser-axis": { zoom: 0, target: [0, 0] },
+    }
+  }, [viewState]);
 
   const views = useMemo(() => {
     return [
-    
+
       ...(settings.minimapEnabled && !settings.treenomeEnabled
         ? [
-            new OrthographicView({
-              id: "minimap",
-              x: "79%",
-              y: "1%",
-              width: "20%",
-              height: "35%",
-              borderWidth: "1px",
-              controller: true,
-              // clear: true,
-            }),
-          ]
+          new OrthographicView({
+            id: "minimap",
+            x: "79%",
+            y: "1%",
+            width: "20%",
+            height: "35%",
+            borderWidth: "1px",
+            controller: true,
+            // clear: true,
+          }),
+        ]
         : []),
       ...(settings.treenomeEnabled
         ? [
@@ -161,29 +163,28 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
             width: "60%",
           }),
         ] : []),
-        ...[
-          new OrthographicView({
-            id: "main",
-            controller: {
-              type: MyOrthographicController,
-              scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
-            },
-            width: "100%",
-            initialViewState: viewState,
-          }),
-        ],
-        
-  
-    
+      ...[
+        new OrthographicView({
+          id: "main",
+          controller: {
+            type: MyOrthographicController,
+            scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
+          },
+          width: "100%",
+          initialViewState: viewState,
+        }),
+      ],
+
+
+
     ];
   }, [viewState, zoomAxis, settings.minimapEnabled, settings.treenomeEnabled, xzoom]);
 
   const [mouseXY, setMouseXY] = useState([0, 0]);
 
-  // TODO this is hack
   const modelMatrix = useMemo(() => {
     return [
-      (1 / 2 ** (viewState.zoom - xzoom)), 
+      (1 / 2 ** (viewState.zoom - xzoom)),
       0,
       0,
       0,
@@ -205,7 +206,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
 
   const onViewStateChange = useCallback(
     ({
-      viewState : newViewState,
+      viewState: newViewState,
       interactionState,
       viewId,
       oldViewState,
@@ -225,7 +226,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
         }, 100);
         return;
       }
-          
+
 
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
@@ -284,17 +285,17 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       newViewState.max_y = se[1];
 
       newViewState["minimap"] = { zoom: -3, target: [250, 1000] };
-      
-  
+
+
 
       if (jbrowseRef.current) {
         const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
         const xBound = jbrowseRef.current.children[0].children[0].offsetParent.offsetParent.offsetLeft;
-        if (mouseXY[0] > xBound && mouseXY[1] < yBound || mouseXY[0] < 0 || mouseXY[1] < 0) {
+        if ((mouseXY[0] > xBound && mouseXY[1] < yBound )|| mouseXY[0] < 0 || mouseXY[1] < 0) {
           if (!basicTarget && viewId) {
             return;
           }
-        }      
+        }
       }
 
       // Treenome view state
@@ -328,7 +329,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     [viewState, onViewStateChange]
   );
 
- 
+
   const output = useMemo(() => {
     return {
       viewState,

@@ -1,6 +1,5 @@
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import '@fontsource/roboto'
-import { StylesProvider } from "@material-ui/core/styles";
 import "../App.css";
 import useTreenomeAnnotations from '../hooks/useTreenomeAnnotations';
 
@@ -8,8 +7,6 @@ import {
   createViewState,
   JBrowseLinearGenomeView,
 } from '@jbrowse/react-linear-genome-view'
-
-const referenceUrl = 'https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.2bit'
 
 function JBrowsePanel(props) {
 
@@ -34,7 +31,7 @@ function JBrowsePanel(props) {
         }
       }
 
-}, [props.treenomeState.isCov2Tree, props.treenomeState.genome, props.treenomeState.genomeSize, props.treenomeState.chromosomeName]);
+}, [props.treenomeState.genome, props.treenomeState.genomeSize, props.treenomeState.chromosomeName]);
 
 const tracks = useMemo(() => {
   return [
@@ -185,35 +182,6 @@ const defaultSession = useMemo(() => {
   }
 }, []);
 
-
-useEffect(() => {
-  if (!props.treenomeState.ntBoundsExt) {
-    return;
-  }
-  const v = state.session.view;
-  v.navToLocString('NC_045512v2:' + props.treenomeState.ntBoundsExt[0] + '..' + props.treenomeState.ntBoundsExt[1]);
-  props.treenomeState.setNtBoundsExt(null);
-
-}, [props.treenomeState]);
-
-
-// Read JBrowse state to determine nt bounds
-const onChange = (patch) => {
-  if (patch.op != "replace") {
-    return;
-  }
-  const v = state.session.view;
-
-  const leftNtBound = v.offsetPx * v.bpPerPx;
-  const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
-  if (leftNtBound != props.treenomeState.ntBounds[0] || rightNtBound != props.treenomeState.ntBounds[1]) {
-    props.treenomeState.setNtBounds([leftNtBound, rightNtBound]);
-  }
-  const pxPerBp = 1 / v.bpPerPx;
-  if (pxPerBp != props.treenomeState.pxPerBp) {
-    props.treenomeState.setPxPerBp(pxPerBp);
-  }
-};
 const theme = useMemo(() => {
   return {
     configuration: {
@@ -243,8 +211,35 @@ const state = useMemo(() => createViewState({
   location: props.treenomeState.isCov2Tree ? 'NC_045512v2:0-29903' : '',
   defaultSession: props.treenomeState.isCov2Tree ? defaultSession : {},
   ...theme,
-  onChange: onChange
+  onChange: (patch) => {
+    if (patch.op !== "replace") {
+      return;
+    }
+    const v = state.session.view;
+  
+    const leftNtBound = v.offsetPx * v.bpPerPx;
+    const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
+    if (leftNtBound !== props.treenomeState.ntBounds[0] || rightNtBound !== props.treenomeState.ntBounds[1]) {
+      props.treenomeState.setNtBounds([leftNtBound, rightNtBound]);
+    }
+    const pxPerBp = 1 / v.bpPerPx;
+    if (pxPerBp !== props.treenomeState.pxPerBp) {
+      props.treenomeState.setPxPerBp(pxPerBp);
+    }
+  }
 }), [assembly, tracks, defaultSession, theme, props.treenomeState.isCov2Tree]);
+// TODO: Adding treenomState as dependency above breaks things
+
+
+useEffect(() => {
+  if (!props.treenomeState.ntBoundsExt) {
+    return;
+  }
+  const v = state.session.view;
+  v.navToLocString('NC_045512v2:' + props.treenomeState.ntBoundsExt[0] + '..' + props.treenomeState.ntBoundsExt[1]);
+  props.treenomeState.setNtBoundsExt(null);
+
+}, [props.treenomeState, state.session.view]);
 
 
 useEffect(() => {
@@ -254,11 +249,11 @@ useEffect(() => {
   }
   const leftNtBound = v.offsetPx * v.bpPerPx;
   const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
-  if (leftNtBound != props.treenomeState.ntBounds[0] || rightNtBound != props.treenomeState.ntBounds[1]) {
+  if (leftNtBound !== props.treenomeState.ntBounds[0] || rightNtBound !== props.treenomeState.ntBounds[1]) {
     props.treenomeState.setNtBounds([leftNtBound, rightNtBound]);
   }
   const pxPerBp = 1 / v.bpPerPx;
-  if (pxPerBp != props.treenomeState.pxPerBp) {
+  if (pxPerBp !== props.treenomeState.pxPerBp) {
     props.treenomeState.setPxPerBp(pxPerBp);
   }
 }, [props.treenomeState, state.session.view]);

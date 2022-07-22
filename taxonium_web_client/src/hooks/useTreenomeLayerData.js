@@ -21,19 +21,18 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
       setReference(e.data.reference)
     }
 
-    if (e.data.type == "variation_data_return_cache_aa") {
+    if (e.data.type === "variation_data_return_cache_aa") {
       setCachedVarDataAa(e.data.filteredVarData)
       setVarDataAa(e.data.filteredVarData);
-    } else if (e.data.type == "variation_data_return_aa") {
+    } else if (e.data.type === "variation_data_return_aa") {
       setVarDataAa(e.data.filteredVarData)
-    } else if (e.data.type == "variation_data_return_cache_nt") {
+    } else if (e.data.type === "variation_data_return_cache_nt") {
       setCachedVarDataNt(e.data.filteredVarData)
       setVarDataNt(e.data.filteredVarData);
-    } else if (e.data.type == "variation_data_return_nt") {
-      console.log("got computer nuc")
+    } else if (e.data.type === "variation_data_return_nt") {
       setVarDataNt(e.data.filteredVarData)
     }
-  }, [reference, setReference, setVarDataAa, setVarDataNt, setCachedVarDataAa, setCachedVarDataNt, currentJobId])
+  }, [reference, setReference, setVarDataAa, setVarDataNt, setCachedVarDataAa, setCachedVarDataNt])
 
   useEffect(() => {
 
@@ -43,10 +42,9 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
     }
 
     if (!didFirstAa && data.data && data.data.nodes && treenomeState.genomeSize > 0 &&
-      treenomeState.ntBounds[0] == 0 && treenomeState.ntBounds[1] == treenomeState.genomeSize) {
+      treenomeState.ntBounds[0] === 0 && treenomeState.ntBounds[1] === treenomeState.genomeSize) {
       if (settings.mutationTypesEnabled.aa) {
         const jobId = data.data.nodes.length;
-        console.log("sending init aa", data.data.nodes, treenomeState.ntBounds)
         worker.postMessage({
           type: "variation_data_aa",
           data: data,
@@ -57,11 +55,9 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
       setDidFirstAa(true)
     }
     if (!didFirstNt && data.data && data.data.nodes && treenomeState.genomeSize > 0 &&
-      treenomeState.ntBounds[0] == 0 && treenomeState.ntBounds[1] == treenomeState.genomeSize) {
+      treenomeState.ntBounds[0] === 0 && treenomeState.ntBounds[1] === treenomeState.genomeSize) {
       if (settings.mutationTypesEnabled.nt) {
         const jobId = data.data.nodes.length;
-        console.log("sending init nt")
-
         worker.postMessage({
           type: "variation_data_nt",
           data: data,
@@ -76,7 +72,7 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
     }
 
     if (data.data.nodes.length >= 90000) {
-      if (cachedVarDataAa.length > 0 && cachedVarDataAa != varDataAa) {
+      if (cachedVarDataAa.length > 0 && cachedVarDataAa !== varDataAa) {
         setVarDataAa(cachedVarDataAa);
       }
       if (cachedVarDataNt.length > 0) {
@@ -97,7 +93,7 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
     }
     let skipAa = false;
     let skipNt = false;
-    if (numNodes == data.data.nodes.length) {
+    if (numNodes === data.data.nodes.length) {
       // only ntBounds changed, need to recompute only if < 1000 nts are visible
       if (!data.data || !data.data.nodes) {
         return;
@@ -134,7 +130,7 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
         });
       }
     }
-  }, [data.data, numNodes, settings.treenomeEnabled, varDataAa, varDataNt, worker, settings.mutationTypesEnabled, treenomeState.ntBounds, currentJobId, setCurrentJobId, cachedVarDataAa, cachedVarDataNt]);
+  }, [data.data, numNodes, settings.treenomeEnabled, varDataAa, varDataNt, worker, settings.mutationTypesEnabled, treenomeState.ntBounds, currentJobId, setCurrentJobId, cachedVarDataAa, cachedVarDataNt, data, didFirstAa, treenomeState.genomeSize, didFirstNt]);
 
   return [varDataAa, varDataNt, reference]
 }

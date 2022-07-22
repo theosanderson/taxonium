@@ -1,10 +1,9 @@
-import { useState } from "react";
 
 const pre_order = (nodes) => {
   let to_children = {};
   let root_id = null;
   for (let i = 0; i < nodes.length; i++) {
-    if (nodes[i].parent_id == nodes[i].node_id) {
+    if (nodes[i].parent_id === nodes[i].node_id) {
       root_id = nodes[i].node_id;
       continue;
     }
@@ -47,7 +46,7 @@ const computeYSpan = (preorder_nodes, lookup, root) => {
   let yspan = {};
   for (let i = preorder_nodes.length - 1; i >= 0; i--) { // post order
     let node = lookup[preorder_nodes[i]];
-    if (node.node_id == root) {
+    if (node.node_id === root) {
       continue;
     }
     let parent = node.parent_id;
@@ -98,9 +97,9 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
   }
 
   const preorder_nodes = pre_order(nodes);
-  const root = preorder_nodes.find((id) => id == lookup[id].parent_id);
+  const root = preorder_nodes.find((id) => id === lookup[id].parent_id);
   for (let mut of lookup[root].mutations) {
-    if (mut.gene == 'nt') {
+    if (mut.gene === 'nt') {
       ref['nt'][mut.residue_pos] = mut.new_residue
     } else {
       ref['aa'][mut.gene + ':' + mut.residue_pos] = mut.new_residue;
@@ -118,11 +117,11 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
     for (i = memoIndex; i < Math.min(memoIndex + chunkSize, preorder_nodes.length); i++) {
       
       const node = lookup[preorder_nodes[i]];
-      if (node.node_id == root) {
+      if (node.node_id === root) {
         continue;
       }
       for (let mut of node.mutations) {
-        if (mut.gene == 'nt' && type == 'nt' || mut.gene != 'nt' && type == 'aa') {
+        if ((mut.gene === 'nt' && type === 'nt') || (mut.gene !== 'nt' && type === 'aa')) {
           this_var_data.push({
             y: yspan[node.node_id],
             m: mut
@@ -132,16 +131,16 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
     }
     var_data.push(...this_var_data);
     let filteredVarData = computeFilteredVariationData(var_data, ntBounds, data);
-    if (i == preorder_nodes.length && shouldCache) {
+    if (i === preorder_nodes.length && shouldCache) {
       postMessage({
-        type: type == 'aa' ? "variation_data_return_cache_aa" : "variation_data_return_cache_nt",
+        type: type === 'aa' ? "variation_data_return_cache_aa" : "variation_data_return_cache_nt",
         filteredVarData: filteredVarData,
         reference: ref,
         jobId: jobId
       });
     } else {
       postMessage({
-        type: type == 'aa' ? "variation_data_return_aa" : "variation_data_return_nt",
+        type: type === 'aa' ? "variation_data_return_aa" : "variation_data_return_nt",
         filteredVarData: filteredVarData,
         reference: ref,
         jobId: jobId
@@ -158,9 +157,9 @@ onmessage = async (event) => {
   let ntBounds, jobId, data
   ({ ntBounds, jobId, data } = event.data);
 
-  if (event.data.type == "variation_data_aa") {
+  if (event.data.type === "variation_data_aa") {
     computeVariationData(data, 'aa', ntBounds, jobId);
-  } else if (event.data.type == "variation_data_nt") {
+  } else if (event.data.type === "variation_data_nt") {
     computeVariationData(data, 'nt', ntBounds, jobId);
   }
 }

@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState, useEffect } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import useTreenomeLayerData from "./useTreenomeLayerData";
 
@@ -45,7 +45,7 @@ const useTreenomeLayers = (
         } else {
             return 0;
         }
-    }, [data.data, treenomeState.ntBounds]);
+    }, [data.data]);
     const aaWidth = useMemo(() => {
         const browserWidth = treenomeState.xBounds[1] - treenomeState.xBounds[0];
         const numNt = treenomeState.ntBounds[1] - treenomeState.ntBounds[0];
@@ -87,10 +87,10 @@ const useTreenomeLayers = (
         return treenomeState.xBounds[0] + (nt - treenomeState.ntBounds[0])
             / (treenomeState.ntBounds[1] - treenomeState.ntBounds[0])
             * (treenomeState.xBounds[1] - treenomeState.xBounds[0]) - 3;
-    }, [treenomeState.xBounds, treenomeState.ntBounds, treenomeState.yBounds]);
+    }, [treenomeState.xBounds, treenomeState.ntBounds]);
 
     const getNtPos = useCallback((mut) => {
-        if (mut.gene == 'nt') {
+        if (mut.gene === 'nt') {
             return mut.residue_pos - 1;
         }
         return genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
@@ -102,7 +102,7 @@ const useTreenomeLayers = (
         onHover: (info) => setHoverInfo(info),
         pickable: true,
         getColor: (d) => {
-            return  d.m.new_residue != reference['aa'][d.m.gene + ':' + d.m.residue_pos] 
+            return  d.m.new_residue !== reference['aa'][d.m.gene + ':' + d.m.residue_pos] 
             ? colorHook.toRGB(d.m.new_residue)
             : genes[d.m.gene][2].map((c) => 245 - (0.2*(245-c)));
         },
@@ -206,11 +206,10 @@ const useTreenomeLayers = (
         }
         let d = [];
         for (let key of Object.keys(genes)) {
-            if (key == 'ORF1ab') {
+            if (key === 'ORF1ab') {
                 continue;
             }
             const gene = genes[key];
-            const yl = treenomeState.yBounds[0];
             const yh = treenomeState.yBounds[1];
             d.push(
                 {
@@ -225,10 +224,10 @@ const useTreenomeLayers = (
             );
         }
         return d;
-    }, [genes, ntToX, treenomeState.xBounds, treenomeState.yBounds, viewState.zoom, settings.treenomeEnabled]);
+    }, [genes, ntToX, treenomeState.yBounds, settings.treenomeEnabled]);
 
     const selected_node_data = useMemo(() => {
-        if (!selectedDetails.nodeDetails || variation_padding == 0 ) {
+        if (!selectedDetails.nodeDetails || variation_padding === 0 ) {
             return [];
         }
         if (data.data && data.data.nodes && data.data.nodes.length > 500) {
@@ -305,8 +304,6 @@ const useTreenomeLayers = (
             data: dynamic_background_data,
             modelMatrix: modelMatrixFixedX,
             getPolygon: (d) => d.x,
-//            filled: true,
-//            stroked: true,
             getFillColor: (d) => [...d.c, 0.2*255],
             getPolygonOffset: myGetPolygonOffset,
         });
@@ -339,7 +336,6 @@ const useTreenomeLayers = (
             modelMatrix: modelMatrixFixedX,
             lineWidthUnits: "pixels",
             getLineWidth: .4,
-            // getLineColor: [100, 100, 100],
             opacity: 0.1,
             filled: true,
             getFillColor: [240,240,240],
@@ -359,9 +355,7 @@ const useTreenomeLayers = (
         }
         layers.push(selected_node_layer)
 
-
         return layers;
-
     };
 
     export default useTreenomeLayers;
