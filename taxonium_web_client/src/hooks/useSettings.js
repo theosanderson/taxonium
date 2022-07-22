@@ -25,7 +25,7 @@ export const useSettings = ({ query, updateQuery }) => {
   const setTreenomeEnabled = useCallback((value) => {
     updateQuery({ treenomeEnabled: value });
     toast(
-      `Genome browser is now ${
+      `Treenome Browser is now ${
         value ? "enabled" : "disabled"
       }`,
       {

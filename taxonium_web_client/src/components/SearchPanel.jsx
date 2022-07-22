@@ -9,6 +9,8 @@ import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 import { useState } from "react";
 import classNames from "classnames";
+import ReactTooltip from 'react-tooltip';
+
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
@@ -164,33 +166,36 @@ function SearchPanel({
             </Select>
           </label>
         )}
-        <label className="space-x-2 text-sm block">
-            <span className="text-gray-500 text-sm">Treenome Browser:
-            <input
-              name="treenomeEnabled"
-              type="checkbox"
-              className="m-3 inline-block"
-              checked={settings.treenomeEnabled}
-              onChange={(event) => {
-                console.log(settings.treenomeEnabled);
-                settings.setTreenomeEnabled(!settings.treenomeEnabled);
-                view.setViewState({
-                  zoom: -2,
-                  target: [window.screen.width < 600 ? 500 : 1400, 1000],
-                  pitch: 0,
-                  bearing: 0,
-                  minimap: { zoom: -3, target: [250, 1000] },
-                  "browser-main": {zoom: -2, target: [0,1000]},
-                  "browser-axis": {zoom: -2, target: [0,1000]},
-                });
-              }
+        <span>
+          <span className="text-gray-500 text-sm">Treenome Browser:</span>
+          <input
+            name="treenomeEnabled"
+            style={{ verticalAlign: "middle" }}
+            type="checkbox"
+            className="m-3 inline-block"
+            checked={settings.treenomeEnabled}
+            onChange={(event) => {
+              console.log(settings.treenomeEnabled);
+              settings.setTreenomeEnabled(!settings.treenomeEnabled);
+              view.setViewState({
+                zoom: -2,
+                target: [window.screen.width < 600 ? 500 : 1400, 1000],
+                pitch: 0,
+                bearing: 0,
+                minimap: { zoom: -3, target: [250, 1000] },
+                "browser-main": { zoom: -2, target: [0, 1000] },
+                "browser-axis": { zoom: -2, target: [0, 1000] },
+              });
             }
-            />
-            <span style={{display: "inline-block"}}>
-                <BsQuestionCircle/>
-              </span>
+            }
+          />
+          <button style={{cursor: 'default'}} data-tip="Display each genome's mutations alongside the tree.&nbsp;<a href='' class='tooltipLink'>Learn more</a>" data-html={true}>
+            <span style={{ display: 'inline-block', verticalAlign: "middle" }}>
+              <BsQuestionCircle />
             </span>
-          </label>
+          </button>
+          <ReactTooltip delayHide={400} className='infoTooltip' place="top" backgroundColor='#e5e7eb' textColor='#000' effect="solid" />
+        </span>
       </div>
       <div className="py-3 space-y-2">
         <div className="flex space-x-2">
@@ -290,18 +295,18 @@ function SearchPanel({
               )}
               {selectedDetails.nodeDetails.parent_id !==
                 selectedDetails.nodeDetails.node_id && (
-                <button
-                  className="inline-block text-sm text-gray-700 hover:text-black ml-2"
-                  title="Select parent"
-                  onClick={() => {
-                    selectedDetails.getNodeDetails(
-                      selectedDetails.nodeDetails.parent_id
-                    );
-                  }}
-                >
-                  <RiArrowLeftUpLine className="inline-block mr-2" />
-                </button>
-              )}
+                  <button
+                    className="inline-block text-sm text-gray-700 hover:text-black ml-2"
+                    title="Select parent"
+                    onClick={() => {
+                      selectedDetails.getNodeDetails(
+                        selectedDetails.nodeDetails.parent_id
+                      );
+                    }}
+                  >
+                    <RiArrowLeftUpLine className="inline-block mr-2" />
+                  </button>
+                )}
             </h2>
             <button
               onClick={() => selectedDetails.clearNodeDetails()}
@@ -330,7 +335,7 @@ function SearchPanel({
           )}
           {config.mutations.length > 0 &&
             selectedDetails.nodeDetails.node_id !==
-              selectedDetails.nodeDetails.parent_id && (
+            selectedDetails.nodeDetails.parent_id && (
               <>
                 <div className="text-xs font-bold mt-2 mb-0 text-gray-700 justify-between flex">
                   <div className="pt-1">Mutations at this node:</div>{" "}
@@ -353,7 +358,7 @@ function SearchPanel({
                     <div className=" italic">
                       No{" "}
                       {settings.filterMutations([{ type: "nt" }]).length ===
-                      0 ? (
+                        0 ? (
                         <>coding</>
                       ) : (
                         <></>
