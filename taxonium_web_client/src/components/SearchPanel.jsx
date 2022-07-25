@@ -2,8 +2,10 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
+
 import { FaSearch } from "react-icons/fa";
-import { BsBoxArrowInUpRight } from "react-icons/bs";
+import { BsBoxArrowInUpRight, BsArrowRight } from "react-icons/bs";
+
 import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
@@ -44,6 +46,7 @@ function SearchPanel({
   settings,
   backend,
   className,
+  perNodeFunctions,
 }) {
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
 
@@ -277,7 +280,10 @@ function SearchPanel({
               {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
                 fixName(selectedDetails.nodeDetails[config.name_accessor])
               ) : (
-                <i>Internal node</i>
+                <i>
+                  Internal node{" "}
+                  <small>{selectedDetails.nodeDetails.node_id}</small>
+                </i>
               )}
               {selectedDetails.nodeDetails.parent_id !==
                 selectedDetails.nodeDetails.node_id && (
@@ -355,9 +361,15 @@ function SearchPanel({
                 </div>
               </>
             )}
-          {
-            //getCladeLink(selectedDetails.nodeDetails.node_id)
-          }
+          <a
+            href={perNodeFunctions.getCovSpectrumQuery(
+              selectedDetails.nodeDetails.node_id
+            )}
+            className="underline"
+          >
+            <BsArrowRight className="inline-block" /> Find this clade in
+            CovSpectrum
+          </a>
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">

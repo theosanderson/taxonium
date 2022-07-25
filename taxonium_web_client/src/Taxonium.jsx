@@ -62,7 +62,7 @@ function Taxonium({
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);
 
-  const perNodeFunctions = usePerNodeFunctions(data);
+  const perNodeFunctions = usePerNodeFunctions(data, config);
 
   const search = useSearch({
     data,
@@ -112,6 +112,7 @@ function Taxonium({
         settings={settings}
         overlayContent={overlayContent}
         setAboutEnabled={setAboutEnabled}
+        perNodeFunctions={perNodeFunctions}
       />
     </div>
   );
