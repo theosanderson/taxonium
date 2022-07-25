@@ -7,3 +7,12 @@ cd taxonium
 pip install pre-commit
 pre-commit install
 ```
+
+
+## Taxonium_web_client
+
+```
+cd taxonium_web_client
+yarn install
+yarn start
+```
