@@ -226,6 +226,7 @@ const useSearch = ({
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomToSearch, searchResults, deckSize]);
 
   return {
