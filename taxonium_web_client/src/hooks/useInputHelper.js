@@ -17,7 +17,6 @@ function guessType(file_object) {
 
   const tree_extensions = ["nwk", "newick", "tree", "tre", "nh"];
 
-
   if (tree_extensions.includes(file_extension)) {
     return "nwk";
   }
@@ -29,11 +28,10 @@ function guessType(file_object) {
   }
   if (file_extension === "tsv") {
     return "meta_tsv";
-  } 
+  }
   if (file_extension === "json") {
     return "nextstrain";
-  } 
-  else {
+  } else {
     window.alert(
       "Alert: unrecognised file type, supported types: jsonl (taxonium), nwk (newick), json (nextstrain), csv, tsv"
     );
