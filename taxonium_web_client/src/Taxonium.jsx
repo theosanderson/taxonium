@@ -10,6 +10,7 @@ import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
 import { useCallback, useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
+import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 
@@ -60,6 +61,8 @@ function Taxonium({
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);
+
+  const perNodeFunctions = usePerNodeFunctions(data);
 
   const search = useSearch({
     data,

@@ -355,6 +355,9 @@ function SearchPanel({
                 </div>
               </>
             )}
+          {
+            //getCladeLink(selectedDetails.nodeDetails.node_id)
+          }
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">
