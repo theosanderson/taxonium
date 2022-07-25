@@ -186,7 +186,7 @@ export async function processNewick(data, sendStatusMessage) {
     rootId: 0,
     overwrite_config: { num_tips: total_tips },
   };
-console.log(JSON.stringify(output));
+  console.log(JSON.stringify(output));
   return output;
 }
 
@@ -277,5 +277,4 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
   });
   console.log(tree);
   return tree;
-
 }

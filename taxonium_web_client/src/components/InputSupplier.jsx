@@ -16,6 +16,7 @@ const prettyTypes = {
   nwk: "Newick tree",
   meta_tsv: "Metadata TSV",
   meta_csv: "Metadata CSV",
+  nextstrain: "Nextstrain JSON",
 };
 const fileTypes = Object.keys(prettyTypes);
 
