@@ -1,6 +1,7 @@
 import filtering from "taxonium_data_handling/filtering.js";
 import { processJsonl } from "taxonium_data_handling/importing.js";
 import { processNewickAndMetadata } from "../utils/processNewick.js";
+import {processNextstrain} from "../utils/processNextstrain.js";
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
@@ -348,7 +349,18 @@ onmessage = async (event) => {
       data.data,
       sendStatusMessage
     );
-  } else if (data.type === "upload" && data.data && data.data.filename) {
+  } else if (data.type === "upload" &&
+  data.data &&
+  data.data.filename &&
+  data.data.filetype === "nextstrain"){
+    console.log("got nextstrain file", data.data);
+   
+    processedUploadedData = await processNextstrain(
+      data.data,
+      sendStatusMessage
+    );
+  }
+  else if (data.type === "upload" && data.data && data.data.filename) {
     sendStatusMessage({
       error:
         "Only Taxonium jsonl files are supported (could not find 'jsonl' in filename)",
