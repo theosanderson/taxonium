@@ -8,7 +8,6 @@ pip install pre-commit
 pre-commit install
 ```
 
-
 ## Taxonium_web_client
 
 ```

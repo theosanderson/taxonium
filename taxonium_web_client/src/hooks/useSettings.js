@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback } from "react";
-import { AiFillEye } from "react-icons/ai";
 import { toast } from "react-hot-toast";
 export const useSettings = ({ query, updateQuery }) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
