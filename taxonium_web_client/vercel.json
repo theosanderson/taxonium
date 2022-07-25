@@ -2,10 +2,10 @@
   "headers": [
     {
       "source": "/nodelist.pb",
-      "headers" : [
+      "headers": [
         {
-          "key" : "Content-Type",
-          "value" : "image/bmp"
+          "key": "Content-Type",
+          "value": "image/bmp"
         }
       ]
     }

@@ -24,7 +24,6 @@ class AnnotatedMutation:
     strand: int
 
 
-
 @dataclass(eq=True, frozen=True)
 class AAMutation:
     gene: str
@@ -32,7 +31,6 @@ class AAMutation:
     initial_aa: str
     final_aa: str
     type: str = "aa"
-
 
 
 @dataclass(eq=True, frozen=True)
@@ -126,7 +124,11 @@ def get_mutations(past_nuc_muts_dict,
         if initial_codon_trans != final_codon_trans or disable_check_for_differences:
             #(gene, codon_number + 1, initial_codon_trans, final_codon_trans)
 
-            mutations_here.append( AAMutation(gene=gene, one_indexed_codon=codon_number+1, initial_aa=initial_codon_trans, final_aa=final_codon_trans))
+            mutations_here.append(
+                AAMutation(gene=gene,
+                           one_indexed_codon=codon_number + 1,
+                           initial_aa=initial_codon_trans,
+                           final_aa=final_codon_trans))
 
     # update past_nuc_muts_dict
     for mutation in annotated_mutations:
@@ -182,7 +184,6 @@ def find_codon(position, cds):
 
 
 class UsherMutationAnnotatedTree:
-
     def __init__(self,
                  tree_file,
                  genbank_file=None,
@@ -254,7 +255,7 @@ class UsherMutationAnnotatedTree:
                 for child in list(node.children):
                     if biggest_child.num_tips / child.num_tips > theshold:
                         self.prune_node(child)
-                        
+
     def create_mutation_like_objects_to_record_root_seq(self):
         """Hacky way of recording the root sequence"""
         ref_muts = []
@@ -284,14 +285,9 @@ class UsherMutationAnnotatedTree:
                        title="Annotating amino acids") as pbar:
             recursive_mutation_analysis(self.tree.root, {}, seq, self.cdses,
                                         pbar)
-        root_muts = self.create_mutation_like_objects_to_record_root_seq(
-        )
+        root_muts = self.create_mutation_like_objects_to_record_root_seq()
         self.tree.root.aa_muts = get_mutations(
-            {},
-            root_muts,
-            seq,
-            self.cdses,
-            disable_check_for_differences=True)
+            {}, root_muts, seq, self.cdses, disable_check_for_differences=True)
         self.tree.root.nuc_mutations = root_muts
 
     def load_genbank_file(self, genbank_file):
@@ -323,12 +319,14 @@ class UsherMutationAnnotatedTree:
 
     def get_root_sequence(self):
         collected_mutations = {}
-        for i, node in alive_it(list(enumerate(self.tree.root.traverse_postorder())),
+        for i, node in alive_it(list(
+                enumerate(self.tree.root.traverse_postorder())),
                                 title="Getting root sequence"):
             if node == self.tree.root:
                 continue
             for mutation in node.nuc_mutations:
-                collected_mutations[mutation.one_indexed_position] = mutation.par_nuc
+                collected_mutations[
+                    mutation.one_indexed_position] = mutation.par_nuc
         self.root_sequence = list(str(self.genbank.seq))
         for i, character in enumerate(self.root_sequence):
             if i + 1 in collected_mutations:

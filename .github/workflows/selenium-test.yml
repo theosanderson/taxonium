@@ -1,12 +1,12 @@
 name: Selenium
 
 on:
-   workflow_call:
+  workflow_call:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps:      
+    steps:
       - uses: actions/checkout@v3
       - name: Installed package list
         run: apt list --installed
@@ -20,14 +20,14 @@ jobs:
           path: ./web/
       - uses: actions/setup-python@v3
         with:
-          python-version: '3.8'
+          python-version: "3.8"
       - name: Start server
         run: python -m http.server &
         working-directory: ./web/
       - name: Start server
         run: |
-            ls
-            python -m http.server 3000 &
+          ls
+          python -m http.server 3000 &
         working-directory: ./data/
       - name: Remove Chrome
         run: sudo apt purge google-chrome-stable
@@ -35,4 +35,3 @@ jobs:
         run: pip install requests beautifulsoup4 pandas webdriver-manager==3.5.4 selenium==4.2.0
       - name: Run Selenium tests
         run: python .github/selenium_tests/selenium_tests.py "http://localhost:8000/?protoUrl=http://localhost:3000/tfci-taxonium-config.jsonl.gz"
-

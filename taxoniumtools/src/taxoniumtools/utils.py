@@ -99,10 +99,11 @@ def set_x_coords(root, chronumental_enabled):
             node.x_dist = node.parent.x_dist + node.edge_length
             if chronumental_enabled:
                 node.x_time = node.parent.x_time + node.time_length
-    
+
     normalise_specific_x_coords(root, "x_dist", fixed_val=600)
     if chronumental_enabled:
         normalise_specific_x_coords(root, "x_time", fixed_val=600)
+
 
 def normalise_specific_x_coords(root, attr, fixed_val=75):
     """List all x-coordinates, then find the 95th percentile and normalise it to be the fixed val"""
@@ -150,7 +151,7 @@ def get_all_nuc_muts(root):
 
 def make_aa_object(i, aa_mutation):
     # Tuple format is gene, position, prev, next
-    
+
     return {
         "gene": aa_mutation.gene,
         "previous_residue": aa_mutation.initial_aa,
