@@ -1,7 +1,7 @@
 import {
   kn_expand_node,
-  kn_reorder,
-  kn_reorder_num_tips,
+  // kn_reorder,
+  //kn_reorder_num_tips,
   kn_parse,
   kn_calxy,
 } from "./jstree";
@@ -78,13 +78,13 @@ async function cleanup(tree) {
 
   tree.node = tree.node.map((node, i) => {
     return {
-      name: node.name.replace(/\'/g, ""),
+      name: node.name.replace(/'/g, ""),
       parent_id: node.parent ? node.parent.node_id : node.node_id,
       x_dist: node.x,
       mutations: emptyList,
       y: node.y,
       num_tips: node.num_tips,
-      is_tip: node.child.length == 0,
+      is_tip: node.child.length === 0,
       node_id: node.node_id,
     };
   });
