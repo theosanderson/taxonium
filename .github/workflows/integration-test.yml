@@ -10,9 +10,9 @@ on:
     - cron: "0 0 * * *"
 jobs:
   build:
-    uses:  ./.github/workflows/frontend-test.yml
+    uses: ./.github/workflows/frontend-test.yml
   python:
-    uses:  ./.github/workflows/python-test.yml
+    uses: ./.github/workflows/python-test.yml
   selenium:
     needs: [build, python]
-    uses:  ./.github/workflows/selenium-test.yml
+    uses: ./.github/workflows/selenium-test.yml

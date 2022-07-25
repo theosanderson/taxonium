@@ -62,23 +62,23 @@ function useLocalBackend(uploaded_data, proto) {
   }, [uploaded_data, proto]);
 
   /*
-    
-    
+
+
       const singleSearch = useCallback(
         (singleSearch, boundsForQueries, setResult) => {
-         
+
         },
         [processedUploadedData]
       );
-    
+
       const getDetails = useCallback(
         (node_id, setResult) => {
-          
+
         },
         [processedUploadedData]
       );
-    
-     
+
+
       */
   const queryNodes = useCallback(
     async (boundsForQueries, setResult, setTriggerRefresh, config) => {

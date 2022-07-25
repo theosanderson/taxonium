@@ -250,12 +250,12 @@ function startListening() {
 let sid_cache = {};
 
 async function validateSID(sid) {
-  /* 
+  /*
 
-  Create a call to https://gpsapi.epicov.org/epi3/gps_api 
+  Create a call to https://gpsapi.epicov.org/epi3/gps_api
 
   with URL encoded version of the following parameters:
-  
+
   {"cmd":"state/session/validate",
 "client_id": "TEST-1234",
 "api": {"version":1},
