@@ -184,6 +184,7 @@ def find_codon(position, cds):
 
 
 class UsherMutationAnnotatedTree:
+
     def __init__(self,
                  tree_file,
                  genbank_file=None,
