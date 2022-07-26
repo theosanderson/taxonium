@@ -224,6 +224,7 @@ function json_preorder(root) {
 
 async function json_to_tree(json) {
   const rootJson = json.tree;
+  console.log("rootJson", rootJson);
   const [preorder, parents] = json_preorder(rootJson);
 
   let n_tips = 0;
@@ -261,7 +262,11 @@ export async function processNextstrain(data, sendStatusMessage) {
     message: "Parsing NS file",
   });
 
-  const jsTree = await json_to_tree(JSON.parse(the_data));
+  const input_string = the_data;
+  console.log("length is", input_string.length);
+
+  const jsTree = await json_to_tree(JSON.parse(input_string));
+  console.log("jsTree", jsTree);
   const output = await processJsTree(jsTree, data, sendStatusMessage);
   console.log(output);
   return output;
