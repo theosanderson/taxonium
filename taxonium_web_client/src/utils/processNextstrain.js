@@ -29,6 +29,11 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
     return text;
   } else {
     const response = await axios.get(url, {
+      transformResponse: (res) => {
+        // Do your own parsing here if needed ie JSON.parse(res);
+        return res;
+      },
+      responseType: "json",
       onDownloadProgress: (progress) => {
         sendStatusMessage({
           message: "Downloading " + whatIsBeingDownloaded,
@@ -249,6 +254,8 @@ export async function processNextstrain(data, sendStatusMessage) {
   let the_data;
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
+
+  console.log("the_data", the_data);
 
   sendStatusMessage({
     message: "Parsing NS file",
