@@ -179,10 +179,10 @@ async function processJsTree(tree, data, sendStatusMessage) {
 }
 
 function json_preorder(root) {
-  let parents = {};
+  const parents = {};
   parents[root.name] = null;
-  let path = [];
-  let stack = [root];
+  const path = [];
+  const stack = [root];
   while (stack.length > 0) {
     const nodeJson = stack.pop();
     let dist;
@@ -222,7 +222,7 @@ async function json_to_tree(json) {
   const [preorder, parents] = json_preorder(rootJson);
 
   let n_tips = 0;
-  let nodes = [];
+  const nodes = [];
   let root;
   for (let node of preorder) {
     const parent = parents[node.name];
