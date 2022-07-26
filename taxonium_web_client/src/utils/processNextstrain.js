@@ -1,13 +1,8 @@
-import {
-  kn_expand_node,
-  // kn_reorder,
-  //kn_reorder_num_tips,
-  kn_parse,
-  kn_calxy,
-} from "./jstree";
 import pako from "pako";
 import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
+import { kn_expand_node, kn_calxy } from "./jstree";
+
 const emptyList = [];
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
@@ -71,6 +66,7 @@ function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
+// TODO: cleanup and processJsTree are duplicated in processNewick.js
 async function cleanup(tree) {
   tree.node.forEach((node, i) => {
     node.node_id = i;
@@ -105,17 +101,7 @@ async function cleanup(tree) {
   });
 }
 
-export async function processNewick(data, sendStatusMessage) {
-  console.log("got data", data);
-  let the_data;
-
-  the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
-
-  sendStatusMessage({
-    message: "Parsing Newick file",
-  });
-  const tree = kn_parse(the_data);
-
+async function processJsTree(tree, data, sendStatusMessage) {
   function assignNumTips(node) {
     if (node.child.length === 0) {
       node.num_tips = 1;
@@ -137,6 +123,7 @@ export async function processNewick(data, sendStatusMessage) {
       sortWithNumTips(child);
     });
   }
+  console.log("tree root", tree.root);
   assignNumTips(tree.root);
   const total_tips = tree.root.num_tips;
   console.log("tree.root.num_tips", tree.root.num_tips);
@@ -152,7 +139,9 @@ export async function processNewick(data, sendStatusMessage) {
     message: "Laying out the tree",
   });
 
-  kn_calxy(tree, data.useDistances === true);
+  // TODO: should second argument (is_real) always
+  // be true
+  kn_calxy(tree, true);
 
   sendStatusMessage({
     message: "Sorting on Y",
@@ -186,95 +175,87 @@ export async function processNewick(data, sendStatusMessage) {
     rootId: 0,
     overwrite_config: { num_tips: total_tips },
   };
-  console.log(JSON.stringify(output));
   return output;
 }
 
-export async function processMetadataFile(data, sendStatusMessage) {
-  const logStatusToConsole = (message) => {
-    console.log(message.message);
-  };
-  let the_data;
+function json_preorder(root) {
+  let parents = {};
+  parents[root.name] = null;
+  let path = [];
+  let stack = [root];
+  while (stack.length > 0) {
+    const nodeJson = stack.pop();
+    let dist;
 
-  the_data = await fetch_or_extract(data, logStatusToConsole, "metadata");
-
-  console.log("Got metadata file");
-
-  const lines = the_data.split("\n");
-  const output = {};
-  let separator;
-  if (data.filename.includes("tsv")) {
-    separator = "\t";
-  } else if (data.filename.includes("csv")) {
-    separator = ",";
-  } else {
-    sendStatusMessage({
-      error: "Unknown file type for metadata, should be csv or tsv",
-    });
-    throw new Error("Unknown file type");
-  }
-
-  let headers;
-
-  lines.forEach((line, i) => {
-    if (i % 10000 === 0) {
-      sendStatusMessage({
-        message: "Parsing metadata file",
-        percentage: (i / lines.length) * 100,
-      });
-    }
-    if (i === 0) {
-      headers = line.split(separator);
+    // For now, set branch length to # of nt mutations
+    if (
+      nodeJson.branch_attrs.mutations &&
+      nodeJson.branch_attrs.mutations.nuc
+    ) {
+      dist = nodeJson.branch_attrs.mutations.nuc.length;
     } else {
-      const values = line.split(separator);
-      let name;
-      if (data.taxonColumn) {
-        const taxon_column_index = headers.indexOf(data.taxonColumn);
-        name = values[taxon_column_index];
-      } else {
-        name = values[0];
-      }
-      const as_obj = {};
-      values.slice(1).forEach((value, j) => {
-        as_obj["meta_" + headers[j + 1]] = value;
-      });
-      output[name] = as_obj;
+      dist = 0;
     }
-  });
-  sendStatusMessage({
-    message: "Finalising",
-  });
 
-  return [output, headers];
+    // this is the node format for downstream processing
+    let parsedNode = {
+      name: nodeJson.name,
+      child: [],
+      meta: "",
+      d: dist,
+      hl: false,
+      hidden: false,
+    };
+    path.push(parsedNode);
+    if (nodeJson.children !== undefined) {
+      for (let childJson of nodeJson.children) {
+        parents[childJson.name] = parsedNode;
+        stack.push(childJson);
+      }
+    }
+  }
+  return [path, parents];
 }
 
-export async function processNewickAndMetadata(data, sendStatusMessage) {
-  const treePromise = processNewick(data, sendStatusMessage);
+async function json_to_tree(json) {
+  const rootJson = json.tree;
+  const [preorder, parents] = json_preorder(rootJson);
 
-  const metadataInput = data.metadata;
-  if (!metadataInput) {
-    return await treePromise;
-  }
-  // Wait for both promises to resolve
-  const [tree, metadata_double] = await Promise.all([
-    treePromise,
-    processMetadataFile(metadataInput, sendStatusMessage),
-  ]);
-  const [metadata, headers] = metadata_double;
-  const blanks = Object.fromEntries(
-    headers.slice(1).map((x) => ["meta_" + x, ""])
-  );
-  sendStatusMessage({
-    message: "Assigning metadata to nodes",
-  });
-  tree.nodes.forEach((node) => {
-    const this_metadata = metadata[node.name];
-    if (this_metadata) {
-      Object.assign(node, this_metadata);
+  let n_tips = 0;
+  let nodes = [];
+  let root;
+  for (let node of preorder) {
+    const parent = parents[node.name];
+    node.parent = parent;
+    if (parent) {
+      parent.child.push(node);
     } else {
-      Object.assign(node, blanks);
+      root = node;
     }
+    nodes.push(node);
+  }
+
+  return {
+    // tree in jstree.js format
+    node: nodes,
+    error: 0,
+    n_tips: n_tips,
+    root: root,
+  };
+}
+
+export async function processNextstrain(data, sendStatusMessage) {
+  console.log("got data", data);
+  let the_data;
+
+  the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
+
+  sendStatusMessage({
+    message: "Parsing NS file",
   });
-  console.log(tree);
-  return tree;
+
+  const jsTree = await json_to_tree(JSON.parse(the_data));
+  const output = await processJsTree(jsTree, data, sendStatusMessage);
+  console.log(output);
+  return output;
 }
