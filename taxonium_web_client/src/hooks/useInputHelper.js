@@ -32,7 +32,6 @@ function guessType(file_object) {
   if (file_extension === "json") {
     return "nextstrain";
   } else {
-    
     return "unknown";
   }
 }
@@ -149,7 +148,9 @@ export const useInputHelper = ({
         const meta_file = inputs.find((input) =>
           input.filetype.startsWith("meta_")
         );
-        const tree_file = inputs.find((input) => input.filetype === "nwk" || input.filetype === "nextstrain");
+        const tree_file = inputs.find(
+          (input) => input.filetype === "nwk" || input.filetype === "nextstrain"
+        );
         const newQuery = {
           treeUrl: tree_file.name,
           ladderizeTree: tree_file.ladderize === "true",
