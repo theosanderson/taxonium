@@ -29,6 +29,11 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
     return text;
   } else {
     const response = await axios.get(url, {
+      transformResponse: (res) => {
+        // Do your own parsing here if needed ie JSON.parse(res);
+        return res;
+      },
+      responseType: "json",
       onDownloadProgress: (progress) => {
         sendStatusMessage({
           message: "Downloading " + whatIsBeingDownloaded,
@@ -132,8 +137,9 @@ async function processJsTree(tree, data, sendStatusMessage) {
     console.log("ladderizing");
 
     sortWithNumTips(tree.root);
-    tree.node = kn_expand_node(tree.root);
   }
+
+  tree.node = kn_expand_node(tree.root);
 
   sendStatusMessage({
     message: "Laying out the tree",
@@ -179,10 +185,10 @@ async function processJsTree(tree, data, sendStatusMessage) {
 }
 
 function json_preorder(root) {
-  let parents = {};
+  const parents = {};
   parents[root.name] = null;
-  let path = [];
-  let stack = [root];
+  const path = [];
+  const stack = [root];
   while (stack.length > 0) {
     const nodeJson = stack.pop();
     let dist;
@@ -219,10 +225,11 @@ function json_preorder(root) {
 
 async function json_to_tree(json) {
   const rootJson = json.tree;
+  console.log("rootJson", rootJson);
   const [preorder, parents] = json_preorder(rootJson);
 
   let n_tips = 0;
-  let nodes = [];
+  const nodes = [];
   let root;
   for (let node of preorder) {
     const parent = parents[node.name];
@@ -250,11 +257,17 @@ export async function processNextstrain(data, sendStatusMessage) {
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
+  console.log("the_data", the_data);
+
   sendStatusMessage({
     message: "Parsing NS file",
   });
 
-  const jsTree = await json_to_tree(JSON.parse(the_data));
+  const input_string = the_data;
+  console.log("length is", input_string.length);
+
+  const jsTree = await json_to_tree(JSON.parse(input_string));
+  console.log("jsTree", jsTree);
   const output = await processJsTree(jsTree, data, sendStatusMessage);
   console.log(output);
   return output;

@@ -32,10 +32,7 @@ function guessType(file_object) {
   if (file_extension === "json") {
     return "nextstrain";
   } else {
-    window.alert(
-      "Alert: unrecognised file type, supported types: jsonl (taxonium), nwk (newick), json (nextstrain), csv, tsv"
-    );
-    return "jsonl";
+    return "unknown";
   }
 }
 
@@ -118,6 +115,9 @@ export const useInputHelper = ({
     if (inputs.filter((input) => input.filetype === "nwk").length > 1) {
       return ["invalid", "You can only use a single tree file"];
     }
+    if (inputs.some((input) => input.filetype === "unknown")) {
+      return ["invalid", "Please select the type of each file"];
+    }
     // must have a tree file or a jsonl
     if (
       inputs.filter((input) => input.filetype === "jsonl").length === 0 &&
@@ -151,10 +151,13 @@ export const useInputHelper = ({
         const meta_file = inputs.find((input) =>
           input.filetype.startsWith("meta_")
         );
-        const tree_file = inputs.find((input) => input.filetype === "nwk");
+        const tree_file = inputs.find(
+          (input) => input.filetype === "nwk" || input.filetype === "nextstrain"
+        );
         const newQuery = {
           treeUrl: tree_file.name,
           ladderizeTree: tree_file.ladderize === "true",
+          treeType: tree_file.filetype,
         };
         if (meta_file) {
           newQuery.metaUrl = meta_file.name;
@@ -229,7 +232,7 @@ export const useInputHelper = ({
         status: "url_supplied",
         filename: query.treeUrl,
         ladderize: query.ladderizeTree === "true",
-        filetype: "nwk",
+        filetype: query.treeType ? query.treeType : "nwk",
         ...extra,
       });
     }
