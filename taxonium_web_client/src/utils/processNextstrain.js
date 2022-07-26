@@ -137,8 +137,9 @@ async function processJsTree(tree, data, sendStatusMessage) {
     console.log("ladderizing");
 
     sortWithNumTips(tree.root);
-    tree.node = kn_expand_node(tree.root);
   }
+
+  tree.node = kn_expand_node(tree.root);
 
   sendStatusMessage({
     message: "Laying out the tree",
