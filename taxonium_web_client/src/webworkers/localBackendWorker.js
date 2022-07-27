@@ -183,9 +183,13 @@ const getConfig = async () => {
     "is_tip",
   ];
 
-  config.x_accessors = processedUploadedData.nodes[0].x_time
-    ? ["x_dist", "x_time"]
-    : ["x_dist"];
+  const firstNode = processedUploadedData.nodes[0];
+  config.x_accessors =
+    firstNode.x_dist && firstNode.x_time
+      ? ["x_dist", "x_time"]
+      : firstNode.x_dist
+      ? ["x_dist"]
+      : ["x_time"];
 
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)

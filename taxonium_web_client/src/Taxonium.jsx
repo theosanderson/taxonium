@@ -12,6 +12,8 @@ import { useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
   ? "https://www.epicov.org/epi3/frontend"
@@ -54,12 +56,26 @@ function Taxonium({
   const colorHook = useColor(colorMapping);
 
   const xType = query.xType;
-  const setxType = (xType) => {
-    updateQuery({ xType });
-  };
+  const setxType = useCallback(
+    (xType) => {
+      updateQuery({ xType });
+    },
+    [updateQuery]
+  );
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);
+
+  useEffect(() => {
+    // If there is no distance data, default to time
+    // This can happen with e.g. nextstrain json
+    if (data.base_data && data.base_data.nodes) {
+      const n = data.base_data.nodes[0];
+      if (!n.x_dist) {
+        setxType("x_time");
+      }
+    }
+  }, [data.base_data, setxType]);
 
   const search = useSearch({
     data,
