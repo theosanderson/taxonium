@@ -78,30 +78,53 @@ async function cleanup(tree) {
   });
 
   tree.node = tree.node.map((node, i) => {
-    return {
+    const cleaned = {
       name: node.name.replace(/'/g, ""),
       parent_id: node.parent ? node.parent.node_id : node.node_id,
-      x_dist: node.x,
       mutations: emptyList,
       y: node.y,
       num_tips: node.num_tips,
       is_tip: node.child.length === 0,
       node_id: node.node_id,
     };
-  });
 
+    Object.keys(node).forEach((key) => {
+      if (key.startsWith("meta_")) {
+        cleaned[key] = node[key];
+      }
+    });
+
+    if (node.x_dist !== undefined) {
+      cleaned.x_dist = node.x_dist;
+    }
+    if (node.x_time !== undefined) {
+      cleaned.x_time = node.x_time;
+    }
+    return cleaned;
+  });
   const scale_y = 2000;
 
-  const all_xes = tree.node.map((node) => node.x_dist);
-  all_xes.sort((a, b) => a - b);
+  const all_xes_dist = tree.node.map((node) => node.x_dist);
+  const all_xes_time = tree.node.map((node) => node.x_time);
+
+  all_xes_dist.sort((a, b) => a - b);
+  all_xes_time.sort((a, b) => a - b);
   const ref_x_percentile = 0.99;
-  const ref_x = all_xes[Math.floor(all_xes.length * ref_x_percentile)];
+  const ref_x_dist =
+    all_xes_dist[Math.floor(all_xes_dist.length * ref_x_percentile)];
+  const ref_x_time =
+    all_xes_time[Math.floor(all_xes_time.length * ref_x_percentile)];
 
-  const scale_x = 450 / ref_x;
+  const scale_x_dist = 450 / ref_x_dist;
+  const scale_x_time = 450 / ref_x_time;
 
-  console.log(scale_y, "scale_y");
   tree.node.forEach((node) => {
-    node.x_dist = node.x_dist * scale_x;
+    if (node.x_dist !== undefined) {
+      node.x_dist = node.x_dist * scale_x_dist;
+    }
+    if (node.x_time !== undefined) {
+      node.x_time = node.x_time * scale_x_time;
+    }
     node.y = node.y * scale_y;
   });
 }
@@ -128,14 +151,10 @@ async function processJsTree(tree, data, sendStatusMessage) {
       sortWithNumTips(child);
     });
   }
-  console.log("tree root", tree.root);
   assignNumTips(tree.root);
   const total_tips = tree.root.num_tips;
-  console.log("tree.root.num_tips", tree.root.num_tips);
 
   if (data.ladderize) {
-    console.log("ladderizing");
-
     sortWithNumTips(tree.root);
   }
 
@@ -145,9 +164,29 @@ async function processJsTree(tree, data, sendStatusMessage) {
     message: "Laying out the tree",
   });
 
-  // TODO: should second argument (is_real) always
-  // be true
-  kn_calxy(tree, true);
+  // first set "d" to genetic distance
+  if (tree.node[0].pre_x_dist !== undefined) {
+    tree.node.forEach((node) => {
+      node.d = node.pre_x_dist;
+    });
+    kn_calxy(tree, true);
+    // kn_calxy sets x -> move x to x_dist
+    tree.node.forEach((node) => {
+      node.x_dist = node.x;
+    });
+  }
+  if (tree.node[0].pre_x_time !== undefined) {
+    // rerun kn_calxy to set x again (but for time)
+    tree.node.forEach((node) => {
+      node.d = node.pre_x_time;
+    });
+    kn_calxy(tree, true);
+    tree.node.forEach((node) => {
+      node.x_time = node.x;
+    });
+  }
+
+  // Now tree.node will have x_dist and/or x_time depending on JSON content
 
   sendStatusMessage({
     message: "Sorting on Y",
@@ -191,30 +230,46 @@ function json_preorder(root) {
   const stack = [root];
   while (stack.length > 0) {
     const nodeJson = stack.pop();
-    let dist;
-
-    // For now, set branch length to # of nt mutations
-    if (
-      nodeJson.branch_attrs.mutations &&
-      nodeJson.branch_attrs.mutations.nuc
-    ) {
-      dist = nodeJson.branch_attrs.mutations.nuc.length;
-    } else {
-      dist = 0;
+    let div = null;
+    let time = null;
+    if (nodeJson.node_attrs.div) {
+      div = nodeJson.node_attrs.div;
+    }
+    if (nodeJson.node_attrs.num_date) {
+      time = nodeJson.node_attrs.num_date.value;
     }
 
     // this is the node format for downstream processing
-    let parsedNode = {
+    const parsedNode = {
       name: nodeJson.name,
       child: [],
       meta: "",
-      d: dist,
       hl: false,
       hidden: false,
     };
+
+    // assign distance
+    div && (parsedNode.div = div);
+    time && (parsedNode.time = time);
+
+    // assign metadata
+    const notMeta = ["div", "num_date"];
+    Object.keys(nodeJson.node_attrs)
+      .filter((x) => !notMeta.includes(x))
+      .forEach((x) => {
+        // sometimes the data is not wrapped in a value tag. e.g. "accession" in mpx
+        const attr = nodeJson.node_attrs[x];
+        parsedNode[`meta_${x}`] =
+          attr.value && typeof attr.value !== "object"
+            ? attr.value
+            : typeof attr !== "object"
+            ? attr
+            : "";
+      });
+
     path.push(parsedNode);
     if (nodeJson.children !== undefined) {
-      for (let childJson of nodeJson.children) {
+      for (const childJson of nodeJson.children) {
         parents[childJson.name] = parsedNode;
         stack.push(childJson);
       }
@@ -225,19 +280,25 @@ function json_preorder(root) {
 
 async function json_to_tree(json) {
   const rootJson = json.tree;
-  console.log("rootJson", rootJson);
   const [preorder, parents] = json_preorder(rootJson);
-
   let n_tips = 0;
   const nodes = [];
   let root;
-  for (let node of preorder) {
+  for (const node of preorder) {
     const parent = parents[node.name];
     node.parent = parent;
     if (parent) {
       parent.child.push(node);
+      if (node.div !== undefined) {
+        node.pre_x_dist = node.div - parent.div;
+      }
+      if (node.time !== undefined) {
+        node.pre_x_time = node.time - parent.time;
+      }
     } else {
       root = node;
+      node.pre_x_time = 0;
+      node.pre_x_dist = 0;
     }
     nodes.push(node);
   }
@@ -264,11 +325,10 @@ export async function processNextstrain(data, sendStatusMessage) {
   });
 
   const input_string = the_data;
-  console.log("length is", input_string.length);
 
   const jsTree = await json_to_tree(JSON.parse(input_string));
-  console.log("jsTree", jsTree);
+
   const output = await processJsTree(jsTree, data, sendStatusMessage);
-  console.log(output);
+
   return output;
 }
