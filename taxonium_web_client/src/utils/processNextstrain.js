@@ -129,7 +129,7 @@ async function cleanup(tree) {
   });
 }
 
-async function processJsTree(tree, data, sendStatusMessage) {
+async function processJsTree(tree, data, config, sendStatusMessage) {
   function assignNumTips(node) {
     if (node.child.length === 0) {
       node.num_tips = 1;
@@ -219,7 +219,7 @@ async function processJsTree(tree, data, sendStatusMessage) {
     node_to_mut: {},
     rootMutations: [],
     rootId: 0,
-    overwrite_config: { num_tips: total_tips },
+    overwrite_config: { ...config, num_tips: total_tips },
   };
 
   return output;
@@ -308,7 +308,7 @@ async function json_to_tree(json) {
     nodes.push(node);
   }
 
-  const jstree_format = {
+  const jsTree = {
     // tree in jstree.js format
     node: nodes,
     error: 0,
@@ -316,7 +316,22 @@ async function json_to_tree(json) {
     root: root,
   };
 
-  return jstree_format;
+  const config = {};
+  console.log("META", json.meta);
+  config.title = json.meta.title;
+  console.log("META PROV", json.meta.data_provenance);
+  config.source =
+    json.meta.data_provenance.map((source) => source.name).join(" & ") +
+    " on " +
+    json.meta.updated +
+    " in a build maintained by " +
+    json.meta.maintainers.map((source) => source.name).join(" & ");
+  config.overlay = `<p>This is a tree generated from a <a href='//nextstrain.org'>NextStrain</a> JSON file, being visualised in Taxonium.</p>.`;
+  if (json.meta.build_url) {
+    config.overlay += `<p>The NextStrain build is available <a class='underline' href='${json.meta.build_url}'>here</a>.</p>`;
+  }
+
+  return { jsTree, config };
 }
 
 export async function processNextstrain(data, sendStatusMessage) {
@@ -333,9 +348,9 @@ export async function processNextstrain(data, sendStatusMessage) {
 
   const input_string = the_data;
 
-  const jsTree = await json_to_tree(JSON.parse(input_string));
+  const { jsTree, config } = await json_to_tree(JSON.parse(input_string));
 
-  const output = await processJsTree(jsTree, data, sendStatusMessage);
+  const output = await processJsTree(jsTree, data, config, sendStatusMessage);
 
   return output;
 }
