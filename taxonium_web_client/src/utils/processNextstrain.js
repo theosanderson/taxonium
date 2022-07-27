@@ -415,6 +415,7 @@ export async function processNextstrain(data, sendStatusMessage) {
   );
 
   const output = await processJsTree(jsTree, data, config, sendStatusMessage);
+  const node_to_mut = output.nodes.map((x) => x.mutations);
 
-  return { ...output, mutations: unique_mutations };
+  return { ...output, mutations: unique_mutations, node_to_mut: node_to_mut };
 }
