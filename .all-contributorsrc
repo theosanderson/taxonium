@@ -20,6 +20,17 @@
       ]
     },
     {
+      "login": "amkram",
+      "name": "Alex Kramer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6502785?v=4",
+      "profile": "https://github.com/amkram",
+      "contributions": [
+        "code",
+        "design",
+        "ideas"
+      ]
+    },
+    {
       "login": "AngieHinrichs",
       "name": "Angie Hinrichs",
       "avatar_url": "https://avatars.githubusercontent.com/u/186983?v=4",
@@ -65,18 +76,8 @@
       "contributions": [
         "infra"
       ]
-    },
-    {
-      "login": "amkram",
-      "name": "Alex Kramer",
-      "avatar_url": "https://avatars.githubusercontent.com/u/6502785?v=4",
-      "profile": "https://github.com/amkram",
-      "contributions": [
-        "code",
-        "design",
-        "ideas"
-      ]
     }
+    
   ],
   "contributorsPerLine": 7,
   "projectName": "taxonium",
