@@ -5,6 +5,50 @@ import { kn_expand_node, kn_calxy } from "./jstree";
 
 const emptyList = [];
 
+const nodeMutationsFromNextStrainToTaxonium = (
+  mutations,
+  unique_mutations,
+  mutation_lookup
+) => {
+  //console.log("mutations", mutations);
+  const keys = Object.keys(mutations);
+  const nuc_muts = mutations["nuc"] ? mutations["nuc"] : [];
+
+  const genes = keys.filter((key) => key !== "nuc");
+  const taxonium_muts = [];
+  nuc_muts.forEach((nuc_mut) => {
+    // input format is like "C123T", we want to break this into old_residue, position and new_residue
+    // use regex to match the position
+    const position = nuc_mut.match(/\d+/g);
+    const index_of_position = nuc_mut.indexOf(position[0]);
+    const previous_residue = nuc_mut.substring(0, index_of_position);
+    const new_residue = nuc_mut.substring(
+      index_of_position + position[0].length
+    );
+    const tax_format = {
+      type: "nt",
+      gene: "nt",
+      previous_residue,
+      new_residue,
+      residue_pos: parseInt(position[0]),
+    };
+    const jsonned = JSON.stringify(tax_format);
+    //console.log("jsonned", jsonned);
+    if (mutation_lookup[jsonned]) {
+      taxonium_muts.push(mutation_lookup[jsonned]);
+    } else {
+      unique_mutations.push({
+        ...tax_format,
+        mutation_id: unique_mutations.length,
+      });
+      const this_index = unique_mutations.length - 1;
+      mutation_lookup[jsonned] = this_index;
+      taxonium_muts.push(this_index);
+    }
+  });
+  return taxonium_muts;
+};
+
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
     sendStatusMessage = () => {};
@@ -81,7 +125,7 @@ async function cleanup(tree) {
     const cleaned = {
       name: node.name.replace(/'/g, ""),
       parent_id: node.parent ? node.parent.node_id : node.node_id,
-      mutations: emptyList,
+      mutations: node.mutations ? node.mutations : emptyList,
       y: node.y,
       num_tips: node.num_tips,
       is_tip: node.child.length === 0,
@@ -231,6 +275,10 @@ function json_preorder(root) {
   parents[root.name] = null;
   const path = [];
   const stack = [root];
+
+  const unique_mutations = [];
+
+  const mutation_lookup = {};
   while (stack.length > 0) {
     const nodeJson = stack.pop();
     let div = null;
@@ -241,7 +289,7 @@ function json_preorder(root) {
     if (nodeJson.node_attrs.num_date) {
       time = nodeJson.node_attrs.num_date.value;
     }
-
+    //console.log(nodeJson);
     // this is the node format for downstream processing
     const parsedNode = {
       name: nodeJson.name,
@@ -249,6 +297,14 @@ function json_preorder(root) {
       meta: "",
       hl: false,
       hidden: false,
+      mutations:
+        nodeJson.branch_attrs && nodeJson.branch_attrs.mutations
+          ? nodeMutationsFromNextStrainToTaxonium(
+              nodeJson.branch_attrs.mutations,
+              unique_mutations,
+              mutation_lookup
+            )
+          : [],
     };
 
     // assign distance
@@ -280,12 +336,17 @@ function json_preorder(root) {
       n_tips += 1;
     }
   }
-  return { path, parents, n_tips };
+  return { path, parents, n_tips, unique_mutations };
 }
 
 async function json_to_tree(json) {
   const rootJson = json.tree;
-  const { path: preorder, parents, n_tips } = json_preorder(rootJson);
+  const {
+    path: preorder,
+    parents,
+    n_tips,
+    unique_mutations,
+  } = json_preorder(rootJson);
 
   const nodes = [];
   let root;
@@ -317,6 +378,7 @@ async function json_to_tree(json) {
   };
 
   const config = {};
+
   console.log("META", json.meta);
   config.title = json.meta.title;
   console.log("META PROV", json.meta.data_provenance);
@@ -331,7 +393,7 @@ async function json_to_tree(json) {
     config.overlay += `<p>The NextStrain build is available <a class='underline' href='${json.meta.build_url}'>here</a>.</p>`;
   }
 
-  return { jsTree, config };
+  return { jsTree, config, unique_mutations };
 }
 
 export async function processNextstrain(data, sendStatusMessage) {
@@ -348,9 +410,11 @@ export async function processNextstrain(data, sendStatusMessage) {
 
   const input_string = the_data;
 
-  const { jsTree, config } = await json_to_tree(JSON.parse(input_string));
+  const { jsTree, config, unique_mutations } = await json_to_tree(
+    JSON.parse(input_string)
+  );
 
   const output = await processJsTree(jsTree, data, config, sendStatusMessage);
 
-  return output;
+  return { ...output, mutations: unique_mutations };
 }
