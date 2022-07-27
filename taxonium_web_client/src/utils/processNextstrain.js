@@ -169,6 +169,7 @@ async function processJsTree(tree, data, sendStatusMessage) {
     tree.node.forEach((node) => {
       node.d = node.pre_x_dist;
     });
+
     kn_calxy(tree, true);
     // kn_calxy sets x -> move x to x_dist
     tree.node.forEach((node) => {
@@ -220,10 +221,12 @@ async function processJsTree(tree, data, sendStatusMessage) {
     rootId: 0,
     overwrite_config: { num_tips: total_tips },
   };
+
   return output;
 }
 
 function json_preorder(root) {
+  let n_tips = 0;
   const parents = {};
   parents[root.name] = null;
   const path = [];
@@ -273,15 +276,17 @@ function json_preorder(root) {
         parents[childJson.name] = parsedNode;
         stack.push(childJson);
       }
+    } else {
+      n_tips += 1;
     }
   }
-  return [path, parents];
+  return { path, parents, n_tips };
 }
 
 async function json_to_tree(json) {
   const rootJson = json.tree;
-  const [preorder, parents] = json_preorder(rootJson);
-  let n_tips = 0;
+  const { path: preorder, parents, n_tips } = json_preorder(rootJson);
+
   const nodes = [];
   let root;
   for (const node of preorder) {
@@ -303,13 +308,15 @@ async function json_to_tree(json) {
     nodes.push(node);
   }
 
-  return {
+  const jstree_format = {
     // tree in jstree.js format
     node: nodes,
     error: 0,
     n_tips: n_tips,
     root: root,
   };
+
+  return jstree_format;
 }
 
 export async function processNextstrain(data, sendStatusMessage) {
