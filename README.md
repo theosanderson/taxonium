@@ -62,7 +62,7 @@ Taxonium now consists of a number of components:
 
 ## Contributors
 
-Taxonium is built and maintained by Theo Sanderson at the Francis Crick Institute.
+Taxonium development was initiated and is led by Theo Sanderson at the Francis Crick Institute.
 
 <table>
   <tr>
