@@ -87,6 +87,13 @@ async function cleanup(tree) {
       is_tip: node.child.length === 0,
       node_id: node.node_id,
     };
+
+    Object.keys(node).forEach((key) => {
+      if (key.startsWith("meta_")) {
+        cleaned[key] = node[key];
+      }
+    });
+
     if (node.x_dist !== undefined) {
       cleaned.x_dist = node.x_dist;
     }
@@ -233,7 +240,7 @@ function json_preorder(root) {
     }
 
     // this is the node format for downstream processing
-    let parsedNode = {
+    const parsedNode = {
       name: nodeJson.name,
       child: [],
       meta: "",
@@ -241,12 +248,28 @@ function json_preorder(root) {
       hidden: false,
     };
 
+    // assign distance
     div && (parsedNode.div = div);
     time && (parsedNode.time = time);
 
+    // assign metadata
+    const notMeta = ["div", "num_date"];
+    Object.keys(nodeJson.node_attrs)
+      .filter((x) => !notMeta.includes(x))
+      .forEach((x) => {
+        // sometimes the data is not wrapped in a value tag. e.g. "accession" in mpx
+        const attr = nodeJson.node_attrs[x];
+        parsedNode[`meta_${x}`] =
+          attr.value && typeof attr.value !== "object"
+            ? attr.value
+            : typeof attr !== "object"
+            ? attr
+            : "";
+      });
+
     path.push(parsedNode);
     if (nodeJson.children !== undefined) {
-      for (let childJson of nodeJson.children) {
+      for (const childJson of nodeJson.children) {
         parents[childJson.name] = parsedNode;
         stack.push(childJson);
       }
@@ -258,11 +281,10 @@ function json_preorder(root) {
 async function json_to_tree(json) {
   const rootJson = json.tree;
   const [preorder, parents] = json_preorder(rootJson);
-
   let n_tips = 0;
   const nodes = [];
   let root;
-  for (let node of preorder) {
+  for (const node of preorder) {
     const parent = parents[node.name];
     node.parent = parent;
     if (parent) {
@@ -305,6 +327,7 @@ export async function processNextstrain(data, sendStatusMessage) {
   const input_string = the_data;
 
   const jsTree = await json_to_tree(JSON.parse(input_string));
+
   const output = await processJsTree(jsTree, data, sendStatusMessage);
 
   return output;
