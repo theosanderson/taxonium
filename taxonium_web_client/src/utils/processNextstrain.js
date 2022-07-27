@@ -46,6 +46,41 @@ const nodeMutationsFromNextStrainToTaxonium = (
       taxonium_muts.push(this_index);
     }
   });
+
+  genes.forEach((gene) => {
+    const gene_muts = mutations[gene];
+    gene_muts.forEach((gene_mut) => {
+      // input format is like "Q123F", we want to break this into old_residue, position and new_residue
+      // use regex to match the position
+      const position = gene_mut.match(/\d+/g);
+      const index_of_position = gene_mut.indexOf(position[0]);
+      const previous_residue = gene_mut.substring(0, index_of_position);
+      const new_residue = gene_mut.substring(
+        index_of_position + position[0].length
+      );
+      const tax_format = {
+        type: "aa",
+        gene,
+        previous_residue,
+        new_residue,
+        residue_pos: parseInt(position[0]),
+      };
+      const jsonned = JSON.stringify(tax_format);
+      //console.log("jsonned", jsonned);
+      if (mutation_lookup[jsonned]) {
+        taxonium_muts.push(mutation_lookup[jsonned]);
+      } else {
+        unique_mutations.push({
+          ...tax_format,
+          mutation_id: unique_mutations.length,
+        });
+        const this_index = unique_mutations.length - 1;
+        mutation_lookup[jsonned] = this_index;
+        taxonium_muts.push(this_index);
+      }
+    });
+  });
+
   return taxonium_muts;
 };
 
