@@ -73,6 +73,8 @@ function Taxonium({
       const n = data.base_data.nodes[0];
       if (!n.x_dist) {
         setxType("x_time");
+      } else if (!n.x_time) {
+        setxType("x_dist");
       }
     }
   }, [data.base_data, setxType]);
