@@ -71,9 +71,9 @@ function Taxonium({
     // This can happen with e.g. nextstrain json
     if (data.base_data && data.base_data.nodes) {
       const n = data.base_data.nodes[0];
-      if (!n.x_dist) {
+      if (!n.hasOwnProperty("x_dist")) {
         setxType("x_time");
-      } else if (!n.x_time) {
+      } else if (!n.hasOwnProperty("x_time")) {
         setxType("x_dist");
       }
     }
