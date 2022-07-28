@@ -208,6 +208,7 @@ function useLocalBackend(uploaded_data, proto) {
       setStatusMessage,
       getTipAtts,
       getNextstrainJson,
+      type: "local",
     };
   }, [
     queryNodes,
