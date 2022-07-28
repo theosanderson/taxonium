@@ -63,5 +63,6 @@ export const getNextstrainSubtreeJson = async (subtree_root_id, nodes) => {
     version: "v2",
   };
   console.log("Nextstrain json: ", json);
+  return json;
 };
 export default { getNextstrainSubtreeJson };

@@ -14,6 +14,22 @@ let onStatusReceipt = (receivedData) => {
 let onConfigReceipt = (receivedData) => {};
 let onDetailsReceipt = (receivedData) => {};
 let onListReceipt = (receivedData) => {};
+let onNextStrainReceipt = (receivedData) => {
+  console.log("NEXT STRAIN:", receivedData);
+  // create a blob with this data and trigger download
+  const blob = new Blob([JSON.stringify(receivedData)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = "nextstrain.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+}
 
 let searchSetters = {};
 
@@ -39,6 +55,9 @@ worker.onmessage = (event) => {
   }
   if (event.data.type === "list") {
     onListReceipt(event.data.data);
+  }
+  if (event.data.type === "nextstrain") {
+    onNextStrainReceipt(event.data.data);
   }
 };
 
