@@ -1,4 +1,5 @@
 import filtering from "taxonium_data_handling/filtering.js";
+import { getNextstrainSubtreeJson } from "taxonium_data_handling/exporting.js";
 import { processJsonl } from "taxonium_data_handling/importing.js";
 import { processNewickAndMetadata } from "../utils/processNewick.js";
 import { processNextstrain } from "../utils/processNextstrain.js";
@@ -394,6 +395,13 @@ onmessage = async (event) => {
     if (data.type === "list") {
       const result = await getList(data.node_id, data.key);
       postMessage({ type: "list", data: result });
+    }
+    if (data.type === "nextstrain") {
+      const result = await getNextstrainSubtreeJson(
+        data.node_id,
+        processedUploadedData.nodes
+      );
+      postMessage({ type: "nextstrain", data: result });
     }
   }
 };
