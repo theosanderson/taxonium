@@ -82,7 +82,6 @@ function Taxonium({
     }
   }, [data.base_data, setxType]);
 
-
   const search = useSearch({
     data,
     config,
