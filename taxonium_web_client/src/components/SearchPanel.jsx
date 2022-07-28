@@ -406,7 +406,7 @@ function SearchPanel({
               </div>
             )}
           </div>
-          {config.enable_ns_download(
+          {config.enable_ns_download && (
             <>
               <div style={{ maxWidth: "150px" }}>
                 <Button onClick={handleDownloadJson}>Download JSON</Button>
