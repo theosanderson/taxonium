@@ -180,7 +180,7 @@ def preorder_traversal_internal(node):
     yield node
     for clade in node.children:
         for x in preorder_traversal_internal(clade):
-            if not x.children:
+            if not x.is_leaf():
                 yield x
 
 
