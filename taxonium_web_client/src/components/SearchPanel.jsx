@@ -371,10 +371,12 @@ function SearchPanel({
                 </div>
               </>
             )}
-          <a href={covSpectrumQuery} className="underline">
-            <BsArrowRight className="inline-block" /> Find this clade in
-            CovSpectrum
-          </a>
+          {config.covspectrum_links && (
+            <a href={covSpectrumQuery} className="underline">
+              <BsArrowRight className="inline-block" /> Find this clade in
+              CovSpectrum
+            </a>
+          )}
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">
