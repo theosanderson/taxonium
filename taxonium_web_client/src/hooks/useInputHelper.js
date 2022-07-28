@@ -156,7 +156,7 @@ export const useInputHelper = ({
         );
         const newQuery = {
           treeUrl: tree_file.name,
-          ladderizeTree: tree_file.ladderize === "true",
+          ladderizeTree: tree_file.ladderize === true,
           treeType: tree_file.filetype,
         };
         if (meta_file) {
