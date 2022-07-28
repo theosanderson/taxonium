@@ -1,4 +1,5 @@
 {
+  "enable_ns_download": true,
   "source": "INSDC",
   "title": "Cov2Tree",
   "customNames": { "num_tips": "Descendant sequences" },
