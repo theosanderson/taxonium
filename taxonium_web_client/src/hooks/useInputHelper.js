@@ -16,6 +16,7 @@ function guessType(file_object) {
   const file_extension = file_name.split(".").pop();
 
   const tree_extensions = ["nwk", "newick", "tree", "tre", "nh"];
+
   if (tree_extensions.includes(file_extension)) {
     return "nwk";
   }
@@ -27,11 +28,11 @@ function guessType(file_object) {
   }
   if (file_extension === "tsv") {
     return "meta_tsv";
+  }
+  if (file_extension === "json") {
+    return "nextstrain";
   } else {
-    window.alert(
-      "Alert: unrecognised file type, supported types: jsonl (taxonium), nwk (newick), csv, tsv"
-    );
-    return "jsonl";
+    return "unknown";
   }
 }
 
@@ -114,10 +115,14 @@ export const useInputHelper = ({
     if (inputs.filter((input) => input.filetype === "nwk").length > 1) {
       return ["invalid", "You can only use a single tree file"];
     }
+    if (inputs.some((input) => input.filetype === "unknown")) {
+      return ["invalid", "Please select the type of each file"];
+    }
     // must have a tree file or a jsonl
     if (
       inputs.filter((input) => input.filetype === "jsonl").length === 0 &&
-      inputs.filter((input) => input.filetype === "nwk").length === 0
+      inputs.filter((input) => input.filetype === "nwk").length === 0 &&
+      inputs.filter((input) => input.filetype === "nextstrain").length === 0
     ) {
       return [
         "invalid",
@@ -146,10 +151,13 @@ export const useInputHelper = ({
         const meta_file = inputs.find((input) =>
           input.filetype.startsWith("meta_")
         );
-        const tree_file = inputs.find((input) => input.filetype === "nwk");
+        const tree_file = inputs.find(
+          (input) => input.filetype === "nwk" || input.filetype === "nextstrain"
+        );
         const newQuery = {
           treeUrl: tree_file.name,
           ladderizeTree: tree_file.ladderize === "true",
+          treeType: tree_file.filetype,
         };
         if (meta_file) {
           newQuery.metaUrl = meta_file.name;
@@ -181,7 +189,10 @@ export const useInputHelper = ({
       }
 
       // if there is a tree file find it
-      const tree_file = inputs.find((input) => input.filetype === "nwk");
+      const tree_file = inputs.find(
+        (input) => input.filetype === "nwk" || input.filetype === "nextstrain"
+      );
+
       upload_obj.filename = tree_file.name;
       upload_obj.data = tree_file.data;
       upload_obj.status =
@@ -221,7 +232,7 @@ export const useInputHelper = ({
         status: "url_supplied",
         filename: query.treeUrl,
         ladderize: query.ladderizeTree === "true",
-        filetype: "nwk",
+        filetype: query.treeType ? query.treeType : "nwk",
         ...extra,
       });
     }

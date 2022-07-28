@@ -171,6 +171,14 @@ function useLocalBackend(uploaded_data, proto) {
     };
   }, []);
 
+  const getNextstrainJson = useCallback((nodeId) => {
+    console.log("getNextstrainJson", nodeId);
+    worker.postMessage({
+      type: "nextstrain",
+      node_id: nodeId,
+    });
+  }, []);
+
   return useMemo(() => {
     return {
       queryNodes,
@@ -180,6 +188,7 @@ function useLocalBackend(uploaded_data, proto) {
       statusMessage,
       setStatusMessage,
       getTipAtts,
+      getNextstrainJson,
     };
   }, [
     queryNodes,
@@ -189,6 +198,7 @@ function useLocalBackend(uploaded_data, proto) {
     statusMessage,
     setStatusMessage,
     getTipAtts,
+    getNextstrainJson,
   ]);
 }
 

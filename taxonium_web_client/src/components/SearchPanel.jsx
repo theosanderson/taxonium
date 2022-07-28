@@ -7,7 +7,7 @@ import { BsBoxArrowInUpRight } from "react-icons/bs";
 import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
@@ -46,6 +46,14 @@ function SearchPanel({
   className,
 }) {
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
+
+  const handleDownloadJson = () => {
+    if (selectedDetails.nodeDetails) {
+      const node_id = selectedDetails.nodeDetails.node_id;
+      console.log("json for node", selectedDetails.nodeDetails);
+      backend.getNextstrainJson(node_id);
+    }
+  };
 
   const prettifyName = (name) => {
     if (config && config.customNames && config.customNames[name]) {
@@ -313,7 +321,6 @@ function SearchPanel({
               {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
             </span>
           )}
-
           {[...config.keys_to_display, "num_tips"].map(
             (key) =>
               selectedDetails.nodeDetails[key] &&
@@ -375,6 +382,10 @@ function SearchPanel({
               </div>
             )}
           </div>
+          <div style={{ maxWidth: "150px" }}>
+            <Button onClick={handleDownloadJson}>Download JSON</Button>
+          </div>
+          (Subtree at this node in Nextstrain format)
         </div>
       )}
     </div>
