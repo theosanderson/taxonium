@@ -433,20 +433,15 @@ async function json_to_tree(json) {
 
 export async function processNextstrain(data, sendStatusMessage) {
   console.log("got data", data);
-  let the_data;
-
-  the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
-
-  console.log("the_data", the_data);
+  const the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
   sendStatusMessage({
     message: "Parsing NS file",
   });
 
-  const input_string = the_data;
 
   const { jsTree, config, unique_mutations } = await json_to_tree(
-    JSON.parse(input_string)
+    JSON.parse(the_data)
   );
 
   const output = await processJsTree(jsTree, data, config, sendStatusMessage);
