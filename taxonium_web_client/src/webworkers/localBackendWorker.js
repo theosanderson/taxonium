@@ -332,7 +332,6 @@ onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
-  console.log(data, "data");
   if (
     data.type === "upload" &&
     data.data &&
