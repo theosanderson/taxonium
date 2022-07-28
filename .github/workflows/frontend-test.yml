@@ -1,7 +1,7 @@
 name: Frontend
 
 on:
-   workflow_call:
+  workflow_call:
 
 jobs:
   test:
@@ -20,7 +20,7 @@ jobs:
           yarn install
           yarn build
           cd build
-      - name: 'Upload Artifact'
+      - name: "Upload Artifact"
         uses: actions/upload-artifact@v3
         with:
           name: taxonium_web_client_build

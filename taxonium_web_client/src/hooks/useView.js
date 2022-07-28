@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { toast } from "react-hot-toast";
+
 import {
   OrthographicView,
   OrthographicController,
@@ -9,9 +9,7 @@ import {
 let globalSetZoomAxis = () => {};
 class MyOrthographicController extends OrthographicController {
   // on construction
-  constructor(props) {
-    super(props);
-  }
+
   // Default handler for the `wheel` event.
   onWheel(event) {
     const controlKey =
@@ -188,7 +186,7 @@ const useView = ({ settings, deckSize }) => {
       const oldScaleY = 2 ** oldViewState.zoom;
       const newScaleY = 2 ** viewState.zoom;
       // eslint-disable-line no-unused-vars
-      const oldScaleX = 2 ** xzoom;
+
       let newScaleX = 2 ** xzoom;
 
       if (basicTarget) {

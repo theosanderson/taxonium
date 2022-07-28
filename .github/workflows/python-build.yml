@@ -1,9 +1,9 @@
 name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
 
-on: 
+on:
   push:
     paths:
-    - 'taxoniumtools/**'
+      - "taxoniumtools/**"
 jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI

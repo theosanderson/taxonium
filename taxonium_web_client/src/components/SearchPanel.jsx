@@ -2,12 +2,16 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
+
 import { FaSearch } from "react-icons/fa";
-import { BsBoxArrowInUpRight } from "react-icons/bs";
+import { BsBoxArrowInUpRight, BsArrowRight } from "react-icons/bs";
+
 import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
-import { useState } from "react";
+
+import { useEffect, useState, useMemo } from "react";
+
 import classNames from "classnames";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
@@ -44,8 +48,27 @@ function SearchPanel({
   settings,
   backend,
   className,
+  perNodeFunctions,
 }) {
+  const covSpectrumQuery = useMemo(() => {
+    if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
+      return perNodeFunctions.getCovSpectrumQuery(
+        selectedDetails.nodeDetails.node_id
+      );
+    } else {
+      return null;
+    }
+  }, [selectedDetails.nodeDetails, perNodeFunctions]);
+
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
+
+  const handleDownloadJson = () => {
+    if (selectedDetails.nodeDetails) {
+      const node_id = selectedDetails.nodeDetails.node_id;
+      console.log("json for node", selectedDetails.nodeDetails);
+      backend.getNextstrainJson(node_id);
+    }
+  };
 
   const prettifyName = (name) => {
     if (config && config.customNames && config.customNames[name]) {
@@ -277,7 +300,10 @@ function SearchPanel({
               {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
                 fixName(selectedDetails.nodeDetails[config.name_accessor])
               ) : (
-                <i>Internal node</i>
+                <i>
+                  Internal node{" "}
+                  <small>{selectedDetails.nodeDetails.node_id}</small>
+                </i>
               )}
               {selectedDetails.nodeDetails.parent_id !==
                 selectedDetails.nodeDetails.node_id && (
@@ -313,7 +339,6 @@ function SearchPanel({
               {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
             </span>
           )}
-
           {[...config.keys_to_display, "num_tips"].map(
             (key) =>
               selectedDetails.nodeDetails[key] &&
@@ -355,6 +380,12 @@ function SearchPanel({
                 </div>
               </>
             )}
+          {config.covspectrum_links && (
+            <a href={covSpectrumQuery} className="underline">
+              <BsArrowRight className="inline-block" /> Find this clade in
+              CovSpectrum
+            </a>
+          )}
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">
@@ -375,6 +406,28 @@ function SearchPanel({
               </div>
             )}
           </div>
+          {config.enable_ns_download && (
+            <>
+              <div style={{ maxWidth: "150px" }}>
+                <Button onClick={handleDownloadJson}>Download JSON</Button>
+              </div>
+              (Subtree at this node in Nextstrain format)
+              {backend.type === "server" && (
+                <>
+                  <a
+                    href={
+                      backend.backend_url +
+                      "/nextstrain_json?root_id=" +
+                      selectedDetails.nodeDetails.node_id
+                    }
+                    className="underline"
+                  >
+                    View clade in NextStrain
+                  </a>
+                </>
+              )}
+            </>
+          )}
         </div>
       )}
     </div>

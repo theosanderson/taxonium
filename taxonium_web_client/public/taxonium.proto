@@ -30,9 +30,9 @@ message AllNodeData {
  repeated int32 countries = 4;//Deprecated: DO NOT USE (use metadata_singles)
  repeated int32 dates = 7;  // Deprecated: DO NOT USE (use metadata_singles)
  repeated int32 lineages = 5;//Deprecated: DO NOT USE (use metadata_singles)
- 
 
- repeated MutationList mutations = 6; 
+
+ repeated MutationList mutations = 6;
  repeated int32 parents = 8;
  repeated string genbanks = 9; // Deprecated: DO NOT USE
 repeated int32 epi_isl_numbers = 10;  // Deprecated: DO NOT USE

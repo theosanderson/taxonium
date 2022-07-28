@@ -36,9 +36,10 @@ def do_processing(input_file,
                   shear=False,
                   shear_threshold=1000,
                   only_variable_sites=False,
-                  key_column = "strain"):
+                  key_column="strain"):
 
-    metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns, key_column)
+    metadata_dict, metadata_cols = utils.read_metadata(metadata_file, columns,
+                                                       key_column)
 
     if config_file is not None:
         config = json.load(open(config_file))
@@ -94,20 +95,39 @@ def do_processing(input_file,
     nodes_sorted_by_y = utils.sort_on_y(mat)
     all_aa_muts_objects = utils.get_all_aa_muts(mat.tree.root)
     if only_variable_sites:
-        variable_muts = [x for x in all_aa_muts_objects if x.initial_aa != x.final_aa]
-        variable_sites = set((x.gene,x.one_indexed_codon) for x in variable_muts)
-        all_aa_muts_objects = [x for x in all_aa_muts_objects if (x.gene,x.one_indexed_codon) in variable_sites]
-        mat.tree.root.aa_muts = [x for x in mat.tree.root.aa_muts if (x.gene,x.one_indexed_codon) in variable_sites]
+        variable_muts = [
+            x for x in all_aa_muts_objects if x.initial_aa != x.final_aa
+        ]
+        variable_sites = set(
+            (x.gene, x.one_indexed_codon) for x in variable_muts)
+        all_aa_muts_objects = [
+            x for x in all_aa_muts_objects
+            if (x.gene, x.one_indexed_codon) in variable_sites
+        ]
+        mat.tree.root.aa_muts = [
+            x for x in mat.tree.root.aa_muts
+            if (x.gene, x.one_indexed_codon) in variable_sites
+        ]
     all_nuc_muts = utils.get_all_nuc_muts(mat.tree.root)
     if only_variable_sites:
-        variable_muts = [x for x in all_nuc_muts if x.par_nuc != x.mut_nuc and x.par_nuc!="X"]
-        variable_sites = set((x.chromosome,x.one_indexed_position) for x in variable_muts )
-        all_nuc_muts = [x for x in all_nuc_muts if (x.chromosome,x.one_indexed_position) in variable_sites]
-        mat.tree.root.nuc_mutations = [x for x in mat.tree.root.nuc_mutations if (x.chromosome,x.one_indexed_position) in variable_sites]
+        variable_muts = [
+            x for x in all_nuc_muts
+            if x.par_nuc != x.mut_nuc and x.par_nuc != "X"
+        ]
+        variable_sites = set(
+            (x.chromosome, x.one_indexed_position) for x in variable_muts)
+        all_nuc_muts = [
+            x for x in all_nuc_muts
+            if (x.chromosome, x.one_indexed_position) in variable_sites
+        ]
+        mat.tree.root.nuc_mutations = [
+            x for x in mat.tree.root.nuc_mutations
+            if (x.chromosome, x.one_indexed_position) in variable_sites
+        ]
     all_mut_inputs = all_aa_muts_objects + all_nuc_muts
     all_mut_objects = [
-        utils.make_aa_object(i, input_thing) if input_thing.type == "aa"
-        else utils.make_nuc_object(i, input_thing)
+        utils.make_aa_object(i, input_thing)
+        if input_thing.type == "aa" else utils.make_nuc_object(i, input_thing)
         for i, input_thing in enumerate(all_mut_inputs)
     ]
 
@@ -117,7 +137,7 @@ def do_processing(input_file,
     }
 
     config['num_tips'] = total_tips
-    
+
     first_json = {
         "version": version,
         "mutations": all_mut_objects,
@@ -218,11 +238,13 @@ def get_parser():
         help=
         "A JSON file to use as a config file containing things such as search parameters",
         default=None)
-    parser.add_argument('-t',
-                        "--title",
-                        type=str,
-                        help="A title for the tree. This will be shown at the top of the window as \"[Title] - powered by Taxonium\"",
-                        default=None)
+    parser.add_argument(
+        '-t',
+        "--title",
+        type=str,
+        help=
+        "A title for the tree. This will be shown at the top of the window as \"[Title] - powered by Taxonium\"",
+        default=None)
     parser.add_argument(
         "--overlay_html",
         type=str,
@@ -244,16 +266,24 @@ def get_parser():
     parser.add_argument('--name_internal_nodes',
                         action='store_true',
                         help='If set, we will name internal nodes node_xxx')
-    parser.add_argument("--shear",
-                        action='store_true',
-                        help="If set, we will 'shear' the tree. This will iterate over all nodes. If a particular sub-branch makes up fewer than e.g. 1/1000 of the total descendants, then in most cases it represents a sequencing error. (But it also could represent recombinants, or a real, unfit branch.) We remove these to simplify the interpretation of the tree. ")
-    parser.add_argument('--shear_threshold',
-                        type=float,
-                        help='Threshold for shearing, default is 1000 meaning branches will be removed if they make up less than <1/1000 nodes. Has no effect unless --shear is set.',
-                        default=1000)
-    parser.add_argument('--only_variable_sites',
-                        action='store_true',
-                        help="Only store information about the root sequence if there is variation somewhere in the tree. This may be removed in future versions.")
+    parser.add_argument(
+        "--shear",
+        action='store_true',
+        help=
+        "If set, we will 'shear' the tree. This will iterate over all nodes. If a particular sub-branch makes up fewer than e.g. 1/1000 of the total descendants, then in most cases it represents a sequencing error. (But it also could represent recombinants, or a real, unfit branch.) We remove these to simplify the interpretation of the tree. "
+    )
+    parser.add_argument(
+        '--shear_threshold',
+        type=float,
+        help=
+        'Threshold for shearing, default is 1000 meaning branches will be removed if they make up less than <1/1000 nodes. Has no effect unless --shear is set.',
+        default=1000)
+    parser.add_argument(
+        '--only_variable_sites',
+        action='store_true',
+        help=
+        "Only store information about the root sequence if there is variation somewhere in the tree. This may be removed in future versions."
+    )
 
     parser.add_argument(
         "--key_column",
@@ -287,8 +317,8 @@ def main():
                   name_internal_nodes=args.name_internal_nodes,
                   shear=args.shear,
                   shear_threshold=args.shear_threshold,
-                  only_variable_sites = args.only_variable_sites,
-                  key_column = args.key_column)
+                  only_variable_sites=args.only_variable_sites,
+                  key_column=args.key_column)
 
 
 if __name__ == "__main__":
