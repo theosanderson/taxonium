@@ -382,10 +382,20 @@ function SearchPanel({
               </div>
             )}
           </div>
+          { config.enable_ns_download
+          (<>
           <div style={{ maxWidth: "150px" }}>
             <Button onClick={handleDownloadJson}>Download JSON</Button>
           </div>
           (Subtree at this node in Nextstrain format)
+          {backend.type === "server" && (
+            <><a href={backend.backend_url + "/nextstrain_json?root_id=" + selectedDetails.nodeDetails.node_id}
+            className="underline">
+            
+              View clade in NextStrain</a></>
+          )}
+     </>
+     )}
         </div>
       )}
     </div>
