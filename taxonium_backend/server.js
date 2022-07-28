@@ -11,6 +11,7 @@ var axios = require("axios");
 var pako = require("pako");
 var importing;
 var filtering;
+var exporting;
 
 const { program } = require("commander");
 
@@ -72,6 +73,14 @@ import("taxonium_data_handling/filtering.js").then((imported) => {
   filtering = imported.default;
   console.log("imported filtering");
 });
+
+
+
+import("taxonium_data_handling/exporting.js").then((imported) => {
+  exporting = imported.default;
+  console.log("imported exporting");
+});
+
 
 waitForTheImports = async () => {
   if (importing === undefined || filtering === undefined) {
@@ -383,6 +392,14 @@ app.get("/tip_atts", async (req, res) => {
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + atts
   );
+});
+
+
+app.get("/nextstrain_json", async (req, res) => {
+  const root_id = parseInt(req.query.root_id);
+  const json = await exporting.getNextstrainSubtreeJson(root_id, processedData.nodes);
+  res.send(json);
+
 });
 
 const loadData = async () => {
