@@ -149,7 +149,7 @@ export const useInputHelper = ({
         const tree_file = inputs.find((input) => input.filetype === "nwk");
         const newQuery = {
           treeUrl: tree_file.name,
-          ladderizeTree: tree_file.ladderize === "true",
+          ladderizeTree: tree_file.ladderize === true,
         };
         if (meta_file) {
           newQuery.metaUrl = meta_file.name;
