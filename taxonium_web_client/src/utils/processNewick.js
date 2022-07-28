@@ -98,7 +98,7 @@ async function cleanup(tree) {
 
   const scale_x = 450 / ref_x;
 
-  console.log(scale_y, "scale_y");
+ 
   tree.node.forEach((node) => {
     node.x_dist = node.x_dist * scale_x;
     node.y = node.y * scale_y;
@@ -106,7 +106,7 @@ async function cleanup(tree) {
 }
 
 export async function processNewick(data, sendStatusMessage) {
-  console.log("got data", data);
+  
   let the_data;
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
@@ -139,10 +139,10 @@ export async function processNewick(data, sendStatusMessage) {
   }
   assignNumTips(tree.root);
   const total_tips = tree.root.num_tips;
-  console.log("tree.root.num_tips", tree.root.num_tips);
+
 
   if (data.ladderize) {
-    console.log("ladderizing");
+   
 
     sortWithNumTips(tree.root);
     tree.node = kn_expand_node(tree.root);
@@ -197,8 +197,6 @@ export async function processMetadataFile(data, sendStatusMessage) {
   let the_data;
 
   the_data = await fetch_or_extract(data, logStatusToConsole, "metadata");
-
-  console.log("Got metadata file");
 
   const lines = the_data.split("\n");
   const output = {};
@@ -275,6 +273,6 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
       Object.assign(node, blanks);
     }
   });
-  console.log(tree);
+
   return tree;
 }
