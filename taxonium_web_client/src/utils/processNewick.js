@@ -98,7 +98,6 @@ async function cleanup(tree) {
 
   const scale_x = 450 / ref_x;
 
- 
   tree.node.forEach((node) => {
     node.x_dist = node.x_dist * scale_x;
     node.y = node.y * scale_y;
@@ -106,7 +105,6 @@ async function cleanup(tree) {
 }
 
 export async function processNewick(data, sendStatusMessage) {
-  
   let the_data;
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
@@ -140,10 +138,7 @@ export async function processNewick(data, sendStatusMessage) {
   assignNumTips(tree.root);
   const total_tips = tree.root.num_tips;
 
-
   if (data.ladderize) {
-   
-
     sortWithNumTips(tree.root);
     tree.node = kn_expand_node(tree.root);
   }

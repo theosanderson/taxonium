@@ -438,7 +438,6 @@ export async function processNextstrain(data, sendStatusMessage) {
     message: "Parsing NS file",
   });
 
-
   const { jsTree, config, unique_mutations } = await json_to_tree(
     JSON.parse(the_data)
   );

@@ -358,8 +358,6 @@ onmessage = async (event) => {
     data.data.filename &&
     data.data.filetype === "nextstrain"
   ) {
-   
-
     processedUploadedData = await processNextstrain(
       data.data,
       sendStatusMessage
