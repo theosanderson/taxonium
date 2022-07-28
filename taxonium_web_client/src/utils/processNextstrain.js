@@ -432,7 +432,6 @@ async function json_to_tree(json) {
 }
 
 export async function processNextstrain(data, sendStatusMessage) {
-  console.log("got data", data);
   const the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
   sendStatusMessage({
