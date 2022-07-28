@@ -391,10 +391,9 @@ app.get("/tip_atts", async (req, res) => {
   );
 });
 
-
 // match /nextstrain_json/12345
 app.get("/nextstrain_json/:root_id", async (req, res) => {
-  const root_id = req.params.root_id;
+  const root_id = parseInt(req.params.root_id);
   const json = await exporting.getNextstrainSubtreeJson(
     root_id,
     processedData.nodes
