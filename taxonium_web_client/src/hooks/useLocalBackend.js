@@ -29,7 +29,7 @@ let onNextStrainReceipt = (receivedData) => {
   a.click();
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
-}
+};
 
 let searchSetters = {};
 

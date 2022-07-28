@@ -74,13 +74,10 @@ import("taxonium_data_handling/filtering.js").then((imported) => {
   console.log("imported filtering");
 });
 
-
-
 import("taxonium_data_handling/exporting.js").then((imported) => {
   exporting = imported.default;
   console.log("imported exporting");
 });
-
 
 waitForTheImports = async () => {
   if (importing === undefined || filtering === undefined) {
@@ -394,12 +391,13 @@ app.get("/tip_atts", async (req, res) => {
   );
 });
 
-
 app.get("/nextstrain_json", async (req, res) => {
   const root_id = parseInt(req.query.root_id);
-  const json = await exporting.getNextstrainSubtreeJson(root_id, processedData.nodes);
+  const json = await exporting.getNextstrainSubtreeJson(
+    root_id,
+    processedData.nodes
+  );
   res.send(json);
-
 });
 
 const loadData = async () => {

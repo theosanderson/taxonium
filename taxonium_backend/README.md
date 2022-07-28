@@ -6,7 +6,6 @@
 
 `node server.js --data_url https://cov2tree.nyc3.cdn.digitaloceanspaces.com/tfci-taxonium2.jsonl`
 
-
 `node --experimental-fetch server.js --database_dir ./database/ --port 8080 --ssl --config_json config.json`
 
 Non-SSL public:
