@@ -9,7 +9,7 @@ import { BsBoxArrowInUpRight, BsArrowRight } from "react-icons/bs";
 import { MdList } from "react-icons/md";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import classNames from "classnames";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
@@ -48,6 +48,16 @@ function SearchPanel({
   className,
   perNodeFunctions,
 }) {
+  const covSpectrumQuery = useMemo(() => {
+    if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
+      return perNodeFunctions.getCovSpectrumQuery(
+        selectedDetails.nodeDetails.node_id
+      );
+    } else {
+      return null;
+    }
+  }, [selectedDetails.nodeDetails, perNodeFunctions]);
+
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
 
   const prettifyName = (name) => {
@@ -361,12 +371,7 @@ function SearchPanel({
                 </div>
               </>
             )}
-          <a
-            href={perNodeFunctions.getCovSpectrumQuery(
-              selectedDetails.nodeDetails.node_id
-            )}
-            className="underline"
-          >
+          <a href={covSpectrumQuery} className="underline">
             <BsArrowRight className="inline-block" /> Find this clade in
             CovSpectrum
           </a>
