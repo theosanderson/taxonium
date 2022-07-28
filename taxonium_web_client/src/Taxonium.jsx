@@ -10,6 +10,7 @@ import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
 import { useMemo, useState } from "react";
 import useBackend from "./hooks/useBackend";
+import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 import { useEffect } from "react";
@@ -65,6 +66,8 @@ function Taxonium({
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);
+
+  const perNodeFunctions = usePerNodeFunctions(data, config);
 
   useEffect(() => {
     // If there is no distance data, default to time
@@ -127,6 +130,7 @@ function Taxonium({
         settings={settings}
         overlayContent={overlayContent}
         setAboutEnabled={setAboutEnabled}
+        perNodeFunctions={perNodeFunctions}
       />
     </div>
   );
