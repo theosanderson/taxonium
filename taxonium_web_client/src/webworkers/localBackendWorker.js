@@ -358,7 +358,7 @@ onmessage = async (event) => {
     data.data.filename &&
     data.data.filetype === "nextstrain"
   ) {
-    console.log("got nextstrain file", data.data);
+   
 
     processedUploadedData = await processNextstrain(
       data.data,
