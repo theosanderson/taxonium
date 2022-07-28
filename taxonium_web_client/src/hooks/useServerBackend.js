@@ -159,7 +159,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
       statusMessage,
       getTipAtts,
       type: "server",
-      backend_url: backend_url
+      backend_url: backend_url,
     };
   }, [
     queryNodes,
@@ -169,7 +169,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
     setStatusMessage,
     statusMessage,
     getTipAtts,
-    backend_url
+    backend_url,
   ]);
 }
 
