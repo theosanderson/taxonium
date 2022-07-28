@@ -175,6 +175,12 @@ def preorder_traversal(node):
     for clade in node.children:
         yield from preorder_traversal(clade)
 
+def preorder_traversal_internal(node):
+    yield node
+    for clade in node.children:
+        for x in preorder_traversal_internal(clade):
+            if not x.children:
+                yield x
 
 def preorder_traversal_iter(node):
     return iter(preorder_traversal(node))
@@ -356,10 +362,10 @@ class UsherMutationAnnotatedTree:
 
     def name_internal_nodes(self):
         for i, node in alive_it(list(
-                enumerate(preorder_traversal(self.tree.root))),
+                enumerate(preorder_traversal_internal(self.tree.root))),
                                 title="Naming internal nodes"):
             if not node.label:
-                node.label = "node_" + str(i)
+                node.label = "node_" + str(i+1)
 
     def set_branch_lengths(self):
         for node in alive_it(list(preorder_traversal(self.tree.root)),
