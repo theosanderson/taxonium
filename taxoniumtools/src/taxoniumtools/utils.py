@@ -158,6 +158,7 @@ def make_aa_object(i, aa_mutation):
         "residue_pos": aa_mutation.one_indexed_codon,
         "new_residue": aa_mutation.final_aa,
         "mutation_id": i,
+        "nuc_for_codon": aa_mutation.nuc_for_codon,
         "type": "aa"
     }
 
