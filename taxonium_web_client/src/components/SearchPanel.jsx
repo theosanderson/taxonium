@@ -414,9 +414,9 @@ function SearchPanel({
               {backend.type === "server" && (
                 <>
                   <a
-                    href={
-                      backend.backend_url +
-                      "/nextstrain_json?root_id=" +
+                    href={"https://nextstrain.org/fetch/"+
+                      backend.backend_url.replace("https://","").replace("http://","") +
+                      "/nextstrain_json/" +
                       selectedDetails.nodeDetails.node_id
                     }
                     className="underline"
