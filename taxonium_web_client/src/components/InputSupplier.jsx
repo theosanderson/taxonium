@@ -156,7 +156,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
       )}
       <div className="mb-3">
         Select, drag-and-drop, or enter the URL for tree or metadata files
-        (jsonl, newick, or tsv):
+        (jsonl, newick, nextstrain, tsv, etc.):
       </div>
       <div>
         <input
