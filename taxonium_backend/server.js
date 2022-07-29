@@ -399,6 +399,7 @@ app.get("/nextstrain_json/:root_id", async (req, res) => {
     processedData.nodes,
     config
   );
+  res.setHeader("Content-Disposition", "attachment; " + "filename="+root_id+".nextstrain.json");
   res.send(json);
 });
 

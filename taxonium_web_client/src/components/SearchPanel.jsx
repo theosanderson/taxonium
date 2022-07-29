@@ -2,15 +2,17 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
+import ReactTooltip from "react-tooltip";
+import {BsBoxArrowInUpRight} from "react-icons/bs";
 
-import { FaSearch } from "react-icons/fa";
-import { BsBoxArrowInUpRight, BsArrowRight } from "react-icons/bs";
+import { FaSearch, FaShare } from "react-icons/fa";
 
-import { MdList } from "react-icons/md";
+
+
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 
-import { useEffect, useState, useMemo } from "react";
+import {  useState, useMemo } from "react";
 
 import classNames from "classnames";
 
@@ -132,26 +134,73 @@ function SearchPanel({
         )}
         {key === "num_tips" && (
           <span className="ml-1">
-            <button
-              title="List all tips"
-              className="text-gray-600 hover:text-black"
-              onClick={() => {
-                if (
-                  selectedDetails.nodeDetails.num_tips > 100000 &&
-                  !window.warning_shown
-                ) {
-                  // pop up a warning and ask if we want to continue
-                  alert(
-                    "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again."
-                  );
-                  window.warning_shown = true;
-                  return;
-                }
-                setListOutputModalOpen(true);
-              }}
-            >
-              <MdList className="inline-block" />
-            </button>
+            <a data-for='menu_descendants' data-tip='8' className="cursor-pointer"> <FaShare className="inline-block" /></a>
+            <ReactTooltip id='menu_descendants'
+  getContent={(dataTip) => 
+  <div>
+     <h2>For this clade:</h2>
+    <div  className="mb-3"><Button
+  className="mb-2"
+  
+  onClick={() => {
+    if (
+      selectedDetails.nodeDetails.num_tips > 100000 &&
+      !window.warning_shown
+    ) {
+      // pop up a warning and ask if we want to continue
+      alert(
+        "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again."
+      );
+      window.warning_shown = true;
+      return;
+    }
+    setListOutputModalOpen(true);
+  }}
+>
+ List all tips
+</Button></div>
+
+{config.enable_ns_download && (
+            <>
+           
+             
+                <div  className="mb-3"><Button className="" onClick={handleDownloadJson}>Download Nextstrain JSON</Button></div>
+       
+            
+              {backend.type === "server" && selectedDetails.nodeDetails[key]<20000 && (
+                <>
+                 <div  className="mb-3"><Button className=""
+                    href={"https://nextstrain.org/fetch/"+
+                      backend.getNextstrainJsonUrl(selectedDetails.nodeDetails.node_id, config).replace("https://","").replace("http://","")
+                    }
+                   
+                  >
+                    View clade in NextStrain
+                  </Button></div> 
+                </>
+              )}
+            </>
+          )}
+
+{config.covspectrum_links && (
+  <div className="mb-3">
+            <Button href={covSpectrumQuery} className="" >
+              Find in
+              CovSpectrum
+            </Button></div>
+          )}
+
+</div> }
+  effect='solid'
+  delayHide={500}
+  delayShow={0}
+  delayUpdate={500}
+  
+  place={'right'}
+  border={true}
+  type={'light'}
+/>
+            
           </span>
         )}
       </div>
@@ -379,12 +428,7 @@ function SearchPanel({
                 </div>
               </>
             )}
-          {config.covspectrum_links && (
-            <a href={covSpectrumQuery} className="underline">
-              <BsArrowRight className="inline-block" /> Find this clade in
-              CovSpectrum
-            </a>
-          )}
+          
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">
@@ -405,28 +449,7 @@ function SearchPanel({
               </div>
             )}
           </div>
-          {config.enable_ns_download && (
-            <>
-              <div style={{ maxWidth: "150px" }}>
-                <Button onClick={handleDownloadJson}>Download JSON</Button>
-              </div>
-              (Subtree at this node in Nextstrain format)
-              {backend.type === "server" && (
-                <>
-                  <a
-                    href={"https://nextstrain.org/fetch/"+
-                      backend.backend_url.replace("https://","").replace("http://","") +
-                      "/nextstrain_json/" +
-                      selectedDetails.nodeDetails.node_id
-                    }
-                    className="underline"
-                  >
-                    View clade in NextStrain
-                  </a>
-                </>
-              )}
-            </>
-          )}
+          
         </div>
       )}
     </div>
