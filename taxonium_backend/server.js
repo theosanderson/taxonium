@@ -396,7 +396,8 @@ app.get("/nextstrain_json/:root_id", async (req, res) => {
   const root_id = parseInt(req.params.root_id);
   const json = await exporting.getNextstrainSubtreeJson(
     root_id,
-    processedData.nodes
+    processedData.nodes,
+    config
   );
   res.send(json);
 });
