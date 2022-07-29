@@ -203,7 +203,11 @@ function SearchPanel({
 
                   {config.covspectrum_links && (
                     <div className="mb-3">
-                      <Button href={covSpectrumQuery} className="">
+                      <Button
+                        href={covSpectrumQuery}
+                        className=""
+                        target="_blank"
+                      >
                         Find in CovSpectrum
                       </Button>
                     </div>
