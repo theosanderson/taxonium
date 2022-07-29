@@ -193,7 +193,7 @@ function SearchPanel({
                                 }
                                 target="_blank"
                               >
-                                View clade in NextStrain
+                                View clade in Nextstrain
                               </Button>
                             </div>
                           </>

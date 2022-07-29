@@ -423,9 +423,9 @@ async function json_to_tree(json) {
     json.meta.updated +
     " in a build maintained by " +
     json.meta.maintainers.map((source) => source.name).join(" & ");
-  config.overlay = `<p>This is a tree generated from a <a href='//nextstrain.org'>NextStrain</a> JSON file, being visualised in Taxonium.</p>.`;
+  config.overlay = `<p>This is a tree generated from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
   if (json.meta.build_url) {
-    config.overlay += `<p>The NextStrain build is available <a class='underline' href='${json.meta.build_url}'>here</a>.</p>`;
+    config.overlay += `<p>The Nextstrain build is available <a class='underline' href='${json.meta.build_url}'>here</a>.</p>`;
   }
 
   return { jsTree, config, unique_mutations };
