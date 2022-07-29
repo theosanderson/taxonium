@@ -14,18 +14,44 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
     sendStatusMessage = () => {};
   }
+
+  sendErrorMessage = (message) => {
+    sendStatusMessage({ error: message });
+  };
   // send progress on downloadProgress
 
   if (url.endsWith(".gz")) {
-    const response = await axios.get(url, {
-      responseType: "arraybuffer",
-      onDownloadProgress: (progress) => {
-        sendStatusMessage({
-          message: "Downloading compressed " + whatIsBeingDownloaded,
-          percentage: (progress.loaded / progress.total) * 100,
-        });
-      },
-    });
+    const response = await axios
+      .get(url, {
+        responseType: "arraybuffer",
+        onDownloadProgress: (progress) => {
+          sendStatusMessage({
+            message: "Downloading compressed " + whatIsBeingDownloaded,
+            percentage: (progress.loaded / progress.total) * 100,
+          });
+        },
+      })
+      .catch(function (error) {
+        sendErrorMessage(
+          "Error loading " + url + ". This may be a CORS config issue."
+        );
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          sendErrorMessage(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          sendErrorMessage(error.message);
+        }
+        console.log(error.config);
+      });
     sendStatusMessage({
       message: "Decompressing compressed " + whatIsBeingDownloaded,
     });
@@ -33,14 +59,36 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
     const text = new TextDecoder("utf-8").decode(inflated);
     return text;
   } else {
-    const response = await axios.get(url, {
-      onDownloadProgress: (progress) => {
-        sendStatusMessage({
-          message: "Downloading " + whatIsBeingDownloaded,
-          percentage: (progress.loaded / progress.total) * 100,
-        });
-      },
-    });
+    const response = await axios
+      .get(url, {
+        onDownloadProgress: (progress) => {
+          sendStatusMessage({
+            message: "Downloading " + whatIsBeingDownloaded,
+            percentage: (progress.loaded / progress.total) * 100,
+          });
+        },
+      })
+      .catch(function (error) {
+        sendErrorMessage(
+          "Error loading " + url + ". This may be a CORS config issue."
+        );
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          sendErrorMessage(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          sendErrorMessage(error.message);
+        }
+        console.log(error.config);
+      });
     const text = response.data;
     //parse text:
     return text;
