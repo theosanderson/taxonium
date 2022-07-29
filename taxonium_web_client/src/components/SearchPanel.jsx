@@ -167,7 +167,8 @@ function SearchPanel({
                     </Button>
                   </div>
 
-                  {config.enable_ns_download && (
+                  {config.enable_ns_download &&
+                        selectedDetails.nodeDetails[key] < 1000000 &&  (
                     <>
                       <div className="mb-3">
                         <Button className="" onClick={handleDownloadJson}>
