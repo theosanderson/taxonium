@@ -191,6 +191,7 @@ function SearchPanel({
                                     .replace("https://", "")
                                     .replace("http://", "")
                                 }
+                                target="_blank"
                               >
                                 View clade in NextStrain
                               </Button>

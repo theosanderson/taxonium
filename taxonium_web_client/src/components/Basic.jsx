@@ -1,6 +1,13 @@
 import classNames from "classnames";
 
-export const Button = ({ onClick, className, children, title, href }) => {
+export const Button = ({
+  onClick,
+  className,
+  children,
+  title,
+  href,
+  target,
+}) => {
   if (href && onClick) {
     throw new Error("Button cannot have both href and onClick");
   }
@@ -14,6 +21,7 @@ export const Button = ({ onClick, className, children, title, href }) => {
         )}
         href={href}
         title={title}
+        target={target}
       >
         {children}
       </a>
