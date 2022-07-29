@@ -147,7 +147,7 @@ function SearchPanel({
                   <h2>For this clade:</h2>
                   <div className="mb-3">
                     <Button
-                      className="mb-2"
+                      className=""
                       onClick={() => {
                         if (
                           selectedDetails.nodeDetails.num_tips > 100000 &&
