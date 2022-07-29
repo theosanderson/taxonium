@@ -190,11 +190,12 @@ function useLocalBackend(uploaded_data, proto) {
     };
   }, []);
 
-  const getNextstrainJson = useCallback((nodeId) => {
+  const getNextstrainJson = useCallback((nodeId, config) => {
     console.log("getNextstrainJson", nodeId);
     worker.postMessage({
       type: "nextstrain",
       node_id: nodeId,
+      config: config,
     });
   }, []);
 

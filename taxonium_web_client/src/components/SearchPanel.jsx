@@ -65,8 +65,7 @@ function SearchPanel({
   const handleDownloadJson = () => {
     if (selectedDetails.nodeDetails) {
       const node_id = selectedDetails.nodeDetails.node_id;
-      console.log("json for node", selectedDetails.nodeDetails);
-      backend.getNextstrainJson(node_id);
+      backend.getNextstrainJson(node_id, config);
     }
   };
 

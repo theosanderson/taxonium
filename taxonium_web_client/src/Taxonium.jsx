@@ -56,6 +56,9 @@ function Taxonium({
   }, [config.colorMapping]);
   const colorHook = useColor(colorMapping);
 
+  //TODO: this is always true for now
+  config.enable_ns_download = true;
+
   const xType = query.xType;
   const setxType = useCallback(
     (xType) => {
