@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -53,7 +53,7 @@ jobs:
           usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
       - name: Test only varaible sites
         run: |
-          usher_to_taxonium --input tfci.pb --output tfci-var.jsonl.gz  --only_variable_sites --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage 
+          usher_to_taxonium --input tfci.pb --output tfci-var.jsonl.gz  --only_variable_sites --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
       - uses: actions/upload-artifact@v3
         with:
           name: tfci-var

@@ -14,19 +14,19 @@
   margin: 0px !important;
 }
 
-#view-browser-axis>div>span>div>div>div>div:nth-child(1) {
+#view-browser-axis > div > span > div > div > div > div:nth-child(1) {
   display: none !important;
 }
 
 .jss2 {
-  margin: 0px !important
+  margin: 0px !important;
 }
 
-p[data-testid='refLabel-NC_045512v2'] {
+p[data-testid="refLabel-NC_045512v2"] {
   display: none !important;
 }
 
-[class *="PrivateSwitchBase-input-"]+svg {
+[class*="PrivateSwitchBase-input-"] + svg {
   color: "#2463eb" !important;
 }
 
@@ -54,14 +54,13 @@ p[data-testid='refLabel-NC_045512v2'] {
 
 select,
 input {
-  border-color: #c7ccd8 !important
+  border-color: #c7ccd8 !important;
 }
 
 .infoTooltip {
   max-width: 200px;
   font-size: 12pt !important;
   pointer-events: auto !important;
-  
 }
 .infoTooltip :hover {
   visibility: visible !important;

@@ -2,15 +2,18 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
-import { FaSearch } from "react-icons/fa";
 import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
 import { MdList } from "react-icons/md";
+import ReactTooltip from "react-tooltip";
+
+import { FaSearch, FaShare } from "react-icons/fa";
+
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
-import { useState } from "react";
-import classNames from "classnames";
-import ReactTooltip from 'react-tooltip';
 
+import { useState, useMemo } from "react";
+
+import classNames from "classnames";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
@@ -38,6 +41,8 @@ function SearchPanel({
   colorBy,
   config,
   selectedDetails,
+  overlayContent,
+  setAboutEnabled,
   colorHook,
   xType,
   setxType,
@@ -45,9 +50,27 @@ function SearchPanel({
   backend,
   className,
   treenomeState,
-  view
+  view,
+  perNodeFunctions,
 }) {
+  const covSpectrumQuery = useMemo(() => {
+    if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
+      return perNodeFunctions.getCovSpectrumQuery(
+        selectedDetails.nodeDetails.node_id
+      );
+    } else {
+      return null;
+    }
+  }, [selectedDetails.nodeDetails]);
+
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
+
+  const handleDownloadJson = () => {
+    if (selectedDetails.nodeDetails) {
+      const node_id = selectedDetails.nodeDetails.node_id;
+      backend.getNextstrainJson(node_id, config);
+    }
+  };
 
   const prettifyName = (name) => {
     if (config && config.customNames && config.customNames[name]) {
@@ -62,7 +85,7 @@ function SearchPanel({
 
   const formatMetadataItem = (key) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
-    if (key == "num_tips" && selectedDetails.nodeDetails[key] == 1) return;
+    if (key === "num_tips" && selectedDetails.nodeDetails[key] === 1) return;
     if (
       selectedDetails.nodeDetails &&
       selectedDetails.nodeDetails[key] &&
@@ -112,26 +135,97 @@ function SearchPanel({
         )}
         {key === "num_tips" && (
           <span className="ml-1">
-            <button
-              title="List all tips"
-              className="text-gray-600 hover:text-black"
-              onClick={() => {
-                if (
-                  selectedDetails.nodeDetails.num_tips > 100000 &&
-                  !window.warning_shown
-                ) {
-                  // pop up a warning and ask if we want to continue
-                  alert(
-                    "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again."
-                  );
-                  window.warning_shown = true;
-                  return;
-                }
-                setListOutputModalOpen(true);
-              }}
+            <a
+              data-for="menu_descendants"
+              data-tip="8"
+              className="cursor-pointer"
             >
-              <MdList className="inline-block" />
-            </button>
+              {" "}
+              <FaShare className="inline-block" />
+            </a>
+            <ReactTooltip
+              id="menu_descendants"
+              getContent={(dataTip) => (
+                <div>
+                  <h2>For this clade:</h2>
+                  <div className="mb-3">
+                    <Button
+                      className=""
+                      onClick={() => {
+                        if (
+                          selectedDetails.nodeDetails.num_tips > 100000 &&
+                          !window.warning_shown
+                        ) {
+                          // pop up a warning and ask if we want to continue
+                          alert(
+                            "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again."
+                          );
+                          window.warning_shown = true;
+                          return;
+                        }
+                        setListOutputModalOpen(true);
+                      }}
+                    >
+                      List all tips
+                    </Button>
+                  </div>
+
+                  {config.enable_ns_download &&
+                    selectedDetails.nodeDetails[key] < 1000000 && (
+                      <>
+                        <div className="mb-3">
+                          <Button className="" onClick={handleDownloadJson}>
+                            Download Nextstrain JSON
+                          </Button>
+                        </div>
+
+                        {backend.type === "server" &&
+                          selectedDetails.nodeDetails[key] < 20000 && (
+                            <>
+                              <div className="mb-3">
+                                <Button
+                                  className=""
+                                  href={
+                                    "https://nextstrain.org/fetch/" +
+                                    backend
+                                      .getNextstrainJsonUrl(
+                                        selectedDetails.nodeDetails.node_id,
+                                        config
+                                      )
+                                      .replace("https://", "")
+                                      .replace("http://", "")
+                                  }
+                                  target="_blank"
+                                >
+                                  View clade in Nextstrain
+                                </Button>
+                              </div>
+                            </>
+                          )}
+                      </>
+                    )}
+
+                  {config.covspectrum_links && (
+                    <div className="mb-3">
+                      <Button
+                        href={covSpectrumQuery}
+                        className=""
+                        target="_blank"
+                      >
+                        Find in CovSpectrum
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+              effect="solid"
+              delayHide={500}
+              delayShow={0}
+              delayUpdate={500}
+              place={"right"}
+              border={true}
+              type={"light"}
+            />
           </span>
         )}
       </div>
@@ -145,9 +239,27 @@ function SearchPanel({
       <div className="space-y-2 py-3">
         {config.num_tips && (
           <p className="text-gray-500 text-sm">
-            Displaying {formatNumber(config.num_tips)}{" "}
-            {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
-            {config.source && ` from ${config.source}`}
+            {overlayContent ? (
+              <>
+                Displaying{" "}
+                <button
+                  className="underline"
+                  onClick={() => {
+                    setAboutEnabled(true);
+                  }}
+                >
+                  {formatNumber(config.num_tips)}{" "}
+                  {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
+                </button>{" "}
+                {config.source && ` from ${config.source}`}
+              </>
+            ) : (
+              <>
+                Displaying {formatNumber(config.num_tips)}{" "}
+                {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
+                {config.source && ` from ${config.source}`}
+              </>
+            )}
           </p>
         )}
         {config.x_accessors && config.x_accessors.length > 1 && (
@@ -186,15 +298,25 @@ function SearchPanel({
                 "browser-main": { zoom: -2, target: [0, 1000] },
                 "browser-axis": { zoom: -2, target: [0, 1000] },
               });
-            }
-            }
+            }}
           />
-          <button style={{cursor: 'default'}} data-tip="Display each genome's mutations alongside the tree.&nbsp;<a href='' class='tooltipLink'>Learn more</a>" data-html={true}>
-            <span style={{ display: 'inline-block', verticalAlign: "middle" }}>
+          <button
+            style={{ cursor: "default" }}
+            data-tip="Display each genome's mutations alongside the tree.&nbsp;<a href='' class='tooltipLink'>Learn more</a>"
+            data-html={true}
+          >
+            <span style={{ display: "inline-block", verticalAlign: "middle" }}>
               <BsQuestionCircle />
             </span>
           </button>
-          <ReactTooltip delayHide={400} className='infoTooltip' place="top" backgroundColor='#e5e7eb' textColor='#000' effect="solid" />
+          <ReactTooltip
+            delayHide={400}
+            className="infoTooltip"
+            place="top"
+            backgroundColor="#e5e7eb"
+            textColor="#000"
+            effect="solid"
+          />
         </span>
       </div>
       <div className="py-3 space-y-2">
@@ -291,22 +413,25 @@ function SearchPanel({
               {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
                 fixName(selectedDetails.nodeDetails[config.name_accessor])
               ) : (
-                <i>Internal node</i>
+                <i>
+                  Internal node{" "}
+                  <small>{selectedDetails.nodeDetails.node_id}</small>
+                </i>
               )}
               {selectedDetails.nodeDetails.parent_id !==
                 selectedDetails.nodeDetails.node_id && (
-                  <button
-                    className="inline-block text-sm text-gray-700 hover:text-black ml-2"
-                    title="Select parent"
-                    onClick={() => {
-                      selectedDetails.getNodeDetails(
-                        selectedDetails.nodeDetails.parent_id
-                      );
-                    }}
-                  >
-                    <RiArrowLeftUpLine className="inline-block mr-2" />
-                  </button>
-                )}
+                <button
+                  className="inline-block text-sm text-gray-700 hover:text-black ml-2"
+                  title="Select parent"
+                  onClick={() => {
+                    selectedDetails.getNodeDetails(
+                      selectedDetails.nodeDetails.parent_id
+                    );
+                  }}
+                >
+                  <RiArrowLeftUpLine className="inline-block mr-2" />
+                </button>
+              )}
             </h2>
             <button
               onClick={() => selectedDetails.clearNodeDetails()}
@@ -327,7 +452,6 @@ function SearchPanel({
               {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
             </span>
           )}
-
           {[...config.keys_to_display, "num_tips"].map(
             (key) =>
               selectedDetails.nodeDetails[key] &&
@@ -335,7 +459,7 @@ function SearchPanel({
           )}
           {config.mutations.length > 0 &&
             selectedDetails.nodeDetails.node_id !==
-            selectedDetails.nodeDetails.parent_id && (
+              selectedDetails.nodeDetails.parent_id && (
               <>
                 <div className="text-xs font-bold mt-2 mb-0 text-gray-700 justify-between flex">
                   <div className="pt-1">Mutations at this node:</div>{" "}
@@ -358,7 +482,7 @@ function SearchPanel({
                     <div className=" italic">
                       No{" "}
                       {settings.filterMutations([{ type: "nt" }]).length ===
-                        0 ? (
+                      0 ? (
                         <>coding</>
                       ) : (
                         <></>
@@ -369,6 +493,7 @@ function SearchPanel({
                 </div>
               </>
             )}
+
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">

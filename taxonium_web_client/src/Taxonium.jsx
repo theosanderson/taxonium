@@ -11,9 +11,12 @@ import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
 import { useMemo, useState, useRef } from "react";
 import useBackend from "./hooks/useBackend";
+import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 import { MdArrowForward, MdArrowBack } from "react-icons/md";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
   ? "https://www.epicov.org/epi3/frontend"
@@ -26,6 +29,8 @@ function Taxonium({
   setOverlayContent,
   proto,
   setTitle,
+  overlayContent,
+  setAboutEnabled,
 }) {
   const deckRef = useRef();
   const jbrowseRef = useRef();
@@ -56,13 +61,34 @@ function Taxonium({
   }, [config.colorMapping]);
   const colorHook = useColor(colorMapping);
 
+  //TODO: this is always true for now
+  config.enable_ns_download = true;
+
   const xType = query.xType;
-  const setxType = (xType) => {
-    updateQuery({ xType });
-  };
+  const setxType = useCallback(
+    (xType) => {
+      updateQuery({ xType });
+    },
+    [updateQuery]
+  );
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);
+
+  const perNodeFunctions = usePerNodeFunctions(data, config);
+
+  useEffect(() => {
+    // If there is no distance data, default to time
+    // This can happen with e.g. nextstrain json
+    if (data.base_data && data.base_data.nodes) {
+      const n = data.base_data.nodes[0];
+      if (!n.hasOwnProperty("x_dist")) {
+        setxType("x_time");
+      } else if (!n.hasOwnProperty("x_time")) {
+        setxType("x_dist");
+      }
+    }
+  }, [data.base_data, setxType]);
 
   const search = useSearch({
     data,
@@ -74,24 +100,28 @@ function Taxonium({
     updateQuery,
     deckSize,
     xType,
-    settings
+    settings,
   });
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
     setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
+      window.dispatchEvent(new Event("resize"));
     }, 100);
-
   };
 
-  const treenomeState = useTreenomeState(data, deckRef, view, settings)
+  const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
-    <div className="flex-grow overflow-hidden flex flex-col md:flex-row" >
-      <div className={sidebarOpen ? "h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow"
-        : "md:col-span-12 h-3/6 md:h-full w-full"}>
+    <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
+      <div
+        className={
+          sidebarOpen
+            ? "h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow"
+            : "md:col-span-12 h-3/6 md:h-full w-full"
+        }
+      >
         <Deck
           statusMessage={backend.statusMessage}
           data={data}
@@ -113,30 +143,35 @@ function Taxonium({
           jbrowseRef={jbrowseRef}
         />
       </div>
-      
-      <div className={ sidebarOpen ? "md:w-1/4" : "bg-white shadow-xl" }>
-          <button onClick={toggleSidebar}>
-                <br />
-                { sidebarOpen ? <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" /> : <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle"/> }
-              </button>
-              { 
-              sidebarOpen &&
-                <SearchPanel
-                  className="search-panel flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
-                  backend={backend}
-                  search={search}
-                  colorBy={colorBy}
-                  colorHook={colorHook}
-                  config={config}
-                  selectedDetails={selectedDetails}
-                  xType={xType}
-                  setxType={setxType}
-                  settings={settings}
-                  treenomeState={treenomeState}
-                  view={view}
-                />
-              }              
-        </div>
+
+      <div className={sidebarOpen ? "md:w-1/4" : "bg-white shadow-xl"}>
+        <button onClick={toggleSidebar}>
+          <br />
+          {sidebarOpen ? (
+            <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
+          ) : (
+            <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
+          )}
+        </button>
+        {sidebarOpen && (
+          <SearchPanel
+            className="search-panel flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+            backend={backend}
+            search={search}
+            colorBy={colorBy}
+            colorHook={colorHook}
+            config={config}
+            selectedDetails={selectedDetails}
+            xType={xType}
+            setxType={setxType}
+            settings={settings}
+            treenomeState={treenomeState}
+            view={view}
+            setAboutEnabled={setAboutEnabled}
+            perNodeFunctions={perNodeFunctions}
+          />
+        )}
+      </div>
     </div>
   );
 }

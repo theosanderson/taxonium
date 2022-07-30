@@ -11,6 +11,7 @@ var axios = require("axios");
 var pako = require("pako");
 var importing;
 var filtering;
+var exporting;
 
 const { program } = require("commander");
 
@@ -71,6 +72,11 @@ import("taxonium_data_handling/importing.js").then((imported) => {
 import("taxonium_data_handling/filtering.js").then((imported) => {
   filtering = imported.default;
   console.log("imported filtering");
+});
+
+import("taxonium_data_handling/exporting.js").then((imported) => {
+  exporting = imported.default;
+  console.log("imported exporting");
 });
 
 waitForTheImports = async () => {
@@ -250,12 +256,12 @@ function startListening() {
 let sid_cache = {};
 
 async function validateSID(sid) {
-  /* 
+  /*
 
-  Create a call to https://gpsapi.epicov.org/epi3/gps_api 
+  Create a call to https://gpsapi.epicov.org/epi3/gps_api
 
   with URL encoded version of the following parameters:
-  
+
   {"cmd":"state/session/validate",
 "client_id": "TEST-1234",
 "api": {"version":1},
@@ -383,6 +389,21 @@ app.get("/tip_atts", async (req, res) => {
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + atts
   );
+});
+
+// match /nextstrain_json/12345
+app.get("/nextstrain_json/:root_id", async (req, res) => {
+  const root_id = parseInt(req.params.root_id);
+  const json = await exporting.getNextstrainSubtreeJson(
+    root_id,
+    processedData.nodes,
+    config
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; " + "filename=" + root_id + ".nextstrain.json"
+  );
+  res.send(json);
 });
 
 const loadData = async () => {
