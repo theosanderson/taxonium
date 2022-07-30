@@ -1,6 +1,8 @@
 import filtering from "taxonium_data_handling/filtering.js";
+import { getNextstrainSubtreeJson } from "taxonium_data_handling/exporting.js";
 import { processJsonl } from "taxonium_data_handling/importing.js";
 import { processNewickAndMetadata } from "../utils/processNewick.js";
+import { processNextstrain } from "../utils/processNextstrain.js";
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
@@ -182,9 +184,13 @@ const getConfig = async () => {
     "is_tip",
   ];
 
-  config.x_accessors = processedUploadedData.nodes[0].x_time
-    ? ["x_dist", "x_time"]
-    : ["x_dist"];
+  const firstNode = processedUploadedData.nodes[0];
+  config.x_accessors =
+    firstNode.x_dist && firstNode.x_time
+      ? ["x_dist", "x_time"]
+      : firstNode.x_dist
+      ? ["x_dist"]
+      : ["x_time"];
 
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
@@ -327,7 +333,6 @@ onmessage = async (event) => {
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
-  //console.log(data, "data");
   if (
     data.type === "upload" &&
     data.data &&
@@ -345,6 +350,16 @@ onmessage = async (event) => {
     console.log("got nwk file", data.data);
     data.data.useDistances = true;
     processedUploadedData = await processNewickAndMetadata(
+      data.data,
+      sendStatusMessage
+    );
+  } else if (
+    data.type === "upload" &&
+    data.data &&
+    data.data.filename &&
+    data.data.filetype === "nextstrain"
+  ) {
+    processedUploadedData = await processNextstrain(
       data.data,
       sendStatusMessage
     );
@@ -377,6 +392,14 @@ onmessage = async (event) => {
     if (data.type === "list") {
       const result = await getList(data.node_id, data.key);
       postMessage({ type: "list", data: result });
+    }
+    if (data.type === "nextstrain") {
+      const result = await getNextstrainSubtreeJson(
+        data.node_id,
+        processedUploadedData.nodes,
+        data.config
+      );
+      postMessage({ type: "nextstrain", data: result });
     }
   }
 };

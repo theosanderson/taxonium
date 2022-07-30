@@ -138,6 +138,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
         }, DEBOUNCE_TIME)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boundsForQueries, queryNodes, triggerRefresh, config]);
 
   return { data: dynamicData, boundsForQueries, isCurrentlyOutsideBounds };

@@ -5,13 +5,11 @@ import {
   //OrthographicViewport,
 } from "@deck.gl/core";
 
-let globalSetZoomAxis = () => { };
+let globalSetZoomAxis = () => {};
 
 class MyOrthographicController extends OrthographicController {
   // on construction
-  constructor(props) {
-    super(props);
-  }
+
   // Default handler for the `wheel` event.
   onWheel(event) {
     const controlKey =
@@ -98,7 +96,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -1 : 0);
   globalSetZoomAxis = setZoomAxis;
 
-
   // TODO target needs to be [0,0]
   const [viewState, setViewState] = useState({
     zoom: -2,
@@ -114,12 +111,19 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     setViewState((prevState) => {
       return {
         ...prevState,
-        target: [window.screen.width < 600 ? 500 :
-          settings.treenomeEnabled ? 2600 : 1400, 1000]
-      }
+        target: [
+          window.screen.width < 600
+            ? 500
+            : settings.treenomeEnabled
+            ? 2600
+            : 1400,
+          1000,
+        ],
+      };
     });
-    setXzoom(window.screen.width < 600 ? -1 :
-      settings.treenomeEnabled ? -1 : 0);
+    setXzoom(
+      window.screen.width < 600 ? -1 : settings.treenomeEnabled ? -1 : 0
+    );
   }, [settings.treenomeEnabled]);
 
   const baseViewState = useMemo(() => {
@@ -127,42 +131,42 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       ...viewState,
       "browser-main": { zoom: 0, target: [0, 0] },
       "browser-axis": { zoom: 0, target: [0, 0] },
-    }
+    };
   }, [viewState]);
 
   const views = useMemo(() => {
     return [
-
       ...(settings.minimapEnabled && !settings.treenomeEnabled
         ? [
-          new OrthographicView({
-            id: "minimap",
-            x: "79%",
-            y: "1%",
-            width: "20%",
-            height: "35%",
-            borderWidth: "1px",
-            controller: true,
-            // clear: true,
-          }),
-        ]
+            new OrthographicView({
+              id: "minimap",
+              x: "79%",
+              y: "1%",
+              width: "20%",
+              height: "35%",
+              borderWidth: "1px",
+              controller: true,
+              // clear: true,
+            }),
+          ]
         : []),
       ...(settings.treenomeEnabled
         ? [
-          new OrthographicView({
-            id: "browser-axis",
-            controller: false,
-            x: "40%",
-            y: "0%",
-            width: "60%",
-          }),
-          new OrthographicView({
-            id: "browser-main",
-            controller: false,
-            x: "40%",
-            width: "60%",
-          }),
-        ] : []),
+            new OrthographicView({
+              id: "browser-axis",
+              controller: false,
+              x: "40%",
+              y: "0%",
+              width: "60%",
+            }),
+            new OrthographicView({
+              id: "browser-main",
+              controller: false,
+              x: "40%",
+              width: "60%",
+            }),
+          ]
+        : []),
       ...[
         new OrthographicView({
           id: "main",
@@ -174,17 +178,20 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
           initialViewState: viewState,
         }),
       ],
-
-
-
     ];
-  }, [viewState, zoomAxis, settings.minimapEnabled, settings.treenomeEnabled, xzoom]);
+  }, [
+    viewState,
+    zoomAxis,
+    settings.minimapEnabled,
+    settings.treenomeEnabled,
+    xzoom,
+  ]);
 
   const [mouseXY, setMouseXY] = useState([0, 0]);
 
   const modelMatrix = useMemo(() => {
     return [
-      (1 / 2 ** (viewState.zoom - xzoom)),
+      1 / 2 ** (viewState.zoom - xzoom),
       0,
       0,
       0,
@@ -202,7 +209,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       1,
     ];
   }, [viewState.zoom, xzoom]);
-
 
   const onViewStateChange = useCallback(
     ({
@@ -227,7 +233,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
         return;
       }
 
-
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
         return;
@@ -237,11 +242,12 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       const oldScaleY = 2 ** oldViewState.zoom;
       const newScaleY = 2 ** newViewState.zoom;
       // eslint-disable-line no-unused-vars
-      const oldScaleX = 2 ** xzoom;
+
       let newScaleX = 2 ** xzoom;
 
       if (basicTarget) {
-        newViewState.target[0] = (newViewState.target[0] / newScaleY) * newScaleX;
+        newViewState.target[0] =
+          (newViewState.target[0] / newScaleY) * newScaleX;
       } else {
         if (oldScaleY !== newScaleY) {
           if (localZoomAxis === "Y") {
@@ -286,12 +292,16 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
 
       newViewState["minimap"] = { zoom: -3, target: [250, 1000] };
 
-
-
       if (jbrowseRef.current) {
         const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
-        const xBound = jbrowseRef.current.children[0].children[0].offsetParent.offsetParent.offsetLeft;
-        if ((mouseXY[0] > xBound && mouseXY[1] < yBound )|| mouseXY[0] < 0 || mouseXY[1] < 0) {
+        const xBound =
+          jbrowseRef.current.children[0].children[0].offsetParent.offsetParent
+            .offsetLeft;
+        if (
+          (mouseXY[0] > xBound && mouseXY[1] < yBound) ||
+          mouseXY[0] < 0 ||
+          mouseXY[1] < 0
+        ) {
           if (!basicTarget && viewId) {
             return;
           }
@@ -304,7 +314,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
           ...viewState["browser-main"],
           zoom: newViewState.zoom,
           target: [viewState["browser-main"].target[0], newViewState.target[1]],
-        }
+        };
       }
 
       setViewState(newViewState);
@@ -315,7 +325,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
 
   const zoomIncrement = useCallback(
     (increment, overrideZoomAxis) => {
-
       const newViewState = { ...viewState };
       newViewState.zoom += increment;
 
@@ -328,7 +337,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     },
     [viewState, onViewStateChange]
   );
-
 
   const output = useMemo(() => {
     return {
@@ -343,7 +351,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       xzoom,
       mouseXY,
       setMouseXY,
-      baseViewState
+      baseViewState,
     };
   }, [
     viewState,
@@ -357,7 +365,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     xzoom,
     mouseXY,
     setMouseXY,
-    baseViewState
+    baseViewState,
   ]);
 
   return output;

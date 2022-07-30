@@ -4,6 +4,7 @@ import AboutOverlay from "./components/AboutOverlay";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
+import { FaGithub } from "react-icons/fa";
 import useQueryAsState from "./hooks/useQueryAsState";
 import classNames from "classnames";
 
@@ -29,7 +30,7 @@ const default_query = {
   backend: DEFAULT_BACKEND,
   xType: "x_dist",
   mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
-  treenomeEnabled: false
+  treenomeEnabled: false,
 };
 
 if (window.location.hostname.includes("mpx.taxonium.org")) {
@@ -220,13 +221,22 @@ function App() {
               </>
             )}
           </h1>
-          <button
-            onClick={() => setAboutEnabled(true)}
-            className="text-white font-bold hover:underline flex items-center"
-          >
-            <BsInfoSquare className="w-6 h-6 opacity-80 mr-2" />
-            About
-          </button>
+          <div className="flex ">
+            <button
+              onClick={() => setAboutEnabled(true)}
+              className="text-white font-bold hover:underline flex items-center"
+              title="Info"
+            >
+              <BsInfoSquare className="w-6 h-6 opacity-80 mr-4" />
+            </button>
+            <a
+              href="https://github.com/theosanderson/taxonium"
+              className="text-white font-bold hover:underline flex items-center"
+              title="Source code"
+            >
+              <FaGithub className="w-6 h-6 opacity-80 mr-2 " />
+            </a>
+          </div>
         </div>
         <Suspense fallback={<div></div>}>
           {query.backend ||
@@ -239,6 +249,8 @@ function App() {
               updateQuery={updateQuery}
               setOverlayContent={setOverlayContent}
               setTitle={setTitle}
+              overlayContent={overlayContent}
+              setAboutEnabled={setAboutEnabled}
             />
           ) : (
             <div className="m-10 space-y-3">

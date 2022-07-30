@@ -12,7 +12,7 @@ const useSearch = ({
   updateQuery,
   deckSize,
   xType,
-  settings
+  settings,
 }) => {
   const { singleSearch } = backend;
 
@@ -207,10 +207,9 @@ const useSearch = ({
         Math.log2(
           max_y - min_y + 50000 / (config.num_nodes ? config.num_nodes : 10000)
         );
-      const new_target =
-        settings.treenomeEnabled ? [oldViewState.target[0], (min_y + max_y) / 2]
-          : [(min_x + max_x) / 2, (min_y + max_y) / 2];
-
+      const new_target = settings.treenomeEnabled
+        ? [oldViewState.target[0], (min_y + max_y) / 2]
+        : [(min_x + max_x) / 2, (min_y + max_y) / 2];
 
       const viewState = {
         ...view.viewState,
@@ -218,7 +217,11 @@ const useSearch = ({
         target: new_target,
         zoom: newZoom,
       };
-      console.log("zoom to search new VS", viewState.target[0], viewState.target[1]);
+      console.log(
+        "zoom to search new VS",
+        viewState.target[0],
+        viewState.target[1]
+      );
 
       view.onViewStateChange({
         viewState: viewState,
@@ -229,7 +232,17 @@ const useSearch = ({
       updateQuery({ zoomToSearch: undefined });
       setZoomToSearch(undefined);
     }
-  }, [zoomToSearch, searchResults, deckSize, config.num_nodes, settings.treenomeEnabled, searchSpec, updateQuery, view, xType]);
+  }, [
+    zoomToSearch,
+    searchResults,
+    deckSize,
+    config.num_nodes,
+    settings.treenomeEnabled,
+    searchSpec,
+    updateQuery,
+    view,
+    xType,
+  ]);
 
   return {
     searchResults,

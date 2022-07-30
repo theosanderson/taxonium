@@ -10,7 +10,6 @@ Any files must be uploaded to somewhere that allows Cross-Origin Resource Sharin
 
 If you supply only remote files, then you will find that the Taxonium.org interface encodes them into its URL as it loads the tree, meaning you can share your tree with other people by copying the Taxonium URL. In addition, any searches or colouring of the tree will also be stored in the URL. Each search will have a permalink button that will create a URL that zooms in on those particular nodes.
 
-
 #### Custom configuration
 
 There are a number of things you can do customise Taxonium. They all ultimately involve creating a "config" which Taxonium uses to define its behaviour. This config can be specified in several ways, which are listed here in rough order of the priority in which they are applied:
@@ -19,7 +18,6 @@ There are a number of things you can do customise Taxonium. They all ultimately 
 2. As a `configUrl` supplied to the URL pointing to a JSON file, e.g. https://taxonium.org/?protoUrl=https%3A%2F%2Fmpx-tree.vercel.app%2Fmpx.jsonl.gz&configUrl=https://mpx-tree.vercel.app/config.json
 3. As one of several custom parameters to `usher_to_taxonium`, e.g. `--title`,`--overlay_html`.
 4. As a `--config_json` file passed to [taxoniumtools.md](usher_to_taxonium).
-
 
 #### What you can configure
 
@@ -44,7 +42,8 @@ The way that Taxonium handles colurs by default is that they are computed as a h
 }
 ```
 
-We can supply that config in the URL like this: 
+We can supply that config in the URL like this:
+
 ```
 https://cov2tree.org/?config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}
 ```
@@ -64,7 +63,6 @@ We can supply a title with the `title` key. It will display at the top.
 ##### About overlay
 
 You can replace the contents of the "about" section using the `overlay` property, into which you will supply HTML. This can be a bit unwieldy as JSON needs to have no linebreaks in strings (you can use `\n` so it's easiest to do this in `usher_to_taxonium` by supplying the `overlay_html` parameter).
-
 
 #### Deploying your own Taxonium backend
 

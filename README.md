@@ -2,7 +2,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
@@ -30,13 +30,13 @@ Visit [Cov2Tree.org](http://Cov2Tree.org) which uses Taxonium to allow you to ex
 
 Use [UShER](https://github.com/yatisht/usher/) to build a mutation-annotated tree. Then use [taxoniumtools](./taxoniumtools/) to convert it to a Taxonium format you can upload to the interface at [Taxonium.org](Taxonium.org)
 
-You can also use taxoniumtools to add your own metadata to the existing public phylogeny.
+You can also use taxoniumtools to add your own metadata to [the existing public phylogeny](https://hgwdev.gi.ucsc.edu/~angie/UShER_SARS-CoV-2/).
 
 Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/latest/).
 
 ## See Taxonium in action
 
-- [Cov2Tree](https://cov2tree.org/)
+- [Cov2Tree](https://cov2tree.org/) - (the repo that runs this is [here](https://github.com/theosanderson/cov2tree))
 - [Exploring the NCBI Taxonomy](https://taxonium.org/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json)
 - [Serratus](https://serratus.io/trees) (click Tree Viewer on any tree)
 - [mpxTree](http://mpxtree.taxonium.org/)
@@ -49,7 +49,7 @@ Theo Sanderson
 bioRxiv 2022.06.03.494608; doi: https://doi.org/10.1101/2022.06.03.494608
 ```
 
-N.B. If you are citing the *tree* displayed at Cov2Tree.org, please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too if you relied on it for exploration)
+N.B. If you are citing the _tree_ displayed at Cov2Tree.org, please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too if you relied on it for exploration)
 
 ## Structure
 
@@ -62,7 +62,7 @@ Taxonium now consists of a number of components:
 
 ## Contributors
 
-Taxonium is built and maintained by Theo Sanderson at the Francis Crick Institute.
+Taxonium development was initiated and is led by Theo Sanderson at the Francis Crick Institute.
 
 <table>
   <tr>
@@ -78,6 +78,7 @@ We are very grateful to our contributors:
 <table>
   <tr>
     <td align="center"><a href="http://theo.io"><img src="https://avatars.githubusercontent.com/u/19732295?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Theo Sanderson</b></sub></a><br /><a href="https://github.com/theosanderson/taxonium/commits?author=theosanderson" title="Code">💻</a> <a href="https://github.com/theosanderson/taxonium/commits?author=theosanderson" title="Documentation">📖</a> <a href="#design-theosanderson" title="Design">🎨</a> <a href="#ideas-theosanderson" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-theosanderson" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-theosanderson" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/amkram"><img src="https://avatars.githubusercontent.com/u/6502785?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Kramer</b></sub></a><br /><a href="https://github.com/theosanderson/taxonium/commits?author=amkram" title="Code">💻</a> <a href="#design-amkram" title="Design">🎨</a> <a href="#ideas-amkram" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://genome.ucsc.edu/"><img src="https://avatars.githubusercontent.com/u/186983?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Angie Hinrichs</b></sub></a><br /><a href="#ideas-AngieHinrichs" title="Ideas, Planning, & Feedback">🤔</a> <a href="#data-AngieHinrichs" title="Data">🔣</a></td>
     <td align="center"><a href="https://github.com/richardgoater"><img src="https://avatars.githubusercontent.com/u/1429721?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Richard Goater</b></sub></a><br /><a href="#design-richardgoater" title="Design">🎨</a> <a href="https://github.com/theosanderson/taxonium/commits?author=richardgoater" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/chaoran-chen"><img src="https://avatars.githubusercontent.com/u/18666552?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Chaoran Chen</b></sub></a><br /><a href="#ideas-chaoran-chen" title="Ideas, Planning, & Feedback">🤔</a></td>

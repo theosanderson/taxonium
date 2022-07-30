@@ -149,6 +149,22 @@ function useServerBackend(backend_url, sid, url_on_fail) {
     [backend_url, sid]
   );
 
+  const getNextstrainJsonUrl = useCallback(
+    (nodeId, config) => {
+      return backend_url + "/nextstrain_json/" + nodeId;
+    },
+    [backend_url]
+  );
+
+  const getNextstrainJson = useCallback(
+    (nodeId, config) => {
+      const url = getNextstrainJsonUrl(nodeId, config);
+      // load this
+      window.location.href = url;
+    },
+    [getNextstrainJsonUrl]
+  );
+
   return useMemo(() => {
     return {
       queryNodes,
@@ -158,6 +174,10 @@ function useServerBackend(backend_url, sid, url_on_fail) {
       setStatusMessage,
       statusMessage,
       getTipAtts,
+      type: "server",
+      backend_url: backend_url,
+      getNextstrainJson,
+      getNextstrainJsonUrl,
     };
   }, [
     queryNodes,
@@ -167,6 +187,9 @@ function useServerBackend(backend_url, sid, url_on_fail) {
     setStatusMessage,
     statusMessage,
     getTipAtts,
+    backend_url,
+    getNextstrainJson,
+    getNextstrainJsonUrl,
   ]);
 }
 
