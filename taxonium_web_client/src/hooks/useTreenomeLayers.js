@@ -54,7 +54,7 @@ const useTreenomeLayers = (
     return aaWidth / 3;
   }, [aaWidth]);
   const cov2Genes = useMemo(() => {
-    if (settings.isCov2tree) {
+    if (settings.isCov2Tree) {
       return {
         // [start, end, [color]]
         ORF1a: [266, 13469, [142, 188, 102]],
@@ -74,7 +74,7 @@ const useTreenomeLayers = (
     } else {
       return null;
     }
-  }, [settings.isCov2tree]);
+  }, [settings.isCov2Tree]);
 
   let layers = [];
 

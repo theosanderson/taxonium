@@ -194,7 +194,6 @@ function JBrowsePanel(props) {
     };
   }, [props.settings.isCov2Tree]);
 
-  console.log("Herer1");
   const theme = useMemo(() => {
     return {
       configuration: {
@@ -217,7 +216,6 @@ function JBrowsePanel(props) {
       },
     };
   }, []);
-  console.log("Herer2");
 
   const state = useMemo(
     () =>
@@ -254,10 +252,6 @@ function JBrowsePanel(props) {
     [assembly, tracks, props.settings.isCov2Tree, defaultSession, theme]
   );
   // TODO: Adding treenomState as dependency above breaks things
-
-  console.log("assembly", assembly);
-  console.log("tracks", tracks);
-  console.log("defaultSession", defaultSession);
 
   useEffect(() => {
     if (!props.treenomeState.ntBoundsExt) {
