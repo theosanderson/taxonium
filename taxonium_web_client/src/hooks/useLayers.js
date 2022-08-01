@@ -25,7 +25,7 @@ const useLayers = ({
   config,
   treenomeState,
   reference,
-  setReference
+  setReference,
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -34,8 +34,9 @@ const useLayers = ({
 
   const layers = [];
 
-    // Treenome Browser layers
-  const treenomeLayers = useTreenomeLayers( treenomeState,
+  // Treenome Browser layers
+  const treenomeLayers = useTreenomeLayers(
+    treenomeState,
     data,
     viewState,
     colorHook,
@@ -44,9 +45,9 @@ const useLayers = ({
     reference,
     setReference,
     selectedDetails,
-    modelMatrix);
+    modelMatrix
+  );
   layers.push(...treenomeLayers);
-  
 
   const getX = useCallback((node) => node[xType], [xType]);
 
@@ -476,7 +477,6 @@ const useLayers = ({
   layers.push(minimap_polygon_background);
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
   layers.push(minimap_bound_polygon);
-
 
   const layerFilter = useCallback(
     ({ layer, viewport, renderPass }) => {

@@ -1,4 +1,3 @@
-
 const pre_order = (nodes) => {
   let to_children = {};
   let root_id = null;
@@ -28,30 +27,30 @@ const pre_order = (nodes) => {
   return po;
 };
 
-
 const computeFilteredVariationData = (variation_data, ntBounds, data) => {
-  if (!data.data || !data.data.nodes || !(variation_data)) {
+  if (!data.data || !data.data.nodes || !variation_data) {
     return [];
   }
   if (data.data.nodes.length < 10000 || ntBounds[1] - ntBounds[0] < 1000) {
     return variation_data;
   } else {
-    console.log("FILTERING")
-    return variation_data.filter((d) => (d.y[1] - d.y[0]) > .002)
+    console.log("FILTERING");
+    return variation_data.filter((d) => d.y[1] - d.y[0] > 0.002);
   }
-}
+};
 
 const computeYSpan = (preorder_nodes, lookup, root) => {
-
   let yspan = {};
-  for (let i = preorder_nodes.length - 1; i >= 0; i--) { // post order
+  for (let i = preorder_nodes.length - 1; i >= 0; i--) {
+    // post order
     let node = lookup[preorder_nodes[i]];
     if (node.node_id === root) {
       continue;
     }
     let parent = node.parent_id;
 
-    if (!yspan[node.node_id]) { // Leaf 
+    if (!yspan[node.node_id]) {
+      // Leaf
       yspan[node.node_id] = [node.y, node.y];
     }
     let cur_yspan = yspan[node.node_id];
@@ -68,12 +67,12 @@ const computeYSpan = (preorder_nodes, lookup, root) => {
     }
   }
   return yspan;
-}
+};
 
 const computeVariationData = async (data, type, ntBounds, jobId) => {
   // compute in chunks starting at memoIndex
-  let blank = [[], {}, false]
-  let ref = { 'aa': {}, 'nt': {} };
+  let blank = [[], {}, false];
+  let ref = { aa: {}, nt: {} };
   let shouldCache = false;
   let nodes = null;
   let lookup = null;
@@ -99,10 +98,10 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
   const preorder_nodes = pre_order(nodes);
   const root = preorder_nodes.find((id) => id === lookup[id].parent_id);
   for (let mut of lookup[root].mutations) {
-    if (mut.gene === 'nt') {
-      ref['nt'][mut.residue_pos] = mut.new_residue
+    if (mut.gene === "nt") {
+      ref["nt"][mut.residue_pos] = mut.new_residue;
     } else {
-      ref['aa'][mut.gene + ':' + mut.residue_pos] = mut.new_residue;
+      ref["aa"][mut.gene + ":" + mut.residue_pos] = mut.new_residue;
     }
   }
 
@@ -110,56 +109,74 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
   const yspan = computeYSpan(preorder_nodes, lookup, root);
   let var_data = [];
 
-  for (let memoIndex = 0; memoIndex < preorder_nodes.length + chunkSize; memoIndex += chunkSize) {
-    
+  for (
+    let memoIndex = 0;
+    memoIndex < preorder_nodes.length + chunkSize;
+    memoIndex += chunkSize
+  ) {
     let this_var_data = [];
     let i;
-    for (i = memoIndex; i < Math.min(memoIndex + chunkSize, preorder_nodes.length); i++) {
-      
+    for (
+      i = memoIndex;
+      i < Math.min(memoIndex + chunkSize, preorder_nodes.length);
+      i++
+    ) {
       const node = lookup[preorder_nodes[i]];
       if (node.node_id === root) {
         continue;
       }
       for (let mut of node.mutations) {
-        if ((mut.gene === 'nt' && type === 'nt') || (mut.gene !== 'nt' && type === 'aa')) {
+        if (
+          (mut.gene === "nt" && type === "nt") ||
+          (mut.gene !== "nt" && type === "aa")
+        ) {
           this_var_data.push({
             y: yspan[node.node_id],
-            m: mut
+            m: mut,
           });
         }
       }
     }
     var_data.push(...this_var_data);
-    let filteredVarData = computeFilteredVariationData(var_data, ntBounds, data);
+    let filteredVarData = computeFilteredVariationData(
+      var_data,
+      ntBounds,
+      data
+    );
     if (i === preorder_nodes.length && shouldCache) {
       postMessage({
-        type: type === 'aa' ? "variation_data_return_cache_aa" : "variation_data_return_cache_nt",
+        type:
+          type === "aa"
+            ? "variation_data_return_cache_aa"
+            : "variation_data_return_cache_nt",
         filteredVarData: filteredVarData,
         reference: ref,
-        jobId: jobId
+        jobId: jobId,
       });
     } else {
       postMessage({
-        type: type === 'aa' ? "variation_data_return_aa" : "variation_data_return_nt",
+        type:
+          type === "aa"
+            ? "variation_data_return_aa"
+            : "variation_data_return_nt",
         filteredVarData: filteredVarData,
         reference: ref,
-        jobId: jobId
+        jobId: jobId,
       });
     }
   }
-}
+};
 
 onmessage = async (event) => {
-
   if (!event.data) {
     return;
   }
-  let ntBounds, jobId, data
+  let ntBounds, jobId, data;
   ({ ntBounds, jobId, data } = event.data);
 
   if (event.data.type === "variation_data_aa") {
-    computeVariationData(data, 'aa', ntBounds, jobId);
+    computeVariationData(data, "aa", ntBounds, jobId);
   } else if (event.data.type === "variation_data_nt") {
-    computeVariationData(data, 'nt', ntBounds, jobId);
+    computeVariationData(data, "nt", ntBounds, jobId);
   }
-}
+};
