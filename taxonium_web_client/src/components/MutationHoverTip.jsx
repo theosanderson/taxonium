@@ -1,4 +1,11 @@
-const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config, reference }) => {
+const MutationHoverTip = ({
+  hoverInfo,
+  hoverDetails,
+  colorHook,
+  colorBy,
+  config,
+  reference,
+}) => {
   if (!hoverInfo || !reference) {
     return null;
   }
@@ -7,11 +14,10 @@ const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config,
   if (!hoveredMutation || !hoveredMutation.m) {
     return null;
   }
-  const posKey = hoveredMutation.m.gene + ':' + hoveredMutation.m.residue_pos;
-  if (hoveredMutation.m.new_residue === reference['aa'][posKey]) {
+  const posKey = hoveredMutation.m.gene + ":" + hoveredMutation.m.residue_pos;
+  if (hoveredMutation.m.new_residue === reference["aa"][posKey]) {
     return null;
   }
-
 
   return (
     <div
@@ -24,25 +30,17 @@ const MutationHoverTip = ({ hoverInfo, hoverDetails, colorHook, colorBy, config,
         top: hoverInfo.y,
       }}
     >
-      <h2 className="font-bold whitespace-pre-wrap">
-      </h2>
+      <h2 className="font-bold whitespace-pre-wrap"></h2>
       <div>
         <div className="mutations text-xs">
           <div className="inline-block">
             <span>{hoveredMutation.m.gene}:</span>
-            <span style={{}}>
-              {reference['aa'][posKey]}
-            </span>
+            <span style={{}}>{reference["aa"][posKey]}</span>
             <span>{hoveredMutation.m.residue_pos}</span>
-            <span style={{}}>
-              {hoveredMutation.m.new_residue}
-            </span>
-
+            <span style={{}}>{hoveredMutation.m.new_residue}</span>
           </div>
-
         </div>
       </div>
-
     </div>
   );
 };

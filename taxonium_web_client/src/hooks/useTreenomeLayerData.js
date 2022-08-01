@@ -1,9 +1,11 @@
 import { useCallback, useMemo, useEffect, useState } from "react";
 
-
-
-const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) => {
-
+const useTreenomeLayerData = (
+  data,
+  treenomeState,
+  settings,
+  selectedDetails
+) => {
   const [varDataAa, setVarDataAa] = useState([]);
   const [varDataNt, setVarDataNt] = useState([]);
   const [numNodes, setNumNodes] = useState(0);
@@ -13,56 +15,80 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
   const [didFirstAa, setDidFirstAa] = useState(false);
   const [didFirstNt, setDidFirstNt] = useState(false);
 
-  const [currentJobId, setCurrentJobId] = useState(null)
-  const worker = useMemo(() => new Worker(new URL("../webworkers/treenomeWorker.js", import.meta.url)), []);
+  const [currentJobId, setCurrentJobId] = useState(null);
+  const worker = useMemo(
+    () =>
+      new Worker(new URL("../webworkers/treenomeWorker.js", import.meta.url)),
+    []
+  );
 
-  worker.onmessage = useCallback((e) => {
-    if (!reference && e.data.reference) {
-      setReference(e.data.reference)
-    }
+  worker.onmessage = useCallback(
+    (e) => {
+      if (!reference && e.data.reference) {
+        setReference(e.data.reference);
+      }
 
-    if (e.data.type === "variation_data_return_cache_aa") {
-      setCachedVarDataAa(e.data.filteredVarData)
-      setVarDataAa(e.data.filteredVarData);
-    } else if (e.data.type === "variation_data_return_aa") {
-      setVarDataAa(e.data.filteredVarData)
-    } else if (e.data.type === "variation_data_return_cache_nt") {
-      setCachedVarDataNt(e.data.filteredVarData)
-      setVarDataNt(e.data.filteredVarData);
-    } else if (e.data.type === "variation_data_return_nt") {
-      setVarDataNt(e.data.filteredVarData)
-    }
-  }, [reference, setReference, setVarDataAa, setVarDataNt, setCachedVarDataAa, setCachedVarDataNt])
+      if (e.data.type === "variation_data_return_cache_aa") {
+        setCachedVarDataAa(e.data.filteredVarData);
+        setVarDataAa(e.data.filteredVarData);
+      } else if (e.data.type === "variation_data_return_aa") {
+        setVarDataAa(e.data.filteredVarData);
+      } else if (e.data.type === "variation_data_return_cache_nt") {
+        setCachedVarDataNt(e.data.filteredVarData);
+        setVarDataNt(e.data.filteredVarData);
+      } else if (e.data.type === "variation_data_return_nt") {
+        setVarDataNt(e.data.filteredVarData);
+      }
+    },
+    [
+      reference,
+      setReference,
+      setVarDataAa,
+      setVarDataNt,
+      setCachedVarDataAa,
+      setCachedVarDataNt,
+    ]
+  );
 
   useEffect(() => {
-
-
     if (!(data.data && data.data.nodes)) {
       return;
     }
 
-    if (!didFirstAa && data.data && data.data.nodes && treenomeState.genomeSize > 0 &&
-      treenomeState.ntBounds[0] === 0 && treenomeState.ntBounds[1] === treenomeState.genomeSize) {
+    if (
+      !didFirstAa &&
+      data.data &&
+      data.data.nodes &&
+      treenomeState.genomeSize > 0 &&
+      treenomeState.ntBounds[0] === 0 &&
+      treenomeState.ntBounds[1] === treenomeState.genomeSize
+    ) {
       if (settings.mutationTypesEnabled.aa) {
         const jobId = data.data.nodes.length;
         worker.postMessage({
           type: "variation_data_aa",
           data: data,
           jobId: jobId,
-          ntBounds: treenomeState.ntBounds
+          ntBounds: treenomeState.ntBounds,
         });
       }
-      setDidFirstAa(true)
+      setDidFirstAa(true);
     }
-    if (!didFirstNt && data.data && data.data.nodes && treenomeState.genomeSize > 0 &&
-      treenomeState.ntBounds[0] === 0 && treenomeState.ntBounds[1] === treenomeState.genomeSize) {
+    if (
+      !didFirstNt &&
+      data.data &&
+      data.data.nodes &&
+      treenomeState.genomeSize > 0 &&
+      treenomeState.ntBounds[0] === 0 &&
+      treenomeState.ntBounds[1] === treenomeState.genomeSize
+    ) {
       if (settings.mutationTypesEnabled.nt) {
         const jobId = data.data.nodes.length;
         worker.postMessage({
           type: "variation_data_nt",
           data: data,
           jobId: jobId,
-          ntBounds: treenomeState.ntBounds
+          ntBounds: treenomeState.ntBounds,
         });
       }
       setDidFirstNt(true);
@@ -80,13 +106,13 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
       }
       if (settings.mutationTypesEnabled.aa && cachedVarDataAa.length > 0) {
         if (cachedVarDataNt.length > 0 || !settings.mutationTypesEnabled.nt) {
-          setNumNodes(data.data.nodes.length)
+          setNumNodes(data.data.nodes.length);
           return;
         }
       }
       if (settings.mutationTypesEnabled.nt && cachedVarDataNt.length > 0) {
         if (cachedVarDataAa.length > 0 || !settings.mutationTypesEnabled.aa) {
-          setNumNodes(data.data.nodes.length)
+          setNumNodes(data.data.nodes.length);
           return;
         }
       }
@@ -108,7 +134,7 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
       }
     }
     // full computation
-    setNumNodes(data.data.nodes.length)
+    setNumNodes(data.data.nodes.length);
     let jobId = data.data.nodes.length;
     if (!skipAa) {
       if (settings.mutationTypesEnabled.aa) {
@@ -116,7 +142,7 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
           type: "variation_data_aa",
           data: data,
           jobId: jobId,
-          ntBounds: treenomeState.ntBounds
+          ntBounds: treenomeState.ntBounds,
         });
       }
     }
@@ -126,13 +152,30 @@ const useTreenomeLayerData = (data, treenomeState, settings, selectedDetails) =>
           type: "variation_data_nt",
           data: data,
           jobId: jobId,
-          ntBounds: treenomeState.ntBounds
+          ntBounds: treenomeState.ntBounds,
         });
       }
     }
-  }, [data.data, numNodes, settings.treenomeEnabled, varDataAa, varDataNt, worker, settings.mutationTypesEnabled, treenomeState.ntBounds, currentJobId, setCurrentJobId, cachedVarDataAa, cachedVarDataNt, data, didFirstAa, treenomeState.genomeSize, didFirstNt]);
+  }, [
+    data.data,
+    numNodes,
+    settings.treenomeEnabled,
+    varDataAa,
+    varDataNt,
+    worker,
+    settings.mutationTypesEnabled,
+    treenomeState.ntBounds,
+    currentJobId,
+    setCurrentJobId,
+    cachedVarDataAa,
+    cachedVarDataNt,
+    data,
+    didFirstAa,
+    treenomeState.genomeSize,
+    didFirstNt,
+  ]);
 
-  return [varDataAa, varDataNt, reference]
-}
+  return [varDataAa, varDataNt, reference];
+};
 
 export default useTreenomeLayerData;

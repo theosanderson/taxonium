@@ -70,9 +70,9 @@ const NodeHoverTip = ({
   }
 
   return (
-
     <div
-      className="bg-gray-100 p-3 opacity-90 text-sm" style={{
+      className="bg-gray-100 p-3 opacity-90 text-sm"
+      style={{
         ...style,
       }}
     >
