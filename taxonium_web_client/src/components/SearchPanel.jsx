@@ -278,46 +278,50 @@ function SearchPanel({
             </Select>
           </label>
         )}
-        <span>
-          <span className="text-gray-500 text-sm">Treenome Browser:</span>
-          <input
-            name="treenomeEnabled"
-            style={{ verticalAlign: "middle" }}
-            type="checkbox"
-            className="m-3 inline-block"
-            checked={settings.treenomeEnabled}
-            onChange={(event) => {
-              console.log(settings.treenomeEnabled);
-              settings.setTreenomeEnabled(!settings.treenomeEnabled);
-              view.setViewState({
-                zoom: -2,
-                target: [window.screen.width < 600 ? 500 : 1400, 1000],
-                pitch: 0,
-                bearing: 0,
-                minimap: { zoom: -3, target: [250, 1000] },
-                "browser-main": { zoom: -2, target: [0, 1000] },
-                "browser-axis": { zoom: -2, target: [0, 1000] },
-              });
-            }}
-          />
-          <button
-            style={{ cursor: "default" }}
-            data-tip="Display each genome's mutations alongside the tree.&nbsp;<a href='' class='tooltipLink'>Learn more</a>"
-            data-html={true}
-          >
-            <span style={{ display: "inline-block", verticalAlign: "middle" }}>
-              <BsQuestionCircle />
-            </span>
-          </button>
-          <ReactTooltip
-            delayHide={400}
-            className="infoTooltip"
-            place="top"
-            backgroundColor="#e5e7eb"
-            textColor="#000"
-            effect="solid"
-          />
-        </span>
+        {treenomeState.genome && treenomeState.genome.length > 0 && (
+          <span>
+            <span className="text-gray-500 text-sm">Treenome Browser:</span>
+            <input
+              name="treenomeEnabled"
+              style={{ verticalAlign: "middle" }}
+              type="checkbox"
+              className="m-3 inline-block"
+              checked={settings.treenomeEnabled}
+              onChange={(event) => {
+                console.log(settings.treenomeEnabled);
+                settings.setTreenomeEnabled(!settings.treenomeEnabled);
+                view.setViewState({
+                  zoom: -2,
+                  target: [window.screen.width < 600 ? 500 : 1400, 1000],
+                  pitch: 0,
+                  bearing: 0,
+                  minimap: { zoom: -3, target: [250, 1000] },
+                  "browser-main": { zoom: -2, target: [0, 1000] },
+                  "browser-axis": { zoom: -2, target: [0, 1000] },
+                });
+              }}
+            />
+            <button
+              style={{ cursor: "default" }}
+              data-tip="Display each genome's mutations alongside the tree.&nbsp;<a href='' class='tooltipLink'>Learn more</a>"
+              data-html={true}
+            >
+              <span
+                style={{ display: "inline-block", verticalAlign: "middle" }}
+              >
+                <BsQuestionCircle />
+              </span>
+            </button>
+            <ReactTooltip
+              delayHide={400}
+              className="infoTooltip"
+              place="top"
+              backgroundColor="#e5e7eb"
+              textColor="#000"
+              effect="solid"
+            />
+          </span>
+        )}
       </div>
       <div className="py-3 space-y-2">
         <div className="flex space-x-2">

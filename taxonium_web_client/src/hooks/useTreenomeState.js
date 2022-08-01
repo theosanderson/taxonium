@@ -1,165 +1,175 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 
-const useTreenomeState = (
-    data,
-    deckRef,
-    view,
-    settings
-) => {
-    const [yBounds, setYBounds] = useState([0, 0]);
-    const [xBounds, setXbounds] = useState([0, 0]);
-    const [pxPerBp, setPxPerBp] = useState(0);
-    const [bpWidth, setBpWidth] = useState(0);
-    const [isCov2Tree, setIsCov2Tree] = useState(false);
+const useTreenomeState = (data, deckRef, view, settings) => {
+  const [yBounds, setYBounds] = useState([0, 0]);
+  const [xBounds, setXbounds] = useState([0, 0]);
+  const [pxPerBp, setPxPerBp] = useState(0);
+  const [bpWidth, setBpWidth] = useState(0);
 
-    const [genomeSize, setGenomeSize] = useState(0);
-    const [genome, setGenome] = useState(null);
+  const [genomeSize, setGenomeSize] = useState(0);
+  const [genome, setGenome] = useState(null);
 
-    const chromosomeName = useMemo(() => {
-        return isCov2Tree ? 'NC_045512v2' : 'chromosome';
-    }, [isCov2Tree])
+  const chromosomeName = useMemo(() => {
+    return settings.isCov2Tree ? "NC_045512v2" : "chromosome";
+  }, [settings.isCov2Tree]);
 
-    useEffect(() => {
-        if ((genomeSize && genomeSize > 0) || !data || !data.base_data || !data.base_data.nodes) {
-            return;
+  useEffect(() => {
+    if (
+      (genomeSize && genomeSize > 0) ||
+      !data ||
+      !data.base_data ||
+      !data.base_data.nodes
+    ) {
+      return;
+    }
+    const nodes = data.base_data.nodes;
+    for (let node of nodes) {
+      if (node.parent_id === node.node_id) {
+        let size = 0;
+        let genome = "";
+        for (let mut of node.mutations) {
+          if (mut.gene === "nt") {
+            size += 1;
+            genome += mut.new_residue;
+          }
         }
-        const nodes = data.base_data.nodes;
-        for (let node of nodes) {
-            if (node.parent_id === node.node_id) {
-                let size = 0;
-                let genome = '';
-                for (let mut of node.mutations) {
-                    if (mut.gene === 'nt') {
-                        size += 1;
-                        genome += mut.new_residue;
-                    }
-                }
-                setGenomeSize(size);
-                setGenome(genome);
-            }
-        }
-    }, [setGenomeSize, genomeSize, genome, setGenome, data]);
+        setGenomeSize(size);
+        setGenome(genome);
+      }
+    }
+  }, [setGenomeSize, genomeSize, genome, setGenome, data]);
 
+  const [ntBounds, setNtBounds] = useState([0, genomeSize]);
 
-    useEffect(() => {
-        if (window.location.href.includes("cov2tree.org")) {
-            setIsCov2Tree(true);
-        }
-    }, [])
+  useEffect(() => {
+    if (!data.data || !data.data.nodes || !settings.treenomeEnabled) {
+      return;
+    }
+    const bounds = [0, 0];
+    for (let node of data.data.nodes) {
+      if (node.y < bounds[0]) {
+        bounds[0] = node.y;
+      }
+      if (node.y > bounds[1]) {
+        bounds[1] = node.y;
+      }
+    }
+    setYBounds(bounds);
+  }, [data.data, settings.treenomeEnabled]);
 
-    const [ntBounds, setNtBounds] = useState([0, genomeSize]);
+  const handleResize = useCallback(() => {
+    console.log("calling handleResize");
+    console.log(deckRef.current, settings.treenomeEnabled);
+    if (
+      !deckRef.current ||
+      !deckRef.current.deck ||
+      !deckRef.current.deck.viewManager ||
+      !settings.treenomeEnabled
+    ) {
+      return;
+    }
+    console.log("here in handleResize");
+    const tempViewState = { ...view.viewState };
+    console.log("tempViewState", tempViewState);
+    view.setViewState(view.baseViewState);
+    console.log("baseViewState", view.baseViewState);
+    const vp = {
+      ...deckRef.current.deck.getViewports()[1],
+    };
+    console.log("unprojecting:::resize");
+    vp && setXbounds([vp.unproject([0, 0])[0], vp.unproject([vp.width, 0])[0]]);
 
-    useEffect(() => {
-        if (!data.data || !data.data.nodes || !settings.treenomeEnabled) {
-            return;
-        }
-        const bounds = [0, 0];
-        for (let node of data.data.nodes) {
-            if (node.y < bounds[0]) {
-                bounds[0] = node.y;
-            }
-            if (node.y > bounds[1]) {
-                bounds[1] = node.y;
-            }
-        }
-        setYBounds(bounds);
-    }, [data.data, settings.treenomeEnabled]);
+    view.setViewState(tempViewState);
+    console.log("back to ", view.viewState);
+  }, [deckRef, setXbounds, view, settings.treenomeEnabled]);
 
-    
-    const handleResize = useCallback(() => {
-        console.log("calling handleResize");
-        console.log(deckRef.current, settings.treenomeEnabled);
-        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.treenomeEnabled) {
-            return;
-        }
-        console.log("here in handleResize");
-        const tempViewState = {...view.viewState};
-        console.log("tempViewState", tempViewState);
-        view.setViewState(view.baseViewState);
-        console.log("baseViewState", view.baseViewState);
-        const vp = {
-                ...deckRef.current.deck.getViewports()[1],
-            }
-            console.log("unprojecting:::resize")
-            vp && setXbounds([vp.unproject([0, 0])[0], vp.unproject([vp.width, 0])[0]]);
+  useEffect(() => {
+    if (!settings.treenomeEnabled) {
+      setJbrowseLoaded(false);
+      setHandled(false);
+    }
+  }, [settings.treenomeEnabled]);
 
-        view.setViewState(tempViewState);
-        console.log("back to ", view.viewState);
-        
-       
- 
-    }, [deckRef, setXbounds, view, settings.treenomeEnabled]);
+  const [jbrowseLoaded, setJbrowseLoaded] = useState(false);
+  const [handled, setHandled] = useState(false);
+  useEffect(() => {
+    if (jbrowseLoaded && !handled) {
+      console.log("handle resize");
+      window.setTimeout(() => {
+        handleResize();
+      }, 200);
+      setHandled(true);
+    }
+  }, [jbrowseLoaded, handleResize, setHandled, handled]);
 
-    useEffect(() => {
-        if(!settings.treenomeEnabled) {
-            setJbrowseLoaded(false);
-            setHandled(false)
-        }
-    }, [settings.treenomeEnabled]);
+  useEffect(() => {
+    const observer = new MutationObserver(function (
+      mutations,
+      mutationInstance
+    ) {
+      const jbrowse = document.getElementById("view-browser-axis");
+      if (jbrowse) {
+        console.log("set jbrowse loaded");
+        setJbrowseLoaded(jbrowse);
+        mutationInstance.disconnect();
+      }
+    });
 
-    const [jbrowseLoaded, setJbrowseLoaded] = useState(false);
-    const [handled, setHandled] = useState(false);
-    useEffect(() => {
-        if (jbrowseLoaded && !handled) {
-            console.log("handle resize")
-            window.setTimeout(() => {
-                handleResize();
-            }, 200);
-            setHandled(true);
-        }
-    }, [jbrowseLoaded, handleResize, setHandled, handled]);
+    observer.observe(document, {
+      childList: true,
+      subtree: true,
+    });
+  }, []);
 
-    useEffect(() => {
-        const observer = new MutationObserver(function (mutations, mutationInstance) {
-            const jbrowse = document.getElementById('view-browser-axis');
-            if (jbrowse) {
-                console.log("set jbrowse loaded");
-                setJbrowseLoaded(jbrowse);
-                mutationInstance.disconnect();
-            }
-        });
-        
-        observer.observe(document, {
-            childList: true,
-            subtree:   true
-        });
-    }, []);
+  useEffect(() => {
+    if (
+      !deckRef.current ||
+      !deckRef.current.deck ||
+      !deckRef.current.deck.viewManager ||
+      !settings.treenomeEnabled
+    ) {
+      return;
+    }
+    const vp = {
+      ...deckRef.current.deck.getViewports()[1],
+    };
 
+    if (pxPerBp) {
+      console.log("thisone");
 
-    useEffect(() => {
-        if (!deckRef.current || !deckRef.current.deck || !deckRef.current.deck.viewManager || !settings.treenomeEnabled) {
-            return;
-        }
-        const vp = {
-            ...deckRef.current.deck.getViewports()[1],
-     
-            }
-        
-        if (pxPerBp) {
-            console.log('thisone')
+      setBpWidth(vp.unproject([pxPerBp, 0])[0] - vp.unproject([0, 0])[0]);
+    }
+  }, [deckRef, pxPerBp, settings.treenomeEnabled]);
 
-            setBpWidth(vp.unproject([pxPerBp, 0])[0] - vp.unproject([0, 0])[0]);
-        }
-    }, [deckRef, pxPerBp, settings.treenomeEnabled]);
+  const state = useMemo(() => {
+    return {
+      xBounds,
+      yBounds,
+      ntBounds,
+      setNtBounds,
+      pxPerBp,
+      setPxPerBp,
+      bpWidth,
+      handleResize,
+      genome,
+      genomeSize,
+      chromosomeName,
+    };
+  }, [
+    xBounds,
+    yBounds,
+    ntBounds,
+    setNtBounds,
+    pxPerBp,
+    setPxPerBp,
+    bpWidth,
+    handleResize,
+    genome,
+    genomeSize,
+    chromosomeName,
+  ]);
 
-    const state = useMemo(() => {
-        return {
-            xBounds,
-            yBounds,
-            ntBounds,
-            setNtBounds,
-            pxPerBp,
-            setPxPerBp,
-            bpWidth,
-            handleResize,
-            isCov2Tree,
-            genome,
-            genomeSize,
-            chromosomeName
-        }
-    }, [xBounds, yBounds, ntBounds, setNtBounds, pxPerBp, setPxPerBp, bpWidth, handleResize, isCov2Tree, genome, genomeSize, chromosomeName]);
-
-    return state;
+  return state;
 };
 
 export default useTreenomeState;

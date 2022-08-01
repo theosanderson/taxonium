@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 export const useSettings = ({ query, updateQuery }) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
@@ -21,17 +21,16 @@ export const useSettings = ({ query, updateQuery }) => {
   const treenomeEnabled = useMemo(() => {
     return JSON.parse(query.treenomeEnabled);
   }, [query.treenomeEnabled]);
-  
-  const setTreenomeEnabled = useCallback((value) => {
-    updateQuery({ treenomeEnabled: value });
-    toast(
-      `Treenome Browser is now ${
-        value ? "enabled" : "disabled"
-      }`,
-      {
+
+  const setTreenomeEnabled = useCallback(
+    (value) => {
+      updateQuery({ treenomeEnabled: value });
+      toast(`Treenome Browser is now ${value ? "enabled" : "disabled"}`, {
         position: "bottom-center",
       });
-  }, [updateQuery]);
+    },
+    [updateQuery]
+  );
 
   const filterMutations = useCallback(
     (mutations) => {
@@ -49,7 +48,6 @@ export const useSettings = ({ query, updateQuery }) => {
       mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
     });
   };
-
 
   const [maxCladeTexts, setMaxCladeTexts] = useState(10);
 
@@ -84,6 +82,14 @@ export const useSettings = ({ query, updateQuery }) => {
       </div>
     );
   };
+
+  const [isCov2Tree, setIsCov2Tree] = useState(false);
+  useEffect(() => {
+    if (window.location.href.includes("cov2tree.org")) {
+      setIsCov2Tree(true);
+    }
+  }, []);
+
   return {
     minimapEnabled,
     treenomeEnabled,
@@ -101,5 +107,6 @@ export const useSettings = ({ query, updateQuery }) => {
     maxCladeTexts,
     setMaxCladeTexts,
     miniMutationsMenu,
+    isCov2Tree,
   };
 };

@@ -56,7 +56,10 @@ function Deck({
   } = view;
 
   // Treenome state
-  const setMouseXY = useCallback((info) => view.setMouseXY([info.x, info.y]), [view]);
+  const setMouseXY = useCallback(
+    (info) => view.setMouseXY([info.x, info.y]),
+    [view]
+  );
   const [reference, setReference] = useState(null);
 
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
@@ -130,7 +133,14 @@ function Deck({
         });
       }
     },
-    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, xzoom, deckRef]
+    [
+      selectedDetails,
+      mouseDownIsMinimap,
+      viewState,
+      onViewStateChange,
+      xzoom,
+      deckRef,
+    ]
   );
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
@@ -168,7 +178,7 @@ function Deck({
     config,
     treenomeState,
     reference,
-    setReference
+    setReference,
   });
   // console.log("deck refresh");
 
@@ -232,7 +242,6 @@ function Deck({
           </div>
         </div>
       )}{" "}
-      
       <DeckSettingsModal
         deckSettingsOpen={deckSettingsOpen}
         setDeckSettingsOpen={setDeckSettingsOpen}
@@ -262,9 +271,17 @@ function Deck({
         }}
       >
         <View id="browser-axis">
-          <div style={{ width: "100%", height: "100%", border: "1px solid black" , position: "relative", zIndex: 1}}>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "1px solid black",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
             <span ref={jbrowseRef}>
-              <JBrowsePanel treenomeState={treenomeState}/>
+              <JBrowsePanel treenomeState={treenomeState} settings={settings} />
             </span>
           </div>
         </View>
@@ -279,13 +296,13 @@ function Deck({
             deckSize={deckSize}
           />
           <MutationHoverTip
-              hoverInfo={hoverInfo}
-              hoverDetails={hoverDetails}
-              colorHook={colorHook}
-              colorBy={colorBy}
-              config={config}
-              reference={reference}
-            />
+            hoverInfo={hoverInfo}
+            hoverDetails={hoverDetails}
+            colorHook={colorHook}
+            colorBy={colorBy}
+            config={config}
+            reference={reference}
+          />
           <DeckButtons
             zoomIncrement={zoomIncrement}
             zoomAxis={zoomAxis}
