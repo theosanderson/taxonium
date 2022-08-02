@@ -38,6 +38,10 @@ Optionally, you can also upload a metadata file with your tree. This file should
     All files supplied to Taxonium can also have .gz extensions, indicating they are gzipped: i.e. tree.nwk.gz, metadata.tsv.gz, taxonium.jsonl.gz
 ```
 
+#### Other supported formats
+
+Taxonium can also display JSONL files containing mutation-annotated trees (discussed below), and JSON files created by [Nextstrain Augur](https://github.com/nextstrain/augur).
+
 ### Viewing the global SARS-CoV-2 tree
 
 We maintain an instance of Taxonium that displays a version of the SARS-CoV-2 global public tree built by the UShER team, at [Cov2Tree.org](http://cov2tree.org).
