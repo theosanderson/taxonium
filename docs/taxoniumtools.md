@@ -35,6 +35,12 @@ You can then open that `tfci-taxonium.jsonl.gz` file at [taxonium.org](http://ta
 Right now Taxoniumtools is limited in the types of genome annotations it can support, for SARS-CoV-2 we recommend using the exact [modified .gb file we use in the example](https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb), which splits ORF1ab into ORF1a and ORF1b to avoid the need to model ribosome slippage.
 ```
 
+
+```{note}
+Some people ask what the "L" in JSONL is for. JSONL means "JSON Lines". Each line of the file is a separate JSON object. In the case of Taxonium JSONL format, the very first line contains a lot of metadata about the tree as a whole, and then each additional line contains information about a single node. It's important to use the "jsonl" extension instead of "json" as otherwise the interface may try to parse your tree as a NextStrain JSON file.
+```
+
+
 ##### usher_to_taxonium
 
 ```{eval-rst}
