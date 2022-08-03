@@ -15,7 +15,7 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
         <div className="m-5">
           <h2 className="font-bold mb-3">Welcome to Taxonium</h2>
           <p className="mb-1">
-            Taxonium is a web application for visualizing phylogenetic trees.
+            Taxonium is a web application for exploring phylogenetic trees.
             Find out more at our{" "}
             <a
               className="text-blue underline"
