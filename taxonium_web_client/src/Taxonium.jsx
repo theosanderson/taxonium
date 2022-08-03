@@ -14,7 +14,12 @@ import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
-import { MdArrowForward, MdArrowBack } from "react-icons/md";
+import {
+  MdArrowForward,
+  MdArrowBack,
+  MdArrowDownward,
+  MdArrowUpward,
+} from "react-icons/md";
 import { useEffect } from "react";
 import { useCallback } from "react";
 
@@ -119,7 +124,7 @@ function Taxonium({
         className={
           sidebarOpen
             ? "h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow"
-            : "md:col-span-12 h-3/6 md:h-full w-full"
+            : "md:col-span-12 h-full md:h-full w-full"
         }
       >
         <Deck
@@ -144,18 +149,30 @@ function Taxonium({
         />
       </div>
 
-      <div className={sidebarOpen ? "" : "bg-white shadow-xl"}>
+      <div
+        className={
+          sidebarOpen
+            ? "flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+            : "bg-white shadow-xl"
+        }
+      >
         <button onClick={toggleSidebar}>
           <br />
           {sidebarOpen ? (
-            <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
-          ) : (
+            window.screen.width > 600 ? (
+              <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
+            ) : (
+              <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle" />
+            )
+          ) : window.screen.width > 600 ? (
             <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
+          ) : (
+            <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
           )}
         </button>
         {sidebarOpen && (
           <SearchPanel
-            className="search-panel flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+            className=""
             backend={backend}
             search={search}
             colorBy={colorBy}
