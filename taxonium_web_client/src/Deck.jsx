@@ -310,6 +310,7 @@ function Deck({
             snapshot={snapshot}
             loading={data.status === "loading"}
             requestOpenSettings={() => setDeckSettingsOpen(true)}
+            settings={settings}
           />
         </View>
       </DeckGL>

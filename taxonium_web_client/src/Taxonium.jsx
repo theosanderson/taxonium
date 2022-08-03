@@ -122,9 +122,10 @@ function Taxonium({
     <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
       <div
         className={
-          sidebarOpen
-            ? "h-1/2 md:h-full w-full md:w-2/3 2xl:w-3/4 md:flex-grow"
-            : "md:col-span-12 h-full md:h-full w-full"
+          (sidebarOpen
+            ? "h-1/2 md:h-full w-full 2xl:w-3/4 md:flex-grow"
+            : "md:col-span-12 h-full md:h-full w-full") +
+          (settings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
         }
       >
         <Deck
@@ -151,9 +152,10 @@ function Taxonium({
 
       <div
         className={
-          sidebarOpen
-            ? "flex-grow min-h-0 h-1/2 md:h-full md:w-1/3 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
-            : "bg-white shadow-xl"
+          (sidebarOpen
+            ? "flex-grow min-h-0 h-1/2 md:h-full 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+            : "bg-white shadow-xl") +
+          (settings.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
         }
       >
         <button onClick={toggleSidebar}>

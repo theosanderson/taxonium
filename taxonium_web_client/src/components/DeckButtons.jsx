@@ -29,12 +29,13 @@ export const DeckButtons = ({
   snapshot,
   zoomIncrement,
   requestOpenSettings,
+  settings,
 }) => {
   return (
     <div
       style={{
         position: "absolute",
-        right: "0.2em",
+        right: settings.treenomeEnabled ? "60%" : "0.2em",
         bottom: "0.2em",
         zIndex: 10,
       }}
