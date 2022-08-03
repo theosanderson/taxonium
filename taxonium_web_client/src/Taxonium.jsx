@@ -144,7 +144,7 @@ function Taxonium({
         />
       </div>
 
-      <div className={sidebarOpen ? "md:w-1/4" : "bg-white shadow-xl"}>
+      <div className={sidebarOpen ? "" : "bg-white shadow-xl"}>
         <button onClick={toggleSidebar}>
           <br />
           {sidebarOpen ? (

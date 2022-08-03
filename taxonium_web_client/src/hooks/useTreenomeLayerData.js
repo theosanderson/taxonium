@@ -175,7 +175,7 @@ const useTreenomeLayerData = (
     didFirstNt,
   ]);
 
-  return [varDataAa, varDataNt, reference];
+  return [varDataAa, varDataNt, reference, cachedVarDataAa, cachedVarDataNt];
 };
 
 export default useTreenomeLayerData;

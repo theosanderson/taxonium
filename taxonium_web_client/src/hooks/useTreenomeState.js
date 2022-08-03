@@ -2,6 +2,7 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 
 const useTreenomeState = (data, deckRef, view, settings) => {
   const [yBounds, setYBounds] = useState([0, 0]);
+  const [baseYBounds, setBaseYBounds] = useState([0, 0]);
   const [xBounds, setXbounds] = useState([0, 0]);
   const [pxPerBp, setPxPerBp] = useState(0);
   const [bpWidth, setBpWidth] = useState(0);
@@ -56,6 +57,22 @@ const useTreenomeState = (data, deckRef, view, settings) => {
     }
     setYBounds(bounds);
   }, [data.data, settings.treenomeEnabled]);
+
+  useEffect(() => {
+    if (!data.base_data || !data.base_data.nodes || !settings.treenomeEnabled) {
+      return;
+    }
+    const bounds = [0, 0];
+    for (let node of data.base_data.nodes) {
+      if (node.y < bounds[0]) {
+        bounds[0] = node.y;
+      }
+      if (node.y > bounds[1]) {
+        bounds[1] = node.y;
+      }
+    }
+    setBaseYBounds(bounds);
+  }, [data.base_data, settings.treenomeEnabled]);
 
   const handleResize = useCallback(() => {
     console.log("calling handleResize");
@@ -154,6 +171,7 @@ const useTreenomeState = (data, deckRef, view, settings) => {
       genome,
       genomeSize,
       chromosomeName,
+      baseYBounds,
     };
   }, [
     xBounds,
@@ -167,6 +185,7 @@ const useTreenomeState = (data, deckRef, view, settings) => {
     genome,
     genomeSize,
     chromosomeName,
+    baseYBounds,
   ]);
 
   return state;

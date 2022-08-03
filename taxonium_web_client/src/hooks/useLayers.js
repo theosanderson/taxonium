@@ -45,7 +45,7 @@ const useLayers = ({
     reference,
     setReference,
     selectedDetails,
-    modelMatrix
+    isCurrentlyOutsideBounds
   );
   layers.push(...treenomeLayers);
 
@@ -486,7 +486,11 @@ const useLayers = ({
         (layer.id.startsWith("fillin") &&
           viewport.id === "main" &&
           isCurrentlyOutsideBounds) ||
-        (layer.id.startsWith("browser") && viewport.id === "browser-main");
+        (layer.id.startsWith("browser-loaded") &&
+          viewport.id === "browser-main") ||
+        (layer.id.startsWith("browser-fillin") &&
+          viewport.id === "browser-main" &&
+          isCurrentlyOutsideBounds);
 
       return first_bit;
     },

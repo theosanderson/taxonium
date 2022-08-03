@@ -78,11 +78,13 @@ const useTreenomeLayers = (
 
   let layers = [];
 
-  const [layerDataAa, layerDataNt, computedReference] = useTreenomeLayerData(
-    data,
-    treenomeState,
-    settings
-  );
+  const [
+    layerDataAa,
+    layerDataNt,
+    computedReference,
+    cachedVarDataAa,
+    cachedVarDataNt,
+  ] = useTreenomeLayerData(data, treenomeState, settings);
   useEffect(() => {
     if (!reference) {
       setReference(computedReference);
@@ -116,9 +118,7 @@ const useTreenomeLayers = (
     [cov2Genes]
   );
 
-  const main_variation_layer_aa = new LineLayer({
-    data: layerDataAa,
-    id: "browser-main-aa",
+  const main_variation_aa_common_props = {
     onHover: (info) => setHoverInfo(info),
     pickable: true,
     getColor: (d) => {
@@ -187,11 +187,19 @@ const useTreenomeLayers = (
       getColor: [reference, colorHook, cov2Genes],
     },
     getPolygonOffset: myGetPolygonOffset,
+  };
+  const main_variation_layer_aa = new LineLayer({
+    ...main_variation_aa_common_props,
+    data: layerDataAa,
+    id: "browser-loaded-main-aa",
+  });
+  const fillin_variation_layer_aa = new LineLayer({
+    ...main_variation_aa_common_props,
+    data: cachedVarDataAa,
+    id: "browser-fillin-aa",
   });
 
-  const main_variation_layer_nt = new LineLayer({
-    data: layerDataNt,
-    id: "browser-main-nt",
+  const main_variation_nt_common_props = {
     onHover: (info) => setHoverInfo(info),
     pickable: true,
     getColor: (d) => {
@@ -261,6 +269,18 @@ const useTreenomeLayers = (
       getColor: [reference, colorHook, cov2Genes],
     },
     getPolygonOffset: myGetPolygonOffset,
+  };
+
+  const main_variation_layer_nt = new LineLayer({
+    ...main_variation_nt_common_props,
+    data: layerDataNt,
+    id: "browser-loaded-main-nt",
+  });
+
+  const fillin_variation_layer_nt = new LineLayer({
+    ...main_variation_nt_common_props,
+    data: cachedVarDataNt,
+    id: "browser-fillin-nt",
   });
 
   const dynamic_background_data = useMemo(() => {
@@ -346,7 +366,7 @@ const useTreenomeLayers = (
   }
 
   const browser_background_layer = new PolygonLayer({
-    id: "browser-background",
+    id: "browser-loaded-background",
 
     data: background_layer_data,
 
@@ -362,7 +382,7 @@ const useTreenomeLayers = (
   });
 
   const dynamic_browser_background_sublayer = new SolidPolygonLayer({
-    id: "browser-dynamic-background-sublayer",
+    id: "browser-loaded-dynamic-background-sublayer",
     data: dynamic_browser_background_data,
     getPolygon: (d) => d.x,
     getFillColor: (d) => d.c,
@@ -371,7 +391,7 @@ const useTreenomeLayers = (
   });
 
   const dynamic_browser_background_layer = new SolidPolygonLayer({
-    id: "browser-dynamic-background",
+    id: "browser-loaded-dynamic-background",
     data: dynamic_background_data,
     modelMatrix: modelMatrixFixedX,
     getPolygon: (d) => d.x,
@@ -379,14 +399,14 @@ const useTreenomeLayers = (
     getPolygonOffset: myGetPolygonOffset,
   });
   const browser_outline_layer = new PolygonLayer({
-    id: "browser-outline",
+    id: "browser-loaded-outline",
     data: [
       {
         x: [
-          [ntToX(0), treenomeState.yBounds[0]],
-          [ntToX(0), treenomeState.yBounds[1]],
-          [ntToX(treenomeState.genomeSize), treenomeState.yBounds[1]],
-          [ntToX(treenomeState.genomeSize), treenomeState.yBounds[0]],
+          [ntToX(0), treenomeState.baseYBounds[0]],
+          [ntToX(0), treenomeState.baseYBounds[1]],
+          [ntToX(treenomeState.genomeSize), treenomeState.baseYBounds[1]],
+          [ntToX(treenomeState.genomeSize), treenomeState.baseYBounds[0]],
         ],
       },
     ],
@@ -402,7 +422,7 @@ const useTreenomeLayers = (
   });
 
   const selected_node_layer = new PolygonLayer({
-    id: "browser-selected-node",
+    id: "browser-loaded-selected-node",
     data: selected_node_data,
     getPolygon: (d) => d.p,
     modelMatrix: modelMatrixFixedX,
@@ -419,9 +439,11 @@ const useTreenomeLayers = (
   layers.push(dynamic_browser_background_layer);
   layers.push(browser_outline_layer);
   if (settings.mutationTypesEnabled.aa) {
+    layers.push(fillin_variation_layer_aa);
     layers.push(main_variation_layer_aa);
   }
   if (settings.mutationTypesEnabled.nt) {
+    layers.push(fillin_variation_layer_nt);
     layers.push(main_variation_layer_nt);
   }
   layers.push(selected_node_layer);
