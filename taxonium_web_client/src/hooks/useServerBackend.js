@@ -58,6 +58,8 @@ function useServerBackend(backend_url, sid, url_on_fail) {
 
   const singleSearch = useCallback(
     (singleSearch, boundsForQueries, setResult) => {
+      const abortController = new AbortController();
+
       let url =
         backend_url +
         "/search/?json=" +
@@ -91,16 +93,21 @@ function useServerBackend(backend_url, sid, url_on_fail) {
       url = url + "&xType=" + xType;
 
       axios
-        .get(url)
+        .get(url, { signal: abortController.signal })
         .then(function (response) {
           console.log("got data", response.data);
           setResult(response.data);
         })
         .catch(function (error) {
+          // if cancelled then do nothing
+          if (error.name === "CanceledError") {
+            return;
+          }
           console.log(error);
           window.alert(error);
           setResult([]);
         });
+      return { abortController };
     },
     [backend_url, sid]
   );

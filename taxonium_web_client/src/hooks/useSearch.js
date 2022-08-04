@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
@@ -14,6 +14,8 @@ const useSearch = ({
   xType,
 }) => {
   const { singleSearch } = backend;
+
+  const [searchControllers, setSearchControllers] = useState({});
 
   const searchSpec = useMemo(() => {
     return JSON.parse(query.srch);
@@ -45,6 +47,27 @@ const useSearch = ({
   const setIndividualSearchLoadingStatus = (key, status) => {
     setSearchLoadingStatus((prev) => ({ ...prev, [key]: status }));
   };
+
+  const singleSearchWrapper = useCallback(
+    (key, this_json, boundsForQueries, setter) => {
+      if (searchControllers[key]) {
+        searchControllers[key].forEach((controller) => {
+          console.log("cancelling for ", key);
+          controller.abort();
+        });
+      }
+      searchControllers[key] = [];
+
+      const { abortController } = singleSearch(
+        this_json,
+        boundsForQueries,
+        setter
+      );
+      searchControllers[key] = [...searchControllers[key], abortController];
+      setSearchControllers({ ...searchControllers });
+    },
+    [searchControllers, singleSearch]
+  );
 
   useEffect(() => {
     // Remove search results which are no longer in the search spec
@@ -95,7 +118,7 @@ const useSearch = ({
         const do_search = () => {
           setIndividualSearchLoadingStatus(key, "loading");
 
-          singleSearch(this_json, boundsForQueries, (result) => {
+          singleSearchWrapper(key, this_json, boundsForQueries, (result) => {
             setSearchResults((prevState) => {
               const new_result = {
                 boundingBox: boundsForQueries,
@@ -114,7 +137,7 @@ const useSearch = ({
                   if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
                     new_result.overview = result.data;
                   } else {
-                    singleSearch(this_json, null, (result) => {
+                    singleSearchWrapper(key, this_json, null, (result) => {
                       setSearchResults((prevState) => {
                         let new_result = prevState[key];
                         if (new_result) {
@@ -149,7 +172,14 @@ const useSearch = ({
         timeouts.current[key] = setTimeout(do_search, 500);
       });
     }
-  }, [searchSpec, searchResults, jsonSearch, singleSearch, boundsForQueries]);
+  }, [
+    searchSpec,
+    searchResults,
+    jsonSearch,
+    singleSearch,
+    singleSearchWrapper,
+    boundsForQueries,
+  ]);
 
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
