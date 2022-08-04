@@ -91,12 +91,27 @@ const useSearch = ({
 
         const this_json = spec_json[key];
         console.log("performing search");
+        const time_started = Date.now();
 
         const do_search = () => {
           setIndividualSearchLoadingStatus(key, "loading");
+          setSearchResults((prev) => {
+            const new_results = { ...prev };
+            if (new_results[key]) {
+              new_results[key].time_started = Date.now();
+            }
+            return new_results;
+          });
 
           singleSearch(this_json, boundsForQueries, (result) => {
             setSearchResults((prevState) => {
+              if (
+                prevState[key] &&
+                prevState[key].time_started !== time_started
+              ) {
+                return prevState;
+              }
+
               const new_result = {
                 boundingBox: boundsForQueries,
                 result: result,
@@ -117,6 +132,7 @@ const useSearch = ({
                     singleSearch(this_json, null, (result) => {
                       setSearchResults((prevState) => {
                         let new_result = prevState[key];
+
                         if (new_result) {
                           new_result.overview = result.data;
                         } else {
