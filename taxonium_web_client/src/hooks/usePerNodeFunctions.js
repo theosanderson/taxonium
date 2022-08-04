@@ -3,7 +3,23 @@ import { useMemo } from "react";
 function usePerNodeFunctions(data, config) {
   const getNodeGenotype = (node_id) => {
     console.log("data", data);
-    let cur_node = data.data.nodeLookup[node_id];
+
+    let data_to_use;
+    if (data.data.nodeLookup[node_id]) {
+      data_to_use = data.data;
+    } else if (data.base_data.nodeLookup[node_id]) {
+      data_to_use = data.base_data;
+    } else {
+      console.log(
+        "UNEXPECTED ERROR: node not found",
+        node_id,
+        data.data,
+        data.base_data
+      );
+      return null;
+    }
+    let cur_node = data_to_use.nodeLookup[node_id];
+
     const assembled_mutations = [];
 
     while (cur_node.parent_id !== cur_node.node_id) {
@@ -17,7 +33,7 @@ function usePerNodeFunctions(data, config) {
           )
       );
       assembled_mutations.push(...filtered_nt_mutations);
-      cur_node = data.data.nodeLookup[cur_node.parent_id];
+      cur_node = data_to_use.nodeLookup[cur_node.parent_id];
     }
     return assembled_mutations;
   };

@@ -168,39 +168,39 @@ function SearchPanel({
                   </div>
 
                   {config.enable_ns_download &&
-                        selectedDetails.nodeDetails[key] < 1000000 &&  (
-                    <>
-                      <div className="mb-3">
-                        <Button className="" onClick={handleDownloadJson}>
-                          Download Nextstrain JSON
-                        </Button>
-                      </div>
+                    selectedDetails.nodeDetails[key] < 1000000 && (
+                      <>
+                        <div className="mb-3">
+                          <Button className="" onClick={handleDownloadJson}>
+                            Download Nextstrain JSON
+                          </Button>
+                        </div>
 
-                      {backend.type === "server" &&
-                        selectedDetails.nodeDetails[key] < 20000 && (
-                          <>
-                            <div className="mb-3">
-                              <Button
-                                className=""
-                                href={
-                                  "https://nextstrain.org/fetch/" +
-                                  backend
-                                    .getNextstrainJsonUrl(
-                                      selectedDetails.nodeDetails.node_id,
-                                      config
-                                    )
-                                    .replace("https://", "")
-                                    .replace("http://", "")
-                                }
-                                target="_blank"
-                              >
-                                View clade in Nextstrain
-                              </Button>
-                            </div>
-                          </>
-                        )}
-                    </>
-                  )}
+                        {backend.type === "server" &&
+                          selectedDetails.nodeDetails[key] < 20000 && (
+                            <>
+                              <div className="mb-3">
+                                <Button
+                                  className=""
+                                  href={
+                                    "https://nextstrain.org/fetch/" +
+                                    backend
+                                      .getNextstrainJsonUrl(
+                                        selectedDetails.nodeDetails.node_id,
+                                        config
+                                      )
+                                      .replace("https://", "")
+                                      .replace("http://", "")
+                                  }
+                                  target="_blank"
+                                >
+                                  View clade in Nextstrain
+                                </Button>
+                              </div>
+                            </>
+                          )}
+                      </>
+                    )}
 
                   {config.covspectrum_links && (
                     <div className="mb-3">
