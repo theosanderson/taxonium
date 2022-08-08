@@ -290,15 +290,12 @@ function SearchPanel({
               onChange={(event) => {
                 console.log(settings.treenomeEnabled);
                 settings.setTreenomeEnabled(!settings.treenomeEnabled);
-                view.setViewState({
-                  zoom: -2,
-                  target: [window.screen.width < 600 ? 500 : 1400, 1000],
-                  pitch: 0,
-                  bearing: 0,
-                  minimap: { zoom: -3, target: [250, 1000] },
-                  "browser-main": { zoom: -2, target: [0, 1000] },
-                  "browser-axis": { zoom: -2, target: [0, 1000] },
-                });
+
+                // view.setViewState({
+                //   ...view.viewState,
+                //  "browser-main": { zoom: -2, target: [500, 1000] },
+                // "browser-axis": { zoom: -2, target: [0, 1000] },
+                // });
               }}
             />
             <button

@@ -108,19 +108,19 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     "browser-axis": { zoom: -2, target: [0, 1000] },
   });
   useEffect(() => {
-    setViewState((prevState) => {
-      return {
-        ...prevState,
-        target: [
-          window.screen.width < 600
-            ? 500
-            : settings.treenomeEnabled
-            ? 2600
-            : 1400,
-          1000,
-        ],
-      };
-    });
+    // setViewState((prevState) => {
+    //   return {
+    //     ...prevState,
+    //     target: [
+    //       window.screen.width < 600
+    //         ? 500
+    //         : settings.treenomeEnabled
+    //         ? 2600
+    //         : 1400,
+    //       1000,
+    //     ],
+    //   };
+    // });
     setXzoom(
       window.screen.width < 600 ? -1 : settings.treenomeEnabled ? -1 : 0
     );
@@ -174,10 +174,23 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
             type: MyOrthographicController,
             scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
           },
-          width: "100%",
+          width: settings.treenomeEnabled ? "40%" : "100%",
           initialViewState: viewState,
         }),
       ],
+      ...(settings.treenomeEnabled
+        ? [
+            new OrthographicView({
+              id: "main-overlay",
+              controller: {
+                type: MyOrthographicController,
+                scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
+              },
+              width: "100%",
+              initialViewState: viewState,
+            }),
+          ]
+        : []),
     ];
   }, [
     viewState,
@@ -244,7 +257,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       // eslint-disable-line no-unused-vars
 
       let newScaleX = 2 ** xzoom;
-
       if (basicTarget) {
         newViewState.target[0] =
           (newViewState.target[0] / newScaleY) * newScaleX;
@@ -309,7 +321,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       }
 
       // Treenome view state
-      if (viewId === "main" || !viewId) {
+      if (viewId === "main" || viewId === "main-overlay" || !viewId) {
         newViewState["browser-main"] = {
           ...viewState["browser-main"],
           zoom: newViewState.zoom,

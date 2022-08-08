@@ -35,7 +35,7 @@ export const DeckButtons = ({
     <div
       style={{
         position: "absolute",
-        right: settings.treenomeEnabled ? "60%" : "0.2em",
+        right: "0.2em",
         bottom: "0.2em",
         zIndex: 10,
       }}
