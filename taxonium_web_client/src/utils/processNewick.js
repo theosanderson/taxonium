@@ -112,6 +112,11 @@ export async function processNewick(data, sendStatusMessage) {
   sendStatusMessage({
     message: "Parsing Newick file",
   });
+
+  // if the tree starts with "[&R]" indicating that it is rooted remove these characters so they don't mess up parsing
+  if (the_data.startsWith("[&R]")) {
+    the_data = the_data.substring(4);
+  }
   const tree = kn_parse(the_data);
 
   function assignNumTips(node) {
