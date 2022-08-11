@@ -1,4 +1,4 @@
-FROM node:18.0.0-alpine AS builder
+FROM node:18-bullseye AS builder
 ENV NODE_ENV production
 # Add a work directory
 WORKDIR /app
@@ -12,7 +12,7 @@ RUN yarn --frozen-lockfile
 RUN yarn build
 
 # Bundle static assets with nginx
-FROM nginx:1.21.0-alpine as production
+FROM nginx:1.21.0 as production
 ENV NODE_ENV production
 # Copy built assets from builder
 COPY --from=builder /app/taxonium_web_client/build /usr/share/nginx/html
