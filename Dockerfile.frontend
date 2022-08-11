@@ -1,4 +1,4 @@
-FROM node:18-bullseye AS builder
+FROM node:16-bullseye AS builder
 ENV NODE_ENV production
 # Add a work directory
 WORKDIR /app
