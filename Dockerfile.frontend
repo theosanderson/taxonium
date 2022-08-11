@@ -1,4 +1,4 @@
-FROM node:16-bullseye AS builder
+FROM node:18-alpine AS builder
 ENV NODE_ENV production
 # Add a work directory
 WORKDIR /app
@@ -7,12 +7,13 @@ COPY taxonium_data_handling ./taxonium_data_handling
 WORKDIR /app/taxonium_web_client
 
 # Install dependencies for node-gyp from lzma-native
-RUN apt install python3 make g++
+RUN apk add --no-cache python3 make g++ jpeg-dev cairo-dev giflib-dev pango-dev
+RUN npm_config_build_from_source=true yarn add canvas
 RUN yarn --frozen-lockfile
 RUN yarn build
 
 # Bundle static assets with nginx
-FROM nginx:1.21.0 as production
+FROM nginx:1.21.0-alpine as production
 ENV NODE_ENV production
 # Copy built assets from builder
 COPY --from=builder /app/taxonium_web_client/build /usr/share/nginx/html
