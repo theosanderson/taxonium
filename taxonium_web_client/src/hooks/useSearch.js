@@ -184,7 +184,7 @@ const useSearch = ({
       if (index == -1) {
         searchSpec.forEach((value) => {
           if (searchResults[value.key]) {
-            relevant.push(...searchResults[searchSpec[index].key]);
+            relevant.push(...searchResults[value.key]);
           }
         });
       } else {
