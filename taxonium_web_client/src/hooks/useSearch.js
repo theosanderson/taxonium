@@ -180,11 +180,11 @@ const useSearch = ({
   useEffect(() => {
     if (zoomToSearch && deckSize) {
       const { index } = zoomToSearch;
-      let relevant = [];
+      let relevant = {overview:[]};
       if (index == -1) {
         searchSpec.forEach((value) => {
-          if (searchResults[value.key]) {
-            relevant.push(...searchResults[value.key]);
+          if (searchResults[value.key] && searchResults[value.key].overview ) {
+            relevant.overview.push(...searchResults[value.key].overview);
           }
         });
       } else {
