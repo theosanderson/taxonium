@@ -180,7 +180,7 @@ const useSearch = ({
   useEffect(() => {
     if (zoomToSearch && deckSize) {
       const { index } = zoomToSearch;
-      let relevant;
+      let relevant = [];
       if (index == -1) {
         Object.keys(searchSpec).forEach((index) =>
           relevant.push(...searchResults[index].key)
