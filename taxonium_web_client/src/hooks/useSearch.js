@@ -182,12 +182,11 @@ const useSearch = ({
       const { index } = zoomToSearch;
       let relevant = [];
       if (index == -1) {
-        searchSpec.forEach((value) =>
-                                       { if(searchResults[value.key]){
-          relevant.push(...searchResults[searchSpec[index].key])
-        }
-        }
-        );
+        searchSpec.forEach((value) => {
+          if (searchResults[value.key]) {
+            relevant.push(...searchResults[searchSpec[index].key]);
+          }
+        });
       } else {
         relevant = searchResults[searchSpec[index].key];
       }
