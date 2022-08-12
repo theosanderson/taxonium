@@ -183,7 +183,7 @@ const useSearch = ({
       let relevant = [];
       if (index == -1) {
         Object.keys(searchSpec).forEach((index) =>
-          relevant.push(...searchSpec[index].key)
+          relevant.push(...searchResults[searchSpec[index].key])
         );
       } else {
         relevant = searchResults[searchSpec[index].key];
