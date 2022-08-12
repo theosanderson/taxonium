@@ -300,7 +300,7 @@ function SearchPanel({
             />
             <button
               style={{ cursor: "default" }}
-              data-tip="Display a browser with each genome's mutations alongside the tree.&nbsp;<a href='https://docs.taxonium.org/en/latest/treenome.html' class='tooltipLink'>Learn more</a>"
+              data-tip="Display a browser with each genome's mutations alongside the tree.&nbsp;<a href='https://docs.taxonium.org/en/latest/treenome.html' class='tooltipLink' target='_blank'>Learn more</a>"
               data-html={true}
             >
               <span
