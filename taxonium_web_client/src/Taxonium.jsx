@@ -186,6 +186,7 @@ function Taxonium({
             settings={settings}
             treenomeState={treenomeState}
             view={view}
+            overlayContent={overlayContent}
             setAboutEnabled={setAboutEnabled}
             perNodeFunctions={perNodeFunctions}
           />
