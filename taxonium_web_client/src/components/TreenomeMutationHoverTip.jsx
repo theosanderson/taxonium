@@ -1,4 +1,4 @@
-const MutationHoverTip = ({
+const TreenomeMutationHoverTip = ({
   hoverInfo,
   hoverDetails,
   colorHook,
@@ -45,4 +45,4 @@ const MutationHoverTip = ({
   );
 };
 
-export default MutationHoverTip;
+export default TreenomeMutationHoverTip;

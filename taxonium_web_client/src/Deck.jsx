@@ -13,7 +13,7 @@ import "react-circular-progressbar/dist/styles.css";
 
 import useSnapshot from "./hooks/useSnapshot";
 import NodeHoverTip from "./components/NodeHoverTip";
-import MutationHoverTip from "./components/MutationHoverTip";
+import TreenomeMutationHoverTip from "./components/TreenomeMutationHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
 import FirefoxWarning from "./components/FirefoxWarning";
@@ -295,7 +295,7 @@ function Deck({
             filterMutations={settings.filterMutations}
             deckSize={deckSize}
           />
-          <MutationHoverTip
+          <TreenomeMutationHoverTip
             hoverInfo={hoverInfo}
             hoverDetails={hoverDetails}
             colorHook={colorHook}
