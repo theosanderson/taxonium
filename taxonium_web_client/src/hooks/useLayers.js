@@ -40,6 +40,7 @@ const useLayers = ({
     data,
     viewState,
     colorHook,
+    hoverInfo,
     setHoverInfo,
     settings,
     treenomeReferenceInfo,
@@ -486,6 +487,9 @@ const useLayers = ({
         (layer.id.startsWith("fillin") &&
           viewport.id === "main" &&
           isCurrentlyOutsideBounds) ||
+          (layer.id.startsWith("browser-hovered") &&
+          viewport.id === "browser-main")
+           ||
         (layer.id.startsWith("browser-loaded") &&
           viewport.id === "browser-main") ||
         (layer.id.startsWith("browser-fillin") &&
