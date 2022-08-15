@@ -11,7 +11,7 @@ const useTreenomeLayerData = (
   const [numNodes, setNumNodes] = useState(0);
   const [cachedVarDataAa, setCachedVarDataAa] = useState([]);
   const [cachedVarDataNt, setCachedVarDataNt] = useState([]);
-  const [reference, setReference] = useState(null);
+  const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
   const [didFirstAa, setDidFirstAa] = useState(false);
   const [didFirstNt, setDidFirstNt] = useState(false);
 
@@ -24,8 +24,8 @@ const useTreenomeLayerData = (
 
   worker.onmessage = useCallback(
     (e) => {
-      if (!reference && e.data.reference) {
-        setReference(e.data.reference);
+      if (!treenomeReferenceInfo && e.data.treenomeReferenceInfo) {
+        setTreenomeReferenceInfo(e.data.treenomeReferenceInfo);
       }
 
       if (e.data.type === "variation_data_return_cache_aa") {
@@ -41,8 +41,8 @@ const useTreenomeLayerData = (
       }
     },
     [
-      reference,
-      setReference,
+      treenomeReferenceInfo,
+      setTreenomeReferenceInfo,
       setVarDataAa,
       setVarDataNt,
       setCachedVarDataAa,
@@ -175,7 +175,13 @@ const useTreenomeLayerData = (
     didFirstNt,
   ]);
 
-  return [varDataAa, varDataNt, reference, cachedVarDataAa, cachedVarDataNt];
+  return [
+    varDataAa,
+    varDataNt,
+    treenomeReferenceInfo,
+    cachedVarDataAa,
+    cachedVarDataNt,
+  ];
 };
 
 export default useTreenomeLayerData;
