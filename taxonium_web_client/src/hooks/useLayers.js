@@ -24,8 +24,8 @@ const useLayers = ({
   isCurrentlyOutsideBounds,
   config,
   treenomeState,
-  reference,
-  setReference,
+  treenomeReferenceInfo,
+  setTreenomeReferenceInfo,
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -42,8 +42,8 @@ const useLayers = ({
     colorHook,
     setHoverInfo,
     settings,
-    reference,
-    setReference,
+    treenomeReferenceInfo,
+    setTreenomeReferenceInfo,
     selectedDetails,
     isCurrentlyOutsideBounds
   );

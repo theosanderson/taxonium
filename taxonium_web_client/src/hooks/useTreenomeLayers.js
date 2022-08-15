@@ -9,8 +9,8 @@ const useTreenomeLayers = (
   colorHook,
   setHoverInfo,
   settings,
-  reference,
-  setReference,
+  treenomeReferenceInfo,
+  setTreenomeReferenceInfo,
   selectedDetails
 ) => {
   const myGetPolygonOffset = ({ layerIndex }) => [0, -(layerIndex + 999) * 100];
@@ -86,10 +86,10 @@ const useTreenomeLayers = (
     cachedVarDataNt,
   ] = useTreenomeLayerData(data, treenomeState, settings);
   useEffect(() => {
-    if (!reference) {
-      setReference(computedReference);
+    if (!treenomeReferenceInfo) {
+      setTreenomeReferenceInfo(computedReference);
     }
-  }, [computedReference, reference, setReference]);
+  }, [computedReference, treenomeReferenceInfo, setTreenomeReferenceInfo]);
   const ntToX = useCallback(
     (nt) => {
       return (
@@ -124,12 +124,12 @@ const useTreenomeLayers = (
     getColor: (d) => {
       if (cov2Genes !== null) {
         return d.m.new_residue !==
-          reference["aa"][d.m.gene + ":" + d.m.residue_pos]
+          treenomeReferenceInfo["aa"][d.m.gene + ":" + d.m.residue_pos]
           ? colorHook.toRGB(d.m.new_residue)
           : cov2Genes[d.m.gene][2].map((c) => 245 - 0.2 * (245 - c));
       } else {
         return d.m.new_residue !==
-          reference["aa"][d.m.gene + ":" + d.m.residue_pos]
+          treenomeReferenceInfo["aa"][d.m.gene + ":" + d.m.residue_pos]
           ? colorHook.toRGB(d.m.new_residue)
           : [245, 245, 245];
       }
@@ -184,7 +184,7 @@ const useTreenomeLayers = (
         aaWidth,
       ],
       getWidth: [aaWidth],
-      getColor: [reference, colorHook, cov2Genes],
+      getColor: [treenomeReferenceInfo, colorHook, cov2Genes],
     },
     getPolygonOffset: myGetPolygonOffset,
   };
@@ -266,7 +266,7 @@ const useTreenomeLayers = (
         ntWidth,
       ],
       getWidth: [ntWidth],
-      getColor: [reference, colorHook, cov2Genes],
+      getColor: [treenomeReferenceInfo, colorHook, cov2Genes],
     },
     getPolygonOffset: myGetPolygonOffset,
   };

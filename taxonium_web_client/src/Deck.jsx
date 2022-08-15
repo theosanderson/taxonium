@@ -3,6 +3,7 @@ import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { View } from "@deck.gl/core";
 import useLayers from "./hooks/useLayers";
+import useTreenomeLayers from "./hooks/useTreenomeLayers";
 import JBrowsePanel from "./components/JBrowsePanel";
 import { ClipLoader } from "react-spinners";
 import {
@@ -60,7 +61,7 @@ function Deck({
     (info) => view.setMouseXY([info.x, info.y]),
     [view]
   );
-  const [reference, setReference] = useState(null);
+  const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
 
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
@@ -177,8 +178,8 @@ function Deck({
     isCurrentlyOutsideBounds,
     config,
     treenomeState,
-    reference,
-    setReference,
+    treenomeReferenceInfo,
+    setTreenomeReferenceInfo,
   });
   // console.log("deck refresh");
 
@@ -301,7 +302,7 @@ function Deck({
             colorHook={colorHook}
             colorBy={colorBy}
             config={config}
-            reference={reference}
+            treenomeReferenceInfo={treenomeReferenceInfo}
           />
           <DeckButtons
             zoomIncrement={zoomIncrement}

@@ -4,9 +4,9 @@ const TreenomeMutationHoverTip = ({
   colorHook,
   colorBy,
   config,
-  reference,
+  treenomeReferenceInfo,
 }) => {
-  if (!hoverInfo || !reference) {
+  if (!hoverInfo || !treenomeReferenceInfo) {
     return null;
   }
   const hoveredMutation = hoverInfo.object;
@@ -15,7 +15,7 @@ const TreenomeMutationHoverTip = ({
     return null;
   }
   const posKey = hoveredMutation.m.gene + ":" + hoveredMutation.m.residue_pos;
-  if (hoveredMutation.m.new_residue === reference["aa"][posKey]) {
+  if (hoveredMutation.m.new_residue === treenomeReferenceInfo["aa"][posKey]) {
     return null;
   }
 
@@ -35,7 +35,7 @@ const TreenomeMutationHoverTip = ({
         <div className="mutations text-xs">
           <div className="inline-block">
             <span>{hoveredMutation.m.gene}:</span>
-            <span style={{}}>{reference["aa"][posKey]}</span>
+            <span style={{}}>{treenomeReferenceInfo["aa"][posKey]}</span>
             <span>{hoveredMutation.m.residue_pos}</span>
             <span style={{}}>{hoveredMutation.m.new_residue}</span>
           </div>

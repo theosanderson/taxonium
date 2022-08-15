@@ -150,7 +150,7 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
             ? "variation_data_return_cache_aa"
             : "variation_data_return_cache_nt",
         filteredVarData: filteredVarData,
-        reference: ref,
+        treenomeReferenceInfo: ref,
         jobId: jobId,
       });
     } else {
@@ -160,7 +160,7 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
             ? "variation_data_return_aa"
             : "variation_data_return_nt",
         filteredVarData: filteredVarData,
-        reference: ref,
+        treenomeReferenceInfo: ref,
         jobId: jobId,
       });
     }
