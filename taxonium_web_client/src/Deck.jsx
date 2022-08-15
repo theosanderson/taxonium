@@ -3,7 +3,6 @@ import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { View } from "@deck.gl/core";
 import useLayers from "./hooks/useLayers";
-import useTreenomeLayers from "./hooks/useTreenomeLayers";
 import JBrowsePanel from "./components/JBrowsePanel";
 import { ClipLoader } from "react-spinners";
 import {
