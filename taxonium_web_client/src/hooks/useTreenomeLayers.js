@@ -190,7 +190,6 @@ const useTreenomeLayers = (
     getPolygonOffset: myGetPolygonOffset,
   };
 
- 
   const main_variation_layer_aa = new LineLayer({
     ...main_variation_aa_common_props,
     data: layerDataAa,
@@ -204,9 +203,16 @@ const useTreenomeLayers = (
 
   const hovered_layer_aa = new LineLayer({
     ...main_variation_aa_common_props,
-    data: hoverInfo && hoverInfo.object &&  hoverInfo.object.m&& hoverInfo.object.m.gene && hoverInfo.object.m.gene!=="nt" ? [hoverInfo.object] : [],
+    data:
+      hoverInfo &&
+      hoverInfo.object &&
+      hoverInfo.object.m &&
+      hoverInfo.object.m.gene &&
+      hoverInfo.object.m.gene !== "nt"
+        ? [hoverInfo.object]
+        : [],
     id: "browser-hovered-aa",
-    getWidth: aaWidth*1.5,
+    getWidth: aaWidth * 1.5,
   });
 
   const main_variation_nt_common_props = {
@@ -295,9 +301,16 @@ const useTreenomeLayers = (
 
   const hovered_layer_nt = new LineLayer({
     ...main_variation_nt_common_props,
-    data: hoverInfo && hoverInfo.object && hoverInfo.object.m && hoverInfo.object.m.gene && hoverInfo.object.m.gene==="nt" ? [hoverInfo.object] : [],
+    data:
+      hoverInfo &&
+      hoverInfo.object &&
+      hoverInfo.object.m &&
+      hoverInfo.object.m.gene &&
+      hoverInfo.object.m.gene === "nt"
+        ? [hoverInfo.object]
+        : [],
     id: "browser-hovered-nt",
-    getWidth: ntWidth*2,
+    getWidth: ntWidth * 2,
   });
 
   const dynamic_background_data = useMemo(() => {
@@ -458,15 +471,14 @@ const useTreenomeLayers = (
   if (settings.mutationTypesEnabled.aa) {
     layers.push(fillin_variation_layer_aa);
     layers.push(main_variation_layer_aa);
-    layers.push(hovered_layer_aa)
+    layers.push(hovered_layer_aa);
   }
   if (settings.mutationTypesEnabled.nt) {
     layers.push(fillin_variation_layer_nt);
     layers.push(main_variation_layer_nt);
-    layers.push(hovered_layer_nt)
+    layers.push(hovered_layer_nt);
   }
   layers.push(selected_node_layer);
-
 
   return layers;
 };
