@@ -89,4 +89,6 @@ We are very grateful to our contributors:
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
+Alex Kramer built the __Treenome Browser__ component within Taxonium which will be described in a forthcoming publication.
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
