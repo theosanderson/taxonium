@@ -417,7 +417,7 @@ async function json_to_tree(json) {
   console.log("META", json.meta);
   config.title = json.meta.title;
   console.log("META PROV", json.meta.data_provenance);
-  if((json.meta && json.meta.data_provenance)){}
+  if((json.meta && json.meta.data_provenance)){
   config.source =    json.meta.data_provenance.map((source) => source.name).join(" & ") +
     " on " +
     json.meta.updated +
