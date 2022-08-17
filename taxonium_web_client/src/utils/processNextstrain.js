@@ -417,12 +417,14 @@ async function json_to_tree(json) {
   console.log("META", json.meta);
   config.title = json.meta.title;
   console.log("META PROV", json.meta.data_provenance);
-  if((json.meta && json.meta.data_provenance)){
-  config.source =    json.meta.data_provenance.map((source) => source.name).join(" & ") +
-    " on " +
-    json.meta.updated +
-    " in a build maintained by " +
-    json.meta.maintainers.map((source) => source.name).join(" & "); }
+  if (json.meta && json.meta.data_provenance) {
+    config.source =
+      json.meta.data_provenance.map((source) => source.name).join(" & ") +
+      " on " +
+      json.meta.updated +
+      " in a build maintained by " +
+      json.meta.maintainers.map((source) => source.name).join(" & ");
+  }
 
   config.overlay = `<p>This is a tree generated from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
   if (json.meta.build_url) {
