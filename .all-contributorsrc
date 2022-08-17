@@ -6,20 +6,6 @@
   "commit": false,
   "contributors": [
     {
-      "login": "theosanderson",
-      "name": "Theo Sanderson",
-      "avatar_url": "https://avatars.githubusercontent.com/u/19732295?v=4",
-      "profile": "http://theo.io",
-      "contributions": [
-        "code",
-        "doc",
-        "design",
-        "ideas",
-        "infra",
-        "maintenance"
-      ]
-    },
-    {
       "login": "amkram",
       "name": "Alex Kramer",
       "avatar_url": "https://avatars.githubusercontent.com/u/6502785?v=4",
