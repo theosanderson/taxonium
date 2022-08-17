@@ -77,7 +77,6 @@ We are very grateful to our contributors:
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    
     <td align="center"><a href="https://github.com/amkram"><img src="https://avatars.githubusercontent.com/u/6502785?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Kramer</b></sub></a><br /><a href="https://github.com/theosanderson/taxonium/commits?author=amkram" title="Code">💻</a> <a href="#design-amkram" title="Design">🎨</a> <a href="#ideas-amkram" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://genome.ucsc.edu/"><img src="https://avatars.githubusercontent.com/u/186983?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Angie Hinrichs</b></sub></a><br /><a href="#ideas-AngieHinrichs" title="Ideas, Planning, & Feedback">🤔</a> <a href="#data-AngieHinrichs" title="Data">🔣</a></td>
     <td align="center"><a href="https://github.com/richardgoater"><img src="https://avatars.githubusercontent.com/u/1429721?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Richard Goater</b></sub></a><br /><a href="#design-richardgoater" title="Design">🎨</a> <a href="https://github.com/theosanderson/taxonium/commits?author=richardgoater" title="Code">💻</a></td>
