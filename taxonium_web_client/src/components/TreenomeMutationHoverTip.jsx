@@ -18,7 +18,6 @@ const TreenomeMutationHoverTip = ({
   const posKey = isAa
     ? hoveredMutation.m.gene + ":" + hoveredMutation.m.residue_pos
     : hoveredMutation.m.residue_pos;
-  //  console.log(isAa, hoveredMutation, posKey);
   if (
     isAa &&
     hoveredMutation.m.new_residue === treenomeReferenceInfo["aa"][posKey]
