@@ -78,18 +78,8 @@ const useTreenomeLayers = (
 
   let layers = [];
 
-  const [
-    layerDataAa,
-    layerDataNt,
-    computedReference,
-    cachedVarDataAa,
-    cachedVarDataNt,
-  ] = useTreenomeLayerData(data, treenomeState, settings);
-  useEffect(() => {
-    if (!reference) {
-      setReference(computedReference);
-    }
-  }, [computedReference, reference, setReference]);
+  const {allLines} = useTreenomeLayerData(data, treenomeState, settings);
+
   const ntToX = useCallback(
     (nt) => {
       return (
@@ -122,17 +112,10 @@ const useTreenomeLayers = (
     onHover: (info) => setHoverInfo(info),
     pickable: true,
     getColor: (d) => {
-      if (cov2Genes !== null) {
-        return d.m.new_residue !==
-          reference["aa"][d.m.gene + ":" + d.m.residue_pos]
-          ? colorHook.toRGB(d.m.new_residue)
-          : cov2Genes[d.m.gene][2].map((c) => 245 - 0.2 * (245 - c));
-      } else {
-        return d.m.new_residue !==
-          reference["aa"][d.m.gene + ":" + d.m.residue_pos]
-          ? colorHook.toRGB(d.m.new_residue)
-          : [245, 245, 245];
-      }
+      
+        return colorHook.toRGB(d.m.new_residue)
+          
+      
     },
     modelMatrix: modelMatrixFixedX,
     getSourcePosition: (d) => {
@@ -190,14 +173,10 @@ const useTreenomeLayers = (
   };
   const main_variation_layer_aa = new LineLayer({
     ...main_variation_aa_common_props,
-    data: layerDataAa,
+    data: allLines,
     id: "browser-loaded-main-aa",
   });
-  const fillin_variation_layer_aa = new LineLayer({
-    ...main_variation_aa_common_props,
-    data: cachedVarDataAa,
-    id: "browser-fillin-aa",
-  });
+  
 
   const main_variation_nt_common_props = {
     onHover: (info) => setHoverInfo(info),
@@ -271,17 +250,7 @@ const useTreenomeLayers = (
     getPolygonOffset: myGetPolygonOffset,
   };
 
-  const main_variation_layer_nt = new LineLayer({
-    ...main_variation_nt_common_props,
-    data: layerDataNt,
-    id: "browser-loaded-main-nt",
-  });
-
-  const fillin_variation_layer_nt = new LineLayer({
-    ...main_variation_nt_common_props,
-    data: cachedVarDataNt,
-    id: "browser-fillin-nt",
-  });
+ 
 
   const dynamic_background_data = useMemo(() => {
     if (!settings.treenomeEnabled || cov2Genes === null) {
@@ -439,13 +408,10 @@ const useTreenomeLayers = (
   layers.push(dynamic_browser_background_layer);
   layers.push(browser_outline_layer);
   if (settings.mutationTypesEnabled.aa) {
-    layers.push(fillin_variation_layer_aa);
+    
     layers.push(main_variation_layer_aa);
   }
-  if (settings.mutationTypesEnabled.nt) {
-    layers.push(fillin_variation_layer_nt);
-    layers.push(main_variation_layer_nt);
-  }
+
   layers.push(selected_node_layer);
 
   return layers;
