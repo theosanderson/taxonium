@@ -94,15 +94,11 @@ const nodes_satisfying_function = (starting_node_id, data, to_children, matching
 }
 
 const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY) => {
- // console.log("mut", mutation);
-  //const to_output2= [{y:[minY[node.node_id],maxY[node.node_id]],m:mutation}]
-  //console.log("to_output2", to_output2);
-  //return to_output2;
-  
+
   const has_mutation_in_same_place = (node) =>
     node.mutations.some( m=> m.residue_pos === mutation.residue_pos && m.gene === mutation.gene);
   const nodes_with_mutations_away = nodes_satisfying_function(node.node_id, data, to_children, has_mutation_in_same_place);
-  console.log("nodes_with_mutations_away", nodes_with_mutations_away);
+  //console.log("nodes_with_mutations_away", nodes_with_mutations_away);
   const ranges_negative = nodes_with_mutations_away.map(node_id => [minY[node_id], maxY[node_id]]);
   ranges_negative.sort((a,b) => a[0] - b[0]);
   const total_range = [minY[node.node_id],  maxY[node.node_id]]
@@ -121,7 +117,7 @@ const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY) => {
     }
   }
   const to_output = output_ranges.map(range => ({y:range, m:mutation}))
-  console.log("to_output", to_output);
+  //console.log("to_output", to_output);
   return to_output;
 
     
@@ -129,7 +125,7 @@ const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY) => {
 }
 ;
 
-const getAllLines = (data, to_children, root_id, minY, maxY) => {
+const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker) => {
   console.log("getAllLines start");
   if(!data){
     return [];
@@ -143,11 +139,14 @@ const getAllLines = (data, to_children, root_id, minY, maxY) => {
     let node = data.nodeLookup[next_node_id];
     
     node.mutations.forEach(mutation => {
+      //console.log("mutation", mutation);
+      if (mutation_checker(mutation)) {
       const result = node_mutation_to_lines(node,mutation, to_children, data,minY, maxY);
       result.forEach(line => {
         lines.push(line);
       }
       );
+    }
     }
     );
   
@@ -162,7 +161,7 @@ const getAllLines = (data, to_children, root_id, minY, maxY) => {
   }
   console.log("getAllLines end");
   console.log("lines", lines);
-  return lines.filter(line => line.m.gene !== "nt");
+  return lines
 }
 
 
@@ -177,11 +176,14 @@ const useTreenomeLayerData = (
   
   
   const [treenomeLayerData, setTreenomeLayerData] = useState({});
-  console.log("data", my_data);
+  
   const [to_children, root_id] = useMemo(() => make_to_children(my_data), [my_data]);
   const postorder = useMemo(() => postorder_traversal(root_id, to_children, my_data), [root_id, to_children, my_data]);
   const [minY, maxY] = useMemo(() => min_and_max_y(postorder, to_children, my_data), [postorder, to_children, my_data]);
-  const allLines = useMemo(() => getAllLines(my_data, to_children, root_id, minY, maxY), [my_data, to_children, root_id]);
+  const mutationChecker = useMemo(
+    () => (mutation) => mutation.gene!=="nt"
+    ,[])
+  const allLines = useMemo(() => getAllLines(my_data, to_children, root_id, minY, maxY,mutationChecker), [my_data, to_children, root_id,minY,maxY,mutationChecker]);
 
   return {allLines}
 }
