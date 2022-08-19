@@ -14,12 +14,7 @@ import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
-import {
-  MdArrowForward,
-  MdArrowBack,
-  MdArrowDownward,
-  MdArrowUpward,
-} from "react-icons/md";
+import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import { useCallback } from "react";
 
@@ -158,23 +153,20 @@ function Taxonium({
             : "bg-white shadow-xl"
         }
       >
-        <button onClick={toggleSidebar}>
-          <br />
-          {sidebarOpen ? (
-            window.screen.width > 600 ? (
-              <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
+        {!sidebarOpen && (
+          <button onClick={toggleSidebar}>
+            <br />
+            {window.innerWidth > 768 ? (
+              <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
             ) : (
-              <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle" />
-            )
-          ) : window.screen.width > 600 ? (
-            <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
-          ) : (
-            <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
-          )}
-        </button>
+              <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
+            )}
+          </button>
+        )}
+
         {sidebarOpen && (
           <SearchPanel
-            className=""
+            className="flex-grow min-h-0 h-full bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
             backend={backend}
             search={search}
             colorBy={colorBy}
@@ -189,6 +181,7 @@ function Taxonium({
             overlayContent={overlayContent}
             setAboutEnabled={setAboutEnabled}
             perNodeFunctions={perNodeFunctions}
+            toggleSidebar={toggleSidebar}
           />
         )}
       </div>
