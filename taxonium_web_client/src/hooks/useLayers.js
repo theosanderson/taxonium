@@ -310,10 +310,15 @@ const useLayers = ({
     );
   }
 
+  console.log("config num_tips", config.num_tips);
+  console.log("viewstate", viewState);
+
+  const proportionalToNodesOnScreen = config.num_tips / 2 ** viewState.zoom;
+
   // If leaves are fewer than max_text_number, add a text layer
   if (
-    data.data.nodes &&
-    data.data.nodes.length < 10 ** settings.thresholdForDisplayingText
+    proportionalToNodesOnScreen <
+    0.8 * 10 ** settings.thresholdForDisplayingText
   ) {
     const node_label_layer = new TextLayer({
       id: "main-text-node",
