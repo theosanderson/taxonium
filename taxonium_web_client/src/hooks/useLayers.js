@@ -95,7 +95,6 @@ const useLayers = ({
   }, [data.base_data, getX]);
 
   const detailed_scatter_data = useMemo(() => {
-    
     return detailed_data.nodes.filter(
       (node) =>
         node.is_tip ||
@@ -309,8 +308,6 @@ const useLayers = ({
       hoveredLayer
     );
   }
-
-
 
   const proportionalToNodesOnScreen = config.num_tips / 2 ** viewState.zoom;
 
