@@ -1,5 +1,16 @@
 import { useCallback, useMemo, useEffect, useState } from "react";
 
+const getNtPos =
+  (mut) => {
+    if (mut.gene === "nt") {
+      return mut.residue_pos - 1;
+    }
+    if (mut.nuc_for_codon !== undefined) {
+      return mut.nuc_for_codon - 1;
+    }
+    
+  };
+
 const make_to_children = (data) => {
   if (!data || !data.nodes) {
     return [{}, null];
@@ -27,7 +38,7 @@ const postorder_traversal = ( root_id,to_children, data) => {
   if (!data || !data.nodes) {
     return [];
   }
-  const nodes = data.nodes;
+ 
   let result = [];
   let stack = [root_id];
   while (stack.length > 0) {
@@ -117,7 +128,7 @@ const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY) => {
       output_ranges[output_ranges.length - 2][1] = range[0];
     }
   }
-  const to_output = output_ranges.map(range => ({y:range, m:mutation}))
+  const to_output = output_ranges.map(range => ({x: getNtPos(mutation), y:range, m:mutation}))
   //console.log("to_output", to_output);
   return to_output;
 
@@ -176,6 +187,8 @@ const useTreenomeLayerData = (
   mutationChecker
   
 ) => {
+
+  
  
   
   const [to_children, root_id] = useMemo(() => make_to_children(my_data), [my_data]);

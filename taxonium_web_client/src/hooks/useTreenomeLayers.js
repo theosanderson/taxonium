@@ -15,8 +15,16 @@ const useTreenomeLayers = (
 ) => {
   const myGetPolygonOffset = ({ layerIndex }) => [0, -(layerIndex + 999) * 100];
   const modelMatrixFixedX = useMemo(() => {
-    return [
-      1 / 2 ** viewState.zoom,
+
+    const bounds = treenomeState.ntBounds
+    console.log("bounds", bounds)
+    const offset = -9.3
+    const boundsRange = bounds[1] - bounds[0]
+    console.log("boundsRange", boundsRange)
+    const boundsLog2 = Math.log2(boundsRange) 
+
+    const matrix = [
+      1 / 2 ** (viewState.zoom+offset + boundsLog2 ),
       0,
       0,
       0,
@@ -33,7 +41,12 @@ const useTreenomeLayers = (
       0,
       1,
     ];
-  }, [viewState.zoom]);
+
+    // Translate in X
+    matrix[12] = -bounds[0]/2**(viewState.zoom+offset + boundsLog2) - 0.5*boundsRange/2**(viewState.zoom+offset + boundsLog2)
+
+    return matrix;
+  }, [viewState.zoom, treenomeState.ntBounds]);
 
   const variation_padding = useMemo(() => {
     if (!data.data.nodes) {
@@ -50,9 +63,7 @@ const useTreenomeLayers = (
     const numNt = treenomeState.ntBounds[1] - treenomeState.ntBounds[0];
     return numNt > 600 ? 2 : (browserWidth / numNt) * 3;
   }, [treenomeState.ntBounds, treenomeState.xBounds]);
-  const ntWidth = useMemo(() => {
-    return aaWidth / 3;
-  }, [aaWidth]);
+  
   const cov2Genes = useMemo(() => {
     if (settings.isCov2Tree) {
       return {
@@ -102,20 +113,7 @@ const useTreenomeLayers = (
     [treenomeState.xBounds, treenomeState.ntBounds]
   );
 
-  const getNtPos = useCallback(
-    (mut) => {
-      if (mut.gene === "nt") {
-        return mut.residue_pos - 1;
-      }
-      if (mut.nuc_for_codon !== undefined) {
-        return mut.nuc_for_codon - 1;
-      }
-      if (cov2Genes !== null) {
-        return cov2Genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
-      }
-    },
-    [cov2Genes]
-  );
+  
 
   const main_variation_aa_common_props = {
     onHover: (info) => setHoverInfo(info),
@@ -128,50 +126,23 @@ const useTreenomeLayers = (
     },
     modelMatrix: modelMatrixFixedX,
     getSourcePosition: (d) => {
-      if (!treenomeState.ntBounds) {
-        return [[0, 0]];
-      }
-      let mut = d.m;
-      let ntPos = getNtPos(mut);
-      if (
-        ntPos < treenomeState.ntBounds[0] ||
-        ntPos > treenomeState.ntBounds[1]
-      ) {
-        return [[0, 0]];
-      }
-      let x = ntToX(ntPos);
-      return [x + aaWidth / 2, d.y[0] - variation_padding];
+      
+      return [d.x + aaWidth / 2, d.y[0] - variation_padding];
     },
     getTargetPosition: (d) => {
-      if (!treenomeState.ntBounds) {
-        return [[0, 0]];
-      }
-      let mut = d.m;
-      let ntPos = getNtPos(mut);
-      if (
-        ntPos < treenomeState.ntBounds[0] ||
-        ntPos > treenomeState.ntBounds[1]
-      ) {
-        return [[0, 0]];
-      }
-      let x = ntToX(ntPos);
-      return [x + aaWidth / 2, d.y[1] + variation_padding];
+      
+      return [d.x + aaWidth / 2, d.y[1] + variation_padding];
     },
     getWidth: (d) => {
       return aaWidth;
     },
     updateTriggers: {
       getTargetPosition: [
-        treenomeState.ntBounds,
-        getNtPos,
-        ntToX,
         variation_padding,
         aaWidth,
       ],
       getSourcePosition: [
-        treenomeState.ntBounds,
-        getNtPos,
-        ntToX,
+        
         variation_padding,
         aaWidth,
       ],
@@ -193,77 +164,6 @@ const useTreenomeLayers = (
   });
   
 
-  const main_variation_nt_common_props = {
-    onHover: (info) => setHoverInfo(info),
-    pickable: true,
-    getColor: (d) => {
-      switch (d.m.new_residue) {
-        case "A":
-          return [0, 0, 0];
-        case "C":
-          return [60, 60, 60];
-        case "G":
-          return [120, 120, 120];
-        case "T":
-          return [180, 180, 180];
-        default:
-          return [0, 0, 0];
-      }
-    },
-    modelMatrix: modelMatrixFixedX,
-    getSourcePosition: (d) => {
-      if (!treenomeState.ntBounds) {
-        return [[0, 0]];
-      }
-      let mut = d.m;
-      let ntPos = getNtPos(mut);
-      if (
-        ntPos < treenomeState.ntBounds[0] ||
-        ntPos > treenomeState.ntBounds[1]
-      ) {
-        return [[0, 0]];
-      }
-      let x = ntToX(ntPos);
-      return [x + ntWidth / 2, d.y[0] - variation_padding];
-    },
-    getTargetPosition: (d) => {
-      if (!treenomeState.ntBounds) {
-        return [[0, 0]];
-      }
-      let mut = d.m;
-      let ntPos = getNtPos(mut);
-      if (
-        ntPos < treenomeState.ntBounds[0] ||
-        ntPos > treenomeState.ntBounds[1]
-      ) {
-        return [[0, 0]];
-      }
-      let x = ntToX(ntPos);
-      return [x + ntWidth / 2, d.y[1] + variation_padding];
-    },
-    getWidth: (d) => {
-      return ntWidth;
-    },
-    updateTriggers: {
-      getTargetPosition: [
-        treenomeState.ntBounds,
-        getNtPos,
-        ntToX,
-        variation_padding,
-        ntWidth,
-      ],
-      getSourcePosition: [
-        treenomeState.ntBounds,
-        getNtPos,
-        ntToX,
-        variation_padding,
-        ntWidth,
-      ],
-      getWidth: [ntWidth],
-      getColor: [reference, colorHook, cov2Genes],
-    },
-    getPolygonOffset: myGetPolygonOffset,
-  };
 
  
 
@@ -280,14 +180,15 @@ const useTreenomeLayers = (
       const yh = treenomeState.yBounds[1];
       d.push({
         x: [
-          [ntToX(gene[0] - 1), -3000],
-          [ntToX(gene[0] - 1), yh * 4],
-          [ntToX(gene[1] - 1), yh * 4],
-          [ntToX(gene[1] - 1), -3000],
+          [gene[0] - 1, -3000],
+          [gene[0] - 1, yh * 4],
+          [gene[1] - 1, yh * 4],
+          [gene[1] - 1, -3000],
         ],
         c: gene[2],
       });
     }
+    console.log("cov2genes", d);
     return d;
   }, [cov2Genes, ntToX, treenomeState.yBounds, settings.treenomeEnabled]);
 
@@ -404,6 +305,8 @@ const useTreenomeLayers = (
     pickable: false,
     getPolygonOffset: myGetPolygonOffset,
   });
+
+  
 
   const selected_node_layer = new PolygonLayer({
     id: "browser-loaded-selected-node",
