@@ -17,10 +17,10 @@ const useTreenomeLayers = (
   const modelMatrixFixedX = useMemo(() => {
 
     const bounds = treenomeState.ntBounds
-    console.log("bounds", bounds)
+    
     const offset = -9.3
     const boundsRange = bounds[1] - bounds[0]
-    console.log("boundsRange", boundsRange)
+    
     const boundsLog2 = Math.log2(boundsRange) 
 
     const matrix = [
@@ -96,7 +96,6 @@ const useTreenomeLayers = (
 
   const {allLines:detailLines} = useTreenomeLayerData(data.data, treenomeState, settings, selectedDetails,
       mutationChecker);
-  console.log("detailLines", detailLines);
 
 
 
