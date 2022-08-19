@@ -3,7 +3,7 @@ import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
-import { MdList } from "react-icons/md";
+import { MdArrowForward, MdArrowDownward } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
 
 import { FaSearch, FaShare } from "react-icons/fa";
@@ -52,6 +52,7 @@ function SearchPanel({
   treenomeState,
   view,
   perNodeFunctions,
+  toggleSidebar,
 }) {
   const covSpectrumQuery = useMemo(() => {
     if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
@@ -236,6 +237,14 @@ function SearchPanel({
     <div
       className={classNames("flex flex-col px-4 divide-y text-sm", className)}
     >
+      <button onClick={toggleSidebar}>
+        <br />
+        {window.screen.width > 768 ? (
+          <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
+        ) : (
+          <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle" />
+        )}
+      </button>
       <div className="space-y-2 py-3">
         {config.num_tips && (
           <p className="text-gray-500 text-sm">
@@ -400,7 +409,7 @@ function SearchPanel({
         </div>
       </div>
       {selectedDetails.nodeDetails && (
-        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none">
+        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none overflow-auto">
           <ListOutputModal
             ariaHideApp={false}
             nodeId={selectedDetails.nodeDetails.node_id}
