@@ -156,7 +156,7 @@ function Taxonium({
         {!sidebarOpen && (
           <button onClick={toggleSidebar}>
             <br />
-            {window.screen.width > 768 ? (
+            {window.innerWidth > 768 ? (
               <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
             ) : (
               <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
@@ -166,7 +166,7 @@ function Taxonium({
 
         {sidebarOpen && (
           <SearchPanel
-            className="flex-grow min-h-0 h-1/2 md:h-full bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+            className="flex-grow min-h-0 h-full bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
             backend={backend}
             search={search}
             colorBy={colorBy}

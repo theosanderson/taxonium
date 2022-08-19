@@ -239,7 +239,7 @@ function SearchPanel({
     >
       <button onClick={toggleSidebar}>
         <br />
-        {window.screen.width > 768 ? (
+        {window.innerWidth > 768 ? (
           <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
         ) : (
           <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle" />
