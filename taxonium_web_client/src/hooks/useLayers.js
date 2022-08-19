@@ -95,7 +95,6 @@ const useLayers = ({
   }, [data.base_data, getX]);
 
   const detailed_scatter_data = useMemo(() => {
-    console.log("new scatter");
     return detailed_data.nodes.filter(
       (node) =>
         node.is_tip ||
@@ -310,10 +309,12 @@ const useLayers = ({
     );
   }
 
+  const proportionalToNodesOnScreen = config.num_tips / 2 ** viewState.zoom;
+
   // If leaves are fewer than max_text_number, add a text layer
   if (
-    data.data.nodes &&
-    data.data.nodes.length < 10 ** settings.thresholdForDisplayingText
+    proportionalToNodesOnScreen <
+    0.8 * 10 ** settings.thresholdForDisplayingText
   ) {
     const node_label_layer = new TextLayer({
       id: "main-text-node",
