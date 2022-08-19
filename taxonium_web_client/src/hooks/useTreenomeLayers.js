@@ -187,7 +187,7 @@ const useTreenomeLayers = (
         c: gene[2],
       });
     }
-    console.log("cov2genes", d);
+    
     return d;
   }, [cov2Genes, ntToX, treenomeState.yBounds, settings.treenomeEnabled]);
 
