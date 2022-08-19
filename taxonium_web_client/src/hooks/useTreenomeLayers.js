@@ -78,7 +78,16 @@ const useTreenomeLayers = (
 
   let layers = [];
 
-  const {allLines} = useTreenomeLayerData(data, treenomeState, settings);
+  const mutationChecker = useCallback( (mutation) => mutation.gene !== 'nt' , []);
+
+  const {allLines:baseLines} = useTreenomeLayerData(data.base_data, treenomeState, settings, selectedDetails,
+    mutationChecker);
+
+  const {allLines:detailLines} = useTreenomeLayerData(data.data, treenomeState, settings, selectedDetails,
+      mutationChecker);
+  console.log("detailLines", detailLines);
+
+
 
   const ntToX = useCallback(
     (nt) => {
@@ -173,8 +182,14 @@ const useTreenomeLayers = (
   };
   const main_variation_layer_aa = new LineLayer({
     ...main_variation_aa_common_props,
-    data: allLines,
+    data: detailLines,
     id: "browser-loaded-main-aa",
+  });
+
+  const fillin_variation_layer_aa = new LineLayer({
+    ...main_variation_aa_common_props,
+    data: baseLines,
+    id: "browser-fillin-aa",
   });
   
 
@@ -408,7 +423,7 @@ const useTreenomeLayers = (
   layers.push(dynamic_browser_background_layer);
   layers.push(browser_outline_layer);
   if (settings.mutationTypesEnabled.aa) {
-    
+    layers.push(fillin_variation_layer_aa);
     layers.push(main_variation_layer_aa);
   }
 

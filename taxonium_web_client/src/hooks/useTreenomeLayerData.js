@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useEffect, useState } from "react";
 
 const make_to_children = (data) => {
-  if (!data) {
+  if (!data || !data.nodes) {
     return [{}, null];
   }
+
   const nodes = data.nodes;
   let to_children = {};
   let root_id = null;
@@ -23,7 +24,7 @@ const make_to_children = (data) => {
 };
 
 const postorder_traversal = ( root_id,to_children, data) => {
-  if (!data) {
+  if (!data || !data.nodes) {
     return [];
   }
   const nodes = data.nodes;
@@ -127,7 +128,7 @@ const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY) => {
 
 const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker) => {
   console.log("getAllLines start");
-  if(!data){
+  if(!data || !data.nodes){
     return [];
   }
   let lines = [];
@@ -166,23 +167,21 @@ const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker) =
 
 
 
+
 const useTreenomeLayerData = (
-  data,
+  my_data,
   treenomeState,
   settings,
-  selectedDetails
+  selectedDetails,
+  mutationChecker
+  
 ) => {
-  const my_data = data.base_data
-  
-  
-  const [treenomeLayerData, setTreenomeLayerData] = useState({});
+ 
   
   const [to_children, root_id] = useMemo(() => make_to_children(my_data), [my_data]);
   const postorder = useMemo(() => postorder_traversal(root_id, to_children, my_data), [root_id, to_children, my_data]);
   const [minY, maxY] = useMemo(() => min_and_max_y(postorder, to_children, my_data), [postorder, to_children, my_data]);
-  const mutationChecker = useMemo(
-    () => (mutation) => mutation.gene!=="nt"
-    ,[])
+
   const allLines = useMemo(() => getAllLines(my_data, to_children, root_id, minY, maxY,mutationChecker), [my_data, to_children, root_id,minY,maxY,mutationChecker]);
 
   return {allLines}
