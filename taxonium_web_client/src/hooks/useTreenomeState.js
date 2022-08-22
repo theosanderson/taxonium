@@ -30,7 +30,7 @@ const useTreenomeState = (data, deckRef, view, settings) => {
         let genome = "";
         for (let mut of node.mutations) {
           if (mut.gene === "nt") {
-            if (size < mut.residue_pos){
+            if (size < mut.residue_pos) {
               size = mut.residue_pos;
             }
             genome += mut.new_residue;
