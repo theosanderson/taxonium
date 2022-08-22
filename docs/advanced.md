@@ -17,7 +17,7 @@ There are a number of things you can do customise Taxonium. They all ultimately 
 1. As a `config` parameter supplied to the URL containing a JSON string, e.g. `taxonium.org?protoUrl=xxxx&config={"title":"My tree"}`
 2. As a `configUrl` supplied to the URL pointing to a JSON file, e.g. https://taxonium.org/?protoUrl=https%3A%2F%2Fmpx-tree.vercel.app%2Fmpx.jsonl.gz&configUrl=https://mpx-tree.vercel.app/config.json
 3. As one of several custom parameters to `usher_to_taxonium`, e.g. `--title`,`--overlay_html`.
-4. As a `--config_json` file passed to [taxoniumtools.md](usher_to_taxonium).
+4. As a `--config_json` file passed to [usher_to_taxonium](taxoniumtools.md).
 
 #### What you can configure
 
