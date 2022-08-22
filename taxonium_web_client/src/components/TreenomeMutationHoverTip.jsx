@@ -14,8 +14,20 @@ const TreenomeMutationHoverTip = ({
   if (!hoveredMutation || !hoveredMutation.m) {
     return null;
   }
-  const posKey = hoveredMutation.m.gene + ":" + hoveredMutation.m.residue_pos;
-  if (hoveredMutation.m.new_residue === treenomeReferenceInfo["aa"][posKey]) {
+  const isAa = hoveredMutation.m.type === "aa";
+  const posKey = isAa
+    ? hoveredMutation.m.gene + ":" + hoveredMutation.m.residue_pos
+    : hoveredMutation.m.residue_pos;
+  if (
+    isAa &&
+    hoveredMutation.m.new_residue === treenomeReferenceInfo["aa"][posKey]
+  ) {
+    return null;
+  }
+  if (
+    !isAa &&
+    hoveredMutation.m.new_residue === treenomeReferenceInfo["nt"][posKey]
+  ) {
     return null;
   }
 
@@ -35,7 +47,9 @@ const TreenomeMutationHoverTip = ({
         <div className="mutations text-xs">
           <div className="inline-block">
             <span>{hoveredMutation.m.gene}:</span>
-            <span style={{}}>{treenomeReferenceInfo["aa"][posKey]}</span>
+            <span style={{}}>
+              {treenomeReferenceInfo[isAa ? "aa" : "nt"][posKey]}
+            </span>
             <span>{hoveredMutation.m.residue_pos}</span>
             <span style={{}}>{hoveredMutation.m.new_residue}</span>
           </div>

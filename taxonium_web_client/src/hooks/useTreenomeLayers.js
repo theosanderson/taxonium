@@ -76,6 +76,21 @@ const useTreenomeLayers = (
     }
   }, [settings.isCov2Tree]);
 
+  const ntToCov2Gene = useCallback(
+    (nt) => {
+      if (cov2Genes !== null) {
+        for (const gene of Object.keys(cov2Genes)) {
+          const [start, end, color] = cov2Genes[gene];
+          if (nt >= start && nt <= end) {
+            return gene;
+          }
+        }
+      }
+      return null;
+    },
+    [cov2Genes]
+  );
+
   let layers = [];
 
   const [
@@ -203,18 +218,33 @@ const useTreenomeLayers = (
     onHover: (info) => setHoverInfo(info),
     pickable: true,
     getColor: (d) => {
+      let color = [0, 0, 0];
       switch (d.m.new_residue) {
         case "A":
-          return [0, 0, 0];
+          color = [0, 0, 0];
+          break;
         case "C":
-          return [60, 60, 60];
+          color = [60, 60, 60];
+          break;
         case "G":
-          return [120, 120, 120];
+          color = [120, 120, 120];
+          break;
         case "T":
-          return [180, 180, 180];
+          color = [180, 180, 180];
+          break;
         default:
-          return [0, 0, 0];
+          color = [0, 0, 0];
+          break;
       }
+      if (cov2Genes !== null) {
+        if (d.m.new_residue === treenomeReferenceInfo["nt"][d.m.residue_pos]) {
+          const gene = ntToCov2Gene(d.m.residue_pos);
+          if (gene !== null) {
+            return cov2Genes[gene][2].map((c) => 245 - 0.2 * (245 - c));
+          }
+        }
+      }
+      return color;
     },
     modelMatrix: modelMatrixFixedX,
     getSourcePosition: (d) => {
