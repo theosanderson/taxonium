@@ -79,7 +79,8 @@ const min_and_max_y = (postorder, to_children, data) =>{
 
   
 
-const nodes_satisfying_function = (starting_node_id, data, to_children, matching_function) => {
+const nodes_satisfying_function = (starting_node_id, data, to_children, matching_function, minY, maxY, minYdiff) => {
+  
   let satisfying_nodes = [];
   let next_nodes = []
   const my_children = to_children[starting_node_id];
@@ -95,7 +96,10 @@ const nodes_satisfying_function = (starting_node_id, data, to_children, matching
     const children = to_children[next_node_id];
     if(children){
       children.forEach(child => {
+        if (maxY[child] - minY[child] > minYdiff) {
+         // console.log("maxY[child]", maxY[child], "minY[child]", minY[child], minYdiff);
         next_nodes.push(child);
+        }
       }
       );
     }
@@ -105,11 +109,11 @@ const nodes_satisfying_function = (starting_node_id, data, to_children, matching
    
 }
 
-const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY) => {
+const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY, minYdiff) => {
 
   const has_mutation_in_same_place = (node) =>
     node.mutations.some( m=> m.residue_pos === mutation.residue_pos && m.gene === mutation.gene);
-  const nodes_with_mutations_away = nodes_satisfying_function(node.node_id, data, to_children, has_mutation_in_same_place);
+  const nodes_with_mutations_away = nodes_satisfying_function(node.node_id, data, to_children, has_mutation_in_same_place, minY, maxY, minYdiff);
   //console.log("nodes_with_mutations_away", nodes_with_mutations_away);
   const ranges_negative = nodes_with_mutations_away.map(node_id => [minY[node_id], maxY[node_id]]);
   ranges_negative.sort((a,b) => a[0] - b[0]);
@@ -137,7 +141,7 @@ const node_mutation_to_lines = (node,mutation, to_children, data,minY,maxY) => {
 }
 ;
 
-const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker) => {
+const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker, minYDiff) => {
   console.log("getAllLines start");
   if(!data || !data.nodes){
     return [];
@@ -153,7 +157,7 @@ const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker) =
     node.mutations.forEach(mutation => {
       //console.log("mutation", mutation);
       if (mutation_checker(mutation)) {
-      const result = node_mutation_to_lines(node,mutation, to_children, data,minY, maxY);
+      const result = node_mutation_to_lines(node,mutation, to_children, data,minY, maxY, minYDiff);
       result.forEach(line => {
         lines.push(line);
       }
@@ -165,7 +169,9 @@ const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker) =
     const children = to_children[next_node_id]
     if(children){
       children.forEach(child => {
+        if (maxY[child] - minY[child] > minYDiff) {
         next_nodes.push(child);
+        }
       }
       );
     }
@@ -173,6 +179,7 @@ const getAllLines = (data, to_children, root_id, minY, maxY, mutation_checker) =
   }
   console.log("getAllLines end");
   console.log("lines", lines);
+
   return lines
 }
 
@@ -184,7 +191,8 @@ const useTreenomeLayerData = (
   treenomeState,
   settings,
   selectedDetails,
-  mutationChecker
+  mutationChecker,
+  minYDiff
   
 ) => {
 
@@ -195,7 +203,7 @@ const useTreenomeLayerData = (
   const postorder = useMemo(() => postorder_traversal(root_id, to_children, my_data), [root_id, to_children, my_data]);
   const [minY, maxY] = useMemo(() => min_and_max_y(postorder, to_children, my_data), [postorder, to_children, my_data]);
 
-  const allLines = useMemo(() => getAllLines(my_data, to_children, root_id, minY, maxY,mutationChecker), [my_data, to_children, root_id,minY,maxY,mutationChecker]);
+  const allLines = useMemo(() => getAllLines(my_data, to_children, root_id, minY, maxY,mutationChecker, minYDiff), [my_data, to_children, root_id,minY,maxY,mutationChecker, minYDiff]);
 
   return {allLines}
 }

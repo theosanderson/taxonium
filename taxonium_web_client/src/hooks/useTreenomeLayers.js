@@ -92,10 +92,12 @@ const useTreenomeLayers = (
   const mutationChecker = useCallback( (mutation) => mutation.gene !== 'nt' , []);
 
   const {allLines:baseLines} = useTreenomeLayerData(data.base_data, treenomeState, settings, selectedDetails,
-    mutationChecker);
+    mutationChecker, 0.02);
+
+  
 
   const {allLines:detailLines} = useTreenomeLayerData(data.data, treenomeState, settings, selectedDetails,
-      mutationChecker);
+      mutationChecker, data.data.nodes ? 10/data.data.nodes.length : 0.02);
 
 
 
