@@ -168,13 +168,13 @@ function App() {
         onDragLeave={onDragLeave}
       >
         <ReactTooltip
-              delayHide={400}
-              className="infoTooltip"
-              place="top"
-              backgroundColor="#e5e7eb"
-              textColor="#000"
-              effect="solid"
-            />
+          delayHide={400}
+          className="infoTooltip"
+          place="top"
+          backgroundColor="#e5e7eb"
+          textColor="#000"
+          effect="solid"
+        />
         <Toaster />
         {beingDragged && (
           <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>

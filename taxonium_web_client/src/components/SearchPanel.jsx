@@ -5,7 +5,6 @@ import { Button } from "../components/Basic";
 import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
 import { MdArrowForward, MdArrowDownward } from "react-icons/md";
 
-
 import { FaSearch, FaShare } from "react-icons/fa";
 
 import { Select } from "./Basic";
@@ -318,7 +317,6 @@ function SearchPanel({
                 <BsQuestionCircle />
               </span>
             </button>
-            
           </span>
         )}
       </div>
