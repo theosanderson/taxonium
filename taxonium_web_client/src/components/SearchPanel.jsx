@@ -11,7 +11,7 @@ import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 
 import { useState, useMemo } from "react";
-
+import ReactTooltip from "react-tooltip";
 import classNames from "classnames";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
