@@ -4,7 +4,7 @@ import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
 import { MdArrowForward, MdArrowDownward } from "react-icons/md";
-import ReactTooltip from "react-tooltip";
+
 
 import { FaSearch, FaShare } from "react-icons/fa";
 
@@ -318,14 +318,7 @@ function SearchPanel({
                 <BsQuestionCircle />
               </span>
             </button>
-            <ReactTooltip
-              delayHide={400}
-              className="infoTooltip"
-              place="top"
-              backgroundColor="#e5e7eb"
-              textColor="#000"
-              effect="solid"
-            />
+            
           </span>
         )}
       </div>
