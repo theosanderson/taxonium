@@ -3,6 +3,8 @@ import { BsTrash } from "react-icons/bs";
 import { Button, Select } from "../components/Basic";
 import { BiFile, BiLink } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
+import ReactTooltip from "react-tooltip";
+
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
@@ -36,6 +38,14 @@ export const InputSupplier = ({ inputHelper, className }) => {
 
   return (
     <div className={className}>
+      <ReactTooltip
+          delayHide={400}
+          className="infoTooltip"
+          place="top"
+          backgroundColor="#e5e7eb"
+          textColor="#000"
+          effect="solid"
+        />
       {inputs.length > 0 && <h2>Input files</h2>}
       {inputs.map((input, index) => {
         return (
