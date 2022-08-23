@@ -167,7 +167,6 @@ function App() {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        
         <Toaster />
         {beingDragged && (
           <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>

@@ -39,13 +39,13 @@ export const InputSupplier = ({ inputHelper, className }) => {
   return (
     <div className={className}>
       <ReactTooltip
-          delayHide={400}
-          className="infoTooltip"
-          place="top"
-          backgroundColor="#e5e7eb"
-          textColor="#000"
-          effect="solid"
-        />
+        delayHide={400}
+        className="infoTooltip"
+        place="top"
+        backgroundColor="#e5e7eb"
+        textColor="#000"
+        effect="solid"
+      />
       {inputs.length > 0 && <h2>Input files</h2>}
       {inputs.map((input, index) => {
         return (
