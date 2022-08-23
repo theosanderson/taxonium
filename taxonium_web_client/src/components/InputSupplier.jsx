@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { BsTrash } from "react-icons/bs";
 import { Button, Select } from "../components/Basic";
 import { BiFile, BiLink } from "react-icons/bi";
-import {BsQuestionCircle} from "react-icons/bs";
+import { BsQuestionCircle } from "react-icons/bs";
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
@@ -123,17 +123,21 @@ export const InputSupplier = ({ inputHelper, className }) => {
                       );
                     }}
                   />{" "}
-                  Ladderize tree    <button
-              style={{ cursor: "default" }}
-              data-tip="Ladderizing will preserve the tree's topology, but sort the nodes according to how many descendants they have"
-              data-html={true}
-            >
-              <span
-                style={{ display: "inline-block", verticalAlign: "middle" }}
-              >
-                <BsQuestionCircle />
-              </span>
-            </button>
+                  Ladderize tree{" "}
+                  <button
+                    style={{ cursor: "default" }}
+                    data-tip="Ladderizing will preserve the tree's topology, but sort the nodes according to how many descendants they have"
+                    data-html={true}
+                  >
+                    <span
+                      style={{
+                        display: "inline-block",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      <BsQuestionCircle />
+                    </span>
+                  </button>
                 </label>
               </div>
             )}
