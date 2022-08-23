@@ -400,13 +400,13 @@ function SearchPanel({
         </div>
       </div>
       <ReactTooltip
-          delayHide={400}
-          className="infoTooltip"
-          place="top"
-          backgroundColor="#e5e7eb"
-          textColor="#000"
-          effect="solid"
-        />
+        delayHide={400}
+        className="infoTooltip"
+        place="top"
+        backgroundColor="#e5e7eb"
+        textColor="#000"
+        effect="solid"
+      />
       {selectedDetails.nodeDetails && (
         <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none overflow-auto">
           <ListOutputModal
