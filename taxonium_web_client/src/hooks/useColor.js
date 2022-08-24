@@ -71,7 +71,7 @@ const useColor = (colorMapping) => {
       if (string === "N/A") {
         return [180, 180, 180];
       }
-      
+
       if (string === "NA") {
         return [180, 180, 180];
       }
