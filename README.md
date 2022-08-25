@@ -53,7 +53,7 @@ N.B. If you are citing the _tree_ displayed at Cov2Tree.org, please cite [the UC
 
 ## Structure
 
-Taxonium now consists of a number of components:
+Taxonium consists of a number of components:
 
 - [taxoniumtools](./taxoniumtools/) - a Python package that lets you easily generate Taxonium files from Usher protobuf files
 - [taxonium_web_client](./taxonium_web_client/) - the web client that is available at e.g. taxonium.org and let's you explore Taxonium files in your browser
@@ -77,7 +77,6 @@ We are very grateful to our contributors:
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://theo.io"><img src="https://avatars.githubusercontent.com/u/19732295?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Theo Sanderson</b></sub></a><br /><a href="https://github.com/theosanderson/taxonium/commits?author=theosanderson" title="Code">💻</a> <a href="https://github.com/theosanderson/taxonium/commits?author=theosanderson" title="Documentation">📖</a> <a href="#design-theosanderson" title="Design">🎨</a> <a href="#ideas-theosanderson" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-theosanderson" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-theosanderson" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/amkram"><img src="https://avatars.githubusercontent.com/u/6502785?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alex Kramer</b></sub></a><br /><a href="https://github.com/theosanderson/taxonium/commits?author=amkram" title="Code">💻</a> <a href="#design-amkram" title="Design">🎨</a> <a href="#ideas-amkram" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://genome.ucsc.edu/"><img src="https://avatars.githubusercontent.com/u/186983?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Angie Hinrichs</b></sub></a><br /><a href="#ideas-AngieHinrichs" title="Ideas, Planning, & Feedback">🤔</a> <a href="#data-AngieHinrichs" title="Data">🔣</a></td>
     <td align="center"><a href="https://github.com/richardgoater"><img src="https://avatars.githubusercontent.com/u/1429721?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Richard Goater</b></sub></a><br /><a href="#design-richardgoater" title="Design">🎨</a> <a href="https://github.com/theosanderson/taxonium/commits?author=richardgoater" title="Code">💻</a></td>
@@ -89,5 +88,7 @@ We are very grateful to our contributors:
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
+Alex Kramer built the _Treenome Browser_ component within Taxonium which will be described in a forthcoming publication.
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->

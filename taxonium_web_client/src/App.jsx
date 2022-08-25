@@ -30,6 +30,7 @@ const default_query = {
   backend: DEFAULT_BACKEND,
   xType: "x_dist",
   mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
+  treenomeEnabled: false,
 };
 
 if (window.location.hostname.includes("mpx.taxonium.org")) {

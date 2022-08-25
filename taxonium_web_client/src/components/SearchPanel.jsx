@@ -2,8 +2,9 @@ import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
+import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
+import { MdArrowForward, MdArrowDownward } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
-import { BsBoxArrowInUpRight } from "react-icons/bs";
 
 import { FaSearch, FaShare } from "react-icons/fa";
 
@@ -48,7 +49,10 @@ function SearchPanel({
   settings,
   backend,
   className,
+  treenomeState,
+  view,
   perNodeFunctions,
+  toggleSidebar,
 }) {
   const covSpectrumQuery = useMemo(() => {
     if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
@@ -233,6 +237,14 @@ function SearchPanel({
     <div
       className={classNames("flex flex-col px-4 divide-y text-sm", className)}
     >
+      <button onClick={toggleSidebar}>
+        <br />
+        {window.innerWidth > 768 ? (
+          <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
+        ) : (
+          <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle" />
+        )}
+      </button>
       <div className="space-y-2 py-3">
         {config.num_tips && (
           <p className="text-gray-500 text-sm">
@@ -274,6 +286,47 @@ function SearchPanel({
               ))}
             </Select>
           </label>
+        )}
+        {treenomeState.genome && treenomeState.genome.length > 0 && (
+          <span>
+            <span className="text-gray-500 text-sm">Treenome Browser:</span>
+            <input
+              name="treenomeEnabled"
+              style={{ verticalAlign: "middle" }}
+              type="checkbox"
+              className="m-3 inline-block"
+              checked={settings.treenomeEnabled}
+              onChange={(event) => {
+                console.log(settings.treenomeEnabled);
+                settings.setTreenomeEnabled(!settings.treenomeEnabled);
+
+                // view.setViewState({
+                //   ...view.viewState,
+                //  "browser-main": { zoom: -2, target: [500, 1000] },
+                // "browser-axis": { zoom: -2, target: [0, 1000] },
+                // });
+              }}
+            />
+            <button
+              style={{ cursor: "default" }}
+              data-tip="Display a browser with each genome's mutations alongside the tree.&nbsp;<a href='https://docs.taxonium.org/en/latest/treenome.html' class='tooltipLink' target='_blank'>Learn more</a>"
+              data-html={true}
+            >
+              <span
+                style={{ display: "inline-block", verticalAlign: "middle" }}
+              >
+                <BsQuestionCircle />
+              </span>
+            </button>
+            <ReactTooltip
+              delayHide={400}
+              className="infoTooltip"
+              place="top"
+              backgroundColor="#e5e7eb"
+              textColor="#000"
+              effect="solid"
+            />
+          </span>
         )}
       </div>
       <div className="py-3 space-y-2">
@@ -356,7 +409,7 @@ function SearchPanel({
         </div>
       </div>
       {selectedDetails.nodeDetails && (
-        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none">
+        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none overflow-auto">
           <ListOutputModal
             ariaHideApp={false}
             nodeId={selectedDetails.nodeDetails.node_id}

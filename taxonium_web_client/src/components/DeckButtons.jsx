@@ -29,6 +29,7 @@ export const DeckButtons = ({
   snapshot,
   zoomIncrement,
   requestOpenSettings,
+  settings,
 }) => {
   return (
     <div

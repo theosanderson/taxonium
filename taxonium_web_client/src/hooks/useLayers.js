@@ -6,6 +6,7 @@ import {
 } from "@deck.gl/layers";
 
 import { useMemo, useCallback } from "react";
+import useTreenomeLayers from "./useTreenomeLayers";
 
 const useLayers = ({
   data,
@@ -22,6 +23,9 @@ const useLayers = ({
   settings,
   isCurrentlyOutsideBounds,
   config,
+  treenomeState,
+  treenomeReferenceInfo,
+  setTreenomeReferenceInfo,
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
@@ -29,6 +33,21 @@ const useLayers = ({
   const { toRGB } = colorHook;
 
   const layers = [];
+
+  // Treenome Browser layers
+  const treenomeLayers = useTreenomeLayers(
+    treenomeState,
+    data,
+    viewState,
+    colorHook,
+    setHoverInfo,
+    settings,
+    treenomeReferenceInfo,
+    setTreenomeReferenceInfo,
+    selectedDetails,
+    isCurrentlyOutsideBounds
+  );
+  layers.push(...treenomeLayers);
 
   const getX = useCallback((node) => node[xType], [xType]);
 
@@ -76,7 +95,6 @@ const useLayers = ({
   }, [data.base_data, getX]);
 
   const detailed_scatter_data = useMemo(() => {
-    console.log("new scatter");
     return detailed_data.nodes.filter(
       (node) =>
         node.is_tip ||
@@ -291,10 +309,12 @@ const useLayers = ({
     );
   }
 
+  const proportionalToNodesOnScreen = config.num_tips / 2 ** viewState.zoom;
+
   // If leaves are fewer than max_text_number, add a text layer
   if (
-    data.data.nodes &&
-    data.data.nodes.length < 10 ** settings.thresholdForDisplayingText
+    proportionalToNodesOnScreen <
+    0.8 * 10 ** settings.thresholdForDisplayingText
   ) {
     const node_label_layer = new TextLayer({
       id: "main-text-node",
@@ -460,12 +480,17 @@ const useLayers = ({
   layers.push(minimap_bound_polygon);
 
   const layerFilter = useCallback(
-    ({ layer, viewport }) => {
+    ({ layer, viewport, renderPass }) => {
       const first_bit =
         (layer.id.startsWith("main") && viewport.id === "main") ||
         (layer.id.startsWith("mini") && viewport.id === "minimap") ||
         (layer.id.startsWith("fillin") &&
           viewport.id === "main" &&
+          isCurrentlyOutsideBounds) ||
+        (layer.id.startsWith("browser-loaded") &&
+          viewport.id === "browser-main") ||
+        (layer.id.startsWith("browser-fillin") &&
+          viewport.id === "browser-main" &&
           isCurrentlyOutsideBounds);
 
       return first_bit;
