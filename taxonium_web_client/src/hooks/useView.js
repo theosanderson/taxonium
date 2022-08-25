@@ -92,6 +92,9 @@ class MyOrthographicController extends OrthographicController {
 }
 
 const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
+  if(!deckSize){
+    return
+  }
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -1 : 0);
   globalSetZoomAxis = setZoomAxis;
