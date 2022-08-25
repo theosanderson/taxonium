@@ -126,7 +126,6 @@ const useSearch = ({
 
         return true;
       }
-   
 
       return false;
     });
