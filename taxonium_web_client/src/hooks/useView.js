@@ -233,7 +233,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       overrideZoomAxis,
     }) => {
       const localZoomAxis = overrideZoomAxis || zoomAxis;
-      
 
       // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
