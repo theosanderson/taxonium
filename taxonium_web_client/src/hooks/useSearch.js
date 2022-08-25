@@ -53,9 +53,9 @@ const useSearch = ({
     (key, this_json, boundsForQueries, setter) => {
       if (searchControllers[key]) {
         searchControllers[key].forEach((controller) => {
-          if(controller){
-          console.log("cancelling for ", key);
-          controller.abort();
+          if (controller) {
+            console.log("cancelling for ", key);
+            controller.abort();
           }
         });
       }
