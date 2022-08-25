@@ -53,8 +53,7 @@ const useSearch = ({
 
   const singleSearchWrapper = useCallback(
     (key, this_json, boundsForQueries, setter) => {
-
-      const everything = {key,this_json, boundsForQueries};
+      const everything = { key, this_json, boundsForQueries };
       const everything_string = JSON.stringify(everything);
       if (inflightSearches.includes(everything_string)) {
         return;
@@ -63,7 +62,7 @@ const useSearch = ({
 
       if (searchControllers[key]) {
         searchControllers[key].forEach((controller) => {
-          if (controller && (boundsForQueries== controller.bounds)) {
+          if (controller && boundsForQueries == controller.bounds) {
             console.log("cancelling for ", key);
             controller.con.abort();
           }
@@ -75,11 +74,16 @@ const useSearch = ({
         this_json,
         boundsForQueries,
         (x) => {
-          setInflightSearches((prev) => prev.filter((s) => s !== everything_string));
+          setInflightSearches((prev) =>
+            prev.filter((s) => s !== everything_string)
+          );
           setter(x);
         }
       );
-      searchControllers[key] = [...searchControllers[key], {con:abortController, bounds:boundsForQueries}];
+      searchControllers[key] = [
+        ...searchControllers[key],
+        { con: abortController, bounds: boundsForQueries },
+      ];
       setSearchControllers({ ...searchControllers });
     },
     [searchControllers, singleSearch]
@@ -108,21 +112,29 @@ const useSearch = ({
     );
 
     // also add any result where the result type is not complete, and the bounding box has changed
-    const result_changed = Object.keys(searchResults).filter(
-      (key) =>
-      {
-        if( !(searchResults[key].result.type === "complete")   && 
-        searchResults[key].boundingBox !== boundsForQueries ){
-          console.log("result_changed", key, searchResults[key].boundingBox, boundsForQueries);
+    const result_changed = Object.keys(searchResults).filter((key) => {
+      if (
+        !(searchResults[key].result.type === "complete") &&
+        searchResults[key].boundingBox !== boundsForQueries
+      ) {
+        console.log(
+          "result_changed",
+          key,
+          searchResults[key].boundingBox,
+          boundsForQueries
+        );
 
-          return true
-        }
-        console.log("result unchanged", key, searchResults[key], boundsForQueries);
-
-        return false
-
+        return true;
       }
-    );
+      console.log(
+        "result unchanged",
+        key,
+        searchResults[key],
+        boundsForQueries
+      );
+
+      return false;
+    });
 
     // if any json strings have changed, update the search results
     if (json_changed.length > 0) {
