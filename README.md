@@ -89,6 +89,6 @@ We are very grateful to our contributors:
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
-Alex Kramer built the _Treenome Browser_ component within Taxonium which will be described in a forthcoming publication.
+[Alex Kramer](https://corbett-lab.github.io/People/Current/alex/) at UCSC built the _Treenome Browser_ component within Taxonium which will be described in a forthcoming publication.
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
