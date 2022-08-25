@@ -117,8 +117,6 @@ export async function processNewick(data, sendStatusMessage) {
     message: "Parsing Newick file",
   });
 
-  
-
   // remove all square-bracketed comments from the string
   the_data = removeSquareBracketedComments(the_data);
 
