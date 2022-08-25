@@ -126,12 +126,7 @@ const useSearch = ({
 
         return true;
       }
-      console.log(
-        "result unchanged",
-        key,
-        searchResults[key],
-        boundsForQueries
-      );
+   
 
       return false;
     });
