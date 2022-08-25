@@ -16,6 +16,8 @@ const useSearch = ({
 }) => {
   const { singleSearch } = backend;
 
+  const [inflightSearches, setInflightSearches] = useState([]);
+
   const [searchControllers, setSearchControllers] = useState({});
 
   const searchSpec = useMemo(() => {
@@ -51,11 +53,19 @@ const useSearch = ({
 
   const singleSearchWrapper = useCallback(
     (key, this_json, boundsForQueries, setter) => {
+
+      const everything = {key,this_json, boundsForQueries};
+      const everything_string = JSON.stringify(everything);
+      if (inflightSearches.includes(everything_string)) {
+        return;
+      }
+      setInflightSearches((prev) => [...prev, everything_string]);
+
       if (searchControllers[key]) {
         searchControllers[key].forEach((controller) => {
-          if (controller) {
+          if (controller && (boundsForQueries== controller.bounds)) {
             console.log("cancelling for ", key);
-            controller.abort();
+            controller.con.abort();
           }
         });
       }
@@ -64,9 +74,12 @@ const useSearch = ({
       const { abortController } = singleSearch(
         this_json,
         boundsForQueries,
-        setter
+        (x) => {
+          setInflightSearches((prev) => prev.filter((s) => s !== everything_string));
+          setter(x);
+        }
       );
-      searchControllers[key] = [...searchControllers[key], abortController];
+      searchControllers[key] = [...searchControllers[key], {con:abortController, bounds:boundsForQueries}];
       setSearchControllers({ ...searchControllers });
     },
     [searchControllers, singleSearch]
@@ -97,8 +110,18 @@ const useSearch = ({
     // also add any result where the result type is not complete, and the bounding box has changed
     const result_changed = Object.keys(searchResults).filter(
       (key) =>
-        !(searchResults[key].result.type === "complete") &&
-        searchResults[key].boundingBox !== boundsForQueries
+      {
+        if( !(searchResults[key].result.type === "complete")   && 
+        searchResults[key].boundingBox !== boundsForQueries ){
+          console.log("result_changed", key, searchResults[key].boundingBox, boundsForQueries);
+
+          return true
+        }
+        console.log("result unchanged", key, searchResults[key], boundsForQueries);
+
+        return false
+
+      }
     );
 
     // if any json strings have changed, update the search results
