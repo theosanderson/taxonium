@@ -200,8 +200,15 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       {(singleSearchSpec.type === "mutation" ||
         singleSearchSpec.type === "genotype") && (
         <div className="pl-11 pt-2 text-gray-700">
-          <div>
-            <label className="text-sm mr-2">Gene: </label>
+          {singleSearchSpec.type === "genotype" && (
+            <div className="text-sm -mt-1">
+              (N.B. genotype searches are slow, where possible use{" "}
+              <i>mutation</i> searches instead)
+            </div>
+          )}
+
+          <div className="mt-2">
+            <label className="text-sm mr-2 ">Gene: </label>
             <Select
               value={singleSearchSpec.gene}
               onChange={(e) =>

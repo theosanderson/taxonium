@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 
@@ -15,6 +15,10 @@ const useSearch = ({
   settings,
 }) => {
   const { singleSearch } = backend;
+
+  const [inflightSearches, setInflightSearches] = useState([]);
+
+  const [searchControllers, setSearchControllers] = useState({});
 
   const searchSpec = useMemo(() => {
     return JSON.parse(query.srch);
@@ -47,6 +51,44 @@ const useSearch = ({
     setSearchLoadingStatus((prev) => ({ ...prev, [key]: status }));
   };
 
+  const singleSearchWrapper = useCallback(
+    (key, this_json, boundsForQueries, setter) => {
+      const everything = { key, this_json, boundsForQueries };
+      const everything_string = JSON.stringify(everything);
+      if (inflightSearches.includes(everything_string)) {
+        return;
+      }
+      setInflightSearches((prev) => [...prev, everything_string]);
+
+      if (searchControllers[key]) {
+        searchControllers[key].forEach((controller) => {
+          if (controller && boundsForQueries == controller.bounds) {
+            console.log("cancelling for ", key);
+            controller.con.abort();
+          }
+        });
+      }
+      searchControllers[key] = [];
+
+      const { abortController } = singleSearch(
+        this_json,
+        boundsForQueries,
+        (x) => {
+          setInflightSearches((prev) =>
+            prev.filter((s) => s !== everything_string)
+          );
+          setter(x);
+        }
+      );
+      searchControllers[key] = [
+        ...searchControllers[key],
+        { con: abortController, bounds: boundsForQueries },
+      ];
+      setSearchControllers({ ...searchControllers });
+    },
+    [searchControllers, singleSearch, inflightSearches]
+  );
+
   useEffect(() => {
     // Remove search results which are no longer in the search spec
     const spec_keys = searchSpec.map((spec) => spec.key);
@@ -70,11 +112,23 @@ const useSearch = ({
     );
 
     // also add any result where the result type is not complete, and the bounding box has changed
-    const result_changed = Object.keys(searchResults).filter(
-      (key) =>
+    const result_changed = Object.keys(searchResults).filter((key) => {
+      if (
         !(searchResults[key].result.type === "complete") &&
         searchResults[key].boundingBox !== boundsForQueries
-    );
+      ) {
+        console.log(
+          "result_changed",
+          key,
+          searchResults[key].boundingBox,
+          boundsForQueries
+        );
+
+        return true;
+      }
+
+      return false;
+    });
 
     // if any json strings have changed, update the search results
     if (json_changed.length > 0) {
@@ -96,7 +150,7 @@ const useSearch = ({
         const do_search = () => {
           setIndividualSearchLoadingStatus(key, "loading");
 
-          singleSearch(this_json, boundsForQueries, (result) => {
+          singleSearchWrapper(key, this_json, boundsForQueries, (result) => {
             setSearchResults((prevState) => {
               const new_result = {
                 boundingBox: boundsForQueries,
@@ -115,7 +169,7 @@ const useSearch = ({
                   if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
                     new_result.overview = result.data;
                   } else {
-                    singleSearch(this_json, null, (result) => {
+                    singleSearchWrapper(key, this_json, null, (result) => {
                       setSearchResults((prevState) => {
                         let new_result = prevState[key];
                         if (new_result) {
@@ -150,7 +204,14 @@ const useSearch = ({
         timeouts.current[key] = setTimeout(do_search, 500);
       });
     }
-  }, [searchSpec, searchResults, jsonSearch, singleSearch, boundsForQueries]);
+  }, [
+    searchSpec,
+    searchResults,
+    jsonSearch,
+    singleSearch,
+    singleSearchWrapper,
+    boundsForQueries,
+  ]);
 
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
