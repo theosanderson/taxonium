@@ -10,6 +10,10 @@ import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
 const emptyList = [];
 
+function removeSquareBracketedComments(str) {
+  return str.replace(/\[[^\]]*\]/g, "");
+}
+
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
     sendStatusMessage = () => {};
@@ -113,10 +117,11 @@ export async function processNewick(data, sendStatusMessage) {
     message: "Parsing Newick file",
   });
 
-  // if the tree starts with "[&R]" indicating that it is rooted remove these characters so they don't mess up parsing
-  if (the_data.startsWith("[&R]")) {
-    the_data = the_data.substring(4);
-  }
+  
+
+  // remove all square-bracketed comments from the string
+  the_data = removeSquareBracketedComments(the_data);
+
   const tree = kn_parse(the_data);
 
   function assignNumTips(node) {
