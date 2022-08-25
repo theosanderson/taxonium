@@ -201,7 +201,10 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
         singleSearchSpec.type === "genotype") && (
         <div className="pl-11 pt-2 text-gray-700">
           {singleSearchSpec.type === "genotype" && (
-          <div className="text-sm -mt-1">(N.B. genotype searches are slow, where possible use <i>mutation</i> searches instead)</div>
+            <div className="text-sm -mt-1">
+              (N.B. genotype searches are slow, where possible use{" "}
+              <i>mutation</i> searches instead)
+            </div>
           )}
 
           <div className="mt-2">
