@@ -82,7 +82,7 @@ const useSearch = ({
       searchControllers[key] = [...searchControllers[key], {con:abortController, bounds:boundsForQueries}];
       setSearchControllers({ ...searchControllers });
     },
-    [searchControllers, singleSearch]
+    [searchControllers, singleSearch, inflightSearches]
   );
 
   useEffect(() => {
