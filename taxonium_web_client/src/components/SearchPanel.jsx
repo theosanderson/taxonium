@@ -508,19 +508,9 @@ function SearchPanel({
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">
-                <div className="mt-1">
-                  <b className="font-semibold">Originating laboratory:</b>{" "}
-                  {selectedDetails.nodeDetails.acknowledgements.covv_orig_lab}
-                </div>
-                <div className="mt-1">
-                  <b className="font-semibold">Submitting laboratory:</b>{" "}
-                  {selectedDetails.nodeDetails.acknowledgements.covv_subm_lab}
-                </div>
                 <div className="mt-1 justify">
                   <b className="font-semibold">Authors:</b>{" "}
-                  {fixAuthors(
-                    selectedDetails.nodeDetails.acknowledgements.covv_authors
-                  )}
+                  {selectedDetails.nodeDetails.acknowledgements.authors}
                 </div>
               </div>
             )}
