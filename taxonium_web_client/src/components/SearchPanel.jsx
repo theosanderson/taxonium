@@ -508,12 +508,9 @@ function SearchPanel({
           <div>
             {selectedDetails.nodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">
-               
                 <div className="mt-1 justify">
                   <b className="font-semibold">Authors:</b>{" "}
-                  {
-                    selectedDetails.nodeDetails.acknowledgements.authors
-                  }
+                  {selectedDetails.nodeDetails.acknowledgements.authors}
                 </div>
               </div>
             )}
