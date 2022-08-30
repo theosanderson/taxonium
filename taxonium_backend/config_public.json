@@ -5,6 +5,7 @@
   "customNames": { "num_tips": "Descendant sequences" },
   "name_accessor": "name",
   "covspectrum_links": true,
+  "enable_genbank_acknowledgement": true,
   "keys_to_display": [
     "genotype",
     "meta_date",

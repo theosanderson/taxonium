@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "pako": "^2.0.4",
-    "taxonium_data_handling": "file:../taxonium_data_handling"
+    "taxonium_data_handling": "file:../taxonium_data_handling",
+    "xml2js": "^0.4.23"
   }
 }
