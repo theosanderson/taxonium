@@ -342,23 +342,26 @@ function get_epi_isl_url(epi_isl) {
   }
 }
 
-async function getGenBankAuthors(genbank_accession){
-  
-      const genbank_xml_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=" + genbank_accession + "&rettype=gb&retmode=xml";
-      const genbank_xml = await axios.get(genbank_xml_url);
-      const genbank_xml_json = await xml2js.parseStringPromise(genbank_xml.data);
-  
-  let authors = genbank_xml_json['GBSet']['GBSeq'][0]['GBSeq_references'][0]['GBReference'][0]['GBReference_authors'][0]["GBAuthor"]
-  authors = authors.map(x=>
-    {
-      const [last,first] = x.split(",")
-      return first+" "+last
-    })
-    return(authors)
-    
-    //['GBSeq_xrefs'][0]['GBXref'])
-  
-  }
+async function getGenBankAuthors(genbank_accession) {
+  const genbank_xml_url =
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=" +
+    genbank_accession +
+    "&rettype=gb&retmode=xml";
+  const genbank_xml = await axios.get(genbank_xml_url);
+  const genbank_xml_json = await xml2js.parseStringPromise(genbank_xml.data);
+
+  let authors =
+    genbank_xml_json["GBSet"]["GBSeq"][0]["GBSeq_references"][0][
+      "GBReference"
+    ][0]["GBReference_authors"][0]["GBAuthor"];
+  authors = authors.map((x) => {
+    const [last, first] = x.split(",");
+    return first + " " + last;
+  });
+  return authors;
+
+  //['GBSeq_xrefs'][0]['GBXref'])
+}
 
 app.get("/node_details/", async (req, res) => {
   const start_time = Date.now();
@@ -371,23 +374,21 @@ app.get("/node_details/", async (req, res) => {
   const detailed_node = { ...node, mutations: node_mutations };
   // If node name starts with EPI_ISL_, then get the URL
 
-  if(config.enable_genbank_acknowledgement && detailed_node.meta_genbank_accession){
+  if (
+    config.enable_genbank_acknowledgement &&
+    detailed_node.meta_genbank_accession
+  ) {
     const genbank_accession = detailed_node.meta_genbank_accession;
-    let authors
+    let authors;
     try {
-    authors = await getGenBankAuthors(genbank_accession)
+      authors = await getGenBankAuthors(genbank_accession);
+    } catch (e) {
+      console.log("Error getting authors", e);
     }
-    catch(e){
-      console.log("Error getting authors",e)
-    }
-    if(authors){
-      detailed_node.acknowledgements = {authors: authors.join(", ")}
+    if (authors) {
+      detailed_node.acknowledgements = { authors: authors.join(", ") };
     }
   }
-
-
-
-
 
   if (detailed_node.name.startsWith("EPI_ISL_")) {
     const acknowledgements_url = get_epi_isl_url(detailed_node.name);
