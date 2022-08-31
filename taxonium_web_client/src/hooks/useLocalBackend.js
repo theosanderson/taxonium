@@ -129,7 +129,7 @@ function useLocalBackend(uploaded_data, proto) {
         );
         setResult(receivedData);
       };
-      return { abortController: false };
+      return { abortController: {abort: ()=> console.log("no controller for local") } };
     },
     []
   );
