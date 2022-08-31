@@ -288,47 +288,50 @@ function SearchPanel({
             </Select>
           </label>
         )}
-        {treenomeState.genome && treenomeState.genome.length > 0 && window.location && !window.location.href.includes("disabletreenome") && (
-          <span>
-            <span className="text-gray-500 text-sm">Treenome Browser:</span>
-            <input
-              name="treenomeEnabled"
-              style={{ verticalAlign: "middle" }}
-              type="checkbox"
-              className="m-3 inline-block"
-              checked={settings.treenomeEnabled}
-              onChange={(event) => {
-                console.log(settings.treenomeEnabled);
-                settings.setTreenomeEnabled(!settings.treenomeEnabled);
+        {treenomeState.genome &&
+          treenomeState.genome.length > 0 &&
+          window.location &&
+          !window.location.href.includes("disabletreenome") && (
+            <span>
+              <span className="text-gray-500 text-sm">Treenome Browser:</span>
+              <input
+                name="treenomeEnabled"
+                style={{ verticalAlign: "middle" }}
+                type="checkbox"
+                className="m-3 inline-block"
+                checked={settings.treenomeEnabled}
+                onChange={(event) => {
+                  console.log(settings.treenomeEnabled);
+                  settings.setTreenomeEnabled(!settings.treenomeEnabled);
 
-                // view.setViewState({
-                //   ...view.viewState,
-                //  "browser-main": { zoom: -2, target: [500, 1000] },
-                // "browser-axis": { zoom: -2, target: [0, 1000] },
-                // });
-              }}
-            />
-            <button
-              style={{ cursor: "default" }}
-              data-tip="Display a browser with each genome's mutations alongside the tree.&nbsp;<a href='https://docs.taxonium.org/en/latest/treenome.html' class='tooltipLink' target='_blank'>Learn more</a>"
-              data-html={true}
-            >
-              <span
-                style={{ display: "inline-block", verticalAlign: "middle" }}
+                  // view.setViewState({
+                  //   ...view.viewState,
+                  //  "browser-main": { zoom: -2, target: [500, 1000] },
+                  // "browser-axis": { zoom: -2, target: [0, 1000] },
+                  // });
+                }}
+              />
+              <button
+                style={{ cursor: "default" }}
+                data-tip="Display a browser with each genome's mutations alongside the tree.&nbsp;<a href='https://docs.taxonium.org/en/latest/treenome.html' class='tooltipLink' target='_blank'>Learn more</a>"
+                data-html={true}
               >
-                <BsQuestionCircle />
-              </span>
-            </button>
-            <ReactTooltip
-              delayHide={400}
-              className="infoTooltip"
-              place="top"
-              backgroundColor="#e5e7eb"
-              textColor="#000"
-              effect="solid"
-            />
-          </span>
-        )}
+                <span
+                  style={{ display: "inline-block", verticalAlign: "middle" }}
+                >
+                  <BsQuestionCircle />
+                </span>
+              </button>
+              <ReactTooltip
+                delayHide={400}
+                className="infoTooltip"
+                place="top"
+                backgroundColor="#e5e7eb"
+                textColor="#000"
+                effect="solid"
+              />
+            </span>
+          )}
       </div>
       <div className="py-3 space-y-2">
         <div className="flex space-x-2">
