@@ -288,7 +288,7 @@ function SearchPanel({
             </Select>
           </label>
         )}
-        {treenomeState.genome && treenomeState.genome.length > 0 && (
+        {treenomeState.genome && treenomeState.genome.length > 0 && window.location && !window.location.href.includes("disabletreenome") && (
           <span>
             <span className="text-gray-500 text-sm">Treenome Browser:</span>
             <input
