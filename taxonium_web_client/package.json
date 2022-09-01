@@ -40,6 +40,7 @@
     "readable-web-to-node-stream": "^3.0.2",
     "scale-color-perceptual": "^1.1.2",
     "tailwindcss": ">=3.1.0",
+    "taxonium": "file:../taxonium",
     "taxonium_data_handling": "file:../taxonium_data_handling",
     "web-vitals": "^1.0.1",
     "webpack": "^5.72.0",
