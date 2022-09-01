@@ -1,8 +1,17 @@
-import filtering from "taxonium_data_handling/filtering.js";
-import { getNextstrainSubtreeJson } from "taxonium_data_handling/exporting.js";
-import { processJsonl } from "taxonium_data_handling/importing.js";
+
+
+import taxonium_data_handling from "taxonium-data-handling";
+import commonjs from 'rollup-plugin-commonjs';
 import { processNewickAndMetadata } from "../utils/processNewick.js";
 import { processNextstrain } from "../utils/processNextstrain.js";
+
+
+const filtering = taxonium_data_handling.filtering
+const exporting = taxonium_data_handling.exporting;
+const getNextstrainSubtreeJson = exporting.getNextstrainSubtreeJson;
+const importing = taxonium_data_handling.importing;
+const processJsonl = importing.processJsonl;
+
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 

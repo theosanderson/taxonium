@@ -1,10 +1,12 @@
 import React, { useCallback, useMemo, useEffect, useState } from "react";
-
+import taxonium_data_handling from "taxonium_data_handling";
+import pako from "pako";
+import axios from "axios";
 import BackendWorker from 'web-worker:../webworkers/localBackendWorker.js';
 
 // test
 console.log("new worker");
-const worker = new BackendWorker();
+const worker = new BackendWorker({}, taxonium_data_handling, pako, axios)
 
 let onQueryReceipt = (receivedData) => {};
 let onStatusReceipt = (receivedData) => {
