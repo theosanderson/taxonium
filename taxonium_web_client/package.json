@@ -1,5 +1,5 @@
 {
-  "name": "taxonium",
+  "name": "taxonium_app",
   "version": "2.0.0",
   "private": true,
   "dependencies": {
