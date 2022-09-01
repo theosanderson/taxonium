@@ -1,5 +1,6 @@
 import postcss from "rollup-plugin-postcss";
 import babel from "@rollup/plugin-babel";
+import webWorkerLoader from 'rollup-plugin-web-worker-loader';
 
 export default {
     input: "./index.js",
@@ -22,6 +23,7 @@ export default {
             babelHelpers: "bundled",
             exclude: "node_modules/**",
           }),
+          webWorkerLoader({targetPlatform: "browser"}),
       ],
       external: ["react", "react-dom"],
   }

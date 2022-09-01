@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 export const useSettings = ({ query, updateQuery }) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);

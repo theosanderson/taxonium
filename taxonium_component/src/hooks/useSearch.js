@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 

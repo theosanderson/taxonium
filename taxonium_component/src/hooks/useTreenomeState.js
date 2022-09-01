@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState, useEffect } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 
 const useTreenomeState = (data, deckRef, view, settings) => {
   const [yBounds, setYBounds] = useState([0, 0]);

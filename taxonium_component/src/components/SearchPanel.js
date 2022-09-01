@@ -1,3 +1,4 @@
+import React from "react";
 import SearchTopLayerItem from "./SearchTopLayerItem";
 import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";

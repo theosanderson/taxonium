@@ -1,6 +1,6 @@
 {
   "name": "taxonium",
-  "main": "index.js",
+  "main": "output.js",
   "version": "2.0.0",
   "private": false,
   "dependencies": {
@@ -25,7 +25,6 @@
     "commander": "^9.0.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
-    "craco": "^0.0.3",
     "deck.gl": "^8.6.6",
     "jsonl": "^1.1.2",
     "lodash": "^4.17.21",
@@ -33,14 +32,11 @@
     "node-polyfill-webpack-plugin": "^1.1.4",
     "pako": "^2.0.4",
     "process": "^0.11.10",
-    "react": "^17.0.2",
     "react-circular-progressbar": "^2.0.4",
     "react-debounce-input": "^3.2.3",
-    "react-dom": "^17.0.2",
     "react-hot-toast": "^2.2.0",
     "react-icons": "^4.2.0",
     "react-modal": "^3.15.1",
-    "react-router-dom": "^5.2.0",
     "react-scripts": "5.0.0",
     "react-spinners": "^0.11.0",
     "react-tooltip": "^4.2.21",
@@ -81,7 +77,8 @@
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "postcss": "8"
+    "postcss": "8",
+    "rollup-plugin-web-worker-loader": "^1.6.1"
   },
   "peerDependencies": {
     "react": "^17.0.1",

@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
+
+import BackendWorker from 'web-worker:../webworkers/localBackendWorker.js';
 
 // test
 console.log("new worker");
-const worker = new Worker(
-  new URL("../webworkers/localBackendWorker.js", import.meta.url)
-);
+const worker = new BackendWorker();
 
 let onQueryReceipt = (receivedData) => {};
 let onStatusReceipt = (receivedData) => {

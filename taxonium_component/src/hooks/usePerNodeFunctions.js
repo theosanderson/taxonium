@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 function usePerNodeFunctions(data, config) {
   const getNodeGenotype = (node_id) => {

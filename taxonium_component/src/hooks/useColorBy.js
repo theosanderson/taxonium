@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useCallback } from "react";
+import React, { useMemo, useEffect, useCallback } from "react";
 
 let colorCache = {};
 

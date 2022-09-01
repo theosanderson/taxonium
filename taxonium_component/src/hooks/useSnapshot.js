@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 const useSnapshot = (deckRef) => {
   const snapshot = useCallback(() => {

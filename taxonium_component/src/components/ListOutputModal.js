@@ -1,5 +1,5 @@
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import { useState, useEffect } from "react";
 
 const ListOutputModal = ({
   backend,

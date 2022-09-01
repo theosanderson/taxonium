@@ -5,7 +5,7 @@ import {
   TextLayer,
 } from "@deck.gl/layers";
 
-import { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
 
 const useLayers = ({

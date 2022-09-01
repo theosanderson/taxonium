@@ -9,14 +9,14 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useMemo, useState, useRef } from "react";
+
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
-import { MdArrowBack, MdArrowUpward } from "react-icons/md";
-import { useEffect } from "react";
-import { useCallback } from "react";
+
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import {MdArrowBack, MdArrowUpward} from "react-icons/md";
 
 const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
   ? "https://www.epicov.org/epi3/frontend"

@@ -1,7 +1,7 @@
 // https://github.com/baruchiro/use-route-as-state
 // (via @richardgoater)
 
-import { useCallback, useMemo, useEffect, useRef } from "react";
+import React, { useCallback, useMemo, useEffect, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 const queryParamsToObject = (search) => {

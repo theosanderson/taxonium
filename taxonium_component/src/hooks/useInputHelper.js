@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 
 function guessIfCompressed(file_object) {
   //return true if gzipped and false if not

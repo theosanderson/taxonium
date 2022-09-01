@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import scale from "scale-color-perceptual";
 
 let rgb_cache = {};

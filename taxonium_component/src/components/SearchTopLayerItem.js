@@ -1,3 +1,4 @@
+import React from "react";
 import SearchItem from "./SearchItem";
 import { FaSearch, FaLink, FaTrash } from "react-icons/fa";
 import { useCallback, useState } from "react";

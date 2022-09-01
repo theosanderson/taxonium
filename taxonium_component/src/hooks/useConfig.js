@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
   const [config, setConfig] = useState({

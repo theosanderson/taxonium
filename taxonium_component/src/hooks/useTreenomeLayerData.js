@@ -1,4 +1,7 @@
-import { useCallback, useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
+
+import TreenomeWorker from 'web-worker:../webworkers/treenomeWorker.js';
+
 
 const useTreenomeLayerData = (
   data,
@@ -18,7 +21,7 @@ const useTreenomeLayerData = (
   const [currentJobId, setCurrentJobId] = useState(null);
   const worker = useMemo(
     () =>
-      new Worker(new URL("../webworkers/treenomeWorker.js", import.meta.url)),
+      new TreenomeWorker(),
     []
   );
 

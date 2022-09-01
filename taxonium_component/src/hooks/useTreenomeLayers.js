@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import useTreenomeLayerData from "./useTreenomeLayerData";
 

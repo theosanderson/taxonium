@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 function useNodeDetails(nickname, backend) {
   const [nodeDetails, setNodeDetails] = useState(null);
