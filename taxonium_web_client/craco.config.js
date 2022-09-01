@@ -23,6 +23,14 @@ module.exports = {
             test: /\.mjs$/,
             use: [],
           },
+          {
+            test: /\.css$/,
+            use: [
+              'style-loader',
+              'css-loader'
+              'postcss-loader'
+            ]
+          }
         ],
       },
     },
