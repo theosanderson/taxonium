@@ -8,7 +8,7 @@ import { FaGithub } from "react-icons/fa";
 import useQueryAsState from "./hooks/useQueryAsState";
 import classNames from "classnames";
 
-import {Taxonium} from "taxonium"
+import { Taxonium } from "taxonium";
 import { useInputHelper } from "./hooks/useInputHelper";
 
 import { getDefaultSearch } from "./utils/searchUtil";
@@ -16,7 +16,6 @@ import InputSupplier from "./components/InputSupplier";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { Toaster } from "react-hot-toast";
 const first_search = getDefaultSearch("aa1");
-
 
 const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
   ? "https://tree.epicov.org:8443"

@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useEffect, useState } from "react";
 
-import TreenomeWorker from 'web-worker:../webworkers/treenomeWorker.js';
-
+import TreenomeWorker from "web-worker:../webworkers/treenomeWorker.js";
 
 const useTreenomeLayerData = (
   data,
@@ -19,11 +18,7 @@ const useTreenomeLayerData = (
   const [didFirstNt, setDidFirstNt] = useState(false);
 
   const [currentJobId, setCurrentJobId] = useState(null);
-  const worker = useMemo(
-    () =>
-      new TreenomeWorker(),
-    []
-  );
+  const worker = useMemo(() => new TreenomeWorker(), []);
 
   worker.onmessage = useCallback(
     (e) => {

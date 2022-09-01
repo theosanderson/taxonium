@@ -15,8 +15,14 @@ import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import {MdArrowBack, MdArrowUpward} from "react-icons/md";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
+import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 
 const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
   ? "https://www.epicov.org/epi3/frontend"

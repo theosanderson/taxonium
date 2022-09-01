@@ -1,1 +1,1 @@
-export { default as Taxonium } from "./src/Taxonium"
+export { default as Taxonium } from "./src/Taxonium";

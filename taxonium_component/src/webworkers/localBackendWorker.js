@@ -1,12 +1,9 @@
-
-
 import taxonium_data_handling from "taxonium-data-handling";
-import commonjs from 'rollup-plugin-commonjs';
+import commonjs from "rollup-plugin-commonjs";
 import { processNewickAndMetadata } from "../utils/processNewick.js";
 import { processNextstrain } from "../utils/processNextstrain.js";
 
-
-const filtering = taxonium_data_handling.filtering
+const filtering = taxonium_data_handling.filtering;
 const exporting = taxonium_data_handling.exporting;
 const getNextstrainSubtreeJson = exporting.getNextstrainSubtreeJson;
 const importing = taxonium_data_handling.importing;
