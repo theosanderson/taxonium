@@ -1,0 +1,92 @@
+{
+  "name": "taxonium",
+  "version": "2.0.0",
+  "private": false,
+  "main" : "dist/bundle.js",
+  "dependencies": {
+    "@babel/preset-react": "^7.18.6",
+    "@craco/craco": "^6.1.2",
+    "@fontsource/roboto": "^4.5.5",
+    "@jbrowse/react-linear-genome-view": "^2.1.0",
+    "@tailwindcss/forms": "^0.5.2",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "JSONStream": "^1.3.5",
+    "autoprefixer": "^10.4.8",
+    "axios": "^0.27.2",
+    "binary-search": "^1.3.6",
+    "classnames": "^2.3.1",
+    "commander": "^9.0.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "css-loader": "^6.7.1",
+    "deck.gl": "^8.6.6",
+    "jsonl": "^1.1.2",
+    "lodash": "^4.17.21",
+    "lzma-native": "^8.0.6",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "pako": "^2.0.4",
+    "postcss-loader": "^7.0.1",
+    "process": "^0.11.10",
+
+    "react-circular-progressbar": "^2.0.4",
+    "react-debounce-input": "^3.2.3",
+
+    "react-hot-toast": "^2.2.0",
+    "react-icons": "^4.2.0",
+    "react-modal": "^3.15.1",
+
+    "react-spinners": "^0.11.0",
+    "react-tooltip": "^4.2.21",
+    "readable-web-to-node-stream": "^3.0.2",
+    "scale-color-perceptual": "^1.1.2",
+    "style-loader": "^3.3.1",
+    "tailwindcss": ">=3.1.0",
+    "taxonium_data_handling": "file:../taxonium_data_handling",
+    "web-vitals": "^1.0.1",
+    "webpack": "^5.74.0",
+    "webpack-dev-server": "^4.10.1",
+    "yargs": "^17.3.1"
+  },
+  "scripts": {
+    "start": "craco  start",
+    "build": "craco  build",
+    "test": "craco  test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.13",
+    "@babel/preset-env": "^7.18.10",
+    "babel-loader": "^8.2.5",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "postcss": "8",
+    "webpack-cli": "^4.10.0"
+  }
+  ,
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.3.0"
+  }
+}

@@ -50,5 +50,3 @@ public-latest.metadata.tsv.gz
 public-2020-12-08.all.plus.cogUk.12-30.masked.pb
 process/nodelist.pb.gz
 process/date_comparison.tsv.gz
-
-dist/**

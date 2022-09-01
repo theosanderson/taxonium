@@ -16,7 +16,7 @@ import FirefoxWarning from "./components/FirefoxWarning";
 import { Toaster } from "react-hot-toast";
 const first_search = getDefaultSearch("aa1");
 
-const Taxonium = React.lazy(() => import("./Taxonium"));
+import {Taxonium} from 'taxonium'
 
 const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
   ? "https://tree.epicov.org:8443"
