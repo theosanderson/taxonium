@@ -108,19 +108,15 @@ async function cleanup(tree) {
   });
 }
 
-
-function extractNewickFromNexus(nexus){
+function extractNewickFromNexus(nexus) {
   // nexus is a string in nexus format.
   // we want to extract the first tree in the file in Newick format.
   // we want to be case insensitive.
-  
+
   const trees_block = nexus.match(/begin trees;(.|\n)*?end;/i)[0];
   const tree = trees_block.match(/tree\s+\S+\s*=\s*(.|\n)*?;/i)[0];
-  const newick = tree.match(/=\s*(.|\n)*?;/i)[0].slice(1,-1);
+  const newick = tree.match(/=\s*(.|\n)*?;/i)[0].slice(1, -1);
   return newick;
-
-
-
 }
 
 export async function processNewick(data, sendStatusMessage) {
@@ -136,10 +132,9 @@ export async function processNewick(data, sendStatusMessage) {
   the_data = removeSquareBracketedComments(the_data);
 
   // check if the data is in nexus format
-  if (the_data.match(/begin trees;/i)){
+  if (the_data.match(/begin trees;/i)) {
     the_data = extractNewickFromNexus(the_data);
   }
-  
 
   const tree = kn_parse(the_data);
 
