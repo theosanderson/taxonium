@@ -10,7 +10,6 @@ import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
 const emptyList = [];
 
-
 function removeSquareBracketedComments(str) {
   return str.replace(/\[[^\]]*\]/g, "");
 }
@@ -204,14 +203,13 @@ export async function processMetadataFile(data, sendStatusMessage) {
 
   const lines = the_data.split("\n");
   const output = new Map();
-  let splitFunction
+  let splitFunction;
 
   if (data.filename.includes("tsv")) {
     splitFunction = (x) => x.split("\t");
   } else if (data.filename.includes("csv")) {
     // remove any double quotes
     splitFunction = (x) => x.split(",").map((x) => x.replace(/"/g, ""));
-    
   } else {
     sendStatusMessage({
       error: "Unknown file type for metadata, should be csv or tsv",
@@ -222,13 +220,13 @@ export async function processMetadataFile(data, sendStatusMessage) {
   let headers;
 
   lines.forEach((line, i) => {
-    if (i % 10000 === 0 ) {
+    if (i % 10000 === 0) {
       sendStatusMessage({
         message: "Parsing metadata file",
         percentage: (i / lines.length) * 100,
       });
-      
-      console.log(i)
+
+      console.log(i);
     }
     if (i === 0) {
       headers = splitFunction(line);
@@ -246,10 +244,8 @@ export async function processMetadataFile(data, sendStatusMessage) {
       values.slice(1).forEach((value, j) => {
         as_obj["meta_" + headers[j + 1]] = value;
       });
-    
+
       output.set(name, as_obj);
-      
-    
     }
   });
   sendStatusMessage({
