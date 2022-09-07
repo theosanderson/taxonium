@@ -218,10 +218,11 @@ export async function processMetadataFile(data, sendStatusMessage) {
   let headers;
 
   lines.forEach((line, i) => {
-    if (i % 10000 === 0) {
+    if (i % 100 === 0) {
       sendStatusMessage({
         message: "Parsing metadata file",
         percentage: (i / lines.length) * 100,
+        line: i
       });
     }
     if (i === 0) {
