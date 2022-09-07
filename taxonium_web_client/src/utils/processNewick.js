@@ -202,12 +202,14 @@ export async function processMetadataFile(data, sendStatusMessage) {
   the_data = await fetch_or_extract(data, logStatusToConsole, "metadata");
 
   const lines = the_data.split("\n");
-  const output = {};
-  let separator;
+  const output = new Map();
+  let splitFunction;
+
   if (data.filename.includes("tsv")) {
-    separator = "\t";
+    splitFunction = (x) => x.split("\t");
   } else if (data.filename.includes("csv")) {
-    separator = ",";
+    // remove any double quotes
+    splitFunction = (x) => x.split(",").map((x) => x.replace(/"/g, ""));
   } else {
     sendStatusMessage({
       error: "Unknown file type for metadata, should be csv or tsv",
@@ -223,11 +225,14 @@ export async function processMetadataFile(data, sendStatusMessage) {
         message: "Parsing metadata file",
         percentage: (i / lines.length) * 100,
       });
+
+      console.log(i);
     }
     if (i === 0) {
-      headers = line.split(separator);
+      headers = splitFunction(line);
     } else {
-      const values = line.split(separator);
+      const values = splitFunction(line);
+
       let name;
       if (data.taxonColumn) {
         const taxon_column_index = headers.indexOf(data.taxonColumn);
@@ -239,7 +244,8 @@ export async function processMetadataFile(data, sendStatusMessage) {
       values.slice(1).forEach((value, j) => {
         as_obj["meta_" + headers[j + 1]] = value;
       });
-      output[name] = as_obj;
+
+      output.set(name, as_obj);
     }
   });
   sendStatusMessage({
@@ -269,7 +275,7 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     message: "Assigning metadata to nodes",
   });
   tree.nodes.forEach((node) => {
-    const this_metadata = metadata[node.name];
+    const this_metadata = metadata.get(node.name);
     if (this_metadata) {
       Object.assign(node, this_metadata);
     } else {
