@@ -242,7 +242,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
         as_obj["meta_" + headers[j + 1]] = value;
       });
     
-      output.set(name, obj);
+      output.set(name, as_obj);
       
     
     }
