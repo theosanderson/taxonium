@@ -241,7 +241,17 @@ export async function processMetadataFile(data, sendStatusMessage) {
       values.slice(1).forEach((value, j) => {
         as_obj["meta_" + headers[j + 1]] = value;
       });
+      if (i % 10000 === 0 || i > 8388600) {
+        sendStatusMessage({
+          message: "Parsing metadata fileA",
+          percentage: (i / lines.length) * 100,
+        });
+      }
       output[name] = as_obj;
+      sendStatusMessage({
+        message: "Parsing metadata fileB",
+        percentage: (i / lines.length) * 100,
+      });
     }
   });
   sendStatusMessage({
