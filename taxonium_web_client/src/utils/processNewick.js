@@ -202,7 +202,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
   the_data = await fetch_or_extract(data, logStatusToConsole, "metadata");
 
   const lines = the_data.split("\n");
-  const output = {};
+  const output = new Map();
   let separator;
   if (data.filename.includes("tsv")) {
     separator = "\t";
@@ -218,7 +218,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
   let headers;
 
   lines.forEach((line, i) => {
-    if (i % 10000 === 0 || i > 8388600) {
+    if (i % 10000 === 0 ) {
       sendStatusMessage({
         message: "Parsing metadata file",
         percentage: (i / lines.length) * 100,
@@ -241,17 +241,10 @@ export async function processMetadataFile(data, sendStatusMessage) {
       values.slice(1).forEach((value, j) => {
         as_obj["meta_" + headers[j + 1]] = value;
       });
-      if (i % 10000 === 0 || i > 8388600) {
-        sendStatusMessage({
-          message: "Parsing metadata fileA",
-          percentage: (i / lines.length) * 100,
-        });
-      }
-      output[name] = as_obj;
-      sendStatusMessage({
-        message: "Parsing metadata fileB",
-        percentage: (i / lines.length) * 100,
-      });
+    
+      output.set(name, obj);
+      
+    
     }
   });
   sendStatusMessage({
@@ -281,7 +274,7 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     message: "Assigning metadata to nodes",
   });
   tree.nodes.forEach((node) => {
-    const this_metadata = metadata[node.name];
+    const this_metadata = metadata.get(node.name);
     if (this_metadata) {
       Object.assign(node, this_metadata);
     } else {
