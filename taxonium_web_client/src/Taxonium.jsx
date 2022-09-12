@@ -114,6 +114,8 @@ function Taxonium({
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
+    <>
+    
     <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
       <div
         className={
@@ -185,7 +187,7 @@ function Taxonium({
           />
         )}
       </div>
-    </div>
+    </div></>
   );
 }
 

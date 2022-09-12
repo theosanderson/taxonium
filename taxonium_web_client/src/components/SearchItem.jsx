@@ -105,10 +105,12 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   if (singleSearchSpec.type === "boolean" && !singleSearchSpec.boolean_method) {
     singleSearchSpec.boolean_method = "and";
   }
+  useEffect(() => {
+    ReactTooltip.rebuild()
+  }, [singleSearchSpec]);
 
   return (
     <>
-      <ReactTooltip />
       <Select
         className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm mr-1"
         value={singleSearchSpec.type}

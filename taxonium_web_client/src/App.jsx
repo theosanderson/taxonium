@@ -14,6 +14,7 @@ import { getDefaultSearch } from "./utils/searchUtil";
 import InputSupplier from "./components/InputSupplier";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { Toaster } from "react-hot-toast";
+import ReactTooltip from "react-tooltip";
 const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
@@ -154,6 +155,14 @@ function App() {
   const isGisaid = window.location.toString().includes("epicov.org");
   return (
     <Router>
+        <ReactTooltip
+                delayHide={400}
+                className="infoTooltip"
+                place="top"
+                backgroundColor="#e5e7eb"
+                textColor="#000"
+                effect="solid"
+              />
       <AboutOverlay
         enabled={aboutEnabled}
         setEnabled={setAboutEnabled}

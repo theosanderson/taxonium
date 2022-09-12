@@ -1,7 +1,9 @@
-import { useState, useCallback } from "react";
-import { BsTrash } from "react-icons/bs";
+import { useState, useCallback, useEffect } from "react";
+import { BsTrash,BsQuestionCircle } from "react-icons/bs";
 import { Button, Select } from "../components/Basic";
 import { BiFile, BiLink } from "react-icons/bi";
+import ReactTooltip from "react-tooltip";
+
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
@@ -22,6 +24,10 @@ const prettyTypes = {
 const fileTypes = Object.keys(prettyTypes);
 
 export const InputSupplier = ({ inputHelper, className }) => {
+  useEffect( () => {
+    ReactTooltip.rebuild();
+  });
+  window.reb = ReactTooltip.rebuild;
   const [tempURL, setTempURL] = useState("");
 
   const { inputs, setInputs } = inputHelper;
@@ -122,8 +128,21 @@ export const InputSupplier = ({ inputHelper, className }) => {
                       );
                     }}
                   />{" "}
-                  Ladderize tree
-                </label>
+                  Ladderize tree 
+                </label> <button
+                    style={{ cursor: "default" }}
+                    data-tip="Ladderizing will preserve the tree's topology, but sort the nodes according to how many descendants they have"
+                    
+                  >
+                    <span
+                      style={{
+                        display: "inline-block",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      <BsQuestionCircle />
+                    </span>
+                  </button>
               </div>
             )}
             {input.filetype.startsWith("meta_") && (
