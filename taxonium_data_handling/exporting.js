@@ -24,7 +24,8 @@ const addNucMuts = (nucMuts, node) => {
 export const getNextstrainSubtreeJson = async (
   subtree_root_id,
   nodes,
-  config, mutations
+  config,
+  mutations
 ) => {
   const subtree_root = nodes.find((node) => node.node_id === subtree_root_id);
 
