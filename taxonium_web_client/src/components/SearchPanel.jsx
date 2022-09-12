@@ -11,7 +11,7 @@ import { FaSearch, FaShare } from "react-icons/fa";
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import classNames from "classnames";
 
@@ -54,6 +54,10 @@ function SearchPanel({
   perNodeFunctions,
   toggleSidebar,
 }) {
+  useEffect(() => {
+    ReactTooltip.rebuild();
+  });
+
   const covSpectrumQuery = useMemo(() => {
     if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
       return perNodeFunctions.getCovSpectrumQuery(
@@ -322,14 +326,6 @@ function SearchPanel({
                   <BsQuestionCircle />
                 </span>
               </button>
-              <ReactTooltip
-                delayHide={400}
-                className="infoTooltip"
-                place="top"
-                backgroundColor="#e5e7eb"
-                textColor="#000"
-                effect="solid"
-              />
             </span>
           )}
       </div>

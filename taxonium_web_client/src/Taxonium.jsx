@@ -114,78 +114,80 @@ function Taxonium({
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
-    <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
-      <div
-        className={
-          sidebarOpen
-            ? "h-1/2 md:h-full w-full 2xl:w-3/4 md:flex-grow" +
-              (settings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
-            : "md:col-span-12 h-5/6 md:h-full w-full"
-        }
-      >
-        <Deck
-          statusMessage={backend.statusMessage}
-          data={data}
-          search={search}
-          view={view}
-          colorHook={colorHook}
-          colorBy={colorBy}
-          config={config}
-          ariaHideApp={false} // sadly with or without this the app is not suitable for screen readers
-          hoverDetails={hoverDetails}
-          selectedDetails={selectedDetails}
-          xType={xType}
-          settings={settings}
-          setDeckSize={setDeckSize}
-          deckSize={deckSize}
-          isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
-          treenomeState={treenomeState}
-          deckRef={deckRef}
-          jbrowseRef={jbrowseRef}
-        />
-      </div>
-
-      <div
-        className={
-          sidebarOpen
-            ? "flex-grow min-h-0 h-1/2 md:h-full 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden" +
-              (settings.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
-            : "bg-white shadow-xl"
-        }
-      >
-        {!sidebarOpen && (
-          <button onClick={toggleSidebar}>
-            <br />
-            {window.innerWidth > 768 ? (
-              <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
-            ) : (
-              <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
-            )}
-          </button>
-        )}
-
-        {sidebarOpen && (
-          <SearchPanel
-            className="flex-grow min-h-0 h-full bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
-            backend={backend}
+    <>
+      <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
+        <div
+          className={
+            sidebarOpen
+              ? "h-1/2 md:h-full w-full 2xl:w-3/4 md:flex-grow" +
+                (settings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
+              : "md:col-span-12 h-5/6 md:h-full w-full"
+          }
+        >
+          <Deck
+            statusMessage={backend.statusMessage}
+            data={data}
             search={search}
-            colorBy={colorBy}
+            view={view}
             colorHook={colorHook}
+            colorBy={colorBy}
             config={config}
+            ariaHideApp={false} // sadly with or without this the app is not suitable for screen readers
+            hoverDetails={hoverDetails}
             selectedDetails={selectedDetails}
             xType={xType}
-            setxType={setxType}
             settings={settings}
+            setDeckSize={setDeckSize}
+            deckSize={deckSize}
+            isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
             treenomeState={treenomeState}
-            view={view}
-            overlayContent={overlayContent}
-            setAboutEnabled={setAboutEnabled}
-            perNodeFunctions={perNodeFunctions}
-            toggleSidebar={toggleSidebar}
+            deckRef={deckRef}
+            jbrowseRef={jbrowseRef}
           />
-        )}
+        </div>
+
+        <div
+          className={
+            sidebarOpen
+              ? "flex-grow min-h-0 h-1/2 md:h-full 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden" +
+                (settings.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
+              : "bg-white shadow-xl"
+          }
+        >
+          {!sidebarOpen && (
+            <button onClick={toggleSidebar}>
+              <br />
+              {window.innerWidth > 768 ? (
+                <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
+              ) : (
+                <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
+              )}
+            </button>
+          )}
+
+          {sidebarOpen && (
+            <SearchPanel
+              className="flex-grow min-h-0 h-full bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
+              backend={backend}
+              search={search}
+              colorBy={colorBy}
+              colorHook={colorHook}
+              config={config}
+              selectedDetails={selectedDetails}
+              xType={xType}
+              setxType={setxType}
+              settings={settings}
+              treenomeState={treenomeState}
+              view={view}
+              overlayContent={overlayContent}
+              setAboutEnabled={setAboutEnabled}
+              perNodeFunctions={perNodeFunctions}
+              toggleSidebar={toggleSidebar}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
