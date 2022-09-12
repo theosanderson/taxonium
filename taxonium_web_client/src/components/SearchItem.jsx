@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
-import ReactTooltip from 'react-tooltip';
+import ReactTooltip from "react-tooltip";
 const number_methods = [">", "<", ">=", "<=", "=="];
 
 // title case
@@ -108,7 +108,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   return (
     <>
-    <ReactTooltip />
+      <ReactTooltip />
       <Select
         className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm mr-1"
         value={singleSearchSpec.type}
