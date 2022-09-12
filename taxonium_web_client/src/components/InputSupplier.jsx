@@ -27,7 +27,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
   useEffect( () => {
     ReactTooltip.rebuild();
   });
-  window.reb = ReactTooltip.rebuild;
+
   const [tempURL, setTempURL] = useState("");
 
   const { inputs, setInputs } = inputHelper;
