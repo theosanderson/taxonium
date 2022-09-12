@@ -20,7 +20,29 @@ This should bring up a development server showing Taxonium.
 
 ### Linking taxonium_data_handling
 
-A small amount of front-end code comes from the `taxonium_data_handling` repo. If you need to work on this code then link the taxonium data handling repo to the web client repo. (N.B. This seems a bit finicky so do check that changes to `taxonium_data_handling` manifest - if not the most fool-proof approach is to delete `node_modules/taxonium_data_handling` and run `yarn install --check-files`.)
+A small amount of front-end code comes from the `taxonium_data_handling` repo. If you need to work on this code then you can "link" the `taxonium_data_handling` to the web client repo.
+
+```
+cd taxonium_data_handling
+yarn install
+yarn link
+cd ../taxonium_web_client
+yarn link taxonium_data_handling
+```
+
+## For back-end development
+
+```
+cd taxonium_backend
+yarn install
+node server.js --data-file tfci.jsonl.gz
+```
+
+This will launch the backend server on port 8000, from a small tree file. (Though sometimes this checked in tree file gets out of date in terms of format, you can also use the latest full public tree: `https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz` but this will need more RAM).
+
+### Linking taxonium_data_handling
+
+A small amount of front-end code comes from the `taxonium_data_handling` repo. If you need to work on this code then you can "link" the `taxonium_data_handling` to the web client repo.
 
 ```
 cd taxonium_data_handling
