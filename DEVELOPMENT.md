@@ -24,6 +24,7 @@ A small amount of front-end code comes from the `taxonium_data_handling` repo. I
 
 ```
 cd taxonium_data_handling
+yarn install
 yarn link
 cd ../taxonium_web_client
 yarn link taxonium_data_handling
