@@ -397,7 +397,8 @@ onmessage = async (event) => {
       const result = await getNextstrainSubtreeJson(
         data.node_id,
         processedUploadedData.nodes,
-        data.config
+        data.config,
+        data.config.mutations
       );
       postMessage({ type: "nextstrain", data: result });
     }
