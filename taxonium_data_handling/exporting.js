@@ -1,5 +1,4 @@
-const addAAmuts = (aaMuts,node) =>
-{
+const addAAmuts = (aaMuts, node) => {
   const alreadyIn = [];
   aaMuts.forEach((m) => {
     if (alreadyIn.includes(m.gene)) {
@@ -13,15 +12,13 @@ const addAAmuts = (aaMuts,node) =>
       alreadyIn.push(m.gene);
     }
   });
+};
 
-}
-
-const addNucMuts = (nucMuts,node) =>
-{
-  node.branch_attrs.mutations['nuc'] = nucMuts.map(
+const addNucMuts = (nucMuts, node) => {
+  node.branch_attrs.mutations["nuc"] = nucMuts.map(
     (m) => `${m.previous_residue}${m.residue_pos}${m.new_residue}`
-  )
-}
+  );
+};
 
 // can be called by local or server backend
 export const getNextstrainSubtreeJson = async (
@@ -53,15 +50,12 @@ export const getNextstrainSubtreeJson = async (
     node_id: subtree_root.node_id,
     node_attrs: { div: 0 },
     branch_attrs: {
-      mutations: {
-       
-      },
+      mutations: {},
     },
   };
 
-  addAAmuts(aaMuts,treeJson);
-  addNucMuts(nucMuts,treeJson);
- 
+  addAAmuts(aaMuts, treeJson);
+  addNucMuts(nucMuts, treeJson);
 
   Object.keys(subtree_root)
     .filter((v) => v.startsWith("meta_"))
@@ -84,7 +78,7 @@ export const getNextstrainSubtreeJson = async (
         let muts = child_node.mutations.map((m) => mutations[m]);
         const nucMuts = muts.filter((m) => m.type === "nt");
         const aaMuts = muts.filter((m) => m.type === "aa");
-        
+
         const nucMutsNoAmb = nucMuts.filter(
           (m) => m.new_residue != "-" && m.previous_residue != "-"
         );
@@ -97,12 +91,12 @@ export const getNextstrainSubtreeJson = async (
           node_attrs: {
             div: currNodeDiv + nucMutsNoAmb.length,
           },
-          branch_attrs: {mutations: {}},
+          branch_attrs: { mutations: {} },
         };
 
         // TODO add div key for genetic distance
-        addAAmuts(aaMuts,childJson);
-        addNucMuts(nucMuts,childJson);
+        addAAmuts(aaMuts, childJson);
+        addNucMuts(nucMuts, childJson);
 
         Object.keys(child_node)
           .filter((v) => v.startsWith("meta_"))
