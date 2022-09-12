@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
-
+import ReactTooltip from 'react-tooltip';
 const number_methods = [">", "<", ">=", "<=", "=="];
 
 // title case
@@ -108,6 +108,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   return (
     <>
+    <ReactTooltip />
       <Select
         className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm mr-1"
         value={singleSearchSpec.type}
@@ -147,7 +148,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       {(is_text || is_multi_text) && singleSearchSpec.controls && (
         <>
           <label
-            title="Exact match"
+            data-tip="Exact match"
             className="inline-block text-xs text-gray-400 pl-2 pr-3"
           >
             <input
@@ -172,7 +173,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
             x{" "}
           </label>
           <label
-            title="Multi-line"
+            data-tip="Multi-line"
             className="inline-block text-xs text-gray-400"
           >
             <input
