@@ -155,14 +155,14 @@ function App() {
   const isGisaid = window.location.toString().includes("epicov.org");
   return (
     <Router>
-        <ReactTooltip
-                delayHide={400}
-                className="infoTooltip"
-                place="top"
-                backgroundColor="#e5e7eb"
-                textColor="#000"
-                effect="solid"
-              />
+      <ReactTooltip
+        delayHide={400}
+        className="infoTooltip"
+        place="top"
+        backgroundColor="#e5e7eb"
+        textColor="#000"
+        effect="solid"
+      />
       <AboutOverlay
         enabled={aboutEnabled}
         setEnabled={setAboutEnabled}

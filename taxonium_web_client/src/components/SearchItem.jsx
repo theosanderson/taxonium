@@ -106,7 +106,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
     singleSearchSpec.boolean_method = "and";
   }
   useEffect(() => {
-    ReactTooltip.rebuild()
+    ReactTooltip.rebuild();
   }, [singleSearchSpec]);
 
   return (
