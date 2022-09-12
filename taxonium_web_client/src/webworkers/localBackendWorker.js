@@ -398,7 +398,7 @@ onmessage = async (event) => {
         data.node_id,
         processedUploadedData.nodes,
         data.config,
-        data.config.mutations
+        processedUploadedData.mutations
       );
       postMessage({ type: "nextstrain", data: result });
     }
