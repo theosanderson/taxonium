@@ -16,6 +16,8 @@ yarn install
 yarn start
 ```
 
+This should bring up a development server showing Taxonium.
+
 
 ### Linking taxonium_data_handling
 
