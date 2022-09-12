@@ -27,7 +27,7 @@ const addNucMuts = (nucMuts,node) =>
 export const getNextstrainSubtreeJson = async (
   subtree_root_id,
   nodes,
-  config
+  config, mutations
 ) => {
   const subtree_root = nodes.find((node) => node.node_id === subtree_root_id);
 
@@ -44,7 +44,7 @@ export const getNextstrainSubtreeJson = async (
     }
   }
 
-  let muts = subtree_root.mutations.map((m) => config.mutations[m]);
+  let muts = subtree_root.mutations.map((m) => mutations[m]);
   const nucMuts = muts.filter((m) => m.type === "nt");
   const aaMuts = muts.filter((m) => m.type === "aa");
 
@@ -81,7 +81,7 @@ export const getNextstrainSubtreeJson = async (
     if (children !== undefined) {
       for (const child_id of children) {
         const child_node = lookup[child_id];
-        let muts = child_node.mutations.map((m) => config.mutations[m]);
+        let muts = child_node.mutations.map((m) => mutations[m]);
         const nucMuts = muts.filter((m) => m.type === "nt");
         const aaMuts = muts.filter((m) => m.type === "aa");
         
@@ -138,7 +138,7 @@ export const getNextstrainSubtreeJson = async (
     tree: treeJson,
     version: "v2",
   };
-  console.log("Nextstrain json: ", json);
+  //console.log("Nextstrain json: ", json);
   return json;
 };
 export default { getNextstrainSubtreeJson };

@@ -436,7 +436,8 @@ app.get("/nextstrain_json/:root_id", async (req, res) => {
   const json = await exporting.getNextstrainSubtreeJson(
     root_id,
     processedData.nodes,
-    config
+    config,
+    processedData.mutations
   );
   res.setHeader(
     "Content-Disposition",
