@@ -1,4 +1,4 @@
-# Install pre-commit hooks
+## Install pre-commit hooks
 
 We use [pre-commit.com](https://pre-commit.com/) to run a set of standard pre-commit hooks. You can install these as follows:
 
@@ -27,3 +27,7 @@ yarn link
 cd ../taxonium_web_client
 yarn link taxonium_data_handling
 ```
+
+## Codespaces
+
+We do a lot of development for the client side version in [GitHub Codespaces](https://github.com/codespaces). There is no reason that you have to do that, but the `devcontainer` set up means you can easily if you so wish.
