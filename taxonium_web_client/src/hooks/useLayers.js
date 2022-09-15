@@ -313,7 +313,7 @@ const useLayers = ({
 
   // If leaves are fewer than max_text_number, add a text layer
   if (
-    proportionalToNodesOnScreen <
+    data.data.nodes && proportionalToNodesOnScreen <
     0.8 * 10 ** settings.thresholdForDisplayingText
   ) {
     const node_label_layer = new TextLayer({
