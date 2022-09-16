@@ -249,7 +249,7 @@ def get_parser():
         "--overlay_html",
         type=str,
         help=
-        "A file containing HTML to put in the About box when this tree is loaded. This could contain information about who you are who built the tree and what data you used.",
+        "A file containing HTML to put in the About box when this tree is loaded. This could contain information about who built the tree and what data you used.",
         default=None)
     parser.add_argument(
         '--remove_after_pipe',
@@ -261,7 +261,7 @@ def get_parser():
         "--clade_types",
         type=str,
         help=
-        "Optionally specify clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'. Order must match that used in the UShER pb file.",
+        "Optionally specify clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'. Order must match that used in the UShER pb file. If you haven't specifically annotated clades in your protobuf, don't use this",
         default=None)
     parser.add_argument('--name_internal_nodes',
                         action='store_true',
