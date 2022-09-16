@@ -282,7 +282,7 @@ def get_parser():
         '--only_variable_sites',
         action='store_true',
         help=
-        "Only store information about the root sequence if there is variation somewhere in the tree. This may be removed in future versions."
+        "Only store information about the root sequence at a particular position if there is variation at that position somewhere in the tree. This helps to speed up the loading of larger genomes such as MPXV."
     )
 
     parser.add_argument(
