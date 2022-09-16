@@ -249,7 +249,7 @@ def get_parser():
         "--overlay_html",
         type=str,
         help=
-        "A file containing HTML to put in the About box when this tree is loaded. This could contain information about who you are who built the tree and what data you used.",
+        "A file containing HTML to put in the About box when this tree is loaded. This could contain information about who built the tree and what data you used.",
         default=None)
     parser.add_argument(
         '--remove_after_pipe',
@@ -261,7 +261,7 @@ def get_parser():
         "--clade_types",
         type=str,
         help=
-        "Optionally specify clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'. Order must match that used in the UShER pb file.",
+        "Optionally specify clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'. Order must match that used in the UShER pb file. If you haven't specifically annotated clades in your protobuf, don't use this",
         default=None)
     parser.add_argument('--name_internal_nodes',
                         action='store_true',
@@ -282,7 +282,7 @@ def get_parser():
         '--only_variable_sites',
         action='store_true',
         help=
-        "Only store information about the root sequence if there is variation somewhere in the tree. This may be removed in future versions."
+        "Only store information about the root sequence at a particular position if there is variation at that position somewhere in the tree. This helps to speed up the loading of larger genomes such as MPXV."
     )
 
     parser.add_argument(

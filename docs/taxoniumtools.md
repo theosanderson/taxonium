@@ -47,7 +47,7 @@ Some people ask what the "L" in JSONL is for. JSONL means "JSON Lines". Each lin
    :func: get_parser
    :prog: usher_to_taxonium
 
-   This tool with convert an UShER protobuf file into a Taxonium file. At its simplest it just takes the `-i` and `-o` parameters, describing the input and output files. But for the most complete results you can add metadata, a reference genome, or even create a time tree.
+   This tool will convert an UShER protobuf file into a Taxonium file. At its simplest it just takes the `-i` and `-o` parameters, describing the input and output files. But for the most complete results you can add metadata, a reference genome, or even create a time tree.
 
    j
       This file controls many aspects of the UI for Taxonium, such as what searches are available. You can see an example file at https://github.com/theosanderson/taxonium/blob/master/taxonium_backend/config_public.json.
