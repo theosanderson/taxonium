@@ -12,6 +12,7 @@ Here we summarise some situations of large trees that load without requring any 
 
 ### Situations that may be more complex
 
-We have observed a memory limitation somewhere between 5M and 11M sequences (dependant also on amount of metadata and mutations) on Chrome for MacOS. This appears to be due to a 2GB memory limit on web worker processes specific to this platform. Using Firefox appears to avoid this issue.
+We have observed a memory limitation somewhere between 5M and 11M sequences (dependant also on amount of metadata and mutations) on Chrome for MacOS. This appears to be due to a 2GB memory limit on web worker processes specific to this platform. Using Firefox appears to avoid this issue. **We recommend the use of Firefox if using macOS to view very large trees locally*.
 
-#### TODO: describe use of Taxonium backend
+#### Taxonium backend
+In some situations you might want to [deploy your own Taxonium backend](https://docs.taxonium.org/en/latest/advanced.html#deploying-your-own-taxonium-backend) to avoid these issues.
