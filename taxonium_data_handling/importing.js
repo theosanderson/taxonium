@@ -40,6 +40,7 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
         sendStatusMessage({
           message: `Loaded ${formatNumber(line_number)} nodes`,
           percentage: percentage.toFixed(2),
+          total: line_number == 500 ? data.header.total_nodes : undefined,
         });
       } else {
         sendStatusMessage({
