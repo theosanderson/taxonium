@@ -70,14 +70,14 @@ function useLocalBackend(uploaded_data, proto) {
       console.log("ERROR33:", receivedData.data.error);
     }
     const total_nodes = receivedData.data.total;
-    if(total && total>6000000){
+    if (total && total > 6000000) {
       // if OS is macOS
       const mac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
       const chrome = window.chrome;
-      if(chrome&&mac){
-        window.alert("This is a large tree, and you appear to be using Chrome on MacOS. If the page crashes, you may have better results in Firefox.")
-
-
+      if (chrome && mac) {
+        window.alert(
+          "This is a large tree, and you appear to be using Chrome on MacOS. If the page crashes, you may have better results in Firefox."
+        );
       }
     }
     setStatusMessage(receivedData.data);
