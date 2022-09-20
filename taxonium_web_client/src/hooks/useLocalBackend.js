@@ -70,7 +70,7 @@ function useLocalBackend(uploaded_data, proto) {
       console.log("ERROR33:", receivedData.data.error);
     }
     const total_nodes = receivedData.data.total;
-    if (total && total > 6000000) {
+    if (total_nodes && total_nodes > 6000000) {
       // if OS is macOS
       const mac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
       const chrome = window.chrome;
