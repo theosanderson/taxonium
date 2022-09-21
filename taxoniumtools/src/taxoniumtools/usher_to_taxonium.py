@@ -201,7 +201,7 @@ def get_parser():
         "--columns",
         type=str,
         help=
-        "Column names to include in the metadata, separated by columns, e.g. `pangolin_lineage,country`"
+        "Column names to include in the metadata, separated by commas, e.g. `pangolin_lineage,country`"
     )
     parser.add_argument(
         '-C',
