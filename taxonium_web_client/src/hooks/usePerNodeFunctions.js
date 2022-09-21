@@ -38,9 +38,11 @@ function usePerNodeFunctions(data, config) {
     return assembled_mutations;
   };
   const getCovSpectrumQuery = (node_id) => {
-    const genotypes = getNodeGenotype(node_id).map(
-      (m) => m.residue_pos + m.new_residue
-    );
+    const genotype = getNodeGenotype(node_id);
+    if (!genotype) {
+      return "";
+    }
+    const genotypes = genotype.map((m) => m.residue_pos + m.new_residue);
     const num_genotypes = genotypes.length;
     const query = `[${num_genotypes}-of:${genotypes.join(", ")}]`;
     const url_encoded_query = encodeURIComponent(query);
