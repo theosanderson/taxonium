@@ -6,6 +6,7 @@
   "name_accessor": "name",
   "covspectrum_links": true,
   "enable_genbank_acknowledgement": true,
+  "defaultColorByField": "meta_pango_lineage_usher",
   "keys_to_display": [
     "genotype",
     "meta_date",
