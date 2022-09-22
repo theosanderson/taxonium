@@ -287,8 +287,8 @@ const getConfig = async () => {
 
   //check if 'meta_pangolin_lineage' is in options
 
-  config.defaultColorByField = colorByOptions.includes("meta_pangolin_lineage")
-    ? "meta_pangolin_lineage"
+  config.defaultColorByField = colorByOptions.includes("meta_pango_lineage_usher")
+    ? "meta_pango_lineage_usher"
     : colorByOptions[0];
 
   config.mutations = processedUploadedData.mutations;
