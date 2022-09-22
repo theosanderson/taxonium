@@ -10,14 +10,14 @@
     "genotype",
     "meta_date",
     "meta_genbank_accession",
-    "meta_pangolin_lineage",
+    "meta_pango_lineage_usher",
     "meta_country"
   ],
   "overlay": "TODO",
   "search_types": [
     { "name": "name", "label": "Name", "type": "text_match" },
     {
-      "name": "meta_pangolin_lineage",
+      "name": "meta_pango_lineage_usher",
       "label": "PANGO lineage",
       "type": "text_exact"
     },
@@ -35,7 +35,7 @@
   ],
   "colorBy": {
     "colorByOptions": [
-      "meta_pangolin_lineage",
+      "meta_pango_lineage_usher",
       "meta_country",
       "genotype",
       "None"
