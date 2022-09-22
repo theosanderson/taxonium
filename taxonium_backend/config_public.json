@@ -2,7 +2,10 @@
   "enable_ns_download": true,
   "source": "INSDC",
   "title": "Cov2Tree",
-  "customNames": { "num_tips": "Descendant sequences" },
+  "customNames": {
+    "num_tips": "Descendant sequences",
+    "meta_pango_lineage_usher": "PANGO lineage"
+  },
   "name_accessor": "name",
   "covspectrum_links": true,
   "enable_genbank_acknowledgement": true,
