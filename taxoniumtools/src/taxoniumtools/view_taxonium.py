@@ -4,6 +4,27 @@ import argparse
 import psutil
 import os
 import time
+import socket
+
+import docker
+
+#Check if Docker is available
+
+try:
+    client = docker.from_env()
+    client.ping()
+except docker.errors.DockerException:
+    print('Docker is not running. Please install Docker, or start it, and try again.')
+    exit(1)
+
+
+def is_port_in_use(port: int) -> bool:   
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('localhost', port)) == 0
+
+def check_port_is_free(port):
+   if is_port_in_use(port):
+    raise Exception(f"Port {port} is already in use.")
 
 BACKEND_IMAGE = "theosanderson/taxonium_backend:master"
 FRONTEND_IMAGE = "theosanderson/taxonium_frontend:master"
@@ -30,38 +51,15 @@ parser.add_argument('--frontend_port',
 
 args = parser.parse_args()
 
+# check ports are available
+if not args.no_frontend:
+    check_port_is_free(args.frontend_port)
+check_port_is_free(args.backend_port)
+
+
 # get the real full path to the jsonl.gz file
 args.jsonl_gz = os.path.realpath(args.jsonl_gz)
 
-# Check if docker is installed.
-try:
-    subprocess.check_call(['docker', '--version'])
-except:
-    raise Exception(
-        'Docker is not installed. Please install Docker to use this tool.')
-
-# Check if docker is running.
-try:
-    subprocess.check_call(['docker', 'ps'])
-except:
-    raise Exception(
-        'Docker is not running. Please start Docker to use this tool.')
-
-# Check if backend image is available.
-try:
-    subprocess.check_call(['docker', 'pull', BACKEND_IMAGE])
-except:
-    raise Exception(
-        'Could not pull backend image. Please check your internet connection.')
-
-if not args.no_frontend:
-    # Check if frontend image is available.
-    try:
-        subprocess.check_call(['docker', 'pull', FRONTEND_IMAGE])
-    except:
-        raise Exception(
-            'Could not pull frontend image. Please check your internet connection.'
-        )
 
 if args.memory:
     memory = args.memory
@@ -76,62 +74,37 @@ else:
 
 # something like:
 
-backend_command = [
-    'docker',
-    'run',
-    '-d',
-    '-p',
-    f'{args.backend_port}:80',
-    '-v',
-    f'{args.jsonl_gz}:/mnt/data/data.jsonl.gz:ro',
-    '-e',
-    f'DATA_FILE=/mnt/data/data.jsonl.gz',
-    '-e',
-    f'MAXMEM={memory}',
-    #'-e',
-    #f'CONFIG_JSON=config_public.json',
-    BACKEND_IMAGE
-]
-
 print('Starting backend...')
-print(f"Running command: {' '.join(backend_command)}")
-backend_process = subprocess.Popen(backend_command,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
+backend_id = client.containers.run(BACKEND_IMAGE, ports={80:args.backend_port}, volumes={args.jsonl_gz: {'bind': '/mnt/data/data.jsonl.gz', 'mode': 'ro'}}, environment={'DATA_FILE': '/mnt/data/data.jsonl.gz', 'MAXMEM': memory}, detach=True).id
 
 
-def wait_for_first_line_of_process(process, timeout=10):
-    start_time = time.time()
-    while True:
-        if time.time() - start_time > timeout:
-            raise Exception('Timeout waiting for first line of process.')
-        line = process.stdout.readline()
-        if line:
-            return line
 
 
-backend_id = wait_for_first_line_of_process(backend_process).decode(
-    'utf-8').strip()
-print(f'Backend started with id {backend_id}.')
+print(f'Backend started')
 
 # Start frontend
 if not args.no_frontend:
-    frontend_command = [
-        'docker', 'run', '-d', '-p', f'{args.frontend_port}:80', FRONTEND_IMAGE
-    ]
     print('Starting frontend...')
-    frontend_id = subprocess.check_output(frontend_command).decode(
-        'utf-8').strip()
+    frontend_id = client.containers.run(
+        FRONTEND_IMAGE,
+        ports={80:args.frontend_port},
+        detach=True,
+    ).id
+    print(f'Frontend started')
 
-
-# Clean up
 def cleanup():
-    print('Cleaning up...')
-    if not args.no_frontend:
-        subprocess.check_call(['docker', 'kill', frontend_id])
-    subprocess.check_call(['docker', 'kill', backend_id])
-    print('Done.')
+    try:
 
+        print('Cleaning up, please wait..')
+        backend = client.containers.get(backend_id)
+        backend.stop()
+        if not args.no_frontend:
+            frontend = client.containers.get(frontend_id)
+            frontend.stop()
+        print('Done.')
+    except KeyboardInterrupt:
+        cleanup()
+        
 
 atexit.register(cleanup)
 
@@ -140,21 +113,31 @@ if args.no_frontend:
         f'The backend should be running at http://localhost:{args.backend_port}.'
     )
 else:
+    url = f"http://localhost:{args.frontend_port}/?backend=http://localhost:{args.backend_port}"
+    print("\n\n\n\n\n")
+    print("#########")
     print(
-        f'You should be able to access your tree at http://localhost:{args.frontend_port}/?backend=http://localhost:{args.backend_port} in a few minutes.'
+        f'You should be able to access your tree at {url} in a few minutes.'
     )
+    print("#########")
+    # Launch URL in the browser
+    try:
+        subprocess.run(['xdg-open', url])
+    except FileNotFoundError:
+        print("Couldn't launch browser, please open the URL manually.")
+
+    print("\n\n\n\n\n")
+    print("\n\n\n\n\n")
+    time.sleep(15)
 
 import time
 
 
+backend = client.containers.get(backend_id)
+
 def main():
-    # echo backend output from stderr or stdout to console
+    # just display the backend logs, continuously
     while True:
-        line = backend_process.stdout.readline()
-        if line:
+        for line in backend.logs(stream=True):
             print(line.decode('utf-8').strip())
-        line2 = backend_process.stderr.readline()
-        if line2:
-            print(line2.decode('utf-8').strip())
-        if not line and not line2:
-            time.sleep(0.1)
+        time.sleep(1)
