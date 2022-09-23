@@ -3,6 +3,7 @@ import subprocess
 import argparse
 import psutil
 import os
+import time
 
 BACKEND_IMAGE = "theosanderson/taxonium_backend:master"
 FRONTEND_IMAGE = "theosanderson/taxonium_frontend:master"
@@ -69,7 +70,16 @@ else:
 backend_command = ['docker', 'run', '-d', '-p', f'{args.backend_port}:80', '-v', f'{args.jsonl_gz}:/mnt/data/data.jsonl.gz:ro', '-e', f'"DATA_FILE=/mnt/data/data.jsonl.gz"', '-e', f'"MAX_MEM={memory}"', '-e', f'"CONFIG_JSON=config_public.json"', BACKEND_IMAGE]
 
 print('Starting backend...')
-backend_id = subprocess.check_output(backend_command).decode('utf-8').strip()
+backend_process = subprocess.Popen(backend_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+def wait_for_first_line_of_process(process, timeout=10):
+    start_time = time.time()
+    while True:
+        if time.time() - start_time > timeout:
+            raise Exception('Timeout waiting for first line of process.')
+        line = process.stdout.readline()
+        if line:
+            return line
+backend_id = wait_for_first_line_of_process(backend_process).decode('utf-8').strip()
 
 
 # Start frontend
