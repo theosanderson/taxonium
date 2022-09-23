@@ -75,12 +75,11 @@ else:
 # Start backend
 
 # something like:
-#docker run -p 80:80 -v "/Users/MyUserName/Desktop/myfile.jsonl.gz:/mnt/data/myfile.jsonl.gz" -e "DATA_FILE=/mnt/data/myfile.jsonl.gz" -e "MAX_MEM=8000" -e "CONFIG_JSON=config_public.json" theosanderson/taxonium_backend:master
 
 backend_command = [
     'docker', 'run', '-d', '-p', f'{args.backend_port}:80', '-v',
     f'{args.jsonl_gz}:/mnt/data/data.jsonl.gz:ro', '-e',
-    f'DATA_FILE=/mnt/data/data.jsonl.gz', '-e', f'MAX_MEM={memory}', '-e',
+    f'DATA_FILE=/mnt/data/data.jsonl.gz', '-e', f'MAXMEM={memory}', '-e',
     f'CONFIG_JSON=config_public.json', BACKEND_IMAGE
 ]
 
