@@ -197,7 +197,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   return output;
 };
 
-export const  generateConfig = (config, processedUploadedData) => {
+export const generateConfig = (config, processedUploadedData) => {
   config.num_nodes = processedUploadedData.nodes.length;
   config.initial_x =
     (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
@@ -335,6 +335,6 @@ export const  generateConfig = (config, processedUploadedData) => {
   config.defaultColorByField = colorByOptions.includes("meta_pangolin_lineage")
     ? "meta_pangolin_lineage"
     : colorByOptions[0];
-}
+};
 
 export default { processJsonl, generateConfig };
