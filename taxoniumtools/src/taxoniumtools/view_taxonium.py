@@ -69,19 +69,14 @@ else:
 backend_command = ['docker', 'run', '-d', '-p', f'{args.backend_port}:80', '-v', f'{args.jsonl_gz}:/mnt/data/data.jsonl.gz:ro', '-e', f'"DATA_FILE=/mnt/data/data.jsonl.gz"', '-e', f'"MAX_MEM={memory}"', '-e', f'"CONFIG_JSON=config_public.json"', BACKEND_IMAGE]
 
 print('Starting backend...')
-backend_process = subprocess.Popen(backend_command)
-backend_id = backend_process.stdout.read().decode('utf-8').strip()
-print(f'Backend started with ID {backend_id}.')
-print(f'Backend should appear on port {args.backend_port} in a few minutes.')
+backend_id = subprocess.check_output(backend_command).decode('utf-8').strip()
+
 
 # Start frontend
 if not args.no_frontend:
     frontend_command = ['docker', 'run', '-d', '-p', f'{args.frontend_port}:80', FRONTEND_IMAGE]
     print('Starting frontend...')
-    frontend_process = subprocess.Popen(frontend_command)
-    frontend_id = frontend_process.stdout.read().decode('utf-8').strip()
-    print(f'Frontend started with ID {frontend_id}.')
-    print(f'Frontend should appear on port {args.frontend_port} in a few minutes.')
+    frontend_id = subprocess.check_output(frontend_command).decode('utf-8').strip()
 
 # Clean up
 def cleanup():
