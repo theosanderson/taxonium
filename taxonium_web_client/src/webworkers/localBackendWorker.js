@@ -1,6 +1,9 @@
 import filtering from "taxonium_data_handling/filtering.js";
 import { getNextstrainSubtreeJson } from "taxonium_data_handling/exporting.js";
-import { processJsonl, generateConfig} from "taxonium_data_handling/importing.js";
+import {
+  processJsonl,
+  generateConfig,
+} from "taxonium_data_handling/importing.js";
 import { processNewickAndMetadata } from "../utils/processNewick.js";
 import { processNextstrain } from "../utils/processNextstrain.js";
 
@@ -155,7 +158,6 @@ const getConfig = async () => {
   await waitForProcessedData();
   const config = {};
   generateConfig(config, processedUploadedData);
-  
 
   config.mutations = processedUploadedData.mutations;
 
