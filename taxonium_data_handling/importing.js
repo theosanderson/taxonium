@@ -197,7 +197,7 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   return output;
 };
 
-function generateConfig(config, processedUploadedData) {
+export const  generateConfig = (config, processedUploadedData) => {
   config.num_nodes = processedUploadedData.nodes.length;
   config.initial_x =
     (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
