@@ -6,9 +6,7 @@ import { processNextstrain } from "../utils/processNextstrain.js";
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
-
-const generateConfig = (processedUploadedData,config) =>
-{
+const generateConfig = (processedUploadedData, config) => {
   config.initial_x =
     (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
   config.initial_y =
@@ -145,7 +143,7 @@ const generateConfig = (processedUploadedData,config) =>
   config.defaultColorByField = colorByOptions.includes("meta_pangolin_lineage")
     ? "meta_pangolin_lineage"
     : colorByOptions[0];
-}
+};
 
 const the_cache = {};
 
@@ -297,7 +295,6 @@ const getConfig = async () => {
   config.num_nodes = processedUploadedData.nodes.length;
 
   generateConfig(config, processedUploadedData);
-  
 
   config.mutations = processedUploadedData.mutations;
 
