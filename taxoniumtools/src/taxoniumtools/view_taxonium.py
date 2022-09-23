@@ -105,5 +105,10 @@ else:
 
 import time 
 def main():
+    # echo backend output to stdout
     while True:
-        time.sleep(1)
+        line = backend_process.stdout.readline()
+        if line:
+            print(line.decode('utf-8').strip())
+        else:
+            time.sleep(1)
