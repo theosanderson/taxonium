@@ -88,7 +88,7 @@ backend_command = [
     f'DATA_FILE=/mnt/data/data.jsonl.gz',
     '-e',
     f'MAXMEM={memory}',
-    '-e',
+    #'-e',
     #f'CONFIG_JSON=config_public.json',
     BACKEND_IMAGE
 ]
