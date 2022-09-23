@@ -92,3 +92,7 @@ if args.no_frontend:
     print(f'The backend should be running at http://localhost:{args.backend_port}.')
 else:
     print(f'You should be able to access your tree at http://localhost:{args.frontend_port}/?backend=http://localhost:{args.backend_port} in a few minutes.')
+
+
+def main():
+    pass
