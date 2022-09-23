@@ -2,6 +2,7 @@ import atexit
 import subprocess
 import argparse
 import psutil
+import os
 
 BACKEND_IMAGE = "theosanderson/taxonium_backend:master"
 FRONTEND_IMAGE = "theosanderson/taxonium_frontend:master"
@@ -16,8 +17,12 @@ parser.add_argument('--backend_port', type=int, default=5000, help='Port to use 
 parser.add_argument('--frontend_port', type=int, default=8000, help='Port to use for the frontend.')
 
 
+
+
 args = parser.parse_args()
-args = parser.parse_args()
+
+# relative path to absolute:
+args.jsonl_gz = os.path.abspath(args.jsonl_gz)
 
 # Check if docker is installed.
 try:
