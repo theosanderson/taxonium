@@ -80,7 +80,7 @@ def wait_for_first_line_of_process(process, timeout=10):
         if line:
             return line
 backend_id = wait_for_first_line_of_process(backend_process).decode('utf-8').strip()
-
+print(f'Backend started with id {backend_id}.')
 
 # Start frontend
 if not args.no_frontend:
@@ -105,10 +105,13 @@ else:
 
 import time 
 def main():
-    # echo backend output to stdout
+    # echo backend output from stderr or stdout to console
     while True:
         line = backend_process.stdout.readline()
         if line:
             print(line.decode('utf-8').strip())
-        else:
-            time.sleep(1)
+        line2 = backend_process.stderr.readline()
+        if line2:
+            print(line2.decode('utf-8').strip())
+        if not line and not line2:
+            time.sleep(0.1)
