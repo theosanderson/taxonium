@@ -93,6 +93,7 @@ if args.no_frontend:
 else:
     print(f'You should be able to access your tree at http://localhost:{args.frontend_port}/?backend=http://localhost:{args.backend_port} in a few minutes.')
 
-
+import time 
 def main():
-    pass
+    while True:
+        time.sleep(1)
