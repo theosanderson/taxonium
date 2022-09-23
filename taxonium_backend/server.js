@@ -470,7 +470,7 @@ const loadData = async () => {
     logStatusMessage
   );
 
-  if (config.no_file){
+  if (config.no_file) {
     importing.generateConfig(config, processedData);
   }
 
