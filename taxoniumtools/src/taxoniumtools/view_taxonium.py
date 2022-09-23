@@ -54,8 +54,8 @@ if args.memory:
     memory = args.memory
 else:
     total_memory_in_mb = psutil.virtual_memory().total / 1024 / 1024
-    suggested_memory = int(total_memory_in_mb * 0.8)
-    print(f'No memory specified. Using {suggested_memory} MB for the backend. You can modify this with the --memory argument.')
+    memory = int(total_memory_in_mb * 0.8)
+    print(f'No memory specified. Using {memory} MB for the backend. You can modify this with the --memory argument.')
 
 
 
