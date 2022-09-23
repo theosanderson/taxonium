@@ -70,6 +70,7 @@ else:
 backend_command = ['docker', 'run', '-d', '-p', f'{args.backend_port}:80', '-v', f'{args.jsonl_gz}:/mnt/data/data.jsonl.gz:ro', '-e', f'"DATA_FILE=/mnt/data/data.jsonl.gz"', '-e', f'"MAX_MEM={memory}"', '-e', f'"CONFIG_JSON=config_public.json"', BACKEND_IMAGE]
 
 print('Starting backend...')
+print(f"Running command: {' '.join(backend_command)}")
 backend_process = subprocess.Popen(backend_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 def wait_for_first_line_of_process(process, timeout=10):
     start_time = time.time()
