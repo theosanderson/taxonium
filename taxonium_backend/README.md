@@ -18,8 +18,6 @@ then start the dev server for the front-end and go to e.g. http://localhost:3000
 
 If you need to regenerate the data run `make_pandas.py`:
 
-
-
 ## Docker
 
 `docker pull theosanderson/taxonium_backend:master`
