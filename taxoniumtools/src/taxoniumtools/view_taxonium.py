@@ -77,10 +77,20 @@ else:
 # something like:
 
 backend_command = [
-    'docker', 'run', '-d', '-p', f'{args.backend_port}:80', '-v',
-    f'{args.jsonl_gz}:/mnt/data/data.jsonl.gz:ro', '-e',
-    f'DATA_FILE=/mnt/data/data.jsonl.gz', '-e', f'MAXMEM={memory}', '-e',
-    f'CONFIG_JSON=config_public.json', BACKEND_IMAGE
+    'docker',
+    'run',
+    '-d',
+    '-p',
+    f'{args.backend_port}:80',
+    '-v',
+    f'{args.jsonl_gz}:/mnt/data/data.jsonl.gz:ro',
+    '-e',
+    f'DATA_FILE=/mnt/data/data.jsonl.gz',
+    '-e',
+    f'MAXMEM={memory}',
+    #'-e',
+    #f'CONFIG_JSON=config_public.json',
+    BACKEND_IMAGE
 ]
 
 print('Starting backend...')

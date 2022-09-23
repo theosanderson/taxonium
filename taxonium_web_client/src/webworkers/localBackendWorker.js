@@ -1,8 +1,12 @@
 import filtering from "taxonium_data_handling/filtering.js";
 import { getNextstrainSubtreeJson } from "taxonium_data_handling/exporting.js";
-import { processJsonl } from "taxonium_data_handling/importing.js";
+import {
+  processJsonl,
+  generateConfig,
+} from "taxonium_data_handling/importing.js";
 import { processNewickAndMetadata } from "../utils/processNewick.js";
 import { processNextstrain } from "../utils/processNextstrain.js";
+
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
 
@@ -153,143 +157,7 @@ const getConfig = async () => {
   console.log("Worker getConfig");
   await waitForProcessedData();
   const config = {};
-  config.num_nodes = processedUploadedData.nodes.length;
-  config.initial_x =
-    (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
-  config.initial_y =
-    (processedUploadedData.overallMaxY + processedUploadedData.overallMinY) / 2;
-  config.initial_zoom = config.initial_zoom ? config.initial_zoom : -2;
-  config.genes = [
-    ...new Set(processedUploadedData.mutations.map((x) => (x ? x.gene : null))),
-  ]
-    .filter((x) => x)
-    .sort();
-
-  config.rootMutations = processedUploadedData.rootMutations;
-  config.rootId = processedUploadedData.rootId;
-
-  config.name_accessor = "name";
-  const to_remove = [
-    "parent_id",
-    "node_id",
-    "x",
-    "x_dist",
-    "x_time",
-    "y",
-    "mutations",
-    "name",
-    "num_tips",
-    "time_x",
-    "clades",
-    "is_tip",
-  ];
-
-  const firstNode = processedUploadedData.nodes[0];
-  config.x_accessors =
-    firstNode.x_dist && firstNode.x_time
-      ? ["x_dist", "x_time"]
-      : firstNode.x_dist
-      ? ["x_dist"]
-      : ["x_time"];
-
-  config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
-    (x) => !to_remove.includes(x)
-  );
-
-  /*config.search_types = [
-    { name: "name", label: "Name", type: "text_match" },
-    { name: "meta_Lineage", label: "PANGO lineage", type: "text_exact" },
-    { name: "meta_Country", label: "Country", type: "text_match" },
-    { name: "mutation", label: "Mutation", type: "mutation" },
-    { name: "revertant", label: "Revertant", type: "revertant" },
-    { name: "genbank", label: "Genbank", type: "text_per_line" },
-  ];*/
-  const prettyName = (x) => {
-    // if x starts with meta_
-    if (x.startsWith("meta_")) {
-      const bit = x.substring(5);
-      const capitalised_first_letter =
-        bit.charAt(0).toUpperCase() + bit.slice(1);
-      return capitalised_first_letter;
-    }
-    if (x === "mutation") {
-      return "Mutation";
-    }
-
-    const capitalised_first_letter = x.charAt(0).toUpperCase() + x.slice(1);
-    return capitalised_first_letter;
-  };
-
-  const typeFromKey = (x) => {
-    if (x === "mutation") {
-      return "mutation";
-    }
-    if (x === "genotype") {
-      return "genotype";
-    }
-    if (x === "num_tips") {
-      return "number";
-    }
-    if (x === "genbank") {
-      return "text_per_line";
-    }
-    if (x === "revertant") {
-      return "revertant";
-    }
-    if (x === "meta_Lineage") {
-      return "text_exact";
-    }
-    if (x === "boolean") return "boolean";
-
-    return "text_match";
-  };
-  const initial_search_types = ["name", ...config.keys_to_display];
-
-  if (processedUploadedData.mutations.length > 0) {
-    initial_search_types.push("mutation");
-    initial_search_types.push("genotype");
-  }
-
-  if (processedUploadedData.rootMutations.length > 0) {
-    initial_search_types.push("revertant");
-  }
-
-  initial_search_types.push("num_tips");
-
-  if (initial_search_types.length > 1) {
-    initial_search_types.push("boolean");
-  }
-
-  config.search_types = initial_search_types.map((x) => ({
-    name: x,
-    label: prettyName(x),
-    type: typeFromKey(x),
-  }));
-
-  config.search_types.forEach((x) => {
-    // if "text" is found in the type
-    if (x.type.includes("text")) {
-      x.controls = true;
-    }
-  });
-
-  const colorByOptions = [...config.keys_to_display];
-  if (processedUploadedData.mutations.length > 0) {
-    colorByOptions.push("genotype");
-  }
-  colorByOptions.push("None");
-
-  if (colorByOptions.length < 2) {
-    config.colorMapping = { None: [50, 50, 150] };
-  }
-
-  config.colorBy = { colorByOptions };
-
-  //check if 'meta_pangolin_lineage' is in options
-
-  config.defaultColorByField = colorByOptions.includes("meta_pangolin_lineage")
-    ? "meta_pangolin_lineage"
-    : colorByOptions[0];
+  generateConfig(config, processedUploadedData);
 
   config.mutations = processedUploadedData.mutations;
 

@@ -158,7 +158,7 @@ let config;
 if (path_for_config && fs.existsSync(path_for_config)) {
   config = JSON.parse(fs.readFileSync(path_for_config));
 } else {
-  config = { title: "", source: "" };
+  config = { title: "", source: "", no_file: true };
 }
 
 app.get("/config", function (req, res) {
@@ -469,6 +469,11 @@ const loadData = async () => {
     supplied_object,
     logStatusMessage
   );
+
+  if (config.no_file) {
+    importing.generateConfig(config, processedData);
+  }
+
   processedData.genes = new Set(
     processedData.mutations.map((mutation) => mutation.gene)
   );
