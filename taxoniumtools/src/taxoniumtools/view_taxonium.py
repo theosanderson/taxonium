@@ -10,12 +10,7 @@ import docker
 
 #Check if Docker is available
 
-try:
-    client = docker.from_env()
-    client.ping()
-except docker.errors.DockerException:
-    print('Docker is not running. Please install Docker, or start it, and try again.')
-    exit(1)
+
 
 
 def is_port_in_use(port: int) -> bool:   
@@ -51,6 +46,13 @@ parser.add_argument('--frontend_port',
 
 args = parser.parse_args()
 
+try:
+    client = docker.from_env()
+    client.ping()
+except docker.errors.DockerException:
+    print('Docker is not running. Please install Docker, or start it, and try again.')
+    exit(1)
+    
 # check ports are available
 if not args.no_frontend:
     check_port_is_free(args.frontend_port)
