@@ -21,8 +21,8 @@ parser.add_argument('--frontend_port', type=int, default=8000, help='Port to use
 
 args = parser.parse_args()
 
-# relative path to absolute:
-args.jsonl_gz = os.path.abspath(args.jsonl_gz)
+# get the real full path to the jsonl.gz file
+args.jsonl_gz = os.path.realpath(args.jsonl_gz)
 
 # Check if docker is installed.
 try:
