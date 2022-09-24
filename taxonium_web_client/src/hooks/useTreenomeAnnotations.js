@@ -18,46 +18,48 @@ const useTreenomeAnnotations = (settings) => {
     getTrackList();
   }, []);
 
+  const getJson = useCallback(
+    (track, key, name, category) => {
+      console.log("in here");
 
-  const getJson = useCallback((track, key, name, category) => {
-    console.log("in here")
-
-    const url = track.bigDataUrl;
-    if (!url) {
-      return null;
-    }
-    const ext = url.slice(-2);
-    if (ext !== "bb" && ext !== "bw") {
-      return null;
-    }
-    const fullUrl = `${baseUrl}${url}`;
-    const output = {
-      trackId: key,
-      name: name,
-      assemblyNames: [settings.chromosomeName],
-      category: category,
-    };
-    if (ext === "bb") {
-      output.type = "FeatureTrack";
-      output.adapter = {
-        type: "BigBedAdapter",
-        bigBedLocation: {
-          uri: fullUrl,
-          locationType: "UriLocation",
-        },
+      const url = track.bigDataUrl;
+      if (!url) {
+        return null;
+      }
+      const ext = url.slice(-2);
+      if (ext !== "bb" && ext !== "bw") {
+        return null;
+      }
+      const fullUrl = `${baseUrl}${url}`;
+      const output = {
+        trackId: key,
+        name: name,
+        assemblyNames: [settings.chromosomeName],
+        category: category,
       };
-    } else if (ext === "bw") {
-      output.type = "QuantitativeTrack";
-      output.adapter = {
-        type: "BigWigAdapter",
-        bigWigLocation: {
-          uri: fullUrl,
-          locationType: "UriLocation",
-        },
-      };
-    }
-    return output;
-  }, [settings.chromosomeName]);
+      if (ext === "bb") {
+        output.type = "FeatureTrack";
+        output.adapter = {
+          type: "BigBedAdapter",
+          bigBedLocation: {
+            uri: fullUrl,
+            locationType: "UriLocation",
+          },
+        };
+      } else if (ext === "bw") {
+        output.type = "QuantitativeTrack";
+        output.adapter = {
+          type: "BigWigAdapter",
+          bigWigLocation: {
+            uri: fullUrl,
+            locationType: "UriLocation",
+          },
+        };
+      }
+      return output;
+    },
+    [settings.chromosomeName]
+  );
 
   const json = useMemo(() => {
     let allJson = [];

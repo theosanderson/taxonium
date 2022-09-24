@@ -86,7 +86,7 @@ function Deck({
         mouseDownPos.current &&
         Math.sqrt(
           Math.pow(mouseDownPos.current[0] - event.clientX, 2) +
-          Math.pow(mouseDownPos.current[1] - event.clientY, 2)
+            Math.pow(mouseDownPos.current[1] - event.clientY, 2)
         ) > pan_threshold
       ) {
         return false;
@@ -283,7 +283,6 @@ function Deck({
               zIndex: 1,
             }}
           >
-          
             <span ref={jbrowseRef}>
               <JBrowsePanel treenomeState={treenomeState} settings={settings} />
               <TreenomeModal
@@ -293,14 +292,14 @@ function Deck({
               />
             </span>
           </div>
-          
+
           <TreenomeButtons
             loading={data.status === "loading"}
             requestOpenSettings={() => {
-              console.log("opening")
-              console.log(treenomeSettingsOpen)
+              console.log("opening");
+              console.log(treenomeSettingsOpen);
 
-              setTreenomeSettingsOpen(true)
+              setTreenomeSettingsOpen(true);
             }}
             settings={settings}
           />
@@ -332,7 +331,6 @@ function Deck({
             requestOpenSettings={() => setDeckSettingsOpen(true)}
             settings={settings}
           />
-
         </View>
       </DeckGL>
     </div>

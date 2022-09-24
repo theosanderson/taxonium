@@ -10,7 +10,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
   const [genomeSize, setGenomeSize] = useState(0);
   const [genome, setGenome] = useState(null);
 
-
   useEffect(() => {
     if (
       (genomeSize && genomeSize > 0) ||

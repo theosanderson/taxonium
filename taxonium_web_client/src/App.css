@@ -73,9 +73,8 @@ input {
 
 button[data-testid="addTrackNextButton"] {
   background-color: #858585;
-
 }
 
-.MuiDialog-container > div > div > .MuiScopedCssBaseline-root  {
+.MuiDialog-container > div > div > .MuiScopedCssBaseline-root {
   padding: 15px;
 }

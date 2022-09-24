@@ -92,7 +92,6 @@ export const useSettings = ({ query, updateQuery }) => {
     }
   }, []);
 
-
   return {
     minimapEnabled,
     treenomeEnabled,
