@@ -2494,6 +2494,18 @@
     react-vtree "^3.0.0-beta.1"
     react-window "^1.8.6"
 
+"@jbrowse/plugin-data-management@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.npmjs.org/@jbrowse/plugin-data-management/-/plugin-data-management-2.1.4.tgz#6024b369bfe0b109accd7e68b41f042855ed460b"
+  integrity sha512-1B7L8zAzivtRmxeYYSip8uvJX6AXmqWFIMqA6Oizm0WOZa8/8I7VdijQvxhRCplU+iJOka9YGvDvOoaYNvTQMw==
+  dependencies:
+    "@gmod/ucsc-hub" "^0.1.3"
+    "@mui/icons-material" "^5.0.1"
+    clsx "^1.1.0"
+    react-virtualized-auto-sizer "^1.0.2"
+    react-vtree "^3.0.0-beta.1"
+    react-window "^1.8.6"
+
 "@jbrowse/plugin-gff3@^2.1.2":
   version "2.1.2"
   resolved "https://registry.npmjs.org/@jbrowse/plugin-gff3/-/plugin-gff3-2.1.2.tgz#7ed37b3762736f2efd1057dda97bb4dae779e436"

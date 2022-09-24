@@ -16,6 +16,8 @@ import NodeHoverTip from "./components/NodeHoverTip";
 import TreenomeMutationHoverTip from "./components/TreenomeMutationHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
+import { TreenomeButtons } from "./components/TreenomeButtons";
+import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 
 function Deck({
@@ -39,6 +41,7 @@ function Deck({
 }) {
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
+  const [treenomeSettingsOpen, setTreenomeSettingsOpen] = useState(false);
 
   //console.log("DATA is ", data);
   const no_data = !data.data || !data.data.nodes || !data.data.nodes.length;
@@ -83,7 +86,7 @@ function Deck({
         mouseDownPos.current &&
         Math.sqrt(
           Math.pow(mouseDownPos.current[0] - event.clientX, 2) +
-            Math.pow(mouseDownPos.current[1] - event.clientY, 2)
+          Math.pow(mouseDownPos.current[1] - event.clientY, 2)
         ) > pan_threshold
       ) {
         return false;
@@ -280,10 +283,27 @@ function Deck({
               zIndex: 1,
             }}
           >
+          
             <span ref={jbrowseRef}>
               <JBrowsePanel treenomeState={treenomeState} settings={settings} />
+              <TreenomeModal
+                treenomeSettingsOpen={treenomeSettingsOpen}
+                setTreenomeSettingsOpen={setTreenomeSettingsOpen}
+                settings={settings}
+              />
             </span>
           </div>
+          
+          <TreenomeButtons
+            loading={data.status === "loading"}
+            requestOpenSettings={() => {
+              console.log("opening")
+              console.log(treenomeSettingsOpen)
+
+              setTreenomeSettingsOpen(true)
+            }}
+            settings={settings}
+          />
         </View>
         <View id="main">
           <NodeHoverTip
@@ -312,6 +332,7 @@ function Deck({
             requestOpenSettings={() => setDeckSettingsOpen(true)}
             settings={settings}
           />
+
         </View>
       </DeckGL>
     </div>

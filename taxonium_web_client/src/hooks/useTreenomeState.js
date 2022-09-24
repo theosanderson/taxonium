@@ -10,9 +10,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
   const [genomeSize, setGenomeSize] = useState(0);
   const [genome, setGenome] = useState(null);
 
-  const chromosomeName = useMemo(() => {
-    return settings.isCov2Tree ? "NC_045512v2" : "chromosome";
-  }, [settings.isCov2Tree]);
 
   useEffect(() => {
     if (
@@ -172,7 +169,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
       handleResize,
       genome,
       genomeSize,
-      chromosomeName,
       baseYBounds,
     };
   }, [
@@ -186,7 +182,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
     handleResize,
     genome,
     genomeSize,
-    chromosomeName,
     baseYBounds,
   ]);
 

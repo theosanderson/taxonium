@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-const useTreenomeAnnotations = () => {
+const useTreenomeAnnotations = (settings) => {
   const [trackList, setTrackList] = useState([]);
   const baseUrl = "https://hgdownload.soe.ucsc.edu";
 
@@ -18,7 +18,10 @@ const useTreenomeAnnotations = () => {
     getTrackList();
   }, []);
 
-  const getJson = (track, key, name, category) => {
+
+  const getJson = useCallback((track, key, name, category) => {
+    console.log("in here")
+
     const url = track.bigDataUrl;
     if (!url) {
       return null;
@@ -31,7 +34,7 @@ const useTreenomeAnnotations = () => {
     const output = {
       trackId: key,
       name: name,
-      assemblyNames: ["NC_045512v2"],
+      assemblyNames: [settings.chromosomeName],
       category: category,
     };
     if (ext === "bb") {
@@ -54,7 +57,7 @@ const useTreenomeAnnotations = () => {
       };
     }
     return output;
-  };
+  }, [settings.chromosomeName]);
 
   const json = useMemo(() => {
     let allJson = [];
@@ -68,7 +71,7 @@ const useTreenomeAnnotations = () => {
             continue;
           }
           childJson = getJson(child, childKey, `${child.longLabel}`, [
-            "Composite UCSC Tracks",
+            "UCSC Tracks (Composite)",
             track.longLabel,
           ]);
           if (childJson) {
@@ -82,7 +85,7 @@ const useTreenomeAnnotations = () => {
       }
     }
     return allJson;
-  }, [trackList]);
+  }, [getJson, trackList.wuhCor1]);
 
   const output = useMemo(() => {
     return { json };
