@@ -1,5 +1,6 @@
 #python usher_to_taxonium.py --input public-latest.all.masked.pb.gz --output ../taxonium_web_client/public/public2.jsonl.gz --metadata public-latest.metadata.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
 
+from ftplib import all_errors
 import orjson
 import json
 import pandas as pd
@@ -47,6 +48,8 @@ def do_processing(input_file,
     else:
         config = {}
 
+  
+
     if title is not None:
         config['title'] = title
 
@@ -55,20 +58,35 @@ def do_processing(input_file,
         config['overlay'] = html_content
 
     if "gz" in input_file:
-        f = gzip.open(input_file, 'rb')
+        f = gzip.open(input_file, 'rt')
     else:
-        f = open(input_file, 'rb')
+        f = open(input_file, 'rt')
 
-    tree = treeswift.read_tree_newick(f)
+    # get all comtents
+    all_contents = f.read()
+    # remove line breaks
+    all_contents = all_contents.replace("\n", "")
+    # remove spaces
+    all_contents = all_contents.replace(" ", "")
+
+
+    tree = treeswift.read_tree_newick(all_contents)
 
 
 
     print("Ladderizing tree..")
     tree.ladderize(ascending=False)
     print("Ladderizing done")
+
+
+    for node in tree.traverse_postorder():
+        if node.is_leaf():
+            node.num_tips = 1
+        else:
+            node.num_tips = sum(child.num_tips for child in node.children)
     total_tips = tree.root.num_tips
     utils.set_x_coords(tree.root,
-                       chronumental_enabled=chronumental_enabled)
+                       chronumental_enabled=False)
     utils.set_terminal_y_coords(tree.root)
     utils.set_internal_y_coords(tree.root)
 
@@ -79,7 +97,9 @@ def do_processing(input_file,
     config['num_tips'] = total_tips
 
     first_json = {
+          
         "version": version,
+          "mutations": [],
         "total_nodes": len(nodes_sorted_by_y),
         "config": config
     }
