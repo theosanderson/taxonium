@@ -11,15 +11,15 @@ import docker
 #Check if Docker is available
 
 
-
-
-def is_port_in_use(port: int) -> bool:   
+def is_port_in_use(port: int) -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) == 0
 
+
 def check_port_is_free(port):
-   if is_port_in_use(port):
-    raise Exception(f"Port {port} is already in use.")
+    if is_port_in_use(port):
+        raise Exception(f"Port {port} is already in use.")
+
 
 BACKEND_IMAGE = "theosanderson/taxonium_backend:master"
 FRONTEND_IMAGE = "theosanderson/taxonium_frontend:master"
@@ -50,18 +50,18 @@ try:
     client = docker.from_env()
     client.ping()
 except docker.errors.DockerException:
-    print('Docker is not running. Please install Docker, or start it, and try again.')
+    print(
+        'Docker is not running. Please install Docker, or start it, and try again.'
+    )
     exit(1)
-    
+
 # check ports are available
 if not args.no_frontend:
     check_port_is_free(args.frontend_port)
 check_port_is_free(args.backend_port)
 
-
 # get the real full path to the jsonl.gz file
 args.jsonl_gz = os.path.realpath(args.jsonl_gz)
-
 
 if args.memory:
     memory = args.memory
@@ -77,10 +77,21 @@ else:
 # something like:
 
 print('Starting backend...')
-backend_id = client.containers.run(BACKEND_IMAGE, ports={80:args.backend_port}, volumes={args.jsonl_gz: {'bind': '/mnt/data/data.jsonl.gz', 'mode': 'ro'}}, environment={'DATA_FILE': '/mnt/data/data.jsonl.gz', 'MAXMEM': memory}, detach=True).id
-
-
-
+backend_id = client.containers.run(BACKEND_IMAGE,
+                                   ports={
+                                       80: args.backend_port
+                                   },
+                                   volumes={
+                                       args.jsonl_gz: {
+                                           'bind': '/mnt/data/data.jsonl.gz',
+                                           'mode': 'ro'
+                                       }
+                                   },
+                                   environment={
+                                       'DATA_FILE': '/mnt/data/data.jsonl.gz',
+                                       'MAXMEM': memory
+                                   },
+                                   detach=True).id
 
 print(f'Backend started')
 
@@ -89,10 +100,13 @@ if not args.no_frontend:
     print('Starting frontend...')
     frontend_id = client.containers.run(
         FRONTEND_IMAGE,
-        ports={80:args.frontend_port},
+        ports={
+            80: args.frontend_port
+        },
         detach=True,
     ).id
     print(f'Frontend started')
+
 
 def cleanup():
     try:
@@ -106,7 +120,7 @@ def cleanup():
         print('Done.')
     except KeyboardInterrupt:
         cleanup()
-        
+
 
 atexit.register(cleanup)
 
@@ -118,9 +132,7 @@ else:
     url = f"http://localhost:{args.frontend_port}/?backend=http://localhost:{args.backend_port}"
     print("\n\n\n\n\n")
     print("#########")
-    print(
-        f'You should be able to access your tree at {url} in a few minutes.'
-    )
+    print(f'You should be able to access your tree at {url} in a few minutes.')
     print("#########")
     # Launch URL in the browser
     try:
@@ -134,8 +146,8 @@ else:
 
 import time
 
-
 backend = client.containers.get(backend_id)
+
 
 def main():
     # just display the backend logs, continuously
