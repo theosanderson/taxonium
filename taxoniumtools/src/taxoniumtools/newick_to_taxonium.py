@@ -1,5 +1,6 @@
 #python usher_to_taxonium.py --input public-latest.all.masked.pb.gz --output ../taxonium_web_client/public/public2.jsonl.gz --metadata public-latest.metadata.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
 
+from ftplib import all_errors
 import orjson
 import json
 import pandas as pd
@@ -10,6 +11,7 @@ from . import utils
 import argparse
 import gzip
 
+import treeswift
 try:
     from . import _version
     version = _version.version
@@ -54,93 +56,40 @@ def do_processing(input_file,
         config['overlay'] = html_content
 
     if "gz" in input_file:
-        f = gzip.open(input_file, 'rb')
+        f = gzip.open(input_file, 'rt')
     else:
-        f = open(input_file, 'rb')
+        f = open(input_file, 'rt')
 
-    if clade_types:
-        clade_types = clade_types.split(",")
-    else:
-        clade_types = []
-    mat = ushertools.UsherMutationAnnotatedTree(
-        f,
-        genbank_file,
-        clade_types=clade_types,
-        name_internal_nodes=name_internal_nodes,
-        shear=shear,
-        shear_threshold=shear_threshold)
-    f.close()
+    # get all comtents
+    all_contents = f.read()
+    # remove line breaks
+    all_contents = all_contents.replace("\n", "")
+    # remove spaces
+    all_contents = all_contents.replace(" ", "")
 
-    if hasattr(mat, "genes"):
-        config['gene_details'] = mat.genes
-
-    if chronumental_enabled:
-        utils.do_chronumental(
-            mat=mat,
-            chronumental_reference_node=chronumental_reference_node,
-            metadata_file=metadata_file,
-            chronumental_steps=chronumental_steps,
-            chronumental_date_output=chronumental_date_output,
-            chronumental_tree_output=chronumental_tree_output)
+    tree = treeswift.read_tree_newick(all_contents)
 
     print("Ladderizing tree..")
-    mat.tree.ladderize(ascending=False)
+    tree.ladderize(ascending=False)
     print("Ladderizing done")
-    total_tips = mat.tree.root.num_tips
-    utils.set_x_coords(mat.tree.root,
-                       chronumental_enabled=chronumental_enabled)
-    utils.set_terminal_y_coords(mat.tree.root)
-    utils.set_internal_y_coords(mat.tree.root)
 
-    nodes_sorted_by_y = utils.sort_on_y(mat.tree)
-    all_aa_muts_objects = utils.get_all_aa_muts(mat.tree.root)
-    if only_variable_sites:
-        variable_muts = [
-            x for x in all_aa_muts_objects if x.initial_aa != x.final_aa
-        ]
-        variable_sites = set(
-            (x.gene, x.one_indexed_codon) for x in variable_muts)
-        all_aa_muts_objects = [
-            x for x in all_aa_muts_objects
-            if (x.gene, x.one_indexed_codon) in variable_sites
-        ]
-        mat.tree.root.aa_muts = [
-            x for x in mat.tree.root.aa_muts
-            if (x.gene, x.one_indexed_codon) in variable_sites
-        ]
-    all_nuc_muts = utils.get_all_nuc_muts(mat.tree.root)
-    if only_variable_sites:
-        variable_muts = [
-            x for x in all_nuc_muts
-            if x.par_nuc != x.mut_nuc and x.par_nuc != "X"
-        ]
-        variable_sites = set(
-            (x.chromosome, x.one_indexed_position) for x in variable_muts)
-        all_nuc_muts = [
-            x for x in all_nuc_muts
-            if (x.chromosome, x.one_indexed_position) in variable_sites
-        ]
-        mat.tree.root.nuc_mutations = [
-            x for x in mat.tree.root.nuc_mutations
-            if (x.chromosome, x.one_indexed_position) in variable_sites
-        ]
-    all_mut_inputs = all_aa_muts_objects + all_nuc_muts
-    all_mut_objects = [
-        utils.make_aa_object(i, input_thing)
-        if input_thing.type == "aa" else utils.make_nuc_object(i, input_thing)
-        for i, input_thing in enumerate(all_mut_inputs)
-    ]
+    for node in tree.traverse_postorder():
+        if node.is_leaf():
+            node.num_tips = 1
+        else:
+            node.num_tips = sum(child.num_tips for child in node.children)
+    total_tips = tree.root.num_tips
+    utils.set_x_coords(tree.root, chronumental_enabled=False)
+    utils.set_terminal_y_coords(tree.root)
+    utils.set_internal_y_coords(tree.root)
 
-    input_to_index = {
-        input_thing: i
-        for i, input_thing in enumerate(all_mut_inputs)
-    }
+    nodes_sorted_by_y = utils.sort_on_y(tree)
 
     config['num_tips'] = total_tips
 
     first_json = {
         "version": version,
-        "mutations": all_mut_objects,
+        "mutations": [],
         "total_nodes": len(nodes_sorted_by_y),
         "config": config
     }
@@ -158,8 +107,7 @@ def do_processing(input_file,
         node_object = utils.get_node_object(
             node,
             node_to_index,
-            metadata_dict,
-            input_to_index,
+            metadata_dict, {},
             metadata_cols,
             chronumental_enabled=chronumental_enabled)
         if remove_after_pipe and 'name' in node_object and node_object['name']:
@@ -174,11 +122,11 @@ def do_processing(input_file,
 
 def get_parser():
     parser = argparse.ArgumentParser(
-        description='Convert a Usher pb to Taxonium jsonl format')
+        description='Convert a Newick file to Taxonium jsonl format')
     parser.add_argument('-i',
                         '--input',
                         type=str,
-                        help='File path to input Usher protobuf file (.pb)',
+                        help='File path to input Newick file',
                         required=True)
     parser.add_argument('-o',
                         '--output',

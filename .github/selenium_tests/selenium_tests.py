@@ -1,6 +1,8 @@
 from selenium import webdriver
+from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.utils import ChromeType
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
