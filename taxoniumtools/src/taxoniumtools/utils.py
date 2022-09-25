@@ -218,13 +218,13 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
     return object
 
 
-def sort_on_y(mat):
+def sort_on_y(tree):
     with alive_bar(title="Sorting on y") as bar:
 
         def return_y(node):
             bar()
             return node.y
 
-        nodes_sorted_by_y = sorted(mat.tree.root.traverse_preorder(),
+        nodes_sorted_by_y = sorted(tree.root.traverse_preorder(),
                                    key=lambda x: return_y(x))
     return nodes_sorted_by_y
