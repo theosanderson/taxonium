@@ -91,6 +91,14 @@ function SearchPanel({
   const formatMetadataItem = (key) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
     if (key === "num_tips" && selectedDetails.nodeDetails[key] === 1) return;
+    if (key === "meta_ThumbnailURL") {
+      return (
+        <img
+          src={selectedDetails.nodeDetails[key]}
+          style={{ width: "100%", height: "auto" }}
+        />
+      );
+    }
     if (
       selectedDetails.nodeDetails &&
       selectedDetails.nodeDetails[key] &&
