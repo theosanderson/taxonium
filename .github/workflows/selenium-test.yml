@@ -29,9 +29,15 @@ jobs:
           ls
           python -m http.server 3000 &
         working-directory: ./data/
+      - name: Installed package list
+        run: apt list --installed
       - name: Remove Chrome
         run: sudo apt purge google-chrome-stable
+      - name: Remove default Chromium
+        run: sudo apt purge chromium-browser
+      - name: Install a new Chromium
+        run: sudo apt install -y chromium-browser
       - name: Install all necessary packages
-        run: pip install requests beautifulsoup4 pandas webdriver-manager==3.5.4 selenium==4.2.0
-      - name: Run Selenium tests
+        run: pip install requests beautifulsoup4 pandas webdriver-manager selenium
+      - name: Run the selenium script
         run: python .github/selenium_tests/selenium_tests.py "http://localhost:8000/?protoUrl=http://localhost:3000/tfci-taxonium-config.jsonl.gz"
