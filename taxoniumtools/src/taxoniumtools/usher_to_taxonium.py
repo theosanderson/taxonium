@@ -92,7 +92,7 @@ def do_processing(input_file,
     utils.set_terminal_y_coords(mat.tree.root)
     utils.set_internal_y_coords(mat.tree.root)
 
-    nodes_sorted_by_y = utils.sort_on_y(mat)
+    nodes_sorted_by_y = utils.sort_on_y(mat.tree)
     all_aa_muts_objects = utils.get_all_aa_muts(mat.tree.root)
     if only_variable_sites:
         variable_muts = [
