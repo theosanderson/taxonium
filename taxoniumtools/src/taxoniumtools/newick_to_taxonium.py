@@ -48,8 +48,6 @@ def do_processing(input_file,
     else:
         config = {}
 
-  
-
     if title is not None:
         config['title'] = title
 
@@ -69,15 +67,11 @@ def do_processing(input_file,
     # remove spaces
     all_contents = all_contents.replace(" ", "")
 
-
     tree = treeswift.read_tree_newick(all_contents)
-
-
 
     print("Ladderizing tree..")
     tree.ladderize(ascending=False)
     print("Ladderizing done")
-
 
     for node in tree.traverse_postorder():
         if node.is_leaf():
@@ -85,21 +79,17 @@ def do_processing(input_file,
         else:
             node.num_tips = sum(child.num_tips for child in node.children)
     total_tips = tree.root.num_tips
-    utils.set_x_coords(tree.root,
-                       chronumental_enabled=False)
+    utils.set_x_coords(tree.root, chronumental_enabled=False)
     utils.set_terminal_y_coords(tree.root)
     utils.set_internal_y_coords(tree.root)
 
     nodes_sorted_by_y = utils.sort_on_y(tree)
-   
-
 
     config['num_tips'] = total_tips
 
     first_json = {
-          
         "version": version,
-          "mutations": [],
+        "mutations": [],
         "total_nodes": len(nodes_sorted_by_y),
         "config": config
     }
@@ -117,8 +107,7 @@ def do_processing(input_file,
         node_object = utils.get_node_object(
             node,
             node_to_index,
-            metadata_dict,
-            {},
+            metadata_dict, {},
             metadata_cols,
             chronumental_enabled=chronumental_enabled)
         if remove_after_pipe and 'name' in node_object and node_object['name']:
