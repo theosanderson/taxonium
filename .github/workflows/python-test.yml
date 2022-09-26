@@ -58,6 +58,9 @@ jobs:
         with:
           name: tfci-var
           path: tfci-var.jsonl.gz
+      - name: Basic test, nwk
+        run: |
+          newick_to_taxonium --input test.nwk --output nwk.jsonl.gz
       - uses: LouisBrunner/checks-action@v1.1.1
         if: always()
         with:
