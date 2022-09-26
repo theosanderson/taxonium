@@ -184,7 +184,7 @@ def main():
     do_processing(args.input,
                   args.output,
                   metadata_file=args.metadata,
-                  genbank_file=args.genbank,
+               
                   columns=args.columns,
                   config_file=args.config_json,
                   title=args.title,
