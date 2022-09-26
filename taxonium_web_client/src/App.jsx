@@ -317,7 +317,7 @@ function App() {
               {/* documentation link, centered with react-icons*/}
               <div className="flex justify-center pt-5">
                 <a
-                  href="docs.taxonium.org"
+                  href="//docs.taxonium.org"
                   className="text-gray-500 hover:underline"
                   target="_top"
                 >
