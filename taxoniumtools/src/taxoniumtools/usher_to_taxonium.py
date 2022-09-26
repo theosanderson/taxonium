@@ -302,13 +302,22 @@ def main():
     do_processing(args.input,
                   args.output,
                   metadata_file=args.metadata,
-            
+                  genbank_file=args.genbank,
+                  chronumental_enabled=args.chronumental,
+                  chronumental_steps=args.chronumental_steps,
                   columns=args.columns,
-                  
+                  chronumental_date_output=args.chronumental_date_output,
+                  chronumental_tree_output=args.chronumental_tree_output,
+                  chronumental_reference_node=args.chronumental_reference_node,
                   config_file=args.config_json,
                   title=args.title,
                   overlay_html=args.overlay_html,
-                  
+                  remove_after_pipe=args.remove_after_pipe,
+                  clade_types=args.clade_types,
+                  name_internal_nodes=args.name_internal_nodes,
+                  shear=args.shear,
+                  shear_threshold=args.shear_threshold,
+                  only_variable_sites=args.only_variable_sites,
                   key_column=args.key_column)
 
 
