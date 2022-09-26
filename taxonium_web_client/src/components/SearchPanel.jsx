@@ -444,7 +444,7 @@ function SearchPanel({
                 </button>
               )}
             </h2>
-            
+
             <button
               onClick={() => selectedDetails.clearNodeDetails()}
               className="text-gray-500"
@@ -452,13 +452,13 @@ function SearchPanel({
               close
             </button>
           </header>
-{selectedDetails.nodeDetails["meta_ThumbnailURL"] && (
-              <img
-                src={selectedDetails.nodeDetails["meta_ThumbnailURL"]}
-                alt="thumbnail"
-              />
-            )}
-            
+          {selectedDetails.nodeDetails["meta_ThumbnailURL"] && (
+            <img
+              src={selectedDetails.nodeDetails["meta_ThumbnailURL"]}
+              alt="thumbnail"
+            />
+          )}
+
           {colorBy.colorByField === "genotype" && (
             <span
               style={{
