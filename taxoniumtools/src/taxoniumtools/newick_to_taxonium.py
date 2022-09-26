@@ -137,7 +137,7 @@ def get_parser():
                         '--metadata',
                         type=str,
                         help='File path for input metadata file (CSV/TSV)')
-    
+
     parser.add_argument(
         '-c',
         "--columns",
@@ -145,7 +145,7 @@ def get_parser():
         help=
         "Column names to include in the metadata, separated by commas, e.g. `pangolin_lineage,country`"
     )
-    
+
     parser.add_argument(
         '-j',
         "--config_json",
@@ -184,7 +184,6 @@ def main():
     do_processing(args.input,
                   args.output,
                   metadata_file=args.metadata,
-               
                   columns=args.columns,
                   config_file=args.config_json,
                   title=args.title,

@@ -58,7 +58,6 @@ Some people ask what the "L" in JSONL is for. JSONL means "JSON Lines". Each lin
 
 Using the parameters above you can trigger `usher_to_taxonium` to launch [Chronumental](https://github.com/theosanderson/chronumental) and create a time tree which will be packaged into your tree.
 
-
 ##### newick_to_taxonium
 
 If you don't need genotype data encoded in the final tree (e.g. some taxonomies, or non-genome-based trees) you can skip UShER and use `newick_to_taxonium`
