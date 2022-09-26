@@ -83,6 +83,9 @@ const NodeHoverTip = ({
           <i>Internal node</i>
         )}
       </h2>
+      {hoveredNode["meta_ThumbnailURL"] && (
+        <img src={hoveredNode["meta_ThumbnailURL"]} alt="thumbnail" />
+      )}
       {colorBy.colorByField === "genotype" && (
         <span
           style={{
