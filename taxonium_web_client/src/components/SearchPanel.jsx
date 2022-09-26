@@ -91,7 +91,7 @@ function SearchPanel({
   const formatMetadataItem = (key) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
     if (key === "num_tips" && selectedDetails.nodeDetails[key] === 1) return;
-    
+
     if (
       selectedDetails.nodeDetails &&
       selectedDetails.nodeDetails[key] &&
@@ -444,10 +444,12 @@ function SearchPanel({
                 </button>
               )}
             </h2>
-            {
-        selectedDetails.nodeDetails['meta_ThumbnailURL'] &&
-        <img src={selectedDetails.nodeDetails['meta_ThumbnailURL']} alt="thumbnail" />
-      }
+            {selectedDetails.nodeDetails["meta_ThumbnailURL"] && (
+              <img
+                src={selectedDetails.nodeDetails["meta_ThumbnailURL"]}
+                alt="thumbnail"
+              />
+            )}
             <button
               onClick={() => selectedDetails.clearNodeDetails()}
               className="text-gray-500"
