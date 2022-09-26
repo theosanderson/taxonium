@@ -137,13 +137,7 @@ def get_parser():
                         '--metadata',
                         type=str,
                         help='File path for input metadata file (CSV/TSV)')
-    parser.add_argument(
-        '-g',
-        '--genbank',
-        type=str,
-        help=
-        'File path for GenBank file containing reference genome (N.B. currently only one chromosome is supported, and no compound features)'
-    )
+    
     parser.add_argument(
         '-c',
         "--columns",
@@ -151,34 +145,7 @@ def get_parser():
         help=
         "Column names to include in the metadata, separated by commas, e.g. `pangolin_lineage,country`"
     )
-    parser.add_argument(
-        '-C',
-        '--chronumental',
-        action='store_true',
-        help=
-        'Runs Chronumental to build a time tree. The metadata TSV must include a date column.'
-    )
-    parser.add_argument('--chronumental_steps',
-                        type=int,
-                        help='Number of steps to run Chronumental for')
-    parser.add_argument(
-        "--chronumental_date_output",
-        type=str,
-        help=
-        "Optional output file for the chronumental date table if you want to keep it (a table mapping nodes to their inferred dates)."
-    )
-    parser.add_argument(
-        "--chronumental_tree_output",
-        type=str,
-        help=
-        "Optional output file for the chronumental time tree file in nwk format."
-    )
-    parser.add_argument(
-        "--chronumental_reference_node",
-        type=str,
-        help=
-        "A reference node to be used for Chronumental. This should be earlier in the outbreak and have a good defined date. If not set the oldest sample will be automatically picked by Chronumental.",
-        default=None)
+    
     parser.add_argument(
         '-j',
         "--config_json",
@@ -199,39 +166,6 @@ def get_parser():
         help=
         "A file containing HTML to put in the About box when this tree is loaded. This could contain information about who built the tree and what data you used.",
         default=None)
-    parser.add_argument(
-        '--remove_after_pipe',
-        action='store_true',
-        help=
-        'If set, we will remove anything after a pipe (|) in each node\'s name, after joining to metadata'
-    )
-    parser.add_argument(
-        "--clade_types",
-        type=str,
-        help=
-        "Optionally specify clade types provided in the UShER file, comma separated - e.g. 'nextstrain,pango'. Order must match that used in the UShER pb file. If you haven't specifically annotated clades in your protobuf, don't use this",
-        default=None)
-    parser.add_argument('--name_internal_nodes',
-                        action='store_true',
-                        help='If set, we will name internal nodes node_xxx')
-    parser.add_argument(
-        "--shear",
-        action='store_true',
-        help=
-        "If set, we will 'shear' the tree. This will iterate over all nodes. If a particular sub-branch makes up fewer than e.g. 1/1000 of the total descendants, then in most cases it represents a sequencing error. (But it also could represent recombinants, or a real, unfit branch.) We remove these to simplify the interpretation of the tree. "
-    )
-    parser.add_argument(
-        '--shear_threshold',
-        type=float,
-        help=
-        'Threshold for shearing, default is 1000 meaning branches will be removed if they make up less than <1/1000 nodes. Has no effect unless --shear is set.',
-        default=1000)
-    parser.add_argument(
-        '--only_variable_sites',
-        action='store_true',
-        help=
-        "Only store information about the root sequence at a particular position if there is variation at that position somewhere in the tree. This helps to speed up the loading of larger genomes such as MPXV."
-    )
 
     parser.add_argument(
         "--key_column",
@@ -251,21 +185,10 @@ def main():
                   args.output,
                   metadata_file=args.metadata,
                   genbank_file=args.genbank,
-                  chronumental_enabled=args.chronumental,
-                  chronumental_steps=args.chronumental_steps,
                   columns=args.columns,
-                  chronumental_date_output=args.chronumental_date_output,
-                  chronumental_tree_output=args.chronumental_tree_output,
-                  chronumental_reference_node=args.chronumental_reference_node,
                   config_file=args.config_json,
                   title=args.title,
                   overlay_html=args.overlay_html,
-                  remove_after_pipe=args.remove_after_pipe,
-                  clade_types=args.clade_types,
-                  name_internal_nodes=args.name_internal_nodes,
-                  shear=args.shear,
-                  shear_threshold=args.shear_threshold,
-                  only_variable_sites=args.only_variable_sites,
                   key_column=args.key_column)
 
 
