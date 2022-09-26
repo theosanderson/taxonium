@@ -15,6 +15,8 @@ import InputSupplier from "./components/InputSupplier";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { Toaster } from "react-hot-toast";
 import ReactTooltip from "react-tooltip";
+import {HiOutlineBookOpen}  from "react-icons/hi";
+
 const first_search = getDefaultSearch("aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
@@ -153,6 +155,15 @@ function App() {
   const [overlayContent, setOverlayContent] = useState(null);
   // does the window location contain epicov anywhere
   const isGisaid = window.location.toString().includes("epicov.org");
+
+  const showCase = [
+    {title: "SARS-CoV-2", url : "/?backend=https://api.cov2tree.org", desc: "Public sequences of SARS-CoV-2 from the INSDC databases"},
+    {title: "NCBI Taxonomy (visual)", url : "/?configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig_special2.json&protoUrl=https%3A%2F%2Fcov2tree.nyc3.cdn.digitaloceanspaces.com%2Fncbi%2Fspecial_filtered.jsonl.gz&xType=x_dist", desc:"The tree of life: selected species from NCBI Taxonomy with images from, and links to, Wikipedia"},
+    {title: "NCBI Taxonomy (full)", url : "https://taxonomy.taxonium.org", desc: "Full 2.2M NCBI Taxonomy of species"},
+   // {title: "Monkeypox", url : "https://mpx.taxonium.org", desc: "Monkeypox sequences from all-time"},
+
+  ]
+
   return (
     <Router>
       <ReactTooltip
@@ -267,31 +278,43 @@ function App() {
                 Welcome to Taxonium, a tool for exploring large trees
               </p>
               <InputSupplier inputHelper={inputHelper} />
-              <p className="text-md text-gray-700 font-semibold mb-2">
-                or{" "}
-                <a
-                  className="text-blue-500"
-                  href="/?backend=https://api.cov2tree.org"
-                >
-                  load the public SARS-CoV-2 tree
-                </a>
-                ,{" "}
-                <a
-                  className="text-blue-500"
-                  href="/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json"
-                >
-                  an exploration of the NCBI taxonomy
-                </a>
-                , or{" "}
-                <a
-                  className="text-blue-500"
-                  href="https://taxonium.readthedocs.io/en/latest/"
-                >
-                  read more
-                </a>{" "}
-                about how to use Taxonium
-              </p>{" "}
-              <FirefoxWarning className="mt-8 text-gray-400" />
+              <div className="flex flex-col space-y-3 pt-6">
+                {/* Horizontal separator and text "or load an existing tree:"*/}
+                <div className="flex flex-row items-center">
+                  <div className="flex-1 border-t border-gray-300"></div>
+                  <div className="px-2 text-gray-500 text-sm">or load an existing tree:</div>
+                  <div className="flex-1 border-t border-gray-300"></div>
+                </div>
+                {/* Showcases */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {showCase.map((item, i) => (
+                    <div
+
+                      key={i}
+                      className="border border-gray-300 rounded p-3"
+                    >
+                      <a
+                        href={item.url}
+                        className="text-gray-800 hover:underline"
+                        target="_top"
+                      >
+                        {item.title}
+                      </a>
+                      <p className="text-gray-600 text-sm">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+                  {/* documentation link, centered with react-icons*/}
+                  <div className="flex justify-center pt-5">
+                    <a
+                      href="docs.taxonium.org"
+                      className="text-gray-500 hover:underline"
+                      target="_top"
+                    ><HiOutlineBookOpen className="w-6 h-4 opacity-80 mr-2 inline-block " />
+                      Read the Taxonium documentation
+                    </a>
+                  </div>
             </div>
           )}
         </Suspense>
@@ -299,4 +322,5 @@ function App() {
     </Router>
   );
 }
+
 export default App;
