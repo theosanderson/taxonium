@@ -17,7 +17,6 @@ var filtering;
 var exporting;
 
 const { program } = require("commander");
-const { response } = require("express");
 
 program
   .option("--ssl", "use ssl")
