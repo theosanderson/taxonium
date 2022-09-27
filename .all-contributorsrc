@@ -62,6 +62,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "kvargha",
+      "name": "Koorous Vargha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35252220?v=4",
+      "profile": "https://kvargha.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
