@@ -10,11 +10,14 @@ var https = require("https");
 var xml2js = require("xml2js");
 var axios = require("axios");
 var pako = require("pako");
+const URL = require("url").URL;
+const { execSync } = require('child_process');
 var importing;
 var filtering;
 var exporting;
 
 const { program } = require("commander");
+const { response } = require("express");
 
 program
   .option("--ssl", "use ssl")
@@ -151,15 +154,43 @@ app.get("/search", function (req, res) {
   console.log("Result type was " + result.type);
 });
 
-const path_for_config = command_options.config_json;
+let path_for_config = command_options.config_json;
+let config;
+
+// Check if config passed in a valid URL
+const stringIsAValidUrl = (s) => {
+  try {
+    new URL(s);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+if (stringIsAValidUrl(path_for_config)) {
+  console.log("CONFIG_JSON detected as a URL. Downloading config.")
+  // Delete any trailing /
+  path_for_config = path_for_config.endsWith('/') ? path_for_config.slice(0, -1) : path_for_config;
+
+  // Download file through wget
+  execSync(`wget -c ${path_for_config}`)
+
+  // Extract file name
+  const splitURL = path_for_config.split('/');
+  const fileName = splitURL[splitURL.length - 1];
+
+  path_for_config = fileName;
+
+  console.log("Config name set to", path_for_config);
+}
 
 // check if path exists
-let config;
 if (path_for_config && fs.existsSync(path_for_config)) {
   config = JSON.parse(fs.readFileSync(path_for_config));
 } else {
   config = { title: "", source: "", no_file: true };
 }
+
 
 app.get("/config", function (req, res) {
   config.num_nodes = processedData.nodes.length;
