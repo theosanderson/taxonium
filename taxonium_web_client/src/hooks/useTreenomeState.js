@@ -73,8 +73,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
   }, [data.base_data, settings.treenomeEnabled]);
 
   const handleResize = useCallback(() => {
-    console.log("calling handleResize");
-    console.log(deckRef.current, settings.treenomeEnabled);
     if (
       !deckRef.current ||
       !deckRef.current.deck ||
@@ -83,19 +81,14 @@ const useTreenomeState = (data, deckRef, view, settings) => {
     ) {
       return;
     }
-    console.log("here in handleResize");
     const tempViewState = { ...view.viewState };
-    console.log("tempViewState", tempViewState);
     view.setViewState(view.baseViewState);
-    console.log("baseViewState", view.baseViewState);
     const vp = {
       ...deckRef.current.deck.getViewports()[1],
     };
-    console.log("unprojecting:::resize");
     vp && setXbounds([vp.unproject([0, 0])[0], vp.unproject([vp.width, 0])[0]]);
 
     view.setViewState(tempViewState);
-    console.log("back to ", view.viewState);
   }, [deckRef, setXbounds, view, settings.treenomeEnabled]);
 
   useEffect(() => {
@@ -109,7 +102,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
   const [handled, setHandled] = useState(false);
   useEffect(() => {
     if (jbrowseLoaded && !handled) {
-      console.log("handle resize");
       window.setTimeout(() => {
         handleResize();
       }, 200);
@@ -124,7 +116,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
     ) {
       const jbrowse = document.getElementById("view-browser-axis");
       if (jbrowse) {
-        console.log("set jbrowse loaded");
         setJbrowseLoaded(jbrowse);
         mutationInstance.disconnect();
       }
@@ -150,8 +141,6 @@ const useTreenomeState = (data, deckRef, view, settings) => {
     };
 
     if (pxPerBp) {
-      console.log("thisone");
-
       setBpWidth(vp.unproject([pxPerBp, 0])[0] - vp.unproject([0, 0])[0]);
     }
   }, [deckRef, pxPerBp, settings.treenomeEnabled]);

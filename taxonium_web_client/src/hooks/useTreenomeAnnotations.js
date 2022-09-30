@@ -20,8 +20,6 @@ const useTreenomeAnnotations = (settings) => {
 
   const getJson = useCallback(
     (track, key, name, category) => {
-      console.log("in here");
-
       const url = track.bigDataUrl;
       if (!url) {
         return null;

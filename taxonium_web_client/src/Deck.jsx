@@ -19,6 +19,7 @@ import DeckSettingsModal from "./components/DeckSettingsModal";
 import { TreenomeButtons } from "./components/TreenomeButtons";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
+import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 
 function Deck({
   data,
@@ -284,7 +285,12 @@ function Deck({
             }}
           >
             <span ref={jbrowseRef}>
-              <JBrowsePanel treenomeState={treenomeState} settings={settings} />
+              <JBrowseErrorBoundary>
+                <JBrowsePanel
+                  treenomeState={treenomeState}
+                  settings={settings}
+                />
+              </JBrowseErrorBoundary>
               <TreenomeModal
                 treenomeSettingsOpen={treenomeSettingsOpen}
                 setTreenomeSettingsOpen={setTreenomeSettingsOpen}

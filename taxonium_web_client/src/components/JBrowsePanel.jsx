@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useRef, useState } from "react";
 import "@fontsource/roboto";
 import "@jbrowse/plugin-data-management";
 import "../App.css";
@@ -7,7 +7,6 @@ import {
   createViewState,
   JBrowseLinearGenomeView,
 } from "@jbrowse/react-linear-genome-view";
-import { AssemblyManager } from "@jbrowse/plugin-data-management";
 import { protect, unprotect } from "mobx-state-tree";
 
 function JBrowsePanel(props) {
@@ -46,7 +45,7 @@ function JBrowsePanel(props) {
     props.settings.chromosomeName,
   ]);
 
-  const [userTracks, setUserTracks] = React.useState([]);
+  const [userTracks, setUserTracks] = useState([]);
 
   const tracks = useMemo(() => {
     const covTracks = [
@@ -170,9 +169,19 @@ function JBrowsePanel(props) {
       },
       ...treenomeAnnotations.json,
     ];
-    return userTracks.concat(covTracks);
-  }, [props.settings.chromosomeName, treenomeAnnotations.json, userTracks]);
+    if (props.settings.isCov2Tree) {
+      return userTracks.concat(covTracks);
+    } else {
+      return userTracks;
+    }
+  }, [
+    props.settings.chromosomeName,
+    props.settings.isCov2Tree,
+    treenomeAnnotations.json,
+    userTracks,
+  ]);
 
+  useEffect(() => {});
   const defaultSession = useMemo(() => {
     return {
       name: "Default",
@@ -222,47 +231,77 @@ function JBrowsePanel(props) {
     };
   }, []);
 
-  const state = useMemo(
-    () =>
-      createViewState({
-        assembly,
-        tracks: props.settings.isCov2Tree ? tracks : undefined,
-        location: props.settings.isCov2Tree
-          ? `${props.settings.chromosomeName}:0-29903`
-          : props.settings.chromosomeName +
-            ":0-" +
-            props.treenomeState.genomeSize,
-        defaultSession: defaultSession,
-        ...theme,
-        onChange: (patch) => {
-          if (patch.op !== "replace") {
-            return;
-          }
-          const v = state.session.view;
+  const [freezeTracks, setFreezeTracks] = useState([]);
+  const [enabledTracks, setEnabledTracks] = useState([]);
 
-          const leftNtBound = v.offsetPx * v.bpPerPx;
-          const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
-          if (
-            leftNtBound !== props.treenomeState.ntBounds[0] ||
-            rightNtBound !== props.treenomeState.ntBounds[1]
-          ) {
-            props.treenomeState.setNtBounds([leftNtBound, rightNtBound]);
-          }
-          const pxPerBp = 1 / v.bpPerPx;
-          if (pxPerBp !== props.treenomeState.pxPerBp) {
-            props.treenomeState.setPxPerBp(pxPerBp);
-          }
-        },
-      }),
-    [
+  const state = useMemo(() => {
+    setFreezeTracks(enabledTracks);
+    return createViewState({
       assembly,
-      props.settings.isCov2Tree,
-      props.settings.chromosomeName,
-      tracks,
-      defaultSession,
-      theme,
-    ]
-  );
+      tracks: tracks,
+      location: props.settings.isCov2Tree
+        ? `${props.settings.chromosomeName}:0-29903`
+        : props.settings.chromosomeName +
+          ":0-" +
+          props.treenomeState.genomeSize,
+      defaultSession: defaultSession,
+      ...theme,
+      onChange: (patch) => {
+        if (patch.op !== "replace") {
+          return;
+        }
+        const v = state.session.view;
+
+        const leftNtBound = v.offsetPx * v.bpPerPx;
+        const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
+        if (
+          leftNtBound !== props.treenomeState.ntBounds[0] ||
+          rightNtBound !== props.treenomeState.ntBounds[1]
+        ) {
+          props.treenomeState.setNtBounds([leftNtBound, rightNtBound]);
+        }
+        const pxPerBp = 1 / v.bpPerPx;
+        if (pxPerBp !== props.treenomeState.pxPerBp) {
+          props.treenomeState.setPxPerBp(pxPerBp);
+        }
+      },
+    });
+  }, [
+    assembly,
+    props.settings.isCov2Tree,
+    props.settings.chromosomeName,
+    tracks,
+    defaultSession,
+    theme,
+  ]);
+
+  useEffect(() => {
+    if (
+      freezeTracks.length > 0 &&
+      state &&
+      state.session &&
+      state.session.view
+    ) {
+      freezeTracks.forEach((t) =>
+        state.session.view.showTrack(t.configuration.trackId)
+      );
+    }
+  }, [freezeTracks, state]);
+
+  useEffect(() => {
+    if (state && state.session && state.session.view) {
+      setEnabledTracks(state.session.view.tracks);
+    }
+  }, [state]);
+
+  const [showThis, setShowThis] = useState(null);
+
+  useEffect(() => {
+    if (showThis && state && state.session && state.session.view) {
+      state.session.view.showTrack(showThis);
+      setShowThis(null);
+    }
+  }, [showThis, state]);
 
   useEffect(() => {
     if (state && state.session && state.session.view) {
@@ -276,7 +315,8 @@ function JBrowsePanel(props) {
       // for some reason. So we add it here.
       unprotect(state);
       state.session.addTrackConf = (trackConf) => {
-        setUserTracks(userTracks.concat(trackConf));
+        setUserTracks((userTracks) => [...userTracks, trackConf]);
+        setShowThis(trackConf.trackId);
       };
       protect(state);
     }
