@@ -306,14 +306,7 @@ function SearchPanel({
                 className="m-3 inline-block"
                 checked={settings.treenomeEnabled}
                 onChange={(event) => {
-                  console.log(settings.treenomeEnabled);
                   settings.setTreenomeEnabled(!settings.treenomeEnabled);
-
-                  // view.setViewState({
-                  //   ...view.viewState,
-                  //  "browser-main": { zoom: -2, target: [500, 1000] },
-                  // "browser-axis": { zoom: -2, target: [0, 1000] },
-                  // });
                 }}
               />
               <button

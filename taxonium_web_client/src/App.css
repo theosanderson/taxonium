@@ -8,7 +8,7 @@
 }
 
 /* JBrowse customization */
-.MuiPaper-root.MuiPaper-rounded {
+.MuiPaper-root.MuiPaper-rounded.MuiPaper-elevation {
   box-shadow: none !important;
   padding: 0px !important;
   margin: 0px !important;
@@ -69,4 +69,12 @@ input {
 .tooltipLink {
   color: #2563eb;
   text-decoration: underline;
+}
+
+button[data-testid="addTrackNextButton"] {
+  background-color: #858585;
+}
+
+.MuiDialog-container > div > div > .MuiScopedCssBaseline-root {
+  padding: 15px;
 }

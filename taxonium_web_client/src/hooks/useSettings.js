@@ -83,10 +83,12 @@ export const useSettings = ({ query, updateQuery }) => {
     );
   };
 
+  const [chromosomeName, setChromosomeName] = useState("chromosome");
   const [isCov2Tree, setIsCov2Tree] = useState(false);
   useEffect(() => {
     if (window.location.href.includes("cov2tree.org")) {
       setIsCov2Tree(true);
+      setChromosomeName("NC_045512v2");
     }
   }, []);
 
@@ -108,5 +110,7 @@ export const useSettings = ({ query, updateQuery }) => {
     setMaxCladeTexts,
     miniMutationsMenu,
     isCov2Tree,
+    chromosomeName,
+    setChromosomeName,
   };
 };

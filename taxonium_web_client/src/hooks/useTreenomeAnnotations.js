@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-const useTreenomeAnnotations = () => {
+const useTreenomeAnnotations = (settings) => {
   const [trackList, setTrackList] = useState([]);
   const baseUrl = "https://hgdownload.soe.ucsc.edu";
 
@@ -18,43 +18,46 @@ const useTreenomeAnnotations = () => {
     getTrackList();
   }, []);
 
-  const getJson = (track, key, name, category) => {
-    const url = track.bigDataUrl;
-    if (!url) {
-      return null;
-    }
-    const ext = url.slice(-2);
-    if (ext !== "bb" && ext !== "bw") {
-      return null;
-    }
-    const fullUrl = `${baseUrl}${url}`;
-    const output = {
-      trackId: key,
-      name: name,
-      assemblyNames: ["NC_045512v2"],
-      category: category,
-    };
-    if (ext === "bb") {
-      output.type = "FeatureTrack";
-      output.adapter = {
-        type: "BigBedAdapter",
-        bigBedLocation: {
-          uri: fullUrl,
-          locationType: "UriLocation",
-        },
+  const getJson = useCallback(
+    (track, key, name, category) => {
+      const url = track.bigDataUrl;
+      if (!url) {
+        return null;
+      }
+      const ext = url.slice(-2);
+      if (ext !== "bb" && ext !== "bw") {
+        return null;
+      }
+      const fullUrl = `${baseUrl}${url}`;
+      const output = {
+        trackId: key,
+        name: name,
+        assemblyNames: [settings.chromosomeName],
+        category: category,
       };
-    } else if (ext === "bw") {
-      output.type = "QuantitativeTrack";
-      output.adapter = {
-        type: "BigWigAdapter",
-        bigWigLocation: {
-          uri: fullUrl,
-          locationType: "UriLocation",
-        },
-      };
-    }
-    return output;
-  };
+      if (ext === "bb") {
+        output.type = "FeatureTrack";
+        output.adapter = {
+          type: "BigBedAdapter",
+          bigBedLocation: {
+            uri: fullUrl,
+            locationType: "UriLocation",
+          },
+        };
+      } else if (ext === "bw") {
+        output.type = "QuantitativeTrack";
+        output.adapter = {
+          type: "BigWigAdapter",
+          bigWigLocation: {
+            uri: fullUrl,
+            locationType: "UriLocation",
+          },
+        };
+      }
+      return output;
+    },
+    [settings.chromosomeName]
+  );
 
   const json = useMemo(() => {
     let allJson = [];
@@ -68,7 +71,7 @@ const useTreenomeAnnotations = () => {
             continue;
           }
           childJson = getJson(child, childKey, `${child.longLabel}`, [
-            "Composite UCSC Tracks",
+            "UCSC Tracks (Composite)",
             track.longLabel,
           ]);
           if (childJson) {
@@ -82,7 +85,7 @@ const useTreenomeAnnotations = () => {
       }
     }
     return allJson;
-  }, [trackList]);
+  }, [getJson, trackList.wuhCor1]);
 
   const output = useMemo(() => {
     return { json };
