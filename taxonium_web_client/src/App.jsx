@@ -172,7 +172,7 @@ function App() {
       url: "https://taxonomy.taxonium.org",
       desc: "Full 2.2M NCBI Taxonomy of species",
     },
-    {title: "Monkeypox", url : "https://mpx.taxonium.org", desc: "Monkeypox sequences from GenBank},
+    {title: "Monkeypox", url : "https://mpx.taxonium.org", desc: "Monkeypox sequences from GenBank"}
   ];
 
   return (
