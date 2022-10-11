@@ -1,6 +1,8 @@
 name: Electron build/release
 
-on: push
+on: 
+  push:
+  workflow_call:
 
 jobs:
   release:
