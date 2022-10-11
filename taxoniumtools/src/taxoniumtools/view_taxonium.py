@@ -37,11 +37,11 @@ parser.add_argument('--no_frontend',
                     help='Do not start the frontend.')
 parser.add_argument('--backend_port',
                     type=int,
-                    default=5000,
+                    default=5544,
                     help='Port to use for the backend.')
 parser.add_argument('--frontend_port',
                     type=int,
-                    default=8000,
+                    default=8200,
                     help='Port to use for the frontend.')
 
 args = parser.parse_args()
