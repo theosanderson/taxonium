@@ -28,7 +28,7 @@ const { program } = require("commander");
 
 program
   .option("--ssl", "use ssl")
-  .option("--port <port>", "port", 4321)
+  .option("--port <port>", "port", 8000)
   .option("--config_json <config_json>", "config json")
   .option("--data_url <data url>", "data url")
   .option(
@@ -115,6 +115,7 @@ app.use(queue({ activeLimit: 10, queuedLimit: 10 }));
 
 const logStatusMessage = (status_obj) => {
   console.log("status", status_obj);
+  process.send(status_obj);
 };
 
 app.get("/", function (req, res) {
@@ -511,6 +512,12 @@ const loadData = async () => {
     logStatusMessage
   );
 
+  logStatusMessage({
+    status: "finalising",
+
+  }
+  );
+
   if (config.no_file) {
     importing.generateConfig(config, processedData);
   }
@@ -535,6 +542,12 @@ const loadData = async () => {
   cached_starting_values = result;
   console.log("Saved cached starting vals");
   // set a timeout to start listening
+  logStatusMessage({
+    status: "loaded",
+
+  }
+  );
+
   setTimeout(() => {
     console.log("Starting to listen");
     startListening();

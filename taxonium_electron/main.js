@@ -19,23 +19,71 @@ const {fork} = require('child_process');
 app.commandLine.appendSwitch('js-flags', `--max-old-space-size=${bytesToMb(maxMemory)}`);
 const path = require('path')
 
+
+const setup = (mainWindow, args)=> {
+  const p = fork(path.join(__dirname, 'node_modules/taxonium_backend/server.js'),args, {
+  stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+});
+
+setTimeout(()=> {
+  console.log("sending message")
+  // close mainWindow
+ 
+  mainWindow.webContents.send('message', 'hello from main')
+}, 5000)
+
+console.log("Forked process", p.pid);
+
+// log the output from the child process
+p.stdout.on('data', (data) => {
+  console.log(`stdout: ${data}`);
+});
+
+
+// log the output from the child process
+p.stderr.on('data', (data) => {
+  console.log(`stderr: ${data}`);
+}
+);
+
+//log events from the child process
+p.on('message', (data) => {
+  console.log(`message: ${data}`);
+  console.log(data)
+  mainWindow.webContents.send('status', data);
+  
+}
+);
+}
+
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      nodeIntegration: true,
+      contextIsolation: false,
+    
     }
   })
+  //setup(mainWindow);
 
   
-
+  mainWindow.toggleDevTools()
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
+  // listen for 'open-file' event from the renderer process
+  ipcMain.on('open-file', (event, arg) => {
+    console.log(arg) // prints "ping"
+    console.log("opening file")
+    setup(mainWindow, ["--data_file", arg])
+    event.reply('asynchronous-reply', 'pong')
+
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
+});
 }
 
 // This method will be called when Electron has finished
@@ -63,21 +111,3 @@ app.on('window-all-closed', function () {
 // code. You can also put them in separate files and require them here.
 
 
-
-const p = fork(path.join(__dirname, 'node_modules/taxonium_backend/server.js'),args, {
-  stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-});
-
-console.log("Forked process", p.pid);
-
-// log the output from the child process
-p.stdout.on('data', (data) => {
-  console.log(`stdout: ${data}`);
-});
-
-
-// log the output from the child process
-p.stderr.on('data', (data) => {
-  console.log(`stderr: ${data}`);
-}
-);
