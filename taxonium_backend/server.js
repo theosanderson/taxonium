@@ -1,7 +1,7 @@
 var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
-var queue = require('express-queue');
+var queue = require("express-queue");
 var app = express();
 var fs = require("fs");
 const path = require("node:path");
@@ -11,7 +11,7 @@ var xml2js = require("xml2js");
 var axios = require("axios");
 var pako = require("pako");
 const URL = require("url").URL;
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
 var importing;
 var filtering;
 var exporting;
@@ -169,15 +169,17 @@ const stringIsAValidUrl = (s) => {
 };
 
 if (stringIsAValidUrl(path_for_config)) {
-  console.log("CONFIG_JSON detected as a URL. Downloading config.")
+  console.log("CONFIG_JSON detected as a URL. Downloading config.");
   // Delete any trailing /
-  path_for_config = path_for_config.endsWith('/') ? path_for_config.slice(0, -1) : path_for_config;
+  path_for_config = path_for_config.endsWith("/")
+    ? path_for_config.slice(0, -1)
+    : path_for_config;
 
   // Download file through wget
-  execSync(`wget -c ${path_for_config}`)
+  execSync(`wget -c ${path_for_config}`);
 
   // Extract file name
-  const splitURL = path_for_config.split('/');
+  const splitURL = path_for_config.split("/");
   const fileName = splitURL[splitURL.length - 1];
 
   path_for_config = fileName;
@@ -191,7 +193,6 @@ if (path_for_config && fs.existsSync(path_for_config)) {
 } else {
   config = { title: "", source: "", no_file: true };
 }
-
 
 app.get("/config", function (req, res) {
   config.num_nodes = processedData.nodes.length;
