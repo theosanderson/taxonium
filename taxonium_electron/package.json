@@ -1,0 +1,28 @@
+{
+  "name": "electron-child-process-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder build --publish never",
+    "clean": "rm -rf ./dist"
+  },
+  "author": "Matthew Slipper <me@matthewslipper.com>",
+  "license": "MIT",
+  "dependencies": {
+    "blake2": "4.0.0"
+  },
+  "devDependencies": {
+    "electron": "6.0.9",
+    "electron-builder": "21.2.0"
+  },
+  "build": {
+    "productName": "ElectronChildProcessPlayground",
+    "appId": "com.mslipper.ElectronChildProcessPlayground",
+    "files": [
+      "src/",
+      "package.json"
+    ]
+  }
+}
