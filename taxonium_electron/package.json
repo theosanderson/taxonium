@@ -1,23 +1,21 @@
 {
-  "name": "Taxonium",
+  "name": "taxonium_electron",
   "version": "1.0.0",
-  "description": "Taxonium local",
+  "description": "Taxonium Electron",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/theosanderson/taxonium",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "taxonium",
+    "tree",
+    "phylogenetics"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Theo Sanderson",
+  "license": "MIT",
   "dependencies": {
     "check-files": "^0.0.2",
     "electron-squirrel-startup": "^1.0.0",
@@ -38,7 +36,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "electron_quick_start"
+            "name": "Taxonium"
           }
         },
         {
