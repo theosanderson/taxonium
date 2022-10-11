@@ -25,7 +25,10 @@ jobs:
         run: |
           cd taxonium_electron
           yarn install
-          yarn electron-builder -mwl
+          yarn electron-builder -m
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -33,4 +36,6 @@ jobs:
           working_directory: taxonium_electron/dist/
           files: |
             Taxonium*
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
   
