@@ -25,9 +25,9 @@ pip install taxoniumtools
 ```
 
 Start the servers
+
 ```
 view_taxonium mytree.jsonl.gz
 ```
 
 This script will display a URL where you can access Taxonium. It will not have the same memory limits discussed above.
-

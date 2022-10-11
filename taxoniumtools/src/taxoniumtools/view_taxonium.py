@@ -18,7 +18,9 @@ def is_port_in_use(port: int) -> bool:
 
 def check_port_is_free(port):
     if is_port_in_use(port):
-        raise Exception(f"Port {port} is already in use. You can use the --help command to find out how to change the ports used.")
+        raise Exception(
+            f"Port {port} is already in use. You can use the --help command to find out how to change the ports used."
+        )
 
 
 BACKEND_IMAGE = "theosanderson/taxonium_backend:master"
