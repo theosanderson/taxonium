@@ -16,6 +16,13 @@ var importing;
 var filtering;
 var exporting;
 
+if (!global.fetch) {
+  // use dynamic import to load node-fetch
+  import("node-fetch").then((fetch) => {
+    global.fetch = fetch;
+  });
+}
+
 const { program } = require("commander");
 
 program
@@ -107,6 +114,7 @@ app.use(queue({ activeLimit: 10, queuedLimit: 10 }));
 
 const logStatusMessage = (status_obj) => {
   console.log("status", status_obj);
+  process.send(status_obj);
 };
 
 app.get("/", function (req, res) {
@@ -503,6 +511,10 @@ const loadData = async () => {
     logStatusMessage
   );
 
+  logStatusMessage({
+    status: "finalising",
+  });
+
   if (config.no_file) {
     importing.generateConfig(config, processedData);
   }
@@ -527,6 +539,10 @@ const loadData = async () => {
   cached_starting_values = result;
   console.log("Saved cached starting vals");
   // set a timeout to start listening
+  logStatusMessage({
+    status: "loaded",
+  });
+
   setTimeout(() => {
     console.log("Starting to listen");
     startListening();

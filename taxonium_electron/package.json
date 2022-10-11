@@ -1,28 +1,61 @@
 {
-  "name": "electron-child-process-playground",
+  "name": "Taxonium",
   "version": "1.0.0",
-  "description": "",
-  "main": "./src/main.js",
+  "description": "Taxonium local",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-builder build --publish never",
-    "clean": "rm -rf ./dist"
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
-  "author": "Matthew Slipper <me@matthewslipper.com>",
-  "license": "MIT",
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
   "dependencies": {
-    "blake2": "4.0.0"
+    "check-files": "^0.0.2",
+    "electron-squirrel-startup": "^1.0.0",
+    "taxonium_backend": "file:../taxonium_backend"
   },
   "devDependencies": {
-    "electron": "6.0.9",
-    "electron-builder": "21.2.0"
+    "@electron-forge/cli": "^6.0.0-beta.67",
+    "@electron-forge/maker-deb": "^6.0.0-beta.67",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.67",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.67",
+    "@electron-forge/maker-zip": "^6.0.0-beta.67",
+    "electron": "^21.1.0"
   },
-  "build": {
-    "productName": "ElectronChildProcessPlayground",
-    "appId": "com.mslipper.ElectronChildProcessPlayground",
-    "files": [
-      "src/",
-      "package.json"
-    ]
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "electron_quick_start"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
