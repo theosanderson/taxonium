@@ -23,7 +23,6 @@ if (!global.fetch) {
   });
 }
 
-
 const { program } = require("commander");
 
 program
@@ -514,9 +513,7 @@ const loadData = async () => {
 
   logStatusMessage({
     status: "finalising",
-
-  }
-  );
+  });
 
   if (config.no_file) {
     importing.generateConfig(config, processedData);
@@ -544,9 +541,7 @@ const loadData = async () => {
   // set a timeout to start listening
   logStatusMessage({
     status: "loaded",
-
-  }
-  );
+  });
 
   setTimeout(() => {
     console.log("Starting to listen");
