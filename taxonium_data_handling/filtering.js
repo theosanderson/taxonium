@@ -328,7 +328,7 @@ function searchFilteringIfUncached({
     console.log("relevant_mutations:", relevant_mutations);
     const relevant_mutations_set = new Set(relevant_mutations);
     //console.log("node_to_mut:", node_to_mut);
-    console.log("NODE", data[0]);
+    //console.log("NODE", data[0]);
 
     filtered = data.filter(
       (node) =>
@@ -336,7 +336,7 @@ function searchFilteringIfUncached({
           relevant_mutations_set.has(mutation_id)
         ) && node.num_tips > spec.min_tips
     );
-    console.log("filtered:", filtered);
+    //console.log("filtered:", filtered);
     return filtered;
   } else if (spec.method === "revertant") {
     if (!all_data) {
