@@ -1,7 +1,7 @@
 var express = require("express");
 var cors = require("cors");
 var compression = require("compression");
-
+var queue = require('express-queue');
 var app = express();
 var fs = require("fs");
 const path = require("node:path");
@@ -102,6 +102,8 @@ let options;
 
 app.use(cors());
 app.use(compression());
+
+app.use(queue({ activeLimit: 10, queuedLimit: 10 }));
 
 const logStatusMessage = (status_obj) => {
   console.log("status", status_obj);
