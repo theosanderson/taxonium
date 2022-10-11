@@ -1,12 +1,13 @@
 {
   "name": "taxonium_electron",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Taxonium Electron",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "mwl": "electron-builder -mwl"
   },
   "repository": "https://github.com/theosanderson/taxonium",
   "keywords": [
@@ -27,7 +28,8 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.67",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.67",
     "@electron-forge/maker-zip": "^6.0.0-beta.67",
-    "electron": "^21.1.0"
+    "electron": "^21.1.0",
+    "electron-builder": "^23.6.0"
   },
   "config": {
     "forge": {
