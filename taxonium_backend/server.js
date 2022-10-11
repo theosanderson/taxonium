@@ -16,11 +16,19 @@ var importing;
 var filtering;
 var exporting;
 
+if (!global.fetch) {
+  // use dynamic import to load node-fetch
+  import("node-fetch").then((fetch) => {
+    global.fetch = fetch;
+  });
+}
+
+
 const { program } = require("commander");
 
 program
   .option("--ssl", "use ssl")
-  .option("--port <port>", "port", 8000)
+  .option("--port <port>", "port", 4321)
   .option("--config_json <config_json>", "config json")
   .option("--data_url <data url>", "data url")
   .option(

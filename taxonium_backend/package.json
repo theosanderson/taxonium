@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-queue": "^0.0.13",
+    "node-fetch": "^3.2.10",
     "pako": "^2.0.4",
     "taxonium_data_handling": "file:../taxonium_data_handling",
     "xml2js": "^0.4.23"
