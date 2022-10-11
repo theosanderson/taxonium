@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <link href="./styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet" />
     <title>Taxonium backend</title>
   </head>
   <body>
@@ -22,7 +22,14 @@
     <div id="how_to_load">
       <p>The backend is now loaded</p>
       <ul>
-        <li>You can access it <a href="https://taxonium.org/?backend=http://localhost:8000" target="_blank">here</a></li>
+        <li>
+          You can access it
+          <a
+            href="https://taxonium.org/?backend=http://localhost:8000"
+            target="_blank"
+            >here</a
+          >
+        </li>
         <!--<li>You need to <a href="https://stackoverflow.com/a/31900210">disable localhost from HTTPS protection</a></li>-->
       </ul>
     </div>
@@ -54,41 +61,36 @@
         color: #000;
       }
     </style>
-    
 
     <script>
-      const { ipcRenderer } = require('electron')
-      const fileInput = document.getElementById('fileInput')
-      fileInput.addEventListener('change', (event) => {
-        ipcRenderer.send('open-file', fileInput.files[0].path)
+      const { ipcRenderer } = require("electron");
+      const fileInput = document.getElementById("fileInput");
+      fileInput.addEventListener("change", (event) => {
+        ipcRenderer.send("open-file", fileInput.files[0].path);
         // hide file input
-        fileInput.style.display = "none"
-        const progress_text = document.getElementById('progress_text')
-        progress_text.innerHTML = "Loading file..."
-      })
-      
-      ipcRenderer.on('status', (event, status) => {
+        fileInput.style.display = "none";
+        const progress_text = document.getElementById("progress_text");
+        progress_text.innerHTML = "Loading file...";
+      });
 
-        if (status.percentage){
-        const progress_bar = document.getElementById('progress_bar')
-        const progress_text = document.getElementById('progress_text')
-        progress_bar.style.width = status.percentage + '%'
-        progress_text.innerHTML = status.percentage + '%'
+      ipcRenderer.on("status", (event, status) => {
+        if (status.percentage) {
+          const progress_bar = document.getElementById("progress_bar");
+          const progress_text = document.getElementById("progress_text");
+          progress_bar.style.width = status.percentage + "%";
+          progress_text.innerHTML = status.percentage + "%";
         }
-        if (status.status){
-          const progress_text = document.getElementById('progress_text')
-          progress_text.innerHTML = status.status
-         
+        if (status.status) {
+          const progress_text = document.getElementById("progress_text");
+          progress_text.innerHTML = status.status;
         }
-        if (status.status=="loaded"){
-          const progress_text = document.getElementById('progress_text')
-          progress_text.innerHTML = "Loaded"
-          const how_to_load = document.getElementById('how_to_load')
-          how_to_load.style.display = "block"
-
+        if (status.status == "loaded") {
+          const progress_text = document.getElementById("progress_text");
+          progress_text.innerHTML = "Loaded";
+          const how_to_load = document.getElementById("how_to_load");
+          how_to_load.style.display = "block";
         }
-
-      })
+      });
     </script>
   </body>
 </html>
