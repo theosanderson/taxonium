@@ -105,7 +105,7 @@ let options;
 app.use(cors());
 app.use(compression());
 
-app.use(queue({ activeLimit: 10, queuedLimit: 10 }));
+app.use(queue({ activeLimit: 100, queuedLimit: 100 }));
 
 const logStatusMessage = (status_obj) => {
   console.log("status", status_obj);
