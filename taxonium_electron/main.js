@@ -67,7 +67,7 @@ function createWindow() {
   });
   //setup(mainWindow);
 
-  mainWindow.toggleDevTools();
+  //mainWindow.toggleDevTools();
   // and load the index.html of the app.
   mainWindow.loadFile("index.html");
 
