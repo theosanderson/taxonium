@@ -6,4 +6,4 @@ You can download the Taxonium desktop app for Windows, MacOS, or Linux from the 
 
 Once you have downloaded the app, point it to a Taxonium .jsonl or .jsonl.gz file and wait for the backend to load.
 
-You can find an example jsonl file [here](https://github.com/theosanderson/taxonium/blob/master/taxonium_backend/tfci.jsonl?raw=true).
+You can find an example jsonl file [here](https://github.com/theosanderson/taxonium/blob/master/taxonium_backend/tfci.jsonl?raw=true) (right-click and save-as).
