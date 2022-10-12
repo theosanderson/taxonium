@@ -1,6 +1,6 @@
 # Using the Taxonium desktop app
 
-Loading very large trees in Taxonium works better in the desktop application. Whereas the Taxonium web app is limited, when loading custom JSONL files, by the browser's memory limitations, the Taxonium desktop app runs a backend which can use much more memory.
+Loading very large trees in Taxonium works better in the desktop application. Whereas the Taxonium web app is limited when loading custom JSONL files by the browser's memory limitations, the Taxonium desktop app runs a backend which can use much more memory to load larger trees and run more smoothly.
 
 ### Installing
 
