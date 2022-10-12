@@ -36,7 +36,7 @@ jobs:
           automatic_release_tag: latest
           working_directory: taxonium_electron/dist/
           files: |
-            Taxonium*
+            taxonium_electron/dist/Taxonium*
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
   
