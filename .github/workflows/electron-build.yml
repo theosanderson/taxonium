@@ -28,7 +28,7 @@ jobs:
       - name: List output
         run: |
           cd taxonium_electron
-          cd out/make
+          cd out/make/squirrel.windows
           find .
 
       - name: Store artifact
