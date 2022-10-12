@@ -2,7 +2,11 @@
 
 Loading very large trees in Taxonium works better in the desktop application. Whereas the Taxonium web app is limited, when loading custom JSONL files, by the browser's memory limitations, the Taxonium desktop app runs a backend which can use much more memory.
 
+### Installing
+
 You can download the Taxonium desktop app for Windows, MacOS, or Linux from the [releases](https://github.com/theosanderson/taxonium/releases) page.
+
+### Using
 
 Once you have downloaded the app, point it to a Taxonium .jsonl or .jsonl.gz file and wait for the backend to load.
 
