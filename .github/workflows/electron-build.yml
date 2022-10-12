@@ -29,7 +29,7 @@ jobs:
         run: |
           cd taxonium_electron
           cd out/make
-          ls -l
+          find .
 
       - name: Store artifact
         uses: actions/upload-artifact@v1
@@ -93,10 +93,10 @@ jobs:
         run: |
           cd taxonium_electron
           cd out/make
-          ls -l
+          find .
 
       - name: Store artifact
         uses: actions/upload-artifact@v1
         with:
           name: Build
-          path: taxonium_electron/out/make/Taxonium-1.0.1-amd64.AppImage
+          path: taxonium_electron/out/make/
