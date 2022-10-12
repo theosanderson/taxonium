@@ -53,7 +53,7 @@ jobs:
         run: |
           cd taxonium_electron
           yarn install
-          yarn make --win --arch=all
+          yarn make --win --arch=x64
 
       - name: List output
         run: |
@@ -85,7 +85,7 @@ jobs:
         run: |
           cd taxonium_electron
           yarn install
-          yarn make --linux --arch=all
+          yarn make --linux --arch=x64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
