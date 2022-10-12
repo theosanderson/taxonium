@@ -16,12 +16,7 @@ var importing;
 var filtering;
 var exporting;
 
-if (!global.fetch) {
-  // use dynamic import to load node-fetch
-  import("node-fetch").then((fetch) => {
-    global.fetch = fetch;
-  });
-}
+
 
 const { program } = require("commander");
 
