@@ -59,7 +59,7 @@ jobs:
         run: |
           cd taxonium_electron
           cd out/make
-          ls -l
+          dir
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
