@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  release-mac:
+  build-mac:
     runs-on: macos-latest
 
     steps:
@@ -24,14 +24,79 @@ jobs:
           yarn make --arch universal
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        
-      - uses: "marvinpinto/action-automatic-releases@latest"
+
+      - name: List output
+        run: |
+          cd taxonium_electron
+          cd out/make
+          ls -l
+
+      - name: Store artifact
+        uses: actions/upload-artifact@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          automatic_release_tag: latest
-          files: |
-            taxonium_electron/out/make/Taxonium*
+          name: Build
+          path: taxonium_electron/out/make/Taxonium-1.0.1-universal.dmg
+
+  build-win:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Build Electron app with electron-builder
+        run: |
+          cd taxonium_electron
+          yarn install
+          yarn make --win --arch=all
+
+      - name: List output
+        run: |
+          cd taxonium_electron
+          cd out/make
+          ls -l
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-  
+
+      - name: Store artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Build
+          path: taxonium_electron/out/make/Taxonium-1.0.1-setup.exe
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Build Electron app with electron-builder
+        run: |
+          cd taxonium_electron
+          yarn install
+          yarn make --linux --arch=all
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: List output
+        run: |
+          cd taxonium_electron
+          cd out/make
+          ls -l
+
+      - name: Store artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Build
+          path: taxonium_electron/out/make/Taxonium-1.0.1-amd64.AppImage
