@@ -73,12 +73,12 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Build
-          path: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
+          path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe"
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
+          asset_path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe"
 
   build-linux:
     runs-on: ubuntu-latest
@@ -117,7 +117,6 @@ jobs:
         with:
           name: Build
           path: taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm
-
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
