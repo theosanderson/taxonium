@@ -75,7 +75,7 @@ function createWindow() {
   ipcMain.on("open-file", (event, arg) => {
     console.log(arg); // prints "ping"
     console.log("opening file");
-    setup(mainWindow, ["--data_file", arg]);
+    setup(mainWindow, ["--data_file", arg, '--port', 7722]);
     event.reply("asynchronous-reply", "pong");
 
     // Open the DevTools.
