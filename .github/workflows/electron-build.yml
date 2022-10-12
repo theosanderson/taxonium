@@ -28,7 +28,7 @@ jobs:
       - name: List output
         run: |
           cd taxonium_electron
-          cd out/make/squirrel.windows
+          cd out/make/
           find .
 
       - name: Store artifact
@@ -58,7 +58,7 @@ jobs:
       - name: List output
         run: |
           cd taxonium_electron
-          cd out/make
+          cd out/make/squirrel.windows
           dir
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
