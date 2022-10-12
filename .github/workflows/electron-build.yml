@@ -6,11 +6,7 @@ on:
 
 jobs:
   release:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [macos-latest]
+    runs-on: macos-latest
 
     steps:
       - name: Check out Git repository
@@ -25,7 +21,7 @@ jobs:
         run: |
           cd taxonium_electron
           yarn install
-          yarn electron-builder -m --arm64  --x64
+          yarn make --arch universal
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         
@@ -34,9 +30,8 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           automatic_release_tag: latest
-          working_directory: taxonium_electron/dist/
           files: |
-            taxonium_electron/dist/Taxonium*
+            taxonium_electron/out/mae/Taxonium*
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
   
