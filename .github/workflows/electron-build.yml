@@ -31,7 +31,7 @@ jobs:
           prerelease: false
           automatic_release_tag: latest
           files: |
-            taxonium_electron/out/mae/Taxonium*
+            taxonium_electron/out/make/Taxonium*
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
   
