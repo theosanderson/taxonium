@@ -1,8 +1,9 @@
 name: Electron build/release
 
-on: 
-  push:
-  workflow_call:
+on:
+  release:
+    types:
+      - created
 
 jobs:
   build-mac:
@@ -37,12 +38,10 @@ jobs:
           name: Build
           path: taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg
 
-      - name: Upload release assets to GitHub
-        uses: AButler/upload-release-assets@v2.0
+      - uses: shogo82148/actions-upload-release-asset@v1
         with:
-          files: 'taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg'
-          repo-token: ${{ secrets.GH_TOKEN }}
-          release-tag: latest
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg
 
   build-win:
     runs-on: windows-latest
@@ -76,13 +75,10 @@ jobs:
           name: Build
           path: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
 
-      - name: Upload release assets to GitHub
-        uses: AButler/upload-release-assets@v2.0
+      - uses: shogo82148/actions-upload-release-asset@v1
         with:
-          files: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
-          repo-token: ${{ secrets.GH_TOKEN }}
-          release-tag: latest
-
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
 
   build-linux:
     runs-on: ubuntu-latest
@@ -123,15 +119,11 @@ jobs:
           path: taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm
 
 
-      - name: Upload release assets to GitHub
-        uses: AButler/upload-release-assets@v2.0
+      - uses: shogo82148/actions-upload-release-asset@v1
         with:
-          files: 'taxonium_electron/out/make/deb/x64/taxonium_0.0.0_amd64.deb'
-          repo-token: ${{ secrets.GH_TOKEN }}
-          release-tag: latest
-      - name: Upload release assets to GitHub
-        uses: AButler/upload-release-assets@v2.0
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm
+      - uses: shogo82148/actions-upload-release-asset@v1
         with:
-          files: 'taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm'
-          repo-token: ${{ secrets.GH_TOKEN }}
-          release-tag: latest
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: taxonium_electron/out/make/deb/x64/taxonium_0.0.0_amd64.deb
