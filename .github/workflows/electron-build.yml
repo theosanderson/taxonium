@@ -25,7 +25,7 @@ jobs:
         run: |
           cd taxonium_electron
           yarn install
-          yarn electron-builder -m
+          yarn electron-builder -m --arm64  --x64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         
