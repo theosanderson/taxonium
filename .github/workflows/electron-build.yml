@@ -126,9 +126,9 @@ jobs:
       - name: Upload release assets to GitHub
         uses: AButler/upload-release-assets@v2.0
         with:
-        files: 'taxonium_electron/out/make/deb/x64/taxonium_0.0.0_amd64.deb'
-        repo-token: ${{ secrets.GH_TOKEN }}
-        release-tag: latest
+          files: 'taxonium_electron/out/make/deb/x64/taxonium_0.0.0_amd64.deb'
+          repo-token: ${{ secrets.GH_TOKEN }}
+          release-tag: latest
       - name: Upload release assets to GitHub
         uses: AButler/upload-release-assets@v2.0
         with:
