@@ -37,6 +37,13 @@ jobs:
           name: Build
           path: taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg
 
+      - name: Upload release assets to GitHub
+        uses: AButler/upload-release-assets@v2.0
+        with:
+        files: 'taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg'
+        repo-token: ${{ secrets.GH_TOKEN }}
+        release-tag: latest
+
   build-win:
     runs-on: windows-latest
 
@@ -67,7 +74,15 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Build
-          path: taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe
+          path: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
+
+      - name: Upload release assets to GitHub
+        uses: AButler/upload-release-assets@v2.0
+        with:
+        files: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
+        repo-token: ${{ secrets.GH_TOKEN }}
+        release-tag: latest
+
 
   build-linux:
     runs-on: ubuntu-latest
@@ -106,12 +121,17 @@ jobs:
         with:
           name: Build
           path: taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm
-  deploy-artifacts:
-    runs-on: ubuntu-latest
-    needs: [build-linux,build-win,build-mac]
-    steps:
-      - uses: AButler/upload-release-assets@v2.0
+
+
+      - name: Upload release assets to GitHub
+        uses: AButler/upload-release-assets@v2.0
         with:
-          files: 'artifacts/*'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: latest
+        files: 'taxonium_electron/out/make/deb/x64/taxonium_0.0.0_amd64.deb'
+        repo-token: ${{ secrets.GH_TOKEN }}
+        release-tag: latest
+      - name: Upload release assets to GitHub
+        uses: AButler/upload-release-assets@v2.0
+        with:
+        files: 'taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm'
+        repo-token: ${{ secrets.GH_TOKEN }}
+        release-tag: latest
