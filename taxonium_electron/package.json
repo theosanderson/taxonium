@@ -1,5 +1,6 @@
 {
   "name": "Taxonium",
+  "version": "0.0.0",
   "description": "Taxonium local",
   "main": "src/main.js",
   "scripts": {
