@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Build
-          path: taxonium_electron/out/make/Taxonium-1.0.1-setup.exe
+          path: taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe
 
   build-linux:
     runs-on: ubuntu-latest
