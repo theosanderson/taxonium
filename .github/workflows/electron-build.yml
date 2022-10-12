@@ -108,6 +108,7 @@ jobs:
           path: taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm
   deploy-artifacts:
     runs-on: ubuntu-latest
+    needs: [build-linux,build-win,build-mac]
     steps:
       - uses: AButler/upload-release-assets@v2.0
         with:
