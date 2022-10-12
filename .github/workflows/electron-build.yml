@@ -100,10 +100,11 @@ jobs:
         with:
           name: Build
           path: taxonium_electron/out/make/
-
+  deploy-artifacts:
+    runs-on: ubuntu-latest
     steps:
       - uses: AButler/upload-release-assets@v2.0
         with:
-          files: 'artifacts/*;packages/*.nupkg'
+          files: 'artifacts/*'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: latest
