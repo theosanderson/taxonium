@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Build
-          path: taxonium_electron/out/make/Taxonium-1.0.1-universal.dmg
+          path: taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg
 
   build-win:
     runs-on: windows-latest
@@ -100,3 +100,10 @@ jobs:
         with:
           name: Build
           path: taxonium_electron/out/make/
+
+    steps:
+      - uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 'artifacts/*;packages/*.nupkg'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: latest
