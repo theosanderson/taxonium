@@ -21,7 +21,7 @@ const path = require("path");
 
 const setup = (mainWindow, args) => {
   const p = fork(
-    path.join(__dirname, "node_modules/taxonium_backend/server.js"),
+    path.join(__dirname, "../node_modules/taxonium_backend/server.js"),
     args,
     {
       stdio: ["pipe", "pipe", "pipe", "ipc"],
