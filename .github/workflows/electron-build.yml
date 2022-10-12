@@ -40,9 +40,9 @@ jobs:
       - name: Upload release assets to GitHub
         uses: AButler/upload-release-assets@v2.0
         with:
-        files: 'taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg'
-        repo-token: ${{ secrets.GH_TOKEN }}
-        release-tag: latest
+          files: 'taxonium_electron/out/make/Taxonium-0.0.0-universal.dmg'
+          repo-token: ${{ secrets.GH_TOKEN }}
+          release-tag: latest
 
   build-win:
     runs-on: windows-latest
@@ -79,9 +79,9 @@ jobs:
       - name: Upload release assets to GitHub
         uses: AButler/upload-release-assets@v2.0
         with:
-        files: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
-        repo-token: ${{ secrets.GH_TOKEN }}
-        release-tag: latest
+          files: 'taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe'
+          repo-token: ${{ secrets.GH_TOKEN }}
+          release-tag: latest
 
 
   build-linux:
@@ -132,6 +132,6 @@ jobs:
       - name: Upload release assets to GitHub
         uses: AButler/upload-release-assets@v2.0
         with:
-        files: 'taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm'
-        repo-token: ${{ secrets.GH_TOKEN }}
-        release-tag: latest
+          files: 'taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm'
+          repo-token: ${{ secrets.GH_TOKEN }}
+          release-tag: latest
