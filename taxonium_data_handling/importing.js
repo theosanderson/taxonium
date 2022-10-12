@@ -2,9 +2,7 @@ import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
-if (!fetch) {
-  var fetch = require("node-fetch");
-}
+
 
 const roundToDp = (number, dp) => {
   return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
