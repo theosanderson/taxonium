@@ -186,7 +186,7 @@ function SearchPanel({
                           </Button>
                         </div>
 
-                        {backend.type === "server" &&
+                        {backend.type === "server" && !(backend.backend_url.includes("localhost")) &&
                           selectedDetails.nodeDetails[key] < 20000 && (
                             <>
                               <div className="mb-3">
