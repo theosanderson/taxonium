@@ -20,18 +20,7 @@
       <div class="progress_text" id="progress_text"></div>
     </div>
     <div id="how_to_load">
-      <p>The backend is now loaded</p>
-      <ul>
-        <li>
-          You can access it
-          <a
-            href="https://taxonium.org/?backend=http://localhost:7722"
-            target="_blank"
-            >here</a
-          >
-        </li>
-        <li style="font-size:50%">You may also be able to load https://taxonium.org/?backend=http://localhost:7722 in your browser</li>
-      </ul>
+      
     </div>
     <style>
       #how_to_load {
@@ -72,6 +61,35 @@
         const progress_text = document.getElementById("progress_text");
         progress_text.innerHTML = "Loading file...";
       });
+
+      // on window close
+      window.onbeforeunload = function (e) {
+        ipcRenderer.send("close-window");
+      };
+
+      ipcRenderer.on("port",
+        (event, arg) => {
+          port = arg;
+          console.log("port", port);
+          const how_to_load = document.getElementById("how_to_load");
+          how_to_load.innerHTML = `
+          <p>The backend is now loaded</p>
+      <ul>
+        <li>
+          You can access it
+          <a
+            href="https://taxonium.org/?backend=http://localhost:${port}"
+            target="_blank"
+            >here</a
+          >
+        </li>
+        <li style="font-size:50%">You may also be able to load https://taxonium.org/?backend=http://localhost:${port} in your browser</li>
+      </ul>
+      `;
+         
+
+        }
+      );
 
       ipcRenderer.on("status", (event, status) => {
         if (status.percentage) {
