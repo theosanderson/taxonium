@@ -34,6 +34,10 @@ You can also use taxoniumtools to add your own metadata to [the existing public 
 
 Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/latest/).
 
+### load really huge trees?
+
+For trees larger than about 6M tips, loading local trees in the browser at Taxonium.org can be unreliable on some systems due to browser memory limitations. To avoid these issues, use the [Taxonium desktop app](https://docs.taxonium.org/en/latest/app.html).
+
 ## See Taxonium in action
 
 - [Cov2Tree](https://cov2tree.org/) - (the repo that runs this is [here](https://github.com/theosanderson/cov2tree))
