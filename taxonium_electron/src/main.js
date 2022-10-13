@@ -13,10 +13,7 @@ const bytesToMb = (bytes) => {
 let args = process.argv.slice(1);
 
 const { fork } = require("child_process");
-app.commandLine.appendSwitch(
-  "js-flags",
-  `--max-old-space-size=${bytesToMb(maxMemory)}`
-);
+
 const path = require("path");
 
 const setup = (mainWindow, args) => {
@@ -24,7 +21,7 @@ const setup = (mainWindow, args) => {
     path.join(__dirname, "../node_modules/taxonium_backend/server.js"),
     args,
     {
-      execArgv: [`${bytesToMb(maxMemory)}`],
+      execArgv: [`--max-old-space-size=${bytesToMb(maxMemory)}`],
       stdio: ["pipe", "pipe", "pipe", "ipc"]
     }
   );
