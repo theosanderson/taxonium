@@ -4,7 +4,6 @@ Loading very large trees in Taxonium works better in the desktop application. Wh
 
 <img width="864" alt="image" src="https://user-images.githubusercontent.com/19732295/195406844-b46525cf-bd70-49b5-a413-cd8e5ce88259.png">
 
-
 ### Installing
 
 You can download the Taxonium desktop app for Windows, MacOS, or Linux from the [releases](https://github.com/theosanderson/taxonium/releases) page.
@@ -23,9 +22,6 @@ The Taxonium desktop app still requires an internet connection at present, which
 On some systems, the app may prompt you to allow it to receive incoming connections. This is essential for functionality.
 :::
 
-
 ## Creating JSONL files for the Taxonium desktop app
 
 The desktop app at present only supports Taxonium JSONL files. To create JSONL files you can use [usher_to_taxonium](https://docs.taxonium.org/en/latest/taxoniumtools.html#usher-to-taxonium) or [newick_to_taxonium](https://docs.taxonium.org/en/latest/taxoniumtools.html#newick-to-taxonium).
-
-

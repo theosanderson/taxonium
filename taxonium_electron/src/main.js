@@ -9,6 +9,9 @@ const bytesToMb = (bytes) => {
   return Math.round(bytes / 1024 / 1024);
 };
 
+//get random port
+const port = Math.floor(Math.random() * 10000) + 10000;
+
 // store command line arguments
 let args = process.argv.slice(1);
 
@@ -22,7 +25,7 @@ const setup = (mainWindow, args) => {
     args,
     {
       execArgv: [`--max-old-space-size=${bytesToMb(maxMemory)}`],
-      stdio: ["pipe", "pipe", "pipe", "ipc"]
+      stdio: ["pipe", "pipe", "pipe", "ipc"],
     }
   );
 
@@ -69,11 +72,16 @@ function createWindow() {
   // and load the index.html of the app.
   mainWindow.loadFile("index.html");
 
+  // provide the port to the renderer process
+  mainWindow.webContents.on("did-finish-load", () => {
+    mainWindow.webContents.send("port", port);
+  });
+
   // listen for 'open-file' event from the renderer process
   ipcMain.on("open-file", (event, arg) => {
     console.log(arg); // prints "ping"
     console.log("opening file");
-    setup(mainWindow, ["--data_file", arg, '--port', 7722]);
+    setup(mainWindow, ["--data_file", arg, "--port", port]);
     event.reply("asynchronous-reply", "pong");
 
     // Open the DevTools.
@@ -99,6 +107,12 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
+});
+
+// when receive "close-window" quit
+ipcMain.on("close-window", (event, arg) => {
+  console.log("closing window");
+  app.quit();
 });
 
 // In this file you can include the rest of your app's specific main process
