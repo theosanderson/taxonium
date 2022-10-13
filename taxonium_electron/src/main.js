@@ -11,7 +11,7 @@ const bytesToMb = (bytes) => {
 
 //get random port
 const port = Math.floor(Math.random() * 10000) + 10000;
-
+let fork_id = 0;
 // store command line arguments
 let args = process.argv.slice(1);
 
@@ -28,6 +28,8 @@ const setup = (mainWindow, args) => {
       stdio: ["pipe", "pipe", "pipe", "ipc"],
     }
   );
+
+  fork_id = p.pid;
 
   setTimeout(() => {
     console.log("sending message");
@@ -112,6 +114,9 @@ app.on("window-all-closed", function () {
 // when receive "close-window" quit
 ipcMain.on("close-window", (event, arg) => {
   console.log("closing window");
+  if(fork_id){
+    process.kill(fork_id);
+  }
   app.quit();
 });
 
