@@ -114,7 +114,7 @@ app.on("window-all-closed", function () {
 // when receive "close-window" quit
 ipcMain.on("close-window", (event, arg) => {
   console.log("closing window");
-  if(fork_id){
+  if (fork_id) {
     process.kill(fork_id);
   }
   app.quit();
