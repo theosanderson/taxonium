@@ -24,7 +24,8 @@ const setup = (mainWindow, args) => {
     path.join(__dirname, "../node_modules/taxonium_backend/server.js"),
     args,
     {
-      stdio: ["pipe", "pipe", "pipe", "ipc"],
+      execArgv: [`${bytesToMb(maxMemory)}`],
+      stdio: ["pipe", "pipe", "pipe", "ipc"]
     }
   );
 
