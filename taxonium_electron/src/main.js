@@ -12,8 +12,6 @@ const bytesToMb = (bytes) => {
 //get random port
 const port = Math.floor(Math.random() * 10000) + 10000;
 
-
-
 // store command line arguments
 let args = process.argv.slice(1);
 
@@ -27,7 +25,7 @@ const setup = (mainWindow, args) => {
     args,
     {
       execArgv: [`--max-old-space-size=${bytesToMb(maxMemory)}`],
-      stdio: ["pipe", "pipe", "pipe", "ipc"]
+      stdio: ["pipe", "pipe", "pipe", "ipc"],
     }
   );
 
@@ -79,12 +77,11 @@ function createWindow() {
     mainWindow.webContents.send("port", port);
   });
 
-
   // listen for 'open-file' event from the renderer process
   ipcMain.on("open-file", (event, arg) => {
     console.log(arg); // prints "ping"
     console.log("opening file");
-    setup(mainWindow, ["--data_file", arg, '--port', port]);
+    setup(mainWindow, ["--data_file", arg, "--port", port]);
     event.reply("asynchronous-reply", "pong");
 
     // Open the DevTools.

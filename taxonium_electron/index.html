@@ -19,9 +19,7 @@
       <div class="progress_bar" id="progress_bar"></div>
       <div class="progress_text" id="progress_text"></div>
     </div>
-    <div id="how_to_load">
-      
-    </div>
+    <div id="how_to_load"></div>
     <style>
       #how_to_load {
         display: none;
@@ -67,12 +65,11 @@
         ipcRenderer.send("close-window");
       };
 
-      ipcRenderer.on("port",
-        (event, arg) => {
-          port = arg;
-          console.log("port", port);
-          const how_to_load = document.getElementById("how_to_load");
-          how_to_load.innerHTML = `
+      ipcRenderer.on("port", (event, arg) => {
+        port = arg;
+        console.log("port", port);
+        const how_to_load = document.getElementById("how_to_load");
+        how_to_load.innerHTML = `
           <p>The backend is now loaded</p>
       <ul>
         <li>
@@ -86,10 +83,7 @@
         <li style="font-size:50%">You may also be able to load https://taxonium.org/?backend=http://localhost:${port} in your browser</li>
       </ul>
       `;
-         
-
-        }
-      );
+      });
 
       ipcRenderer.on("status", (event, status) => {
         if (status.percentage) {

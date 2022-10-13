@@ -16,8 +16,6 @@ var importing;
 var filtering;
 var exporting;
 
-
-
 const { program } = require("commander");
 
 program
