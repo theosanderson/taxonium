@@ -487,12 +487,12 @@ const loadData = async () => {
   let supplied_object;
   if (command_options.data_file) {
     local_file = command_options.data_file;
-    //  local_file = "tfci.jsonl";
-    // Read as bytes
-    const file_data = fs.readFileSync(local_file);
+    //  create a stream from the file
+    const stream = fs.createReadStream(local_file);
+
     supplied_object = {
-      data: file_data,
-      status: "loaded",
+      stream: stream,
+      status: "stream_supplied",
       filename: local_file,
     };
   } else {

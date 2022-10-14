@@ -129,7 +129,12 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
     const readableWebStream = response.body;
     const nodeStream = new ReadableWebToNodeStream(readableWebStream);
     nodeStream.pipe(the_stream);
-  } else {
+  } 
+  else if(status === "stream_supplied"){
+    const nodeStream = jsonl.stream;
+    nodeStream.pipe(the_stream);
+  }
+  else {
     throw new Error("Unknown status: " + status);
   }
 
