@@ -16,7 +16,7 @@ sudo xattr -r -d com.apple.quarantine "/Applications/Taxonium.app"
 (if Taxonium is stored at that location)
 :::
 
-### Using
+### Using the app
 
 Once you have downloaded the app, point it to a Taxonium .jsonl or .jsonl.gz file and wait for the backend to load.
 
