@@ -152,6 +152,9 @@ function App() {
         protoUrl;
     }
   }
+
+  const isMobile = window.screen.width < 600 // TODO: use matchMedia hook
+
   const [overlayContent, setOverlayContent] = useState(null);
   // does the window location contain epicov anywhere
   const isGisaid = window.location.toString().includes("epicov.org");
@@ -212,47 +215,50 @@ function App() {
             isGisaid ? "h-11" : "h-16"
           )}
         >
-          <h1 className="text-xl text-white flex items-center space-x-2">
+          <h1 className={classNames(
+            "text-white space-x-2",
+            isMobile ? "items-center" : "items-baseline",
+            { flex: !!title }
+          )}>
             {title ? (
               <>
-                {window.screen.width < 600 && (
+                {isMobile ? (
                   <>
                     {" "}
-                    <span className="font-medium pr-2">{title}</span>
+                    <span className="text-xl font-medium pr-2">{title}</span>
                     <span className="flex flex-col text-center">
                       <span className="text-xs">powered by</span>
                       <a
                         href="//taxonium.org"
-                        className="underline hover:no-underline text-sm flex items-center"
+                        className="underline hover:no-underline text-sm"
                         target="_top"
                       >
-                        <CgListTree className="h-4 w-4 mr-1 mt-0.5" />
+                        <CgListTree className="h-4 w-4 inline-block mr-1" />
                         <span>Taxonium</span>
                       </a>
                     </span>
                   </>
-                )}
-                {window.screen.width >= 600 && (
+                ) :
                   <>
-                    <span className="font-medium ">{title}</span>
-                    <div className="flex flex-row mt-4">
-                      <CgListTree className="h- ml-1 w-4 mr-1" />
-                      <span className="text-xs ml-1">powered by </span>
+                    <span className=" text-xl font-medium">{title}</span>
+                    <div>
+                      <span className="text-xs">powered by </span>
                       <a
                         href="//taxonium.org"
-                        className="underline hover:no-underline text-xs ml-0.5"
+                        className="underline hover:no-underline text-sm"
                         target="_top"
                       >
+                        <CgListTree className="w-4 h-4 inline-block mr-1" />
                         <span>Taxonium</span>
                       </a>
                     </div>
                   </>
-                )}
+                }
               </>
             ) : (
               <>
-                <CgListTree className="h-6 w-6" />
-                <span className="font-bold">Taxonium</span>
+                <CgListTree className="h-6 w-6 inline-block align-middle" />
+                <span className="font-bold align-middle">Taxonium</span>
               </>
             )}
           </h1>
