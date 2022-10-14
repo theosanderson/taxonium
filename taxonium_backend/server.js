@@ -532,14 +532,13 @@ const loadData = async () => {
   cached_starting_values = result;
   console.log("Saved cached starting vals");
   // set a timeout to start listening
-  
 
   setTimeout(() => {
     console.log("Starting to listen");
     startListening();
     logStatusMessage({
-    status: "loaded",
-  });
+      status: "loaded",
+    });
   }, 10);
 };
 loadData();
