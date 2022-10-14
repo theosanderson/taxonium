@@ -242,7 +242,16 @@ const useSearch = ({
   useEffect(() => {
     if (zoomToSearch && deckSize) {
       const { index } = zoomToSearch;
-      const relevant = searchResults[searchSpec[index].key];
+      let relevant = { overview: [] };
+      if (index == -1) {
+        searchSpec.forEach((value) => {
+          if (searchResults[value.key] && searchResults[value.key].overview) {
+            relevant.overview.push(...searchResults[value.key].overview);
+          }
+        });
+      } else {
+        relevant = searchResults[searchSpec[index].key];
+      }
       if (!relevant) {
         console.log("no search results for index", index);
         console.log(searchResults);
