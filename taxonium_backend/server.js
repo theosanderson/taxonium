@@ -107,7 +107,9 @@ app.use(queue({ activeLimit: 100, queuedLimit: 100 }));
 
 const logStatusMessage = (status_obj) => {
   console.log("status", status_obj);
-  process.send(status_obj);
+  if(process&&process.send){
+    process.send(status_obj);
+  }
 };
 
 app.get("/", function (req, res) {
