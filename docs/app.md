@@ -13,7 +13,7 @@ On MacOS you may need to "unquarantine" the app, because the code has not been s
 ```
 sudo xattr -r -d com.apple.quarantine "/Applications/Taxonium.app"
 ```
-If Taxonium is stored at that location
+(if Taxonium is stored at that location)
 :::
 
 ### Using
