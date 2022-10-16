@@ -150,11 +150,12 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       {(is_text || is_multi_text) && singleSearchSpec.controls && (
         <>
           <label
-            data-tip="Exact match"
+            title="Exact match"
             className="inline-block text-xs text-gray-400 pl-2 pr-3"
           >
             <input
               type="checkbox"
+         title="Exact match"
               checked={
                 singleSearchSpec.method === "text_exact" || is_multi_text
               }
@@ -175,11 +176,12 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
             x{" "}
           </label>
           <label
-            data-tip="Multi-line"
+            title="Multi-line"
             className="inline-block text-xs text-gray-400"
           >
             <input
               type="checkbox"
+title="Multi-line"
               checked={is_multi_text}
               onChange={(e) => {
                 if (e.target.checked) {
