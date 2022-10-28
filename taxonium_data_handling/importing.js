@@ -234,10 +234,8 @@ export const generateConfig = (config, processedUploadedData) => {
 
   const firstNode = processedUploadedData.nodes[0];
 
-
-
   config.x_accessors =
-    ((firstNode.x_dist!==undefined) && (firstNode.x_time !== undefined))
+    firstNode.x_dist !== undefined && firstNode.x_time !== undefined
       ? ["x_dist", "x_time"]
       : firstNode.x_dist
       ? ["x_dist"]
