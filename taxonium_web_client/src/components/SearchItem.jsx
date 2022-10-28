@@ -155,7 +155,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           >
             <input
               type="checkbox"
-         title="Exact match"
+              title="Exact match"
               checked={
                 singleSearchSpec.method === "text_exact" || is_multi_text
               }
@@ -181,7 +181,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
           >
             <input
               type="checkbox"
-title="Multi-line"
+              title="Multi-line"
               checked={is_multi_text}
               onChange={(e) => {
                 if (e.target.checked) {
