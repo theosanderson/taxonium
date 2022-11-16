@@ -14,7 +14,7 @@ Taxonium is a tool for exploring trees, including those with millions of nodes.
 
 ### [📚 Consult the documentation](https://taxonium.readthedocs.io/en/latest/)
 
-### [📝 Read the preprint](https://www.biorxiv.org/content/10.1101/2022.06.03.494608v1)
+### [📝 Read the paper](https://elifesciences.org/articles/82392)
 
 ## How do I..
 
@@ -48,9 +48,8 @@ For trees larger than about 6M tips, loading local trees in the browser at Taxon
 ## Citing Taxonium
 
 ```
-Taxonium: a web-based tool for exploring large phylogenetic trees
-Theo Sanderson
-bioRxiv 2022.06.03.494608; doi: https://doi.org/10.1101/2022.06.03.494608
+Sanderson, T (2022). Taxonium, a web-based tool for exploring large phylogenetic trees. Elife, 11:e82392
+https://doi.org/10.7554/eLife.82392
 ```
 
 N.B. If you are citing the _tree_ displayed at Cov2Tree.org, please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too if you relied on it for exploration)
