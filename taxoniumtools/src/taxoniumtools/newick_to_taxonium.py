@@ -5,6 +5,7 @@ import orjson
 import json
 import pandas as pd
 from alive_progress import config_handler, alive_it, alive_bar
+import datetime
 
 from . import ushertools
 from . import utils
@@ -86,6 +87,8 @@ def do_processing(input_file,
     nodes_sorted_by_y = utils.sort_on_y(tree)
 
     config['num_tips'] = total_tips
+    yyyymmdd = datetime.datetime.now().strftime("%Y-%m-%d")
+    config['date_created'] = yyyymmdd
 
     first_json = {
         "version": version,
