@@ -1,6 +1,6 @@
 # Taxonium
 
-[![Published in Nature](https://img.shields.io/badge/Published%20in-eLife-blue.svg)](https://elifesciences.org/articles/82392) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/All_contributors-7-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END --> [![Zenodo](https://zenodo.org/badge/380002519.svg)](https://zenodo.org/badge/latestdoi/380002519)
+[![Published in Nature](https://img.shields.io/badge/Published%20in-eLife-blue.svg)](https://elifesciences.org/articles/82392) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/All_contributors-7-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END --> 
 
 Taxonium is a tool for exploring trees, including those with millions of nodes.
 
