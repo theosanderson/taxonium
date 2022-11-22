@@ -42,7 +42,7 @@ const Key = ({ keyStuff, colorByField, config }) => {
               <div className="key-text text-xs text-gray-700 mt-0.5">
                 <div
                   style={{ backgroundColor: color }}
-                  className="w-2 h-2 mr-2 rounded-full inline-block"
+                  className="w-2 h-2 mr-2 rounded-full inline-block break-words"
                 />
                 {item.value}
               </div>
