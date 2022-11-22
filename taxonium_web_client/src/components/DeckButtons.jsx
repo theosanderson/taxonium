@@ -7,6 +7,8 @@ import {
 } from "react-icons/bi";
 
 import { TiZoom, TiCog } from "react-icons/ti";
+
+import { MdOutlineZoomOutMap } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
 
 const TaxButton = ({ children, onClick, title }) => {
