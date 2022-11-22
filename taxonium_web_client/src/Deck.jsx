@@ -169,7 +169,7 @@ function Deck({
     [hoverDetails]
   );
 
-  const { layers, layerFilter , keyStuff} = useLayers({
+  const { layers, layerFilter, keyStuff } = useLayers({
     data,
     search,
     viewState,
@@ -336,8 +336,7 @@ function Deck({
             keyStuff={keyStuff}
             colorByField={colorBy.colorByField}
             config={config}
-
-            />
+          />
           <DeckButtons
             zoomReset={zoomReset}
             zoomIncrement={zoomIncrement}

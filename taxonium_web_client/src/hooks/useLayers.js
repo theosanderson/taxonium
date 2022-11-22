@@ -14,15 +14,14 @@ const getKeyStuff = (getNodeColorField, colorByField, dataset, toRGB) => {
     const value = getNodeColorField(node, dataset);
     if (value in counts) {
       counts[value]++;
-    }
-    else{
+    } else {
       counts[value] = 1;
     }
   }
   const keys = Object.keys(counts);
   const output = [];
   for (const key of keys) {
-    output.push({value: key, count: counts[key], color: toRGB(key)});
+    output.push({ value: key, count: counts[key], color: toRGB(key) });
   }
   return output;
 };
@@ -86,7 +85,6 @@ const useLayers = ({
   const keyStuff = useMemo(() => {
     return getKeyStuff(getNodeColorField, colorByField, detailed_data, toRGB);
   }, [detailed_data, getNodeColorField, colorByField, toRGB]);
-
 
   const clade_accessor = "pango";
 

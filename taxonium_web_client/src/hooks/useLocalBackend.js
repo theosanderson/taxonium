@@ -71,7 +71,6 @@ function useLocalBackend(uploaded_data, proto) {
     }
     const total_nodes = receivedData.data.total;
     if (total_nodes && total_nodes > 6000000) {
-      
       if (1) {
         window.alert(
           "This is a large tree which could use too much memory to run in the web browser, you might want to try the Taxonium desktop app."

@@ -107,7 +107,7 @@ function SearchPanel({
     if (config.metadataTypes && config.metadataTypes[key] === "sequence") {
       return (
         <div className="text-sm mt-1" key={key}>
-          <span className="font-semibold">{prettifyName(key,config)}:</span>{" "}
+          <span className="font-semibold">{prettifyName(key, config)}:</span>{" "}
           <div className="text-xs font-mono break-all">
             {selectedDetails.nodeDetails[key]}
           </div>
@@ -117,7 +117,7 @@ function SearchPanel({
 
     return (
       <div className="text-sm mt-1" key={key}>
-        <span className="font-semibold">{prettifyName(key,config)}:</span>{" "}
+        <span className="font-semibold">{prettifyName(key, config)}:</span>{" "}
         {colorBy.colorByField === key ? (
           <span
             style={{
