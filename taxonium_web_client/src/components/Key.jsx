@@ -14,6 +14,9 @@ const Key = ({ keyStuff, colorByField, config }) => {
   if(colorByField === "None" ) {
     return null;
   }
+ if(!filteredKeyStuff || filteredKeyStuff.length ==0 ) {
+    return null;
+  }
   return (
     <div
       className={classNames(
