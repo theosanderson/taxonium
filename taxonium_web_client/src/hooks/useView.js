@@ -344,13 +344,14 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
 
   const zoomReset = useCallback(() => {
     const newViewState = { ...defaultViewState };
-
+    setXzoom(0);
+    setViewState(newViewState)
     onViewStateChange({
       viewState: newViewState,
       interactionState: "isZooming",
-      oldViewState: viewState,
+      oldViewState: newViewState,
     });
-    setXzoom(0);
+    
   }, [viewState, onViewStateChange]);
 
   const output = useMemo(() => {
