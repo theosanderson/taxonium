@@ -205,16 +205,18 @@ export async function processMetadataFile(data, sendStatusMessage) {
   const output = new Map();
   let splitFunction;
 
-  if (data.filename.includes(data.filetype=="meta_csv")) {
+  if (data.filename.includes(data.filetype == "meta_csv")) {
     splitFunction = (x) => x.split("\t");
-  } else if (data.filetype=="meta_csv") {
+  } else if (data.filetype == "meta_csv") {
     // remove any double quotes
     splitFunction = (x) => x.split(",").map((x) => x.replace(/"/g, ""));
   } else {
     sendStatusMessage({
       error: "Filetype was not set, please raise an issue on our GitHub page",
     });
-    throw new Error("Filetype was not set, please raise an issue on our GitHub page");
+    throw new Error(
+      "Filetype was not set, please raise an issue on our GitHub page"
+    );
   }
 
   let headers;

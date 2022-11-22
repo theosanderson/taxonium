@@ -161,7 +161,7 @@ export const useInputHelper = ({
         };
         if (meta_file) {
           newQuery.metaUrl = meta_file.name;
-          newQuery.metaType = meta_file.filetype
+          newQuery.metaType = meta_file.filetype;
         }
         updateQuery(newQuery);
       }
@@ -186,7 +186,7 @@ export const useInputHelper = ({
           filename: meta_file.name,
           data: meta_file.data,
           status: meta_file.supplyType === "url" ? "url_supplied" : "loaded",
-          filetype: meta_file.filetype
+          filetype: meta_file.filetype,
         };
       }
 
@@ -226,7 +226,11 @@ export const useInputHelper = ({
       if (query.metaUrl) {
         extra.metadata = {
           filename: query.metaUrl,
-          filetype: query.metaType ? query.metaType : (query.metaUrl.includes("csv") ? "meta_csv" : "meta_tsv"),
+          filetype: query.metaType
+            ? query.metaType
+            : query.metaUrl.includes("csv")
+            ? "meta_csv"
+            : "meta_tsv",
           status: "url_supplied",
           taxonColumn: query.taxonColumn,
         };
