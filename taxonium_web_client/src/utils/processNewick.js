@@ -205,7 +205,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
   const output = new Map();
   let splitFunction;
 
-  if (data.filename.includes(data.filetype == "meta_csv")) {
+  if (data.filetype == "meta_csv") {
     splitFunction = (x) => x.split("\t");
   } else if (data.filetype == "meta_csv") {
     // remove any double quotes
