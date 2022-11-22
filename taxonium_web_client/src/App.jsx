@@ -250,10 +250,14 @@ function App() {
                 )}
               </>
             ) : (
-              <>
+              <a
+                        href="//taxonium.org"
+                        className="hover:underline"
+                        target="_top"
+                      >
                 <CgListTree className="h-6 w-6" />
                 <span className="font-bold">Taxonium</span>
-              </>
+              </a>
             )}
           </h1>
           <div className="flex ">
