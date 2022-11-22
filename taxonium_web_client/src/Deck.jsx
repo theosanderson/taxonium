@@ -330,7 +330,7 @@ function Deck({
             treenomeReferenceInfo={treenomeReferenceInfo}
           />
           <DeckButtons
-          zoomReset={zoomReset}
+            zoomReset={zoomReset}
             zoomIncrement={zoomIncrement}
             zoomAxis={zoomAxis}
             setZoomAxis={setZoomAxis}

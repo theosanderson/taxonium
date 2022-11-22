@@ -75,16 +75,14 @@ export const DeckButtons = ({
           </>
         )}
         </TaxButton>*/}
-<TaxButton
+      <TaxButton
         onClick={() => {
-          zoomReset()
+          zoomReset();
         }}
         title="Reset zoom"
       >
-
         <MdOutlineZoomOutMap className="mx-auto  w-5 h-5 inline-block " />
-        
-        </TaxButton>
+      </TaxButton>
       <TaxButton
         onClick={() => {
           snapshot();

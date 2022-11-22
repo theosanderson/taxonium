@@ -15,7 +15,7 @@ const defaultViewState = {
   minimap: { zoom: -3, target: [250, 1000] },
   "browser-main": { zoom: -2, target: [0, 1000] },
   "browser-axis": { zoom: -2, target: [0, 1000] },
-}
+};
 
 class MyOrthographicController extends OrthographicController {
   // on construction
@@ -342,21 +342,16 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     [viewState, onViewStateChange]
   );
 
-  const zoomReset = useCallback(
-    () => {
-      const newViewState = { ...defaultViewState };
-      
+  const zoomReset = useCallback(() => {
+    const newViewState = { ...defaultViewState };
 
-      onViewStateChange({
-        viewState: newViewState,
-        interactionState: "isZooming",
-        oldViewState: viewState,
-        
-      });
-      setXzoom(0)
-    },
-    [viewState, onViewStateChange]
-  );
+    onViewStateChange({
+      viewState: newViewState,
+      interactionState: "isZooming",
+      oldViewState: viewState,
+    });
+    setXzoom(0);
+  }, [viewState, onViewStateChange]);
 
   const output = useMemo(() => {
     return {
