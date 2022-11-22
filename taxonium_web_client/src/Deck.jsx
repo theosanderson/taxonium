@@ -40,6 +40,7 @@ function Deck({
   deckRef,
   jbrowseRef,
 }) {
+  const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
   const [treenomeSettingsOpen, setTreenomeSettingsOpen] = useState(false);
@@ -329,6 +330,7 @@ function Deck({
             treenomeReferenceInfo={treenomeReferenceInfo}
           />
           <DeckButtons
+          zoomReset={zoomReset}
             zoomIncrement={zoomIncrement}
             zoomAxis={zoomAxis}
             setZoomAxis={setZoomAxis}

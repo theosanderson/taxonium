@@ -6,6 +6,16 @@ import {
 } from "@deck.gl/core";
 
 let globalSetZoomAxis = () => {};
+const defaultViewState = {
+  zoom: -2,
+  target: [window.screen.width < 600 ? 500 : 1400, 1000],
+
+  pitch: 0,
+  bearing: 0,
+  minimap: { zoom: -3, target: [250, 1000] },
+  "browser-main": { zoom: -2, target: [0, 1000] },
+  "browser-axis": { zoom: -2, target: [0, 1000] },
+}
 
 class MyOrthographicController extends OrthographicController {
   // on construction
@@ -97,16 +107,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
   globalSetZoomAxis = setZoomAxis;
 
   // TODO target needs to be [0,0]
-  const [viewState, setViewState] = useState({
-    zoom: -2,
-    target: [window.screen.width < 600 ? 500 : 1400, 1000],
-
-    pitch: 0,
-    bearing: 0,
-    minimap: { zoom: -3, target: [250, 1000] },
-    "browser-main": { zoom: -2, target: [0, 1000] },
-    "browser-axis": { zoom: -2, target: [0, 1000] },
-  });
+  const [viewState, setViewState] = useState(defaultViewState);
   useEffect(() => {
     // setViewState((prevState) => {
     //   return {
@@ -341,6 +342,22 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     [viewState, onViewStateChange]
   );
 
+  const zoomReset = useCallback(
+    () => {
+      const newViewState = { ...defaultViewState };
+      
+
+      onViewStateChange({
+        viewState: newViewState,
+        interactionState: "isZooming",
+        oldViewState: viewState,
+        
+      });
+      setXzoom(0)
+    },
+    [viewState, onViewStateChange]
+  );
+
   const output = useMemo(() => {
     return {
       viewState,
@@ -355,6 +372,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       mouseXY,
       setMouseXY,
       baseViewState,
+      zoomReset,
     };
   }, [
     viewState,
@@ -369,6 +387,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     mouseXY,
     setMouseXY,
     baseViewState,
+    zoomReset,
   ]);
 
   return output;
