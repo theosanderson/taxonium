@@ -11,7 +11,7 @@ const Key = ({ keyStuff, colorByField, config }) => {
   const topTenKeyStuff = sortedKeyStuff.slice(0, 10);
   // if there is an item with value of "", remove it
   const filteredKeyStuff = topTenKeyStuff.filter((item) => item.value !== "");
-  if(colorByField === "none") {
+  if(colorByField === "None" ) {
     return null;
   }
   return (
