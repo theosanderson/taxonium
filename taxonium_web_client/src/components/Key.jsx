@@ -2,9 +2,7 @@ import prettifyName from "../utils/prettifyName";
 import { useState } from "react";
 import classNames from "classnames";
 const Key = ({ keyStuff, colorByField, config }) => {
-  if(colorByField === "none") {
-    return null;
-  }
+ 
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
   // sort by item.count in descending order
   const sortedKeyStuff = keyStuff.sort((a, b) => b.count - a.count);
@@ -13,6 +11,9 @@ const Key = ({ keyStuff, colorByField, config }) => {
   const topTenKeyStuff = sortedKeyStuff.slice(0, 10);
   // if there is an item with value of "", remove it
   const filteredKeyStuff = topTenKeyStuff.filter((item) => item.value !== "");
+  if(colorByField === "none") {
+    return null;
+  }
   return (
     <div
       className={classNames(
