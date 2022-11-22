@@ -2,7 +2,7 @@ import prettifyName from "../utils/prettifyName";
 import { useState } from "react";
 import classNames from "classnames";
 const Key = ({ keyStuff, colorByField, config }) => {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
   // sort by item.count in descending order
   const sortedKeyStuff = keyStuff.sort((a, b) => b.count - a.count);
   // truncate to 10 items
