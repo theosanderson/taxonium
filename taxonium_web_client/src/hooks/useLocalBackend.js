@@ -71,12 +71,10 @@ function useLocalBackend(uploaded_data, proto) {
     }
     const total_nodes = receivedData.data.total;
     if (total_nodes && total_nodes > 6000000) {
-      // if OS is macOS
-      const mac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
-      const chrome = window.chrome;
-      if (chrome && mac) {
+      
+      if (1) {
         window.alert(
-          "This is a large tree, and you appear to be using Chrome on MacOS. If the page crashes, you may have better results in Firefox."
+          "This is a large tree, you might want to try the Taxonium desktop app."
         );
       }
     }
