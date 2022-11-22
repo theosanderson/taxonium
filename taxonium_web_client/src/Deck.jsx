@@ -20,6 +20,9 @@ import { TreenomeButtons } from "./components/TreenomeButtons";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
+import Key from "./components/Key";
+
+const MemoizedKey = React.memo(Key);
 
 function Deck({
   data,
@@ -166,7 +169,7 @@ function Deck({
     [hoverDetails]
   );
 
-  const { layers, layerFilter } = useLayers({
+  const { layers, layerFilter , keyStuff} = useLayers({
     data,
     search,
     viewState,
@@ -329,6 +332,12 @@ function Deck({
             config={config}
             treenomeReferenceInfo={treenomeReferenceInfo}
           />
+          <MemoizedKey
+            keyStuff={keyStuff}
+            colorByField={colorBy.colorByField}
+            config={config}
+
+            />
           <DeckButtons
             zoomReset={zoomReset}
             zoomIncrement={zoomIncrement}

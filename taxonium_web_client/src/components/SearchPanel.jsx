@@ -5,6 +5,7 @@ import { Button } from "../components/Basic";
 import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
 import { MdArrowForward, MdArrowDownward } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
+import prettifyName from "../utils/prettifyName";
 
 import { FaSearch, FaShare } from "react-icons/fa";
 
@@ -77,17 +78,6 @@ function SearchPanel({
     }
   };
 
-  const prettifyName = (name) => {
-    if (config && config.customNames && config.customNames[name]) {
-      return config.customNames[name];
-    }
-    if (name === "num_tips") {
-      return "Number of descendants";
-    }
-    const new_name = name.replace("meta_", "").replace("_", " ");
-    return new_name.charAt(0).toUpperCase() + new_name.slice(1);
-  };
-
   const formatMetadataItem = (key) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
     if (key === "num_tips" && selectedDetails.nodeDetails[key] === 1) return;
@@ -117,7 +107,7 @@ function SearchPanel({
     if (config.metadataTypes && config.metadataTypes[key] === "sequence") {
       return (
         <div className="text-sm mt-1" key={key}>
-          <span className="font-semibold">{prettifyName(key)}:</span>{" "}
+          <span className="font-semibold">{prettifyName(key,config)}:</span>{" "}
           <div className="text-xs font-mono break-all">
             {selectedDetails.nodeDetails[key]}
           </div>
@@ -127,7 +117,7 @@ function SearchPanel({
 
     return (
       <div className="text-sm mt-1" key={key}>
-        <span className="font-semibold">{prettifyName(key)}:</span>{" "}
+        <span className="font-semibold">{prettifyName(key,config)}:</span>{" "}
         {colorBy.colorByField === key ? (
           <span
             style={{
@@ -340,7 +330,7 @@ function SearchPanel({
           >
             {colorBy.colorByOptions.map((item) => (
               <option key={item} value={item}>
-                {prettifyName(item)}
+                {prettifyName(item, config)}
               </option>
             ))}
           </Select>

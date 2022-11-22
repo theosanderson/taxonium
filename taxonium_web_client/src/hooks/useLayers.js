@@ -8,6 +8,25 @@ import {
 import { useMemo, useCallback } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
 
+const getKeyStuff = (getNodeColorField, colorByField, dataset, toRGB) => {
+  const counts = {};
+  for (const node of dataset.nodes) {
+    const value = getNodeColorField(node, dataset);
+    if (value in counts) {
+      counts[value]++;
+    }
+    else{
+      counts[value] = 1;
+    }
+  }
+  const keys = Object.keys(counts);
+  const output = [];
+  for (const key of keys) {
+    output.push({value: key, count: counts[key], color: toRGB(key)});
+  }
+  return output;
+};
+
 const useLayers = ({
   data,
   search,
@@ -29,6 +48,7 @@ const useLayers = ({
 }) => {
   const lineColor = [150, 150, 150];
   const getNodeColorField = colorBy.getNodeColorField;
+  const colorByField = colorBy.colorByField;
 
   const { toRGB } = colorHook;
 
@@ -62,6 +82,11 @@ const useLayers = ({
       return { nodes: [], nodeLookup: {} };
     }
   }, [data.data, getX]);
+
+  const keyStuff = useMemo(() => {
+    return getKeyStuff(getNodeColorField, colorByField, detailed_data, toRGB);
+  }, [detailed_data, getNodeColorField, colorByField, toRGB]);
+
 
   const clade_accessor = "pango";
 
@@ -499,7 +524,7 @@ const useLayers = ({
     [isCurrentlyOutsideBounds]
   );
 
-  return { layers, layerFilter };
+  return { layers, layerFilter, keyStuff };
 };
 
 export default useLayers;
