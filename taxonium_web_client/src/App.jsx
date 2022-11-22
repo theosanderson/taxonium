@@ -255,7 +255,7 @@ function App() {
                 className="hover:underline"
                 target="_top"
               >
-                <CgListTree className="h-6 w-6" />
+                <CgListTree className="h-6 w-6 inline-block" />
                 <span className="font-bold">Taxonium</span>
               </a>
             )}
