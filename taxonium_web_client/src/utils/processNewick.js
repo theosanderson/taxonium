@@ -205,16 +205,18 @@ export async function processMetadataFile(data, sendStatusMessage) {
   const output = new Map();
   let splitFunction;
 
-  if (data.filename.includes("tsv")) {
+  if (data.filetype == "meta_tsv") {
     splitFunction = (x) => x.split("\t");
-  } else if (data.filename.includes("csv")) {
+  } else if (data.filetype == "meta_csv") {
     // remove any double quotes
     splitFunction = (x) => x.split(",").map((x) => x.replace(/"/g, ""));
   } else {
     sendStatusMessage({
-      error: "Unknown file type for metadata, should be csv or tsv",
+      error: "Filetype was not set, please raise an issue on our GitHub page",
     });
-    throw new Error("Unknown file type");
+    throw new Error(
+      "Filetype was not set, please raise an issue on our GitHub page"
+    );
   }
 
   let headers;
