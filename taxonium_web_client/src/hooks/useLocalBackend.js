@@ -74,7 +74,7 @@ function useLocalBackend(uploaded_data, proto) {
       
       if (1) {
         window.alert(
-          "This is a large tree, you might want to try the Taxonium desktop app."
+          "This is a large tree which could use too much memory to run in the web browser, you might want to try the Taxonium desktop app."
         );
       }
     }
