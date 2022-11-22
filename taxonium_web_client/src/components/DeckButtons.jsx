@@ -7,6 +7,8 @@ import {
 } from "react-icons/bi";
 
 import { TiZoom, TiCog } from "react-icons/ti";
+
+import { MdOutlineZoomOutMap } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
 
 const TaxButton = ({ children, onClick, title }) => {
@@ -29,6 +31,7 @@ export const DeckButtons = ({
   snapshot,
   zoomIncrement,
   requestOpenSettings,
+  zoomReset,
   settings,
 }) => {
   return (
@@ -54,7 +57,7 @@ export const DeckButtons = ({
       >
         <TiCog className="mx-auto w-5 h-5 inline-block" />
       </TaxButton>
-      <TaxButton
+      {/*<TaxButton
         onClick={() => {
           setZoomAxis(zoomAxis === "X" ? "Y" : "X");
         }}
@@ -64,6 +67,7 @@ export const DeckButtons = ({
             : "Switch to horizontal zoom (you can also hold Ctrl key)"
         }
       >
+
         <TiZoom className="mx-auto  w-5 h-5 inline-block m-0" />
         {zoomAxis === "Y" ? (
           <BiMoveVertical className="mx-auto  w-5 h-5 inline-block m-0" />
@@ -72,8 +76,15 @@ export const DeckButtons = ({
             <BiMoveHorizontal className="mx-auto  w-5 h-5 inline-block m-0" />
           </>
         )}
+        </TaxButton>*/}
+      <TaxButton
+        onClick={() => {
+          zoomReset();
+        }}
+        title="Reset zoom"
+      >
+        <MdOutlineZoomOutMap className="mx-auto  w-5 h-5 inline-block " />
       </TaxButton>
-
       <TaxButton
         onClick={() => {
           snapshot();
