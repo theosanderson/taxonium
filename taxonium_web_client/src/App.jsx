@@ -17,7 +17,7 @@ import { Toaster } from "react-hot-toast";
 import ReactTooltip from "react-tooltip";
 import { HiOutlineBookOpen } from "react-icons/hi";
 
-const first_search = getDefaultSearch("aa1");
+const first_search = getDefaultSearch(config,"aa1");
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
