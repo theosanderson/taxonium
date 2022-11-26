@@ -21,9 +21,7 @@ const first_search = getDefaultSearch(null, "aa1");
 
 if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
   first_search["type"] = "meta_name";
-
 }
-
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
@@ -61,8 +59,8 @@ if (window.location.hostname.includes("taxonomy.taxonium.org")) {
 }
 
 if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
-  default_query.protoUrl = "https://cov2tree.nyc3.digitaloceanspaces.com/wikidata/out.jsonl.gz";
-
+  default_query.protoUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/wikidata/out.jsonl.gz";
 }
 
 function App() {
