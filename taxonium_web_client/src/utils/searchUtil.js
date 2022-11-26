@@ -3,8 +3,8 @@ export function getDefaultSearch(config, key) {
     key = Math.random().toString(36).substring(2, 15);
     console.log("generated key", key);
   }
-  if (config&&config.defaultSearch){
-    return config.defaultSearch
+  if (config && config.defaultSearch) {
+    return config.defaultSearch;
   }
   return {
     key,
