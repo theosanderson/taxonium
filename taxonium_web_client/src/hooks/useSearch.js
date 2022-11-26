@@ -216,7 +216,7 @@ const useSearch = ({
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
     // get a random string key
-    const newSearch = getDefaultSearch();
+    const newSearch = getDefaultSearch(config);
 
     setSearchSpec([...searchSpec, newSearch]);
     setTimeout(() => {

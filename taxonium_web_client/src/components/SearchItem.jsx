@@ -355,7 +355,10 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
               onClick={() => {
                 setThisSearchSpec({
                   ...singleSearchSpec,
-                  subspecs: [...singleSearchSpec.subspecs, getDefaultSearch()],
+                  subspecs: [
+                    ...singleSearchSpec.subspecs,
+                    getDefaultSearch(config),
+                  ],
                 });
               }}
             >

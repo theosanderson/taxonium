@@ -17,7 +17,11 @@ import { Toaster } from "react-hot-toast";
 import ReactTooltip from "react-tooltip";
 import { HiOutlineBookOpen } from "react-icons/hi";
 
-const first_search = getDefaultSearch("aa1");
+const first_search = getDefaultSearch(null, "aa1");
+
+if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
+  first_search["type"] = "meta_name";
+}
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
@@ -52,6 +56,11 @@ if (window.location.hostname.includes("taxonomy.taxonium.org")) {
     "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json";
 
   default_query.ladderizeTree = "true";
+}
+
+if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
+  default_query.protoUrl =
+    "https://cov2tree.nyc3.digitaloceanspaces.com/wikidata/out.jsonl.gz";
 }
 
 function App() {
