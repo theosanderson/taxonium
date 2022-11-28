@@ -172,9 +172,9 @@ function App() {
       desc: "Public sequences of SARS-CoV-2 from the INSDC databases",
     },
     {
-      title: "NCBI Taxonomy (visual)",
+      title: "Wikidata visual tree of life",
       url: "/?configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig_special2.json&protoUrl=https%3A%2F%2Fcov2tree.nyc3.cdn.digitaloceanspaces.com%2Fncbi%2Fspecial_filtered.jsonl.gz&xType=x_dist",
-      desc: "The tree of life: selected species from NCBI Taxonomy with images from, and links to, Wikipedia",
+      desc: "The tree of life, showing species from Wikidata with images. Links to Wikipedia.",
     },
     {
       title: "NCBI Taxonomy (full)",
