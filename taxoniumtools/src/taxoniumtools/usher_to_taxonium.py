@@ -181,12 +181,12 @@ def get_parser():
     parser.add_argument('-i',
                         '--input',
                         type=str,
-                        help='File path to input Usher protobuf file (.pb)',
+                        help='File path to input Usher protobuf file (.pb / .pb.gz)',
                         required=True)
     parser.add_argument('-o',
                         '--output',
                         type=str,
-                        help='File path for output Taxonium jsonl file',
+                        help='File path for output Taxonium jsonl file (.jsonl / .jsonl.gz)',
                         required=True)
     parser.add_argument('-m',
                         '--metadata',
