@@ -62,7 +62,7 @@ We can supply a title with the `title` key. It will display at the top.
 
 ##### About overlay
 
-You can replace the contents of the "about" section using the `overlay` property, into which you will supply HTML. This can be a bit unwieldy as JSON needs to have no linebreaks in strings (you can use `\n` so it's easiest to do this in `usher_to_taxonium` by supplying the `overlay_html` parameter).
+You can replace the contents of the "about" section using the `overlay` property, into which you will supply HTML. This can be a bit unwieldy as JSON needs to have no linebreaks in strings (you can use `\n`), so it's easiest to do this in `usher_to_taxonium` by supplying the `overlay_html` parameter which points to an HTML file which will automatically be converted to a compatible format.
 
 #### Deploying your own Taxonium backend
 
