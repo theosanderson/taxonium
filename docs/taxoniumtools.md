@@ -8,9 +8,9 @@ Taxoniumtools is available from PyPI. You can install it with pip.
 pip install taxoniumtools
 ```
 
-The `usher_to_taxonium` utility will then be available for use.
+The `usher_to_taxonium`, and `newick_to_taxonium` utilities will then be available for use.
 
-#### Using usher_to_taxonium from taxoniumtools
+#### Using usher_to_taxonium
 
 ##### Example
 
