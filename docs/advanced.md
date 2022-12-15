@@ -87,3 +87,4 @@ To connect to the Taxonium backend you can go to `https://taxonium.org?backend=h
 ```bash
 docker run -p 80:80 theosanderson/taxonium_frontend:master
 ```
+For production use you would want to run with Kubernetes or similar to handle automatic restarts.
