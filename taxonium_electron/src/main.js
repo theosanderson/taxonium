@@ -9,6 +9,8 @@ const bytesToMb = (bytes) => {
   return Math.round(bytes / 1024 / 1024);
 };
 
+
+console.log("maxMem", maxMemory)
 //get random port
 const port = Math.floor(Math.random() * 10000) + 10000;
 let fork_id = 0;
@@ -19,12 +21,22 @@ const { fork } = require("child_process");
 
 const path = require("path");
 
+const inMB = bytesToMb(maxMemory)
+console.log("inMB", inMB)
+
+app.commandLine.appendSwitch('js-flags', '--max-old-space-size='+inMB);
+
+const v8 = require("v8");
+const heapTotal = v8.getHeapStatistics()
+
+console.log("heapTotal", heapTotal);
+
 const setup = (mainWindow, args) => {
   const p = fork(
     path.join(__dirname, "../node_modules/taxonium_backend/server.js"),
     args,
     {
-      execArgv: [`--max-old-space-size=${bytesToMb(maxMemory)}`],
+      execArgv: [`--max-old-space-size=${inMB}`],
       stdio: ["pipe", "pipe", "pipe", "ipc"],
     }
   );

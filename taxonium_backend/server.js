@@ -11,6 +11,16 @@ var xml2js = require("xml2js");
 var axios = require("axios");
 var pako = require("pako");
 const URL = require("url").URL;
+const v8 = require("v8");
+
+// log heap statistics
+const logHeapStatistics = () => {
+  const heapStats = v8.getHeapStatistics();
+  console.log("Heap statistics:", heapStats);
+};
+
+logHeapStatistics();
+
 const { execSync } = require("child_process");
 var importing;
 var filtering;
