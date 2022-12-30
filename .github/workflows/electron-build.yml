@@ -72,6 +72,7 @@ jobs:
         run: |
           cd taxonium_electron
           mkdir binaries
+          choco install wget --no-progress
           wget https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe -O binaries/node18.exe
           yarn install
           yarn make --win --arch=x64
