@@ -32,8 +32,13 @@
     "taxonium_backend": "file:../taxonium_backend"
   },
   "config": {
+    
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": { 
+         "extraResource": [
+           "./binaries"
+          ]
+        },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
