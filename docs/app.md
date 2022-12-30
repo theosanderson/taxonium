@@ -11,7 +11,7 @@ You can download the Taxonium desktop app for Windows, MacOS, or Linux from the 
 :::{note}
 On MacOS you may need to "unquarantine" the app, because the code has not been signed. Please refer to the instructions on [this page](https://support.apple.com/en-gb/guide/mac-help/mh40616/mac) for how to do this.
 
-Briefly, you can either navigate to the *Applications* folder and *control-click* on the Taxonium icon, then press Open, or you can use the Terminal:
+Briefly, you can either navigate to the _Applications_ folder and _control-click_ on the Taxonium icon, then press Open, or you can use the Terminal:
 
 ```
 sudo xattr -r -d com.apple.quarantine "/Applications/Taxonium.app"

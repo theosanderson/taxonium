@@ -281,7 +281,7 @@ function App() {
               href="https://github.com/theosanderson/taxonium"
               className="text-white font-bold hover:underline flex items-center"
               title="Source code"
-               target="_top"
+              target="_top"
             >
               <FaGithub className="w-6 h-6 opacity-80 mr-2 " />
             </a>
