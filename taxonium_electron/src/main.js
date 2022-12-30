@@ -18,19 +18,18 @@ let fork_id = 0;
 // store command line arguments
 let args = process.argv.slice(1);
 
-
 let isPackaged = false;
 
 if (
   process.mainModule &&
-  process.mainModule.filename.indexOf('app.asar') !== -1
+  process.mainModule.filename.indexOf("app.asar") !== -1
 ) {
   isPackaged = true;
-} else if (process.argv.filter(a => a.indexOf('app.asar') !== -1).length > 0) {
+} else if (
+  process.argv.filter((a) => a.indexOf("app.asar") !== -1).length > 0
+) {
   isPackaged = true;
 }
-
-
 
 let binaryFilename = "";
 if (process.platform === "win32") {
@@ -56,31 +55,26 @@ if (isPackaged) {
   binaryDirectory = path.join(__dirname, "../binaries");
 }
 
+const { spawn, fork } = require("child_process");
 
-
-
-const { spawn , fork} = require('child_process');
-
-const binPath = "/Users/theosanderson/electronfix2/taxonium/taxonium_electron/binaries/node18_arm64mac";
+const binPath =
+  "/Users/theosanderson/electronfix2/taxonium/taxonium_electron/binaries/node18_arm64mac";
 const setup = (mainWindow, args) => {
- 
-  binaryPath = path.join(binaryDirectory, binaryFilename)
-  scriptPath  = path.join(__dirname, "../node_modules/taxonium_backend/server.js")
+  binaryPath = path.join(binaryDirectory, binaryFilename);
+  scriptPath = path.join(
+    __dirname,
+    "../node_modules/taxonium_backend/server.js"
+  );
 
   max_old_space_arg = "--max-old-space-size=" + bytesToMb(maxMemory);
 
   // do it with spawn instead
 
-  const p = spawn(
-    binPath,
-    [max_old_space_arg, scriptPath, ...args],
-    {
-      stdio: ["pipe", "pipe", "pipe", "ipc"],
-    }
-  );
+  const p = spawn(binPath, [max_old_space_arg, scriptPath, ...args], {
+    stdio: ["pipe", "pipe", "pipe", "ipc"],
+  });
 
-
-console.log("Executing", binPath, [max_old_space_arg, scriptPath, ...args])
+  console.log("Executing", binPath, [max_old_space_arg, scriptPath, ...args]);
   fork_id = p.pid;
 
   setTimeout(() => {
