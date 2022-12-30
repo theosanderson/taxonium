@@ -57,8 +57,6 @@ if (isPackaged) {
 
 const { spawn, fork } = require("child_process");
 
-const binPath =
-  "/Users/theosanderson/electronfix2/taxonium/taxonium_electron/binaries/node18_arm64mac";
 const setup = (mainWindow, args) => {
   binaryPath = path.join(binaryDirectory, binaryFilename);
   scriptPath = path.join(
@@ -74,7 +72,7 @@ const setup = (mainWindow, args) => {
     stdio: ["pipe", "pipe", "pipe", "ipc"],
   });
 
-  console.log("Executing", binPath, [max_old_space_arg, scriptPath, ...args]);
+  console.log("Executing", binaryPath, [max_old_space_arg, scriptPath, ...args]);
   fork_id = p.pid;
 
   setTimeout(() => {
