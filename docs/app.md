@@ -9,10 +9,9 @@ Loading very large (>5M tips) trees in Taxonium works better in the desktop appl
 You can download the Taxonium desktop app for Windows, MacOS, or Linux from the [releases](https://github.com/theosanderson/taxonium/releases) page.
 
 :::{note}
-On MacOS you may need to "unquarantine" the app, because the code has not been signed. Please refer to the instructions on [this page](https://support.apple.com/en-gb/guide/mac-help/mh40616/mac) for how to do this.
+On MacOS you will need to "unquarantine" the app, because the code has not been signed. Before you do this, the application will claim that it is "damaged and can't be opened". 
 
-Briefly, you can either navigate to the _Applications_ folder and _control-click_ on the Taxonium icon, then press Open, or you can use the Terminal:
-
+Please use the terminal command below to achieve this:
 ```
 sudo xattr -r -d com.apple.quarantine "/Applications/Taxonium.app"
 ```
