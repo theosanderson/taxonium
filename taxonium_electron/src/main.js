@@ -1,5 +1,8 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require("electron");
+const Os = require("os");
+
+const path = require("path");
 
 // find out total os memory, then set the max memory to 3/4 of that
 const os = require("os");
@@ -15,20 +18,63 @@ let fork_id = 0;
 // store command line arguments
 let args = process.argv.slice(1);
 
-const { fork } = require("child_process");
+let isPackaged = false;
 
-const path = require("path");
+if (
+  process.mainModule &&
+  process.mainModule.filename.indexOf("app.asar") !== -1
+) {
+  isPackaged = true;
+} else if (
+  process.argv.filter((a) => a.indexOf("app.asar") !== -1).length > 0
+) {
+  isPackaged = true;
+}
 
+let binaryFilename = "";
+if (process.platform === "win32") {
+  binaryFilename = "node18.exe";
+} else if (process.platform === "linux") {
+  binaryFilename = "node18_x64linux";
+} else if (process.platform === "darwin") {
+  // we need to check if we are on an M1 mac
+  if (Os.arch() === "arm64") {
+    binaryFilename = "node18_arm64mac";
+  } else {
+    binaryFilename = "node18_x64mac";
+  }
+}
+
+let binaryDirectory = "";
+
+// if we are packaged then we need to use the resources path
+// otherwise we can use the current directory
+if (isPackaged) {
+  binaryDirectory = path.join(process.resourcesPath, "binaries");
+} else {
+  binaryDirectory = path.join(__dirname, "../binaries");
+}
+
+const { spawn, fork } = require("child_process");
+
+const binPath =
+  "/Users/theosanderson/electronfix2/taxonium/taxonium_electron/binaries/node18_arm64mac";
 const setup = (mainWindow, args) => {
-  const p = fork(
-    path.join(__dirname, "../node_modules/taxonium_backend/server.js"),
-    args,
-    {
-      execArgv: [`--max-old-space-size=${bytesToMb(maxMemory)}`],
-      stdio: ["pipe", "pipe", "pipe", "ipc"],
-    }
+  binaryPath = path.join(binaryDirectory, binaryFilename);
+  scriptPath = path.join(
+    __dirname,
+    "../node_modules/taxonium_backend/server.js"
   );
 
+  max_old_space_arg = "--max-old-space-size=" + bytesToMb(maxMemory);
+
+  // do it with spawn instead
+
+  const p = spawn(binPath, [max_old_space_arg, scriptPath, ...args], {
+    stdio: ["pipe", "pipe", "pipe", "ipc"],
+  });
+
+  console.log("Executing", binPath, [max_old_space_arg, scriptPath, ...args]);
   fork_id = p.pid;
 
   setTimeout(() => {

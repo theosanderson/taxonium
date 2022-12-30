@@ -178,16 +178,18 @@ def do_processing(input_file,
 def get_parser():
     parser = argparse.ArgumentParser(
         description='Convert a Usher pb to Taxonium jsonl format')
-    parser.add_argument('-i',
-                        '--input',
-                        type=str,
-                        help='File path to input Usher protobuf file (.pb / .pb.gz)',
-                        required=True)
-    parser.add_argument('-o',
-                        '--output',
-                        type=str,
-                        help='File path for output Taxonium jsonl file (.jsonl / .jsonl.gz)',
-                        required=True)
+    parser.add_argument(
+        '-i',
+        '--input',
+        type=str,
+        help='File path to input Usher protobuf file (.pb / .pb.gz)',
+        required=True)
+    parser.add_argument(
+        '-o',
+        '--output',
+        type=str,
+        help='File path for output Taxonium jsonl file (.jsonl / .jsonl.gz)',
+        required=True)
     parser.add_argument('-m',
                         '--metadata',
                         type=str,

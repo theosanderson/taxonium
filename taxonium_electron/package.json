@@ -33,7 +33,11 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "extraResource": [
+          "./binaries"
+        ]
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
