@@ -16,7 +16,7 @@ function formatBytes(bytes, decimals = 2) {
 const prettyTypes = {
   jsonl: "Taxonium JSONL",
   nwk: "Newick tree",
-  nexus: "Nexus tree (Nexus support is experimental)",
+  nexus: "Nexus tree",
   meta_tsv: "Metadata TSV",
   meta_csv: "Metadata CSV",
   nextstrain: "Nextstrain JSON",
