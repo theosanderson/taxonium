@@ -221,8 +221,7 @@ onmessage = async (event) => {
       data.data,
       sendStatusMessage
     );
-  }
-   else if (
+  } else if (
     data.type === "upload" &&
     data.data &&
     data.data.filename &&

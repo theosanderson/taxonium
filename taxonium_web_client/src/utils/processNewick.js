@@ -115,9 +115,8 @@ export async function processNewick(data, sendStatusMessage) {
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
   console.log("data.filetype", data.filetype);
-  if(data.filetype=="nexus"){
+  if (data.filetype == "nexus") {
     the_data = nexusToNewick(the_data);
-    
   }
 
   sendStatusMessage({
