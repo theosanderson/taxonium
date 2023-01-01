@@ -211,10 +211,9 @@ onmessage = async (event) => {
     console.log("processedUploadedData created");
   } else if (
     data.type === "upload" &&
-      data.data &&
-      data.data.filename &&
-      (data.data.filetype === "nwk" ||
-    data.data.filetype === "nexus")
+    data.data &&
+    data.data.filename &&
+    (data.data.filetype === "nwk" || data.data.filetype === "nexus")
   ) {
     console.log("got nwk file", data.data);
     data.data.useDistances = true;
