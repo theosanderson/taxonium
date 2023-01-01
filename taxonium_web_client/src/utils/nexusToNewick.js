@@ -2,11 +2,14 @@
 function nexusToNewick(nexusString) {
   // get Translate section if present
   const translateBlock = nexusString.match(/Translate(.*?);/gims);
-  const translate = translateBlock[0];
+  
 
   let translations = {};
 
   // get all the translations
+
+  if (translateBlock){
+  const translate = translateBlock[0];
   translate.split("\n").forEach((line) => {
     line = line.trim();
     const parts = line.split(" ");
@@ -16,6 +19,7 @@ function nexusToNewick(nexusString) {
       translations[key] = value;
     }
   });
+}
 
   // get all the trees
 
