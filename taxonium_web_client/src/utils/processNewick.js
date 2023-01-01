@@ -8,6 +8,7 @@ import {
 import pako from "pako";
 import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
+import nexusToNewick from "../utils/nexusToNewick.js";
 const emptyList = [];
 
 function removeSquareBracketedComments(str) {
@@ -112,6 +113,11 @@ export async function processNewick(data, sendStatusMessage) {
   let the_data;
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
+
+  console.log("data.filetype", data.filetype);
+  if (data.filetype == "nexus") {
+    the_data = nexusToNewick(the_data);
+  }
 
   sendStatusMessage({
     message: "Parsing Newick file",

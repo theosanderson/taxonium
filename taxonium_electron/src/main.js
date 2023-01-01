@@ -72,7 +72,11 @@ const setup = (mainWindow, args) => {
     stdio: ["pipe", "pipe", "pipe", "ipc"],
   });
 
-  console.log("Executing", binaryPath, [max_old_space_arg, scriptPath, ...args]);
+  console.log("Executing", binaryPath, [
+    max_old_space_arg,
+    scriptPath,
+    ...args,
+  ]);
   fork_id = p.pid;
 
   setTimeout(() => {

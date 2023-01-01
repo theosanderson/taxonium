@@ -20,6 +20,11 @@ function guessType(file_object) {
   if (tree_extensions.includes(file_extension)) {
     return "nwk";
   }
+
+  if (file_extension === "nexus" || file_extension === "nex") {
+    return "nexus";
+  }
+
   if (file_extension === "jsonl") {
     return "jsonl";
   }
@@ -112,7 +117,11 @@ export const useInputHelper = ({
       return ["invalid", "You can only use a single metadata file"];
     }
     // can't have more than one tree file
-    if (inputs.filter((input) => input.filetype === "nwk").length > 1) {
+    if (
+      inputs.filter(
+        (input) => input.filetype === "nwk" || input.filetype === "nexus"
+      ).length > 1
+    ) {
       return ["invalid", "You can only use a single tree file"];
     }
     if (inputs.some((input) => input.filetype === "unknown")) {
@@ -121,7 +130,9 @@ export const useInputHelper = ({
     // must have a tree file or a jsonl
     if (
       inputs.filter((input) => input.filetype === "jsonl").length === 0 &&
-      inputs.filter((input) => input.filetype === "nwk").length === 0 &&
+      inputs.filter(
+        (input) => input.filetype === "nwk" || input.filetype === "nexus"
+      ).length === 0 &&
       inputs.filter((input) => input.filetype === "nextstrain").length === 0
     ) {
       return [
@@ -152,7 +163,10 @@ export const useInputHelper = ({
           input.filetype.startsWith("meta_")
         );
         const tree_file = inputs.find(
-          (input) => input.filetype === "nwk" || input.filetype === "nextstrain"
+          (input) =>
+            input.filetype === "nwk" ||
+            input.filetype === "nextstrain" ||
+            input.filetype === "nexus"
         );
         const newQuery = {
           treeUrl: tree_file.name,
@@ -192,7 +206,10 @@ export const useInputHelper = ({
 
       // if there is a tree file find it
       const tree_file = inputs.find(
-        (input) => input.filetype === "nwk" || input.filetype === "nextstrain"
+        (input) =>
+          input.filetype === "nwk" ||
+          input.filetype === "nextstrain" ||
+          input.filetype === "nexus"
       );
 
       upload_obj.filename = tree_file.name;
