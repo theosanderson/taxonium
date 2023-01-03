@@ -247,7 +247,9 @@ function SearchPanel({
           <p className="text-gray-500 text-sm">
             {overlayContent ? (
               <>
-                <span title={config.date_created ? config.date_created : ""}>Displaying</span>{" "}
+                <span title={config.date_created ? config.date_created : ""}>
+                  Displaying
+                </span>{" "}
                 <button
                   className="underline"
                   onClick={() => {
