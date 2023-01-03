@@ -15,7 +15,17 @@ function guessType(file_object) {
   const file_name = file_object.name.toLowerCase().replace(".gz", "");
   const file_extension = file_name.split(".").pop();
 
-  const tree_extensions = ["nwk", "newick", "tree", "tre", "nh", "phy", "nw", "treefile", "rooted"];
+  const tree_extensions = [
+    "nwk",
+    "newick",
+    "tree",
+    "tre",
+    "nh",
+    "phy",
+    "nw",
+    "treefile",
+    "rooted",
+  ];
 
   if (tree_extensions.includes(file_extension)) {
     return "nwk";
