@@ -37,3 +37,5 @@ On some systems, the app may prompt you to allow it to receive incoming connecti
 ## Creating JSONL files for the Taxonium desktop app
 
 The desktop app at present only supports Taxonium JSONL files. To create JSONL files you can use [usher_to_taxonium](https://docs.taxonium.org/en/latest/taxoniumtools.html#usher-to-taxonium) or [newick_to_taxonium](https://docs.taxonium.org/en/latest/taxoniumtools.html#newick-to-taxonium).
+
+(Remember that you can visualise Newick / Nexus files with <5M sequences directly with the [web app](https://taxodium.org/))
