@@ -22,7 +22,7 @@ function nexusToNewick(nexusString) {
 
   // get all the trees
 
-  const treeBlock = nexusString.match(/tree .+ = (.*?;)/gims);
+  const treeBlock = nexusString.match(/tree .+ ?= ?(.*?;)/gims);
 
   // get the Newick string from the tree block
   const newickString = treeBlock[0].match(/\((.*?)\).+;/gims)[0];
