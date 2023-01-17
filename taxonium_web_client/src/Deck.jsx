@@ -22,7 +22,8 @@ import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 import Key from "./components/Key";
 
-const MemoizedKey = React.memo(Key);
+//const MemoizedKey = React.memo(Key);
+const MemoizedKey = Key;
 
 function Deck({
   data,
