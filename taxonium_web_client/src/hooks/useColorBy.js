@@ -1,8 +1,8 @@
 import { useMemo, useEffect, useCallback } from "react";
 
 let colorCache = {}; // todo do this with state
-let cachedColorByPosition = null;  // todo do this with state
-let cachedColorByGene = null;  // todo do this with state
+let cachedColorByPosition = null; // todo do this with state
+let cachedColorByGene = null; // todo do this with state
 
 function useColorBy(config, query, updateQuery) {
   const colorByConfig = useMemo(() => {
@@ -51,12 +51,14 @@ function useColorBy(config, query, updateQuery) {
 
   const getNodeColorField = useCallback(
     (node, dataset) => {
-      
-      if (colorByPosition != cachedColorByPosition || colorByGene != cachedColorByGene ){
+      if (
+        colorByPosition != cachedColorByPosition ||
+        colorByGene != cachedColorByGene
+      ) {
         /* Should be able to increase perf by moving this cache invalidation to setColorByGene and setColorByPosition */
-        colorCache = {}
-        cachedColorByPosition = colorByPosition
-        cachedColorByGene = colorByGene
+        colorCache = {};
+        cachedColorByPosition = colorByPosition;
+        cachedColorByGene = colorByGene;
       }
       if (colorByField === "None") {
         return "None";
