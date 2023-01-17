@@ -335,6 +335,8 @@ function Deck({
           <MemoizedKey
             keyStuff={keyStuff}
             colorByField={colorBy.colorByField}
+            colorByGene={colorBy.colorByGene}
+            colorByPosition={colorBy.colorByPosition}
             config={config}
           />
           <DeckButtons
