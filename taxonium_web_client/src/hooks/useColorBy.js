@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useCallback } from "react";
 
 let colorCache = {};
+let cachedColorByPosition = null;
 
 function useColorBy(config, query, updateQuery) {
   const colorByConfig = useMemo(() => {
@@ -54,6 +55,10 @@ function useColorBy(config, query, updateQuery) {
 
   const getNodeColorField = useCallback(
     (node, dataset) => {
+      if (colorByPosition != cachedColorByPosition){
+        colorCache = {}
+        cachedColorByPosition = colorByPosition
+      }
       if (colorByField === "None") {
         return "None";
       }
