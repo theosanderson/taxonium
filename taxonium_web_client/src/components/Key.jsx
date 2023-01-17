@@ -1,7 +1,7 @@
 import prettifyName from "../utils/prettifyName";
 import { useState } from "react";
 import classNames from "classnames";
-const Key = ({ keyStuff, colorByField, config }) => {
+const Key = ({ keyStuff, colorByField, colorByGene, colorByPosition, config }) => {
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
   // sort by item.count in descending order
   const sortedKeyStuff = keyStuff.sort((a, b) => b.count - a.count);
@@ -27,7 +27,7 @@ const Key = ({ keyStuff, colorByField, config }) => {
         className="font-bold text-gray-600 text-xs cursor-pointer"
         onClick={() => setCollapsed(!collapsed)}
       >
-        {collapsed ? "Key" : prettifyName(colorByField, config)}
+        {collapsed ? "Key" : colorByField === "genotype" ? colorByGene+":"+colorByPosition: prettifyName(colorByField, config)}
         {/* Arrow to collapse up/down */}
         <span className="float-right text-xs cursor-pointer text-gray-600">
           {collapsed ? "▲" : "▼"}
