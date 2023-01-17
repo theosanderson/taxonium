@@ -55,9 +55,9 @@ function useColorBy(config, query, updateQuery) {
 
   const getNodeColorField = useCallback(
     (node, dataset) => {
-      if (colorByPosition != cachedColorByPosition){
-        colorCache = {}
-        cachedColorByPosition = colorByPosition
+      if (colorByPosition != cachedColorByPosition) {
+        colorCache = {};
+        cachedColorByPosition = colorByPosition;
       }
       if (colorByField === "None") {
         return "None";
