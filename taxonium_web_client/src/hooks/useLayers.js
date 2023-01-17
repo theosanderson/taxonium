@@ -49,7 +49,6 @@ const useLayers = ({
   const getNodeColorField = colorBy.getNodeColorField;
   const colorByField = colorBy.colorByField;
 
-
   const { toRGB } = colorHook;
 
   const layers = [];
@@ -85,7 +84,14 @@ const useLayers = ({
 
   const keyStuff = useMemo(() => {
     return getKeyStuff(getNodeColorField, colorByField, detailed_data, toRGB);
-  }, [detailed_data, getNodeColorField, colorByField, toRGB, colorBy.colorByPosition, colorBy.colorByGene]);
+  }, [
+    detailed_data,
+    getNodeColorField,
+    colorByField,
+    toRGB,
+    colorBy.colorByPosition,
+    colorBy.colorByGene,
+  ]);
 
   const clade_accessor = "pango";
 
