@@ -44,7 +44,7 @@ For trees larger than about 6M tips, loading local trees in the browser at Taxon
 ## Citing Taxonium
 
 ```
-Sanderson, T (2022). Taxonium, a web-based tool for exploring large phylogenetic trees. Elife, 11:e82392
+Sanderson, T (2022). Taxonium, a web-based tool for exploring large phylogenetic trees. eLife, 11:e82392
 https://doi.org/10.7554/eLife.82392
 ```
 
