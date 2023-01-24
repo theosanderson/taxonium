@@ -126,6 +126,9 @@ export async function processNewick(data, sendStatusMessage) {
   // remove all square-bracketed comments from the string
   the_data = removeSquareBracketedComments(the_data);
 
+  // remove newlines from the string
+  the_data = the_data.replace("\n","")
+
   const tree = kn_parse(the_data);
 
   function assignNumTips(node) {
