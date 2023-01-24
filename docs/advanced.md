@@ -25,16 +25,16 @@ You can configure many things. We only discuss some here. For more information h
 
 ##### Colors
 
-The way that Taxonium handles colurs by default is that they are computed as a hash of the text they represent. That has advantages, because it means that they are consistent over time. But sometimes values of interest can have very similar strings, or may have ugly colours that you wish to change. These can be overwritten using a `colorMapping` object, which maps metadata string values to colors as RGB values. The object looks something like this:
+The way that Taxonium handles colurs by default is that they are computed as a hash of the text they represent. That has advantages, because it means that they are consistent over time. But sometimes values of interest can have very similar strings, or may have ugly colours that you wish to change. These can be overwritten using a `colorMapping` object, which maps the string values you want to colors as RGB values. The object looks something like this:
 
 ```
 {
-  "England": [
+  "AY.4": [
     255,
     0,
     0
   ],
-  "France": [
+  "B.1.1.7": [
     0,
     0,
     255
@@ -45,18 +45,16 @@ The way that Taxonium handles colurs by default is that they are computed as a h
 We can supply that config in the URL like this:
 
 ```
-https://cov2tree.org/?config={"colorMapping":{"England":[255,0,0],"France":[0,0,255]}}
+https://cov2tree.org/?config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}
 ```
 
 or make a JSON file containing
 
 ```
 {"colorMapping":
-{"England":[255,0,0],"France":[0,0,255]}
+{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}
 }
 ```
-
-and use https://cov2tree.org/?configUrl=https://mydomain.org/my_config.json
 
 ##### Title
 
