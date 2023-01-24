@@ -42,7 +42,7 @@ Optionally, you can also upload a metadata file with your tree. This file should
 
 #### Other supported formats
 
-Taxonium can also display JSONL files containing mutation-annotated trees (discussed below), and JSON files created by [Nextstrain Augur](https://github.com/nextstrain/augur).
+Taxonium can also display JSONL files containing mutation-annotated trees (discussed below), and JSON files created by [Nextstrain Augur](https://github.com/nextstrain/augur). We have added experimental support for Nexus trees.
 
 ### Viewing the global SARS-CoV-2 tree
 
