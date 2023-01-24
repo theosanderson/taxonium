@@ -25,16 +25,16 @@ You can configure many things. We only discuss some here. For more information h
 
 ##### Colors
 
-The way that Taxonium handles colurs by default is that they are computed as a hash of the text they represent. That has advantages, because it means that they are consistent over time. But sometimes values of interest can have very similar strings, or may have ugly colours that you wish to change. These can be overwritten using a `colorMapping` object, which maps the string values you want to colors as RGB values. The object looks something like this:
+The way that Taxonium handles colurs by default is that they are computed as a hash of the text they represent. That has advantages, because it means that they are consistent over time. But sometimes values of interest can have very similar strings, or may have ugly colours that you wish to change. These can be overwritten using a `colorMapping` object, which maps metadata string values to colors as RGB values. The object looks something like this:
 
 ```
 {
-  "AY.4": [
+  "England": [
     255,
     0,
     0
   ],
-  "B.1.1.7": [
+  "France": [
     0,
     0,
     255
