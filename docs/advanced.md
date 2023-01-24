@@ -45,16 +45,18 @@ The way that Taxonium handles colurs by default is that they are computed as a h
 We can supply that config in the URL like this:
 
 ```
-https://cov2tree.org/?config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}
+https://cov2tree.org/?config={"colorMapping":{"England":[255,0,0],"France":[0,0,255]}}
 ```
 
 or make a JSON file containing
 
 ```
 {"colorMapping":
-{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}
+{"England":[255,0,0],"France":[0,0,255]}
 }
 ```
+
+and use https://cov2tree.org/?configUrl=https://mydomain.org/my_config.json
 
 ##### Title
 
