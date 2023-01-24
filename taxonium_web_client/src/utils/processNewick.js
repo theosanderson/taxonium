@@ -129,7 +129,7 @@ export async function processNewick(data, sendStatusMessage) {
   // remove newlines from the string
   the_data = the_data.replace("\n", "");
   console.log("thedata", the_data);
-  window.the_data = the_data
+  window.the_data = the_data;
 
   const tree = kn_parse(the_data);
 
