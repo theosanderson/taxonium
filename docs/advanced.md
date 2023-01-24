@@ -48,6 +48,8 @@ We can supply that config in the URL like this:
 https://taxonium.org/?backend=https://api.cov2tree.org&config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}
 ```
 
+(or just https://taxonium.org/?config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}) and then choose a file of interest)
+
 or make a JSON file containing
 
 ```
