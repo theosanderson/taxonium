@@ -20,7 +20,7 @@ function useColorBy(config, query, updateQuery) {
     ? "S"
     : "nt";
   const colorByPosition =
-    colorByConfig.pos !== undefined ? colorByConfig.pos : 501;
+    colorByConfig.pos !== undefined ? colorByConfig.pos : 484;
 
   const { colorByOptions } = config.colorBy
     ? config.colorBy
