@@ -159,7 +159,9 @@ export const useInputHelper = ({
 
   function addFromURL(url) {
     const file_obj = { name: url, supplyType: "url" };
-    window.alert("Please note: URL based loading will only work if the web server supports CORS. If the tree does not load please download the tree to your own computer and load the file into Taxonium from there.")
+    window.alert(
+      "Please note: URL based loading will only work if the web server supports CORS. If the tree does not load please download the tree to your own computer and load the file into Taxonium from there."
+    );
     addInput(file_obj);
   }
 

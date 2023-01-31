@@ -473,6 +473,14 @@ function SearchPanel({
                 <div className="text-xs leading-5 mt-1 text-gray-700">
                   {settings
                     .filterMutations(selectedDetails.nodeDetails.mutations)
+                    .sort((a, b) => {
+                      if (a.gene !== b.gene) {
+                        return a.gene > b.gene ? 1 : -1;
+                      }
+                      return parseInt(a.residue_pos) > parseInt(b.residue_pos)
+                        ? 1
+                        : -1;
+                    })
                     .map((mutation, i) => (
                       <span key={mutation.mutation_id}>
                         {i > 0 && <>, </>}
