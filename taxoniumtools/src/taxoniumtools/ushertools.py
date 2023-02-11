@@ -237,9 +237,9 @@ class UsherMutationAnnotatedTree:
         print("Ending early")
         if genbank_file:
             # We need to reconstruct root seq before shearing as shearing can mess it up
-            
+
             self.load_genbank_file(genbank_file)
-            self.get_root_sequence() 
+            self.get_root_sequence()
         if shear:
             print("Shearing tree...")
             self.shear_tree(shear_threshold)
