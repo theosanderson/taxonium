@@ -4,12 +4,16 @@ This is the client used at taxonium.org
 
 ### Dev instructions
 
+
+
 ```
 nvm use 18
 npm install -g yarn
 yarn install
 yarn start
 ```
+
+The above will start a dev server.
 
 Building:
 
