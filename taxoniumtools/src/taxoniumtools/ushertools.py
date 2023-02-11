@@ -234,6 +234,12 @@ class UsherMutationAnnotatedTree:
         self.expand_condensed_nodes()
         self.assign_num_tips()
         print(f"Loaded initial tree with {self.tree.root.num_tips} tips")
+        print("Ending early")
+        if genbank_file:
+            # We need to reconstruct root seq before shearing as shearing can mess it up
+            
+            self.load_genbank_file(genbank_file)
+            self.get_root_sequence() 
         if shear:
             print("Shearing tree...")
             self.shear_tree(shear_threshold)
@@ -241,8 +247,6 @@ class UsherMutationAnnotatedTree:
         print(f"Tree to use now has {self.tree.root.num_tips} tips")
         self.set_branch_lengths()
         if genbank_file:
-            self.load_genbank_file(genbank_file)
-            self.get_root_sequence()
             self.perform_aa_analysis()
 
     def prune_node(self, node_to_prune):
@@ -291,6 +295,7 @@ class UsherMutationAnnotatedTree:
                 NucMutation(one_indexed_position=i + 1,
                             mut_nuc=character,
                             par_nuc="X"))
+
         return ref_muts
 
     def annotate_clades(self, clade_types):
