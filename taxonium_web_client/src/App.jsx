@@ -182,9 +182,9 @@ function App() {
       desc: "Full 2.2M NCBI Taxonomy of species",
     },
     {
-      title: "Monkeypox",
+      title: "Mpox",
       url: "https://mpx.taxonium.org",
-      desc: "Monkeypox sequences from GenBank",
+      desc: "Mpox sequences from GenBank",
     },
   ];
 
