@@ -4,8 +4,6 @@ This is the client used at taxonium.org
 
 ### Dev instructions
 
-
-
 ```
 nvm use 18
 npm install -g yarn
