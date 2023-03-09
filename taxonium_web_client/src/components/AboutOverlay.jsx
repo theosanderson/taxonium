@@ -29,8 +29,8 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
             </a>
             .
           </p>
-          <p className="mb-1 text-sm mt-3">
-            <h3 className="font-bold">Citation</h3>
+          <p className="mb-1 text-sm mt-3 text-sm">
+            <h3 className="font-bold text-md text-base">Citation</h3>
             If you use Taxonium in your research, please cite:
             <br />
             Theo Sanderson (2022){" "}
