@@ -29,10 +29,10 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
         </a>
         .
       </p>
-      <p className="mb-1">
+      <p className="mb-1 text-sm">
         If you use Taxonium in your research, please cite:
         <br />
-        Theo Sanderson (2022) Taxonium, a web-based tool for exploring large phylogenetic trees eLife 11:e82392.
+        Theo Sanderson (2022) <b>Taxonium, a web-based tool for exploring large phylogenetic trees</b> <i>eLife</i> 11:e82392.
         <br />
         https://doi.org/10.7554/eLife.82392
       </p>
