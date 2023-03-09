@@ -54,7 +54,7 @@ There is a separate [preprint for the Treenome browser](https://www.biorxiv.org/
 
 ## Structure
 
-Taxonium consists of a number of components:
+Taxonium is structured as a 'monorepo' containing a number of components:
 
 - [taxoniumtools](./taxoniumtools/) - a Python package that lets you easily generate Taxonium files from Usher protobuf files
 - [taxonium_web_client](./taxonium_web_client/) - the web client that is available at e.g. taxonium.org and let's you explore Taxonium files in your browser
