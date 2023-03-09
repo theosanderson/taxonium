@@ -30,13 +30,13 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
             .
           </p>
           <p className="mb-1 text-sm mt-3 text-sm text-gray-700">
-            <h3 className="font-bold text-md text-base">Citation</h3>
+            <h3 className="font-bold text-md">Citation</h3>
             If you use Taxonium in your research, please cite:
             <br />
             Theo Sanderson (2022){" "}
-            <b>
+            <span class="font-semibold">
               Taxonium, a web-based tool for exploring large phylogenetic trees
-            </b>{" "}
+            </span>{" "}
             <i>eLife</i> 11:e82392.
             <br />
             https://doi.org/10.7554/eLife.82392
