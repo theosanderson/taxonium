@@ -86,7 +86,10 @@ export const useSettings = ({ query, updateQuery }) => {
   const [chromosomeName, setChromosomeName] = useState("chromosome");
   const [isCov2Tree, setIsCov2Tree] = useState(false);
   useEffect(() => {
-    if (window.location.href.includes("cov2tree.org") || window.location.href.includes("big-tree.ucsc.edu")) {
+    if (
+      window.location.href.includes("cov2tree.org") ||
+      window.location.href.includes("big-tree.ucsc.edu")
+    ) {
       setIsCov2Tree(true);
       setChromosomeName("NC_045512v2");
     }
