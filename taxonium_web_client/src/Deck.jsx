@@ -75,81 +75,49 @@ function Deck({
   const mouseDownPos = useRef();
 
   const onClickOrMouseMove = useCallback(
-    (event) => {
-      if (event.buttons === 0 && event._reactName === "onPointerMove") {
-        return false;
-      }
-      if (event._reactName === "onPointerDown") {
-        mouseDownPos.current = [event.clientX, event.clientY];
-      }
-      const pan_threshold = 10;
-      // if we get a click event and the mouse has moved more than the threshold,
-      // then we assume that the user is panning and just return. Use Pythagorean
-      // theorem to calculate the distance
-      if (
-        event._reactName === "onClick" &&
-        mouseDownPos.current &&
-        Math.sqrt(
-          Math.pow(mouseDownPos.current[0] - event.clientX, 2) +
-            Math.pow(mouseDownPos.current[1] - event.clientY, 2)
-        ) > pan_threshold
-      ) {
-        return false;
-      }
+  (event) => {
+    const { offsetCenter } = event;
+    const viewport = deckRef.current.deck.viewManager.getViewports()[1];
 
-      //console.log("onClickOrMouseMove", event);
-
-      const pickInfo = deckRef.current.pickObject({
-        x: event.nativeEvent.offsetX,
-        y: event.nativeEvent.offsetY,
-        radius: 10,
-      });
-
-      if (event._reactName === "onPointerDown") {
-        if (pickInfo && pickInfo.viewport.id === "minimap") {
-          setMouseDownIsMinimap(true);
-        } else {
-          setMouseDownIsMinimap(false);
-        }
-      }
-      if (
-        pickInfo &&
-        pickInfo.viewport.id === "main" &&
-        event._reactName === "onClick"
-      ) {
-        selectedDetails.getNodeDetails(pickInfo.object.node_id);
-      }
-
-      if (!pickInfo && event._reactName === "onClick") {
-        selectedDetails.clearNodeDetails();
-      }
-
-      if (
-        pickInfo &&
-        pickInfo.viewport.id === "minimap" &&
-        mouseDownIsMinimap
-      ) {
+    if (event.type === "pointerdown" && event.pointerType === "mouse") {
+      setMouseDownCoordinate(viewport.unproject(offsetCenter));
+      setMouseCoordinate(viewport.unproject(offsetCenter));
+      setMouseDownIsMinimap(pickInfo && pickInfo.viewport.id === "minimap");
+    } else if (event.type === "pointermove" && event.pointerType === "mouse") {
+      if (mouseDownIsMinimap) {
+        const mousePos = viewport.unproject(offsetCenter);
+        const dx = mousePos[0] - mouseDownCoordinate[0];
+        const dy = mousePos[1] - mouseDownCoordinate[1];
+        const newTarget = [
+          viewState.target[0] - dx / 2 ** (viewState.zoom - xzoom),
+          viewState.target[1] + dy / 2 ** (viewState.zoom - xzoom),
+        ];
         onViewStateChange({
           oldViewState: viewState,
-          viewState: {
-            ...viewState,
-            target: [
-              pickInfo.coordinate[0] / 2 ** (viewState.zoom - xzoom),
-              pickInfo.coordinate[1],
-            ],
-          },
+          viewState: { ...viewState, target: newTarget },
         });
+        setMouseCoordinate(mousePos);
       }
-    },
-    [
-      selectedDetails,
-      mouseDownIsMinimap,
-      viewState,
-      onViewStateChange,
-      xzoom,
-      deckRef,
-    ]
-  );
+    } else if (event.type === "pointerup" && event.pointerType === "mouse") {
+      if (mouseDownIsMinimap) {
+        setMouseDownCoordinate(null);
+        setMouseCoordinate(null);
+        setMouseDownIsMinimap(false);
+      }
+    } else if (!pickInfo && event._reactName === "onClick") {
+      selectedDetails.clearNodeDetails();
+    }
+  },
+  [
+    selectedDetails,
+    mouseDownIsMinimap,
+    viewState,
+    onViewStateChange,
+    xzoom,
+    deckRef,
+    pickInfo,
+  ]
+);
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
   const setHoverInfo = useCallback(
