@@ -18,6 +18,7 @@ function guessType(file_object) {
   const tree_extensions = [
     "nwk",
     "newick",
+    "contree",
     "tree",
     "tre",
     "nh",
