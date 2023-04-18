@@ -3,7 +3,6 @@ import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { View } from "@deck.gl/core";
 import useLayers from "./hooks/useLayers";
-import JBrowsePanel from "./components/JBrowsePanel";
 import { ClipLoader } from "react-spinners";
 import {
   CircularProgressbarWithChildren,
@@ -19,8 +18,8 @@ import DeckSettingsModal from "./components/DeckSettingsModal";
 import { TreenomeButtons } from "./components/TreenomeButtons";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
-import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 import Key from "./components/Key";
+import TreenomeBrowser from "./components/TreenomeBrowser";
 
 const MemoizedKey = React.memo(Key);
 
@@ -289,12 +288,7 @@ function Deck({
             }}
           >
             <span ref={jbrowseRef}>
-              <JBrowseErrorBoundary>
-                <JBrowsePanel
-                  treenomeState={treenomeState}
-                  settings={settings}
-                />
-              </JBrowseErrorBoundary>
+              <TreenomeBrowser state={treenomeState} settings={settings} />
               <TreenomeModal
                 treenomeSettingsOpen={treenomeSettingsOpen}
                 setTreenomeSettingsOpen={setTreenomeSettingsOpen}
