@@ -95,6 +95,8 @@ export const useSettings = ({ query, updateQuery }) => {
     }
   }, []);
 
+  const [mapViewOpen, setMapViewOpen] = useState(false);
+
   return {
     minimapEnabled,
     treenomeEnabled,
@@ -115,5 +117,7 @@ export const useSettings = ({ query, updateQuery }) => {
     isCov2Tree,
     chromosomeName,
     setChromosomeName,
+    mapViewOpen,
+    setMapViewOpen,
   };
 };
