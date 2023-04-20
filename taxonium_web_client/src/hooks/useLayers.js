@@ -3,10 +3,15 @@ import {
   ScatterplotLayer,
   PolygonLayer,
   TextLayer,
+  GeoJsonLayer,
 } from "@deck.gl/layers";
 
 import { useMemo, useCallback } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
+
+// source: https://datahub.io/core/geo-countries
+import geojson from "../worldMap.geo.json";
+import { getCountryCounts } from "../utils/coordinates";
 
 const getKeyStuff = (getNodeColorField, colorByField, dataset, toRGB) => {
   const counts = {};
@@ -503,6 +508,57 @@ const useLayers = ({
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
   layers.push(minimap_bound_polygon);
 
+  let countryCounts = {};
+  if (data.data.nodes) {
+    countryCounts = getCountryCounts(data.data.nodes);
+  }
+
+  let min = Infinity;
+  let max = -Infinity;
+  for (const [_, count] of Object.entries(countryCounts)) {
+    if (count > max) max = count;
+    if (count < min) min = count;
+  }
+
+  const linear_normalization = (
+    enteredValue,
+    minEntry,
+    maxEntry,
+    normalizedMin,
+    normalizedMax
+  ) => {
+    let mx = Math.log(enteredValue - minEntry) / Math.log(maxEntry - minEntry);
+    let preshiftNormalized = mx * (normalizedMax - normalizedMin);
+    let shiftedNormalized = preshiftNormalized + normalizedMin;
+
+    return shiftedNormalized;
+  };
+
+  const getColorByCountryCount = (country) => {
+    const count = countryCounts[country] ? countryCounts[country] : 0;
+    const normal = linear_normalization(count, min, max, 0, 255);
+    console.log(country, count, normal);
+    return [25, normal, 150];
+  };
+
+  layers.push(
+    new GeoJsonLayer({
+      id: "map",
+      data: geojson.features,
+      stroked: true,
+      filled: true,
+      getLineColor: [255, 255, 255],
+      getFillColor: (d) => {
+        return getColorByCountryCount(d.properties.ADMIN);
+      },
+      updateTriggers: {
+        getFillColor: data.data.nodes,
+      },
+      pickable: true,
+      opacity: 0.8,
+    })
+  );
+
   const layerFilter = useCallback(
     ({ layer, viewport, renderPass }) => {
       const first_bit =
@@ -515,7 +571,8 @@ const useLayers = ({
           viewport.id === "browser-main") ||
         (layer.id.startsWith("browser-fillin") &&
           viewport.id === "browser-main" &&
-          isCurrentlyOutsideBounds);
+          isCurrentlyOutsideBounds) ||
+        (layer.id.startsWith("map") && viewport.id === "map");
 
       return first_bit;
     },

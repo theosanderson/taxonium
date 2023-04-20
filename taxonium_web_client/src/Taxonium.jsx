@@ -35,9 +35,17 @@ function Taxonium({
   const deckRef = useRef();
   const jbrowseRef = useRef();
 
+  const [nodes, setNodes] = useState([]);
+
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
-  const view = useView({ settings, deckSize, deckRef, jbrowseRef });
+  const view = useView({
+    settings,
+    deckSize,
+    deckRef,
+    jbrowseRef,
+    nodes,
+  });
 
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 
@@ -74,6 +82,8 @@ function Taxonium({
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);
+
+  useMemo(() => setNodes(data), [data]);
 
   const perNodeFunctions = usePerNodeFunctions(data, config);
 

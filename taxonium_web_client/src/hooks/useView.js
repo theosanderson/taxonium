@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   OrthographicView,
   OrthographicController,
-  //OrthographicViewport,
+  MapView,
 } from "@deck.gl/core";
 
 let globalSetZoomAxis = () => {};
@@ -15,6 +15,11 @@ const defaultViewState = {
   minimap: { zoom: -3, target: [250, 1000] },
   "browser-main": { zoom: -2, target: [0, 1000] },
   "browser-axis": { zoom: -2, target: [0, 1000] },
+  map: {
+    latitude: 65,
+    longitude: 20,
+    zoom: 0.55,
+  },
 };
 
 class MyOrthographicController extends OrthographicController {
@@ -101,7 +106,7 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
+const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -1 : 0);
   globalSetZoomAxis = setZoomAxis;
@@ -192,12 +197,23 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
             }),
           ]
         : []),
+      ...(settings.mapViewOpen
+        ? [
+            new MapView({
+              id: "map",
+              width: "50%",
+              initialViewState: viewState,
+              x: "50%",
+            }),
+          ]
+        : []),
     ];
   }, [
     viewState,
     zoomAxis,
     settings.minimapEnabled,
     settings.treenomeEnabled,
+    settings.mapViewOpen,
     xzoom,
   ]);
 
@@ -320,6 +336,28 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
           target: [viewState["browser-main"].target[0], newViewState.target[1]],
         };
       }
+
+      // this section automaticlly moves the map view based on the tree view. currently not in use
+      // if (nodes.data) {
+      //   const coords = getUniqueCoordinates(nodes.data.nodes);
+      //   const [min_lat, max_lat, min_lon, max_lon] =
+      //     calculateBoundingBox(coords);
+
+      //   const lat = (min_lat + max_lat) / 2;
+      //   const lon = (min_lon + max_lon) / 2;
+
+      //   newViewState["map"] = {
+      //     latitude: lat,
+      //     longitude: lon,
+      //     zoom: newViewState.zoom,
+      //   };
+      // }
+
+      newViewState["map"] = {
+        latitude: 65,
+        longitude: 20,
+        zoom: 0.55,
+      };
 
       setViewState(newViewState);
       return newViewState;

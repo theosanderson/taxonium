@@ -308,21 +308,19 @@ function Deck({
             settings={settings}
           />
         </View>
-        {settings.mapViewOpen && (
+
+        <View id="map">
           <div
-            key="cat"
+            key={crypto.randomUUID()}
             style={{
-              width: "10vw",
-              height: "10vw",
-              border: "10px solid red",
+              width: "100%",
+              height: "100%",
+              border: "1px solid black",
+              position: "relative",
+              zIndex: 2,
             }}
-          >
-            <img
-              alt="cat"
-              src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg"
-            />
-          </div>
-        )}
+          ></div>
+        </View>
 
         <View id="main">
           <NodeHoverTip
