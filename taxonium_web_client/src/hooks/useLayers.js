@@ -8,6 +8,7 @@ import {
 
 import { useMemo, useCallback } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
+import { linear_normalization } from "../utils/mathFunctions";
 
 // source: https://datahub.io/core/geo-countries
 import geojson from "../worldMap.geo.json";
@@ -520,24 +521,9 @@ const useLayers = ({
     if (count < min) min = count;
   }
 
-  const linear_normalization = (
-    enteredValue,
-    minEntry,
-    maxEntry,
-    normalizedMin,
-    normalizedMax
-  ) => {
-    let mx = Math.log(enteredValue - minEntry) / Math.log(maxEntry - minEntry);
-    let preshiftNormalized = mx * (normalizedMax - normalizedMin);
-    let shiftedNormalized = preshiftNormalized + normalizedMin;
-
-    return shiftedNormalized;
-  };
-
   const getColorByCountryCount = (country) => {
     const count = countryCounts[country] ? countryCounts[country] : 0;
     const normal = linear_normalization(count, min, max, 0, 255);
-    console.log(country, count, normal);
     return [25, normal, 150];
   };
 

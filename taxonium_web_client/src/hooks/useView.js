@@ -180,7 +180,8 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
             type: MyOrthographicController,
             scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
           },
-          width: settings.treenomeEnabled ? "40%" : "100%",
+          width:
+            settings.treenomeEnabled || settings.mapViewOpen ? "40%" : "100%",
           initialViewState: viewState,
         }),
       ],
@@ -201,9 +202,9 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
         ? [
             new MapView({
               id: "map",
-              width: "50%",
+              width: "60%",
               initialViewState: viewState,
-              x: "50%",
+              x: "40%",
             }),
           ]
         : []),
@@ -336,28 +337,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
           target: [viewState["browser-main"].target[0], newViewState.target[1]],
         };
       }
-
-      // this section automaticlly moves the map view based on the tree view. currently not in use
-      // if (nodes.data) {
-      //   const coords = getUniqueCoordinates(nodes.data.nodes);
-      //   const [min_lat, max_lat, min_lon, max_lon] =
-      //     calculateBoundingBox(coords);
-
-      //   const lat = (min_lat + max_lat) / 2;
-      //   const lon = (min_lon + max_lon) / 2;
-
-      //   newViewState["map"] = {
-      //     latitude: lat,
-      //     longitude: lon,
-      //     zoom: newViewState.zoom,
-      //   };
-      // }
-
-      newViewState["map"] = {
-        latitude: 65,
-        longitude: 20,
-        zoom: 0.55,
-      };
 
       setViewState(newViewState);
       return newViewState;

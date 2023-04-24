@@ -315,7 +315,9 @@ function Deck({
             style={{
               width: "100%",
               height: "100%",
-              border: "1px solid black",
+              borderLeftWidth: "1px",
+              borderColor: "black",
+              borderStyle: "solid",
               position: "relative",
               zIndex: 2,
             }}
