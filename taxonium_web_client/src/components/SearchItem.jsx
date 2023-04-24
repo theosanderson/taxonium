@@ -82,7 +82,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
       }
 
       return [type.name, obj];
-    })
+    }),
   );
 
   const setTypeTo = (type) => {
@@ -326,7 +326,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                         (foundsubspec, i) =>
                           i === singleSearchSpec.subspecs.indexOf(subspec)
                             ? new_subspec
-                            : foundsubspec
+                            : foundsubspec,
                       ),
                     });
                   }}
@@ -340,7 +340,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
                       ...singleSearchSpec,
                       subspecs: singleSearchSpec.subspecs.filter(
                         (compsubspec, i) =>
-                          i !== singleSearchSpec.subspecs.indexOf(subspec)
+                          i !== singleSearchSpec.subspecs.indexOf(subspec),
                       ),
                     });
                   }}

@@ -20,13 +20,13 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
     return accessFunction(
       array.reduce(function (max, item) {
         return accessFunction(item) > accessFunction(max) ? item : max;
-      })
+      }),
     );
   } else if (maxOrMin === "min") {
     return accessFunction(
       array.reduce(function (min, item) {
         return accessFunction(item) < accessFunction(min) ? item : min;
-      })
+      }),
     );
   }
 }
@@ -84,7 +84,7 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
 
 export const processJsonl = async (jsonl, sendStatusMessage) => {
   console.log(
-    "Worker processJsonl" //, jsonl
+    "Worker processJsonl", //, jsonl
   );
   const data = jsonl.data;
   const status = jsonl.status;
@@ -164,12 +164,12 @@ export const processJsonl = async (jsonl, sendStatusMessage) => {
   const overallMaxX = reduceMaxOrMin(
     new_data.nodes,
     (node) => node.x_dist,
-    "max"
+    "max",
   );
   const overallMinX = reduceMaxOrMin(
     new_data.nodes,
     (node) => node.x_dist,
-    "min"
+    "min",
   );
 
   const root = new_data.nodes.find((node) => node.parent_id === node.node_id);
@@ -242,7 +242,7 @@ export const generateConfig = (config, processedUploadedData) => {
       : ["x_time"];
 
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
-    (x) => !to_remove.includes(x)
+    (x) => !to_remove.includes(x),
   );
 
   /*config.search_types = [

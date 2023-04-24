@@ -64,7 +64,7 @@ class MyOrthographicController extends OrthographicController {
       {
         isZooming: zoomAxis === "Y",
         isPanning: true,
-      }
+      },
     );
 
     if (controlKey) {
@@ -123,7 +123,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
     //   };
     // });
     setXzoom(
-      window.screen.width < 600 ? -1 : settings.treenomeEnabled ? -1 : 0
+      window.screen.width < 600 ? -1 : settings.treenomeEnabled ? -1 : 0,
     );
   }, [settings.treenomeEnabled]);
 
@@ -324,7 +324,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
       setViewState(newViewState);
       return newViewState;
     },
-    [zoomAxis, xzoom, deckSize, viewState, jbrowseRef, mouseXY]
+    [zoomAxis, xzoom, deckSize, viewState, jbrowseRef, mouseXY],
   );
 
   const zoomIncrement = useCallback(
@@ -339,7 +339,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef }) => {
         overrideZoomAxis,
       });
     },
-    [viewState, onViewStateChange]
+    [viewState, onViewStateChange],
   );
 
   const zoomReset = useCallback(() => {

@@ -36,11 +36,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           response.data.nodes.forEach((node) => {
             if (node.node_id === config.rootId) {
               node.mutations = config.rootMutations.map(
-                (x) => config.mutations[x]
+                (x) => config.mutations[x],
               );
             } else {
               node.mutations = node.mutations.map(
-                (mutation) => config.mutations[mutation]
+                (mutation) => config.mutations[mutation],
               );
             }
           });
@@ -53,7 +53,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           setTriggerRefresh({});
         });
     },
-    [backend_url, sid]
+    [backend_url, sid],
   );
 
   const singleSearch = useCallback(
@@ -109,7 +109,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         });
       return { abortController };
     },
-    [backend_url, sid]
+    [backend_url, sid],
   );
 
   const getDetails = useCallback(
@@ -119,7 +119,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         setResult(response.data);
       });
     },
-    [backend_url, sid]
+    [backend_url, sid],
   );
 
   const getConfig = useCallback(
@@ -129,14 +129,14 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         console.log("got config", response.data);
         if (response.data.error) {
           window.alert(
-            response.data.error + (url_on_fail ? "\nRedirecting you." : "")
+            response.data.error + (url_on_fail ? "\nRedirecting you." : ""),
           );
           window.location.href = url_on_fail;
         }
         setResult(response.data);
       });
     },
-    [backend_url, sid, url_on_fail]
+    [backend_url, sid, url_on_fail],
   );
 
   const getTipAtts = useCallback(
@@ -153,14 +153,14 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         callback(response.err, response.data);
       });
     },
-    [backend_url, sid]
+    [backend_url, sid],
   );
 
   const getNextstrainJsonUrl = useCallback(
     (nodeId, config) => {
       return backend_url + "/nextstrain_json/" + nodeId;
     },
-    [backend_url]
+    [backend_url],
   );
 
   const getNextstrainJson = useCallback(
@@ -169,7 +169,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
       // load this
       window.location.href = url;
     },
-    [getNextstrainJsonUrl]
+    [getNextstrainJsonUrl],
   );
 
   return useMemo(() => {

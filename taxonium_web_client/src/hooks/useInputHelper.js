@@ -92,7 +92,7 @@ export const useInputHelper = ({
       if (file.name.includes(".pb")) {
         // V1 format
         window.alert(
-          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there."
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. Please retry the upload from there.",
         );
         window.location.href =
           "https://cov2tree-git-v1-theosanderson.vercel.app/";
@@ -130,7 +130,7 @@ export const useInputHelper = ({
     // can't have more than one tree file
     if (
       inputs.filter(
-        (input) => input.filetype === "nwk" || input.filetype === "nexus"
+        (input) => input.filetype === "nwk" || input.filetype === "nexus",
       ).length > 1
     ) {
       return ["invalid", "You can only use a single tree file"];
@@ -142,7 +142,7 @@ export const useInputHelper = ({
     if (
       inputs.filter((input) => input.filetype === "jsonl").length === 0 &&
       inputs.filter(
-        (input) => input.filetype === "nwk" || input.filetype === "nexus"
+        (input) => input.filetype === "nwk" || input.filetype === "nexus",
       ).length === 0 &&
       inputs.filter((input) => input.filetype === "nextstrain").length === 0
     ) {
@@ -161,7 +161,7 @@ export const useInputHelper = ({
   function addFromURL(url) {
     const file_obj = { name: url, supplyType: "url" };
     window.alert(
-      "Please note: URL based loading will only work if the web server supports CORS. If the tree does not load please download the tree to your own computer and load the file into Taxonium from there."
+      "Please note: URL based loading will only work if the web server supports CORS. If the tree does not load please download the tree to your own computer and load the file into Taxonium from there.",
     );
     addInput(file_obj);
   }
@@ -174,13 +174,13 @@ export const useInputHelper = ({
         updateQuery({ protoUrl: inputs[0].name });
       } else {
         const meta_file = inputs.find((input) =>
-          input.filetype.startsWith("meta_")
+          input.filetype.startsWith("meta_"),
         );
         const tree_file = inputs.find(
           (input) =>
             input.filetype === "nwk" ||
             input.filetype === "nextstrain" ||
-            input.filetype === "nexus"
+            input.filetype === "nexus",
         );
         const newQuery = {
           treeUrl: tree_file.name,
@@ -207,7 +207,7 @@ export const useInputHelper = ({
       const upload_obj = {};
       // if there is some metadata find it
       const meta_file = inputs.find((input) =>
-        input.filetype.startsWith("meta_")
+        input.filetype.startsWith("meta_"),
       );
       if (meta_file) {
         upload_obj.metadata = {
@@ -223,7 +223,7 @@ export const useInputHelper = ({
         (input) =>
           input.filetype === "nwk" ||
           input.filetype === "nextstrain" ||
-          input.filetype === "nexus"
+          input.filetype === "nexus",
       );
 
       upload_obj.filename = tree_file.name;

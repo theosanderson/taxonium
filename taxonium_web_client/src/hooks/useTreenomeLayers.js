@@ -11,7 +11,7 @@ const useTreenomeLayers = (
   settings,
   treenomeReferenceInfo,
   setTreenomeReferenceInfo,
-  selectedDetails
+  selectedDetails,
 ) => {
   const myGetPolygonOffset = ({ layerIndex }) => [0, -(layerIndex + 999) * 100];
   const modelMatrixFixedX = useMemo(() => {
@@ -88,7 +88,7 @@ const useTreenomeLayers = (
       }
       return null;
     },
-    [cov2Genes]
+    [cov2Genes],
   );
 
   let layers = [];
@@ -115,7 +115,7 @@ const useTreenomeLayers = (
         3
       );
     },
-    [treenomeState.xBounds, treenomeState.ntBounds]
+    [treenomeState.xBounds, treenomeState.ntBounds],
   );
 
   const getNtPos = useCallback(
@@ -130,7 +130,7 @@ const useTreenomeLayers = (
         return cov2Genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
       }
     },
-    [cov2Genes]
+    [cov2Genes],
   );
 
   const main_variation_aa_common_props = {

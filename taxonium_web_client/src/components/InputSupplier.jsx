@@ -70,7 +70,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
                         input.filetype = e.target.value;
                       }
                       return input;
-                    })
+                    }),
                   );
                 }}
               >
@@ -125,7 +125,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
                             input.ladderize = e.target.checked;
                           }
                           return input;
-                        })
+                        }),
                       );
                     }}
                   />{" "}
@@ -203,7 +203,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
             setTempURL(
               e.target.value
                 .replace("http://", "")
-                .replace("http://", "https://")
+                .replace("http://", "https://"),
             );
           }}
           onKeyUp={(e) => {

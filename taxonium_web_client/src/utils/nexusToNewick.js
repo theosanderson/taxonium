@@ -37,7 +37,7 @@ function nexusToNewick(nexusString) {
     (match) => {
       //console.log(translations[match])
       return translations[match] || match;
-    }
+    },
   );
 
   return translatedNewickString;

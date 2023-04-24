@@ -4,7 +4,7 @@ const useTreenomeLayerData = (
   data,
   treenomeState,
   settings,
-  selectedDetails
+  selectedDetails,
 ) => {
   const [varDataAa, setVarDataAa] = useState([]);
   const [varDataNt, setVarDataNt] = useState([]);
@@ -19,7 +19,7 @@ const useTreenomeLayerData = (
   const worker = useMemo(
     () =>
       new Worker(new URL("../webworkers/treenomeWorker.js", import.meta.url)),
-    []
+    [],
   );
 
   worker.onmessage = useCallback(
@@ -47,7 +47,7 @@ const useTreenomeLayerData = (
       setVarDataNt,
       setCachedVarDataAa,
       setCachedVarDataNt,
-    ]
+    ],
   );
 
   useEffect(() => {

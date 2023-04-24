@@ -14,7 +14,7 @@ function usePerNodeFunctions(data, config) {
         "UNEXPECTED ERROR: node not found",
         node_id,
         data.data,
-        data.base_data
+        data.base_data,
       );
       return null;
     }
@@ -24,13 +24,13 @@ function usePerNodeFunctions(data, config) {
 
     while (cur_node.parent_id !== cur_node.node_id) {
       const nt_mutations = cur_node.mutations.filter(
-        (mutation) => mutation.type === "nt"
+        (mutation) => mutation.type === "nt",
       );
       const filtered_nt_mutations = nt_mutations.filter(
         (mutation) =>
           !assembled_mutations.some(
-            (m) => m.residue_pos === mutation.residue_pos
-          )
+            (m) => m.residue_pos === mutation.residue_pos,
+          ),
       );
       assembled_mutations.push(...filtered_nt_mutations);
       cur_node = data_to_use.nodeLookup[cur_node.parent_id];

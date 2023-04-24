@@ -283,7 +283,7 @@ function JBrowsePanel(props) {
       state.session.view
     ) {
       freezeTracks.forEach((t) =>
-        state.session.view.showTrack(t.configuration.trackId)
+        state.session.view.showTrack(t.configuration.trackId),
       );
     }
   }, [freezeTracks, state]);
@@ -308,7 +308,7 @@ function JBrowsePanel(props) {
       const widget = state.session.addWidget(
         "AddTrackWidget",
         "addTrackWidget",
-        { view: state.session.view.id }
+        { view: state.session.view.id },
       );
       // AddTrackWidget calls session.addTrackConf, which
       // doesn't appear to be defined in the session object
@@ -332,7 +332,7 @@ function JBrowsePanel(props) {
         ":" +
         props.treenomeState.ntBoundsExt[0] +
         ".." +
-        props.treenomeState.ntBoundsExt[1]
+        props.treenomeState.ntBoundsExt[1],
     );
     props.treenomeState.setNtBoundsExt(null);
   }, [props.settings.chromosomeName, props.treenomeState, state.session.view]);

@@ -115,7 +115,7 @@ const NodeHoverTip = ({
                 hoveredNode[key]
               )}
             </div>
-          )
+          ),
       )}
 
       {config.mutations.length > 0 && (
@@ -160,7 +160,7 @@ const NodeHoverTip = ({
             <div className="mt-1 justify">
               <b className="font-semibold">Authors:</b>{" "}
               {fixAuthors(
-                hoverDetails.nodeDetails.acknowledgements.covv_authors
+                hoverDetails.nodeDetails.acknowledgements.covv_authors,
               )}
             </div>
           </div>

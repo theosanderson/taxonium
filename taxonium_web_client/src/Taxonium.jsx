@@ -46,7 +46,7 @@ function Taxonium({
     query.sid,
     url_on_fail,
     uploadedData,
-    proto
+    proto,
   );
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
@@ -69,7 +69,7 @@ function Taxonium({
     (xType) => {
       updateQuery({ xType });
     },
-    [updateQuery]
+    [updateQuery],
   );
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =

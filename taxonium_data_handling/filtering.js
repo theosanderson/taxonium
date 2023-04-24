@@ -39,7 +39,7 @@ const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
     (m) =>
       m.gene in gene_sequence &&
       gene_sequence[m.gene][m.residue_pos] === m.new_residue &&
-      m.new_residue !== m.previous_residue
+      m.new_residue !== m.previous_residue,
   );
   return new Set(revertant_mutations.map((m) => m.mutation_id));
 };
@@ -53,7 +53,7 @@ const reduceOverPlotting = (input, precisionX, precisionY, xType) => {
     "precisionX:",
     precisionX,
     "precisionY:",
-    precisionY
+    precisionY,
   );
 
   const filtered = input.filter((node) => {
@@ -126,7 +126,7 @@ const addParents = (data, filtered) => {
     }
   }
   const with_parents = data.filter((node) =>
-    selected_node_ids_set.has(node.node_id)
+    selected_node_ids_set.has(node.node_id),
   );
   const final_size = with_parents.length;
   console.log("Adding parents took " + (Date.now() - start_time) + "ms.");
@@ -154,7 +154,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
     filtered.filter((node) => node.num_tips == 1),
     getPrecision(min_x, max_x),
     getPrecision(min_y, max_y),
-    xType
+    xType,
   );
   const time3 = Date.now();
   console.log("Reducing took " + (time3 - time2) + "ms.");
@@ -197,7 +197,7 @@ function searchFiltering({
   if (cache_helper && cache_helper.store_in_cache) {
     cache_helper.store_in_cache(
       hash_spec,
-      result.map((node) => node.node_id)
+      result.map((node) => node.node_id),
     );
   }
   return result;
@@ -226,7 +226,7 @@ function searchFilteringIfUncached({
             node_to_mut: node_to_mut,
             all_data: all_data,
             cache_helper: cache_helper,
-          })
+          }),
         );
         workingData = workingData.filter((n) => new_results.has(n));
       });
@@ -280,14 +280,14 @@ function searchFilteringIfUncached({
     spec.text = spec.text.toLowerCase();
     filtered = data.filter(
       (node) =>
-        node[spec.type] && node[spec.type].toLowerCase().includes(spec.text)
+        node[spec.type] && node[spec.type].toLowerCase().includes(spec.text),
     );
     return filtered;
   } else if (spec.method === "text_exact") {
     // case insensitive
     spec.text = spec.text.toLowerCase();
     filtered = data.filter(
-      (node) => node[spec.type] && node[spec.type].toLowerCase() === spec.text
+      (node) => node[spec.type] && node[spec.type].toLowerCase() === spec.text,
     );
     return filtered;
   } else if (spec.method === "text_per_line") {
@@ -299,7 +299,7 @@ function searchFilteringIfUncached({
         .map((line) => {
           return line.trim();
         })
-        .filter((line) => line !== "")
+        .filter((line) => line !== ""),
     );
 
     filtered = data.filter((node) => {
@@ -333,8 +333,8 @@ function searchFilteringIfUncached({
     filtered = data.filter(
       (node) =>
         node_to_mut[node.node_id].some((mutation_id) =>
-          relevant_mutations_set.has(mutation_id)
-        ) && node.num_tips > spec.min_tips
+          relevant_mutations_set.has(mutation_id),
+        ) && node.num_tips > spec.min_tips,
     );
     //console.log("filtered:", filtered);
     return filtered;
@@ -346,7 +346,7 @@ function searchFilteringIfUncached({
       revertant_mutations_set = getRevertantMutationsSet(
         all_data,
         node_to_mut,
-        mutations
+        mutations,
       );
     }
 
@@ -354,8 +354,8 @@ function searchFilteringIfUncached({
       (node) =>
         node.num_tips > spec.min_tips &&
         node_to_mut[node.node_id].some((mutation_id) =>
-          revertant_mutations_set.has(mutation_id)
-        )
+          revertant_mutations_set.has(mutation_id),
+        ),
     );
     //console.log("filtered:", filtered);
     return filtered;
@@ -374,7 +374,7 @@ function searchFilteringIfUncached({
     const number_value = parseFloat(spec.number);
     const filterFunc = getNumericFilterFunction(
       spec.number_method,
-      number_value
+      number_value,
     );
 
     filtered = data.filter((node) => filterFunc(node[spec.type]));
@@ -430,7 +430,7 @@ function singleSearch({
 
     // TODO if we ensured all searches maintained order we could use binary search here
     const filtered_cut = filtered.filter(
-      (node) => node.y < max_y && node.y > min_y
+      (node) => node.y < max_y && node.y > min_y,
     );
 
     console.log("length of filtered_cut:", filtered_cut.length);
@@ -442,7 +442,7 @@ function singleSearch({
       filtered_cut,
       getPrecision(min_x, max_x),
       getPrecision(min_y, max_y),
-      xType
+      xType,
     );
     result = {
       type: "filtered",
@@ -530,7 +530,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
   const positive_mutations = new Set(
     relevant_mutations
       .filter((mutation) => mutation.new_residue === new_residue)
-      .map((m) => m.mutation_id)
+      .map((m) => m.mutation_id),
   );
 
   // if no positive mutations then return empty array
@@ -541,7 +541,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
   const negative_mutations = new Set(
     relevant_mutations
       .filter((mutation) => mutation.new_residue !== new_residue)
-      .map((m) => m.mutation_id)
+      .map((m) => m.mutation_id),
   );
   const output = data.filter((node) => {
     //   console.log("node:",node);
@@ -556,7 +556,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
       const is_positive =
         cache_value === true ||
         node_to_mut[cur_node.node_id].some((mutation_id) =>
-          positive_mutations.has(mutation_id)
+          positive_mutations.has(mutation_id),
         );
       if (is_positive) {
         // console.log("positive");
@@ -568,7 +568,7 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
       const is_negative =
         cache_value === false ||
         node_to_mut[cur_node.node_id].some((mutation_id) =>
-          negative_mutations.has(mutation_id)
+          negative_mutations.has(mutation_id),
         );
       if (is_negative) {
         // console.log("negative");

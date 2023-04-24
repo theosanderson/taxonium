@@ -26,7 +26,7 @@ const Key = ({
     <div
       className={classNames(
         "px-2 border-right border  bg-white opacity-90 absolute bottom-2 left-2 pt-1 pb-2",
-        collapsed ? "w-20" : "w-32"
+        collapsed ? "w-20" : "w-32",
       )}
     >
       <h3

@@ -57,7 +57,7 @@ function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
     return do_fetch(
       file_obj.filename,
       sendStatusMessage,
-      whatIsBeingDownloaded
+      whatIsBeingDownloaded,
     );
   } else if (file_obj.status === "loaded") {
     if (file_obj.filename.includes(".gz")) {
@@ -226,7 +226,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
       error: "Filetype was not set, please raise an issue on our GitHub page",
     });
     throw new Error(
-      "Filetype was not set, please raise an issue on our GitHub page"
+      "Filetype was not set, please raise an issue on our GitHub page",
     );
   }
 
@@ -282,7 +282,7 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
   ]);
   const [metadata, headers] = metadata_double;
   const blanks = Object.fromEntries(
-    headers.slice(1).map((x) => ["meta_" + x, ""])
+    headers.slice(1).map((x) => ["meta_" + x, ""]),
   );
   sendStatusMessage({
     message: "Assigning metadata to nodes",
