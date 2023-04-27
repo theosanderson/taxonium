@@ -311,6 +311,7 @@ function Deck({
 
         <View id="map">
           <div
+            id="map-div"
             key={crypto.randomUUID()}
             style={{
               width: "100%",

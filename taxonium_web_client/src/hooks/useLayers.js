@@ -522,10 +522,16 @@ const useLayers = ({
   }
 
   const getColorByCountryCount = (country) => {
+    const GRAY = [169, 169, 169];
     const count = countryCounts[country] ? countryCounts[country] : 0;
-    const normal = linear_normalization(count, min, max, 0, 255);
-    return [25, normal, 150];
+    if (count === 0) return GRAY;
+    let normal = linear_normalization(count, min, max, 0, 255);
+    // 138, 43, 226;
+    return [138, normal, 226];
   };
+
+  let lineWidth = 100;
+  if (viewState["map"]) lineWidth = (1 / viewState["map"].zoom) * 9000;
 
   layers.push(
     new GeoJsonLayer({
@@ -534,6 +540,7 @@ const useLayers = ({
       stroked: true,
       filled: true,
       getLineColor: [255, 255, 255],
+      getLineWidth: lineWidth,
       getFillColor: (d) => {
         return getColorByCountryCount(d.properties.ADMIN);
       },
