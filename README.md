@@ -39,7 +39,6 @@ For trees larger than about 6M tips, loading local trees in the browser at Taxon
 - [Cov2Tree](https://cov2tree.org/) - (the repo that runs this is [here](https://github.com/theosanderson/cov2tree))
 - [Exploring the NCBI Taxonomy](https://taxonium.org/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json)
 - [Serratus](https://serratus.io/trees) (click Tree Viewer on any tree)
-- [mpxTree](http://mpxtree.taxonium.org/)
 
 ## Citing Taxonium
 
@@ -50,7 +49,7 @@ https://doi.org/10.7554/eLife.82392
 
 N.B. If you are citing the _tree_ displayed at Cov2Tree.org, please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too if you relied on it for exploration)
 
-There is a separate [preprint for the Treenome browser](https://www.biorxiv.org/content/10.1101/2022.09.28.509985v1).
+There is a separate [paper](https://academic.oup.com/bioinformatics/article/39/1/btac772/6858450) for the Treenome Browser feature (Kramer et al., Bioinformatics, 2022).
 
 ## Structure
 
