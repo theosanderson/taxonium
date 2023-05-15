@@ -29,7 +29,7 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
             </a>
             .
           </p>
-  <p className="mb-1 mt-6">
+          <p className="mb-1 mt-6">
             Taxonium is a{" "}
             <a className="text-blue underline" href="https://www.genomium.com">
               Genomium
@@ -49,7 +49,6 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
             <br />
             https://doi.org/10.7554/eLife.82392
           </p>
-        
         </div>
       )}
     </Modal>
