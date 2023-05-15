@@ -31,7 +31,7 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
           </p>
           <p className="mb-1 mt-6">
             Taxonium is a{" "}
-            <a className="text-blue underline" href="https://www.genomium.com">
+            <a className="text-blue underline" href="https://genomium.org">
               Genomium
             </a>{" "}
             project.
