@@ -42,12 +42,12 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
             https://doi.org/10.7554/eLife.82392
           </p>
           <p className="mb-1 mt-6">
-            Taxonium is a {" "}
+            Taxonium is a{" "}
             <a className="text-blue underline" href="https://www.genomium.com">
               Genomium
-            </a> project.
+            </a>{" "}
+            project.
           </p>
-
         </div>
       )}
     </Modal>
