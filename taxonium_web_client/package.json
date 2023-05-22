@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^6.1.2",
     "@fontsource/roboto": "^4.5.5",
     "@jbrowse/plugin-data-management": "^2.1.4",
     "@jbrowse/react-linear-genome-view": "^2.1.4",
@@ -19,7 +18,6 @@
     "commander": "^9.0.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
-    "craco": "^0.0.3",
     "deck.gl": "^8.6.6",
     "jsonl": "^1.1.2",
     "lodash": "^4.17.21",
@@ -47,9 +45,9 @@
     "yargs": "^17.3.1"
   },
   "scripts": {
-    "start": "craco  start",
-    "build": "craco  build",
-    "test": "craco  test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
