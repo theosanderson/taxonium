@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useState, Suspense, useRef } from "react";
 
 import { Toaster } from "react-hot-toast";
-import  ReactTooltip from 'react-tooltip'
+import ReactTooltip from "react-tooltip";
 import { getDefaultSearch } from "./utils/searchUtil";
 import Taxonium from "./Taxonium";
 
@@ -27,24 +27,20 @@ function TaxoniumWrapper() {
     setQuery({ ...query, ...newQuery });
   };
 
-  
-
   return (
-  
-      <div className="w-full h-full flex">
-       <Toaster />
-        <ReactTooltip />
+    <div className="w-full h-full flex">
+      <Toaster />
+      <ReactTooltip />
       <Taxonium
-              uploadedData={uploadedData}
-              query={query}
-              updateQuery={updateQuery}
-              setOverlayContent={() => console.log("setOverlayContent")}
-              setTitle={ () => console.log("setTitle")}
-              overlayContent={null}
-              setAboutEnabled={() => console.log("setAboutEnabled")}
-            />
-      </div>
-   
+        uploadedData={uploadedData}
+        query={query}
+        updateQuery={updateQuery}
+        setOverlayContent={() => console.log("setOverlayContent")}
+        setTitle={() => console.log("setTitle")}
+        overlayContent={null}
+        setAboutEnabled={() => console.log("setAboutEnabled")}
+      />
+    </div>
   );
 }
 

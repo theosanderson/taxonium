@@ -18,7 +18,7 @@ import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import { useCallback } from "react";
 
-const URL_ON_FAIL = "https://fail.org"
+const URL_ON_FAIL = "https://fail.org";
 
 function Taxonium({
   uploadedData,

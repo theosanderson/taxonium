@@ -27,24 +27,20 @@ function TaxoniumWrapper() {
     setQuery({ ...query, ...newQuery });
   };
 
-  
-
   return (
-  
-      <div className="w-full h-full flex">
-       <Toaster />
-        <ReactTooltip />
+    <div className="w-full h-full flex">
+      <Toaster />
+      <ReactTooltip />
       <Taxonium
-              uploadedData={uploadedData}
-              query={query}
-              updateQuery={updateQuery}
-              setOverlayContent={() => console.log("setOverlayContent")}
-              setTitle={ () => console.log("setTitle")}
-              overlayContent={null}
-              setAboutEnabled={() => console.log("setAboutEnabled")}
-            />
-      </div>
-   
+        uploadedData={uploadedData}
+        query={query}
+        updateQuery={updateQuery}
+        setOverlayContent={() => console.log("setOverlayContent")}
+        setTitle={() => console.log("setTitle")}
+        overlayContent={null}
+        setAboutEnabled={() => console.log("setAboutEnabled")}
+      />
+    </div>
   );
 }
 

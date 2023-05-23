@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { Header } from './Header';
-import './page.css';
-import TaxoniumWrapper from '../TaxoniumWrapper';
+import { Header } from "./Header";
+import "./page.css";
+import TaxoniumWrapper from "../TaxoniumWrapper";
 
 export const Page = () => {
   const [user, setUser] = React.useState();
@@ -11,13 +11,13 @@ export const Page = () => {
     <article>
       <Header
         user={user}
-        onLogin={() => setUser({ name: 'Jane Doe' })}
+        onLogin={() => setUser({ name: "Jane Doe" })}
         onLogout={() => setUser(undefined)}
-        onCreateAccount={() => setUser({ name: 'Jane Doe' })}
+        onCreateAccount={() => setUser({ name: "Jane Doe" })}
       />
 
-      <section >
-       <TaxoniumWrapper />
+      <section>
+        <TaxoniumWrapper />
       </section>
     </article>
   );
