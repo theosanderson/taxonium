@@ -38,3 +38,26 @@ export const LocalData = {
     layout: "padded",
   },
 };
+
+
+export const ConfigTree = {
+  args: {
+    
+      queryAdd:{
+        configUrl:"https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config_special2.json"
+       
+      }
+      ,
+      sourceData: {
+        status: "url_supplied",
+        filename: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/ncbi/special_filtered.jsonl.gz",
+        filetype: "jsonl",
+    }}
+,
+parameters: {
+  // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
+  layout: "padded",
+},
+
+   
+  };

@@ -28,6 +28,7 @@ const URL_ON_FAIL = "https://fail.org/";
 function Taxonium({
   sourceData,
   query,
+  queryAdd,
   updateQuery,
   setOverlayContent,
   proto,
@@ -36,6 +37,11 @@ function Taxonium({
   overlayContent,
   setAboutEnabled,
 }) {
+
+  const full_default_query = useMemo(() => {
+
+    return { ...default_query, ...(queryAdd ? queryAdd : {}) };
+  }, [queryAdd]);
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery) => {
     setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
@@ -82,6 +88,7 @@ function Taxonium({
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
+  console.log("Backend: ", backend);
   const config = useConfig(backend, view, setOverlayContent, setTitle, query);
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {

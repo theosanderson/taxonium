@@ -13,9 +13,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@deck.gl/core": "^8.9.16",
-    "@deck.gl/layers": "^8.9.16",
-    "@deck.gl/react": "^8.9.16",
+    "deck.gl": "=8.6.6",
+    "readable-web-to-node-stream": "^3.0.2",
     "@fontsource/roboto": "^5.0.1",
     "@jbrowse/core": "^2.5.0",
     "@jbrowse/plugin-data-management": "^2.5.0",
@@ -52,8 +51,8 @@
     "eslint-plugin-react-refresh": "^0.3.4",
     "eslint-plugin-storybook": "^0.6.12",
     "postcss": "^8.4.23",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "storybook": "^7.0.14",
     "tailwindcss": "^3.3.2",
     "@tailwindcss/forms": "^0.5.3",
@@ -63,7 +62,7 @@
     "vite-plugin-node-polyfills": "^0.8.2"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }

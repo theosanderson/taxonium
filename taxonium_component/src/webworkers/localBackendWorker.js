@@ -1,14 +1,44 @@
-import filtering from "taxonium_data_handling/filtering.js";
-import { getNextstrainSubtreeJson } from "taxonium_data_handling/exporting.js";
-import {
-  processJsonl,
-  generateConfig,
-} from "taxonium_data_handling/importing.js";
-import { processNewickAndMetadata } from "../utils/processNewick.js";
-import { processNextstrain } from "../utils/processNextstrain.js";
+let filtering;
+import("taxonium_data_handling/filtering.js")
+  .then((module) => {
+    filtering = module.default;
+    console.log("filtering is", filtering);
+  })
+  .catch((error) => console.error(`Error loading module: ${error}`));
+
+let getNextstrainSubtreeJson;
+import("taxonium_data_handling/exporting.js")
+  .then((module) => {
+    getNextstrainSubtreeJson = module.getNextstrainSubtreeJson;
+  })
+  .catch((error) => console.error(`Error loading module: ${error}`));
+
+importingPromise = import("taxonium_data_handling/importing.js");
+
+
+let processNewickAndMetadata;
+import("../utils/processNewick.js")
+  .then((module) => {
+    processNewickAndMetadata = module.processNewickAndMetadata;
+  })
+  .catch((error) => console.error(`Error loading module: ${error}`));
+
+let processNextstrain;
+import("../utils/processNextstrain.js")
+  .then((module) => {
+    processNextstrain = module.processNextstrain;
+  })
+  .catch((error) => console.error(`Error loading module: ${error}`));
+
+const  readableWebToNodeStreamPromise = import("readable-web-to-node-stream");
+
+
+
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
+
+
 
 const the_cache = {};
 
@@ -55,7 +85,7 @@ const waitForProcessedData = async () => {
   }
 };
 
-export const queryNodes = async (boundsForQueries) => {
+const queryNodes = async (boundsForQueries) => {
   console.log("Worker query Nodes");
   await waitForProcessedData();
 
@@ -157,7 +187,10 @@ const getConfig = async () => {
   console.log("Worker getConfig");
   await waitForProcessedData();
   const config = {};
-  generateConfig(config, processedUploadedData);
+  const importing = await importingPromise; 
+    
+
+  importing.generateConfig(config, processedUploadedData);
 
   config.mutations = processedUploadedData.mutations;
 
@@ -198,6 +231,8 @@ const getList = async (node_id, att) => {
 };
 
 onmessage = async (event) => {
+ 
+
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
@@ -207,8 +242,15 @@ onmessage = async (event) => {
     data.data.filename &&
     data.data.filename.includes("jsonl")
   ) {
-    processedUploadedData = await processJsonl(data.data, sendStatusMessage);
-    console.log("processedUploadedData created");
+    
+    
+    const importing = await importingPromise; 
+    const ReadableWebToNodeStream = await (await readableWebToNodeStreamPromise).ReadableWebToNodeStream; 
+    
+
+    console.log("READABLE", ReadableWebToNodeStream.default);
+    processedUploadedData = await importing.processJsonl(data.data, sendStatusMessage, ReadableWebToNodeStream);
+ 
   } else if (
     data.type === "upload" &&
     data.data &&

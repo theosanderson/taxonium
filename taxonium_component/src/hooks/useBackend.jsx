@@ -5,6 +5,7 @@ function useBackend(backend_url, sid, url_on_fail, uploaded_data, proto) {
   const serverBackend = useServerBackend(backend_url, sid, url_on_fail);
   const localBackend = useLocalBackend(uploaded_data, proto);
   if (backend_url) {
+    console.log("using server backend", backend_url);
     if (!window.done_ev) {
       window.done_ev = true;
       if (window.gtag) {
