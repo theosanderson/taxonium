@@ -13,7 +13,7 @@ import("taxonium_data_handling/exporting.js")
   })
   .catch((error) => console.error(`Error loading module: ${error}`));
 
-importingPromise = import("taxonium_data_handling/importing.js");
+const importingPromise = import("taxonium_data_handling/importing.js");
 
 let processNewickAndMetadata;
 import("../utils/processNewick.js")
