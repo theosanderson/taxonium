@@ -1,11 +1,4 @@
-let filtering;
-import("taxonium_data_handling/filtering.js")
-  .then((module) => {
-    filtering = module.default;
-    console.log("filtering is", filtering);
-  })
-  .catch((error) => console.error(`Error loading module: ${error}`));
-
+import filtering from "../../../taxonium_data_handling/filtering.js";
 let getNextstrainSubtreeJson;
 import("taxonium_data_handling/exporting.js")
   .then((module) => {
