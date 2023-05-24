@@ -42,6 +42,7 @@ const removeUndefined = (obj) => {
 const useQueryAsState = (defaultValues) => {
   const history = useHistory();
   const { pathname, search } = useLocation();
+  console.log("useQueryAsState", pathname, search);
 
   const decodedSearch = useMemo(() => queryParamsToObject(search), [search]);
 

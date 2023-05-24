@@ -26,7 +26,7 @@ const default_query = getDefaultQuery();
 const URL_ON_FAIL = "https://fail.org/"
 
 function Taxonium({
-  uploadedData,
+  sourceData,
   query,
   updateQuery,
   setOverlayContent,
@@ -76,7 +76,7 @@ function Taxonium({
     backendUrl ? backendUrl : query.backend,
     query.sid,
     url_on_fail,
-    uploadedData,
+    sourceData,
     proto
   );
   let hoverDetails = useHoverDetails();
@@ -145,7 +145,7 @@ function Taxonium({
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
-    <>
+    <div className="w-full h-full flex">
       <Toaster />
     <ReactTooltip
         delayHide={400}
@@ -227,7 +227,7 @@ function Taxonium({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

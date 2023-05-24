@@ -2,8 +2,10 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 // test
 console.log("new worker");
+const workerPath = "../webworkers/localBackendWorker.js"
 const worker = new Worker(
-  new URL("../webworkers/localBackendWorker.js", import.meta.url)
+  // module type
+  new URL(workerPath, import.meta.url), {type: "module"}
 );
 
 let onQueryReceipt = (receivedData) => {};

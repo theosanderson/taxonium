@@ -190,6 +190,8 @@ function Deck({
   });
   // console.log("deck refresh");
 
+  console.log("deck refresh", layers);
+
   return (
     <div
       className="w-full h-full relative"

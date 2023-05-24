@@ -1,32 +1,26 @@
-import "./App.css";
+
 import React, { useState, Suspense, useRef } from "react";
 import AboutOverlay from "./components/AboutOverlay";
-import { BrowserRouter as Router } from "react-router-dom";
+
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 import { FaGithub } from "react-icons/fa";
 import useQueryAsState from "./hooks/useQueryAsState";
 import classNames from "classnames";
-
+import { BrowserRouter as Router } from "react-router-dom";
 import { useInputHelper } from "./hooks/useInputHelper";
 
 import InputSupplier from "./components/InputSupplier";
 
 import { HiOutlineBookOpen } from "react-icons/hi";
-import getDefaultQuery from "./utils/getDefaultQuery";
+import { Taxonium,getDefaultQuery} from "taxonium-component";
 
 
 
-
-const Taxonium = React.lazy(() => import("./Taxonium"));
 
 const default_query = getDefaultQuery();
 
-default_query.backend = window.location.hostname.includes("epicov.org")
-  ? "https://tree.epicov.org:8443"
-  : window.location.hostname.includes("cov2tree.org")
-  ? "https://api.cov2tree.org"
-  : process.env.REACT_APP_DEFAULT_BACKEND;
+default_query.backend =  "https://api.cov2tree.org";
 
 
 
@@ -54,6 +48,7 @@ if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
 }
 
 function App() {
+  
   const [uploadedData, setUploadedData] = useState(null);
 
   // check if .epicov.org is in the URL
@@ -179,7 +174,8 @@ function App() {
   ];
 
   return (
-    <Router>
+    
+  <>
       
       <AboutOverlay
         enabled={aboutEnabled}
@@ -330,7 +326,9 @@ function App() {
           )}
         </Suspense>
       </div>
-    </Router>
+    </>
+   
+  
   );
 }
 

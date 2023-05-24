@@ -18,7 +18,7 @@ const useTreenomeLayerData = (
   const [currentJobId, setCurrentJobId] = useState(null);
   const worker = useMemo(
     () =>
-      new Worker(new URL("../webworkers/treenomeWorker.js", import.meta.url)),
+      new Worker(new URL("../webworkers/treenomeWorker.js", import.meta.url),{type: "module"}),
     []
   );
 
