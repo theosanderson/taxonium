@@ -5,7 +5,6 @@ function useBackend(backend_url, sid, url_on_fail, uploaded_data, proto) {
   const serverBackend = useServerBackend(backend_url, sid, url_on_fail);
   const localBackend = useLocalBackend(uploaded_data, proto);
   if (backend_url) {
-   
     if (!window.done_ev) {
       window.done_ev = true;
       if (window.gtag) {
@@ -20,8 +19,10 @@ function useBackend(backend_url, sid, url_on_fail, uploaded_data, proto) {
   if (uploaded_data) {
     return localBackend;
   } else {
-    window.alert("Taxonium did not receive the information it needed to launch.");
-    return null
+    window.alert(
+      "Taxonium did not receive the information it needed to launch."
+    );
+    return null;
   }
 }
 export default useBackend;

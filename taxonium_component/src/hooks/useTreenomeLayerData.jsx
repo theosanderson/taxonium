@@ -19,12 +19,7 @@ const useTreenomeLayerData = (
 
   const [currentJobId, setCurrentJobId] = useState(null);
 
-  const worker = useMemo(
-    () =>
-      new workerSpec()
-      ,
-    []
-  );
+  const worker = useMemo(() => new workerSpec(), []);
 
   worker.onmessage = useCallback(
     (e) => {
