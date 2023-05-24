@@ -7,7 +7,10 @@ console.log("new worker");
 
 import workerSpec from '../webworkers/localBackendWorker.js?worker&inline'
 
-const worker = new workerSpec();
+//const url = new URL('../webworkers/localBackendWorker.js', import.meta.url)
+//const getWorker = () => new Worker(url, { type: 'module' })
+
+const worker = new workerSpec()
 
 
 let onQueryReceipt = (receivedData) => {};
