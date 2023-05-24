@@ -1,20 +1,19 @@
-import React, { useState, Suspense, useRef } from "react";
+import React, { useState, Suspense, useRef, useEffect } from "react";
 import AboutOverlay from "./components/AboutOverlay";
+import TaxoniumBit from "./components/TaxoniumBit";
 
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 import { FaGithub } from "react-icons/fa";
 import useQueryAsState from "./hooks/useQueryAsState";
 import classNames from "classnames";
-import { BrowserRouter as Router } from "react-router-dom";
 import { useInputHelper } from "./hooks/useInputHelper";
 
 import InputSupplier from "./components/InputSupplier";
 
 import { HiOutlineBookOpen } from "react-icons/hi";
-import { Taxonium, getDefaultQuery } from "taxonium-component";
 
-const default_query = getDefaultQuery();
+const default_query = {}
 
 default_query.backend = null;
 
@@ -44,6 +43,10 @@ if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
 }
 
 function App() {
+
+useEffect(() => {
+  import('taxonium-component');
+}, []);
   const [uploadedData, setUploadedData] = useState(null);
 
   // check if .epicov.org is in the URL
@@ -263,10 +266,9 @@ function App() {
           (uploadedData &&
             (uploadedData.status === "loaded" ||
               uploadedData.status === "url_supplied")) ? (
-            <Taxonium
+            <TaxoniumBit
               sourceData={uploadedData}
-              query={query}
-              updateQuery={updateQuery}
+             
               setOverlayContent={setOverlayContent}
               setTitle={setTitle}
               overlayContent={overlayContent}
