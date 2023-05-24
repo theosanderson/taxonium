@@ -264,7 +264,7 @@ function App() {
             (uploadedData.status === "loaded" ||
               uploadedData.status === "url_supplied")) ? (
             <Taxonium
-              uploadedData={uploadedData}
+              sourceData={uploadedData}
               query={query}
               updateQuery={updateQuery}
               setOverlayContent={setOverlayContent}
