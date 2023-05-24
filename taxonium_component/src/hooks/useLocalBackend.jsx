@@ -5,7 +5,7 @@ console.log("new worker");
 const workerPath = "../webworkers/localBackendWorker.js";
 const worker = new Worker(
   // module type
-  new URL(workerPath, import.meta.url),
+  new URL(workerPath, import.meta.url)
   //{ type: "module" }
 );
 

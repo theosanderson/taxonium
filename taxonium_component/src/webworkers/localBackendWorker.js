@@ -15,7 +15,6 @@ import("taxonium_data_handling/exporting.js")
 
 importingPromise = import("taxonium_data_handling/importing.js");
 
-
 let processNewickAndMetadata;
 import("../utils/processNewick.js")
   .then((module) => {
@@ -30,15 +29,10 @@ import("../utils/processNextstrain.js")
   })
   .catch((error) => console.error(`Error loading module: ${error}`));
 
-const  readableWebToNodeStreamPromise = import("readable-web-to-node-stream");
-
-
-
+const readableWebToNodeStreamPromise = import("readable-web-to-node-stream");
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
-
-
 
 const the_cache = {};
 
@@ -187,8 +181,7 @@ const getConfig = async () => {
   console.log("Worker getConfig");
   await waitForProcessedData();
   const config = {};
-  const importing = await importingPromise; 
-    
+  const importing = await importingPromise;
 
   importing.generateConfig(config, processedUploadedData);
 
@@ -231,8 +224,6 @@ const getList = async (node_id, att) => {
 };
 
 onmessage = async (event) => {
- 
-
   //Process uploaded data:
   console.log("Worker onmessage");
   const { data } = event;
@@ -242,15 +233,17 @@ onmessage = async (event) => {
     data.data.filename &&
     data.data.filename.includes("jsonl")
   ) {
-    
-    
-    const importing = await importingPromise; 
-    const ReadableWebToNodeStream = await (await readableWebToNodeStreamPromise).ReadableWebToNodeStream; 
-    
+    const importing = await importingPromise;
+    const ReadableWebToNodeStream = await (
+      await readableWebToNodeStreamPromise
+    ).ReadableWebToNodeStream;
 
     console.log("READABLE", ReadableWebToNodeStream.default);
-    processedUploadedData = await importing.processJsonl(data.data, sendStatusMessage, ReadableWebToNodeStream);
- 
+    processedUploadedData = await importing.processJsonl(
+      data.data,
+      sendStatusMessage,
+      ReadableWebToNodeStream
+    );
   } else if (
     data.type === "upload" &&
     data.data &&

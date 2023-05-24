@@ -37,9 +37,7 @@ function Taxonium({
   overlayContent,
   setAboutEnabled,
 }) {
-
   const full_default_query = useMemo(() => {
-
     return { ...default_query, ...(queryAdd ? queryAdd : {}) };
   }, [queryAdd]);
   const [backupQuery, setBackupQuery] = useState(default_query);
@@ -88,7 +86,7 @@ function Taxonium({
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
-  
+
   const config = useConfig(backend, view, setOverlayContent, setTitle, query);
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {

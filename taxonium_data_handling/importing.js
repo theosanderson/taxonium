@@ -6,7 +6,6 @@ const roundToDp = (number, dp) => {
   return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
 };
 
-
 export const formatNumber = (num) => {
   return num !== null && typeof num === "number" ? num.toLocaleString() : "";
 };
@@ -80,7 +79,11 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
   });
 };
 
-export const processJsonl = async (jsonl, sendStatusMessage, ReadableWebToNodeStream) => {
+export const processJsonl = async (
+  jsonl,
+  sendStatusMessage,
+  ReadableWebToNodeStream
+) => {
   console.log(
     "Worker processJsonl" //, jsonl
   );
@@ -125,7 +128,7 @@ export const processJsonl = async (jsonl, sendStatusMessage, ReadableWebToNodeSt
     sendStatusMessage({ message: "Loading root genome" });
 
     const readableWebStream = response.body;
-    
+
     const nodeStream = new ReadableWebToNodeStream(readableWebStream);
     nodeStream.pipe(the_stream);
   } else if (status === "stream_supplied") {

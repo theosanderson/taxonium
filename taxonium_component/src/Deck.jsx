@@ -190,7 +190,6 @@ function Deck({
   });
   // console.log("deck refresh");
 
-
   return (
     <div
       className="w-full h-full relative"

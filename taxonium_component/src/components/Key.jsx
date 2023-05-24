@@ -51,7 +51,10 @@ const Key = ({
             const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
             return (
               // small dot with color
-              <div className="key-text text-xs text-gray-700 mt-0.5  break-all" key={index}>  
+              <div
+                className="key-text text-xs text-gray-700 mt-0.5  break-all"
+                key={index}
+              >
                 <div
                   style={{ backgroundColor: color }}
                   className="w-2 h-2 mr-2 rounded-full inline-block"
