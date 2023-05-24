@@ -88,7 +88,7 @@ function Taxonium({
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
-  console.log("Backend: ", backend);
+  
   const config = useConfig(backend, view, setOverlayContent, setTitle, query);
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {
