@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { BsTrash, BsQuestionCircle } from "react-icons/bs";
-import { Button, Select } from "taxonium-component"
+import { Button, Select } from "taxonium-component";
 import { BiFile, BiLink } from "react-icons/bi";
 import ReactTooltip from "react-tooltip";
 

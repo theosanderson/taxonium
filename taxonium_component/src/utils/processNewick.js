@@ -70,12 +70,12 @@ function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
       return text;
     } else {
       // convert array buffer to string
-      let text
+      let text;
       // if type is not string, assume it is arraybuffer
       if (typeof file_obj.data === "string") {
         text = file_obj.data;
       } else {
-      text = new TextDecoder("utf-8").decode(file_obj.data);
+        text = new TextDecoder("utf-8").decode(file_obj.data);
       }
       return text;
     }

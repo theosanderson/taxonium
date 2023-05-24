@@ -23,7 +23,7 @@ import { Toaster } from "react-hot-toast";
 
 const default_query = getDefaultQuery();
 
-const URL_ON_FAIL = "https://fail.org/"
+const URL_ON_FAIL = "https://fail.org/";
 
 function Taxonium({
   sourceData,
@@ -36,7 +36,6 @@ function Taxonium({
   overlayContent,
   setAboutEnabled,
 }) {
-
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery) => {
     setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
@@ -45,7 +44,6 @@ function Taxonium({
   if (!query && !updateQuery) {
     query = backupQuery;
     updateQuery = backupUpdateQuery;
-    
   }
 
   // if no setTitle, set it to a noop
@@ -61,7 +59,6 @@ function Taxonium({
   if (!setAboutEnabled) {
     setAboutEnabled = () => {};
   }
-
 
   const deckRef = useRef();
   const jbrowseRef = useRef();
@@ -147,7 +144,7 @@ function Taxonium({
   return (
     <div className="w-full h-full flex">
       <Toaster />
-    <ReactTooltip
+      <ReactTooltip
         delayHide={400}
         className="infoTooltip"
         place="top"

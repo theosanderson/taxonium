@@ -1,59 +1,50 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import {nodePolyfills} from 'vite-plugin-node-polyfills'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 export default defineConfig({
   worker: {
-    format: "es"
+    format: "es",
   },
   plugins: [
     react(),
     cssInjectedByJsPlugin(),
     nodePolyfills({
-      exclude:['fs'],
+      exclude: ["fs"],
       protocolImports: true,
     }),
-  
-  //  commonjs({ include: 'node_modules/**', }),
+
+    //  commonjs({ include: 'node_modules/**', }),
   ],
 
-  
   build: {
-
-    
     //extry: 'src/index.js',
 
-    
     lib: {
-      entry: 'src/index.js',
-      name: 'TaxoniumComponent', // give your library a name
+      entry: "src/index.js",
+      name: "TaxoniumComponent", // give your library a name
       fileName: (format) => `taxonium-component.${format}.js`,
-    //  formats: ['iife']
+      //  formats: ['iife']
     },
-    
-   //entry: 'src/App.jsx',
 
+    //entry: 'src/App.jsx',
 
-    
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['react', 'react-dom'],
+      external: ["react", "react-dom"],
       output: {
-      
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM'
-        }
-      }
-    }
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
+    },
   },
   optimizeDeps: {
-    include: [
-  
-  ], //add 'prop-types' here
-  }
-})
+    include: [], //add 'prop-types' here
+  },
+});

@@ -1,4 +1,3 @@
-
 import React, { useState, Suspense, useRef } from "react";
 import AboutOverlay from "./components/AboutOverlay";
 
@@ -13,16 +12,11 @@ import { useInputHelper } from "./hooks/useInputHelper";
 import InputSupplier from "./components/InputSupplier";
 
 import { HiOutlineBookOpen } from "react-icons/hi";
-import { Taxonium,getDefaultQuery} from "taxonium-component";
-
-
-
+import { Taxonium, getDefaultQuery } from "taxonium-component";
 
 const default_query = getDefaultQuery();
 
-default_query.backend =  "https://api.cov2tree.org";
-
-
+default_query.backend = "https://api.cov2tree.org";
 
 if (window.location.hostname.includes("mpx.taxonium.org")) {
   default_query.protoUrl = "https://mpx-tree.vercel.app/mpx.jsonl.gz";
@@ -48,7 +42,6 @@ if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
 }
 
 function App() {
-  
   const [uploadedData, setUploadedData] = useState(null);
 
   // check if .epicov.org is in the URL
@@ -174,9 +167,7 @@ function App() {
   ];
 
   return (
-    
-  <>
-      
+    <>
       <AboutOverlay
         enabled={aboutEnabled}
         setEnabled={setAboutEnabled}
@@ -189,7 +180,6 @@ function App() {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-      
         {beingDragged && (
           <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>
         )}
@@ -327,8 +317,6 @@ function App() {
         </Suspense>
       </div>
     </>
-   
-  
   );
 }
 
