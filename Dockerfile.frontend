@@ -17,7 +17,7 @@ RUN yarn build
 FROM nginx:1.21.0-alpine as production
 ENV NODE_ENV production
 # Copy built assets from builder
-COPY --from=builder /app/taxonium_web_client/build /usr/share/nginx/html
+COPY --from=builder /app/taxonium_website/dist /usr/share/nginx/html
 # Expose port
 EXPOSE 80
 # Start nginx
