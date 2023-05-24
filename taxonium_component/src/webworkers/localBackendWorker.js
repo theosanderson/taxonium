@@ -1,28 +1,12 @@
-import filtering from "../../../taxonium_data_handling/filtering.js";
-let getNextstrainSubtreeJson;
-import("taxonium_data_handling/exporting.js")
-  .then((module) => {
-    getNextstrainSubtreeJson = module.getNextstrainSubtreeJson;
-  })
-  .catch((error) => console.error(`Error loading module: ${error}`));
-
-const importingPromise = import("taxonium_data_handling/importing.js");
-
-let processNewickAndMetadata;
-import("../utils/processNewick.js")
-  .then((module) => {
-    processNewickAndMetadata = module.processNewickAndMetadata;
-  })
-  .catch((error) => console.error(`Error loading module: ${error}`));
-
-let processNextstrain;
-import("../utils/processNextstrain.js")
-  .then((module) => {
-    processNextstrain = module.processNextstrain;
-  })
-  .catch((error) => console.error(`Error loading module: ${error}`));
-
-const readableWebToNodeStreamPromise = import("readable-web-to-node-stream");
+import filtering from "taxonium_data_handling/filtering.js";
+import { getNextstrainSubtreeJson } from "taxonium_data_handling/exporting.js";
+import {
+  processJsonl,
+  generateConfig,
+} from "taxonium_data_handling/importing.js";
+import { processNewickAndMetadata } from "../utils/processNewick.js";
+import { processNextstrain } from "../utils/processNextstrain.js";
+import { ReadableWebToNodeStream } from "readable-web-to-node-stream";
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
@@ -72,7 +56,7 @@ const waitForProcessedData = async () => {
   }
 };
 
-const queryNodes = async (boundsForQueries) => {
+export const queryNodes = async (boundsForQueries) => {
   console.log("Worker query Nodes");
   await waitForProcessedData();
 
@@ -174,9 +158,7 @@ const getConfig = async () => {
   console.log("Worker getConfig");
   await waitForProcessedData();
   const config = {};
-  const importing = await importingPromise;
-
-  importing.generateConfig(config, processedUploadedData);
+  generateConfig(config, processedUploadedData);
 
   config.mutations = processedUploadedData.mutations;
 
@@ -226,17 +208,8 @@ onmessage = async (event) => {
     data.data.filename &&
     data.data.filename.includes("jsonl")
   ) {
-    const importing = await importingPromise;
-    const ReadableWebToNodeStream = await (
-      await readableWebToNodeStreamPromise
-    ).ReadableWebToNodeStream;
-
-    console.log("READABLE", ReadableWebToNodeStream.default);
-    processedUploadedData = await importing.processJsonl(
-      data.data,
-      sendStatusMessage,
-      ReadableWebToNodeStream
-    );
+    processedUploadedData = await processJsonl(data.data, sendStatusMessage, ReadableWebToNodeStream);
+    console.log("processedUploadedData created");
   } else if (
     data.type === "upload" &&
     data.data &&

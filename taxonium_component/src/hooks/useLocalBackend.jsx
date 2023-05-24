@@ -3,12 +3,11 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 // test
 console.log("new worker");
 //const workerPath = "../webworkers/localBackendWorker.js";
-import workerUrl from  "../webworkers/localBackendWorker.js?url";
-const worker = new Worker(
-  // module type
-  workerUrl
-  ,{ type: "module" }
-);
+
+
+import workerSpec from '../webworkers/localBackendWorker.js?worker&inline'
+
+const worker = new workerSpec();
 
 
 let onQueryReceipt = (receivedData) => {};
