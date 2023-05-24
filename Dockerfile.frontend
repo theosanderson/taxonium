@@ -4,6 +4,7 @@ ENV NODE_ENV production
 WORKDIR /app
 COPY taxonium_web_client ./taxonium_web_client
 COPY taxonium_data_handling ./taxonium_data_handling
+COPY taxonium_component ./taxonium_component
 WORKDIR /app/taxonium_web_client
 
 # Install dependencies for node-gyp from lzma-native

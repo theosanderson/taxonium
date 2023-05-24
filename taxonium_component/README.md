@@ -1,6 +1,6 @@
-# Taxonium web client
+# Taxonium component
 
-This is the client used at taxonium.org
+This React component is the heart of Taxonium
 
 ### Dev instructions
 
@@ -8,23 +8,7 @@ This is the client used at taxonium.org
 nvm use 18
 npm install -g yarn
 yarn install
-yarn start
+yarn storybook
 ```
 
-The above will start a dev server.
-
-Building:
-
-```
-yarn build
-```
-
-### Serving
-
-There are lots of ways to serve -- once built, this frontend is just a static app.
-
-#### Docker container
-
-We provide a docker container that serves using nginx:
-
-`docker run --pull always -p 80:80 theosanderson/taxonium_frontend:master`
+The above will start the storybook which contains a number of different examples of deployments of Taxonium.
