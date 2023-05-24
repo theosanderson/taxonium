@@ -1,6 +1,6 @@
 import "./App.css";
 import Deck from "./Deck";
-import SearchPanel from "./components/SearchPanel.jsx";
+import SearchPanel from "./components/SearchPanel";
 import useTreenomeState from "./hooks/useTreenomeState";
 import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";

@@ -31,7 +31,6 @@ data_processing/__pycache__/*
 data_processing/__pycache__/tree_pb2.cpython-38.pyc
 data_processing/__pycache__/tree_pb2.cpython-38.pyc
 data_processing/public-latest.all.masked.pb
-src/components/SearchPanel.jsx
 data_processing/epiToPublic.tsv.gz
 data_processing/metadata.tsv.gz
 public-latest.all.masked.pb
