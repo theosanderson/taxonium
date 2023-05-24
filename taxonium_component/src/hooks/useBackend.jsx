@@ -21,6 +21,7 @@ function useBackend(backend_url, sid, url_on_fail, uploaded_data, proto) {
     return localBackend;
   } else {
     window.alert("Taxonium did not receive the information it needed to launch.");
+    return null
   }
 }
 export default useBackend;

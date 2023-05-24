@@ -2,10 +2,11 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 // test
 console.log("new worker");
-const workerPath = "../webworkers/localBackendWorker.js";
+//const workerPath = "../webworkers/localBackendWorker.js";
+import workerUrl from  "../webworkers/localBackendWorker.js?worker&url";
 const worker = new Worker(
   // module type
-  new URL(workerPath, import.meta.url)
+  workerUrl
   ,{ type: "module" }
 );
 
