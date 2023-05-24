@@ -10,35 +10,25 @@ import classNames from "classnames";
 
 import { useInputHelper } from "./hooks/useInputHelper";
 
-import { getDefaultSearch } from "./utils/searchUtil";
 import InputSupplier from "./components/InputSupplier";
-import FirefoxWarning from "./components/FirefoxWarning";
-import { Toaster } from "react-hot-toast";
-import ReactTooltip from "react-tooltip";
+
 import { HiOutlineBookOpen } from "react-icons/hi";
+import getDefaultQuery from "./utils/getDefaultQuery";
 
-const first_search = getDefaultSearch(null, "aa1");
 
-if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
-  first_search["type"] = "meta_name";
-}
+
 
 const Taxonium = React.lazy(() => import("./Taxonium"));
 
-const DEFAULT_BACKEND = window.location.hostname.includes("epicov.org")
+const default_query = getDefaultQuery();
+
+default_query.backend = window.location.hostname.includes("epicov.org")
   ? "https://tree.epicov.org:8443"
   : window.location.hostname.includes("cov2tree.org")
   ? "https://api.cov2tree.org"
   : process.env.REACT_APP_DEFAULT_BACKEND;
 
-const default_query = {
-  srch: JSON.stringify([first_search]),
-  enabled: JSON.stringify({ [first_search.key]: true }),
-  backend: DEFAULT_BACKEND,
-  xType: "x_dist",
-  mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
-  treenomeEnabled: false,
-};
+
 
 if (window.location.hostname.includes("mpx.taxonium.org")) {
   default_query.protoUrl = "https://mpx-tree.vercel.app/mpx.jsonl.gz";
@@ -190,14 +180,7 @@ function App() {
 
   return (
     <Router>
-      <ReactTooltip
-        delayHide={400}
-        className="infoTooltip"
-        place="top"
-        backgroundColor="#e5e7eb"
-        textColor="#000"
-        effect="solid"
-      />
+      
       <AboutOverlay
         enabled={aboutEnabled}
         setEnabled={setAboutEnabled}
@@ -210,7 +193,7 @@ function App() {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
       >
-        <Toaster />
+      
         {beingDragged && (
           <div className="bg-sky-200 p-5 font-bold">Drop file to import</div>
         )}

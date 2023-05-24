@@ -17,10 +17,13 @@ import { useSettings } from "./hooks/useSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import { useCallback } from "react";
+import getDefaultQuery from "./utils/getDefaultQuery";
+import ReactTooltip from "react-tooltip";
+import { Toaster } from "react-hot-toast";
 
-const URL_ON_FAIL = window.location.hostname.includes(".epicov.org")
-  ? "https://www.epicov.org/epi3/frontend"
-  : process.env.REACT_APP_URL_ON_FAIL;
+const default_query = getDefaultQuery();
+
+const URL_ON_FAIL = "https://fail.org/"
 
 function Taxonium({
   uploadedData,
@@ -28,10 +31,38 @@ function Taxonium({
   updateQuery,
   setOverlayContent,
   proto,
+  backendUrl,
   setTitle,
   overlayContent,
   setAboutEnabled,
 }) {
+
+  const [backupQuery, setBackupQuery] = useState(default_query);
+  const backupUpdateQuery = useCallback((newQuery) => {
+    setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
+  }, []);
+  // if query and updateQuery are not provided, use the backupQuery
+  if (!query && !updateQuery) {
+    query = backupQuery;
+    updateQuery = backupUpdateQuery;
+    
+  }
+
+  // if no setTitle, set it to a noop
+  if (!setTitle) {
+    setTitle = () => {};
+  }
+  // if no setOverlayContent, set it to a noop
+  if (!setOverlayContent) {
+    setOverlayContent = () => {};
+  }
+
+  // if no setAboutEnabled, set it to a noop
+  if (!setAboutEnabled) {
+    setAboutEnabled = () => {};
+  }
+
+
   const deckRef = useRef();
   const jbrowseRef = useRef();
 
@@ -42,7 +73,7 @@ function Taxonium({
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 
   const backend = useBackend(
-    query.backend,
+    backendUrl ? backendUrl : query.backend,
     query.sid,
     url_on_fail,
     uploadedData,
@@ -115,6 +146,15 @@ function Taxonium({
 
   return (
     <>
+      <Toaster />
+    <ReactTooltip
+        delayHide={400}
+        className="infoTooltip"
+        place="top"
+        backgroundColor="#e5e7eb"
+        textColor="#000"
+        effect="solid"
+      />
       <div className="flex-grow overflow-hidden flex flex-col md:flex-row">
         <div
           className={
