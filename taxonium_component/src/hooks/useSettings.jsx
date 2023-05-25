@@ -26,15 +26,14 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const treenomeEnabled = useMemo(() => {
     if (!query.treenomeEnabled) {
-      updateQuery({ treenomeEnabled: default_query.treenomeEnabled });
-      return JSON.parse(default_query.treenomeEnabled);
+     return false;
     }
     return JSON.parse(query.treenomeEnabled);
   }, [query.treenomeEnabled]);
 
   const setTreenomeEnabled = useCallback(
     (value) => {
-      updateQuery({ treenomeEnabled: value });
+      updateQuery({ treenomeEnabled: JSON.stringify(value) });
       toast(`Treenome Browser is now ${value ? "enabled" : "disabled"}`, {
         position: "bottom-center",
       });
