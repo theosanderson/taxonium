@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
-          node-version: 17.5
+          node-version: 18
       - name: NPM build
         run: |
           cd taxonium_website
