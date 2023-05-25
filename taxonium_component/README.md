@@ -67,7 +67,7 @@ If you're working with basic HTML, you can include the Taxonium component using 
   
   <script>
     // Source data code from above
-   </script
+  </script>
 
   <script>
     const MyComponent = TaxoniumComponent.Taxonium;
