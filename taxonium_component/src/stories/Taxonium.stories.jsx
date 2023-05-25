@@ -82,3 +82,37 @@ export const ConfigTree = {
     layout: "padded",
   },
 };
+
+
+
+const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
+const metadata_text = 
+`Node,Name,Species
+A,Bob,Cow
+B,Jim,Cow
+C,Joe,Fish
+D,John,Fish`;
+
+const metadata = {
+  filename: "test.csv",
+  data: metadata_text,
+  status:  "loaded",
+  filetype: "meta_csv",
+};
+
+export const LocalDataWithMetadataNew = {
+  args: {
+    sourceData: {
+      status: "loaded",
+      filename: "test.nwk",
+      data: nwk,
+      filetype: "nwk",
+      metadata: metadata,
+    },
+  },
+
+  parameters: {
+    // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
+    layout: "padded",
+  },
+};

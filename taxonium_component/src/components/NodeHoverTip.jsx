@@ -44,7 +44,7 @@ const NodeHoverTip = ({
     return null;
   }
   const hoveredNode = hoverInfo.object;
-  if (!hoveredNode || !hoveredNode.node_id) {
+  if (!hoveredNode || (hoveredNode.node_id  === undefined || hoveredNode.node_id === null)) {
     return null;
   }
 
