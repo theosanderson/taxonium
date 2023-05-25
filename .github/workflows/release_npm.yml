@@ -23,7 +23,7 @@ jobs:
           yarn install
           yarn build
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-          yarn release-it
+          yarn release-it --npm.publishArgs="--registry=https://registry.npmjs.org"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
