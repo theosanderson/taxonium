@@ -19,6 +19,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
+      - name: Update package.json with GitHub tag
+        run: |
+          brew install jq
+          jq --arg version ${GITHUB_REF#refs/*/} '.version = $version' taxonium_electron/package.json > temp.json
+          mv temp.json taxonium_electron/package.json
 
       - name: Build Electron app with electron-builder
         run: |
@@ -67,6 +72,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
+      - name: Update package.json with GitHub tag
+        run: |
+          choco install jq
+          jq --arg version ${GITHUB_REF#refs/*/} '.version = $version' taxonium_electron/package.json > temp.json
+          mv temp.json taxonium_electron/package.json
 
       - name: Build Electron app with electron-builder
         run: |
@@ -107,7 +117,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-
+      - name: Update package.json with GitHub tag
+        run: |
+          sudo apt-get install jq
+          jq --arg version ${GITHUB_REF#refs/*/} '.version = $version' taxonium_electron/package.json > temp.json
+          mv temp.json taxonium_electron/package.json
       - name: Build Electron app with electron-builder
         run: |
           cd taxonium_electron
