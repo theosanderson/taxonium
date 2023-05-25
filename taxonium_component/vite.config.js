@@ -23,7 +23,7 @@ export default defineConfig({
 
     lib: {
       entry: "src/index.js",
-      name: "TaxoniumComponent", // give your library a name
+      name: "Taxonium", // give your library a name
       fileName: (format) => `taxonium-component.${format}.js`,
       //  formats: ['iife']
     },
