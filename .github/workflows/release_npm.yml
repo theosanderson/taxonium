@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 18
-          
+
       - name: Release it
         run: |
           cd taxonium_component
