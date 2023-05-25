@@ -66,7 +66,7 @@ worker.onmessage = (event) => {
   }
 };
 
-function useLocalBackend(uploaded_data, proto) {
+function useLocalBackend(uploaded_data) {
   const [statusMessage, setStatusMessage] = useState({ message: null });
   onStatusReceipt = (receivedData) => {
     console.log("STATUS:", receivedData.data);
@@ -88,10 +88,9 @@ function useLocalBackend(uploaded_data, proto) {
     console.log("Sending data to worker");
     worker.postMessage({
       type: "upload",
-      data: uploaded_data,
-      proto: proto,
+      data: uploaded_data
     });
-  }, [uploaded_data, proto]);
+  }, [uploaded_data]);
 
   const queryNodes = useCallback(
     async (boundsForQueries, setResult, setTriggerRefresh, config) => {

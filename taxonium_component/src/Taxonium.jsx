@@ -31,7 +31,6 @@ function Taxonium({
 
   updateQuery,
   setOverlayContent,
-  proto,
   backendUrl,
   setTitle,
   overlayContent,
@@ -76,8 +75,7 @@ function Taxonium({
     backendUrl ? backendUrl : query.backend,
     query.sid,
     url_on_fail,
-    sourceData,
-    proto
+    sourceData
   );
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
