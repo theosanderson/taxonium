@@ -8,8 +8,9 @@ on:
       - created
 
 jobs:
-  build-mac:
-    runs-on: macos-latest
+
+  update-version:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out Git repository
@@ -19,12 +20,37 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
+
       - name: Update package.json with GitHub tag
         run: |
-          brew install jq
+          apt-get install jq
           version=$(echo ${GITHUB_REF#refs/*/} | sed 's/^v//')
           jq --arg version $version '.version = $version' taxonium_electron/package.json > temp.json
           mv temp.json taxonium_electron/package.json
+
+      - name: Upload package.json as artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/package.json
+
+  build-mac:
+    needs: update-version
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+      - name: Download updated package.json
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
 
       - name: Build Electron app with electron-builder
         run: |
@@ -63,31 +89,29 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: taxonium_electron/out/make/Taxonium-*-x64.dmg
   build-win:
+    needs: update-version
     runs-on: windows-latest
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
+      - name: Download updated package.json
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: Update package.json with GitHub tag
-        run: |
-          choco install jq
-          $GITHUB_REF = $env:GITHUB_REF
-          $version = $GITHUB_REF -replace 'refs/.*/' -replace '^v'
-          jq --arg version $version '.version = $version' "taxonium_electron/package.json" > temp.json
-          mv -Force temp.json taxonium_electron/package.json
-        shell: powershell
 
       - name: Build Electron app with electron-builder
         run: |
           cd taxonium_electron
           mkdir binaries
           choco install wget --no-progress
-          wget -qN https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe -O binaries/node18.exe
+          wget https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe -O binaries/node18.exe
           yarn install
           yarn make --win --arch=x64
 
@@ -111,22 +135,22 @@ jobs:
           asset_path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-* Setup.exe"
 
   build-linux:
+    needs: update-version
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
-
+      - name: Download updated package.json
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: Update package.json with GitHub tag
-        run: |
-          brew install jq
-          version=$(echo ${GITHUB_REF#refs/*/} | sed 's/^v//')
-          jq --arg version $version '.version = $version' taxonium_electron/package.json > temp.json
-          mv temp.json taxonium_electron/package.json
+
       - name: Build Electron app with electron-builder
         run: |
           cd taxonium_electron
