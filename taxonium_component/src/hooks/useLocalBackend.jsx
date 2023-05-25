@@ -88,7 +88,7 @@ function useLocalBackend(uploaded_data) {
     console.log("Sending data to worker");
     worker.postMessage({
       type: "upload",
-      data: uploaded_data
+      data: uploaded_data,
     });
   }, [uploaded_data]);
 
