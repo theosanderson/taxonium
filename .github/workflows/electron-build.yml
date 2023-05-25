@@ -76,14 +76,14 @@ jobs:
         run: |
           choco install jq
           jq --arg version ${GITHUB_REF#refs/*/} '.version = $version' taxonium_electron/package.json > temp.json
-          mv -f temp.json taxonium_electron/package.json
+          mv -Force temp.json taxonium_electron/package.json
 
       - name: Build Electron app with electron-builder
         run: |
           cd taxonium_electron
           mkdir binaries
           choco install wget --no-progress
-          wget https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe -O binaries/node18.exe
+          wget -qN https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe -O binaries/node18.exe
           yarn install
           yarn make --win --arch=x64
 
