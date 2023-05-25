@@ -32,8 +32,8 @@ const metadata = {
 };
 
 const sourceData = {
-  status: "loaded",
-  filename: "test.nwk",
+  status: "loaded", 
+  filename: "test.nwk", 
   data: nwk,
   filetype: "nwk",
   metadata: metadata,
