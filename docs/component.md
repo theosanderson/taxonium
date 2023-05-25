@@ -7,7 +7,7 @@ Taxonium is now available as a React component. There are a few different ways y
 ```{html}
 <body>
   <div id="root"></div>
-  
+
   <!-- Include peer dependencies -->
   <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
@@ -17,7 +17,7 @@ Taxonium is now available as a React component. There are a few different ways y
 
   <script>
     const MyComponent = TaxoniumComponent.Taxonium;
-    
+
     ReactDOM.render(
       React.createElement(MyComponent, { backendUrl: 'https://api.cov2tree.org'}),
       document.getElementById('root')
@@ -26,17 +26,16 @@ Taxonium is now available as a React component. There are a few different ways y
 </body>
 ```
 
-
 ## In a React project
 
 ### Install Taxonium Component
-    
+
 ```{bash}
 npm install taxonium-component
 ```
 
-or 
-    
+or
+
 ```{bash}
 yarn add taxonium-component
 ```
@@ -57,16 +56,15 @@ const App = () => {
 
 In either case the following properties are available.
 
-| Property | Type | Default | Description |
-| --- | --- | --- | --- |
-| backendUrl | string | None | (Optional) a backend to connect to |
-| sourceData | Javascript dictionary | None | (Optional) Tree / metadata to load locally (see section below) |
-| configDict | Javascript dictionary | None | (Optional) configuration |
-
+| Property   | Type                  | Default | Description                                                    |
+| ---------- | --------------------- | ------- | -------------------------------------------------------------- |
+| backendUrl | string                | None    | (Optional) a backend to connect to                             |
+| sourceData | Javascript dictionary | None    | (Optional) Tree / metadata to load locally (see section below) |
+| configDict | Javascript dictionary | None    | (Optional) configuration                                       |
 
 ## sourceData
 
-The `sourceData` property allows you to load a tree and metadata directly into the component. 
+The `sourceData` property allows you to load a tree and metadata directly into the component.
 
 Examples:
 
@@ -86,4 +84,4 @@ sourceData: {
       data: `((A:0.1,B:0.2):0.3,C:0.4);`,
       filetype: "nwk",
     }
-
+```
