@@ -15,8 +15,6 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "deck.gl": "=8.6.6",
-    "readable-web-to-node-stream": "^3.0.2",
     "@fontsource/roboto": "^5.0.1",
     "@jbrowse/core": "^2.5.0",
     "@jbrowse/plugin-data-management": "^2.5.0",
@@ -24,6 +22,7 @@
     "@rollup/plugin-commonjs": "^25.0.0",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
+    "deck.gl": "=8.6.6",
     "react-circular-progressbar": "^2.1.0",
     "react-debounce-input": "^3.3.0",
     "react-hot-toast": "^2.4.1",
@@ -31,6 +30,7 @@
     "react-modal": "^3.16.1",
     "react-spinners": "^0.13.8",
     "react-tooltip": "^4.2.21",
+    "readable-web-to-node-stream": "^3.0.2",
     "sb": "^7.0.14",
     "scale-color-perceptual": "^1.1.2",
     "taxonium_data_handling": "file:../taxonium_data_handling"
@@ -43,6 +43,7 @@
     "@storybook/react": "^7.0.14",
     "@storybook/react-vite": "^7.0.14",
     "@storybook/testing-library": "^0.0.14-next.2",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
@@ -55,9 +56,9 @@
     "postcss": "^8.4.23",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "release-it": "^15.10.3",
     "storybook": "^7.0.14",
     "tailwindcss": "^3.3.2",
-    "@tailwindcss/forms": "^0.5.3",
     "vite": "^4.3.2",
     "vite-plugin-css-injected-by-js": "^3.1.1",
     "vite-plugin-externalize-deps": "^0.6.0",
