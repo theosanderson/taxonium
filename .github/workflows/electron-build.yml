@@ -75,8 +75,11 @@ jobs:
       - name: Update package.json with GitHub tag
         run: |
           choco install jq
-          jq --arg version ${GITHUB_REF#refs/*/} '.version = $version' taxonium_electron/package.json > temp.json
+          $GITHUB_REF = $env:GITHUB_REF
+          $version = $GITHUB_REF -replace 'refs/.*/'
+          jq --arg version $version '.version = $version' "taxonium_electron/package.json" > temp.json
           mv -Force temp.json taxonium_electron/package.json
+        shell: powershell
 
       - name: Build Electron app with electron-builder
         run: |
