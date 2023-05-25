@@ -28,7 +28,7 @@ const URL_ON_FAIL = "https://fail.org/";
 function Taxonium({
   sourceData,
   query,
-  queryAdd,
+  
   updateQuery,
   setOverlayContent,
   proto,
@@ -37,9 +37,7 @@ function Taxonium({
   overlayContent,
   setAboutEnabled,
 }) {
-  const full_default_query = useMemo(() => {
-    return { ...default_query, ...(queryAdd ? queryAdd : {}) };
-  }, [queryAdd]);
+  
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery) => {
     setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
@@ -98,12 +96,16 @@ function Taxonium({
   config.enable_ns_download = true;
 
   const xType = query.xType;
+  
   const setxType = useCallback(
     (xType) => {
       updateQuery({ xType });
     },
     [updateQuery]
   );
+  if (!xType) {
+    setxType("x_dist");
+  }
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);

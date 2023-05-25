@@ -1,5 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import getDefaultQuery from "../utils/getDefaultQuery";
+const default_query = getDefaultQuery();
 export const useSettings = ({ query, updateQuery }) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
@@ -15,10 +17,18 @@ export const useSettings = ({ query, updateQuery }) => {
   };
 
   const mutationTypesEnabled = useMemo(() => {
+    if (!query.mutationTypesEnabled) {
+      updateQuery({ mutationTypesEnabled: default_query.mutationTypesEnabled });
+      return JSON.parse(default_query.mutationTypesEnabled);
+    }
     return JSON.parse(query.mutationTypesEnabled);
   }, [query.mutationTypesEnabled]);
 
   const treenomeEnabled = useMemo(() => {
+    if (!query.treenomeEnabled) {
+      updateQuery({ treenomeEnabled: default_query.treenomeEnabled });
+      return JSON.parse(default_query.treenomeEnabled);
+    }
     return JSON.parse(query.treenomeEnabled);
   }, [query.treenomeEnabled]);
 

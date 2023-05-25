@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
+import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
+const default_query = getDefaultQuery();
 
 const useSearch = ({
   data,
@@ -21,6 +23,10 @@ const useSearch = ({
   const [searchControllers, setSearchControllers] = useState({});
 
   const searchSpec = useMemo(() => {
+    if(!query.srch) {
+      updateQuery({srch: default_query.srch});
+      return JSON.parse(default_query.srch);
+    }
     return JSON.parse(query.srch);
   }, [query.srch]);
 

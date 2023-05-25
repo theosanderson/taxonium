@@ -268,6 +268,8 @@ useEffect(() => {
               uploadedData.status === "url_supplied")) ? (
             <TaxoniumBit
               sourceData={uploadedData}
+              query={query}
+              updateQuery={updateQuery}
              
               setOverlayContent={setOverlayContent}
               setTitle={setTitle}
