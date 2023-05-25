@@ -61,10 +61,10 @@ export const LocalData = {
 
 export const ConfigTree = {
   args: {
-    queryAdd: {
+   
       configUrl:
         "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config_special2.json",
-    },
+   
     sourceData: {
       status: "url_supplied",
       filename:

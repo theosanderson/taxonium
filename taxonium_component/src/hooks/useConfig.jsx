@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useConfig = (backend, view, setOverlayContent, setTitle, query, configDict) => {
+const useConfig = (backend, view, setOverlayContent, setTitle, query, configDict, configUrl) => {
   const [config, setConfig] = useState({
     title: "loading",
     source: "",
@@ -51,6 +51,11 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query, configDict
           setOverlayContent(results.overlay);
         }
       }
+
+      if(configUrl && !query.configUrl) {
+        query.configUrl = configUrl;
+      }
+      
 
       if (query.configUrl) {
         console.log("FOUND QUERY", query.configUrl);

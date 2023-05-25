@@ -36,7 +36,8 @@ function Taxonium({
   setTitle,
   overlayContent,
   setAboutEnabled,
-  configuration
+  configDict,
+  configUrl,
 }) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery) => {
@@ -85,7 +86,7 @@ function Taxonium({
   }
   const selectedDetails = useNodeDetails("selected", backend);
 
-  const config = useConfig(backend, view, setOverlayContent, setTitle, query, configuration);
+  const config = useConfig(backend, view, setOverlayContent, setTitle, query, configDict, configUrl);
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {
     return config.colorMapping ? config.colorMapping : {};
