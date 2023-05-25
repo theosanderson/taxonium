@@ -6,6 +6,11 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/theosanderson/taxonium",
+    "directory": "taxonium-component"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
