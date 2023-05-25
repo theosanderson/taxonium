@@ -36,7 +36,7 @@ For trees larger than about 6M tips, loading local trees in the browser at Taxon
 
 ### use Taxonium in my own web application?
 
-See the documentation for the Taxonium component.
+Use the [Taxonium component](./taxonium_component).
 
 ## See Taxonium in action
 
