@@ -63,7 +63,11 @@ If you're working with basic HTML, you can include the Taxonium component using 
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 
   <!-- Include Taxonium Component -->
-  <script src="https://unpkg.com/taxonium-component@2.100.0/dist/taxonium-component.umd.js"></script>
+  <script src="https://unpkg.com/taxonium-component"></script>
+  
+  <script>
+    // Source data code from above
+   </script
 
   <script>
     const MyComponent = TaxoniumComponent.Taxonium;
