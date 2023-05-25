@@ -86,7 +86,15 @@ function Taxonium({
   }
   const selectedDetails = useNodeDetails("selected", backend);
 
-  const config = useConfig(backend, view, setOverlayContent, setTitle, query, configDict, configUrl);
+  const config = useConfig(
+    backend,
+    view,
+    setOverlayContent,
+    setTitle,
+    query,
+    configDict,
+    configUrl
+  );
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {
     return config.colorMapping ? config.colorMapping : {};
@@ -104,7 +112,6 @@ function Taxonium({
     },
     [updateQuery]
   );
-  
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);

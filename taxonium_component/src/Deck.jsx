@@ -349,8 +349,6 @@ function Deck({
             requestOpenSettings={() => setDeckSettingsOpen(true)}
             settings={settings}
           />
-          
-
         </View>
       </DeckGL>
     </div>

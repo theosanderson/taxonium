@@ -61,17 +61,15 @@ export const LocalData = {
 
 export const ConfigTree = {
   args: {
-   
-      configUrl:
-        "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config_special2.json",
+    configUrl:
+      "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config_special2.json",
 
-        configDict: {
-          "colorMapping": {
-            "genus": [255,0,0]
-          },
-        },
+    configDict: {
+      colorMapping: {
+        genus: [255, 0, 0],
+      },
+    },
 
-   
     sourceData: {
       status: "url_supplied",
       filename:

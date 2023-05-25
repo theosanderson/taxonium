@@ -40,7 +40,6 @@ const useSearch = ({
     console.log("setEnabled", key, enabled);
     const newSearchesEnabled = { ...searchesEnabled, [key]: enabled };
     updateQuery({ enabled: JSON.stringify(newSearchesEnabled) });
-    
   };
 
   const setSearchSpec = (newSearchSpec) => {

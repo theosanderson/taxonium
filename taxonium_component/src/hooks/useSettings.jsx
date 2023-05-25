@@ -26,7 +26,7 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const treenomeEnabled = useMemo(() => {
     if (!query.treenomeEnabled) {
-     return false;
+      return false;
     }
     return JSON.parse(query.treenomeEnabled);
   }, [query.treenomeEnabled]);
