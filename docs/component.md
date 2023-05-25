@@ -19,38 +19,37 @@ Taxonium is now available as a React component. There are a few different ways y
 
   <!-- Include Taxonium Component -->
   <script src="https://unpkg.com/taxonium-component"></script>
-  
-  <script>
-   const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
 
-const metadata_text = 
-`Node,Name,Species
+  <script>
+    const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
+
+    const metadata_text = `Node,Name,Species
 A,Bob,Cow
 B,Jim,Cow
 C,Joe,Fish
 D,John,Fish`;
 
-// Metadata is optional
-const metadata = { 
-  filename: "test.csv",
-  data: metadata_text,
-  status: "loaded",
-  filetype: "meta_csv",
-};
+    // Metadata is optional
+    const metadata = {
+      filename: "test.csv",
+      data: metadata_text,
+      status: "loaded",
+      filetype: "meta_csv",
+    };
 
-const sourceData = {
-  status: "loaded",
-  filename: "test.nwk",
-  data: nwk,
-  filetype: "nwk",
-  metadata: metadata,
-};
+    const sourceData = {
+      status: "loaded",
+      filename: "test.nwk",
+      data: nwk,
+      filetype: "nwk",
+      metadata: metadata,
+    };
   </script>
 
   <script>
     ReactDOM.render(
-      React.createElement(Taxonium, { sourceData: sourceData}),
-      document.getElementById('root')
+      React.createElement(Taxonium, { sourceData: sourceData }),
+      document.getElementById("root")
     );
   </script>
 </body>
@@ -73,12 +72,10 @@ yarn add taxonium-component
 ### Import and use Taxonium Component in your React jsx
 
 ```js
-import Taxonium from 'taxonium-component';
+import Taxonium from "taxonium-component";
 
 const App = () => {
-  return (
-    <Taxonium backendUrl="https://api.cov2tree.org" />
-  );
+  return <Taxonium backendUrl="https://api.cov2tree.org" />;
 };
 ```
 
@@ -90,7 +87,7 @@ In either case the following properties are available.
 | ---------- | --------------------- | ------- | -------------------------------------------------------------- |
 | backendUrl | string                | None    | (Optional) a backend to connect to                             |
 | sourceData | Javascript dictionary | None    | (Optional) Tree / metadata to load locally (see section below) |
-| configDict | Javascript dictionary | None    | (Optional) configuration (see [advanced](./advanced.md))                                       |
+| configDict | Javascript dictionary | None    | (Optional) configuration (see [advanced](./advanced.md))       |
 
 ## sourceData
 
@@ -106,6 +103,7 @@ sourceData: {
       filetype: "jsonl",
 }
 ```
+
 ```js
  sourceData: {
       status: "loaded",

@@ -6,7 +6,6 @@ You can try out Taxonium at [taxonium.org](https://taxonium.org).
 
 You can also find fuller [documentation for the component](https://docs.taxonium.org/en/latest/component.html) and how to embed it in your own site.
 
-
 ## Getting started
 
 Here's an example of how to set up the source data and use the Taxonium component in React and basic HTML.
@@ -16,15 +15,14 @@ First, set up the source data in JavaScript:
 ```js
 const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
 
-const metadata_text = 
-`Node,Name,Species
+const metadata_text = `Node,Name,Species
 A,Bob,Cow
 B,Jim,Cow
 C,Joe,Fish
 D,John,Fish`;
 
 // Metadata is optional
-const metadata = { 
+const metadata = {
   filename: "test.csv",
   data: metadata_text,
   status: "loaded",
@@ -43,12 +41,10 @@ const sourceData = {
 In React, you can use the Taxonium component as follows:
 
 ```js
-import Taxonium from 'taxonium-component';
+import Taxonium from "taxonium-component";
 
 const App = () => {
-  return (
-    <Taxonium sourceData={sourceData} />
-  );
+  return <Taxonium sourceData={sourceData} />;
 };
 ```
 
@@ -64,22 +60,19 @@ If you're working with basic HTML, you can include the Taxonium component using 
 
   <!-- Include Taxonium Component -->
   <script src="https://unpkg.com/taxonium-component"></script>
-  
+
   <script>
     // Source data code from above
   </script>
 
   <script>
     ReactDOM.render(
-      React.createElement(Taxonium, { sourceData: sourceData}),
-      document.getElementById('root')
+      React.createElement(Taxonium, { sourceData: sourceData }),
+      document.getElementById("root")
     );
   </script>
 </body>
 ```
-
-
-
 
 ### Developing the package
 
