@@ -34,7 +34,8 @@ const useSearch = ({
   const [zoomToSearch, setZoomToSearch] = useState(
     query.zoomToSearch ? { index: query.zoomToSearch } : null
   );
-  const searchesEnabled = query.enabled ? JSON.parse(query.enabled) : default_query.enabled;
+  const searchesEnabled = query.enabled ? JSON.parse(query.enabled) : JSON.parse(default_query.enabled);
+  console.log("searchesEnabled", searchesEnabled);
 
   const setEnabled = (key, enabled) => {
     console.log("setEnabled", key, enabled);
