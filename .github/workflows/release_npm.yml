@@ -21,7 +21,8 @@ jobs:
         run: |
           cd taxonium_component
           yarn install
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+          yarn build
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
           yarn release-it
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
