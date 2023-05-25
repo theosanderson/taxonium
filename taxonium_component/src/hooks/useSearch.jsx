@@ -24,8 +24,8 @@ const useSearch = ({
 
   const searchSpec = useMemo(() => {
     if (!query.srch) {
-      updateQuery({ srch: default_query.srch });
-      console.log("setting default search", default_query.srch);
+      //updateQuery({ srch: default_query.srch });
+      //console.log("setting default search", default_query.srch);
       return JSON.parse(default_query.srch);
     }
     return JSON.parse(query.srch);
