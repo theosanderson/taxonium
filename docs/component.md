@@ -74,7 +74,7 @@ The `sourceData` property allows you to load a tree and metadata directly into t
 
 Examples:
 
-```{jsx}
+```
 sourceData: {
       status: "url_supplied",
       filename:
@@ -83,7 +83,7 @@ sourceData: {
 }
 ```
 
-```{jsx}
+```
  sourceData: {
       status: "loaded",
       filename: "test.nwk",
