@@ -7,7 +7,7 @@ You can try out Taxonium at [taxonium.org](https://taxonium.org).
 You can also find fuller [documentation for the component](https://docs.taxonium.org/en/latest/component.html) and how to embed it in your own site.
 
 
-## Basics
+## Getting started
 
 Here's an example of how to set up the source data and use the Taxonium component in React and basic HTML.
 
