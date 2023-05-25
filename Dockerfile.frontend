@@ -2,7 +2,7 @@ FROM node:18-alpine AS builder
 ENV NODE_ENV production
 # Add a work directory
 WORKDIR /app
-COPY taxonium_web_client ./taxonium_web_client
+COPY taxonium_website ./taxonium_website
 COPY taxonium_data_handling ./taxonium_data_handling
 COPY taxonium_component ./taxonium_component
 WORKDIR /app/taxonium_web_client
