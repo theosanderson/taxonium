@@ -70,10 +70,8 @@ If you're working with basic HTML, you can include the Taxonium component using 
   </script>
 
   <script>
-    const MyComponent = TaxoniumComponent.Taxonium;
-
     ReactDOM.render(
-      React.createElement(MyComponent, { sourceData: sourceData}),
+      React.createElement(Taxonium, { sourceData: sourceData}),
       document.getElementById('root')
     );
   </script>

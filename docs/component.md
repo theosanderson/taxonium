@@ -9,7 +9,7 @@ Taxonium is now available as a React component. There are a few different ways y
 
 ## Basic HTML
 
-```
+```js
 <body>
   <div id="root"></div>
 
@@ -18,13 +18,38 @@ Taxonium is now available as a React component. There are a few different ways y
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 
   <!-- Include Taxonium Component -->
-  <script src="https://unpkg.com/taxonium-component@0.0.0/dist/taxonium-component.umd.js"></script>
+  <script src="https://unpkg.com/taxonium-component"></script>
+  
+  <script>
+   const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
+
+const metadata_text = 
+`Node,Name,Species
+A,Bob,Cow
+B,Jim,Cow
+C,Joe,Fish
+D,John,Fish`;
+
+// Metadata is optional
+const metadata = { 
+  filename: "test.csv",
+  data: metadata_text,
+  status: "loaded",
+  filetype: "meta_csv",
+};
+
+const sourceData = {
+  status: "loaded",
+  filename: "test.nwk",
+  data: nwk,
+  filetype: "nwk",
+  metadata: metadata,
+};
+  </script>
 
   <script>
-    const MyComponent = TaxoniumComponent.Taxonium;
-
     ReactDOM.render(
-      React.createElement(MyComponent, { backendUrl: 'https://api.cov2tree.org'}),
+      React.createElement(Taxonium, { sourceData: sourceData}),
       document.getElementById('root')
     );
   </script>
@@ -47,7 +72,7 @@ yarn add taxonium-component
 
 ### Import and use Taxonium Component in your React jsx
 
-```
+```js
 import Taxonium from 'taxonium-component';
 
 const App = () => {
@@ -65,7 +90,7 @@ In either case the following properties are available.
 | ---------- | --------------------- | ------- | -------------------------------------------------------------- |
 | backendUrl | string                | None    | (Optional) a backend to connect to                             |
 | sourceData | Javascript dictionary | None    | (Optional) Tree / metadata to load locally (see section below) |
-| configDict | Javascript dictionary | None    | (Optional) configuration                                       |
+| configDict | Javascript dictionary | None    | (Optional) configuration (see [advanced](./advanced.md))                                       |
 
 ## sourceData
 
@@ -73,7 +98,7 @@ The `sourceData` property allows you to load a tree and metadata directly into t
 
 Examples:
 
-```
+```js
 sourceData: {
       status: "url_supplied",
       filename:
@@ -81,8 +106,7 @@ sourceData: {
       filetype: "jsonl",
 }
 ```
-
-```
+```js
  sourceData: {
       status: "loaded",
       filename: "test.nwk",
