@@ -2,7 +2,6 @@
 
 Taxonium is now available as a React component. There are a few different ways you can use this.
 
-
 ```{eval-rst}
 .. note::
     This component is new and in flux.
