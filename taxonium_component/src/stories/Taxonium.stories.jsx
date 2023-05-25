@@ -64,6 +64,13 @@ export const ConfigTree = {
    
       configUrl:
         "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config_special2.json",
+
+        configDict: {
+          "colorMapping": {
+            "genus": [255,0,0]
+          },
+        },
+
    
     sourceData: {
       status: "url_supplied",
