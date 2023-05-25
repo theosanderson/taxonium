@@ -10,7 +10,7 @@ Taxonium is now available as a React component. There are a few different ways y
 
 ## Basic HTML
 
-```{html}
+```
 <body>
   <div id="root"></div>
 
@@ -36,19 +36,19 @@ Taxonium is now available as a React component. There are a few different ways y
 
 ### Install Taxonium Component
 
-```{bash}
+```
 npm install taxonium-component
 ```
 
 or
 
-```{bash}
+```
 yarn add taxonium-component
 ```
 
 ### Import and use Taxonium Component in your React jsx
 
-```{jsx}
+```
 import Taxonium from 'taxonium-component';
 
 const App = () => {
@@ -58,7 +58,7 @@ const App = () => {
 };
 ```
 
-# Properties
+## Properties
 
 In either case the following properties are available.
 
