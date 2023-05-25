@@ -4,7 +4,7 @@ const Taxonium = lazy(() => import("taxonium-component"));
 
 const TaxoniumBit = (props) => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div></div>}>
       <Taxonium {...props} />
     </Suspense>
   );
