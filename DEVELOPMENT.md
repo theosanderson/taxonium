@@ -11,9 +11,9 @@ pre-commit install
 ## For front-end development
 
 ```
-cd taxonium_web_client
+cd taxonium_component
 yarn install
-yarn start
+yarn storybook
 ```
 
 This should bring up a development server showing Taxonium.
@@ -26,7 +26,7 @@ A small amount of front-end code comes from the `taxonium_data_handling` repo. I
 cd taxonium_data_handling
 yarn install
 yarn link
-cd ../taxonium_web_client
+cd ../taxonium_component
 yarn link taxonium_data_handling
 ```
 

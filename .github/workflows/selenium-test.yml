@@ -16,7 +16,7 @@ jobs:
           path: ./data/
       - uses: actions/download-artifact@v3
         with:
-          name: taxonium_web_client_build
+          name: taxonium_website_build
           path: ./web/
       - uses: actions/setup-python@v3
         with:

@@ -1,2 +1,2 @@
-cd taxonium_web_client
+cd taxonium_website
 yarn install &

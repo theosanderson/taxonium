@@ -2,9 +2,10 @@ FROM node:18-alpine AS builder
 ENV NODE_ENV production
 # Add a work directory
 WORKDIR /app
-COPY taxonium_web_client ./taxonium_web_client
+COPY taxonium_website ./taxonium_website
 COPY taxonium_data_handling ./taxonium_data_handling
-WORKDIR /app/taxonium_web_client
+COPY taxonium_component ./taxonium_component
+WORKDIR /app/taxonium_website
 
 # Install dependencies for node-gyp from lzma-native
 RUN apk add --no-cache python3 make g++ jpeg-dev cairo-dev giflib-dev pango-dev
@@ -16,7 +17,7 @@ RUN yarn build
 FROM nginx:1.21.0-alpine as production
 ENV NODE_ENV production
 # Copy built assets from builder
-COPY --from=builder /app/taxonium_web_client/build /usr/share/nginx/html
+COPY --from=builder /app/taxonium_website/dist /usr/share/nginx/html
 # Expose port
 EXPOSE 80
 # Start nginx
