@@ -42,7 +42,7 @@ const removeUndefined = (obj) => {
 const useQueryAsState = (defaultValues) => {
   const history = useHistory();
   const { pathname, search } = useLocation();
-  console.log("useQueryAsState", pathname, search);
+  
 
   const decodedSearch = useMemo(() => queryParamsToObject(search), [search]);
 
@@ -53,7 +53,7 @@ const useQueryAsState = (defaultValues) => {
 
   const updateQuery = useCallback(
     (updatedParams, method = "push") => {
-      console.log("updateQuery", updatedParams, method);
+ 
       const { pathname, decodedSearch } = updateRef.current;
       const new_vals = { ...decodedSearch, ...updatedParams };
       Object.keys(updatedParams).forEach((key) => {
