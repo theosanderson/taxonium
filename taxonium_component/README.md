@@ -1,14 +1,16 @@
 # Taxonium component
 
-This React component is the heart of Taxonium.
+This React component allows phylogenetic trees of up to millions of nodes to be efficiently viewed in the browser.
 
-See the [dcumentation on the component](https://docs.taxonium.org/en/latest/component.html)
+You can try out Taxonium at [taxonium.org](https://taxonium.org).
+
+You can also find fuller [documentation for the component](https://docs.taxonium.org/en/latest/component.html) and how to embed it in your own site.
 
 
 ## Basics
 
 Set up the source data:
-```
+```{js}
 
 const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
 
@@ -39,7 +41,7 @@ const sourceData = {
 
 In React, 
 
-```
+```{js}
 import Taxonium from 'taxonium-component';
 
 const App = () => {
@@ -51,7 +53,7 @@ const App = () => {
 
 In basic HTML, 
 
-```
+```{html}
 <body>
   <div id="root"></div>
 
