@@ -5,7 +5,7 @@ WORKDIR /app
 COPY taxonium_website ./taxonium_website
 COPY taxonium_data_handling ./taxonium_data_handling
 COPY taxonium_component ./taxonium_component
-WORKDIR /app/taxonium_web_client
+WORKDIR /app/taxonium_website
 
 # Install dependencies for node-gyp from lzma-native
 RUN apk add --no-cache python3 make g++ jpeg-dev cairo-dev giflib-dev pango-dev
