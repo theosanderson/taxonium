@@ -34,6 +34,10 @@ Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/lat
 
 For trees larger than about 6M tips, loading local trees in the browser at Taxonium.org can be unreliable on some systems due to browser memory limitations. To avoid these issues, use the [Taxonium desktop app](https://docs.taxonium.org/en/latest/app.html).
 
+### use Taxonium in my own web application?
+
+See the documentation for the Taxonium component.
+
 ## See Taxonium in action
 
 - [Cov2Tree](https://cov2tree.org/) - (the repo that runs this is [here](https://github.com/theosanderson/cov2tree))

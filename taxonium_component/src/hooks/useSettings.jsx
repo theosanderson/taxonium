@@ -18,7 +18,7 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const mutationTypesEnabled = useMemo(() => {
     if (!query.mutationTypesEnabled) {
-      updateQuery({ mutationTypesEnabled: default_query.mutationTypesEnabled });
+      
       return JSON.parse(default_query.mutationTypesEnabled);
     }
     return JSON.parse(query.mutationTypesEnabled);
