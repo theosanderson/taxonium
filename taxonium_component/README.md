@@ -13,7 +13,7 @@ Here's an example of how to set up the source data and use the Taxonium componen
 
 First, set up the source data in JavaScript:
 
-```{js}
+```js
 const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
 
 const metadata_text = 
@@ -42,7 +42,7 @@ const sourceData = {
 
 In React, you can use the Taxonium component as follows:
 
-```{js}
+```js
 import Taxonium from 'taxonium-component';
 
 const App = () => {
@@ -54,7 +54,7 @@ const App = () => {
 
 If you're working with basic HTML, you can include the Taxonium component using a script tag:
 
-```{html}
+```html
 <body>
   <div id="root"></div>
 
@@ -81,7 +81,7 @@ If you're working with basic HTML, you can include the Taxonium component using 
 
 ### Developing the package
 
-```
+```bash
 yarn install
 yarn storybook
 ```
