@@ -23,8 +23,8 @@ const useSearch = ({
   const [searchControllers, setSearchControllers] = useState({});
 
   const searchSpec = useMemo(() => {
-    if(!query.srch) {
-      updateQuery({srch: default_query.srch});
+    if (!query.srch) {
+      updateQuery({ srch: default_query.srch });
       return JSON.parse(default_query.srch);
     }
     return JSON.parse(query.srch);

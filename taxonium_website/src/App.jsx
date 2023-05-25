@@ -13,7 +13,7 @@ import InputSupplier from "./components/InputSupplier";
 
 import { HiOutlineBookOpen } from "react-icons/hi";
 
-const default_query = {}
+const default_query = {};
 
 default_query.backend = null;
 
@@ -43,10 +43,9 @@ if (window.location.hostname.includes("visualtreeoflife.taxonium.org")) {
 }
 
 function App() {
-
-useEffect(() => {
-  import('taxonium-component');
-}, []);
+  useEffect(() => {
+    import("taxonium-component");
+  }, []);
   const [uploadedData, setUploadedData] = useState(null);
 
   // check if .epicov.org is in the URL
@@ -270,7 +269,6 @@ useEffect(() => {
               sourceData={uploadedData}
               query={query}
               updateQuery={updateQuery}
-             
               setOverlayContent={setOverlayContent}
               setTitle={setTitle}
               overlayContent={overlayContent}

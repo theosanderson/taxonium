@@ -8,7 +8,7 @@ const WithState = (args) => {
     setState({ ...state, ...newState });
   };
   return (
-    <Taxonium 
+    <Taxonium
       {...args}
       query={state}
       updateQuery={updateQuery}
@@ -17,14 +17,10 @@ const WithState = (args) => {
   );
 };
 
-
-
-
 export default {
   title: "Example/Page2",
   component: WithState,
 };
-
 
 export const WithBackend = {
   args: {
