@@ -53,6 +53,7 @@ const useQueryAsState = (defaultValues) => {
 
   const updateQuery = useCallback(
     (updatedParams, method = "push") => {
+      console.log("updateQuery", updatedParams, method);
       const { pathname, decodedSearch } = updateRef.current;
       const new_vals = { ...decodedSearch, ...updatedParams };
       Object.keys(updatedParams).forEach((key) => {

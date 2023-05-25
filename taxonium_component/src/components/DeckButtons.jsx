@@ -5,11 +5,13 @@ import {
   BiMoveVertical,
   BiMoveHorizontal,
 } from "react-icons/bi";
+import { CgListTree } from "react-icons/cg";
 
 import { TiZoom, TiCog } from "react-icons/ti";
 
 import { MdOutlineZoomOutMap } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
+
 
 const TaxButton = ({ children, onClick, title }) => {
   return (
@@ -38,17 +40,37 @@ export const DeckButtons = ({
     <div
       style={{
         position: "absolute",
-        right: "0.2em",
-        bottom: "0.2em",
+        right: "0em",
+        bottom: "0em",
         zIndex: 10,
       }}
-      className="flex justify-end"
+      className="flex flex-col items-end"
+     
     >
+       
+      <div className="flex justify-end "
+      style={
+        {
+          marginBottom: "0em",
+          marginRight: "0em"
+        }
+      }>
       {loading && (
         <div className="mr-4 mt-auto inline-block">
           <ClipLoader size={24} color="#444444" />
         </div>
       )}
+      <div className="inline-block text-gray-800  mr-4 mt-auto mb-1 bg-white
+      opacity-50 px-1 hover:opacity-100 rounded 
+      "
+      style={
+        {
+          fontSize: ".7em",
+          boxShadow: "0px -3px 4px  4px rgba(255, 255, 255, 1)"
+        }
+      }> 
+        <a href="https://taxonium.org" target="_blank" className="no-underline hover:underline"><CgListTree className="inline-block mr-1 w-3 h-3 inline-block" />Taxonium</a>
+      </div>
       <TaxButton
         onClick={() => {
           requestOpenSettings();
@@ -135,6 +157,8 @@ export const DeckButtons = ({
           </TaxButton>
         </div>
       </div>
+    </div>
+   
     </div>
   );
 };

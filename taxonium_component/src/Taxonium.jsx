@@ -36,6 +36,7 @@ function Taxonium({
   setTitle,
   overlayContent,
   setAboutEnabled,
+  configuration
 }) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery) => {
@@ -84,7 +85,7 @@ function Taxonium({
   }
   const selectedDetails = useNodeDetails("selected", backend);
 
-  const config = useConfig(backend, view, setOverlayContent, setTitle, query);
+  const config = useConfig(backend, view, setOverlayContent, setTitle, query, configuration);
   const colorBy = useColorBy(config, query, updateQuery);
   const colorMapping = useMemo(() => {
     return config.colorMapping ? config.colorMapping : {};
@@ -94,7 +95,7 @@ function Taxonium({
   //TODO: this is always true for now
   config.enable_ns_download = true;
 
-  const xType = query.xType;
+  const xType = query.xType ? query.xType : "x_dist";
 
   const setxType = useCallback(
     (xType) => {
@@ -102,9 +103,7 @@ function Taxonium({
     },
     [updateQuery]
   );
-  if (!xType) {
-    setxType("x_dist");
-  }
+  
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);

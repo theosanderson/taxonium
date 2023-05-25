@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
+const useConfig = (backend, view, setOverlayContent, setTitle, query, configDict) => {
   const [config, setConfig] = useState({
     title: "loading",
     source: "",
@@ -35,6 +35,8 @@ const useConfig = (backend, view, setOverlayContent, setTitle, query) => {
           window.document.title = results.title;
           console.log("setting title to ", config.title);
         }
+
+        Object.assign(results, configDict);
 
         setConfig(results);
         backend.setStatusMessage({ message: "Connecting" });
