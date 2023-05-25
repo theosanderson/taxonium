@@ -23,7 +23,6 @@ jobs:
 
       - name: Update package.json with GitHub tag
         run: |
-          apt-get install jq
           version=$(echo ${GITHUB_REF#refs/*/} | sed 's/^v//')
           jq --arg version $version '.version = $version' taxonium_electron/package.json > temp.json
           mv temp.json taxonium_electron/package.json
