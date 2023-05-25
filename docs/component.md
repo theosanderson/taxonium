@@ -9,7 +9,7 @@ Taxonium is now available as a React component. There are a few different ways y
 
 ## Basic HTML
 
-```js
+```html
 <body>
   <div id="root"></div>
 
