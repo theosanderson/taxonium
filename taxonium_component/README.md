@@ -40,6 +40,11 @@ const sourceData = {
 
 In React, you can use the Taxonium component as follows:
 
+```bash
+yarn add taxonium-component
+# or npm install  taxonium-component
+```
+
 ```js
 import Taxonium from "taxonium-component";
 
