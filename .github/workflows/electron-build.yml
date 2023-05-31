@@ -8,7 +8,6 @@ on:
       - created
 
 jobs:
-
   update-version:
     runs-on: ubuntu-latest
 
