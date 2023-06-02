@@ -58,6 +58,8 @@ or make a JSON file containing
 }
 ```
 
+Guilhem Sempéré has created a tool called [TaxoniumColors](https://webtools.southgreen.fr/TaxoniumColors/) to help with generating these palettes.
+
 ##### Title
 
 We can supply a title with the `title` key. It will display at the top.
