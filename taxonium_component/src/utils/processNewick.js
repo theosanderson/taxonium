@@ -280,50 +280,41 @@ export async function processMetadataFile(data, sendStatusMessage) {
 
 export async function processNewickAndMetadata(data, sendStatusMessage) {
   const treePromise = processNewick(data, sendStatusMessage);
-  let tree, metadata_double
+  let tree, metadata_double;
   let metadata = new Map();
   let headers = [];
   const metadataInput = data.metadata;
   if (!metadataInput) {
-    tree =  await treePromise;
+    tree = await treePromise;
+  } else {
+    // Wait for both promises to resolve
+    [tree, metadata_double] = await Promise.all([
+      treePromise,
+      processMetadataFile(metadataInput, sendStatusMessage),
+    ]);
+    [metadata, headers] = metadata_double;
   }
-  else{
-  // Wait for both promises to resolve
-  [tree, metadata_double] = await Promise.all([
-    treePromise,
-    processMetadataFile(metadataInput, sendStatusMessage),
-  ]);
-  [metadata, headers] = metadata_double;
-
-}
- 
- 
 
   const blanks = Object.fromEntries(
     headers.slice(1).map((x) => ["meta_" + x, ""])
   );
-  
-  if (tree.extra_metadata){
+
+  if (tree.extra_metadata) {
     // loop over the extra metadata dict to find all the (sub)keys
     const all_extra_keys = new Set();
     Object.values(tree.extra_metadata).forEach((node_extra) => {
       Object.keys(node_extra).forEach((key) => {
         all_extra_keys.add(key);
       });
-    }
-    
-    
-    );
+    });
     // add any misssing keys to blanks
     all_extra_keys.forEach((key) => {
-      if (!blanks[ key]) {
+      if (!blanks[key]) {
         blanks[key] = "";
       }
     });
-
   }
 
-  
   sendStatusMessage({
     message: "Assigning metadata to nodes",
   });
@@ -334,11 +325,9 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
       Object.assign(node, this_metadata);
     }
     if (tree.extra_metadata) {
-      
       const node_extra = tree.extra_metadata[node.name];
       if (node_extra) {
         Object.assign(node, node_extra);
-        
       }
     }
   });

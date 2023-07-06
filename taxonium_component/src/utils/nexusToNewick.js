@@ -38,10 +38,9 @@ function nexusToNewick(nexusString) {
       let propertyDict = {};
       for (let prop of properties) {
         let [key, value] = prop.split("=");
-        propertyDict["meta_"+key] = value;
+        propertyDict["meta_" + key] = value;
       }
       nodeProperties[nodeId] = propertyDict;
-
     }
   );
 
@@ -56,7 +55,6 @@ function nexusToNewick(nexusString) {
       return translations[match] || match;
     }
   );
-  
 
   return { newick: translatedNewickString, nodeProperties };
 }

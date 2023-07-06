@@ -114,16 +114,11 @@ export const LocalDataWithMetadataNew = {
   },
 };
 
-
-
 export const NexusTree = {
   args: {
-    
-
     sourceData: {
       status: "url_supplied",
-      filename:
-        "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/nexus.tree",
+      filename: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/nexus.tree",
       filetype: "nexus",
     },
   },
