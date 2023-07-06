@@ -113,3 +113,17 @@ export const LocalDataWithMetadataNew = {
     layout: "padded",
   },
 };
+
+export const NexusTree = {
+  args: {
+    sourceData: {
+      status: "url_supplied",
+      filename: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/nexus.tree",
+      filetype: "nexus",
+    },
+  },
+  parameters: {
+    // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
+    layout: "padded",
+  },
+};
