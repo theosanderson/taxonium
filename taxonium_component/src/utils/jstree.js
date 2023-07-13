@@ -1,5 +1,8 @@
 /* eslint-disable */
 
+// This file is heavily based on JStree with some small edits made for fixes in the Taxonium context
+// see https://github.com/lh3/jstreeview
+
 /* The MIT License
 
    Copyright (c) 2008 Genome Research Ltd (GRL).
