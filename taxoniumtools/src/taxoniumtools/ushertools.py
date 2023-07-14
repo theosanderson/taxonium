@@ -105,7 +105,7 @@ def get_mutations(past_nuc_muts_dict,
 
         # For most of this function we ignore strand - so for negative strand we
         # are actually collecting the reverse complement of the codon
-        initial_codon = [seq[x] for x in gene_codon.positions]
+        initial_codon = [seq[gene_codon.positions[x]] for x in range(3)]
 
         relevant_past_muts = [(x, past_nuc_muts_dict[x])
                               for x in gene_codon.positions
