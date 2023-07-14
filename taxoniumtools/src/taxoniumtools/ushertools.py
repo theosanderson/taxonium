@@ -120,7 +120,7 @@ def get_mutations(past_nuc_muts_dict,
         final_codon = initial_codon.copy()
 
         for mutation in mutations:
-            pos_in_codon = flipped_dict[mutation.one_indexed_position -1 ]
+            pos_in_codon = flipped_dict[mutation.one_indexed_position - 1]
             final_codon[pos_in_codon] = mutation.genome_residue
 
         initial_codon = "".join(initial_codon)
