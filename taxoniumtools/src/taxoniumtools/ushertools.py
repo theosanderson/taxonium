@@ -136,7 +136,7 @@ def get_mutations(past_nuc_muts_dict,
             #(gene, codon_number + 1, initial_codon_trans, final_codon_trans)
 
             mutations_here.append(
-                AAMutation(gene=gene_codon.gene.name,
+                AAMutation(gene=gene_codon.gene,
                            one_indexed_codon=gene_codon.codon_number + 1,
                            initial_aa=initial_codon_trans,
                            final_aa=final_codon_trans,
