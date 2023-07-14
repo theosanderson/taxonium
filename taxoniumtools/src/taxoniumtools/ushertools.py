@@ -43,14 +43,13 @@ class Gene:
 from dataclasses import dataclass
 
 
-
 @dataclass(eq=False)
 class Codon:
     gene: Gene
-    codon_number: int # zero-indexed
-    positions: dict # zero-indexed positions e.g. {0:123,1:124,2:125}
+    codon_number: int  # zero-indexed
+    positions: dict  # zero-indexed positions e.g. {0:123,1:124,2:125}
     strand: int
-    
+
     def __eq__(self, other):
         if isinstance(other, Codon):
             return self.gene == other.gene and self.codon_number == other.codon_number
