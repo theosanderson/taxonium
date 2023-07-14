@@ -145,7 +145,7 @@ def get_mutations(past_nuc_muts_dict,
     # update past_nuc_muts_dict
     for mutation in new_nuc_mutations_here:
         past_nuc_muts_dict[mutation.one_indexed_position -
-                           1] = mutation.genome_residue
+                           1] = mutation.mut_nuc
 
     return mutations_here
 
