@@ -126,7 +126,7 @@ def get_mutations(past_nuc_muts_dict,
         initial_codon = "".join(initial_codon)
         final_codon = "".join(final_codon)
 
-        if gene_codon.gene.strand == -1:
+        if gene_codon.strand == -1:
             initial_codon = reverse_complement(initial_codon)
             final_codon = reverse_complement(final_codon)
 
