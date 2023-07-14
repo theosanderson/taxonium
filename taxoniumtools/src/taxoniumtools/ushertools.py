@@ -135,7 +135,7 @@ def get_mutations(past_nuc_muts_dict,
                            nuc_for_codon=gene_codon.positions[1]))
 
     # update past_nuc_muts_dict
-    for mutation in mutations:
+    for mutation in new_nuc_mutations_here:
         past_nuc_muts_dict[mutation.one_indexed_position -
                            1] = mutation.genome_residue
 
