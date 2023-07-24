@@ -11,6 +11,8 @@ from collections import defaultdict
 
 def reverse_complement(input_string):
     return input_string.translate(str.maketrans("ATCG", "TAGC"))[::-1]
+
+
 def complement(input_string):
     return input_string.translate(str.maketrans("ATCG", "TAGC"))
 
@@ -84,8 +86,8 @@ def get_gene_name(cds):
 def get_genes_dict(cdses):
     genes = {}
     for cds in cdses:
-        print(get_gene_name(cds),cds.strand)
-        
+        print(get_gene_name(cds), cds.strand)
+
         genes[get_gene_name(cds)] = Gene(get_gene_name(cds), cds.strand,
                                          cds.location.start, cds.location.end)
     return genes
@@ -132,9 +134,8 @@ def get_mutations(past_nuc_muts_dict,
         initial_codon = "".join(initial_codon)
         final_codon = "".join(final_codon)
 
-        
         if gene_codon.strand == -1:
-            
+
             initial_codon = complement(initial_codon)
             final_codon = complement(final_codon)
 
@@ -344,11 +345,12 @@ class UsherMutationAnnotatedTree:
 
             nucleotide_counter = 0
             for part in feature.location.parts:
-                ranger = range(part.start, part.end) if part.strand == 1 else range(part.end -1, part.start-1, -1)
+                ranger = range(part.start,
+                               part.end) if part.strand == 1 else range(
+                                   part.end - 1, part.start - 1, -1)
                 print(part)
                 for genome_position in ranger:
-                   # print(part.start, part.end, part.strand, genome_position)
-                  
+                    # print(part.start, part.end, part.strand, genome_position)
 
                     cur_codon_number = nucleotide_counter // 3
                     cur_pos_in_codon = nucleotide_counter % 3
