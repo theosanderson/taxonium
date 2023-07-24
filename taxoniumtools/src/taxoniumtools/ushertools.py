@@ -11,6 +11,8 @@ from collections import defaultdict
 
 def reverse_complement(input_string):
     return input_string.translate(str.maketrans("ATCG", "TAGC"))[::-1]
+def complement(input_string):
+    return input_string.translate(str.maketrans("ATCG", "TAGC"))
 
 
 @dataclass(eq=True, frozen=True)
@@ -82,6 +84,8 @@ def get_gene_name(cds):
 def get_genes_dict(cdses):
     genes = {}
     for cds in cdses:
+        print(get_gene_name(cds),cds.strand)
+        
         genes[get_gene_name(cds)] = Gene(get_gene_name(cds), cds.strand,
                                          cds.location.start, cds.location.end)
     return genes
@@ -105,7 +109,7 @@ def get_mutations(past_nuc_muts_dict,
     for gene_codon, mutations in by_codon.items():
 
         # For most of this function we ignore strand - so for negative strand we
-        # are actually collecting the reverse complement of the codon
+        # are actually collecting the complement of the codon
 
         initial_codon = [seq[gene_codon.positions[x]] for x in range(3)]
 
@@ -128,9 +132,11 @@ def get_mutations(past_nuc_muts_dict,
         initial_codon = "".join(initial_codon)
         final_codon = "".join(final_codon)
 
+        
         if gene_codon.strand == -1:
-            initial_codon = reverse_complement(initial_codon)
-            final_codon = reverse_complement(final_codon)
+            
+            initial_codon = complement(initial_codon)
+            final_codon = complement(final_codon)
 
         initial_codon_trans = codon_table[initial_codon]
         final_codon_trans = codon_table[final_codon]
@@ -329,14 +335,20 @@ class UsherMutationAnnotatedTree:
         self.genes = get_genes_dict(self.cdses)
 
         by_everything = defaultdict(lambda: defaultdict(dict))
+        total_lengths = {}
 
         for feature in self.cdses:
 
             gene_name = get_gene_name(feature)
+            print(gene_name)
 
             nucleotide_counter = 0
             for part in feature.location.parts:
-                for genome_position in range(part.start, part.end):
+                ranger = range(part.start, part.end) if part.strand == 1 else range(part.end -1, part.start-1, -1)
+                print(part)
+                for genome_position in ranger:
+                   # print(part.start, part.end, part.strand, genome_position)
+                  
 
                     cur_codon_number = nucleotide_counter // 3
                     cur_pos_in_codon = nucleotide_counter % 3
@@ -344,13 +356,16 @@ class UsherMutationAnnotatedTree:
                     by_everything[gene_name][cur_codon_number][
                         cur_pos_in_codon] = genome_position
                     nucleotide_counter += 1
+            total_lengths[gene_name] = nucleotide_counter
 
         nuc_to_codon = defaultdict(list)
+        print(self.genes)
 
         for feat_name, codons in by_everything.items():
             for codon_index, codon_dict in codons.items():
                 codon_obj = Codon(feat_name, codon_index, codon_dict,
                                   self.genes[feat_name].strand)
+                print(codon_obj)
 
                 assert len(codon_dict) % 3 == 0
                 for k, v in codon_dict.items():
