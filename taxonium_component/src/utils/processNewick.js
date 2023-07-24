@@ -11,9 +11,7 @@ import reduceMaxOrMin from "./reduceMaxOrMin";
 import nexusToNewick from "../utils/nexusToNewick.js";
 const emptyList = [];
 
-function removeSquareBracketedComments(str) {
-  return str.replace(/\[[^\]]*\]/g, "");
-}
+
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
@@ -82,13 +80,30 @@ function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
+function parseNewickKeyValue(newickKVString, obj_to_set) {
+  // Regular expression that matches key=value pairs, accounting for commas within {}
+  const regex = /(&?\w+)=({[^}]*}|[^,]*)/g;
+
+  const result = [];
+  let match;
+  
+  // Use the RegExp.exec() method to find all matches in the string
+  while ((match = regex.exec(newickKVString)) !== null) {
+      // Remove the '&' character if it's present at the start of the key
+      const key = match[1].startsWith('&') ? match[1].slice(1) : match[1];
+      // Push the key-value pair to the result array
+      obj_to_set["meta_"+key] = match[2];
+  }
+
+}
+
 async function cleanup(tree) {
   tree.node.forEach((node, i) => {
     node.node_id = i;
   });
 
   tree.node = tree.node.map((node, i) => {
-    return {
+    const to_return = {
       name: node.name.replace(/'/g, ""),
       parent_id: node.parent ? node.parent.node_id : node.node_id,
       x_dist: node.x,
@@ -97,7 +112,15 @@ async function cleanup(tree) {
       num_tips: node.num_tips,
       is_tip: node.child.length === 0,
       node_id: node.node_id,
-    };
+
+    }
+    // if node.meta is not empty, parse it.
+    // We need to parse things of the form "&name=blabla,mutations={T694A:1.0,C29870A:1.0},Ns={1-3,4-17,18-20,21-26,686-693,22029-22033,28248-28253,28271-28271}"
+    if (node.meta) {
+      parseNewickKeyValue(node.meta, to_return);
+    }
+    return to_return;
+
   });
 
   const scale_y = 2000;
@@ -117,7 +140,6 @@ async function cleanup(tree) {
 
 export async function processNewick(data, sendStatusMessage) {
   let the_data;
-  let extra_metadata;
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
@@ -125,15 +147,18 @@ export async function processNewick(data, sendStatusMessage) {
   if (data.filetype == "nexus") {
     const result = nexusToNewick(the_data);
     the_data = result.newick;
-    extra_metadata = result.nodeProperties;
+    
   }
 
   sendStatusMessage({
     message: "Parsing Newick file",
   });
 
-  // remove all square-bracketed comments from the string
-  the_data = removeSquareBracketedComments(the_data);
+  // if starts with a "[", then trim to after the first "]"
+  if (the_data[0] === "[") {
+    the_data = the_data.slice(the_data.indexOf("]") + 1);
+  }
+  
 
   // remove newlines from the string
 
@@ -141,6 +166,8 @@ export async function processNewick(data, sendStatusMessage) {
   the_data = the_data.replaceAll("\r", "");
 
   const tree = kn_parse(the_data);
+  console.log("tree", tree);
+ 
 
   function assignNumTips(node) {
     if (node.child.length === 0) {
@@ -189,6 +216,7 @@ export async function processNewick(data, sendStatusMessage) {
   });
 
   cleanup(tree);
+  console.log("tree", tree);
 
   const overallMaxX = reduceMaxOrMin(tree.node, (x) => x.x_dist, "max");
   const overallMinX = reduceMaxOrMin(tree.node, (x) => x.x_dist, "min");
@@ -208,7 +236,6 @@ export async function processNewick(data, sendStatusMessage) {
     rootMutations: [],
     rootId: 0,
     overwrite_config: { num_tips: total_tips, from_newick: true },
-    extra_metadata,
   };
 
   return output;
@@ -299,37 +326,44 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     headers.slice(1).map((x) => ["meta_" + x, ""])
   );
 
-  if (tree.extra_metadata) {
-    // loop over the extra metadata dict to find all the (sub)keys
-    const all_extra_keys = new Set();
-    Object.values(tree.extra_metadata).forEach((node_extra) => {
-      Object.keys(node_extra).forEach((key) => {
-        all_extra_keys.add(key);
-      });
-    });
-    // add any misssing keys to blanks
-    all_extra_keys.forEach((key) => {
-      if (!blanks[key]) {
-        blanks[key] = "";
-      }
-    });
-  }
+  const all_keys = new Set();
+  tree.nodes.forEach((node) => {
+    // get all the keys that start with "meta_"
+    const meta_keys = Object.keys(node).filter((x) => x.startsWith("meta_"));
+    // add them to the set
+    meta_keys.forEach((key) => {
+      all_keys.add(key);
+    }
+    );
+  });
+  console.log("all_keys", all_keys);
+  // update the blanks object to include all the keys
+  all_keys.forEach((key) => {
+    if (!blanks[key]) {
+      blanks[key] = "";
+    }
+  });
+  console.log("blanks", blanks);
+
+  const blanksList = Object.entries(blanks);
 
   sendStatusMessage({
     message: "Assigning metadata to nodes",
   });
   tree.nodes.forEach((node) => {
     const this_metadata = metadata.get(node.name);
-    Object.assign(node, blanks);
+    // add blanks for any properties not currently set
+    blanksList.forEach(([key, value]) => {
+      if (!node[key]) {
+        node[key] = value;
+      }
+    });
+
+
     if (this_metadata) {
       Object.assign(node, this_metadata);
     }
-    if (tree.extra_metadata) {
-      const node_extra = tree.extra_metadata[node.name];
-      if (node_extra) {
-        Object.assign(node, node_extra);
-      }
-    }
+    
   });
 
   return tree;
