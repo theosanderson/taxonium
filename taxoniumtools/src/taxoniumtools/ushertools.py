@@ -347,7 +347,7 @@ class UsherMutationAnnotatedTree:
             for part in feature.location.parts:
                 ranger = range(part.start,
                                part.end) if part.strand == 1 else range(
-                                   part.end - 1, part.start - 1, -1)
+                                   part.end - 1, part.start - 1, -1) ranger = range(part.start, part.end) if part.strand == 1 else range(part.end -1, part.start-1, -1) #(honestly not sure why we need to subtract 1 here but we seem to?)
                 print(part)
                 for genome_position in ranger:
                     # print(part.start, part.end, part.strand, genome_position)
