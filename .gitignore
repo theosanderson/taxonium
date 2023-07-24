@@ -13,3 +13,6 @@ taxonium_backend/latest_public.jsonl.gz.1
 taxonium_component/dist
 taxonium_component/storybook-static/**
 .DS_Store
+**/*.egg-info/**
+**/*.pyc
+**/_version.py
