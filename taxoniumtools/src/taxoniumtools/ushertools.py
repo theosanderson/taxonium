@@ -106,7 +106,7 @@ def get_mutations(past_nuc_muts_dict,
 
         # For most of this function we ignore strand - so for negative strand we
         # are actually collecting the reverse complement of the codon
-  
+
         initial_codon = [seq[gene_codon.positions[x]] for x in range(3)]
 
         relevant_past_muts = [(x, past_nuc_muts_dict[x])
@@ -336,7 +336,7 @@ class UsherMutationAnnotatedTree:
 
             nucleotide_counter = 0
             for part in feature.location.parts:
-                for genome_position in range(part.start, part.end ):
+                for genome_position in range(part.start, part.end):
 
                     cur_codon_number = nucleotide_counter // 3
                     cur_pos_in_codon = nucleotide_counter % 3
@@ -351,8 +351,8 @@ class UsherMutationAnnotatedTree:
             for codon_index, codon_dict in codons.items():
                 codon_obj = Codon(feat_name, codon_index, codon_dict,
                                   self.genes[feat_name].strand)
-              
-                assert len(codon_dict)%3 == 0
+
+                assert len(codon_dict) % 3 == 0
                 for k, v in codon_dict.items():
                     nuc_to_codon[v].append(codon_obj)
 
