@@ -26,7 +26,6 @@ function nexusToNewick(nexusString) {
   // get the Newick string from the tree block
   const newickString = treeBlock[0].match(/\((.*?)\).+;/gims)[0];
 
-
   // translate the taxon labels in the Newick string
   const translatedNewickString = newickString.replace(
     /([^:\,\(\)]+)/gims,

@@ -11,8 +11,6 @@ import reduceMaxOrMin from "./reduceMaxOrMin";
 import nexusToNewick from "../utils/nexusToNewick.js";
 const emptyList = [];
 
-
-
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   if (!sendStatusMessage) {
     sendStatusMessage = () => {};
@@ -86,15 +84,14 @@ function parseNewickKeyValue(newickKVString, obj_to_set) {
 
   const result = [];
   let match;
-  
+
   // Use the RegExp.exec() method to find all matches in the string
   while ((match = regex.exec(newickKVString)) !== null) {
-      // Remove the '&' character if it's present at the start of the key
-      const key = match[1].startsWith('&') ? match[1].slice(1) : match[1];
-      // Push the key-value pair to the result array
-      obj_to_set["meta_"+key] = match[2];
+    // Remove the '&' character if it's present at the start of the key
+    const key = match[1].startsWith("&") ? match[1].slice(1) : match[1];
+    // Push the key-value pair to the result array
+    obj_to_set["meta_" + key] = match[2];
   }
-
 }
 
 async function cleanup(tree) {
@@ -112,15 +109,13 @@ async function cleanup(tree) {
       num_tips: node.num_tips,
       is_tip: node.child.length === 0,
       node_id: node.node_id,
-
-    }
+    };
     // if node.meta is not empty, parse it.
     // We need to parse things of the form "&name=blabla,mutations={T694A:1.0,C29870A:1.0},Ns={1-3,4-17,18-20,21-26,686-693,22029-22033,28248-28253,28271-28271}"
     if (node.meta) {
       parseNewickKeyValue(node.meta, to_return);
     }
     return to_return;
-
   });
 
   const scale_y = 2000;
@@ -147,7 +142,6 @@ export async function processNewick(data, sendStatusMessage) {
   if (data.filetype == "nexus") {
     const result = nexusToNewick(the_data);
     the_data = result.newick;
-    
   }
 
   sendStatusMessage({
@@ -158,7 +152,6 @@ export async function processNewick(data, sendStatusMessage) {
   if (the_data[0] === "[") {
     the_data = the_data.slice(the_data.indexOf("]") + 1);
   }
-  
 
   // remove newlines from the string
 
@@ -167,7 +160,6 @@ export async function processNewick(data, sendStatusMessage) {
 
   const tree = kn_parse(the_data);
   console.log("tree", tree);
- 
 
   function assignNumTips(node) {
     if (node.child.length === 0) {
@@ -333,8 +325,7 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     // add them to the set
     meta_keys.forEach((key) => {
       all_keys.add(key);
-    }
-    );
+    });
   });
   console.log("all_keys", all_keys);
   // update the blanks object to include all the keys
@@ -359,11 +350,9 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
       }
     });
 
-
     if (this_metadata) {
       Object.assign(node, this_metadata);
     }
-    
   });
 
   return tree;
