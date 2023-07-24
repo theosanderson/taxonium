@@ -26,37 +26,15 @@ function nexusToNewick(nexusString) {
   // get the Newick string from the tree block
   const newickString = treeBlock[0].match(/\((.*?)\).+;/gims)[0];
 
-  let nodeProperties = {};
-
-  // extract properties, which are indicated by [&key=value] or [&key={value1,value2,...}]
-  newickString.replace(
-    /\[&?(.*?)\]/gims,
-    (match, contents, offset, inputString) => {
-      let nodeId = inputString.slice(0, offset).match(/[^,\(\):]+$/g)[0];
-      // use a regular expression to split on commas not inside curly brackets
-      let properties = contents.split(/,(?![^{]*})/g);
-      let propertyDict = {};
-      for (let prop of properties) {
-        let [key, value] = prop.split("=");
-        propertyDict["meta_" + key] = value;
-      }
-      nodeProperties[nodeId] = propertyDict;
-    }
-  );
-
-  // remove comments, which are indicated by [...]
-
-  const newick = newickString.replace(/\[(.*?)\]/gims, "");
-
   // translate the taxon labels in the Newick string
-  const translatedNewickString = newick.replace(
+  const translatedNewickString = newickString.replace(
     /([^:\,\(\)]+)/gims,
     (match) => {
       return translations[match] || match;
     }
   );
 
-  return { newick: translatedNewickString, nodeProperties };
+  return { newick: translatedNewickString };
 }
 
 export default nexusToNewick;
