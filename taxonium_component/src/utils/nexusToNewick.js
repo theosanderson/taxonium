@@ -32,14 +32,14 @@ function nexusToNewick(nexusString) {
   newickString.replace(
     /\[&?(.*?)\]/gims,
     (match, contents, offset, inputString) => {
-      let nodeId
+      let nodeId;
       let matches = inputString.slice(0, offset).match(/[^,\(\):]+$/g)[0];
-      if (matches){
-        nodeId = matches[0];}
-      else{
-        return
+      if (matches) {
+        nodeId = matches[0];
+      } else {
+        return;
       }
-      
+
       // use a regular expression to split on commas not inside curly brackets
       let properties = contents.split(/,(?![^{]*})/g);
       let propertyDict = {};
