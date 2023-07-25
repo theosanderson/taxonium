@@ -199,7 +199,7 @@ def get_parser():
         '--genbank',
         type=str,
         help=
-        'File path for GenBank file containing reference genome (N.B. currently only one chromosome is supported, and no compound features)'
+        'File path for GenBank file containing reference genome (N.B. currently only one chromosome is supported)'
     )
     parser.add_argument(
         '-c',
