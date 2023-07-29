@@ -115,7 +115,7 @@ def get_mutations(past_nuc_muts_dict,
 
         initial_codon = [seq[gene_codon.positions[x]] for x in range(3)]
 
-        relevant_past_muts = [(x, past_nuc_muts_dict[x])
+        relevant_past_muts = [(gene_codon.positions[x], past_nuc_muts_dict[x])
                               for x in gene_codon.positions
                               if x in past_nuc_muts_dict]
         flipped_dict = {
