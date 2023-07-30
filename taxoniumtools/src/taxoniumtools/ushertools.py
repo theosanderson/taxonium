@@ -86,7 +86,7 @@ def get_gene_name(cds):
 def get_genes_dict(cdses):
     genes = {}
     for cds in cdses:
-        print(get_gene_name(cds), cds.strand)
+       
 
         genes[get_gene_name(cds)] = Gene(get_gene_name(cds), cds.strand,
                                          cds.location.start, cds.location.end)
@@ -341,7 +341,7 @@ class UsherMutationAnnotatedTree:
         for feature in self.cdses:
 
             gene_name = get_gene_name(feature)
-            print(gene_name)
+           
 
             nucleotide_counter = 0
             for part in feature.location.parts:
@@ -350,9 +350,9 @@ class UsherMutationAnnotatedTree:
                 ) if part.strand == 1 else range(
                     part.end - 1, part.start - 1, -1
                 )  #(honestly not sure why we need to subtract 1 here but we seem to?)
-                print(part)
+                
                 for genome_position in ranger:
-                    # print(part.start, part.end, part.strand, genome_position)
+                    
 
                     cur_codon_number = nucleotide_counter // 3
                     cur_pos_in_codon = nucleotide_counter % 3
@@ -363,13 +363,13 @@ class UsherMutationAnnotatedTree:
             total_lengths[gene_name] = nucleotide_counter
 
         nuc_to_codon = defaultdict(list)
-        print(self.genes)
+        
 
         for feat_name, codons in by_everything.items():
             for codon_index, codon_dict in codons.items():
                 codon_obj = Codon(feat_name, codon_index, codon_dict,
                                   self.genes[feat_name].strand)
-                print(codon_obj)
+                
 
                 assert len(codon_dict) % 3 == 0
                 for k, v in codon_dict.items():
