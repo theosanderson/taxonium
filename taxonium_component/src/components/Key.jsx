@@ -8,12 +8,13 @@ const Key = ({
   colorByPosition,
   config,
 }) => {
+  const numLegendEntries = 10;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
   // sort by item.count in descending order
   const sortedKeyStuff = keyStuff.sort((a, b) => b.count - a.count);
   // truncate to 10 items
-  const isTruncated = sortedKeyStuff.length > 10;
-  const topTenKeyStuff = sortedKeyStuff.slice(0, 10);
+  const isTruncated = sortedKeyStuff.length > numLegendEntries;
+  const topTenKeyStuff = sortedKeyStuff.slice(0, numLegendEntries);
   // if there is an item with value of "", remove it
   const filteredKeyStuff = topTenKeyStuff.filter((item) => item.value !== "");
   if (colorByField === "None") {
