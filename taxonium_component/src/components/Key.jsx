@@ -8,7 +8,7 @@ const Key = ({
   colorByPosition,
   config,
 }) => {
-  const numLegendEntries = 10;
+  const numLegendEntries = 20;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
   // sort by item.count in descending order
   const sortedKeyStuff = keyStuff.sort((a, b) => b.count - a.count);
