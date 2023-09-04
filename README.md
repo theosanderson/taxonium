@@ -34,12 +34,15 @@ Find out more in [📚 the documentation](https://taxonium.readthedocs.io/en/lat
 
 For trees larger than about 6M tips, loading local trees in the browser at Taxonium.org can be unreliable on some systems due to browser memory limitations. To avoid these issues, use the [Taxonium desktop app](https://docs.taxonium.org/en/latest/app.html).
 
+### use Taxonium in my own web application?
+
+Use the [Taxonium component](./taxonium_component).
+
 ## See Taxonium in action
 
 - [Cov2Tree](https://cov2tree.org/) - (the repo that runs this is [here](https://github.com/theosanderson/cov2tree))
 - [Exploring the NCBI Taxonomy](https://taxonium.org/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json)
 - [Serratus](https://serratus.io/trees) (click Tree Viewer on any tree)
-- [mpxTree](http://mpxtree.taxonium.org/)
 
 ## Citing Taxonium
 
@@ -50,15 +53,16 @@ https://doi.org/10.7554/eLife.82392
 
 N.B. If you are citing the _tree_ displayed at Cov2Tree.org, please cite [the UCSC tree](https://pubmed.ncbi.nlm.nih.gov/34469548/) (.. and ideally Taxonium too if you relied on it for exploration)
 
-There is a separate [preprint for the Treenome browser](https://www.biorxiv.org/content/10.1101/2022.09.28.509985v1).
+There is a separate [paper](https://academic.oup.com/bioinformatics/article/39/1/btac772/6858450) for the Treenome Browser feature (Kramer et al., Bioinformatics, 2022).
 
 ## Structure
 
 Taxonium is structured as a 'monorepo' containing a number of components:
 
 - [taxoniumtools](./taxoniumtools/) - a Python package that lets you easily generate Taxonium files from Usher protobuf files
-- [taxonium_web_client](./taxonium_web_client/) - the web client that is available at e.g. taxonium.org and let's you explore Taxonium files in your browser
-- [taxonium_backend](./taxonium_backend/) - a server-based backend that allows Taxonium trees to be explored without the user downloading the full tree (N.B. Taxonium can also be used without this backend, with static files acccessed in taxonium_web_client)
+- [taxonium_component](./taxonium_component/) - a React component that implements the Taxonium tree explorer
+- [taxonium_website](./taxonium_website/) - The Taxonium website found at [Taxonium.org](https://taxonium.org), a wrapper around taxonium_component
+- [taxonium_backend](./taxonium_backend/) - a server-based backend that allows Taxonium trees to be explored without the user downloading the full tree (N.B. Taxonium can also be used without this backend, with static files acccessed in taxonium_website)
 - [taxonium_data_handling](./taxonium_data_handling/) - this is a node package upon which both the web client and the backend depend (it handles core logic common to both)
 
 ## Contributors

@@ -1,7 +1,4 @@
-var crypto = null;
-import("crypto").then((c) => {
-  crypto = c;
-});
+import crypto from "crypto";
 
 let revertant_mutations_set = null;
 let cachedChildrenArray = null;

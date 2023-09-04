@@ -8,12 +8,42 @@ on:
       - created
 
 jobs:
+  update-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Update package.json with GitHub tag
+        run: |
+          version=$(echo ${GITHUB_REF#refs/*/} | sed 's/^v//')
+          jq --arg version $version '.version = $version' taxonium_electron/package.json > temp.json
+          mv temp.json taxonium_electron/package.json
+
+      - name: Upload package.json as artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/package.json
+
   build-mac:
+    needs: update-version
     runs-on: macos-latest
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
+      - name: Download updated package.json
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
@@ -37,31 +67,37 @@ jobs:
           find .
 
       - name: Store artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Build
-          path: taxonium_electron/out/make/Taxonium-0.0.0-arm64.dmg
+          path: taxonium_electron/out/make/Taxonium-*-arm64.dmg
 
       - name: Store artifact 2
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Build
-          path: taxonium_electron/out/make/Taxonium-0.0.0-x64.dmg
+          path: taxonium_electron/out/make/Taxonium-*-x64.dmg
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: taxonium_electron/out/make/Taxonium-0.0.0-arm64.dmg
+          asset_path: taxonium_electron/out/make/Taxonium-*-arm64.dmg
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: taxonium_electron/out/make/Taxonium-0.0.0-x64.dmg
+          asset_path: taxonium_electron/out/make/Taxonium-*-x64.dmg
   build-win:
+    needs: update-version
     runs-on: windows-latest
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
+      - name: Download updated package.json
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
@@ -86,23 +122,28 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Store artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Build
-          path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe"
+          path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-* Setup.exe"
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-0.0.0 Setup.exe"
+          asset_path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-* Setup.exe"
 
   build-linux:
+    needs: update-version
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
-
+      - name: Download updated package.json
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+          path: taxonium_electron/
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
@@ -124,21 +165,21 @@ jobs:
           find .
 
       - name: Store artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Build
-          path: taxonium_electron/out/make/deb/x64/taxonium_0.0.0_amd64.deb
+          path: taxonium_electron/out/make/deb/x64/taxonium_*_amd64.deb
 
       - name: Store artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Build
-          path: taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm
+          path: taxonium_electron/out/make/rpm/x64/Taxonium-*-1.x86_64.rpm
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: taxonium_electron/out/make/rpm/x64/Taxonium-0.0.0-1.x86_64.rpm
+          asset_path: taxonium_electron/out/make/rpm/x64/Taxonium-*-1.x86_64.rpm
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: taxonium_electron/out/make/deb/x64/taxonium_0.0.0_amd64.deb
+          asset_path: taxonium_electron/out/make/deb/x64/taxonium_*_amd64.deb

@@ -12,10 +12,10 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
-          node-version: 17.5
+          node-version: 18
       - name: NPM build
         run: |
-          cd taxonium_web_client
+          cd taxonium_website
           npm install -g yarn
           yarn install
           yarn build
@@ -23,6 +23,6 @@ jobs:
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v3
         with:
-          name: taxonium_web_client_build
-          path: taxonium_web_client/build
+          name: taxonium_website
+          path: taxonium_website/build
           retention-days: 5

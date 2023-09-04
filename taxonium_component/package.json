@@ -1,0 +1,81 @@
+{
+  "name": "taxonium-component",
+  "version": "0.0.0",
+  "description": "React component for exploring large phylogenetic trees in the browser",
+  "keywords": [
+    "phylogenetics",
+    "newick"
+  ],
+  "type": "module",
+  "main": "dist/taxonium-component.umd.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theosanderson/taxonium",
+    "directory": "taxonium-component"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@fontsource/roboto": "^5.0.1",
+    "@jbrowse/core": "^2.5.0",
+    "@jbrowse/plugin-data-management": "^2.5.0",
+    "@jbrowse/react-linear-genome-view": "^2.5.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "axios": "^1.4.0",
+    "classnames": "^2.3.2",
+    "deck.gl": "=8.6.6",
+    "react-circular-progressbar": "^2.1.0",
+    "react-debounce-input": "^3.3.0",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^4.8.0",
+    "react-modal": "^3.16.1",
+    "react-spinners": "^0.13.8",
+    "react-tooltip": "^4.2.21",
+    "readable-web-to-node-stream": "^3.0.2",
+    "sb": "^7.0.14",
+    "scale-color-perceptual": "^1.1.2",
+    "taxonium_data_handling": "file:../taxonium_data_handling"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.0.14",
+    "@storybook/addon-interactions": "^7.0.14",
+    "@storybook/addon-links": "^7.0.14",
+    "@storybook/blocks": "^7.0.14",
+    "@storybook/react": "^7.0.14",
+    "@storybook/react-vite": "^7.0.14",
+    "@storybook/testing-library": "^0.0.14-next.2",
+    "@tailwindcss/forms": "^0.5.3",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "eslint-plugin-storybook": "^0.6.12",
+    "postcss": "^8.4.23",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "release-it": "^15.10.3",
+    "storybook": "^7.0.14",
+    "tailwindcss": "^3.3.2",
+    "vite": "^4.3.2",
+    "vite-plugin-css-injected-by-js": "^3.1.1",
+    "vite-plugin-externalize-deps": "^0.6.0",
+    "vite-plugin-node-polyfills": "^0.8.2"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}

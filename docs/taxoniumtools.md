@@ -32,7 +32,7 @@ usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfc
 You can then open that `tfci-taxonium.jsonl.gz` file at [taxonium.org](http://taxonium.org)
 
 ```{note}
-Right now Taxoniumtools is limited in the types of genome annotations it can support, for SARS-CoV-2 we recommend using the exact [modified .gb file we use in the example](https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb), which splits ORF1ab into ORF1a and ORF1b to avoid the need to model ribosome slippage.
+For SARS-CoV-2 we recommend using the exact [modified .gb file we use in the example](https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb), which splits ORF1ab into ORF1a and ORF1b.
 ```
 
 ```{note}

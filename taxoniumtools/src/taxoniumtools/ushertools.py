@@ -13,15 +13,8 @@ def reverse_complement(input_string):
     return input_string.translate(str.maketrans("ATCG", "TAGC"))[::-1]
 
 
-@dataclass(eq=True, frozen=True)
-class AnnotatedMutation:
-    genome_position: int  #0-based
-    genome_residue: str
-    codon_number: int  #0-based
-    codon_start: int  #0-based
-    codon_end: int  #0-based
-    gene: str
-    strand: int
+def complement(input_string):
+    return input_string.translate(str.maketrans("ATCG", "TAGC"))
 
 
 @dataclass(eq=True, frozen=True)
@@ -47,8 +40,27 @@ class NucMutation:  #hashable
 class Gene:
     name: str
     strand: int
-    start: int
-    end: int
+    start: int  # zero-indexed
+    end: int  # 0-indexed
+
+
+from dataclasses import dataclass
+
+
+@dataclass(eq=False)
+class Codon:
+    gene: Gene
+    codon_number: int  # zero-indexed
+    positions: dict  # zero-indexed positions e.g. {0:123,1:124,2:125}
+    strand: int
+
+    def __eq__(self, other):
+        if isinstance(other, Codon):
+            return self.gene == other.gene and self.codon_number == other.codon_number
+        return False
+
+    def __hash__(self):
+        return hash((self.gene, self.codon_number))
 
 
 def get_codon_table():
@@ -74,6 +86,7 @@ def get_gene_name(cds):
 def get_genes_dict(cdses):
     genes = {}
     for cds in cdses:
+
         genes[get_gene_name(cds)] = Gene(get_gene_name(cds), cds.strand,
                                          cds.location.start, cds.location.end)
     return genes
@@ -82,59 +95,48 @@ def get_genes_dict(cdses):
 def get_mutations(past_nuc_muts_dict,
                   new_nuc_mutations_here,
                   seq,
-                  cdses,
+                  nuc_to_codon,
                   disable_check_for_differences=False):
 
-    annotated_mutations = []
+    by_codon = defaultdict(list)
 
     for mutation in new_nuc_mutations_here:
-        cds = find_cds(mutation.one_indexed_position - 1, cdses)
-        if cds:
-            codon_number, codon_start, codon_end = find_codon(
-                mutation.one_indexed_position - 1, cds)
-            annotated_mutations.append(
-                AnnotatedMutation(
-                    genome_position=mutation.one_indexed_position - 1,
-                    genome_residue=mutation.mut_nuc,
-                    gene=get_gene_name(cds),
-                    codon_number=codon_number,
-                    codon_start=codon_start,
-                    codon_end=codon_end,
-                    strand=cds.strand))
-
-    by_gene_codon = defaultdict(list)
-
-    for mutation in annotated_mutations:
-        by_gene_codon[(mutation.gene, mutation.codon_number,
-                       mutation.codon_start, mutation.codon_end,
-                       mutation.strand)].append(mutation)
+        zero_indexed_pos = mutation.one_indexed_position - 1
+        if zero_indexed_pos in nuc_to_codon:
+            for codon in nuc_to_codon[zero_indexed_pos]:
+                by_codon[codon].append(mutation)
 
     mutations_here = []
-    for gene_codon, mutations in by_gene_codon.items():
-        gene, codon_number, codon_start, codon_end, strand = gene_codon
-        very_initial_codon = seq[codon_start:codon_end]
+    for gene_codon, mutations in by_codon.items():
+
         # For most of this function we ignore strand - so for negative strand we
-        # are actually collecting the reverse complement of the codon
-        initial_codon = list(very_initial_codon)
+        # are actually collecting the complement of the codon
+
+        initial_codon = [seq[gene_codon.positions[x]] for x in range(3)]
 
         relevant_past_muts = [(x, past_nuc_muts_dict[x])
-                              for x in range(codon_start, codon_end)
+                              for x in gene_codon.positions.values()
                               if x in past_nuc_muts_dict]
+        flipped_dict = {
+            position: offset
+            for offset, position in gene_codon.positions.items()
+        }
         for position, value in relevant_past_muts:
-            initial_codon[position - codon_start] = value
+            initial_codon[flipped_dict[position]] = value
 
         final_codon = initial_codon.copy()
 
         for mutation in mutations:
-            pos_in_codon = mutation.genome_position - codon_start
-            final_codon[pos_in_codon] = mutation.genome_residue
+            pos_in_codon = flipped_dict[mutation.one_indexed_position - 1]
+            final_codon[pos_in_codon] = mutation.mut_nuc
 
         initial_codon = "".join(initial_codon)
         final_codon = "".join(final_codon)
 
-        if strand == -1:
-            initial_codon = reverse_complement(initial_codon)
-            final_codon = reverse_complement(final_codon)
+        if gene_codon.strand == -1:
+
+            initial_codon = complement(initial_codon)
+            final_codon = complement(final_codon)
 
         initial_codon_trans = codon_table[initial_codon]
         final_codon_trans = codon_table[final_codon]
@@ -142,29 +144,31 @@ def get_mutations(past_nuc_muts_dict,
             #(gene, codon_number + 1, initial_codon_trans, final_codon_trans)
 
             mutations_here.append(
-                AAMutation(gene=gene,
-                           one_indexed_codon=codon_number + 1,
+                AAMutation(gene=gene_codon.gene,
+                           one_indexed_codon=gene_codon.codon_number + 1,
                            initial_aa=initial_codon_trans,
                            final_aa=final_codon_trans,
-                           nuc_for_codon=codon_start + 1))
+                           nuc_for_codon=gene_codon.positions[1]))
 
     # update past_nuc_muts_dict
-    for mutation in annotated_mutations:
-        past_nuc_muts_dict[mutation.genome_position] = mutation.genome_residue
+    for mutation in new_nuc_mutations_here:
+        past_nuc_muts_dict[mutation.one_indexed_position -
+                           1] = mutation.mut_nuc
 
     return mutations_here
 
 
-def recursive_mutation_analysis(node, past_nuc_muts_dict, seq, cdses, pbar):
+def recursive_mutation_analysis(node, past_nuc_muts_dict, seq, cdses, pbar,
+                                nuc_to_codon):
     pbar()
 
     new_nuc_mutations_here = node.nuc_mutations
     new_past_nuc_muts_dict = past_nuc_muts_dict.copy()
     node.aa_muts = get_mutations(new_past_nuc_muts_dict,
-                                 new_nuc_mutations_here, seq, cdses)
+                                 new_nuc_mutations_here, seq, nuc_to_codon)
     for child in node.children:
         recursive_mutation_analysis(child, new_past_nuc_muts_dict, seq, cdses,
-                                    pbar)
+                                    pbar, nuc_to_codon)
 
 
 NUC_ENUM = "ACGT"
@@ -316,7 +320,7 @@ class UsherMutationAnnotatedTree:
         with alive_bar(self.tree.num_nodes(),
                        title="Annotating amino acids") as pbar:
             recursive_mutation_analysis(self.tree.root, {}, seq, self.cdses,
-                                        pbar)
+                                        pbar, self.nuc_to_codon)
         root_muts = self.create_mutation_like_objects_to_record_root_seq()
         self.tree.root.aa_muts = get_mutations(
             {}, root_muts, seq, self.cdses, disable_check_for_differences=True)
@@ -328,13 +332,45 @@ class UsherMutationAnnotatedTree:
         # Assert that there are no compound locations and that all strands are positive,
         # and that all CDS features are a multiple of 3
 
-        for cds in self.cdses:
-
-            #assert cds.location.strand == 1
-            assert len(cds.location.parts) == 1
-            assert len(cds.location.parts[0]) % 3 == 0
-
         self.genes = get_genes_dict(self.cdses)
+
+        by_everything = defaultdict(lambda: defaultdict(dict))
+        total_lengths = {}
+
+        for feature in self.cdses:
+
+            gene_name = get_gene_name(feature)
+
+            nucleotide_counter = 0
+            for part in feature.location.parts:
+                ranger = range(
+                    part.start, part.end
+                ) if part.strand == 1 else range(
+                    part.end - 1, part.start - 1, -1
+                )  #(honestly not sure why we need to subtract 1 here but we seem to?)
+
+                for genome_position in ranger:
+
+                    cur_codon_number = nucleotide_counter // 3
+                    cur_pos_in_codon = nucleotide_counter % 3
+
+                    by_everything[gene_name][cur_codon_number][
+                        cur_pos_in_codon] = genome_position
+                    nucleotide_counter += 1
+            total_lengths[gene_name] = nucleotide_counter
+
+        nuc_to_codon = defaultdict(list)
+
+        for feat_name, codons in by_everything.items():
+            for codon_index, codon_dict in codons.items():
+                codon_obj = Codon(feat_name, codon_index, codon_dict,
+                                  self.genes[feat_name].strand)
+
+                assert len(codon_dict) % 3 == 0
+                for k, v in codon_dict.items():
+                    nuc_to_codon[v].append(codon_obj)
+
+        self.nuc_to_codon = nuc_to_codon
 
     def convert_nuc_mutation(self, usher_mutation):
         new_mut = NucMutation(one_indexed_position=usher_mutation.position,

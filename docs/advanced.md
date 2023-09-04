@@ -48,7 +48,7 @@ We can supply that config in the URL like this:
 https://taxonium.org/?backend=https://api.cov2tree.org&config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}
 ```
 
-(or just https://taxonium.org/?config={"colorMapping":{"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}}) and then choose a file of interest)
+(or just `https://taxonium.org/?config={%22colorMapping%22:{%22AY.4%22:[255,0,0],%22B.1.1.7%22:[0,0,255]}}` and then choose a file of interest)
 
 or make a JSON file containing
 
@@ -57,6 +57,10 @@ or make a JSON file containing
 {"AY.4":[255,0,0],"B.1.1.7":[0,0,255]}
 }
 ```
+
+:::{note}
+Guilhem Sempéré has created a tool called [TaxoniumColors](https://webtools.southgreen.fr/TaxoniumColors/) to help with generating these palettes.
+:::
 
 ##### Title
 

@@ -20,6 +20,7 @@
     "node-fetch": "^3.2.10",
     "pako": "^2.0.4",
     "taxonium_data_handling": "file:../taxonium_data_handling",
+    "readable-web-to-node-stream": "^3.0.2",
     "xml2js": "^0.4.23"
   }
 }
