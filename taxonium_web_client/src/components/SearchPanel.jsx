@@ -315,7 +315,7 @@ function SearchPanel({
               </button>
             </span>
           )}
-        {/* TODO: Add conditions for map display */}{" "}
+        {<br />}
         {true && (
           <span>
             <span className="text-gray-500 text-sm">Map View:</span>
@@ -326,7 +326,7 @@ function SearchPanel({
               className="m-3 inline-block"
               checked={settings.mapViewOpen}
               onChange={(e) => {
-                settings.setMapViewOpen(!settings.mapViewOpen);
+                settings.setMapOpenAndToast(!settings.mapViewOpen);
               }}
             />
             <button

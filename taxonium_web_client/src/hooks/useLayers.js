@@ -8,7 +8,6 @@ import {
 
 import { useMemo, useCallback } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
-import { linear_normalization } from "../utils/mathFunctions";
 
 // source: https://datahub.io/core/geo-countries
 import geojson from "../worldMap.geo.json";
@@ -522,12 +521,13 @@ const useLayers = ({
   }
 
   const getColorByCountryCount = (country) => {
+    const hookColor = colorHook.toRGB(country);
+
     const GRAY = [169, 169, 169];
     const count = countryCounts[country] ? countryCounts[country] : 0;
     if (count === 0) return GRAY;
-    let normal = linear_normalization(count, min, max, 0, 255);
-    // 138, 43, 226;
-    return [138, normal, 226];
+
+    return hookColor;
   };
 
   let lineWidth = 100;
@@ -547,7 +547,6 @@ const useLayers = ({
       updateTriggers: {
         getFillColor: data.data.nodes,
       },
-      pickable: true,
       opacity: 0.8,
     })
   );

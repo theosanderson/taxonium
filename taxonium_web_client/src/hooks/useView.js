@@ -342,18 +342,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
             }
           }
 
-          // Treenome view state
-          if (viewId === "main" || viewId === "main-overlay" || !viewId) {
-            newViewState["browser-main"] = {
-              ...viewState["browser-main"],
-              zoom: newViewState.zoom,
-              target: [
-                viewState["browser-main"].target[0],
-                newViewState.target[1],
-              ],
-            };
-          }
-
           const combinedViewState = { ...currentViewState, ...newViewState };
           return combinedViewState;
         });

@@ -97,6 +97,13 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const [mapViewOpen, setMapViewOpen] = useState(false);
 
+  const setMapOpenAndToast = useCallback((value) => {
+    setMapViewOpen(value);
+    toast(`Map View is now ${value ? "enabled" : "disabled"}`, {
+      position: "bottom-center",
+    });
+  }, []);
+
   return {
     minimapEnabled,
     treenomeEnabled,
@@ -119,5 +126,6 @@ export const useSettings = ({ query, updateQuery }) => {
     setChromosomeName,
     mapViewOpen,
     setMapViewOpen,
+    setMapOpenAndToast,
   };
 };
