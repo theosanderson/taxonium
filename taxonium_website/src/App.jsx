@@ -268,15 +268,15 @@ function App() {
             (uploadedData.status === "loaded" ||
               uploadedData.status === "url_supplied")) ? (
             <div className="w-[calc(100%-4rem)]">
-            <TaxoniumBit
-              sourceData={uploadedData}
-              query={query}
-              updateQuery={updateQuery}
-              setOverlayContent={setOverlayContent}
-              setTitle={setTitle}
-              overlayContent={overlayContent}
-              setAboutEnabled={setAboutEnabled}
-            />
+              <TaxoniumBit
+                sourceData={uploadedData}
+                query={query}
+                updateQuery={updateQuery}
+                setOverlayContent={setOverlayContent}
+                setTitle={setTitle}
+                overlayContent={overlayContent}
+                setAboutEnabled={setAboutEnabled}
+              />
             </div>
           ) : (
             <div className="m-10 space-y-3">
