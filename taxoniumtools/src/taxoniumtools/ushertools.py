@@ -323,7 +323,7 @@ class UsherMutationAnnotatedTree:
                                         pbar, self.nuc_to_codon)
         root_muts = self.create_mutation_like_objects_to_record_root_seq()
         self.tree.root.aa_muts = get_mutations(
-            {}, root_muts, seq, self.cdses, disable_check_for_differences=True)
+            {}, root_muts, seq, self.nuc_to_codon, disable_check_for_differences=True)
         self.tree.root.nuc_mutations = root_muts
 
     def load_genbank_file(self, genbank_file):
