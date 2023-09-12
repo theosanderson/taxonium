@@ -43,7 +43,7 @@ function Deck({
   isCurrentlyOutsideBounds,
   deckRef,
   jbrowseRef,
-  setAdditionalColorMapping
+  setAdditionalColorMapping,
 }) {
   const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
@@ -77,8 +77,6 @@ function Deck({
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const mouseDownPos = useRef();
-
-
 
   const onClickOrMouseMove = useCallback(
     (event) => {
@@ -264,21 +262,14 @@ function Deck({
       <ColorSettingModal
         isOpen={colorSettingOpen}
         setIsOpen={setColorSettingOpen}
-        color = {colorHook.toRGB(currentColorSettingKey)}
-        setColor = { 
-
-          (color) => {
-            setAdditionalColorMapping(x => {
-              return {...x, [currentColorSettingKey]: color};
-            });
-          }
-
-        }
-        title = {currentColorSettingKey}
+        color={colorHook.toRGB(currentColorSettingKey)}
+        setColor={(color) => {
+          setAdditionalColorMapping((x) => {
+            return { ...x, [currentColorSettingKey]: color };
+          });
+        }}
+        title={currentColorSettingKey}
       />
-
-
-
       <DeckGL
         pickingRadius={10}
         //getCursor={() => hoverInfo && hoverInfo.object ? "default" : "pointer"}
@@ -364,7 +355,6 @@ function Deck({
             config={config}
             setCurrentColorSettingKey={setCurrentColorSettingKey}
             setColorSettingOpen={setColorSettingOpen}
-          
           />
           <DeckButtons
             zoomReset={zoomReset}
