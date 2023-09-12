@@ -40,6 +40,7 @@
     "react-icons": "^4.8.0",
     "react-modal": "^3.16.1",
     "react-spinners": "^0.13.8",
+    "react-tabs": "4",
     "react-tooltip": "^4.2.21",
     "readable-web-to-node-stream": "^3.0.2",
     "sb": "^7.0.14",
