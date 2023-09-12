@@ -14,7 +14,13 @@ const settingsModalStyle = {
     borderRadius: "8px",
     padding: "20px",
     maxWidth: "700px",
-  },
+  }
+  ,
+  overlay: {
+    backgroundColor: "rgba(100, 100, 100, 0.3)",
+    zIndex: 1000,
+
+  }
 };
 
 const prettifyMutationTypes = {

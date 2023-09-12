@@ -169,7 +169,7 @@ const useLayers = ({
     onHover: (info) => setHoverInfo(info),
     modelMatrix: modelMatrix,
     updateTriggers: {
-      getFillColor: [detailed_data, getNodeColorField],
+      getFillColor: [detailed_data, getNodeColorField,colorHook],
       getPosition: [xType],
     },
   };

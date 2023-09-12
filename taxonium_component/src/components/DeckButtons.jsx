@@ -44,7 +44,7 @@ export const DeckButtons = ({
         position: "absolute",
         right: "0em",
         bottom: "0em",
-        zIndex: 10,
+        zIndex: 2,
         pointerEvents: "none",
       }}
       className="flex flex-col items-end"

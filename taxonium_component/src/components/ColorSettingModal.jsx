@@ -12,7 +12,13 @@ const modalStyle = {
     borderRadius: "8px",
     padding: "20px",
     maxWidth: "400px",
+    
   },
+  overlay: {
+    backgroundColor: "rgba(100, 100, 100, 0.3)",
+    zIndex: 1000,
+
+  }
 };
 
 const ColorSettingModal = ({ isOpen, setIsOpen, color, setColor, title }) => {
