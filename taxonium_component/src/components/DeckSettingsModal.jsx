@@ -158,33 +158,7 @@ const DeckSettingsModal = ({
                 />
               </label>
             </div>
-            <div>
-              <label>
-                Color for terminal node labels
-                <ColorPicker
-                  color={settings.terminalNodeLabelColor}
-                  setColor={settings.setTerminalNodeLabelColor}
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                Color for tree lines
-                <ColorPicker
-                  color={settings.lineColor}
-                  setColor={settings.setLineColor}
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                Color for clade labels
-                <ColorPicker
-                  color={settings.cladeLabelColor}
-                  setColor={settings.setCladeLabelColor}
-                />
-              </label>
-            </div>
+            
           </div>
         </TabPanel>
 
@@ -226,13 +200,43 @@ const DeckSettingsModal = ({
           </div>
         </TabPanel>
         <TabPanel>
-          <div className="space-y-3">
-            <h3 className="font-medium">Color</h3>
+          <div className="space-y-3 mt-5">
+            
             <div>
               <label>
                 Default color for nodes:
                 <ColorPicker color={noneColor} setColor={setNoneColor} />
               </label>
+            </div>
+            <div>
+              <label>
+                Color for terminal node labels
+                <ColorPicker
+                  color={settings.terminalNodeLabelColor}
+                  setColor={settings.setTerminalNodeLabelColor}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Color for tree lines
+                <ColorPicker
+                  color={settings.lineColor}
+                  setColor={settings.setLineColor}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Color for clade labels
+                <ColorPicker
+                  color={settings.cladeLabelColor}
+                  setColor={settings.setCladeLabelColor}
+                />
+              </label>
+            </div>
+            <div className="text-md">
+              <b>Tip:</b> to modify the color of nodes colored by metadata, click the specific metadata in the key at the bottom left.
             </div>
           </div>
         </TabPanel>
