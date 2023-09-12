@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 import Modal from "react-modal";
 import ColorPicker from "./ColorPicker";
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
 
 const settingsModalStyle = {
   content: {
@@ -10,10 +10,10 @@ const settingsModalStyle = {
     left: "50%",
     transform: "translate(-50%, -50%)",
     backgroundColor: "#fafafa",
-    border: '1px solid #e2e8f0',
-    borderRadius: '8px',
-    padding: '20px',
-    maxWidth: '500px',
+    border: "1px solid #e2e8f0",
+    borderRadius: "8px",
+    padding: "20px",
+    maxWidth: "500px",
   },
 };
 
@@ -22,7 +22,11 @@ const prettifyMutationTypes = {
   nt: "Nucleotide",
 };
 
-const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) => {
+const DeckSettingsModal = ({
+  settings,
+  deckSettingsOpen,
+  setDeckSettingsOpen,
+}) => {
   return (
     <Modal
       isOpen={deckSettingsOpen}
@@ -58,7 +62,11 @@ const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) 
                   type="checkbox"
                   className="mr-1"
                   checked={settings.displayTextForInternalNodes}
-                  onChange={() => settings.setDisplayTextForInternalNodes(!settings.displayTextForInternalNodes)}
+                  onChange={() =>
+                    settings.setDisplayTextForInternalNodes(
+                      !settings.displayTextForInternalNodes
+                    )
+                  }
                 />{" "}
                 Display labels for internal nodes if present
               </label>
@@ -69,7 +77,11 @@ const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) 
                   type="checkbox"
                   className="mr-1"
                   checked={settings.displayPointsForInternalNodes}
-                  onChange={() => settings.setDisplayPointsForInternalNodes(!settings.displayPointsForInternalNodes)}
+                  onChange={() =>
+                    settings.setDisplayPointsForInternalNodes(
+                      !settings.displayPointsForInternalNodes
+                    )
+                  }
                 />{" "}
                 Display points for internal nodes
               </label>
@@ -85,7 +97,11 @@ const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) 
                 <input
                   type="number"
                   value={settings.thresholdForDisplayingText}
-                  onChange={(e) => settings.setThresholdForDisplayingText(parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    settings.setThresholdForDisplayingText(
+                      parseFloat(e.target.value)
+                    )
+                  }
                   step="0.1"
                   min="0"
                   max="10"
@@ -99,7 +115,9 @@ const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) 
                 <input
                   type="number"
                   value={settings.maxCladeTexts}
-                  onChange={(e) => settings.setMaxCladeTexts(parseInt(e.target.value))}
+                  onChange={(e) =>
+                    settings.setMaxCladeTexts(parseInt(e.target.value))
+                  }
                   step="1"
                   min="0"
                   max="10000000"
@@ -147,9 +165,16 @@ const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) 
                     type="checkbox"
                     className="mr-1"
                     checked={settings.mutationTypesEnabled[key]}
-                    onChange={() => settings.setMutationTypeEnabled(key, !settings.mutationTypesEnabled[key])}
+                    onChange={() =>
+                      settings.setMutationTypeEnabled(
+                        key,
+                        !settings.mutationTypesEnabled[key]
+                      )
+                    }
                   />{" "}
-                  {prettifyMutationTypes[key] ? prettifyMutationTypes[key] : key}
+                  {prettifyMutationTypes[key]
+                    ? prettifyMutationTypes[key]
+                    : key}
                 </label>
               </div>
             ))}
@@ -164,7 +189,11 @@ const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) 
                 type="checkbox"
                 className="mr-1"
                 checked={settings.displaySearchesAsPoints}
-                onChange={() => settings.setDisplaySearchesAsPoints(!settings.displaySearchesAsPoints)}
+                onChange={() =>
+                  settings.setDisplaySearchesAsPoints(
+                    !settings.displaySearchesAsPoints
+                  )
+                }
               />{" "}
               Display searches as points
             </label>
@@ -174,11 +203,15 @@ const DeckSettingsModal = ({ settings, deckSettingsOpen, setDeckSettingsOpen }) 
                 <input
                   type="number"
                   value={settings.searchPointSize}
-                  onChange={(e) => settings.setSearchPointSize(parseInt(e.target.value))}
+                  onChange={(e) =>
+                    settings.setSearchPointSize(parseInt(e.target.value))
+                  }
                   step="1"
                   min="1"
                   max="10"
-                  className={`border py-1 px-1 text-grey-darkest text-sm ${!settings.displaySearchesAsPoints ? "bg-gray-200" : ""}`}
+                  className={`border py-1 px-1 text-grey-darkest text-sm ${
+                    !settings.displaySearchesAsPoints ? "bg-gray-200" : ""
+                  }`}
                   disabled={!settings.displaySearchesAsPoints}
                 />
               </label>
