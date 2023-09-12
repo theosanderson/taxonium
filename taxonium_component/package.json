@@ -34,6 +34,7 @@
     "classnames": "^2.3.2",
     "deck.gl": "=8.6.6",
     "react-circular-progressbar": "^2.1.0",
+    "react-color": "^2.19.3",
     "react-debounce-input": "^3.3.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.8.0",
