@@ -9,6 +9,8 @@ const Key = ({
   config,
   setCurrentColorSettingKey,
   setColorSettingOpen,
+  hoveredKey,
+  setHoveredKey,
 }) => {
   const numLegendEntries = 10;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
@@ -32,7 +34,9 @@ const Key = ({
         collapsed ? "w-20" : "w-32"
       )}
       // z index big
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 10 ,
+      
+    cursor:'default'}}
     >
       <h3
         className="font-bold text-gray-600 text-xs cursor-pointer"
@@ -58,15 +62,26 @@ const Key = ({
               <div
                 className="key-text text-xs text-gray-700 mt-0.5 break-all cursor-pointer"
                 key={index}
+                style={{
+                  pointerEvents: 'auto'
+                }
+              }
                 onClick={() => {
                   setCurrentColorSettingKey(item.value);
                   setColorSettingOpen(true);
                 }}
+                onMouseEnter={() =>{
+                  setHoveredKey(item.value)
+                  
+                }
+                }
+                onMouseLeave={() => setHoveredKey(null)}
+
                 title="Edit color"
               >
                 <div
                   style={{ backgroundColor: color }}
-                  className="circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform hover:scale-150"
+                  className={`circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform ${hoveredKey === item.value ? "scale-150" : "scale-100" }`}
                 />
                 {item.value}
               </div>

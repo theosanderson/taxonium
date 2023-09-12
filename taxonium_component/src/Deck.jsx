@@ -50,6 +50,7 @@ function Deck({
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
   const [colorSettingOpen, setColorSettingOpen] = useState(false);
   const [currentColorSettingKey, setCurrentColorSettingKey] = useState("a");
+  const [hoveredKey, setHoveredKey] = useState(null);
   const [treenomeSettingsOpen, setTreenomeSettingsOpen] = useState(false);
 
   //console.log("DATA is ", data);
@@ -191,6 +192,8 @@ function Deck({
     treenomeState,
     treenomeReferenceInfo,
     setTreenomeReferenceInfo,
+    hoveredKey,
+    
   });
   // console.log("deck refresh");
 
@@ -301,6 +304,8 @@ function Deck({
         config={config}
         setCurrentColorSettingKey={setCurrentColorSettingKey}
         setColorSettingOpen={setColorSettingOpen}
+        hoveredKey={hoveredKey}
+        setHoveredKey={setHoveredKey}
       />
       <DeckButtons
         // we want this to intercept all mouse events

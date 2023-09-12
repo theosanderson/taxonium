@@ -44,6 +44,7 @@ const useLayers = ({
   treenomeState,
   treenomeReferenceInfo,
   setTreenomeReferenceInfo,
+  hoveredKey
 }) => {
   const lineColor = settings.lineColor;
   const getNodeColorField = colorBy.getNodeColorField;
@@ -158,7 +159,7 @@ const useLayers = ({
     getFillColor: (d) => toRGB(getNodeColorField(d, detailed_data)),
 
     // radius in pixels
-    getRadius: 3,
+    getRadius: (d) => getNodeColorField(d, detailed_data) === hoveredKey ? 4 : 3,
     getLineColor: [100, 100, 100],
     opacity: 0.6,
     stroked: data.data.nodes && data.data.nodes.length < 3000,
@@ -170,6 +171,7 @@ const useLayers = ({
     modelMatrix: modelMatrix,
     updateTriggers: {
       getFillColor: [detailed_data, getNodeColorField, colorHook],
+      getRadius:[hoveredKey,getNodeColorField],
       getPosition: [xType],
     },
   };
