@@ -232,17 +232,11 @@ const DeckSettingsModal = ({
             <div>
               <label>
                 Default color for nodes:
-                <ColorPicker
-                  color={noneColor}
-                  setColor={setNoneColor}
-                 />
+                <ColorPicker color={noneColor} setColor={setNoneColor} />
               </label>
             </div>
           </div>
         </TabPanel>
-
-                  
-
       </Tabs>
     </Modal>
   );
