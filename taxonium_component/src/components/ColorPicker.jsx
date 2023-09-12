@@ -75,6 +75,7 @@ function ColorPicker({ color, setColor }) {
         color={rgbColor}
         onChange={handleColorChange}
         presetColors={[]}
+        disableAlpha={true}
       />
     </div>
   );
