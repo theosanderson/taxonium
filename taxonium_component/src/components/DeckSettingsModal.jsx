@@ -74,7 +74,6 @@ const DeckSettingsModal = ({
           </label>
         </div>
 
-
         <div>
           <label>
             Max density of node label text:{" "}
@@ -141,33 +140,40 @@ const DeckSettingsModal = ({
           ))}
         </div>
         <div className="mt-2">
-        <h3 className="mt-5 font-medium">Search</h3>
-  <label>
-    <input
-      type="checkbox"
-      className="mr-1"
-      checked={settings.displaySearchesAsPoints}
-      onChange={() => settings.setDisplaySearchesAsPoints(!settings.displaySearchesAsPoints)}
-    />{" "}
-    Display searches as points
-  </label>
-</div>
-<div className="mt-2">
-  <label>
-    Point Size:{" "}
-    <input
-      type="number"
-      value={settings.searchPointSize}
-      onChange={(e) => settings.setSearchPointSize(parseInt(e.target.value))}
-      step="1"
-      min="1"
-      max="10"
-      className={`border py-1 px-1 text-grey-darkest text-sm ${!settings.displaySearchesAsPoints ? 'bg-gray-200' : ''}`}
-      disabled={!settings.displaySearchesAsPoints}
-    />
-  </label>
-</div>
-
+          <h3 className="mt-5 font-medium">Search</h3>
+          <label>
+            <input
+              type="checkbox"
+              className="mr-1"
+              checked={settings.displaySearchesAsPoints}
+              onChange={() =>
+                settings.setDisplaySearchesAsPoints(
+                  !settings.displaySearchesAsPoints
+                )
+              }
+            />{" "}
+            Display searches as points
+          </label>
+        </div>
+        <div className="mt-2">
+          <label>
+            Point Size:{" "}
+            <input
+              type="number"
+              value={settings.searchPointSize}
+              onChange={(e) =>
+                settings.setSearchPointSize(parseInt(e.target.value))
+              }
+              step="1"
+              min="1"
+              max="10"
+              className={`border py-1 px-1 text-grey-darkest text-sm ${
+                !settings.displaySearchesAsPoints ? "bg-gray-200" : ""
+              }`}
+              disabled={!settings.displaySearchesAsPoints}
+            />
+          </label>
+        </div>
       </div>
     </Modal>
   );

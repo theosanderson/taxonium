@@ -455,8 +455,10 @@ const useLayers = ({
       data: data,
       id: "main-search-scatter-" + spec.key,
       getPosition: (d) => [d[xType], d.y],
-      getLineColor: settings.displaySearchesAsPoints ? [0,0,0] : lineColor,
-      getRadius: settings.displaySearchesAsPoints ? settings.searchPointSize : 5 + 2 * i ,
+      getLineColor: settings.displaySearchesAsPoints ? [0, 0, 0] : lineColor,
+      getRadius: settings.displaySearchesAsPoints
+        ? settings.searchPointSize
+        : 5 + 2 * i,
       radiusUnits: "pixels",
       lineWidthUnits: "pixels",
       stroked: true,
@@ -464,7 +466,9 @@ const useLayers = ({
       wireframe: true,
       getLineWidth: 1,
       filled: true,
-      getFillColor: settings.displaySearchesAsPoints ? lineColor:[255, 0, 0, 0],
+      getFillColor: settings.displaySearchesAsPoints
+        ? lineColor
+        : [255, 0, 0, 0],
       modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [xType],

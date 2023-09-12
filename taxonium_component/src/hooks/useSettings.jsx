@@ -10,14 +10,13 @@ export const useSettings = ({ query, updateQuery }) => {
   const [thresholdForDisplayingText, setThresholdForDisplayingText] =
     useState(2.9);
 
-  const [displaySearchesAsPoints, setDisplaySearchesAsPoints] =
-    useState(false);
+  const [displaySearchesAsPoints, setDisplaySearchesAsPoints] = useState(false);
 
-    const [searchPointSize, setSearchPointSize] =
-    useState(3);
+  const [searchPointSize, setSearchPointSize] = useState(3);
 
-    const [terminalNodeLabelColor, setTerminalNodeLabelColor] = useState([180,180,180]);
-
+  const [terminalNodeLabelColor, setTerminalNodeLabelColor] = useState([
+    180, 180, 180,
+  ]);
 
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
     useState(false);
@@ -137,6 +136,6 @@ export const useSettings = ({ query, updateQuery }) => {
     searchPointSize,
     setSearchPointSize,
     terminalNodeLabelColor,
-    setTerminalNodeLabelColor
+    setTerminalNodeLabelColor,
   };
 };
