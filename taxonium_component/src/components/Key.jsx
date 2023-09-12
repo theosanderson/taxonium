@@ -7,6 +7,10 @@ const Key = ({
   colorByGene,
   colorByPosition,
   config,
+  setCurrentColorSettingKey,
+  setColorSettingOpen,
+  hoveredKey,
+  setHoveredKey,
 }) => {
   const numLegendEntries = 10;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
@@ -29,6 +33,12 @@ const Key = ({
         "px-2 border-right border  bg-white opacity-90 absolute bottom-2 left-2 pt-1 pb-2",
         collapsed ? "w-20" : "w-32"
       )}
+      // z index big
+      style={{
+        zIndex: 10,
+
+        cursor: "default",
+      }}
     >
       <h3
         className="font-bold text-gray-600 text-xs cursor-pointer"
@@ -51,19 +61,33 @@ const Key = ({
             const rgb = item.color;
             const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
             return (
-              // small dot with color
               <div
-                className="key-text text-xs text-gray-700 mt-0.5  break-all"
+                className="key-text text-xs text-gray-700 mt-0.5 break-all cursor-pointer"
                 key={index}
+                style={{
+                  pointerEvents: "auto",
+                }}
+                onClick={() => {
+                  setCurrentColorSettingKey(item.value);
+                  setColorSettingOpen(true);
+                }}
+                onMouseEnter={() => {
+                  setHoveredKey(item.value);
+                }}
+                onMouseLeave={() => setHoveredKey(null)}
+                title="Edit color"
               >
                 <div
                   style={{ backgroundColor: color }}
-                  className="w-2 h-2 mr-2 rounded-full inline-block"
+                  className={`circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform ${
+                    hoveredKey === item.value ? "scale-150" : "scale-100"
+                  }`}
                 />
                 {item.value}
               </div>
             );
           })}
+
           {isTruncated && <div className="text-xs text-gray-700">...</div>}
         </>
       )}

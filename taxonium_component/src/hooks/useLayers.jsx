@@ -44,8 +44,9 @@ const useLayers = ({
   treenomeState,
   treenomeReferenceInfo,
   setTreenomeReferenceInfo,
+  hoveredKey,
 }) => {
-  const lineColor = [150, 150, 150];
+  const lineColor = settings.lineColor;
   const getNodeColorField = colorBy.getNodeColorField;
   const colorByField = colorBy.colorByField;
 
@@ -158,7 +159,8 @@ const useLayers = ({
     getFillColor: (d) => toRGB(getNodeColorField(d, detailed_data)),
 
     // radius in pixels
-    getRadius: 3,
+    getRadius: (d) =>
+      getNodeColorField(d, detailed_data) === hoveredKey ? 4 : 3,
     getLineColor: [100, 100, 100],
     opacity: 0.6,
     stroked: data.data.nodes && data.data.nodes.length < 3000,
@@ -169,7 +171,8 @@ const useLayers = ({
     onHover: (info) => setHoverInfo(info),
     modelMatrix: modelMatrix,
     updateTriggers: {
-      getFillColor: [detailed_data, getNodeColorField],
+      getFillColor: [detailed_data, getNodeColorField, colorHook],
+      getRadius: [hoveredKey, getNodeColorField],
       getPosition: [xType],
     },
   };
@@ -304,7 +307,7 @@ const useLayers = ({
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d.clades[clade_accessor],
 
-      getColor: [100, 100, 100],
+      getColor: settings.cladeLabelColor,
       getAngle: 0,
       fontFamily: "Roboto, sans-serif",
       fontWeight: 700,
@@ -352,7 +355,7 @@ const useLayers = ({
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d[config.name_accessor],
 
-      getColor: [180, 180, 180],
+      getColor: settings.terminalNodeLabelColor,
       getAngle: 0,
 
       billboard: true,
@@ -455,8 +458,10 @@ const useLayers = ({
       data: data,
       id: "main-search-scatter-" + spec.key,
       getPosition: (d) => [d[xType], d.y],
-      getLineColor: lineColor,
-      getRadius: 5 + 2 * i,
+      getLineColor: settings.displaySearchesAsPoints ? [0, 0, 0] : lineColor,
+      getRadius: settings.displaySearchesAsPoints
+        ? settings.searchPointSize
+        : 5 + 2 * i,
       radiusUnits: "pixels",
       lineWidthUnits: "pixels",
       stroked: true,
@@ -464,7 +469,9 @@ const useLayers = ({
       wireframe: true,
       getLineWidth: 1,
       filled: true,
-      getFillColor: [255, 0, 0, 0],
+      getFillColor: settings.displaySearchesAsPoints
+        ? lineColor
+        : [255, 0, 0, 0],
       modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [xType],
