@@ -158,7 +158,6 @@ const DeckSettingsModal = ({
                 />
               </label>
             </div>
-            
           </div>
         </TabPanel>
 
@@ -201,7 +200,6 @@ const DeckSettingsModal = ({
         </TabPanel>
         <TabPanel>
           <div className="space-y-3 mt-5">
-            
             <div>
               <label>
                 Default color for nodes:
@@ -236,7 +234,8 @@ const DeckSettingsModal = ({
               </label>
             </div>
             <div className="text-md">
-              <b>Tip:</b> to modify the color of nodes colored by metadata, click the specific metadata in the key at the bottom left.
+              <b>Tip:</b> to modify the color of nodes colored by metadata,
+              click the specific metadata in the key at the bottom left.
             </div>
           </div>
         </TabPanel>
