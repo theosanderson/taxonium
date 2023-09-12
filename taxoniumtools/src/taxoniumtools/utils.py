@@ -28,7 +28,7 @@ def read_metadata(metadata_file, columns, key_column):
         metadata.set_index(key_column, inplace=True)
         # convert metadata to dict of rows
         if not metadata.index.is_unique:
-            print(
+            raise ValueError(
                 f"Error: The key column '{key_column}' contains non-unique values in the metadata file."
             )
 
