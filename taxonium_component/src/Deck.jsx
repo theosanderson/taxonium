@@ -258,6 +258,12 @@ function Deck({
         deckSettingsOpen={deckSettingsOpen}
         setDeckSettingsOpen={setDeckSettingsOpen}
         settings={settings}
+        noneColor={colorHook.toRGB("None")}
+        setNoneColor={(color) => {
+          setAdditionalColorMapping((x) => {
+            return { ...x, None: color };
+          });
+        }}
       />
       <ColorSettingModal
         isOpen={colorSettingOpen}

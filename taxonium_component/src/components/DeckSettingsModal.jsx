@@ -14,6 +14,7 @@ const settingsModalStyle = {
     borderRadius: "8px",
     padding: "20px",
     maxWidth: "700px",
+    maxHeight: "80vh",
   },
   overlay: {
     backgroundColor: "rgba(100, 100, 100, 0.3)",
@@ -30,6 +31,8 @@ const DeckSettingsModal = ({
   settings,
   deckSettingsOpen,
   setDeckSettingsOpen,
+  noneColor,
+  setNoneColor,
 }) => {
   return (
     <Modal
@@ -40,11 +43,12 @@ const DeckSettingsModal = ({
     >
       <h2 className="font-medium mb-5 text-lg">Settings</h2>
       <Tabs>
-        <TabList>
+        <TabList className="">
           <Tab>Toggle</Tab>
           <Tab>Appearance</Tab>
           <Tab>Mutation Types</Tab>
           <Tab>Search</Tab>
+          <Tab>Color</Tab>
         </TabList>
 
         <TabPanel>
@@ -222,6 +226,23 @@ const DeckSettingsModal = ({
             </div>
           </div>
         </TabPanel>
+        <TabPanel>
+          <div className="space-y-3">
+            <h3 className="font-medium">Color</h3>
+            <div>
+              <label>
+                Default color for nodes:
+                <ColorPicker
+                  color={noneColor}
+                  setColor={setNoneColor}
+                 />
+              </label>
+            </div>
+          </div>
+        </TabPanel>
+
+                  
+
       </Tabs>
     </Modal>
   );
