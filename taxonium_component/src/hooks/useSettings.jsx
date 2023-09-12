@@ -18,6 +18,9 @@ export const useSettings = ({ query, updateQuery }) => {
     180, 180, 180,
   ]);
 
+  const [lineColor, setLineColor] = useState([150, 150, 150]);
+  const [cladeLabelColor, setCladeLabelColor] = useState([100, 100, 100]);
+
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
     useState(false);
   const toggleMinimapEnabled = () => {
@@ -137,5 +140,9 @@ export const useSettings = ({ query, updateQuery }) => {
     setSearchPointSize,
     terminalNodeLabelColor,
     setTerminalNodeLabelColor,
+    lineColor,
+    setLineColor,
+    cladeLabelColor,
+    setCladeLabelColor,
   };
 };

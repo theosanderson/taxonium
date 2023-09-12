@@ -117,7 +117,25 @@ const DeckSettingsModal = ({
             />
           </label>
         </div>
+        <div>
+          <label>
+            Color for tree lines
+            <ColorPicker
+              color={settings.lineColor}
+              setColor={settings.setLineColor}
+            />
+          </label>
+        </div>
 
+        <div>
+          <label>
+            Color for clade labels
+            <ColorPicker
+              color={settings.cladeLabelColor}
+              setColor={settings.setCladeLabelColor}
+            />
+          </label>
+        </div>
         <h3 className="mt-5 font-medium">Mutation types enabled</h3>
         <div className="mt-2">
           {Object.keys(settings.mutationTypesEnabled).map((key) => (

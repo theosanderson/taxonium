@@ -45,7 +45,7 @@ const useLayers = ({
   treenomeReferenceInfo,
   setTreenomeReferenceInfo,
 }) => {
-  const lineColor = [150, 150, 150];
+  const lineColor = settings.lineColor;
   const getNodeColorField = colorBy.getNodeColorField;
   const colorByField = colorBy.colorByField;
 
@@ -304,7 +304,7 @@ const useLayers = ({
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d.clades[clade_accessor],
 
-      getColor: [100, 100, 100],
+      getColor: settings.cladeLabelColor,
       getAngle: 0,
       fontFamily: "Roboto, sans-serif",
       fontWeight: 700,
