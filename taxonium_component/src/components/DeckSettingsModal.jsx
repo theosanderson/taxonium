@@ -48,7 +48,7 @@ const DeckSettingsModal = ({
         <TabList className="">
           <Tab>Toggle</Tab>
           <Tab>Appearance</Tab>
-          
+
           <Tab>Search</Tab>
           <Tab>Color</Tab>
         </TabList>
@@ -187,8 +187,6 @@ const DeckSettingsModal = ({
             </div>
           </div>
         </TabPanel>
-
-       
 
         <TabPanel>
           <div className="space-y-3">
