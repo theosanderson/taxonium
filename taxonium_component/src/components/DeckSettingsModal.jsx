@@ -10,10 +10,10 @@ const settingsModalStyle = {
     left: "50%",
     transform: "translate(-50%, -50%)",
     backgroundColor: "#fafafa",
-    border: '1px solid #e2e8f0',
-    borderRadius: '8px',
-    padding: '20px',
-    maxWidth: '700px',
+    border: "1px solid #e2e8f0",
+    borderRadius: "8px",
+    padding: "20px",
+    maxWidth: "700px",
   },
 };
 
