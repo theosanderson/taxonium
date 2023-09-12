@@ -15,6 +15,8 @@ const settingsModalStyle = {
     padding: "20px",
     maxWidth: "700px",
     maxHeight: "80vh",
+    minWidth: "400px",
+    minHeight: "400px",
   },
   overlay: {
     backgroundColor: "rgba(100, 100, 100, 0.3)",
@@ -46,13 +48,13 @@ const DeckSettingsModal = ({
         <TabList className="">
           <Tab>Toggle</Tab>
           <Tab>Appearance</Tab>
-          <Tab>Mutation Types</Tab>
+          
           <Tab>Search</Tab>
           <Tab>Color</Tab>
         </TabList>
 
         <TabPanel>
-          <div className="space-y-3">
+          <div className="mt-6">
             <div>
               <label>
                 <input
@@ -94,6 +96,29 @@ const DeckSettingsModal = ({
                 Display points for internal nodes
               </label>
             </div>
+          </div>
+          <div className="space-y-3 mt-6">
+            <h3 className="font-medium">Mutation types enabled</h3>
+            {Object.keys(settings.mutationTypesEnabled).map((key) => (
+              <div key={key}>
+                <label>
+                  <input
+                    type="checkbox"
+                    className="mr-1"
+                    checked={settings.mutationTypesEnabled[key]}
+                    onChange={() =>
+                      settings.setMutationTypeEnabled(
+                        key,
+                        !settings.mutationTypesEnabled[key]
+                      )
+                    }
+                  />{" "}
+                  {prettifyMutationTypes[key]
+                    ? prettifyMutationTypes[key]
+                    : key}
+                </label>
+              </div>
+            ))}
           </div>
         </TabPanel>
 
@@ -163,31 +188,7 @@ const DeckSettingsModal = ({
           </div>
         </TabPanel>
 
-        <TabPanel>
-          <div className="space-y-3">
-            <h3 className="font-medium">Mutation types enabled</h3>
-            {Object.keys(settings.mutationTypesEnabled).map((key) => (
-              <div key={key}>
-                <label>
-                  <input
-                    type="checkbox"
-                    className="mr-1"
-                    checked={settings.mutationTypesEnabled[key]}
-                    onChange={() =>
-                      settings.setMutationTypeEnabled(
-                        key,
-                        !settings.mutationTypesEnabled[key]
-                      )
-                    }
-                  />{" "}
-                  {prettifyMutationTypes[key]
-                    ? prettifyMutationTypes[key]
-                    : key}
-                </label>
-              </div>
-            ))}
-          </div>
-        </TabPanel>
+       
 
         <TabPanel>
           <div className="space-y-3">
