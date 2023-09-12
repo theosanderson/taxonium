@@ -98,7 +98,7 @@ function Taxonium({
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
-    const initial =  config.colorMapping ? config.colorMapping : {};
+    const initial = config.colorMapping ? config.colorMapping : {};
     return { ...initial, ...additionalColorMapping };
   }, [config.colorMapping, additionalColorMapping]);
   const colorHook = useColor(colorMapping);

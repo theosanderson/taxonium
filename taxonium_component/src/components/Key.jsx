@@ -8,9 +8,7 @@ const Key = ({
   colorByPosition,
   config,
   setCurrentColorSettingKey,
-  setColorSettingOpen
-
-
+  setColorSettingOpen,
 }) => {
   const numLegendEntries = 10;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
@@ -60,13 +58,10 @@ const Key = ({
               <div
                 className="key-text text-xs text-gray-700 mt-0.5 break-all cursor-pointer"
                 key={index}
-                onClick={() => 
-                  {
-                    setCurrentColorSettingKey(item.value);
-                    setColorSettingOpen(true);
-                  }
-                
-                }
+                onClick={() => {
+                  setCurrentColorSettingKey(item.value);
+                  setColorSettingOpen(true);
+                }}
                 title="Edit color"
               >
                 <div
@@ -77,7 +72,7 @@ const Key = ({
               </div>
             );
           })}
-            
+
           {isTruncated && <div className="text-xs text-gray-700">...</div>}
         </>
       )}

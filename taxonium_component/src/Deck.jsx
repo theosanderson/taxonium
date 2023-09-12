@@ -43,7 +43,7 @@ function Deck({
   isCurrentlyOutsideBounds,
   deckRef,
   jbrowseRef,
-  setAdditionalColorMapping
+  setAdditionalColorMapping,
 }) {
   const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
@@ -77,8 +77,6 @@ function Deck({
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const mouseDownPos = useRef();
-
-
 
   const onClickOrMouseMove = useCallback(
     (event) => {
@@ -264,62 +262,54 @@ function Deck({
       <ColorSettingModal
         isOpen={colorSettingOpen}
         setIsOpen={setColorSettingOpen}
-        color = {colorHook.toRGB(currentColorSettingKey)}
-        setColor = { 
-
-          (color) => {
-            setAdditionalColorMapping(x => {
-              return {...x, [currentColorSettingKey]: color};
-            });
-          }
-
-        }
-        title = {currentColorSettingKey}
+        color={colorHook.toRGB(currentColorSettingKey)}
+        setColor={(color) => {
+          setAdditionalColorMapping((x) => {
+            return { ...x, [currentColorSettingKey]: color };
+          });
+        }}
+        title={currentColorSettingKey}
       />
       <NodeHoverTip
-            hoverInfo={hoverInfo}
-            hoverDetails={hoverDetails}
-            colorHook={colorHook}
-            colorBy={colorBy}
-            config={config}
-            filterMutations={settings.filterMutations}
-            deckSize={deckSize}
-          />
-          <TreenomeMutationHoverTip
-            hoverInfo={hoverInfo}
-            hoverDetails={hoverDetails}
-            colorHook={colorHook}
-            colorBy={colorBy}
-            config={config}
-            treenomeReferenceInfo={treenomeReferenceInfo}
-          />
-          <MemoizedKey
-            keyStuff={keyStuff}
-            colorByField={colorBy.colorByField}
-            colorByGene={colorBy.colorByGene}
-            colorByPosition={colorBy.colorByPosition}
-            config={config}
-            setCurrentColorSettingKey={setCurrentColorSettingKey}
-            setColorSettingOpen={setColorSettingOpen}
-          
-          />
-          <DeckButtons
-          // we want this to intercept all mouse events
-          // so that we can prevent the default behavior
-          // of the browser
-            
-          
-            zoomReset={zoomReset}
-            zoomIncrement={zoomIncrement}
-            zoomAxis={zoomAxis}
-            setZoomAxis={setZoomAxis}
-            snapshot={snapshot}
-            loading={data.status === "loading"}
-            requestOpenSettings={() => setDeckSettingsOpen(true)}
-            settings={settings}
-          />
+        hoverInfo={hoverInfo}
+        hoverDetails={hoverDetails}
+        colorHook={colorHook}
+        colorBy={colorBy}
+        config={config}
+        filterMutations={settings.filterMutations}
+        deckSize={deckSize}
+      />
+      <TreenomeMutationHoverTip
+        hoverInfo={hoverInfo}
+        hoverDetails={hoverDetails}
+        colorHook={colorHook}
+        colorBy={colorBy}
+        config={config}
+        treenomeReferenceInfo={treenomeReferenceInfo}
+      />
+      <MemoizedKey
+        keyStuff={keyStuff}
+        colorByField={colorBy.colorByField}
+        colorByGene={colorBy.colorByGene}
+        colorByPosition={colorBy.colorByPosition}
+        config={config}
+        setCurrentColorSettingKey={setCurrentColorSettingKey}
+        setColorSettingOpen={setColorSettingOpen}
+      />
+      <DeckButtons
+        // we want this to intercept all mouse events
+        // so that we can prevent the default behavior
+        // of the browser
 
-
+        zoomReset={zoomReset}
+        zoomIncrement={zoomIncrement}
+        zoomAxis={zoomAxis}
+        setZoomAxis={setZoomAxis}
+        snapshot={snapshot}
+        loading={data.status === "loading"}
+        requestOpenSettings={() => setDeckSettingsOpen(true)}
+        settings={settings}
+      />
       <DeckGL
         pickingRadius={10}
         //getCursor={() => hoverInfo && hoverInfo.object ? "default" : "pointer"}
@@ -379,9 +369,7 @@ function Deck({
             settings={settings}
           />
         </View>
-        <View id="main">
-          
-        </View>
+        <View id="main"></View>
       </DeckGL>
     </div>
   );
