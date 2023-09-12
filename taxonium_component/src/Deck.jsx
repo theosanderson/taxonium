@@ -193,7 +193,6 @@ function Deck({
     treenomeReferenceInfo,
     setTreenomeReferenceInfo,
     hoveredKey,
-    
   });
   // console.log("deck refresh");
 

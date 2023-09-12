@@ -34,9 +34,11 @@ const Key = ({
         collapsed ? "w-20" : "w-32"
       )}
       // z index big
-      style={{ zIndex: 10 ,
-      
-    cursor:'default'}}
+      style={{
+        zIndex: 10,
+
+        cursor: "default",
+      }}
     >
       <h3
         className="font-bold text-gray-600 text-xs cursor-pointer"
@@ -63,25 +65,23 @@ const Key = ({
                 className="key-text text-xs text-gray-700 mt-0.5 break-all cursor-pointer"
                 key={index}
                 style={{
-                  pointerEvents: 'auto'
-                }
-              }
+                  pointerEvents: "auto",
+                }}
                 onClick={() => {
                   setCurrentColorSettingKey(item.value);
                   setColorSettingOpen(true);
                 }}
-                onMouseEnter={() =>{
-                  setHoveredKey(item.value)
-                  
-                }
-                }
+                onMouseEnter={() => {
+                  setHoveredKey(item.value);
+                }}
                 onMouseLeave={() => setHoveredKey(null)}
-
                 title="Edit color"
               >
                 <div
                   style={{ backgroundColor: color }}
-                  className={`circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform ${hoveredKey === item.value ? "scale-150" : "scale-100" }`}
+                  className={`circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform ${
+                    hoveredKey === item.value ? "scale-150" : "scale-100"
+                  }`}
                 />
                 {item.value}
               </div>
