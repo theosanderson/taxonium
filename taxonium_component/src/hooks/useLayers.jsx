@@ -464,7 +464,7 @@ const useLayers = ({
       wireframe: true,
       getLineWidth: 1,
       filled: true,
-     // getFillColor: [255, 0, 0, 0],
+      // getFillColor: [255, 0, 0, 0],
       modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [xType],
