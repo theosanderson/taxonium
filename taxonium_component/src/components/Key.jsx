@@ -33,6 +33,8 @@ const Key = ({
         "px-2 border-right border  bg-white opacity-90 absolute bottom-2 left-2 pt-1 pb-2",
         collapsed ? "w-20" : "w-32"
       )}
+      // z index big
+      style={{ zIndex: 1000 }}
     >
       <h3
         className="font-bold text-gray-600 text-xs cursor-pointer"

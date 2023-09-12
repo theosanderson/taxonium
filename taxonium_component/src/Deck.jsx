@@ -276,7 +276,48 @@ function Deck({
         }
         title = {currentColorSettingKey}
       />
-
+      <NodeHoverTip
+            hoverInfo={hoverInfo}
+            hoverDetails={hoverDetails}
+            colorHook={colorHook}
+            colorBy={colorBy}
+            config={config}
+            filterMutations={settings.filterMutations}
+            deckSize={deckSize}
+          />
+          <TreenomeMutationHoverTip
+            hoverInfo={hoverInfo}
+            hoverDetails={hoverDetails}
+            colorHook={colorHook}
+            colorBy={colorBy}
+            config={config}
+            treenomeReferenceInfo={treenomeReferenceInfo}
+          />
+          <MemoizedKey
+            keyStuff={keyStuff}
+            colorByField={colorBy.colorByField}
+            colorByGene={colorBy.colorByGene}
+            colorByPosition={colorBy.colorByPosition}
+            config={config}
+            setCurrentColorSettingKey={setCurrentColorSettingKey}
+            setColorSettingOpen={setColorSettingOpen}
+          
+          />
+          <DeckButtons
+          // we want this to intercept all mouse events
+          // so that we can prevent the default behavior
+          // of the browser
+            
+          
+            zoomReset={zoomReset}
+            zoomIncrement={zoomIncrement}
+            zoomAxis={zoomAxis}
+            setZoomAxis={setZoomAxis}
+            snapshot={snapshot}
+            loading={data.status === "loading"}
+            requestOpenSettings={() => setDeckSettingsOpen(true)}
+            settings={settings}
+          />
 
 
       <DeckGL
@@ -339,43 +380,7 @@ function Deck({
           />
         </View>
         <View id="main">
-          <NodeHoverTip
-            hoverInfo={hoverInfo}
-            hoverDetails={hoverDetails}
-            colorHook={colorHook}
-            colorBy={colorBy}
-            config={config}
-            filterMutations={settings.filterMutations}
-            deckSize={deckSize}
-          />
-          <TreenomeMutationHoverTip
-            hoverInfo={hoverInfo}
-            hoverDetails={hoverDetails}
-            colorHook={colorHook}
-            colorBy={colorBy}
-            config={config}
-            treenomeReferenceInfo={treenomeReferenceInfo}
-          />
-          <MemoizedKey
-            keyStuff={keyStuff}
-            colorByField={colorBy.colorByField}
-            colorByGene={colorBy.colorByGene}
-            colorByPosition={colorBy.colorByPosition}
-            config={config}
-            setCurrentColorSettingKey={setCurrentColorSettingKey}
-            setColorSettingOpen={setColorSettingOpen}
           
-          />
-          <DeckButtons
-            zoomReset={zoomReset}
-            zoomIncrement={zoomIncrement}
-            zoomAxis={zoomAxis}
-            setZoomAxis={setZoomAxis}
-            snapshot={snapshot}
-            loading={data.status === "loading"}
-            requestOpenSettings={() => setDeckSettingsOpen(true)}
-            settings={settings}
-          />
         </View>
       </DeckGL>
     </div>

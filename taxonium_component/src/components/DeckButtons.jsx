@@ -19,6 +19,9 @@ const TaxButton = ({ children, onClick, title }) => {
       shadow-md "
       onClick={onClick}
       title={title}
+      style={{
+        pointerEvents: "auto",
+      }}
     >
       {children}
     </button>
@@ -42,7 +45,9 @@ export const DeckButtons = ({
         right: "0em",
         bottom: "0em",
         zIndex: 10,
+        pointerEvents: "none",
       }}
+
       className="flex flex-col items-end"
     >
       <div
@@ -63,6 +68,7 @@ export const DeckButtons = ({
       "
           style={{
             fontSize: ".7em",
+            pointerEvents: "auto",
             boxShadow: "0px -3px 4px  4px rgba(255, 255, 255, 1)",
           }}
         >
