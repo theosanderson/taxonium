@@ -7,6 +7,10 @@ const Key = ({
   colorByGene,
   colorByPosition,
   config,
+  setCurrentColorSettingKey,
+  setColorSettingOpen
+
+
 }) => {
   const numLegendEntries = 10;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
@@ -51,19 +55,27 @@ const Key = ({
             const rgb = item.color;
             const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
             return (
-              // small dot with color
               <div
-                className="key-text text-xs text-gray-700 mt-0.5  break-all"
+                className="key-text text-xs text-gray-700 mt-0.5 break-all cursor-pointer"
                 key={index}
+                onClick={() => 
+                  {
+                    setCurrentColorSettingKey(item.value);
+                    setColorSettingOpen(true);
+                  }
+                
+                }
+                title="Edit color"
               >
                 <div
                   style={{ backgroundColor: color }}
-                  className="w-2 h-2 mr-2 rounded-full inline-block"
+                  className="circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform hover:scale-150"
                 />
                 {item.value}
               </div>
             );
           })}
+            
           {isTruncated && <div className="text-xs text-gray-700">...</div>}
         </>
       )}

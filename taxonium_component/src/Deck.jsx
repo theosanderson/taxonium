@@ -20,6 +20,7 @@ import { TreenomeButtons } from "./components/TreenomeButtons";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
+import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
 
 const MemoizedKey = React.memo(Key);
@@ -42,10 +43,13 @@ function Deck({
   isCurrentlyOutsideBounds,
   deckRef,
   jbrowseRef,
+  setAdditionalColorMapping
 }) {
   const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
+  const [colorSettingOpen, setColorSettingOpen] = useState(false);
+  const [currentColorSettingKey, setCurrentColorSettingKey] = useState("a");
   const [treenomeSettingsOpen, setTreenomeSettingsOpen] = useState(false);
 
   //console.log("DATA is ", data);
@@ -73,6 +77,8 @@ function Deck({
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const mouseDownPos = useRef();
+
+
 
   const onClickOrMouseMove = useCallback(
     (event) => {
@@ -255,6 +261,24 @@ function Deck({
         setDeckSettingsOpen={setDeckSettingsOpen}
         settings={settings}
       />
+      <ColorSettingModal
+        isOpen={colorSettingOpen}
+        setIsOpen={setColorSettingOpen}
+        color = {colorHook.toRGB(currentColorSettingKey)}
+        setColor = { 
+
+          (color) => {
+            setAdditionalColorMapping(x => {
+              return {...x, [currentColorSettingKey]: color};
+            });
+          }
+
+        }
+        title = {currentColorSettingKey}
+      />
+
+
+
       <DeckGL
         pickingRadius={10}
         //getCursor={() => hoverInfo && hoverInfo.object ? "default" : "pointer"}
@@ -338,6 +362,9 @@ function Deck({
             colorByGene={colorBy.colorByGene}
             colorByPosition={colorBy.colorByPosition}
             config={config}
+            setCurrentColorSettingKey={setCurrentColorSettingKey}
+            setColorSettingOpen={setColorSettingOpen}
+          
           />
           <DeckButtons
             zoomReset={zoomReset}

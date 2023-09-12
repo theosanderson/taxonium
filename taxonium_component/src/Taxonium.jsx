@@ -96,9 +96,11 @@ function Taxonium({
     configUrl
   );
   const colorBy = useColorBy(config, query, updateQuery);
+  const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
-    return config.colorMapping ? config.colorMapping : {};
-  }, [config.colorMapping]);
+    const initial =  config.colorMapping ? config.colorMapping : {};
+    return { ...initial, ...additionalColorMapping };
+  }, [config.colorMapping, additionalColorMapping]);
   const colorHook = useColor(colorMapping);
 
   //TODO: this is always true for now
@@ -193,6 +195,7 @@ function Taxonium({
             treenomeState={treenomeState}
             deckRef={deckRef}
             jbrowseRef={jbrowseRef}
+            setAdditionalColorMapping={setAdditionalColorMapping}
           />
         </div>
 
