@@ -44,6 +44,9 @@ function Deck({
   deckRef,
   jbrowseRef,
   setAdditionalColorMapping,
+  mouseDownIsMinimap,
+  setMouseDownIsMinimap
+
 }) {
   const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
@@ -75,7 +78,6 @@ function Deck({
   );
   const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
 
-  const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const mouseDownPos = useRef();
 
@@ -109,6 +111,9 @@ function Deck({
         y: event.nativeEvent.offsetY,
         radius: 10,
       });
+      if (event._reactName === "onPointerUp") {
+        setMouseDownIsMinimap(false);
+      }
 
       if (event._reactName === "onPointerDown") {
         if (pickInfo && pickInfo.viewport.id === "minimap") {
@@ -134,8 +139,10 @@ function Deck({
         pickInfo.viewport.id === "minimap" &&
         mouseDownIsMinimap
       ) {
+        
         onViewStateChange({
           oldViewState: viewState,
+          specialMinimap:true,
           viewState: {
             ...viewState,
             target: [

@@ -66,10 +66,11 @@ function Taxonium({
 
   const deckRef = useRef();
   const jbrowseRef = useRef();
+  const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
-  const view = useView({ settings, deckSize, deckRef, jbrowseRef });
+  const view = useView({ settings, deckSize, deckRef, jbrowseRef, mouseDownIsMinimap });
 
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 
@@ -194,6 +195,8 @@ function Taxonium({
             isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
             treenomeState={treenomeState}
             deckRef={deckRef}
+            mouseDownIsMinimap={mouseDownIsMinimap}
+            setMouseDownIsMinimap={setMouseDownIsMinimap}
             jbrowseRef={jbrowseRef}
             setAdditionalColorMapping={setAdditionalColorMapping}
           />
