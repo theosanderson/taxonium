@@ -81,6 +81,12 @@ function Deck({
 
   const onClickOrMouseMove = useCallback(
     (event) => {
+      
+      
+      if (event._reactName === "onClick") {
+        
+        setMouseDownIsMinimap(false);
+      }
       if (event.buttons === 0 && event._reactName === "onPointerMove") {
         return false;
       }
@@ -109,9 +115,7 @@ function Deck({
         y: event.nativeEvent.offsetY,
         radius: 10,
       });
-      if (event._reactName === "onPointerUp") {
-        setMouseDownIsMinimap(false);
-      }
+      
 
       if (event._reactName === "onPointerDown") {
         if (pickInfo && pickInfo.viewport.id === "minimap") {
