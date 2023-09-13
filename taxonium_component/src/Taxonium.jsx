@@ -70,7 +70,13 @@ function Taxonium({
 
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
-  const view = useView({ settings, deckSize, deckRef, jbrowseRef, mouseDownIsMinimap });
+  const view = useView({
+    settings,
+    deckSize,
+    deckRef,
+    jbrowseRef,
+    mouseDownIsMinimap,
+  });
 
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
 

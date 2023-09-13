@@ -101,7 +101,13 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({ settings, deckSize, deckRef, jbrowseRef, mouseDownIsMinimap }) => {
+const useView = ({
+  settings,
+  deckSize,
+  deckRef,
+  jbrowseRef,
+  mouseDownIsMinimap,
+}) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -1 : 0);
   globalSetZoomAxis = setZoomAxis;
@@ -232,10 +238,8 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, mouseDownIsMinimap }
       oldViewState,
       basicTarget,
       overrideZoomAxis,
-      specialMinimap
-      
+      specialMinimap,
     }) => {
-      
       if (!deckSize) {
         return;
       }
@@ -251,8 +255,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, mouseDownIsMinimap }
       const newScaleY = 2 ** newViewState.zoom;
       // eslint-disable-line no-unused-vars
 
-      if(mouseDownIsMinimap && !specialMinimap &&oldScaleY === newScaleY){
-       
+      if (mouseDownIsMinimap && !specialMinimap && oldScaleY === newScaleY) {
         return;
       }
 
