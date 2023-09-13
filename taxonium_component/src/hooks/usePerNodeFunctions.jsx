@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 function usePerNodeFunctions(data, config) {
   const getNodeGenotype = (node_id) => {
-    console.log("data", data);
+   
 
     let data_to_use;
     if (data.data.nodeLookup[node_id]) {
