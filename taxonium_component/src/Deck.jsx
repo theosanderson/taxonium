@@ -44,6 +44,8 @@ function Deck({
   deckRef,
   jbrowseRef,
   setAdditionalColorMapping,
+  mouseDownIsMinimap,
+  setMouseDownIsMinimap,
 }) {
   const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
@@ -75,12 +77,13 @@ function Deck({
   );
   const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
 
-  const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
-
   const mouseDownPos = useRef();
 
   const onClickOrMouseMove = useCallback(
     (event) => {
+      if (event._reactName === "onClick") {
+        setMouseDownIsMinimap(false);
+      }
       if (event.buttons === 0 && event._reactName === "onPointerMove") {
         return false;
       }
@@ -136,6 +139,7 @@ function Deck({
       ) {
         onViewStateChange({
           oldViewState: viewState,
+          specialMinimap: true,
           viewState: {
             ...viewState,
             target: [
