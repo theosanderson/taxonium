@@ -11,22 +11,8 @@ import { TiZoom, TiCog } from "react-icons/ti";
 
 import { MdOutlineZoomOutMap } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
-
-const TaxButton = ({ children, onClick, title }) => {
-  return (
-    <button
-      className=" w-12 h-10 bg-gray-100 p-1 rounded border-gray-300 text-gray-700  opacity-70  hover:opacity-100 mr-1 z-50 mt-auto mb-1
-      shadow-md "
-      onClick={onClick}
-      title={title}
-      style={{
-        pointerEvents: "auto",
-      }}
-    >
-      {children}
-    </button>
-  );
-};
+import TaxButton from "./TaxButton";
+import SnapshotButton from "./SnapshotButton";
 
 export const DeckButtons = ({
   loading,
@@ -37,6 +23,7 @@ export const DeckButtons = ({
   requestOpenSettings,
   zoomReset,
   settings,
+  triggerSVGdownload
 }) => {
   return (
     <div
@@ -116,14 +103,9 @@ export const DeckButtons = ({
         >
           <MdOutlineZoomOutMap className="mx-auto  w-5 h-5 inline-block " />
         </TaxButton>
-        <TaxButton
-          onClick={() => {
-            snapshot();
-          }}
-          title="Take screenshot"
-        >
-          <BiCamera className="mx-auto  w-5 h-5 inline-block" />
-        </TaxButton>
+        <SnapshotButton svgFunction={triggerSVGdownload} 
+        pixelFunction={snapshot} />
+      
         <div className="">
           <div>
             <TaxButton

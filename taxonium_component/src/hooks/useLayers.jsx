@@ -8,6 +8,7 @@ import {
 
 import { useMemo, useCallback } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
+import getSVGfunction from "../utils/deckglToSvg";
 
 const getKeyStuff = (getNodeColorField, colorByField, dataset, toRGB) => {
   const counts = {};
@@ -570,10 +571,12 @@ const useLayers = ({
     console.log("could not map layer spec for ", layer);
   });
 
-  console.log("processedLayers", processedLayers)
+  const {renderSVG, triggerSVGdownload} = getSVGfunction(layers,viewState);
+  window.renderSVG = renderSVG;
+  
 
 
-  return { layers: processedLayers, layerFilter, keyStuff };
+  return { layers: processedLayers, layerFilter, keyStuff, renderSVG, triggerSVGdownload };
 };
 
 export default useLayers;

@@ -178,7 +178,7 @@ function Deck({
     [hoverDetails]
   );
 
-  const { layers, layerFilter, keyStuff } = useLayers({
+  const { layers, layerFilter, keyStuff,triggerSVGdownload } = useLayers({
     data,
     search,
     viewState,
@@ -314,6 +314,7 @@ function Deck({
         // we want this to intercept all mouse events
         // so that we can prevent the default behavior
         // of the browser
+        triggerSVGdownload={triggerSVGdownload}
 
         zoomReset={zoomReset}
         zoomIncrement={zoomIncrement}

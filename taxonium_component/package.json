@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@fontsource/roboto": "^5.0.1",
+    "@headlessui/react": "^1.7.17",
     "@jbrowse/core": "^2.5.0",
     "@jbrowse/plugin-data-management": "^2.5.0",
     "@jbrowse/react-linear-genome-view": "^2.5.0",
