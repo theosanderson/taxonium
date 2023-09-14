@@ -342,9 +342,7 @@ function SearchPanel({
         {colorBy.colorByField === "genotype" && (
       
           <div className="space-x-2">
-            <div className="text-xs">
-        If you are using custom JSONLs there is currently a bug with genotype colouring, please use <a className="text-blue-800" href="https://cov2tree-9k82lpuou-theosanderson.vercel.app/">this old version</a>.
-        </div>
+            
             <label className="space-x-2">
               <span>Gene</span>
               <Select
