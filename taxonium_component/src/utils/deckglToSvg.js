@@ -15,9 +15,12 @@ const accessOrConstant = (accessor, node) => {
   }
 
 
-  const svgHeight = 600
-  const svgWidth = 600
 
+
+
+
+
+  const getSVG = (layers, viewState, svgWidth, svgHeight) => {
 
   const applyBounds = ( point) => {
    
@@ -32,14 +35,11 @@ const accessOrConstant = (accessor, node) => {
     return [x*svgWidth,y*svgHeight]
     
   };
-
-
-  const getSVG = (layers) => {
     if(!viewState.min_x){
         window.alert("Please zoom in and out a little before SVG export")
         return
     }
-    let svgContent = "<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'>";
+    let svgContent = `<svg xmlns='http://www.w3.org/2000/svg' width="${svgWidth}" height="${svgHeight}">`
   
     for (const layer of layers) {
       // unless layer id starts with "main"
@@ -133,28 +133,15 @@ const accessOrConstant = (accessor, node) => {
     return svgContent;
   };
   console.log(viewState)
-  function renderSVG() {
-    const svgContent = getSVG(layers, viewState);
-    // Create a new SVG container element
-    const svgContainer = document.createElement("div");
-    svgContainer.id = "mySVG";
-    svgContainer.innerHTML = svgContent;
-
-  // Optional: set styles for the SVG container
-  svgContainer.style.width = '100%';  // or any other desired width
-  svgContainer.style.height = 'auto'; // maintains aspect ratio
   
-    // if there's already an SVG container, remove it
-    const existingSVG = document.getElementById("mySVG");
-    if (existingSVG) {
-      existingSVG.remove();
-    }
-    // Append the container to the bottom of the body
-    document.body.appendChild(svgContainer);
-  }
 
-  function triggerSVGdownload() {
-    const svgContent = getSVG(layers, viewState);
+  function triggerSVGdownload(deckSize) {
+    if(!deckSize){
+        deckSize = {width:600,height:600}
+    }
+    const svgWidth = deckSize.width
+    const svgHeight = deckSize.height
+    const svgContent = getSVG(layers, viewState, svgWidth, svgHeight);
     // Create a new blob object
     const blob = new Blob([svgContent], { type: "image/svg+xml" });
     // Create a link element, hide it, direct it towards the blob, and then 'click' it programatically
@@ -173,7 +160,7 @@ const accessOrConstant = (accessor, node) => {
   }
  
 
-  return {renderSVG, triggerSVGdownload}
+  return { triggerSVGdownload}
 }
 
 export default getSVGfunction

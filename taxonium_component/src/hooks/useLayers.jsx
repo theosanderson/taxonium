@@ -571,12 +571,12 @@ const useLayers = ({
     console.log("could not map layer spec for ", layer);
   });
 
-  const {renderSVG, triggerSVGdownload} = getSVGfunction(layers,viewState);
-  window.renderSVG = renderSVG;
+  const { triggerSVGdownload} = getSVGfunction(layers,viewState);
+  
   
 
 
-  return { layers: processedLayers, layerFilter, keyStuff, renderSVG, triggerSVGdownload };
+  return { layers: processedLayers, layerFilter, keyStuff, triggerSVGdownload };
 };
 
 export default useLayers;

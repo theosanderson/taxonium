@@ -3,14 +3,14 @@ import { Dialog, Transition } from '@headlessui/react';
 import { BiCamera } from 'react-icons/bi';
 import TaxButton from './TaxButton';
 
-const SnapshotButton = ({svgFunction, pixelFunction}) => {
+const SnapshotButton = ({svgFunction, pixelFunction, deckSize}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   function snapshot(option) {
     if (option === 'pixels') {
       pixelFunction();
     } else if (option === 'SVG') {
-      svgFunction();
+      svgFunction(deckSize);
     }
     setIsOpen(false);
   }

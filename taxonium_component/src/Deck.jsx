@@ -315,6 +315,7 @@ function Deck({
         // so that we can prevent the default behavior
         // of the browser
         triggerSVGdownload={triggerSVGdownload}
+        deckSize={deckSize}
 
         zoomReset={zoomReset}
         zoomIncrement={zoomIncrement}
