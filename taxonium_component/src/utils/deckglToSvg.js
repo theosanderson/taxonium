@@ -37,7 +37,7 @@ const accessOrConstant = (accessor, node) => {
   };
     if(!viewState.min_x){
         window.alert("Please zoom in and out a little before SVG export")
-        return
+        return false
     }
     let svgContent = `<svg xmlns='http://www.w3.org/2000/svg' width="${svgWidth}" height="${svgHeight}">`
   
@@ -142,6 +142,9 @@ const accessOrConstant = (accessor, node) => {
     const svgWidth = deckSize.width
     const svgHeight = deckSize.height
     const svgContent = getSVG(layers, viewState, svgWidth, svgHeight);
+    if (!svgContent) {
+      return;
+    }
     // Create a new blob object
     const blob = new Blob([svgContent], { type: "image/svg+xml" });
     // Create a link element, hide it, direct it towards the blob, and then 'click' it programatically
