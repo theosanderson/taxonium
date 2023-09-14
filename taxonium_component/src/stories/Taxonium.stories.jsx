@@ -128,15 +128,12 @@ export const NexusTree = {
   },
 };
 
-
-
-
-
 export const JSONLgenetic = {
   args: {
     sourceData: {
       status: "url_supplied",
-      filename: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/tfci-taxonium.jsonl.gz",
+      filename:
+        "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/tfci-taxonium.jsonl.gz",
       filetype: "jsonl",
     },
   },

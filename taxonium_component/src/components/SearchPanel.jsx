@@ -340,9 +340,7 @@ function SearchPanel({
           </Select>
         </div>
         {colorBy.colorByField === "genotype" && (
-      
           <div className="space-x-2">
-            
             <label className="space-x-2">
               <span>Gene</span>
               <Select
