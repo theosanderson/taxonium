@@ -3,7 +3,7 @@ import {
   ScatterplotLayer,
   PolygonLayer,
   TextLayer,
-  SolidPolygonLayer
+  SolidPolygonLayer,
 } from "@deck.gl/layers";
 
 import { useMemo, useCallback } from "react";
@@ -120,7 +120,6 @@ const useLayers = ({
     }
   }, [data.base_data, getX]);
 
-  
   const detailed_scatter_data = useMemo(() => {
     return detailed_data.nodes.filter(
       (node) =>
@@ -163,7 +162,7 @@ const useLayers = ({
     getRadius: 3,
     // radius in pixels
     // we had to get rid of the below because it was messing up the genotype colours
-   // getRadius: (d) =>
+    // getRadius: (d) =>
     //  getNodeColorField(d, detailed_data) === hoveredKey ? 4 : 3,
     getLineColor: [100, 100, 100],
     opacity: 0.6,
@@ -240,14 +239,14 @@ const useLayers = ({
       id: "fillin-scatter",
       data: minimap_scatter_data,
       getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
-    }
+    };
 
     const main_line_layer = {
       layerType: "LineLayer",
       ...line_layer_horiz_common_props,
       id: "main-line-horiz",
       data: detailed_data.nodes,
-    }
+    };
 
     const main_line_layer2 = {
       layerType: "LineLayer",
@@ -404,7 +403,7 @@ const useLayers = ({
   };
 
   const minimap_line_horiz = {
-    layerType: "LineLayer", 
+    layerType: "LineLayer",
     id: "minimap-line-horiz",
     getPolygonOffset: ({ layerIndex }) => [0, -4000],
     data: base_data.nodes,
@@ -472,9 +471,9 @@ const useLayers = ({
 
     const lineColor = search.getLineColor(i);
 
-    return  {
+    return {
       layerType: "ScatterplotLayer",
-    
+
       data: data,
       id: "main-search-scatter-" + spec.key,
       getPosition: (d) => [d[xType], d.y],
@@ -549,11 +548,9 @@ const useLayers = ({
     },
     [isCurrentlyOutsideBounds]
   );
-  
 
   const processedLayers = layers.map((layer) => {
     if (layer.layerType === "ScatterplotLayer") {
-      
       return new ScatterplotLayer(layer);
     }
     if (layer.layerType === "LineLayer") {
@@ -571,10 +568,7 @@ const useLayers = ({
     console.log("could not map layer spec for ", layer);
   });
 
-  const { triggerSVGdownload} = getSVGfunction(layers,viewState);
-  
-  
-
+  const { triggerSVGdownload } = getSVGfunction(layers, viewState);
 
   return { layers: processedLayers, layerFilter, keyStuff, triggerSVGdownload };
 };

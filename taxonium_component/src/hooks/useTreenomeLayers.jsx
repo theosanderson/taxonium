@@ -427,7 +427,7 @@ const useTreenomeLayers = (
   };
 
   const dynamic_browser_background_layer = {
-    layerType :"SolidPolygonLayer",
+    layerType: "SolidPolygonLayer",
     id: "browser-loaded-dynamic-background",
     data: dynamic_background_data,
     modelMatrix: modelMatrixFixedX,
@@ -459,7 +459,7 @@ const useTreenomeLayers = (
     getPolygonOffset: myGetPolygonOffset,
   };
 
-  const selected_node_layer = ({
+  const selected_node_layer = {
     layerType: "PolygonLayer",
     id: "browser-loaded-selected-node",
     data: selected_node_data,
@@ -472,7 +472,7 @@ const useTreenomeLayers = (
     getFillColor: [240, 240, 240],
     pickable: false,
     getPolygonOffset: myGetPolygonOffset,
-  });
+  };
   layers.push(browser_background_layer);
   layers.push(dynamic_browser_background_sublayer);
   layers.push(dynamic_browser_background_layer);

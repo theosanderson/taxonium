@@ -24,7 +24,7 @@ export const DeckButtons = ({
   zoomReset,
   settings,
   deckSize,
-  triggerSVGdownload
+  triggerSVGdownload,
 }) => {
   return (
     <div
@@ -104,10 +104,12 @@ export const DeckButtons = ({
         >
           <MdOutlineZoomOutMap className="mx-auto  w-5 h-5 inline-block " />
         </TaxButton>
-        <SnapshotButton svgFunction={triggerSVGdownload} 
-        pixelFunction={snapshot} 
-        deckSize={deckSize}/>
-      
+        <SnapshotButton
+          svgFunction={triggerSVGdownload}
+          pixelFunction={snapshot}
+          deckSize={deckSize}
+        />
+
         <div className="">
           <div>
             <TaxButton

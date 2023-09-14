@@ -178,7 +178,7 @@ function Deck({
     [hoverDetails]
   );
 
-  const { layers, layerFilter, keyStuff,triggerSVGdownload } = useLayers({
+  const { layers, layerFilter, keyStuff, triggerSVGdownload } = useLayers({
     data,
     search,
     viewState,
@@ -316,7 +316,6 @@ function Deck({
         // of the browser
         triggerSVGdownload={triggerSVGdownload}
         deckSize={deckSize}
-
         zoomReset={zoomReset}
         zoomIncrement={zoomIncrement}
         zoomAxis={zoomAxis}
