@@ -49,22 +49,20 @@ const getSVGfunction = (layers, viewState) => {
               // make color transparent
               color = "none";
             } else {
-                const initColor = accessOrConstant(accessor, point);
-                // if rgba
-                if (initColor.length === 4) {
-                    color = `rgba(${initColor.join(",")})`;
-                    if (initColor[3] === 0) {
-                    
-                        color = "none";
-                    }
-                    }
-                // if rgb
-                else if (initColor.length === 3) {
-                    color = `rgb(${initColor.join(",")})`;
-                    }
-                else{
-                    console.warn("Unsupported color format");
+              const initColor = accessOrConstant(accessor, point);
+              // if rgba
+              if (initColor.length === 4) {
+                color = `rgba(${initColor.join(",")})`;
+                if (initColor[3] === 0) {
+                  color = "none";
                 }
+              }
+              // if rgb
+              else if (initColor.length === 3) {
+                color = `rgb(${initColor.join(",")})`;
+              } else {
+                console.warn("Unsupported color format");
+              }
             }
             // check if stroked
             let strokeColor, strokeWidth;
