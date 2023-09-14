@@ -47,9 +47,24 @@ const getSVGfunction = (layers, viewState) => {
             let color;
             if (!accessor) {
               // make color transparent
-              color = [0, 0, 0, 0];
+              color = "none";
             } else {
-              color = accessOrConstant(accessor, point).join(",");
+                const initColor = accessOrConstant(accessor, point);
+                // if rgba
+                if (initColor.length === 4) {
+                    color = `rgba(${initColor.join(",")})`;
+                    if (initColor[3] === 0) {
+                    
+                        color = "none";
+                    }
+                    }
+                // if rgb
+                else if (initColor.length === 3) {
+                    color = `rgb(${initColor.join(",")})`;
+                    }
+                else{
+                    console.warn("Unsupported color format");
+                }
             }
             // check if stroked
             let strokeColor, strokeWidth;
@@ -62,7 +77,7 @@ const getSVGfunction = (layers, viewState) => {
 
             // if getRadius is a fn call it otherwise assume it's a value
             const radius = accessOrConstant(layer.getRadius, point);
-            svgContent += `<circle cx="${x}" cy="${y}" r="${radius}" fill="rgb(${color})"
+            svgContent += `<circle cx="${x}" cy="${y}" r="${radius}" fill="${color}"
             ${
               layer.stroked
                 ? `stroke="rgb(${strokeColor})" stroke-width="${strokeWidth}"`
