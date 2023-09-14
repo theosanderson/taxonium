@@ -203,16 +203,18 @@ const useTreenomeLayers = (
     },
     getPolygonOffset: myGetPolygonOffset,
   };
-  const main_variation_layer_aa = new LineLayer({
+  const main_variation_layer_aa = {
+    layerType: "LineLayer",
     ...main_variation_aa_common_props,
     data: layerDataAa,
     id: "browser-loaded-main-aa",
-  });
-  const fillin_variation_layer_aa = new LineLayer({
+  };
+  const fillin_variation_layer_aa = {
+    layerType: "LineLayer",
     ...main_variation_aa_common_props,
     data: cachedVarDataAa,
     id: "browser-fillin-aa",
-  });
+  };
 
   const main_variation_nt_common_props = {
     onHover: (info) => setHoverInfo(info),
@@ -301,17 +303,19 @@ const useTreenomeLayers = (
     getPolygonOffset: myGetPolygonOffset,
   };
 
-  const main_variation_layer_nt = new LineLayer({
+  const main_variation_layer_nt = {
+    layerType: "LineLayer",
     ...main_variation_nt_common_props,
     data: layerDataNt,
     id: "browser-loaded-main-nt",
-  });
+  };
 
-  const fillin_variation_layer_nt = new LineLayer({
+  const fillin_variation_layer_nt = {
+    layerType: "LineLayer",
     ...main_variation_nt_common_props,
     data: cachedVarDataNt,
     id: "browser-fillin-nt",
-  });
+  };
 
   const dynamic_background_data = useMemo(() => {
     if (!settings.treenomeEnabled || cov2Genes === null) {
@@ -395,7 +399,8 @@ const useTreenomeLayers = (
     return [];
   }
 
-  const browser_background_layer = new PolygonLayer({
+  const browser_background_layer = {
+    layerType: "PolygonLayer",
     id: "browser-loaded-background",
 
     data: background_layer_data,
@@ -409,26 +414,29 @@ const useTreenomeLayers = (
     pickable: false,
     getFillColor: [224, 224, 224],
     getPolygonOffset: myGetPolygonOffset,
-  });
+  };
 
-  const dynamic_browser_background_sublayer = new SolidPolygonLayer({
+  const dynamic_browser_background_sublayer = {
+    layerType: "SolidPolygonLayer",
     id: "browser-loaded-dynamic-background-sublayer",
     data: dynamic_browser_background_data,
     getPolygon: (d) => d.x,
     getFillColor: (d) => d.c,
     getPolygonOffset: myGetPolygonOffset,
     modelMatrix: modelMatrixFixedX,
-  });
+  };
 
-  const dynamic_browser_background_layer = new SolidPolygonLayer({
+  const dynamic_browser_background_layer = {
+    layerType :"SolidPolygonLayer",
     id: "browser-loaded-dynamic-background",
     data: dynamic_background_data,
     modelMatrix: modelMatrixFixedX,
     getPolygon: (d) => d.x,
     getFillColor: (d) => [...d.c, 0.2 * 255],
     getPolygonOffset: myGetPolygonOffset,
-  });
-  const browser_outline_layer = new PolygonLayer({
+  };
+  const browser_outline_layer = {
+    layerType: "PolygonLayer",
     id: "browser-loaded-outline",
     data: [
       {
@@ -449,9 +457,10 @@ const useTreenomeLayers = (
     filled: false,
     pickable: false,
     getPolygonOffset: myGetPolygonOffset,
-  });
+  };
 
-  const selected_node_layer = new PolygonLayer({
+  const selected_node_layer = ({
+    layerType: "PolygonLayer",
     id: "browser-loaded-selected-node",
     data: selected_node_data,
     getPolygon: (d) => d.p,
