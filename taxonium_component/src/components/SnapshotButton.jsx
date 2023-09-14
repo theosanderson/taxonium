@@ -48,18 +48,19 @@ const SnapshotButton = ({ svgFunction, pixelFunction, deckSize }) => {
               </Dialog.Title>
 
               <div className="mt-4">
-                <button
-                  onClick={() => snapshot("pixels")}
+              <button
+                  onClick={() => snapshot("SVG")}
                   className="text-blue-600 hover:text-blue-800"
                 >
-                  Pixels
+                  SVG (vector)
                 </button>
                 <button
-                  onClick={() => snapshot("SVG")}
+                  onClick={() => snapshot("pixels")}
                   className="ml-4 text-blue-600 hover:text-blue-800"
                 >
-                  SVG
+                  PNG
                 </button>
+                
               </div>
             </div>
           </div>
