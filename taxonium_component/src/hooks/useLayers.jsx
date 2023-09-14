@@ -118,6 +118,7 @@ const useLayers = ({
     }
   }, [data.base_data, getX]);
 
+  
   const detailed_scatter_data = useMemo(() => {
     return detailed_data.nodes.filter(
       (node) =>
@@ -157,10 +158,11 @@ const useLayers = ({
   const scatter_layer_common_props = {
     getPosition: (d) => [getX(d), d.y],
     getFillColor: (d) => toRGB(getNodeColorField(d, detailed_data)),
-
+    getRadius: 3,
     // radius in pixels
-    getRadius: (d) =>
-      getNodeColorField(d, detailed_data) === hoveredKey ? 4 : 3,
+    // we had to get rid of the below because it was messing up the genotype colours
+   // getRadius: (d) =>
+    //  getNodeColorField(d, detailed_data) === hoveredKey ? 4 : 3,
     getLineColor: [100, 100, 100],
     opacity: 0.6,
     stroked: data.data.nodes && data.data.nodes.length < 3000,
