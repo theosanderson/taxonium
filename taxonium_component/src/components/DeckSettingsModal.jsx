@@ -17,6 +17,7 @@ const settingsModalStyle = {
     maxHeight: "80vh",
     minWidth: "400px",
     minHeight: "400px",
+    fontSize: "13px",
   },
   overlay: {
     backgroundColor: "rgba(100, 100, 100, 0.3)",
@@ -42,10 +43,11 @@ const DeckSettingsModal = ({
       style={settingsModalStyle}
       onRequestClose={() => setDeckSettingsOpen(false)}
       contentLabel="Deck Settings Modal"
+
     >
-      <h2 className="font-medium mb-5 text-lg">Settings</h2>
+      <h2 className="font-medium mb-5  text-lg">Settings</h2>
       <Tabs>
-        <TabList className="">
+        <TabList className="border-b border-gray-800 mb-6">
           <Tab>Toggle</Tab>
           <Tab>Appearance</Tab>
 
