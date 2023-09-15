@@ -240,7 +240,7 @@ const useLayers = ({
           getLineWidth: 0,
           getRadius: main_scatter_layer.getRadius + settings.prettyStroke.width,
         }
-      : {};
+      : null;
 
     const fillin_scatter_layer = {
       layerType: "ScatterplotLayer",
@@ -559,7 +559,7 @@ const useLayers = ({
     [isCurrentlyOutsideBounds]
   );
 
-  const processedLayers = layers.map((layer) => {
+  const processedLayers = layers.filter(x=> x!==null).map((layer) => {
     if (layer.layerType === "ScatterplotLayer") {
       return new ScatterplotLayer(layer);
     }
@@ -578,7 +578,7 @@ const useLayers = ({
     console.log("could not map layer spec for ", layer);
   });
 
-  const { triggerSVGdownload } = getSVGfunction(layers, viewState);
+  const { triggerSVGdownload } = getSVGfunction(layers.filter(x=> x!==null), viewState);
 
   return { layers: processedLayers, layerFilter, keyStuff, triggerSVGdownload };
 };
