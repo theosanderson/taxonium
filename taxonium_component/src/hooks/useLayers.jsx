@@ -48,6 +48,7 @@ const useLayers = ({
   setTreenomeReferenceInfo,
   hoveredKey,
 }) => {
+  
   const lineColor = settings.lineColor;
   const getNodeColorField = colorBy.getNodeColorField;
   const colorByField = colorBy.colorByField;
@@ -159,13 +160,13 @@ const useLayers = ({
   const scatter_layer_common_props = {
     getPosition: (d) => [getX(d), d.y],
     getFillColor: (d) => toRGB(getNodeColorField(d, detailed_data)),
-    getRadius: 3,
+    getRadius: settings.nodeSize,
     // radius in pixels
     // we had to get rid of the below because it was messing up the genotype colours
     // getRadius: (d) =>
     //  getNodeColorField(d, detailed_data) === hoveredKey ? 4 : 3,
     getLineColor: [100, 100, 100],
-    opacity: 0.6,
+    opacity: settings.opacity,
     stroked: data.data.nodes && data.data.nodes.length < 3000,
     lineWidthUnits: "pixels",
     lineWidthScale: 1,
@@ -175,7 +176,7 @@ const useLayers = ({
     modelMatrix: modelMatrix,
     updateTriggers: {
       getFillColor: [detailed_data, getNodeColorField, colorHook],
-      getRadius: [hoveredKey, getNodeColorField],
+      getRadius: [settings.nodeSize],
       getPosition: [xType],
     },
   };
@@ -232,6 +233,12 @@ const useLayers = ({
       id: "main-scatter",
       data: detailed_scatter_data,
     };
+
+    const pretty_stroke_background_layer = settings.prettyStroke.enabled ? {
+      ...main_scatter_layer, getFillColor:settings.prettyStroke.color, getLineWidth:0,
+      getRadius: main_scatter_layer.getRadius + settings.prettyStroke.width} : {};
+
+    
 
     const fillin_scatter_layer = {
       layerType: "ScatterplotLayer",
@@ -339,6 +346,7 @@ const useLayers = ({
       main_line_layer2,
       fillin_line_layer,
       fillin_line_layer2,
+      pretty_stroke_background_layer,
       main_scatter_layer,
       fillin_scatter_layer,
       clade_label_layer,

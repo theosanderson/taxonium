@@ -14,11 +14,20 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const [searchPointSize, setSearchPointSize] = useState(3);
 
+  const [opacity, setOpacity] = useState(0.6);
+
+  const [prettyStroke, setPrettyStroke] = useState({
+    enabled: false,
+    color: [0, 0, 0],
+    width: 1,
+  });
+
   const [terminalNodeLabelColor, setTerminalNodeLabelColor] = useState([
     180, 180, 180,
   ]);
 
   const [lineColor, setLineColor] = useState([150, 150, 150]);
+  const [nodeSize, setNodeSize] = useState(3);
   const [cladeLabelColor, setCladeLabelColor] = useState([100, 100, 100]);
 
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
@@ -144,5 +153,11 @@ export const useSettings = ({ query, updateQuery }) => {
     setLineColor,
     cladeLabelColor,
     setCladeLabelColor,
+    nodeSize,
+    setNodeSize,
+    prettyStroke,
+    setPrettyStroke,
+    opacity,
+    setOpacity,
   };
 };

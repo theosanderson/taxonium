@@ -158,8 +158,93 @@ const DeckSettingsModal = ({
                 />
               </label>
             </div>
-          </div>
-        </TabPanel>
+            <div>
+              <label>
+                Node  size:{" "}
+                <input
+                  type="number"
+                  value={settings.nodeSize}
+                  onChange={(e) =>
+                    
+                    settings.setNodeSize(parseFloat(e.target.value))
+                  }
+                  step="0.1"
+                  min="1"
+                  max="10"
+                  className="border py-1 px-1 text-grey-darkest text-sm"
+                />
+              </label>
+              </div>
+              <div>
+              <label>
+                Node  opacity:{" "}
+                <input
+                  type="number"
+                  value={settings.opacity}
+                  onChange={(e) =>
+                    
+                    settings.setOpacity(parseFloat(e.target.value))
+                  }
+                  step="0.1"
+                  min="0"
+                  max="1"
+                  className="border py-1 px-1 text-grey-darkest text-sm"
+                />
+              </label>
+              </div>
+              {/* New checkbox for "pretty stroke" */}
+              <div className="mt-3">
+                <label>
+                    <input
+                        type="checkbox"
+                        className="mr-1"
+                        checked={settings.prettyStroke.enabled}
+                        onChange={() => settings.setPrettyStroke({
+                            ...settings.prettyStroke,
+                            enabled: !settings.prettyStroke.enabled
+                        })}
+                    />
+                    Enable pretty stroke
+                </label>
+            </div>
+            
+            {/* Conditionally show pretty stroke settings based on the checkbox state */}
+            {settings.prettyStroke.enabled && (
+                <div className="mt-3 space-y-2">
+                    <div>
+                        <label>
+                            Pretty stroke color:
+                            {/* Note: You might need to modify the ColorPicker component or its props to accommodate this */}
+                            <ColorPicker
+                                color={settings.prettyStroke.color}
+                                setColor={(color) => settings.setPrettyStroke({
+                                    ...settings.prettyStroke,
+                                    color
+                                })}
+                            />
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Pretty stroke width: 
+                            <input
+                                type="number"
+                                value={settings.prettyStroke.width}
+                                onChange={(e) => settings.setPrettyStroke({
+                                    ...settings.prettyStroke,
+                                    width: parseFloat(e.target.value)
+                                })}
+                                step="0.1"
+                                min="0.1"
+                                className="border py-1 px-1 text-grey-darkest text-sm"
+                            />
+                        </label>
+                    </div>
+                </div>
+            )}
+        </div>
+    
+</TabPanel>
 
         <TabPanel>
           <div className="space-y-3">
