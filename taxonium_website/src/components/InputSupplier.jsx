@@ -32,6 +32,8 @@ export const InputSupplier = ({ inputHelper, className }) => {
   const [tempURL, setTempURL] = useState("");
 
   const { inputs, setInputs } = inputHelper;
+  const [addingText,setAddingText] = useState(false);
+  const [text,setText] = useState("")
 
   const addFromTempURL = useCallback(() => {
     if (tempURL) {
@@ -82,25 +84,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
                   );
                 })}
               </Select>
-              {/*}
-              <label>
-                Is Gzipped{" "}
-                <input
-                  type="checkbox"
-                  checked={input.gzipped}
-                  className="border p-1 mr-4"
-                  onChange={(e) => {
-                    setInputs(
-                      inputs.map((input, this_index) => {
-                        if (this_index === index) {
-                          input.gzipped = e.target.checked;
-                        }
-                        return input;
-                      })
-                    );
-                  }}
-                />
-                </label>*/}
+              
 
               <Button
                 className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
@@ -178,7 +162,9 @@ export const InputSupplier = ({ inputHelper, className }) => {
         Select, drag-and-drop, or enter the URL for tree or metadata files
         (jsonl, newick, nextstrain, tsv, etc.):
       </div>
+      { !addingText && <>
       <div>
+        
         <input
           className="text-sm mb-3"
           type="file"
@@ -215,6 +201,33 @@ export const InputSupplier = ({ inputHelper, className }) => {
         <Button onClick={addFromTempURL} className="">
           Add
         </Button>
+      </div>
+      </>}
+      <div className="mt-3">
+        <div className="text-xs text-gray-500">
+          {
+            addingText ? <>
+            <div>
+              <textarea className="border p-1 mr-1 text-sm " rows="5" cols="25" 
+              onChange={(e) => {
+                setText(e.target.value)
+              }}
+              value={text}
+              />
+
+            </div></>  : <>
+            or you can use <button className="text-xs text-gray-800 hover:text-gray-700" 
+             onClick={() => {
+              setAddingText(true)
+            }}>text entry</button>
+            </>
+          }
+          </div>
+
+
+
+
+
       </div>
     </div>
   );
