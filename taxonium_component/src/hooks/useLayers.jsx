@@ -559,26 +559,31 @@ const useLayers = ({
     [isCurrentlyOutsideBounds]
   );
 
-  const processedLayers = layers.filter(x=> x!==null).map((layer) => {
-    if (layer.layerType === "ScatterplotLayer") {
-      return new ScatterplotLayer(layer);
-    }
-    if (layer.layerType === "LineLayer") {
-      return new LineLayer(layer);
-    }
-    if (layer.layerType === "PolygonLayer") {
-      return new PolygonLayer(layer);
-    }
-    if (layer.layerType === "TextLayer") {
-      return new TextLayer(layer);
-    }
-    if (layer.layerType === "SolidPolygonLayer") {
-      return new SolidPolygonLayer(layer);
-    }
-    console.log("could not map layer spec for ", layer);
-  });
+  const processedLayers = layers
+    .filter((x) => x !== null)
+    .map((layer) => {
+      if (layer.layerType === "ScatterplotLayer") {
+        return new ScatterplotLayer(layer);
+      }
+      if (layer.layerType === "LineLayer") {
+        return new LineLayer(layer);
+      }
+      if (layer.layerType === "PolygonLayer") {
+        return new PolygonLayer(layer);
+      }
+      if (layer.layerType === "TextLayer") {
+        return new TextLayer(layer);
+      }
+      if (layer.layerType === "SolidPolygonLayer") {
+        return new SolidPolygonLayer(layer);
+      }
+      console.log("could not map layer spec for ", layer);
+    });
 
-  const { triggerSVGdownload } = getSVGfunction(layers.filter(x=> x!==null), viewState);
+  const { triggerSVGdownload } = getSVGfunction(
+    layers.filter((x) => x !== null),
+    viewState
+  );
 
   return { layers: processedLayers, layerFilter, keyStuff, triggerSVGdownload };
 };

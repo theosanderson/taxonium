@@ -43,7 +43,6 @@ const DeckSettingsModal = ({
       style={settingsModalStyle}
       onRequestClose={() => setDeckSettingsOpen(false)}
       contentLabel="Deck Settings Modal"
-
     >
       <h2 className="font-medium mb-5  text-lg">Settings</h2>
       <Tabs>
