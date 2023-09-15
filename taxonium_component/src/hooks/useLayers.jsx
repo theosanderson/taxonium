@@ -48,7 +48,6 @@ const useLayers = ({
   setTreenomeReferenceInfo,
   hoveredKey,
 }) => {
-  
   const lineColor = settings.lineColor;
   const getNodeColorField = colorBy.getNodeColorField;
   const colorByField = colorBy.colorByField;
@@ -234,11 +233,14 @@ const useLayers = ({
       data: detailed_scatter_data,
     };
 
-    const pretty_stroke_background_layer = settings.prettyStroke.enabled ? {
-      ...main_scatter_layer, getFillColor:settings.prettyStroke.color, getLineWidth:0,
-      getRadius: main_scatter_layer.getRadius + settings.prettyStroke.width} : {};
-
-    
+    const pretty_stroke_background_layer = settings.prettyStroke.enabled
+      ? {
+          ...main_scatter_layer,
+          getFillColor: settings.prettyStroke.color,
+          getLineWidth: 0,
+          getRadius: main_scatter_layer.getRadius + settings.prettyStroke.width,
+        }
+      : {};
 
     const fillin_scatter_layer = {
       layerType: "ScatterplotLayer",
