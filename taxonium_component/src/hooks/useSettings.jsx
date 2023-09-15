@@ -18,7 +18,7 @@ export const useSettings = ({ query, updateQuery }) => {
 
   const [prettyStroke, setPrettyStroke] = useState({
     enabled: false,
-    color: [0, 0, 0],
+    color: [76, 87, 106],
     width: 1,
   });
 

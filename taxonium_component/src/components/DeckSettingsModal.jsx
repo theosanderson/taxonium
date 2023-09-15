@@ -211,6 +211,9 @@ const DeckSettingsModal = ({
             {/* Conditionally show pretty stroke settings based on the checkbox state */}
             {settings.prettyStroke.enabled && (
               <div className="mt-3 space-y-2">
+                <p className="text-sm">
+                  Pretty stroke looks best if you set the node opacity to 1.
+                </p>
                 <div>
                   <label>
                     Pretty stroke color:
