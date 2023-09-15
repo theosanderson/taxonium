@@ -140,7 +140,6 @@ const getSVGfunction = (layers, viewState) => {
     svgContent += "</svg>";
     return svgContent;
   };
-  console.log(viewState);
 
   function triggerSVGdownload(deckSize) {
     if (!deckSize) {
