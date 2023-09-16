@@ -166,11 +166,11 @@ export const useInputHelper = ({
     addInput(file_obj);
   }
 
-  function addFromText(text){
+  function addFromText(text) {
     const file_obj = { name: "text.nwk", supplyType: "file" };
     file_obj.filetype = "nwk";
     file_obj.data = text;
-    addInput(file_obj,text);
+    addInput(file_obj, text);
   }
 
   const finaliseInputs = useCallback(() => {
@@ -294,6 +294,5 @@ export const useInputHelper = ({
     finaliseInputs,
     validity,
     validityMessage,
-
   };
 };

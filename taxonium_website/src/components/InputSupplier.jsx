@@ -32,8 +32,8 @@ export const InputSupplier = ({ inputHelper, className }) => {
   const [tempURL, setTempURL] = useState("");
 
   const { inputs, setInputs } = inputHelper;
-  const [addingText,setAddingText] = useState(false);
-  const [text,setText] = useState("")
+  const [addingText, setAddingText] = useState(false);
+  const [text, setText] = useState("");
 
   const addFromTempURL = useCallback(() => {
     if (tempURL) {
@@ -84,7 +84,6 @@ export const InputSupplier = ({ inputHelper, className }) => {
                   );
                 })}
               </Select>
-              
 
               <Button
                 className="inline-block bg-gray-100 text-sm mx-auto p-1 rounded border-gray-300 border m-5 text-gray-700"
@@ -159,98 +158,102 @@ export const InputSupplier = ({ inputHelper, className }) => {
         </div>
       )}
       <div className="mb-3">
-        
         Select, drag-and-drop, or enter the URL for tree or metadata files
         (jsonl, newick, nextstrain, tsv, etc.):
       </div>
-      { !addingText && <>
-      <div>
-        
-        <input
-          className="text-sm mb-3"
-          type="file"
-          multiple="multiple"
-          onChange={(e) => {
-            for (const file of e.target.files) {
-              inputHelper.readFile(file);
-            }
+      {!addingText && (
+        <>
+          <div>
+            <input
+              className="text-sm mb-3"
+              type="file"
+              multiple="multiple"
+              onChange={(e) => {
+                for (const file of e.target.files) {
+                  inputHelper.readFile(file);
+                }
 
-            // empty this
-            e.target.value = "";
-          }}
-        />
-      </div>
-      <div>
-        <input
-          placeholder="https://"
-          type="text"
-          value={tempURL}
-          className="border p-1 mr-1 text-sm "
-          onChange={(e) => {
-            setTempURL(
-              e.target.value
-                .replace("http://", "")
-                .replace("http://", "https://")
-            );
-          }}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              addFromTempURL();
-            }
-          }}
-        />{" "}
-        <Button onClick={addFromTempURL} className="">
-          Add
-        </Button>
-      </div>
-      </>}
+                // empty this
+                e.target.value = "";
+              }}
+            />
+          </div>
+          <div>
+            <input
+              placeholder="https://"
+              type="text"
+              value={tempURL}
+              className="border p-1 mr-1 text-sm "
+              onChange={(e) => {
+                setTempURL(
+                  e.target.value
+                    .replace("http://", "")
+                    .replace("http://", "https://")
+                );
+              }}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  addFromTempURL();
+                }
+              }}
+            />{" "}
+            <Button onClick={addFromTempURL} className="">
+              Add
+            </Button>
+          </div>
+        </>
+      )}
       <div className="mt-3">
         <div className="text-xs text-gray-500">
-          {
-            addingText ? <>
-            <div>
-              <textarea className="border p-1 mr-1 text-sm md:w-1/2 w-full"
-              placeholder="Paste e.g. Newick tree here.."
-              onChange={(e) => {
-                setText(e.target.value)
-              }}
-              value={text}
-              />
-              <div className="mt-2">
-              <button className="background-gray-100 text-sm p-1 rounded border-gray-300 border  text-gray-700"
-              onClick={() => {
-                inputHelper.addFromText(text)
-                setAddingText(false)
-                setText("")
-              }}
-              >Add</button> <button
-              className="background-gray-100 text-sm p-1 rounded border-gray-300 border ml-3 text-gray-700"
-              onClick={() => {
-                setAddingText(false)
-                setText("")
-              }}
-              >Cancel</button>
-
+          {addingText ? (
+            <>
+              <div>
+                <textarea
+                  className="border p-1 mr-1 text-sm md:w-1/2 w-full"
+                  placeholder="Paste e.g. Newick tree here.."
+                  onChange={(e) => {
+                    setText(e.target.value);
+                  }}
+                  value={text}
+                />
+                <div className="mt-2">
+                  <button
+                    className="background-gray-100 text-sm p-1 rounded border-gray-300 border  text-gray-700"
+                    onClick={() => {
+                      inputHelper.addFromText(text);
+                      setAddingText(false);
+                      setText("");
+                    }}
+                  >
+                    Add
+                  </button>{" "}
+                  <button
+                    className="background-gray-100 text-sm p-1 rounded border-gray-300 border ml-3 text-gray-700"
+                    onClick={() => {
+                      setAddingText(false);
+                      setText("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-              
-
-
-
-
-
-            </div></>  : <div className="text-sm">
-            ..or use <button className="text-gray-700 hover:text-gray-700 hover:underline" 
-             onClick={() => {
-              setAddingText(true)
-            }}>text entry</button>.
+            </>
+          ) : (
+            <div className="text-sm">
+              ..or use{" "}
+              <button
+                className="text-gray-700 hover:text-gray-700 hover:underline"
+                onClick={() => {
+                  setAddingText(true);
+                }}
+              >
+                text entry
+              </button>
+              .
             </div>
-          }
-          </div>
-
-
-
-
-
+          )}
+        </div>
       </div>
     </div>
   );
