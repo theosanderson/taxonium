@@ -159,6 +159,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
         </div>
       )}
       <div className="mb-3">
+        
         Select, drag-and-drop, or enter the URL for tree or metadata files
         (jsonl, newick, nextstrain, tsv, etc.):
       </div>
@@ -208,19 +209,41 @@ export const InputSupplier = ({ inputHelper, className }) => {
           {
             addingText ? <>
             <div>
-              <textarea className="border p-1 mr-1 text-sm " rows="5" cols="25" 
+              <textarea className="border p-1 mr-1 text-sm md:w-1/2 w-full"
+              placeholder="Paste e.g. Newick tree here.."
               onChange={(e) => {
                 setText(e.target.value)
               }}
               value={text}
               />
+              <div className="mt-2">
+              <button className="background-gray-100 text-sm p-1 rounded border-gray-300 border  text-gray-700"
+              onClick={() => {
+                inputHelper.addFromText(text)
+                setAddingText(false)
+                setText("")
+              }}
+              >Add</button> <button
+              className="background-gray-100 text-sm p-1 rounded border-gray-300 border ml-3 text-gray-700"
+              onClick={() => {
+                setAddingText(false)
+                setText("")
+              }}
+              >Cancel</button>
 
-            </div></>  : <>
-            or you can use <button className="text-xs text-gray-800 hover:text-gray-700" 
+              </div>
+              
+
+
+
+
+
+            </div></>  : <div className="text-sm">
+            ..or use <button className="text-gray-700 hover:text-gray-700 hover:underline" 
              onClick={() => {
               setAddingText(true)
-            }}>text entry</button>
-            </>
+            }}>text entry</button>.
+            </div>
           }
           </div>
 

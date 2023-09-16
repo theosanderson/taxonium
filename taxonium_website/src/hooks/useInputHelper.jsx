@@ -166,6 +166,13 @@ export const useInputHelper = ({
     addInput(file_obj);
   }
 
+  function addFromText(text){
+    const file_obj = { name: "text.nwk", supplyType: "file" };
+    file_obj.filetype = "nwk";
+    file_obj.data = text;
+    addInput(file_obj,text);
+  }
+
   const finaliseInputs = useCallback(() => {
     // if everything is a URL:
     if (inputs.every((input) => input.supplyType === "url")) {
@@ -283,8 +290,10 @@ export const useInputHelper = ({
     removeInput,
     addInput,
     addFromURL,
+    addFromText,
     finaliseInputs,
     validity,
     validityMessage,
+
   };
 };
