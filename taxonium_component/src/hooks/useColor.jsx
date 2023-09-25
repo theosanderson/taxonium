@@ -140,7 +140,7 @@ const useColor = (colorMapping) => {
 
   const toRGB = useCallback(
     (string) => {
-      if (rgb_cache[string]) {
+      if (rgb_cache[string] && !colorMapping[string]) {
         return rgb_cache[string];
       } else {
         const result = toRGB_uncached(string);

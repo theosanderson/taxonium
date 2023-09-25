@@ -3,11 +3,13 @@ import {
   ScatterplotLayer,
   PolygonLayer,
   TextLayer,
+  SolidPolygonLayer,
   GeoJsonLayer,
 } from "@deck.gl/layers";
 
 import { useMemo, useCallback } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
+import getSVGfunction from "../utils/deckglToSvg";
 
 // source: https://datahub.io/core/geo-countries
 import geojson from "../worldMap.geo.json";
@@ -49,8 +51,9 @@ const useLayers = ({
   treenomeState,
   treenomeReferenceInfo,
   setTreenomeReferenceInfo,
+  hoveredKey,
 }) => {
-  const lineColor = [150, 150, 150];
+  const lineColor = settings.lineColor;
   const getNodeColorField = colorBy.getNodeColorField;
   const colorByField = colorBy.colorByField;
 
@@ -161,11 +164,13 @@ const useLayers = ({
   const scatter_layer_common_props = {
     getPosition: (d) => [getX(d), d.y],
     getFillColor: (d) => toRGB(getNodeColorField(d, detailed_data)),
-
+    getRadius: settings.nodeSize,
     // radius in pixels
-    getRadius: 3,
+    // we had to get rid of the below because it was messing up the genotype colours
+    // getRadius: (d) =>
+    //  getNodeColorField(d, detailed_data) === hoveredKey ? 4 : 3,
     getLineColor: [100, 100, 100],
-    opacity: 0.6,
+    opacity: settings.opacity,
     stroked: data.data.nodes && data.data.nodes.length < 3000,
     lineWidthUnits: "pixels",
     lineWidthScale: 1,
@@ -174,7 +179,8 @@ const useLayers = ({
     onHover: (info) => setHoverInfo(info),
     modelMatrix: modelMatrix,
     updateTriggers: {
-      getFillColor: [detailed_data, getNodeColorField],
+      getFillColor: [detailed_data, getNodeColorField, colorHook],
+      getRadius: [settings.nodeSize],
       getPosition: [xType],
     },
   };
@@ -225,44 +231,60 @@ const useLayers = ({
   };
 
   if (detailed_data.nodes) {
-    const main_scatter_layer = new ScatterplotLayer({
+    const main_scatter_layer = {
+      layerType: "ScatterplotLayer",
       ...scatter_layer_common_props,
       id: "main-scatter",
       data: detailed_scatter_data,
-    });
+    };
 
-    const fillin_scatter_layer = new ScatterplotLayer({
+    const pretty_stroke_background_layer = settings.prettyStroke.enabled
+      ? {
+          ...main_scatter_layer,
+          getFillColor: settings.prettyStroke.color,
+          getLineWidth: 0,
+          getRadius: main_scatter_layer.getRadius + settings.prettyStroke.width,
+        }
+      : null;
+
+    const fillin_scatter_layer = {
+      layerType: "ScatterplotLayer",
       ...scatter_layer_common_props,
       id: "fillin-scatter",
       data: minimap_scatter_data,
       getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
-    });
+    };
 
-    const main_line_layer = new LineLayer({
+    const main_line_layer = {
+      layerType: "LineLayer",
       ...line_layer_horiz_common_props,
       id: "main-line-horiz",
       data: detailed_data.nodes,
-    });
+    };
 
-    const main_line_layer2 = new LineLayer({
+    const main_line_layer2 = {
+      layerType: "LineLayer",
       ...line_layer_vert_common_props,
       id: "main-line-vert",
       data: detailed_data.nodes,
-    });
+    };
 
-    const fillin_line_layer = new LineLayer({
+    const fillin_line_layer = {
+      layerType: "LineLayer",
       ...line_layer_horiz_common_props,
       id: "fillin-line-horiz",
       data: base_data.nodes,
-    });
+    };
 
-    const fillin_line_layer2 = new LineLayer({
+    const fillin_line_layer2 = {
+      layerType: "LineLayer",
       ...line_layer_vert_common_props,
       id: "fillin-line-vert",
       data: base_data.nodes,
-    });
+    };
 
-    const selectedLayer = new ScatterplotLayer({
+    const selectedLayer = {
+      layerType: "ScatterplotLayer",
       data: selectedDetails.nodeDetails ? [selectedDetails.nodeDetails] : [],
       visible: true,
       opacity: 1,
@@ -280,9 +302,10 @@ const useLayers = ({
       },
       lineWidthUnits: "pixels",
       lineWidthScale: 2,
-    });
+    };
 
-    const hoveredLayer = new ScatterplotLayer({
+    const hoveredLayer = {
+      layerType: "ScatterplotLayer",
       data: hoverInfo && hoverInfo.object ? [hoverInfo.object] : [],
       visible: true,
       opacity: 0.3,
@@ -300,16 +323,17 @@ const useLayers = ({
       },
       lineWidthUnits: "pixels",
       lineWidthScale: 2,
-    });
+    };
 
-    const clade_label_layer = new TextLayer({
+    const clade_label_layer = {
+      layerType: "TextLayer",
       id: "main-clade-node",
       getPixelOffset: [-5, -6],
       data: clade_data,
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d.clades[clade_accessor],
 
-      getColor: [100, 100, 100],
+      getColor: settings.cladeLabelColor,
       getAngle: 0,
       fontFamily: "Roboto, sans-serif",
       fontWeight: 700,
@@ -322,13 +346,14 @@ const useLayers = ({
       updateTriggers: {
         getPosition: [getX],
       },
-    });
+    };
 
     layers.push(
       main_line_layer,
       main_line_layer2,
       fillin_line_layer,
       fillin_line_layer2,
+      pretty_stroke_background_layer,
       main_scatter_layer,
       fillin_scatter_layer,
       clade_label_layer,
@@ -345,7 +370,8 @@ const useLayers = ({
     proportionalToNodesOnScreen <
       0.8 * 10 ** settings.thresholdForDisplayingText
   ) {
-    const node_label_layer = new TextLayer({
+    const node_label_layer = {
+      layerType: "TextLayer",
       id: "main-text-node",
       fontFamily: "Roboto, sans-serif",
       fontWeight: 100,
@@ -357,7 +383,7 @@ const useLayers = ({
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d[config.name_accessor],
 
-      getColor: [180, 180, 180],
+      getColor: settings.terminalNodeLabelColor,
       getAngle: 0,
 
       billboard: true,
@@ -366,12 +392,13 @@ const useLayers = ({
       getSize: data.data.nodes.length < 200 ? 12 : 9.5,
       modelMatrix: modelMatrix,
       getPixelOffset: [10, 0],
-    });
+    };
 
     layers.push(node_label_layer);
   }
 
-  const minimap_scatter = new ScatterplotLayer({
+  const minimap_scatter = {
+    layerType: "ScatterplotLayer",
     id: "minimap-scatter",
     data: minimap_scatter_data,
     getPolygonOffset: ({ layerIndex }) => [0, -4000],
@@ -388,23 +415,24 @@ const useLayers = ({
       getFillColor: [base_data, getNodeColorField],
       getPosition: [minimap_scatter_data, xType],
     },
-  });
+  };
 
-  const minimap_line_horiz = new LineLayer({
+  const minimap_line_horiz = {
+    layerType: "LineLayer",
     id: "minimap-line-horiz",
     getPolygonOffset: ({ layerIndex }) => [0, -4000],
     data: base_data.nodes,
     getSourcePosition: (d) => [getX(d), d.y],
     getTargetPosition: (d) => [d.parent_x, d.y],
     getColor: lineColor,
-
     updateTriggers: {
       getSourcePosition: [base_data, xType],
       getTargetPosition: [base_data, xType],
     },
-  });
+  };
 
-  const minimap_line_vert = new LineLayer({
+  const minimap_line_vert = {
+    layerType: "LineLayer",
     id: "minimap-line-vert",
     getPolygonOffset: ({ layerIndex }) => [0, -4000],
     data: base_data.nodes,
@@ -416,9 +444,10 @@ const useLayers = ({
       getSourcePosition: [base_data, xType],
       getTargetPosition: [base_data, xType],
     },
-  });
+  };
 
-  const minimap_polygon_background = new PolygonLayer({
+  const minimap_polygon_background = {
+    layerType: "PolygonLayer",
     id: "minimap-bound-background",
     data: [outer_bounds],
     getPolygon: (d) => d,
@@ -429,9 +458,10 @@ const useLayers = ({
     getPolygonOffset: ({ layerIndex }) => [0, -2000],
 
     getFillColor: (d) => [255, 255, 255],
-  });
+  };
 
-  const minimap_bound_polygon = new PolygonLayer({
+  const minimap_bound_polygon = {
+    layerType: "PolygonLayer",
     id: "minimap-bound-line",
     data: bound_contour,
     getPolygon: (d) => d,
@@ -445,7 +475,7 @@ const useLayers = ({
     getLineWidth: 1,
     lineWidthUnits: "pixels",
     getPolygonOffset: ({ layerIndex }) => [0, -6000],
-  });
+  };
 
   const { searchSpec, searchResults, searchesEnabled } = search;
 
@@ -456,12 +486,16 @@ const useLayers = ({
 
     const lineColor = search.getLineColor(i);
 
-    return new ScatterplotLayer({
+    return {
+      layerType: "ScatterplotLayer",
+
       data: data,
       id: "main-search-scatter-" + spec.key,
       getPosition: (d) => [d[xType], d.y],
-      getLineColor: lineColor,
-      getRadius: 5 + 2 * i,
+      getLineColor: settings.displaySearchesAsPoints ? [0, 0, 0] : lineColor,
+      getRadius: settings.displaySearchesAsPoints
+        ? settings.searchPointSize
+        : 5 + 2 * i,
       radiusUnits: "pixels",
       lineWidthUnits: "pixels",
       stroked: true,
@@ -469,12 +503,14 @@ const useLayers = ({
       wireframe: true,
       getLineWidth: 1,
       filled: true,
-      getFillColor: [255, 0, 0, 0],
+      getFillColor: settings.displaySearchesAsPoints
+        ? lineColor
+        : [255, 0, 0, 0],
       modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [xType],
       },
-    });
+    };
   });
 
   const search_mini_layers = searchSpec.map((spec, i) => {
@@ -483,7 +519,8 @@ const useLayers = ({
       : [];
     const lineColor = search.getLineColor(i);
 
-    return new ScatterplotLayer({
+    return {
+      layerType: "ScatterplotLayer",
       data: data,
       getPolygonOffset: ({ layerIndex }) => [0, -9000],
       id: "mini-search-scatter-" + spec.key,
@@ -500,9 +537,9 @@ const useLayers = ({
       filled: false,
       getFillColor: [255, 0, 0, 0],
       updateTriggers: { getPosition: [xType] },
-    });
+    };
   });
-  layers.push(...search_layers, search_mini_layers);
+  layers.push(...search_layers, ...search_mini_layers);
 
   layers.push(minimap_polygon_background);
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
@@ -571,7 +608,33 @@ const useLayers = ({
     [isCurrentlyOutsideBounds]
   );
 
-  return { layers, layerFilter, keyStuff };
+  const processedLayers = layers
+    .filter((x) => x !== null)
+    .map((layer) => {
+      if (layer.layerType === "ScatterplotLayer") {
+        return new ScatterplotLayer(layer);
+      }
+      if (layer.layerType === "LineLayer") {
+        return new LineLayer(layer);
+      }
+      if (layer.layerType === "PolygonLayer") {
+        return new PolygonLayer(layer);
+      }
+      if (layer.layerType === "TextLayer") {
+        return new TextLayer(layer);
+      }
+      if (layer.layerType === "SolidPolygonLayer") {
+        return new SolidPolygonLayer(layer);
+      }
+      console.log("could not map layer spec for ", layer);
+    });
+
+  const { triggerSVGdownload } = getSVGfunction(
+    layers.filter((x) => x !== null),
+    viewState
+  );
+
+  return { layers: processedLayers, layerFilter, keyStuff, triggerSVGdownload };
 };
 
 export default useLayers;

@@ -259,6 +259,7 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
       oldViewState,
       basicTarget,
       overrideZoomAxis,
+      specialMinimap,
     }) => {
       if (!deckSize) {
         return;
@@ -276,6 +277,14 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
           const oldScaleY = 2 ** oldViewState.zoom;
           const newScaleY = 2 ** newViewState.zoom;
           // eslint-disable-line no-unused-vars
+
+          if (
+            mouseDownIsMinimap &&
+            !specialMinimap &&
+            oldScaleY === newScaleY
+          ) {
+            return;
+          }
 
           let newScaleX = 2 ** xzoom;
           if (basicTarget) {

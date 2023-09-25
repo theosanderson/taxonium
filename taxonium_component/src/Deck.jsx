@@ -41,10 +41,16 @@ function Deck({
   isCurrentlyOutsideBounds,
   deckRef,
   jbrowseRef,
+  setAdditionalColorMapping,
+  mouseDownIsMinimap,
+  setMouseDownIsMinimap,
 }) {
   const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
+  const [colorSettingOpen, setColorSettingOpen] = useState(false);
+  const [currentColorSettingKey, setCurrentColorSettingKey] = useState("a");
+  const [hoveredKey, setHoveredKey] = useState(null);
   const [treenomeSettingsOpen, setTreenomeSettingsOpen] = useState(false);
 
   //console.log("DATA is ", data);
@@ -69,12 +75,13 @@ function Deck({
   );
   const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
 
-  const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
-
   const mouseDownPos = useRef();
 
   const onClickOrMouseMove = useCallback(
     (event) => {
+      if (event._reactName === "onClick") {
+        setMouseDownIsMinimap(false);
+      }
       if (event.buttons === 0 && event._reactName === "onPointerMove") {
         return false;
       }
@@ -130,6 +137,7 @@ function Deck({
       ) {
         onViewStateChange({
           oldViewState: viewState,
+          specialMinimap: true,
           viewState: {
             ...viewState,
             target: [
@@ -168,7 +176,7 @@ function Deck({
     [hoverDetails]
   );
 
-  const { layers, layerFilter, keyStuff } = useLayers({
+  const { layers, layerFilter, keyStuff, triggerSVGdownload } = useLayers({
     data,
     search,
     viewState,
@@ -186,6 +194,7 @@ function Deck({
     treenomeState,
     treenomeReferenceInfo,
     setTreenomeReferenceInfo,
+    hoveredKey,
   });
   // console.log("deck refresh");
 
@@ -252,6 +261,66 @@ function Deck({
       <DeckSettingsModal
         deckSettingsOpen={deckSettingsOpen}
         setDeckSettingsOpen={setDeckSettingsOpen}
+        settings={settings}
+        noneColor={colorHook.toRGB("None")}
+        setNoneColor={(color) => {
+          setAdditionalColorMapping((x) => {
+            return { ...x, None: color };
+          });
+        }}
+      />
+      <ColorSettingModal
+        isOpen={colorSettingOpen}
+        setIsOpen={setColorSettingOpen}
+        color={colorHook.toRGB(currentColorSettingKey)}
+        setColor={(color) => {
+          setAdditionalColorMapping((x) => {
+            return { ...x, [currentColorSettingKey]: color };
+          });
+        }}
+        title={currentColorSettingKey}
+      />
+      <NodeHoverTip
+        hoverInfo={hoverInfo}
+        hoverDetails={hoverDetails}
+        colorHook={colorHook}
+        colorBy={colorBy}
+        config={config}
+        filterMutations={settings.filterMutations}
+        deckSize={deckSize}
+      />
+      <TreenomeMutationHoverTip
+        hoverInfo={hoverInfo}
+        hoverDetails={hoverDetails}
+        colorHook={colorHook}
+        colorBy={colorBy}
+        config={config}
+        treenomeReferenceInfo={treenomeReferenceInfo}
+      />
+      <MemoizedKey
+        keyStuff={keyStuff}
+        colorByField={colorBy.colorByField}
+        colorByGene={colorBy.colorByGene}
+        colorByPosition={colorBy.colorByPosition}
+        config={config}
+        setCurrentColorSettingKey={setCurrentColorSettingKey}
+        setColorSettingOpen={setColorSettingOpen}
+        hoveredKey={hoveredKey}
+        setHoveredKey={setHoveredKey}
+      />
+      <DeckButtons
+        // we want this to intercept all mouse events
+        // so that we can prevent the default behavior
+        // of the browser
+        triggerSVGdownload={triggerSVGdownload}
+        deckSize={deckSize}
+        zoomReset={zoomReset}
+        zoomIncrement={zoomIncrement}
+        zoomAxis={zoomAxis}
+        setZoomAxis={setZoomAxis}
+        snapshot={snapshot}
+        loading={data.status === "loading"}
+        requestOpenSettings={() => setDeckSettingsOpen(true)}
         settings={settings}
       />
       <DeckGL

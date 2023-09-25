@@ -67,8 +67,6 @@ function Taxonium({
   const deckRef = useRef();
   const jbrowseRef = useRef();
 
-  const [nodes, setNodes] = useState([]);
-
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
   const view = useView({
@@ -77,6 +75,7 @@ function Taxonium({
     deckRef,
     jbrowseRef,
     nodes,
+    mouseDownIsMinimap,
   });
 
   const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
@@ -104,9 +103,11 @@ function Taxonium({
     configUrl
   );
   const colorBy = useColorBy(config, query, updateQuery);
+  const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
-    return config.colorMapping ? config.colorMapping : {};
-  }, [config.colorMapping]);
+    const initial = config.colorMapping ? config.colorMapping : {};
+    return { ...initial, ...additionalColorMapping };
+  }, [config.colorMapping, additionalColorMapping]);
   const colorHook = useColor(colorMapping);
 
   //TODO: this is always true for now
@@ -202,7 +203,10 @@ function Taxonium({
             isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
             treenomeState={treenomeState}
             deckRef={deckRef}
+            mouseDownIsMinimap={mouseDownIsMinimap}
+            setMouseDownIsMinimap={setMouseDownIsMinimap}
             jbrowseRef={jbrowseRef}
+            setAdditionalColorMapping={setAdditionalColorMapping}
           />
         </div>
 

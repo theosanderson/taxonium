@@ -10,6 +10,26 @@ export const useSettings = ({ query, updateQuery }) => {
   const [thresholdForDisplayingText, setThresholdForDisplayingText] =
     useState(2.9);
 
+  const [displaySearchesAsPoints, setDisplaySearchesAsPoints] = useState(false);
+
+  const [searchPointSize, setSearchPointSize] = useState(3);
+
+  const [opacity, setOpacity] = useState(0.6);
+
+  const [prettyStroke, setPrettyStroke] = useState({
+    enabled: false,
+    color: [76, 87, 106],
+    width: 1,
+  });
+
+  const [terminalNodeLabelColor, setTerminalNodeLabelColor] = useState([
+    180, 180, 180,
+  ]);
+
+  const [lineColor, setLineColor] = useState([150, 150, 150]);
+  const [nodeSize, setNodeSize] = useState(3);
+  const [cladeLabelColor, setCladeLabelColor] = useState([100, 100, 100]);
+
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
     useState(false);
   const toggleMinimapEnabled = () => {
@@ -135,5 +155,21 @@ export const useSettings = ({ query, updateQuery }) => {
     mapViewOpen,
     setMapViewOpen,
     setMapOpenAndToast,
+    displaySearchesAsPoints,
+    setDisplaySearchesAsPoints,
+    searchPointSize,
+    setSearchPointSize,
+    terminalNodeLabelColor,
+    setTerminalNodeLabelColor,
+    lineColor,
+    setLineColor,
+    cladeLabelColor,
+    setCladeLabelColor,
+    nodeSize,
+    setNodeSize,
+    prettyStroke,
+    setPrettyStroke,
+    opacity,
+    setOpacity,
   };
 };

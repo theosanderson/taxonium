@@ -127,3 +127,18 @@ export const NexusTree = {
     layout: "padded",
   },
 };
+
+export const JSONLgenetic = {
+  args: {
+    sourceData: {
+      status: "url_supplied",
+      filename:
+        "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/tfci-taxonium.jsonl.gz",
+      filetype: "jsonl",
+    },
+  },
+  parameters: {
+    // More on how to position stories at: https://storybook.js.org/docs/react/configure/story-layout
+    layout: "padded",
+  },
+};

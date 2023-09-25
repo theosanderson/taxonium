@@ -8,12 +8,14 @@ const WithState = (args) => {
     setState({ ...state, ...newState });
   };
   return (
-    <Taxonium
-      {...args}
-      query={state}
-      updateQuery={updateQuery}
-      backendUrl={"https://api.cov2tree.org"}
-    />
+    <div style={{ width: "100%", height: "500px" }}>
+      <Taxonium
+        {...args}
+        query={state}
+        updateQuery={updateQuery}
+        backendUrl={"https://api.cov2tree.org"}
+      />
+    </div>
   );
 };
 
