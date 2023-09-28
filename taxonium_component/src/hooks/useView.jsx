@@ -106,7 +106,13 @@ class MyOrthographicController extends OrthographicController {
   }
 }
 
-const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
+const useView = ({
+  settings,
+  deckSize,
+  deckRef,
+  jbrowseRef,
+  mouseDownIsMinimap,
+}) => {
   const [zoomAxis, setZoomAxis] = useState("Y");
   const [xzoom, setXzoom] = useState(window.screen.width < 600 ? -1 : 0);
   globalSetZoomAxis = setZoomAxis;
@@ -246,10 +252,6 @@ const useView = ({ settings, deckSize, deckRef, jbrowseRef, nodes }) => {
       1,
     ];
   }, [viewState.zoom, xzoom]);
-
-  useEffect(() => {
-    console.log("vs: ", viewState);
-  }, [viewState]);
 
   const onViewStateChange = useCallback(
     ({

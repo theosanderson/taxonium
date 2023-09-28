@@ -19,6 +19,7 @@ import { TreenomeButtons } from "./components/TreenomeButtons";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 import Key from "./components/Key";
+import ColorSettingModal from "./components/ColorSettingModal";
 import TreenomeBrowser from "./components/TreenomeBrowser";
 
 const MemoizedKey = React.memo(Key);

@@ -7,7 +7,7 @@ import {
   GeoJsonLayer,
 } from "@deck.gl/layers";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
 
@@ -558,6 +558,7 @@ const useLayers = ({
   }
 
   const getColorByCountryCount = (country) => {
+    console.log("country ", country);
     const hookColor = colorHook.toRGB(country);
 
     const GRAY = [169, 169, 169];
@@ -570,11 +571,11 @@ const useLayers = ({
   let lineWidth = 100;
   if (viewState["map"]) lineWidth = (1 / viewState["map"].zoom) * 9000;
 
-  layers.push(
-    new GeoJsonLayer({
+  layers.push({
       id: "map",
       data: geojson.features,
       stroked: true,
+      layerType: "GeoJsonLayer",
       filled: true,
       getLineColor: [255, 255, 255],
       getLineWidth: lineWidth,
@@ -585,8 +586,7 @@ const useLayers = ({
         getFillColor: data.data.nodes,
       },
       opacity: 0.8,
-    })
-  );
+    });
 
   const layerFilter = useCallback(
     ({ layer, viewport, renderPass }) => {
@@ -615,6 +615,7 @@ const useLayers = ({
         return new ScatterplotLayer(layer);
       }
       if (layer.layerType === "LineLayer") {
+        console.log('processed ', layer);
         return new LineLayer(layer);
       }
       if (layer.layerType === "PolygonLayer") {
@@ -625,6 +626,9 @@ const useLayers = ({
       }
       if (layer.layerType === "SolidPolygonLayer") {
         return new SolidPolygonLayer(layer);
+      }
+      if (layer.layerType === "GeoJsonLayer") {
+        return new GeoJsonLayer(layer);
       }
       console.log("could not map layer spec for ", layer);
     });

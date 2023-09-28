@@ -66,6 +66,7 @@ function Taxonium({
 
   const deckRef = useRef();
   const jbrowseRef = useRef();
+  const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const [deckSize, setDeckSize] = useState(null);
   const settings = useSettings({ query, updateQuery });
@@ -74,7 +75,6 @@ function Taxonium({
     deckSize,
     deckRef,
     jbrowseRef,
-    nodes,
     mouseDownIsMinimap,
   });
 
@@ -124,8 +124,6 @@ function Taxonium({
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
     useGetDynamicData(backend, colorBy, view.viewState, config, xType);
-
-  useMemo(() => setNodes(data), [data]);
 
   const perNodeFunctions = usePerNodeFunctions(data, config);
 
