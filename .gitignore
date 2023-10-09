@@ -16,4 +16,3 @@ taxonium_component/storybook-static/**
 **/*.egg-info/**
 **/*.pyc
 **/_version.py
-node_modules
