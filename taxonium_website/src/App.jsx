@@ -153,7 +153,7 @@ function App() {
     {
       title: "SARS-CoV-2",
       url: "/?backend=https://api.cov2tree.org",
-      desc: "All six million public sequences of SARS-CoV-2 from the INSDC databases",
+      desc: "All seven million public sequences of SARS-CoV-2 from the INSDC databases",
     },
     {
       title: "Wikidata visual tree of life",
