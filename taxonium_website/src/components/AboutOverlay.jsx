@@ -1,9 +1,31 @@
 import React, { useRef, useEffect } from "react";
 import Modal from "react-modal";
 
+const modalStyle = {
+  content: {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#fafafa",
+    border: "1px solid #e2e8f0",
+    borderRadius: "8px",
+    padding: "20px",
+    maxWidth: "700px",
+    maxHeight: "80vh",
+    minWidth: "400px",
+    minHeight: "400px",
+    fontSize: "13px",
+  },
+  overlay: {
+    backgroundColor: "rgba(100, 100, 100, 0.3)",
+    zIndex: 1000,
+  },
+};
+
 function AboutOverlay({ enabled, setEnabled, overlayContent }) {
   return (
-    <Modal isOpen={enabled} onRequestClose={() => setEnabled(false)}>
+    <Modal isOpen={enabled} onRequestClose={() => setEnabled(false)}
+      style={modalStyle}>
       <button
         className="absolute text-lg font-bold top-0 right-0 m-2"
         onClick={() => setEnabled(false)}
