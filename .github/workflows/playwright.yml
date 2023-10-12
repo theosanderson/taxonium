@@ -2,6 +2,7 @@ name: Playwright Tests
 on:
   repository_dispatch:
   workflow_dispatch:
+  workflow_call:
 jobs:
   playwright:
     timeout-minutes: 60
