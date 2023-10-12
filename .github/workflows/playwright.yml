@@ -28,7 +28,8 @@ jobs:
         run: yarn build
         working-directory: ./taxonium_website
       - name: Run Playwright tests
-        run: yarn playwright test
+        run: pwd
+          yarn playwright test
         working-directory: ./taxonium_website
       - uses: actions/upload-artifact@v3
         if: always()
