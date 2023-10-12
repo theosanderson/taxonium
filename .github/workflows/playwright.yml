@@ -23,6 +23,7 @@ jobs:
         working-directory: ./taxonium_website
       - name: Build
         run: yarn build
+        working-directory: ./taxonium_website
       - name: Run Playwright tests
         run: yarn playwright test
         working-directory: ./taxonium_website
