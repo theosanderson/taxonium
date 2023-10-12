@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 18
       - name: Install dependencies
-        run: NODE_OPTIONS=yarn install
+        run: yarn install
         working-directory: ./taxonium_website
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
