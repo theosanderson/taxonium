@@ -1,4 +1,7 @@
 name: Playwright Tests
+on:
+  repository_dispatch:
+  workflow_dispatch:
 jobs:
   playwright:
     timeout-minutes: 60
