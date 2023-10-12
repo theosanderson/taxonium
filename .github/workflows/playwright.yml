@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main, master]
 jobs:
-  test:
+  playwright:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -13,14 +13,18 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: Install Yarn
+        run: npm install -g yarn
       - name: Install dependencies
         run: NODE_OPTIONS='--max-old-space-size=4096' yarn install
         working-directory: ./taxonium_website
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: yarn playwright install --with-deps
         working-directory: ./taxonium_website
+      - name: Build
+        run: yarn build
       - name: Run Playwright tests
-        run: npx playwright test
+        run: yarn playwright test
         working-directory: ./taxonium_website
       - uses: actions/upload-artifact@v3
         if: always()
