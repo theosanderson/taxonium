@@ -14,4 +14,4 @@ jobs:
     uses: ./.github/workflows/python-test.yml
   playwright:
     uses: ./.github/workflows/playwright.yml
-      needs: [python]
+    needs: [python]
