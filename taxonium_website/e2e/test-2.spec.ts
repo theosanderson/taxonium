@@ -24,3 +24,4 @@ test("test", async ({ page }) => {
   await page.getByRole("tab", { name: "Search" }).click();
   await page.getByRole("tab", { name: "Appearance" }).click();
 });
+ 
