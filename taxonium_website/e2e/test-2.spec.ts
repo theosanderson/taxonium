@@ -5,7 +5,7 @@ test("test", async ({ page }) => {
   await page.locator('input[type="file"]').click();
   await page
     .locator('input[type="file"]')
-    .setInputFiles("../../data/tfci-taxonium-chron.jsonl");
+    .setInputFiles("../data/tfci-taxonium-chron.jsonl");
   await page.locator('input[name="treenomeEnabled"]').check();
   await page.locator('input[name="treenomeEnabled"]').uncheck();
   await page.getByLabel("Tree type:DistanceTime").selectOption("x_time");
