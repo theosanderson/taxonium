@@ -1,0 +1,17 @@
+
+name: Integration Test
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: "0 0 * * *"
+jobs:
+  build:
+    uses: ./.github/workflows/frontend-test.yml
+  python:
+    uses: ./.github/workflows/playwright.yml
+      needs: [python]
