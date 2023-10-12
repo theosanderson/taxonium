@@ -2,6 +2,8 @@ name: Testing Python
 
 on:
   workflow_call:
+  pull_request:
+  commit:
 
 jobs:
   test:
