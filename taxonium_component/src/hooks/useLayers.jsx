@@ -545,48 +545,20 @@ const useLayers = ({
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
   layers.push(minimap_bound_polygon);
 
-  let countryCounts = {};
-  if (data.data.nodes) {
-    countryCounts = getCountryCounts(data.data.nodes);
-  }
-
-  let min = Infinity;
-  let max = -Infinity;
-  for (const [_, count] of Object.entries(countryCounts)) {
-    if (count > max) max = count;
-    if (count < min) min = count;
-  }
-
-  const getColorByCountryCount = (country) => {
-    console.log("country ", country);
-    const hookColor = colorHook.toRGB(country);
-
-    const GRAY = [169, 169, 169];
-    const count = countryCounts[country] ? countryCounts[country] : 0;
-    if (count === 0) return GRAY;
-
-    return hookColor;
-  };
-
   let lineWidth = 100;
   if (viewState["map"]) lineWidth = (1 / viewState["map"].zoom) * 9000;
 
   layers.push({
-      id: "map",
-      data: geojson.features,
-      stroked: true,
-      layerType: "GeoJsonLayer",
-      filled: true,
-      getLineColor: [255, 255, 255],
-      getLineWidth: lineWidth,
-      getFillColor: (d) => {
-        return getColorByCountryCount(d.properties.ADMIN);
-      },
-      updateTriggers: {
-        getFillColor: data.data.nodes,
-      },
-      opacity: 0.8,
-    });
+    id: "map",
+    data: geojson.features,
+    stroked: true,
+    layerType: "GeoJsonLayer",
+    filled: true,
+    getLineColor: [255, 255, 255],
+    getLineWidth: lineWidth,
+    getFillColor: [169, 169, 169],
+    opacity: 0.8,
+  });
 
   const layerFilter = useCallback(
     ({ layer, viewport, renderPass }) => {
@@ -615,7 +587,6 @@ const useLayers = ({
         return new ScatterplotLayer(layer);
       }
       if (layer.layerType === "LineLayer") {
-        console.log('processed ', layer);
         return new LineLayer(layer);
       }
       if (layer.layerType === "PolygonLayer") {
