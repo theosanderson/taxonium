@@ -36,7 +36,7 @@ const TreenomeMutationHoverTip = ({
       className="bg-gray-100 p-3 opacity-90 text-sm"
       style={{
         position: "absolute",
-        zIndex: 0,
+        zIndex: 1,
         pointerEvents: "none",
         left: hoverInfo.x,
         top: hoverInfo.y,
