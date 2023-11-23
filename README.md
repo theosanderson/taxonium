@@ -67,7 +67,7 @@ Taxonium is structured as a 'monorepo' containing a number of components:
 
 ## Contributing
 
-We welcome contributions. We ask that all contributors follow [the Contributor Covenant Code of Conduct](https://github.com/theosanderson/genomium/blob/main/CODE_OF_CONDUCT.md).
+We welcome [contributions](CONTRIBUTING.md). We require that that all contributors follow [the Contributor Covenant Code of Conduct](https://github.com/theosanderson/genomium/blob/main/CODE_OF_CONDUCT.md).
 
 ### Contributors
 
