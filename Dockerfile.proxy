@@ -1,0 +1,11 @@
+FROM node:17.9-alpine
+WORKDIR /app
+
+ENV MAXMEM=5000
+COPY proxy ./proxy
+WORKDIR /app/proxy
+RUN npm install
+
+
+EXPOSE 3000
+CMD node server.js
