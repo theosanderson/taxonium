@@ -427,7 +427,7 @@ async function json_to_tree(json) {
   config.overlay = `<p>This is a tree generated from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
 
   if (json.meta && json.meta.updated) {
-    config.source = config.source + " on " + json.meta.updated;
+    config.source = config.source + "a tree built on " + json.meta.updated;
   }
   if (json.meta && json.meta.maintainers) {
     config.source =
