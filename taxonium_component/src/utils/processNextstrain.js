@@ -424,7 +424,7 @@ async function json_to_tree(json) {
       json.meta.data_provenance.map((source) => source.name).join(" & ");
   }
 
-  config.overlay = `<p>This is a tree generated from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
+  config.overlay = `<p>This is a tree extracted from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
 
   if (json.meta && json.meta.updated) {
     config.source = config.source + "a tree built on " + json.meta.updated;
