@@ -22,7 +22,6 @@ const corsOptions = {
 
 //app.use(cors(corsOptions));
 
-
 // Rate limiting middleware
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
