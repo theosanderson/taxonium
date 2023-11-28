@@ -160,7 +160,7 @@ export const useInputHelper = ({
 
   function addFromURL(url) {
     const file_obj = { name: url, supplyType: "url" };
-  
+
     addInput(file_obj);
   }
 
