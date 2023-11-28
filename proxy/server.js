@@ -39,6 +39,7 @@ app.get("/proxy", async (req, res) => {
     res.send(response.data);
   } catch (error) {
     res.status(500).send({ message: "Error forwarding request" });
+    console.log(error);
   }
 });
 
