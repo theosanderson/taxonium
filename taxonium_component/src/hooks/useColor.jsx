@@ -83,9 +83,13 @@ const useColor = (colorMapping) => {
       if (string === "B.1.2") {
         return [95, 158, 245]; //This is near B.1.617.2
       }
+      if (string === "South_Africa") {
+        return [9, 191, 255]; // otherwise collides with Kenya
+      }
       if (string === "England") {
         return [214, 58, 15]; // UK all brick
       }
+      
       if (string === "Scotland") {
         return [255, 130, 82]; // UK all brick
       }
