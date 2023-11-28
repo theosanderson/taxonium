@@ -37,9 +37,10 @@ metadata:
   name: taxonium-proxy-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx" # assuming you are using nginx ingress controller
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
-    - host: proxied.taxonium.org
+    - host: proxy.taxonium.org
       http:
         paths:
           - pathType: Prefix
@@ -51,5 +52,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - proxied.taxonium.org
-      secretName: tls-proxy3
+        - proxy.taxonium.org
+      secretName: taxonium-proxy4-tls
