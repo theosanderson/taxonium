@@ -44,7 +44,7 @@ Use the [Taxonium component](./taxonium_component).
 - [Exploring the NCBI Taxonomy](https://taxonium.org/?treeUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Ftree.nwk.gz&ladderizeTree=true&metaUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fmetadata.tsv.gz&configUrl=https%3A%2F%2Fcov2tree.nyc3.digitaloceanspaces.com%2Fncbi%2Fconfig.json)
 - [Serratus](https://serratus.io/trees) (click Tree Viewer on any tree)
 
-## Citing Taxonium
+## Citing Taxonium 
 
 ```
 Sanderson, T (2022). Taxonium, a web-based tool for exploring large phylogenetic trees. eLife, 11:e82392
