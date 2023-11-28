@@ -30,17 +30,25 @@ export const InputSupplier = ({ inputHelper, className }) => {
   });
 
   const [tempURL, setTempURL] = useState("");
+  const [useProxy, setUseProxy] = useState(true); // New state for proxy usage
+
 
   const { inputs, setInputs } = inputHelper;
   const [addingText, setAddingText] = useState(false);
   const [text, setText] = useState("");
 
+  
   const addFromTempURL = useCallback(() => {
-    if (tempURL) {
-      inputHelper.addFromURL(tempURL);
+    let finalURL = tempURL;
+    if (useProxy) {
+      finalURL = `https://proxy.taxonium.org/proxy?url=${encodeURIComponent(tempURL)}`;
+    }
+    if (finalURL) {
+      inputHelper.addFromURL(finalURL);
       setTempURL("");
     }
-  }, [tempURL, inputHelper]);
+  }, [tempURL, useProxy, inputHelper]); // Include useProxy in the dependency array
+
 
   return (
     <div className={className}>
@@ -196,6 +204,17 @@ export const InputSupplier = ({ inputHelper, className }) => {
                 }
               }}
             />{" "}
+            {
+              tempURL !== "" && <>
+          <input
+            type="checkbox"
+            checked={useProxy}
+            onChange={(e) => setUseProxy(e.target.checked)}
+          />{" "}
+          Use Proxy
+          </>
+}
+
             <Button onClick={addFromTempURL} className="">
               Add
             </Button>
