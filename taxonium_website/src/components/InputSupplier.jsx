@@ -202,18 +202,17 @@ export const InputSupplier = ({ inputHelper, className }) => {
             />{" "}
             {tempURL !== "" && (
               <>
-              <span className="mr-2 text-sm text-gray-600">
-                <input
-                  type="checkbox"
-                  checked={useProxy}
-                  className=""
-                  onChange={(e) => setUseProxy(e.target.checked)}
-                />{" "}
-                Use Proxy
+                <span className="mr-2 text-sm text-gray-600">
+                  <input
+                    type="checkbox"
+                    checked={useProxy}
+                    className=""
+                    onChange={(e) => setUseProxy(e.target.checked)}
+                  />{" "}
+                  Use Proxy
                 </span>
               </>
             )}
-            
             <Button onClick={addFromTempURL} className="">
               Add
             </Button>
