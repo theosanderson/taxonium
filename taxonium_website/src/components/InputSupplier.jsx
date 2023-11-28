@@ -39,7 +39,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
   const addFromTempURL = useCallback(() => {
     let finalURL = tempURL;
     if (useProxy) {
-      finalURL = `https://proxy.taxonium.org/proxy?url=${encodeURIComponent(
+      finalURL = `https://proxied.taxonium.org/proxy?url=${encodeURIComponent(
         tempURL
       )}`;
     }
