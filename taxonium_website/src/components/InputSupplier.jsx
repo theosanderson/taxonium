@@ -187,8 +187,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
               onChange={(e) => {
                 setTempURL(
                   e.target.value
-                    .replace("http://", "")
-                    .replace("http://", "https://")
+                    
                 );
               }}
               onKeyUp={(e) => {
