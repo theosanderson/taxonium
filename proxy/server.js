@@ -19,7 +19,7 @@ const corsOptions = {
 };
 
 // Apply CORS
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
 // Rate limiting middleware
 const limiter = rateLimit({
