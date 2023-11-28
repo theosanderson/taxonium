@@ -5,7 +5,7 @@
 You can supply files locally to the Taxonium web interface, or you can supply URLs for the files.
 
 :::{note}
-Any files must be uploaded to somewhere that allows Cross-Origin Resource Sharing (CORS).
+Files must be accessed from a server that allows Cross-Origin Resource Sharing (CORS). We provide a _proxy_ feature which will get files you request and resupply them in a CORS-compatible way. You can untick the _Use Proxy_ box to disable the use of this proxy.
 :::
 
 If you supply only remote files, then you will find that the Taxonium.org interface encodes them into its URL as it loads the tree, meaning you can share your tree with other people by copying the Taxonium URL. In addition, any searches or colouring of the tree will also be stored in the URL. Each search will have a permalink button that will create a URL that zooms in on those particular nodes.
