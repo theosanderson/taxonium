@@ -205,6 +205,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
                 <input
                   type="checkbox"
                   checked={useProxy}
+                  className="mr-2 text-sm text-gray-600"
                   onChange={(e) => setUseProxy(e.target.checked)}
                 />{" "}
                 Use Proxy
