@@ -15,6 +15,7 @@ spec:
       containers:
       - name: taxonium-proxy
         image: theosanderson/taxonium_proxy:master
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
 
@@ -49,3 +50,7 @@ spec:
             name: taxonium-proxy-service
             port:
               number: 80
+  tls:
+  - hosts:
+    - proxy2.taxonium.org
+    secretName: tls-proxy
