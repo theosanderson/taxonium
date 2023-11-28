@@ -204,7 +204,7 @@ function App() {
                     {" "}
                     <span className="font-medium pr-2">{title}</span>
                     <span className="flex flex-col text-center">
-                      <span className="text-xs">powered by</span>
+                      <span className="text-xs">visualised with</span>
                       <a
                         href="//taxonium.org"
                         className="underline hover:no-underline text-sm flex items-center"
@@ -221,7 +221,7 @@ function App() {
                     <span className="font-medium ">{title}</span>
                     <div className="flex flex-row mt-4">
                       <CgListTree className="h- ml-1 w-4 mr-1" />
-                      <span className="text-xs ml-1">powered by </span>
+                      <span className="text-xs ml-1">visualised with </span>
                       <a
                         href="//taxonium.org"
                         className="underline hover:no-underline text-xs ml-0.5"
