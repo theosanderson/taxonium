@@ -39,17 +39,17 @@ metadata:
     kubernetes.io/ingress.class: "nginx"  # assuming you are using nginx ingress controller
 spec:
   rules:
-  - host: proxy.taxonium.org
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: taxonium-proxy-service
-            port:
-              number: 80
+    - host: proxied.taxonium.org
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: taxonium-proxy-service
+                port:
+                  number: 80
   tls:
-  - hosts:
-    - proxy.taxonium.org
-    secretName: tls-proxy2
+    - hosts:
+        - proxied.taxonium.org
+      secretName: tls-proxy3
