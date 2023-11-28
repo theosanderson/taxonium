@@ -417,16 +417,28 @@ async function json_to_tree(json) {
   console.log("META", json.meta);
   config.title = json.meta.title;
   console.log("META PROV", json.meta.data_provenance);
+  config.source = "";
   if (json.meta && json.meta.data_provenance) {
-    config.source =
-      json.meta.data_provenance.map((source) => source.name).join(" & ") +
-      " on " +
-      json.meta.updated +
-      " in a build maintained by " +
-      json.meta.maintainers.map((source) => source.name).join(" & ");
+    config.source = config.source +
+      json.meta.data_provenance.map((source) => source.name).join(" & ") 
+
   }
 
   config.overlay = `<p>This is a tree generated from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
+
+  if (json.meta && json.meta.updated) {
+    config.source = config.source + " on " +
+      json.meta.updated ;
+  }
+  if (json.meta && json.meta.maintainers) {
+    config.source = config.source +  " in a build maintained by " +
+      json.meta.maintainers.map((source) => source.name).join(" & ");
+    
+    const maintainerLinks = json.meta.maintainers.map((source) => `<a class='underline' href='${source.url}'>${source.name}</a>`).join(" & ");
+    config.overlay += `<p>The Nextstrain build is maintained by ${maintainerLinks}.</p>`;
+  }
+
+
   if (json.meta.build_url) {
     config.overlay += `<p>The Nextstrain build is available <a class='underline' href='${json.meta.build_url}'>here</a>.</p>`;
   }
