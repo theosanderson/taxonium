@@ -24,13 +24,13 @@ const corsOptions = {
 
 
 // Rate limiting middleware
-const limiter = rateLimit({
+/*const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
-
+*/
 // Apply the rate limiter to all requests
-app.use(limiter);
+//app.use(limiter);
 
 // Proxy endpoint
 app.get("/proxy", async (req, res) => {
