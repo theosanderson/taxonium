@@ -24,7 +24,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@fontsource/roboto": "^5.0.1",
     "@headlessui/react": "^1.7.17",
     "@jbrowse/core": "^2.5.0",
@@ -46,9 +47,7 @@
     "readable-web-to-node-stream": "^3.0.2",
     "sb": "^7.0.14",
     "scale-color-perceptual": "^1.1.2",
-    "taxonium_data_handling": "file:../taxonium_data_handling"
-  },
-  "devDependencies": {
+    "taxonium_data_handling": "file:../taxonium_data_handling",
     "@storybook/addon-essentials": "^7.0.14",
     "@storybook/addon-interactions": "^7.0.14",
     "@storybook/addon-links": "^7.0.14",
