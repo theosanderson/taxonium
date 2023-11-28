@@ -30,7 +30,7 @@ const limiter = rateLimit({
 });
 
 // Apply the rate limiter to all requests
-app.use(limiter);
+//app.use(limiter);
 
 // Proxy endpoint
 app.get("/proxy", async (req, res) => {
