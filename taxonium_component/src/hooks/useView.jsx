@@ -285,7 +285,7 @@ const useView = ({
             !specialMinimap &&
             oldScaleY === newScaleY
           ) {
-            return;
+            return { ...currentViewState, ...newViewState };
           }
 
           let newScaleX = 2 ** xzoom;
@@ -348,7 +348,7 @@ const useView = ({
               mouseXY[1] < 0
             ) {
               if (!basicTarget && viewId) {
-                return;
+                return { ...currentViewState, ...newViewState };
               }
             }
           }
