@@ -3,7 +3,6 @@ import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { View } from "@deck.gl/core";
 import useLayers from "./hooks/useLayers";
-import JBrowsePanel from "./components/JBrowsePanel";
 import { ClipLoader } from "react-spinners";
 import {
   CircularProgressbarWithChildren,
@@ -19,9 +18,9 @@ import DeckSettingsModal from "./components/DeckSettingsModal";
 import { TreenomeButtons } from "./components/TreenomeButtons";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
-import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
-import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
+import ColorSettingModal from "./components/ColorSettingModal";
+import TreenomeBrowser from "./components/TreenomeBrowser";
 
 const MemoizedKey = React.memo(Key);
 
@@ -359,12 +358,7 @@ function Deck({
             }}
           >
             <span ref={jbrowseRef}>
-              <JBrowseErrorBoundary>
-                <JBrowsePanel
-                  treenomeState={treenomeState}
-                  settings={settings}
-                />
-              </JBrowseErrorBoundary>
+              <TreenomeBrowser state={treenomeState} settings={settings} />
               <TreenomeModal
                 treenomeSettingsOpen={treenomeSettingsOpen}
                 setTreenomeSettingsOpen={setTreenomeSettingsOpen}
@@ -384,7 +378,59 @@ function Deck({
             settings={settings}
           />
         </View>
-        <View id="main"></View>
+
+        <View id="map">
+          <div
+            id="map-div"
+            key={"map-div-key"}
+            style={{
+              width: "100%",
+              height: "100%",
+              borderLeftWidth: "1px",
+              borderColor: "black",
+              borderStyle: "solid",
+              position: "relative",
+              zIndex: 2,
+            }}
+          ></div>
+        </View>
+
+        <View id="main">
+          <NodeHoverTip
+            hoverInfo={hoverInfo}
+            hoverDetails={hoverDetails}
+            colorHook={colorHook}
+            colorBy={colorBy}
+            config={config}
+            filterMutations={settings.filterMutations}
+            deckSize={deckSize}
+          />
+          <TreenomeMutationHoverTip
+            hoverInfo={hoverInfo}
+            hoverDetails={hoverDetails}
+            colorHook={colorHook}
+            colorBy={colorBy}
+            config={config}
+            treenomeReferenceInfo={treenomeReferenceInfo}
+          />
+          <MemoizedKey
+            keyStuff={keyStuff}
+            colorByField={colorBy.colorByField}
+            colorByGene={colorBy.colorByGene}
+            colorByPosition={colorBy.colorByPosition}
+            config={config}
+          />
+          <DeckButtons
+            zoomReset={zoomReset}
+            zoomIncrement={zoomIncrement}
+            zoomAxis={zoomAxis}
+            setZoomAxis={setZoomAxis}
+            snapshot={snapshot}
+            loading={data.status === "loading"}
+            requestOpenSettings={() => setDeckSettingsOpen(true)}
+            settings={settings}
+          />
+        </View>
       </DeckGL>
     </div>
   );

@@ -2,19 +2,24 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   OrthographicView,
   OrthographicController,
-  //OrthographicViewport,
+  MapView,
+  MapController,
 } from "@deck.gl/core";
 
 let globalSetZoomAxis = () => {};
 const defaultViewState = {
   zoom: -2,
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
-
   pitch: 0,
   bearing: 0,
   minimap: { zoom: -3, target: [250, 1000] },
   "browser-main": { zoom: -2, target: [0, 1000] },
   "browser-axis": { zoom: -2, target: [0, 1000] },
+  map: {
+    latitude: 0,
+    longitude: 0,
+    zoom: 0.55,
+  },
 };
 
 class MyOrthographicController extends OrthographicController {
@@ -138,12 +143,19 @@ const useView = ({
       ...viewState,
       "browser-main": { zoom: 0, target: [0, 0] },
       "browser-axis": { zoom: 0, target: [0, 0] },
+      map: {
+        latitude: 0,
+        longitude: 0,
+        zoom: 0.55,
+      },
     };
   }, [viewState]);
 
   const views = useMemo(() => {
     return [
-      ...(settings.minimapEnabled && !settings.treenomeEnabled
+      ...(settings.minimapEnabled &&
+      !settings.treenomeEnabled &&
+      !settings.mapViewOpen
         ? [
             new OrthographicView({
               id: "minimap",
@@ -181,7 +193,8 @@ const useView = ({
             type: MyOrthographicController,
             scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
           },
-          width: settings.treenomeEnabled ? "40%" : "100%",
+          width:
+            settings.treenomeEnabled || settings.mapViewOpen ? "40%" : "100%",
           initialViewState: viewState,
         }),
       ],
@@ -198,12 +211,24 @@ const useView = ({
             }),
           ]
         : []),
+      ...(settings.mapViewOpen
+        ? [
+            new MapView({
+              id: "map",
+              width: "60%",
+              initialViewState: viewState,
+              x: "40%",
+              controller: MapController,
+            }),
+          ]
+        : []),
     ];
   }, [
     viewState,
     zoomAxis,
     settings.minimapEnabled,
     settings.treenomeEnabled,
+    settings.mapViewOpen,
     xzoom,
   ]);
 
@@ -250,90 +275,116 @@ const useView = ({
         return;
       }
 
-      //const temp_viewport = new OrthographicViewport(viewS
-      const oldScaleY = 2 ** oldViewState.zoom;
-      const newScaleY = 2 ** newViewState.zoom;
-      // eslint-disable-line no-unused-vars
+      if (viewId === "main" || interactionState === "isZooming") {
+        setViewState((currentViewState) => {
+          //const temp_viewport = new OrthographicViewport(viewS
+          const oldScaleY = 2 ** oldViewState.zoom;
+          const newScaleY = 2 ** newViewState.zoom;
+          // eslint-disable-line no-unused-vars
 
-      if (mouseDownIsMinimap && !specialMinimap && oldScaleY === newScaleY) {
-        return;
-      }
+          if (
+            mouseDownIsMinimap &&
+            !specialMinimap &&
+            oldScaleY === newScaleY
+          ) {
+            return { ...currentViewState, ...newViewState };
+          }
 
-      let newScaleX = 2 ** xzoom;
-      if (basicTarget) {
-        newViewState.target[0] =
-          (newViewState.target[0] / newScaleY) * newScaleX;
-      } else {
-        if (oldScaleY !== newScaleY) {
-          if (localZoomAxis === "Y") {
+          let newScaleX = 2 ** xzoom;
+          if (basicTarget) {
             newViewState.target[0] =
-              (oldViewState.target[0] / newScaleY) * oldScaleY;
+              (newViewState.target[0] / newScaleY) * newScaleX;
           } else {
-            const difference = newViewState.zoom - oldViewState.zoom;
+            if (oldScaleY !== newScaleY) {
+              if (localZoomAxis === "Y") {
+                newViewState.target[0] =
+                  (oldViewState.target[0] / newScaleY) * oldScaleY;
+              } else {
+                const difference = newViewState.zoom - oldViewState.zoom;
 
-            setXzoom((old) => old + difference);
+                setXzoom((old) => old + difference);
 
-            newScaleX = 2 ** (xzoom + difference);
+                newScaleX = 2 ** (xzoom + difference);
 
-            newViewState.zoom = oldViewState.zoom;
-            newViewState.target[0] =
-              (oldViewState.target[0] / oldScaleY) * newScaleY;
+                newViewState.zoom = oldViewState.zoom;
+                newViewState.target[0] =
+                  (oldViewState.target[0] / oldScaleY) * newScaleY;
+              }
+            }
           }
-        }
-      }
 
-      newViewState.target = [...newViewState.target];
+          newViewState.target = [...newViewState.target];
 
-      newViewState.real_height = deckSize.height / newScaleY;
-      newViewState.real_width = deckSize.width / newScaleX;
+          newViewState.real_height = deckSize.height / newScaleY;
+          newViewState.real_width = deckSize.width / newScaleX;
 
-      newViewState.real_target = [...newViewState.target];
-      newViewState.real_target[0] =
-        (newViewState.real_target[0] * newScaleY) / newScaleX;
+          newViewState.real_target = [...newViewState.target];
+          newViewState.real_target[0] =
+            (newViewState.real_target[0] * newScaleY) / newScaleX;
 
-      const nw = [
-        newViewState.real_target[0] - newViewState.real_width / 2,
-        newViewState.real_target[1] - newViewState.real_height / 2,
-      ];
-      const se = [
-        newViewState.real_target[0] + newViewState.real_width / 2,
-        newViewState.real_target[1] + newViewState.real_height / 2,
-      ];
+          const nw = [
+            newViewState.real_target[0] - newViewState.real_width / 2,
+            newViewState.real_target[1] - newViewState.real_height / 2,
+          ];
+          const se = [
+            newViewState.real_target[0] + newViewState.real_width / 2,
+            newViewState.real_target[1] + newViewState.real_height / 2,
+          ];
 
-      newViewState.min_x = nw[0];
-      newViewState.max_x = se[0];
-      newViewState.min_y = nw[1];
-      newViewState.max_y = se[1];
+          newViewState.min_x = nw[0];
+          newViewState.max_x = se[0];
+          newViewState.min_y = nw[1];
+          newViewState.max_y = se[1];
 
-      newViewState["minimap"] = { zoom: -3, target: [250, 1000] };
+          newViewState["minimap"] = { zoom: -3, target: [250, 1000] };
 
-      if (jbrowseRef.current) {
-        const yBound = jbrowseRef.current.children[0].children[0].clientHeight;
-        const xBound =
-          jbrowseRef.current.children[0].children[0].offsetParent.offsetParent
-            .offsetLeft;
-        if (
-          (mouseXY[0] > xBound && mouseXY[1] < yBound) ||
-          mouseXY[0] < 0 ||
-          mouseXY[1] < 0
-        ) {
-          if (!basicTarget && viewId) {
-            return;
+          if (jbrowseRef.current) {
+            const yBound =
+              jbrowseRef.current.children[0].children[0].clientHeight;
+            const xBound =
+              jbrowseRef.current.children[0].children[0].offsetParent
+                .offsetParent.offsetLeft;
+            if (
+              (mouseXY[0] > xBound && mouseXY[1] < yBound) ||
+              mouseXY[0] < 0 ||
+              mouseXY[1] < 0
+            ) {
+              if (!basicTarget && viewId) {
+                return { ...currentViewState, ...newViewState };
+              }
+            }
           }
-        }
-      }
 
-      // Treenome view state
-      if (viewId === "main" || viewId === "main-overlay" || !viewId) {
-        newViewState["browser-main"] = {
-          ...viewState["browser-main"],
-          zoom: newViewState.zoom,
-          target: [viewState["browser-main"].target[0], newViewState.target[1]],
-        };
+          const combinedViewState = { ...currentViewState, ...newViewState };
+          return combinedViewState;
+        });
+      } else if (viewId === "map") {
+        setViewState((currentViewState) => {
+          const newState = {
+            ...currentViewState,
+            map: {
+              latitude: newViewState.latitude,
+              longitude: newViewState.longitude,
+              zoom: newViewState.zoom,
+            },
+          };
+          return newState;
+        });
+      } else if (!viewId || viewId === "main-overlay" || viewId === "main") {
+        setViewState((currentViewState) => {
+          newViewState["browser-main"] = {
+            ...viewState["browser-main"],
+            zoom: newViewState.zoom,
+            target: [
+              viewState["browser-main"].target[0],
+              newViewState.target[1],
+            ],
+          };
+          const combinedViewState = { ...currentViewState, ...newViewState };
+          return combinedViewState;
+        });
       }
-
-      setViewState(newViewState);
-      return newViewState;
+      return;
     },
     [zoomAxis, xzoom, deckSize, viewState, jbrowseRef, mouseXY]
   );

@@ -317,6 +317,33 @@ function SearchPanel({
               </button>
             </span>
           )}
+        {<br />}
+        {true && (
+          <span>
+            <span className="text-gray-500 text-sm">Map View:</span>
+            <input
+              name="mapEnabled"
+              style={{ verticalAlign: "middle" }}
+              type="checkbox"
+              className="m-3 inline-block"
+              checked={settings.mapViewOpen}
+              onChange={(e) => {
+                settings.setMapOpenAndToast(!settings.mapViewOpen);
+              }}
+            />
+            <button
+              style={{ cursor: "default" }}
+              data-tip="Display a map with points corresponding to the location a sample was collected."
+              data-html={true}
+            >
+              <span
+                style={{ display: "inline-block", verticalAlign: "middle" }}
+              >
+                <BsQuestionCircle />
+              </span>
+            </button>
+          </span>
+        )}
       </div>
       <div className="py-3 space-y-2">
         <div className="flex space-x-2">

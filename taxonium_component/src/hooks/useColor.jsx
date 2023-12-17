@@ -76,7 +76,7 @@ const useColor = (colorMapping) => {
         return [180, 180, 180];
       }
 
-      if (string === "USA") {
+      if (string === "USA" || string === "United States of America") {
         return [95, 158, 245]; //This is just because the default is ugly
       }
 

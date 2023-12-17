@@ -4,11 +4,16 @@ import {
   PolygonLayer,
   TextLayer,
   SolidPolygonLayer,
+  GeoJsonLayer,
 } from "@deck.gl/layers";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
+
+// source: https://datahub.io/core/geo-countries
+import geojson from "../worldMap.geo.json";
+import { getCountryCounts } from "../utils/coordinates";
 
 const getKeyStuff = (getNodeColorField, colorByField, dataset, toRGB) => {
   const counts = {};
@@ -540,6 +545,21 @@ const useLayers = ({
   layers.push(minimap_line_horiz, minimap_line_vert, minimap_scatter);
   layers.push(minimap_bound_polygon);
 
+  let lineWidth = 100;
+  if (viewState["map"]) lineWidth = (1 / viewState["map"].zoom) * 9000;
+
+  layers.push({
+    id: "map",
+    data: geojson.features,
+    stroked: true,
+    layerType: "GeoJsonLayer",
+    filled: true,
+    getLineColor: [255, 255, 255],
+    getLineWidth: lineWidth,
+    getFillColor: [169, 169, 169],
+    opacity: 0.8,
+  });
+
   const layerFilter = useCallback(
     ({ layer, viewport, renderPass }) => {
       const first_bit =
@@ -552,7 +572,8 @@ const useLayers = ({
           viewport.id === "browser-main") ||
         (layer.id.startsWith("browser-fillin") &&
           viewport.id === "browser-main" &&
-          isCurrentlyOutsideBounds);
+          isCurrentlyOutsideBounds) ||
+        (layer.id.startsWith("map") && viewport.id === "map");
 
       return first_bit;
     },
@@ -576,6 +597,9 @@ const useLayers = ({
       }
       if (layer.layerType === "SolidPolygonLayer") {
         return new SolidPolygonLayer(layer);
+      }
+      if (layer.layerType === "GeoJsonLayer") {
+        return new GeoJsonLayer(layer);
       }
       console.log("could not map layer spec for ", layer);
     });
