@@ -153,7 +153,9 @@ const useView = ({
 
   const views = useMemo(() => {
     return [
-      ...(settings.minimapEnabled && !settings.treenomeEnabled
+      ...(settings.minimapEnabled &&
+      !settings.treenomeEnabled &&
+      !settings.mapViewOpen
         ? [
             new OrthographicView({
               id: "minimap",
