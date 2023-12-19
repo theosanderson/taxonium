@@ -252,6 +252,10 @@ function JBrowsePanel(props) {
         }
         const v = state.session.view;
 
+        if (!v.initialized) {
+          return;
+        }
+
         const leftNtBound = v.offsetPx * v.bpPerPx;
         const rightNtBound = v.offsetPx * v.bpPerPx + v.width * v.bpPerPx;
         if (
