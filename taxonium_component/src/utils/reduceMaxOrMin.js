@@ -3,13 +3,13 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
     return accessFunction(
       array.reduce(function (max, item) {
         return accessFunction(item) > accessFunction(max) ? item : max;
-      })
+      }),
     );
   } else if (maxOrMin === "min") {
     return accessFunction(
       array.reduce(function (min, item) {
         return accessFunction(item) < accessFunction(min) ? item : min;
-      })
+      }),
     );
   }
 }

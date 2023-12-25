@@ -6,7 +6,7 @@ const useTreenomeLayerData = (
   data,
   treenomeState,
   settings,
-  selectedDetails
+  selectedDetails,
 ) => {
   const [varDataAa, setVarDataAa] = useState([]);
   const [varDataNt, setVarDataNt] = useState([]);
@@ -46,7 +46,7 @@ const useTreenomeLayerData = (
       setVarDataNt,
       setCachedVarDataAa,
       setCachedVarDataNt,
-    ]
+    ],
   );
 
   useEffect(() => {
