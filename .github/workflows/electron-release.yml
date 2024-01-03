@@ -1,6 +1,7 @@
 name: Electron build/release
 
 on:
+  workflow_dispatch:
   release:
     types:
       - created
@@ -35,6 +36,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      # Install Python 2.7 or a compatible version for node-gyp
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "2.7" # or another compatible version
+
       - name: Check out Git repository
         uses: actions/checkout@v1
       - name: Download updated package.json
@@ -52,6 +59,7 @@ jobs:
         run: |
           cd taxonium_electron
           source download.sh
+          yarn add macos-alias
           yarn install
           yarn make --arch=arm64
           yarn make --arch=x64
