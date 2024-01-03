@@ -36,11 +36,10 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # Install Python 2.7 or a compatible version for node-gyp
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "2.7" # or another compatible version
+          python-version: "3.9" # or another compatible version
 
       - name: Check out Git repository
         uses: actions/checkout@v1
