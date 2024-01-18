@@ -455,7 +455,7 @@ export async function processNextstrain(data, sendStatusMessage) {
   const the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
   sendStatusMessage({
-    message: "Parsing NS file",
+    message: "Parsing Nextstrain format",
   });
 
   const { jsTree, config, unique_mutations } = await json_to_tree(
