@@ -112,7 +112,7 @@ const useTreenomeState = (data, deckRef, view, settings) => {
   useEffect(() => {
     const observer = new MutationObserver(function (
       mutations,
-      mutationInstance
+      mutationInstance,
     ) {
       const jbrowse = document.getElementById("view-browser-axis");
       if (jbrowse) {

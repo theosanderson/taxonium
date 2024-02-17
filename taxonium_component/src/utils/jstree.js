@@ -217,7 +217,7 @@ function kn_check_tree(tree) {
         p.x +
         "<td>" +
         p.y +
-        "</tr>"
+        "</tr>",
     );
   }
   document.write("</table>");
@@ -422,8 +422,8 @@ function kn_reorder(root) {
     return String(a.name) < String(b.name)
       ? -1
       : String(a.name) > String(b.name)
-      ? 1
-      : 0;
+        ? 1
+        : 0;
   };
   const sort_weight = function (a, b) {
     return a.weight / a.n_tips - b.weight / b.n_tips;
@@ -560,12 +560,12 @@ function kn_get_node(tree, conf, x, y) {
       var tmp_x = Math.floor(
         conf.width / 2 +
           p.x * conf.real_r * Math.cos(p.y * conf.full_arc) +
-          0.999
+          0.999,
       );
       var tmp_y = Math.floor(
         conf.height / 2 +
           p.x * conf.real_r * Math.sin(p.y * conf.full_arc) +
-          0.999
+          0.999,
       );
       var tmp_l = 2;
       if (

@@ -32,7 +32,7 @@ const useSearch = ({
   }, [query.srch]);
 
   const [zoomToSearch, setZoomToSearch] = useState(
-    query.zoomToSearch ? { index: query.zoomToSearch } : null
+    query.zoomToSearch ? { index: query.zoomToSearch } : null,
   );
   const searchesEnabled = query.enabled
     ? JSON.parse(query.enabled)
@@ -84,10 +84,10 @@ const useSearch = ({
         boundsForQueries,
         (x) => {
           setInflightSearches((prev) =>
-            prev.filter((s) => s !== everything_string)
+            prev.filter((s) => s !== everything_string),
           );
           setter(x);
-        }
+        },
       );
       searchControllers[key] = [
         ...searchControllers[key],
@@ -95,7 +95,7 @@ const useSearch = ({
       ];
       setSearchControllers({ ...searchControllers });
     },
-    [searchControllers, singleSearch, inflightSearches]
+    [searchControllers, singleSearch, inflightSearches],
   );
 
   useEffect(() => {
@@ -103,7 +103,7 @@ const useSearch = ({
     const spec_keys = searchSpec.map((spec) => spec.key);
     const result_keys = Object.keys(searchResults);
     const keys_to_remove = result_keys.filter(
-      (key) => !spec_keys.includes(key)
+      (key) => !spec_keys.includes(key),
     );
     keys_to_remove.forEach((key) => {
       delete searchResults[key];
@@ -117,7 +117,7 @@ const useSearch = ({
 
     // check which json strings have changed
     const json_changed = Object.keys(spec_json).filter(
-      (key) => spec_json[key] !== jsonSearch[key]
+      (key) => spec_json[key] !== jsonSearch[key],
     );
 
     // also add any result where the result type is not complete, and the bounding box has changed
@@ -130,7 +130,7 @@ const useSearch = ({
           "result_changed",
           key,
           searchResults[key].boundingBox,
-          boundsForQueries
+          boundsForQueries,
         );
 
         return true;
@@ -275,7 +275,7 @@ const useSearch = ({
       const newZoom =
         9 -
         Math.log2(
-          max_y - min_y + 50000 / (config.num_nodes ? config.num_nodes : 10000)
+          max_y - min_y + 50000 / (config.num_nodes ? config.num_nodes : 10000),
         );
       const new_target = settings.treenomeEnabled
         ? [oldViewState.target[0], (min_y + max_y) / 2]
@@ -290,7 +290,7 @@ const useSearch = ({
       console.log(
         "zoom to search new VS",
         viewState.target[0],
-        viewState.target[1]
+        viewState.target[1],
       );
 
       view.onViewStateChange({
