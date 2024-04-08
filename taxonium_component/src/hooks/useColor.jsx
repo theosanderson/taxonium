@@ -118,11 +118,11 @@ const useColor = (colorMapping) => {
         return [24, 112, 32]; // diff to UK
       }
       if (string === "OXFORD_NANOPORE") {
-        return [24, 32, 200]; 
+        return [24, 32, 200];
       }
 
       if (string === "ION_TORRENT") {
-        return [24, 160, 32]; 
+        return [24, 160, 32];
       }
 
       if (string === "Democratic Republic of the Congo") {
@@ -146,7 +146,7 @@ const useColor = (colorMapping) => {
       }
       return rgb;
     },
-    [colorMapping]
+    [colorMapping],
   );
 
   const toRGB = useCallback(
@@ -159,7 +159,7 @@ const useColor = (colorMapping) => {
         return result;
       }
     },
-    [toRGB_uncached]
+    [toRGB_uncached],
   );
 
   const toRGBCSS = useCallback(
@@ -167,7 +167,7 @@ const useColor = (colorMapping) => {
       const output = toRGB(string);
       return `rgb(${output[0]},${output[1]},${output[2]})`;
     },
-    [toRGB]
+    [toRGB],
   );
 
   const output = useMemo(() => {

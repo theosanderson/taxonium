@@ -20,7 +20,7 @@ const TreenomeModal = ({
   settings,
 }) => {
   const [inputChromosome, setInputChromosome] = useState(
-    settings.chromosomeName
+    settings.chromosomeName,
   );
   return (
     <Modal

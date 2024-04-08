@@ -17,7 +17,7 @@ export const Button = ({
         className={classNames(
           "tx-button no-underline",
           "border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700",
-          className
+          className,
         )}
         href={href}
         title={title}
@@ -32,7 +32,7 @@ export const Button = ({
         className={classNames(
           "tx-button",
           "border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700",
-          className
+          className,
         )}
         onClick={onClick}
         title={title}
@@ -49,7 +49,7 @@ export const Select = ({ onChange, className, children, value, title }) => {
       className={classNames(
         "border bg-white text-gray-900 text-sm hover:text-gray-700 py-1 pl-2 pr-6",
         "focus:ring-gray-800 focus:border-gray-800",
-        className
+        className,
       )}
       onChange={onChange}
       value={value}

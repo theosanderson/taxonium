@@ -16,7 +16,7 @@ import { HiOutlineBookOpen } from "react-icons/hi";
 const default_query = {};
 
 default_query.backend = null;
-if(window.location.hostname.includes("viridian.taxonium.org")){
+if (window.location.hostname.includes("viridian.taxonium.org")) {
   default_query.backend = "https://viridian-api.cov2tree.org";
 }
 if (window.location.hostname.includes("cov2tree.org")) {
@@ -127,7 +127,7 @@ function App() {
       // V1 format
       if (!window.redirecting) {
         window.alert(
-          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. "
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. ",
         );
       }
       window.redirecting = 1;
@@ -138,7 +138,7 @@ function App() {
     } else {
       if (!window.redirecting) {
         window.alert(
-          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. "
+          "It looks like you are trying to load a Taxonium V1 proto. We will now redirect you to the V1 site. ",
         );
       }
       window.redirecting = 1;
@@ -195,7 +195,7 @@ function App() {
           className={classNames(
             "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md",
             "flex justify-between items-center px-4 flex-shrink-0",
-            isGisaid ? "h-11" : "h-16"
+            isGisaid ? "h-11" : "h-16",
           )}
         >
           <h1 className="text-xl text-white flex items-center space-x-2">

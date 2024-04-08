@@ -64,7 +64,7 @@ function SearchPanel({
   const covSpectrumQuery = useMemo(() => {
     if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
       return perNodeFunctions.getCovSpectrumQuery(
-        selectedDetails.nodeDetails.node_id
+        selectedDetails.nodeDetails.node_id,
       );
     } else {
       return null;
@@ -156,7 +156,7 @@ function SearchPanel({
                         ) {
                           // pop up a warning and ask if we want to continue
                           alert(
-                            "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again."
+                            "WARNING: This node has a large number of descendants. Displaying them all may take a while or crash this browser window. Are you sure you want to continue? If so press the button again.",
                           );
                           window.warning_shown = true;
                           return;
@@ -190,7 +190,7 @@ function SearchPanel({
                                     backend
                                       .getNextstrainJsonUrl(
                                         selectedDetails.nodeDetails.node_id,
-                                        config
+                                        config,
                                       )
                                       .replace("https://", "")
                                       .replace("http://", "")
@@ -362,7 +362,7 @@ function SearchPanel({
                 value={colorBy.colorByPosition}
                 onChange={(e) =>
                   colorBy.setColorByPosition(
-                    e.target.value !== "" ? parseInt(e.target.value) : ""
+                    e.target.value !== "" ? parseInt(e.target.value) : "",
                   )
                 }
                 type="number"
@@ -427,7 +427,7 @@ function SearchPanel({
                   title="Select parent"
                   onClick={() => {
                     selectedDetails.getNodeDetails(
-                      selectedDetails.nodeDetails.parent_id
+                      selectedDetails.nodeDetails.parent_id,
                     );
                   }}
                 >
@@ -454,7 +454,7 @@ function SearchPanel({
             <span
               style={{
                 color: colorHook.toRGBCSS(
-                  colorBy.getNodeColorField(selectedDetails.nodeDetails)
+                  colorBy.getNodeColorField(selectedDetails.nodeDetails),
                 ),
               }}
             >
@@ -465,7 +465,7 @@ function SearchPanel({
           {[...config.keys_to_display, "num_tips"].map(
             (key) =>
               selectedDetails.nodeDetails[key] &&
-              formatMetadataItem(key, selectedDetails)
+              formatMetadataItem(key, selectedDetails),
           )}
           {config.mutations.length > 0 &&
             selectedDetails.nodeDetails.node_id !==

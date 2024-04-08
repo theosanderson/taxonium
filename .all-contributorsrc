@@ -1,7 +1,5 @@
 {
-  "files": [
-    "README.md"
-  ],
+  "files": ["README.md"],
   "imageSize": 100,
   "commit": false,
   "contributors": [
@@ -10,67 +8,49 @@
       "name": "Alex Kramer",
       "avatar_url": "https://avatars.githubusercontent.com/u/6502785?v=4",
       "profile": "https://github.com/amkram",
-      "contributions": [
-        "code",
-        "design",
-        "ideas"
-      ]
+      "contributions": ["code", "design", "ideas"]
     },
     {
       "login": "AngieHinrichs",
       "name": "Angie Hinrichs",
       "avatar_url": "https://avatars.githubusercontent.com/u/186983?v=4",
       "profile": "http://genome.ucsc.edu/",
-      "contributions": [
-        "ideas",
-        "data"
-      ]
+      "contributions": ["ideas", "data"]
     },
     {
       "login": "richardgoater",
       "name": "Richard Goater",
       "avatar_url": "https://avatars.githubusercontent.com/u/1429721?v=4",
       "profile": "https://github.com/richardgoater",
-      "contributions": [
-        "design",
-        "code"
-      ]
+      "contributions": ["design", "code"]
     },
     {
       "login": "chaoran-chen",
       "name": "Chaoran Chen",
       "avatar_url": "https://avatars.githubusercontent.com/u/18666552?v=4",
       "profile": "https://github.com/chaoran-chen",
-      "contributions": [
-        "ideas"
-      ]
+      "contributions": ["ideas"]
     },
     {
       "login": "corneliusroemer",
       "name": "Cornelius Roemer",
       "avatar_url": "https://avatars.githubusercontent.com/u/25161793?v=4",
       "profile": "https://github.com/corneliusroemer",
-      "contributions": [
-        "ideas"
-      ]
+      "contributions": ["ideas"]
     },
     {
       "login": "sungyeonkwon",
       "name": "Sung Kwon",
       "avatar_url": "https://avatars.githubusercontent.com/u/25865179?v=4",
       "profile": "https://github.com/sungyeonkwon",
-      "contributions": [
-        "infra"
-      ]
+      "contributions": ["infra"]
     },
     {
       "login": "kvargha",
       "name": "Koorous Vargha",
       "avatar_url": "https://avatars.githubusercontent.com/u/35252220?v=4",
       "profile": "https://kvargha.com/",
-      "contributions": [
-        "code"
-      ]
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,

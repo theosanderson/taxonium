@@ -8,7 +8,7 @@ const emptyList = [];
 const nodeMutationsFromNextStrainToTaxonium = (
   mutations,
   unique_mutations,
-  mutation_lookup
+  mutation_lookup,
 ) => {
   //console.log("mutations", mutations);
   const keys = Object.keys(mutations);
@@ -23,7 +23,7 @@ const nodeMutationsFromNextStrainToTaxonium = (
     const index_of_position = nuc_mut.indexOf(position[0]);
     const previous_residue = nuc_mut.substring(0, index_of_position);
     const new_residue = nuc_mut.substring(
-      index_of_position + position[0].length
+      index_of_position + position[0].length,
     );
     const tax_format = {
       type: "nt",
@@ -56,7 +56,7 @@ const nodeMutationsFromNextStrainToTaxonium = (
       const index_of_position = gene_mut.indexOf(position[0]);
       const previous_residue = gene_mut.substring(0, index_of_position);
       const new_residue = gene_mut.substring(
-        index_of_position + position[0].length
+        index_of_position + position[0].length,
       );
       const tax_format = {
         type: "aa",
@@ -131,7 +131,7 @@ function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
     return do_fetch(
       file_obj.filename,
       sendStatusMessage,
-      whatIsBeingDownloaded
+      whatIsBeingDownloaded,
     );
   } else if (file_obj.status === "loaded") {
     if (file_obj.filename.includes(".gz")) {
@@ -337,7 +337,7 @@ function json_preorder(root) {
           ? nodeMutationsFromNextStrainToTaxonium(
               nodeJson.branch_attrs.mutations,
               unique_mutations,
-              mutation_lookup
+              mutation_lookup,
             )
           : [],
     };
@@ -357,8 +357,8 @@ function json_preorder(root) {
           attr.value && typeof attr.value !== "object"
             ? attr.value
             : typeof attr !== "object"
-            ? attr
-            : "";
+              ? attr
+              : "";
       });
 
     path.push(parsedNode);
@@ -438,7 +438,7 @@ async function json_to_tree(json) {
     const maintainerLinks = json.meta.maintainers
       .map(
         (source) =>
-          `<a class='underline' href='${source.url}'>${source.name}</a>`
+          `<a class='underline' href='${source.url}'>${source.name}</a>`,
       )
       .join(" & ");
     config.overlay += `<p>The Nextstrain build is maintained by ${maintainerLinks}.</p>`;
@@ -459,7 +459,7 @@ export async function processNextstrain(data, sendStatusMessage) {
   });
 
   const { jsTree, config, unique_mutations } = await json_to_tree(
-    JSON.parse(the_data)
+    JSON.parse(the_data),
   );
 
   const output = await processJsTree(jsTree, data, config, sendStatusMessage);
