@@ -118,11 +118,11 @@ const useColor = (colorMapping) => {
         return [24, 112, 32]; // diff to UK
       }
       if (string === "OXFORD_NANOPORE") {
-        return [24, 32, 200]; 
+        return [24, 32, 200];
       }
 
       if (string === "ION_TORRENT") {
-        return [24, 160, 32]; 
+        return [24, 160, 32];
       }
 
       if (string === "Democratic Republic of the Congo") {

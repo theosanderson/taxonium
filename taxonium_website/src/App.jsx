@@ -16,7 +16,7 @@ import { HiOutlineBookOpen } from "react-icons/hi";
 const default_query = {};
 
 default_query.backend = null;
-if(window.location.hostname.includes("viridian.taxonium.org")){
+if (window.location.hostname.includes("viridian.taxonium.org")) {
   default_query.backend = "https://viridian-api.cov2tree.org";
 }
 if (window.location.hostname.includes("cov2tree.org")) {
