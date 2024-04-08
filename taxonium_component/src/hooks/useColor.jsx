@@ -121,6 +121,10 @@ const useColor = (colorMapping) => {
         return [24, 32, 200]; 
       }
 
+      if (string === "ION_TORRENT") {
+        return [24, 160, 32]; 
+      }
+
       if (string === "Democratic Republic of the Congo") {
         return [17, 58, 99]; // otherwise too similar to CAR
       }
