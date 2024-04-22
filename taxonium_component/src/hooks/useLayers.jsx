@@ -141,11 +141,11 @@ const useLayers = ({
   }, [base_data, settings.displayPointsForInternalNodes]);
 
   const outer_bounds = [
-    [-1000, -1000],
-    [1000, -1000],
-    [10000, 10000],
-    [-1000, 10000],
-    [-1000, -1000],
+    [-100000, -100000],
+    [100000, -100000],
+    [1000000, 1000000],
+    [-100000, 1000000],
+    [-100000, -100000],
   ];
   const inner_bounds = [
     [viewState.min_x, viewState.min_y < -1000 ? -1000 : viewState.min_y],
