@@ -271,7 +271,7 @@ function SearchPanel({
               </>
             )}
           </p>
-      {config.enabled_by_gisaid && 
+      {config.enabled_by_gisaid &&
         <span>Enabled by data from <a rel="noopener noreferrer" href="https://www.gisaid.org" target="_blank"><img src="https://www.gisaid.org/fileadmin/gisaid/img/schild.png" alt="gisaid-logo" width="65"></a>.</span>
       }
         )}

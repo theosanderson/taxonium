@@ -424,14 +424,14 @@ async function json_to_tree(json) {
       json.meta.data_provenance.map((source) => source.name).join(" & ");
   }
 
-  if (config.source.includes("GISAID")){
-    config.enabled_by_gisaid = true
+  if (config.source.includes("GISAID")) {
+    config.enabled_by_gisaid = true;
   }
 
   config.overlay = `<p>This is a tree extracted from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
-  if(json.meta.description){
-  config.overlay = config.overlay+"<p>"+json.meta.description+"</p>";
-    }
+  if (json.meta.description) {
+    config.overlay = config.overlay + "<p>" + json.meta.description + "</p>";
+  }
 
   if (json.meta && json.meta.updated) {
     config.source = config.source + " in a tree built on " + json.meta.updated;
