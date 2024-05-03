@@ -246,6 +246,7 @@ function SearchPanel({
       </button>
       <div className="space-y-2 py-3">
         {config.num_tips && (
+          <>
           <p className="text-gray-500 text-sm">
             {overlayContent ? (
               <>
@@ -274,7 +275,7 @@ function SearchPanel({
       {config.enabled_by_gisaid &&
         <span>Enabled by data from <a rel="noopener noreferrer" href="https://www.gisaid.org" target="_blank"><img src="https://www.gisaid.org/fileadmin/gisaid/img/schild.png" alt="gisaid-logo" width="65"></a>.</span>
       }
-        )}
+      </>)}
         {config.x_accessors && config.x_accessors.length > 1 && (
           <label className="space-x-2 text-sm block">
             <span className="text-gray-500 text-sm">Tree type:</span>
