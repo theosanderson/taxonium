@@ -273,7 +273,7 @@ function SearchPanel({
               )}
             </p>
             {config.enabled_by_gisaid && (
-              <span>
+              <span className="text-gray-500 mt-1">
                 Enabled by data from{" "}
                 <a
                   rel="noopener noreferrer"
@@ -284,6 +284,7 @@ function SearchPanel({
                     src="https://www.gisaid.org/fileadmin/gisaid/img/schild.png"
                     alt="gisaid-logo"
                     width="65"
+                    className="inline-block"
                   />
                 </a>
                 .
