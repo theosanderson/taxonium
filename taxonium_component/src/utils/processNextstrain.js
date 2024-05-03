@@ -428,9 +428,23 @@ async function json_to_tree(json) {
     config.enabled_by_gisaid = true;
   }
 
-  config.overlay = `<p>This is a tree extracted from a <a href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
+  function markdownToHTML(md) {
+    // Regular expression to match Markdown links
+    var markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+    // Replace Markdown links with HTML <a> tags
+    var html = md.replace(
+      markdownLinkRegex,
+      '<a class="underline" href="$2">$1</a>'
+    );
+
+    return html;
+  }
+
+  config.overlay = `<p>This is a tree extracted from a <a class='underline' href='//nextstrain.org'>Nextstrain</a> JSON file, being visualised in Taxonium.</p>.`;
   if (json.meta.description) {
-    config.overlay = config.overlay + "<p>" + json.meta.description + "</p>";
+    config.overlay =
+      config.overlay + "<p>" + markdownToHTML(json.meta.description) + "</p>";
   }
 
   if (json.meta && json.meta.updated) {
