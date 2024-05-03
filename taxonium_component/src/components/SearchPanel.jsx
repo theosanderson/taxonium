@@ -247,50 +247,50 @@ function SearchPanel({
       <div className="space-y-2 py-3">
         {config.num_tips && (
           <>
-          <p className="text-gray-500 text-sm">
-            {overlayContent ? (
-              <>
-                <span title={config.date_created ? config.date_created : ""}>
-                  Displaying
-                </span>{" "}
-                <button
-                  className="underline"
-                  onClick={() => {
-                    setAboutEnabled(true);
-                  }}
-                >
-                  {formatNumber(config.num_tips)}{" "}
+            <p className="text-gray-500 text-sm">
+              {overlayContent ? (
+                <>
+                  <span title={config.date_created ? config.date_created : ""}>
+                    Displaying
+                  </span>{" "}
+                  <button
+                    className="underline"
+                    onClick={() => {
+                      setAboutEnabled(true);
+                    }}
+                  >
+                    {formatNumber(config.num_tips)}{" "}
+                    {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
+                  </button>{" "}
+                  {config.source && ` from ${config.source}`}
+                </>
+              ) : (
+                <>
+                  Displaying {formatNumber(config.num_tips)}{" "}
                   {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
-                </button>{" "}
-                {config.source && ` from ${config.source}`}
-              </>
-            ) : (
-              <>
-                Displaying {formatNumber(config.num_tips)}{" "}
-                {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
-                {config.source && ` from ${config.source}`}
-              </>
+                  {config.source && ` from ${config.source}`}
+                </>
+              )}
+            </p>
+            {config.enabled_by_gisaid && (
+              <span>
+                Enabled by data from{" "}
+                <a
+                  rel="noopener noreferrer"
+                  href="https://www.gisaid.org"
+                  target="_blank"
+                >
+                  <img
+                    src="https://www.gisaid.org/fileadmin/gisaid/img/schild.png"
+                    alt="gisaid-logo"
+                    width="65"
+                  />
+                </a>
+                .
+              </span>
             )}
-          </p>
-          {config.enabled_by_gisaid && (
-  <span>
-    Enabled by data from{" "}
-    <a
-      rel="noopener noreferrer"
-      href="https://www.gisaid.org"
-      target="_blank"
-    >
-      <img
-        src="https://www.gisaid.org/fileadmin/gisaid/img/schild.png"
-        alt="gisaid-logo"
-        width="65"
-      />
-    </a>
-    .
-  </span>
-)}
-      </>
-        ) }
+          </>
+        )}
         {config.x_accessors && config.x_accessors.length > 1 && (
           <label className="space-x-2 text-sm block">
             <span className="text-gray-500 text-sm">Tree type:</span>
