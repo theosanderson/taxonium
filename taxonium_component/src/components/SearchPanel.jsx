@@ -82,7 +82,7 @@ function SearchPanel({
       setShowSNPButton(true);
     }
   }, []);
-  
+
   const handleDownloadJson = () => {
     if (selectedDetails.nodeDetails) {
       const node_id = selectedDetails.nodeDetails.node_id;
@@ -278,7 +278,6 @@ function SearchPanel({
                 <>
                   Displaying {formatNumber(config.num_tips)}{" "}
                   {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
-							  
                   {config.source && ` from ${config.source}`}
                 </>
               )}
@@ -429,22 +428,22 @@ function SearchPanel({
             <RiAddCircleLine className="mr-1 h-4 w-4 text-gray-500" />
             <span>Add a new search</span>
           </Button>
-		  {showSNPButton && (
-          <Button
-            className="mx-auto flex items-center font-medium leading-6 mt-2"
-            style={{ transform: "translateY(-10px) translateX(10px)" }}
-            onClick={() => setSnpSearchModalOpen(true)}
-            title="Search for samples within a given SNP distance of the inputted node"
-          >
-            SNP Distance Search
-          </Button>
-        )}
-        {showSNPButton && (
-          <SNPOutputModal
-            snpOutputModalOpen={snpSearchModalOpen}
-            setSnpOutputModalOpen={setSnpSearchModalOpen}
-          />
-        )}
+          {showSNPButton && (
+            <Button
+              className="mx-auto flex items-center font-medium leading-6 mt-2"
+              style={{ transform: "translateY(-10px) translateX(10px)" }}
+              onClick={() => setSnpSearchModalOpen(true)}
+              title="Search for samples within a given SNP distance of the inputted node"
+            >
+              SNP Distance Search
+            </Button>
+          )}
+          {showSNPButton && (
+            <SNPOutputModal
+              snpOutputModalOpen={snpSearchModalOpen}
+              setSnpOutputModalOpen={setSnpSearchModalOpen}
+            />
+          )}
         </div>
       </div>
       {selectedDetails.nodeDetails && (
