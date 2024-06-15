@@ -14,7 +14,7 @@ On MacOS you will need to "unquarantine" the app, because the code has not been 
 Please use the terminal command below to achieve this:
 
 ```
-sudo xattr -r -d com.apple.quarantine "/Applications/Taxonium.app"
+sudo /usr/bin/xattr -r -d com.apple.quarantine "/Applications/Taxonium.app"
 ```
 
 (if Taxonium is stored at that location)
