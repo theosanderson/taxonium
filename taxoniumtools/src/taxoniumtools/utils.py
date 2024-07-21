@@ -25,6 +25,7 @@ def read_metadata(metadata_file, columns, key_column):
                                usecols=cols_of_interest)
         # Enable again
         warnings.filterwarnings("default")
+        metadata[key_column] = metadata[key_column].astype(str)
         metadata.set_index(key_column, inplace=True)
         # convert metadata to dict of rows
         if not metadata.index.is_unique:
