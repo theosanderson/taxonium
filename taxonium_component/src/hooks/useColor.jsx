@@ -146,7 +146,7 @@ const useColor = (colorMapping) => {
       }
       return rgb;
     },
-    [colorMapping]
+    [colorMapping],
   );
 
   const toRGB = useCallback(
@@ -159,7 +159,7 @@ const useColor = (colorMapping) => {
         return result;
       }
     },
-    [toRGB_uncached]
+    [toRGB_uncached],
   );
 
   const toRGBCSS = useCallback(
@@ -167,7 +167,7 @@ const useColor = (colorMapping) => {
       const output = toRGB(string);
       return `rgb(${output[0]},${output[1]},${output[2]})`;
     },
-    [toRGB]
+    [toRGB],
   );
 
   const output = useMemo(() => {

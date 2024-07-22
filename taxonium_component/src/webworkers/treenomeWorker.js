@@ -141,7 +141,7 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
     let filteredVarData = computeFilteredVariationData(
       var_data,
       ntBounds,
-      data
+      data,
     );
     if (i === preorder_nodes.length && shouldCache) {
       postMessage({

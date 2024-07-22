@@ -62,12 +62,12 @@ const useQueryAsState = (defaultValues) => {
       });
       history[method](pathname + objectToQueryParams(encodeValues(new_vals)));
     },
-    [history]
+    [history],
   );
 
   const queryWithDefault = useMemo(
     () => Object.assign({}, defaultValues, removeUndefined(decodedSearch)),
-    [decodedSearch, defaultValues]
+    [decodedSearch, defaultValues],
   );
 
   return [queryWithDefault, updateQuery];

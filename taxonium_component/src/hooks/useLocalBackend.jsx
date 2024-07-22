@@ -40,7 +40,7 @@ let searchSetters = {};
 
 worker.onmessage = (event) => {
   console.log(
-    "got message from worker" //, event.data
+    "got message from worker", //, event.data
   );
   if (event.data.type === "status") {
     onStatusReceipt(event.data);
@@ -78,7 +78,7 @@ function useLocalBackend(uploaded_data) {
     if (total_nodes && total_nodes > 6000000) {
       if (1) {
         window.alert(
-          "This is a large tree which may use too much memory to run in the web browser. If the page crashes you might want to try the Taxonium desktop app."
+          "This is a large tree which may use too much memory to run in the web browser. If the page crashes you might want to try the Taxonium desktop app.",
         );
       }
     }
@@ -102,23 +102,23 @@ function useLocalBackend(uploaded_data) {
       onQueryReceipt = (receivedData) => {
         //  console.log("CONFIG IS", config);
         console.log(
-          "got query result" //, receivedData
+          "got query result", //, receivedData
         );
         receivedData.nodes.forEach((node) => {
           if (node.node_id === config.rootId) {
             node.mutations = config.rootMutations.map(
-              (x) => config.mutations[x]
+              (x) => config.mutations[x],
             );
           } else {
             node.mutations = node.mutations.map(
-              (mutation) => config.mutations[mutation]
+              (mutation) => config.mutations[mutation],
             );
           }
         });
         setResult(receivedData);
       };
     },
-    []
+    [],
   );
 
   const singleSearch = useCallback(
@@ -136,7 +136,7 @@ function useLocalBackend(uploaded_data) {
           "got search result from ",
           key,
           //   singleSearch,
-          "result"
+          "result",
           //   receivedData
         );
         setResult(receivedData);
@@ -147,7 +147,7 @@ function useLocalBackend(uploaded_data) {
         },
       };
     },
-    []
+    [],
   );
 
   const getDetails = useCallback((node_id, setResult) => {

@@ -40,7 +40,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
     let finalURL = tempURL;
     if (useProxy) {
       finalURL = `https://proxy.taxonium.org/proxy?url=${encodeURIComponent(
-        tempURL
+        tempURL,
       )}`;
     }
     if (finalURL) {
@@ -79,7 +79,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
                         input.filetype = e.target.value;
                       }
                       return input;
-                    })
+                    }),
                   );
                 }}
               >
@@ -115,7 +115,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
                             input.ladderize = e.target.checked;
                           }
                           return input;
-                        })
+                        }),
                       );
                     }}
                   />{" "}
