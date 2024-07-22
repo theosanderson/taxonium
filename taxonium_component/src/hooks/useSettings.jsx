@@ -57,16 +57,16 @@ export const useSettings = ({ query, updateQuery }) => {
         position: "bottom-center",
       });
     },
-    [updateQuery]
+    [updateQuery],
   );
 
   const filterMutations = useCallback(
     (mutations) => {
       return mutations.filter(
-        (mutation) => mutationTypesEnabled[mutation.type]
+        (mutation) => mutationTypesEnabled[mutation.type],
       );
     },
-    [mutationTypesEnabled]
+    [mutationTypesEnabled],
   );
 
   const setMutationTypeEnabled = (key, enabled) => {
@@ -99,7 +99,7 @@ export const useSettings = ({ query, updateQuery }) => {
                     } for hovered and selected nodes`,
                     {
                       position: "bottom-center",
-                    }
+                    },
                   );
                 }}
               />{" "}

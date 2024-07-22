@@ -101,7 +101,7 @@ export const queryNodes = async (boundsForQueries) => {
       max_y,
       min_x,
       max_x,
-      boundsForQueries.xType
+      boundsForQueries.xType,
     ),
   };
 
@@ -183,7 +183,7 @@ const getDetails = async (node_id) => {
   const details = { ...node };
   details.mutations = processedUploadedData.node_to_mut[node_id]
     ? processedUploadedData.node_to_mut[node_id].map(
-        (x) => processedUploadedData.mutations[x]
+        (x) => processedUploadedData.mutations[x],
       )
     : [];
   console.log("details is ", details);
@@ -211,7 +211,7 @@ onmessage = async (event) => {
     processedUploadedData = await processJsonl(
       data.data,
       sendStatusMessage,
-      ReadableWebToNodeStream
+      ReadableWebToNodeStream,
     );
     console.log("processedUploadedData created");
   } else if (
@@ -224,7 +224,7 @@ onmessage = async (event) => {
     data.data.useDistances = true;
     processedUploadedData = await processNewickAndMetadata(
       data.data,
-      sendStatusMessage
+      sendStatusMessage,
     );
   } else if (
     data.type === "upload" &&
@@ -234,7 +234,7 @@ onmessage = async (event) => {
   ) {
     processedUploadedData = await processNextstrain(
       data.data,
-      sendStatusMessage
+      sendStatusMessage,
     );
   } else if (data.type === "upload" && data.data && data.data.filename) {
     sendStatusMessage({
@@ -271,7 +271,7 @@ onmessage = async (event) => {
         data.node_id,
         processedUploadedData.nodes,
         data.config,
-        processedUploadedData.mutations
+        processedUploadedData.mutations,
       );
       postMessage({ type: "nextstrain", data: result });
     }

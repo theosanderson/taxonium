@@ -12,13 +12,13 @@ function useColorBy(config, query, updateQuery) {
   const colorByField = colorByConfig.field
     ? colorByConfig.field
     : config.defaultColorByField
-    ? config.defaultColorByField
-    : "meta_pangolin_lineage";
+      ? config.defaultColorByField
+      : "meta_pangolin_lineage";
   const colorByGene = colorByConfig.gene
     ? colorByConfig.gene
     : config.genes && config.genes.includes("S")
-    ? "S"
-    : "nt";
+      ? "S"
+      : "nt";
   const colorByPosition =
     colorByConfig.pos !== undefined ? colorByConfig.pos : 484;
 
@@ -32,21 +32,21 @@ function useColorBy(config, query, updateQuery) {
     (field) => {
       updateQuery({ color: JSON.stringify({ ...colorByConfig, field }) });
     },
-    [colorByConfig, updateQuery]
+    [colorByConfig, updateQuery],
   );
 
   const setColorByGene = useCallback(
     (gene) => {
       updateQuery({ color: JSON.stringify({ ...colorByConfig, gene }) });
     },
-    [colorByConfig, updateQuery]
+    [colorByConfig, updateQuery],
   );
 
   const setColorByPosition = useCallback(
     (pos) => {
       updateQuery({ color: JSON.stringify({ ...colorByConfig, pos }) });
     },
-    [colorByConfig, updateQuery]
+    [colorByConfig, updateQuery],
   );
 
   const getNodeColorField = useCallback(
@@ -71,7 +71,7 @@ function useColorBy(config, query, updateQuery) {
         let result;
         const relevantMutations = node.mutations.filter(
           (mut) =>
-            mut.residue_pos === colorByPosition && mut.gene === colorByGene
+            mut.residue_pos === colorByPosition && mut.gene === colorByGene,
         );
         if (relevantMutations.length > 0) {
           result = relevantMutations[0].new_residue;
@@ -87,7 +87,7 @@ function useColorBy(config, query, updateQuery) {
             ) {
               result = getNodeColorField(
                 dataset.nodeLookup[parent_id],
-                dataset
+                dataset,
               );
             } else {
               result = "X";
@@ -100,7 +100,7 @@ function useColorBy(config, query, updateQuery) {
         return node[colorByField];
       }
     },
-    [colorByField, colorByGene, colorByPosition]
+    [colorByField, colorByGene, colorByPosition],
   );
 
   return useMemo(() => {

@@ -61,7 +61,7 @@ const setup = (mainWindow, args) => {
   binaryPath = path.join(binaryDirectory, binaryFilename);
   scriptPath = path.join(
     __dirname,
-    "../node_modules/taxonium_backend/server.js"
+    "../node_modules/taxonium_backend/server.js",
   );
 
   max_old_space_arg = "--max-old-space-size=" + bytesToMb(maxMemory);

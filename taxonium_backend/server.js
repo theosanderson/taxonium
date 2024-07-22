@@ -26,7 +26,7 @@ program
   .option("--data_url <data url>", "data url")
   .option(
     "--data_file <data file>",
-    "local data file, as alternative to data url"
+    "local data file, as alternative to data url",
   );
 
 program.parse();
@@ -154,7 +154,7 @@ app.get("/search", function (req, res) {
       result.data.length +
       " results in " +
       (Date.now() - start_time) +
-      "ms"
+      "ms",
   );
   console.log("Result type was " + result.type);
 });
@@ -256,7 +256,7 @@ app.get("/nodes/", function (req, res) {
       max_y,
       min_x,
       max_x,
-      req.query.xType
+      req.query.xType,
     );
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
@@ -268,7 +268,7 @@ app.get("/nodes/", function (req, res) {
       (Date.now() - start_time) +
       "ms, and output " +
       result.length +
-      " nodes."
+      " nodes.",
   );
 });
 
@@ -276,11 +276,11 @@ function startListening() {
   if (command_options.ssl) {
     options = {
       key: fs.readFileSync(
-        "/etc/letsencrypt/live/api.taxonium.org/privkey.pem"
+        "/etc/letsencrypt/live/api.taxonium.org/privkey.pem",
       ),
       ca: fs.readFileSync("/etc/letsencrypt/live/api.taxonium.org/chain.pem"),
       cert: fs.readFileSync(
-        "/etc/letsencrypt/live/api.taxonium.org/fullchain.pem"
+        "/etc/letsencrypt/live/api.taxonium.org/fullchain.pem",
       ),
     };
     https.createServer(options, app).listen(command_options.port, "0.0.0.0");
@@ -452,7 +452,7 @@ app.get("/node_details/", async (req, res) => {
   }
   validateSIDandSend(detailed_node, req.query.sid, res);
   console.log(
-    "Request took " + (Date.now() - start_time) + "ms, and output " + node
+    "Request took " + (Date.now() - start_time) + "ms, and output " + node,
   );
 });
 
@@ -463,7 +463,7 @@ app.get("/tip_atts", async (req, res) => {
   const atts = filtering.getTipAtts(processedData.nodes, node_id, att);
   validateSIDandSend(atts, req.query.sid, res);
   console.log(
-    "Request took " + (Date.now() - start_time) + "ms, and output " + atts
+    "Request took " + (Date.now() - start_time) + "ms, and output " + atts,
   );
 });
 
@@ -474,11 +474,11 @@ app.get("/nextstrain_json/:root_id", async (req, res) => {
     root_id,
     processedData.nodes,
     config,
-    processedData.mutations
+    processedData.mutations,
   );
   res.setHeader(
     "Content-Disposition",
-    "attachment; " + "filename=" + root_id + ".nextstrain.json"
+    "attachment; " + "filename=" + root_id + ".nextstrain.json",
   );
   res.send(json);
 });
@@ -505,7 +505,7 @@ const loadData = async () => {
   processedData = await importing.processJsonl(
     supplied_object,
     logStatusMessage,
-    ReadableWebToNodeStream.ReadableWebToNodeStream
+    ReadableWebToNodeStream.ReadableWebToNodeStream,
   );
 
   logStatusMessage({
@@ -517,7 +517,7 @@ const loadData = async () => {
   }
 
   processedData.genes = new Set(
-    processedData.mutations.map((mutation) => mutation.gene)
+    processedData.mutations.map((mutation) => mutation.gene),
   );
   // as array
   processedData.genes = Array.from(processedData.genes);
@@ -530,7 +530,7 @@ const loadData = async () => {
     processedData.overallMaxY,
     processedData.overallMinX,
     processedData.overallMaxX,
-    "x_dist"
+    "x_dist",
   );
 
   cached_starting_values = result;
