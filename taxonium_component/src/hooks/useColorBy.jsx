@@ -1,10 +1,12 @@
 import { useMemo, useEffect, useCallback } from "react";
+import { scaleLinear } from "d3-scale";
 
 let colorCache = {}; // todo do this with state
 let cachedColorByPosition = null; // todo do this with state
 let cachedColorByGene = null; // todo do this with state
 
 function useColorBy(config, query, updateQuery) {
+  const colorRamps = config.colorRamps || {};
   const colorByConfig = useMemo(() => {
     return query.color ? JSON.parse(query.color) : {};
   }, [query.color]);
@@ -62,6 +64,14 @@ function useColorBy(config, query, updateQuery) {
       }
       if (colorByField === "None") {
         return "None";
+      }
+      if (colorRamps[colorByField]) {
+        const value = parseFloat(node[colorByField]);
+        if (isNaN(value)) return "#CCCCCC"; // Default color for NaN values
+        const colorScale = scaleLinear()
+          .domain(colorRamps[colorByField].scale.map(d => d[0]))
+          .range(colorRamps[colorByField].scale.map(d => d[1]));
+        return colorScale(value);
       }
       if (colorByField === "genotype") {
         if (colorCache[node.node_id]) {
