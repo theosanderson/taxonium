@@ -148,7 +148,11 @@ export const Colors = {
         meta_mouse_escape: {
           scale: [
             [0, "#000000"],
+            [1, "#cccccc"],
+            [1.5, "#ffee00"],
             [2, "#ff0000"],
+
+
           ],
         },
       },
