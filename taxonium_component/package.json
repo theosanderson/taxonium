@@ -25,7 +25,6 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "d3-scale": "^4.0.2"
   },
   "devDependencies": {
     "@fontsource/roboto": "^5.0.1",
@@ -48,6 +47,7 @@
     "autoprefixer": "^10.4.14",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
+    "d3-scale": "^4.0.2",
     "deck.gl": "=8.6.6",
     "eslint": "^8.38.0",
     "eslint-plugin-react": "^7.32.2",
