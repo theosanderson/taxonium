@@ -6,6 +6,15 @@ let rgb_cache = {};
 const useColor = (colorMapping) => {
   const toRGB_uncached = useCallback(
     (string) => {
+      // Check if the string is a valid hex color
+      if (/^#[0-9A-F]{6}$/i.test(string)) {
+        return [
+          parseInt(string.slice(1, 3), 16),
+          parseInt(string.slice(3, 5), 16),
+          parseInt(string.slice(5, 7), 16),
+        ];
+      }
+
       if (typeof string === "number") {
         const log10 = Math.log10(string);
 
