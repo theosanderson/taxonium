@@ -2,32 +2,29 @@ import { useCallback, useMemo } from "react";
 import scale from "scale-color-perceptual";
 import { scaleLinear } from "d3-scale";
 
-
 let rgb_cache = {};
 
 const useColor = (config, colorMapping, colorByField) => {
-  
   const toRGB_uncached = useCallback(
     (string) => {
-     
-      console.log('colorRamps', config.colorRamps, colorByField)
+      console.log("colorRamps", config.colorRamps, colorByField);
       if (config.colorRamps && config.colorRamps[colorByField]) {
         const value = parseFloat(string);
-      
-        const domain = config.colorRamps[colorByField].scale.map(d => d[0]);
-        const range = config.colorRamps[colorByField].scale.map(d => d[1]);
+
+        const domain = config.colorRamps[colorByField].scale.map((d) => d[0]);
+        const range = config.colorRamps[colorByField].scale.map((d) => d[1]);
         const colorScale = scaleLinear().domain(domain).range(range);
         const output = colorScale(value);
         // this will output rgb(a,b,c
-        const as_list = output.slice(4, -1).split(",").map(d => parseInt(d));
-        console.log("OUTPUTTING",string,value, as_list);
-        return as_list
-
+        const as_list = output
+          .slice(4, -1)
+          .split(",")
+          .map((d) => parseInt(d));
+        console.log("OUTPUTTING", string, value, as_list);
+        return as_list;
       }
 
       if (typeof string === "number") {
-
-
         const log10 = Math.log10(string);
 
         const color = scale.plasma(log10 / 10);
@@ -185,7 +182,6 @@ const useColor = (config, colorMapping, colorByField) => {
 
   const toRGBCSS = useCallback(
     (string) => {
-     
       const output = toRGB(string);
       return `rgb(${output[0]},${output[1]},${output[2]})`;
     },

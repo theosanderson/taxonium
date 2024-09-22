@@ -12,15 +12,19 @@ const WithState = (args) => {
 
 // Wrapper component to ensure consistent sizing
 const SizedWrapper = ({ children }) => (
-  <div style={{ width: "100%", height: "500px" }}>
-    {children}
-  </div>
+  <div style={{ width: "100%", height: "500px" }}>{children}</div>
 );
 
 export default {
   title: "Example/Page",
   component: Taxonium,
-  decorators: [(Story) => <SizedWrapper><Story /></SizedWrapper>],
+  decorators: [
+    (Story) => (
+      <SizedWrapper>
+        <Story />
+      </SizedWrapper>
+    ),
+  ],
 };
 
 export const WithBackend = {
@@ -137,17 +141,17 @@ export const JSONLgenetic = {
   },
 };
 
-
 export const Colors = {
   args: {
-    configDict:{
-      colorRamps:{
+    configDict: {
+      colorRamps: {
         meta_mouse_escape: {
-          scale: [[0, "#000000"], [2, "#ff0000"]],
-
-        }
-
-      }
+          scale: [
+            [0, "#000000"],
+            [2, "#ff0000"],
+          ],
+        },
+      },
     },
     sourceData: {
       status: "url_supplied",
