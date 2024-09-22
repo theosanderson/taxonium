@@ -142,8 +142,8 @@ export const Colors = {
   args: {
     configDict:{
       colorRamps:{
-        mouse_escape: {
-          scale: [[0, "#ABABAB"], [11.03365, "#4041C7"]]
+        meta_mouse_escape: {
+          scale: [[0, "#000000"], [2, "#ff0000"]],
 
         }
 
