@@ -108,7 +108,7 @@ function Taxonium({
     const initial = config.colorMapping ? config.colorMapping : {};
     return { ...initial, ...additionalColorMapping };
   }, [config.colorMapping, additionalColorMapping]);
-  const colorHook = useColor(colorMapping);
+  const colorHook = useColor(config, colorMapping, colorBy.colorByField);
 
   //TODO: this is always true for now
   config.enable_ns_download = true;

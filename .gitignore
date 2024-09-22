@@ -17,3 +17,4 @@ taxonium_component/storybook-static/**
 **/*.pyc
 **/_version.py
 */node_modules/**
+.aider*

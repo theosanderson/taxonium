@@ -1,14 +1,36 @@
 import { useCallback, useMemo } from "react";
 import scale from "scale-color-perceptual";
+import { scaleLinear } from "d3-scale";
 
 let rgb_cache = {};
 
-const useColor = (colorMapping) => {
+const useColor = (config, colorMapping, colorByField) => {
+  const colorScales = useMemo(() => {
+    const scales = {};
+    if (config.colorRamps && config.colorRamps[colorByField]) {
+      const { scale: rampScale } = config.colorRamps[colorByField];
+      const domain = rampScale.map((d) => d[0]);
+      const range = rampScale.map((d) => d[1]);
+      scales.colorRamp = scaleLinear().domain(domain).range(range);
+    }
+    return scales;
+  }, [config.colorRamps, colorByField]);
+
   const toRGB_uncached = useCallback(
     (string) => {
+      console.log("colorRamps", config.colorRamps, colorByField);
+      if (config.colorRamps && config.colorRamps[colorByField]) {
+        const value = parseFloat(string);
+        const output = colorScales.colorRamp(value);
+        const as_list = output
+          .slice(4, -1)
+          .split(",")
+          .map((d) => parseInt(d));
+        return as_list;
+      }
+
       if (typeof string === "number") {
         const log10 = Math.log10(string);
-
         const color = scale.plasma(log10 / 10);
         // convert from hex to rgb
         const rgb = [
@@ -23,6 +45,7 @@ const useColor = (colorMapping) => {
       if (string in colorMapping) {
         return colorMapping[string];
       }
+
       const amino_acids = {
         A: [230, 25, 75],
         R: [60, 180, 75],
@@ -31,11 +54,9 @@ const useColor = (colorMapping) => {
         C: [245, 130, 49],
         Q: [70, 240, 240],
         E: [145, 30, 180],
-
         G: [240, 50, 230],
         H: [188, 246, 12],
         I: [250, 190, 190],
-
         L: [230, 0, 255],
         K: [0, 128, 128],
         M: [154, 99, 36],
@@ -43,7 +64,6 @@ const useColor = (colorMapping) => {
         P: [128, 0, 0],
         T: [170, 255, 195],
         W: [128, 128, 0],
-
         Y: [0, 0, 117],
         V: [0, 100, 177],
         X: [128, 128, 128],
@@ -67,66 +87,35 @@ const useColor = (colorMapping) => {
       if (string === "None") {
         return [220, 220, 220];
       }
-
       if (string === "N/A") {
         return [180, 180, 180];
       }
-
       if (string === "NA") {
         return [180, 180, 180];
       }
 
-      if (string === "USA") {
-        return [95, 158, 245]; //This is just because the default is ugly
-      }
+      // Special cases for specific strings
+      const specialCases = {
+        USA: [95, 158, 245],
+        "B.1.2": [95, 158, 245],
+        South_Africa: [9, 191, 255],
+        England: [214, 58, 15],
+        Scotland: [255, 130, 82],
+        "North America": [200, 200, 50],
+        "South America": [200, 100, 50],
+        Wales: [148, 49, 22],
+        "Northern Ireland": [140, 42, 15],
+        France: [140, 28, 120],
+        Germany: [106, 140, 28],
+        India: [61, 173, 166],
+        Denmark: [24, 112, 32],
+        OXFORD_NANOPORE: [24, 32, 200],
+        ION_TORRENT: [24, 160, 32],
+        "Democratic Republic of the Congo": [17, 58, 99],
+      };
 
-      if (string === "B.1.2") {
-        return [95, 158, 245]; //This is near B.1.617.2
-      }
-      if (string === "South_Africa") {
-        return [9, 191, 255]; // otherwise collides with Kenya
-      }
-      if (string === "England") {
-        return [214, 58, 15]; // UK all brick
-      }
-
-      if (string === "Scotland") {
-        return [255, 130, 82]; // UK all brick
-      }
-      if (string === "North America") {
-        return [200, 200, 50];
-      }
-      if (string === "South America") {
-        return [200, 100, 50];
-      }
-      if (string === "Wales") {
-        return [148, 49, 22]; // UK all brick
-      }
-      if (string === "Northern Ireland") {
-        return [140, 42, 15]; // UK all brick
-      }
-      if (string === "France") {
-        return [140, 28, 120]; // diff to UK
-      }
-      if (string === "Germany") {
-        return [106, 140, 28]; // diff to UK
-      }
-      if (string === "India") {
-        return [61, 173, 166]; // diff to UK
-      }
-      if (string === "Denmark") {
-        return [24, 112, 32]; // diff to UK
-      }
-      if (string === "OXFORD_NANOPORE") {
-        return [24, 32, 200];
-      }
-
-      if (string === "ION_TORRENT") {
-        return [24, 160, 32];
-      }
-
-      if (string === "Democratic Republic of the Congo") {
-        return [17, 58, 99]; // otherwise too similar to CAR
+      if (string in specialCases) {
+        return specialCases[string];
       }
 
       string = string.split("").reverse().join("");
@@ -146,7 +135,7 @@ const useColor = (colorMapping) => {
       }
       return rgb;
     },
-    [colorMapping]
+    [colorMapping, config, colorByField, colorScales]
   );
 
   const toRGB = useCallback(
@@ -159,7 +148,7 @@ const useColor = (colorMapping) => {
         return result;
       }
     },
-    [toRGB_uncached]
+    [toRGB_uncached, colorMapping]
   );
 
   const toRGBCSS = useCallback(

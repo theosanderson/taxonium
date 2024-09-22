@@ -63,6 +63,7 @@ function useColorBy(config, query, updateQuery) {
       if (colorByField === "None") {
         return "None";
       }
+
       if (colorByField === "genotype") {
         if (colorCache[node.node_id]) {
           //console.log("using cache");
