@@ -151,8 +151,6 @@ export const Colors = {
             [1, "#cccccc"],
             [1.5, "#ffee00"],
             [2, "#ff0000"],
-
-
           ],
         },
       },
