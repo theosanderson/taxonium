@@ -5,7 +5,6 @@ let cachedColorByPosition = null; // todo do this with state
 let cachedColorByGene = null; // todo do this with state
 
 function useColorBy(config, query, updateQuery) {
-  const colorRamps = config.colorRamps || {};
   const colorByConfig = useMemo(() => {
     return query.color ? JSON.parse(query.color) : {};
   }, [query.color]);
