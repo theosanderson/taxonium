@@ -92,11 +92,9 @@ const NodeHoverTip = ({
       )}
       {colorBy.colorByField === "genotype" && (
         <span
-          style={
-            {
-              //  color: colorHook.toRGBCSS(colorBy.getNodeColorField(hoveredNode)),
-            }
-          }
+          style={{
+            color: colorHook.toRGBCSS(colorBy.getNodeColorField(hoveredNode)),
+          }}
         >
           {colorBy.colorByGene}:{colorBy.colorByPosition}
           {colorBy.getNodeColorField(hoveredNode)}
