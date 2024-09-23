@@ -22,8 +22,8 @@ const useColor = (config, colorMapping, colorByField) => {
       if (config.colorRamps && config.colorRamps[colorByField]) {
         const value = parseFloat(string);
         const output = colorScales.colorRamp(value);
-        if(!output){
-          return [120,120,120]
+        if (!output) {
+          return [120, 120, 120];
         }
         const as_list = output
           .slice(4, -1)
