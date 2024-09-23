@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import classNames from 'classnames';
-import prettifyName from '../utils/prettifyName';
+import React, { useState, useEffect } from "react";
+import classNames from "classnames";
+import prettifyName from "../utils/prettifyName";
 
 const Key = ({
   keyStuff,
@@ -25,13 +25,13 @@ const Key = ({
     }
   }, [colorByField, config.colorRamps]);
 
-  if (colorByField === 'None' || !keyStuff || keyStuff.length === 0) {
+  if (colorByField === "None" || !keyStuff || keyStuff.length === 0) {
     return null;
   }
 
   const sortedKeyStuff = keyStuff
     .sort((a, b) => b.count - a.count)
-    .filter((item) => item.value !== '');
+    .filter((item) => item.value !== "");
   const isTruncated = sortedKeyStuff.length > numLegendEntries;
   const topKeyStuff = sortedKeyStuff.slice(0, numLegendEntries);
 
@@ -45,10 +45,12 @@ const Key = ({
       return ((value - minValue) / range) * 100;
     };
 
-    const gradientStops = scale.map(([value, color]) => {
-      const percentage = getPositionPercentage(value);
-      return `${color} ${percentage}%`;
-    }).join(', ');
+    const gradientStops = scale
+      .map(([value, color]) => {
+        const percentage = getPositionPercentage(value);
+        return `${color} ${percentage}%`;
+      })
+      .join(", ");
 
     return (
       <div className="w-full h-32 relative mt-2">
@@ -83,22 +85,22 @@ const Key = ({
   return (
     <div
       className={classNames(
-        'px-2 border-right border bg-white opacity-90 absolute bottom-2 left-2 pt-1 pb-2',
-        collapsed ? 'w-20' : colorRamp ? 'w-40' : 'w-32'
+        "px-2 border-right border bg-white opacity-90 absolute bottom-2 left-2 pt-1 pb-2",
+        collapsed ? "w-20" : colorRamp ? "w-40" : "w-32"
       )}
-      style={{ zIndex: 10, cursor: 'default' }}
+      style={{ zIndex: 10, cursor: "default" }}
     >
       <h3
         className="font-bold text-gray-600 text-xs cursor-pointer"
         onClick={() => setCollapsed(!collapsed)}
       >
         {collapsed
-          ? 'Key'
-          : colorByField === 'genotype'
+          ? "Key"
+          : colorByField === "genotype"
           ? `${colorByGene}:${colorByPosition}`
           : prettifyName(colorByField, config)}
         <span className="float-right text-xs cursor-pointer text-gray-600">
-          {collapsed ? '▲' : '▼'}
+          {collapsed ? "▲" : "▼"}
         </span>
       </h3>
       {!collapsed && (
@@ -124,7 +126,7 @@ const Key = ({
                   <div
                     style={{ backgroundColor: color }}
                     className={`circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform ${
-                      hoveredKey === item.value ? 'scale-150' : 'scale-100'
+                      hoveredKey === item.value ? "scale-150" : "scale-100"
                     }`}
                   />
                   {item.value}
