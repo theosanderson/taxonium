@@ -28,6 +28,7 @@ def do_processing(input_file,
                   chronumental_date_output=None,
                   chronumental_tree_output=None,
                   chronumental_reference_node=None,
+                  chronumental_add_inferred_date=None,
                   config_file=None,
                   title=None,
                   overlay_html=None,
@@ -82,7 +83,10 @@ def do_processing(input_file,
             metadata_file=metadata_file,
             chronumental_steps=chronumental_steps,
             chronumental_date_output=chronumental_date_output,
-            chronumental_tree_output=chronumental_tree_output)
+            chronumental_tree_output=chronumental_tree_output,
+            chronumental_add_inferred_date=chronumental_add_inferred_date,
+            metadata_dict=metadata_dict,
+            metadata_cols=metadata_cols)
 
     print("Ladderizing tree..")
     mat.tree.ladderize(ascending=False)
@@ -237,6 +241,12 @@ def get_parser():
         "A reference node to be used for Chronumental. This should be earlier in the outbreak and have a good defined date. If not set the oldest sample will be automatically picked by Chronumental.",
         default=None)
     parser.add_argument(
+        "--chronumental_add_inferred_date",
+        type=str,
+        help=
+        "A new metadata-column-like name to be added for display with the value of Chronumental's inferred date for each sample.",
+        default=None)
+    parser.add_argument(
         '-j',
         "--config_json",
         type=str,
@@ -304,26 +314,28 @@ def main():
     parser = get_parser()
 
     args = parser.parse_args()
-    do_processing(args.input,
-                  args.output,
-                  metadata_file=args.metadata,
-                  genbank_file=args.genbank,
-                  chronumental_enabled=args.chronumental,
-                  chronumental_steps=args.chronumental_steps,
-                  columns=args.columns,
-                  chronumental_date_output=args.chronumental_date_output,
-                  chronumental_tree_output=args.chronumental_tree_output,
-                  chronumental_reference_node=args.chronumental_reference_node,
-                  config_file=args.config_json,
-                  title=args.title,
-                  overlay_html=args.overlay_html,
-                  remove_after_pipe=args.remove_after_pipe,
-                  clade_types=args.clade_types,
-                  name_internal_nodes=args.name_internal_nodes,
-                  shear=args.shear,
-                  shear_threshold=args.shear_threshold,
-                  only_variable_sites=args.only_variable_sites,
-                  key_column=args.key_column)
+    do_processing(
+        args.input,
+        args.output,
+        metadata_file=args.metadata,
+        genbank_file=args.genbank,
+        chronumental_enabled=args.chronumental,
+        chronumental_steps=args.chronumental_steps,
+        columns=args.columns,
+        chronumental_date_output=args.chronumental_date_output,
+        chronumental_tree_output=args.chronumental_tree_output,
+        chronumental_reference_node=args.chronumental_reference_node,
+        chronumental_add_inferred_date=args.chronumental_add_inferred_date,
+        config_file=args.config_json,
+        title=args.title,
+        overlay_html=args.overlay_html,
+        remove_after_pipe=args.remove_after_pipe,
+        clade_types=args.clade_types,
+        name_internal_nodes=args.name_internal_nodes,
+        shear=args.shear,
+        shear_threshold=args.shear_threshold,
+        only_variable_sites=args.only_variable_sites,
+        key_column=args.key_column)
 
 
 if __name__ == "__main__":

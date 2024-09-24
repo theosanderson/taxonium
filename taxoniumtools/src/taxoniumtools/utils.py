@@ -1,7 +1,7 @@
 from alive_progress import alive_it, alive_bar
 import pandas as pd
 import warnings
-import os, tempfile, sys
+import os, tempfile, sys, errno
 import treeswift
 import shutil
 from . import ushertools
@@ -34,7 +34,7 @@ def read_metadata(metadata_file, columns, key_column):
             )
 
         metadata_dict = metadata.to_dict("index")
-        metadata_cols = metadata.columns
+        metadata_cols = metadata.columns.tolist()
         del metadata
         print("Metadata loaded")
         return metadata_dict, metadata_cols
@@ -46,7 +46,8 @@ def read_metadata(metadata_file, columns, key_column):
 
 def do_chronumental(mat, chronumental_reference_node, metadata_file,
                     chronumental_steps, chronumental_date_output,
-                    chronumental_tree_output):
+                    chronumental_tree_output, chronumental_add_inferred_date,
+                    metadata_dict, metadata_cols):
     chronumental_is_available = os.system(
         "which chronumental > /dev/null") == 0
     if not chronumental_is_available:
@@ -92,6 +93,42 @@ def do_chronumental(mat, chronumental_reference_node, metadata_file,
             node.time_length = time_tree_node.edge_length
         del time_tree
         del time_tree_iter
+
+        if chronumental_add_inferred_date:
+            print(
+                f"Adding chronumental inferred date as metadata-like item {chronumental_add_inferred_date}"
+            )
+            if chronumental_date_output:
+                date_output_filename = chronumental_date_output
+            else:
+                metadata_dir = os.path.dirname(metadata_file)
+                metadata_base = os.path.basename(metadata_file)
+                date_output_filename = f"chronumental_dates_{metadata_base}.tsv"
+                if metadata_dir:
+                    date_output_filename = metadata_dir + "/" + date_output_filename
+                if not os.path.exists(date_output_filename):
+                    raise FileNotFoundError(
+                        errno.ENOENT,
+                        f"Can't find default date output file in the expected lococation (try specifying a file name with --chronumental_date_output)",
+                        date_output_filename)
+            metadata_cols.append(chronumental_add_inferred_date)
+            inferred_dates = pd.read_csv(
+                date_output_filename,
+                sep="\t" if metadata_file.endswith(".tsv")
+                or metadata_file.endswith(".tsv.gz") else ",",
+                usecols=['strain', 'predicted_date'])
+            for idx, row in inferred_dates.iterrows():
+                node_name = row['strain']
+                inferred_date = row['predicted_date']
+                # Add inferred_date even if a node (e.g. internal node) has no metadata
+                if node_name not in metadata_dict:
+                    metadata_dict[node_name] = {
+                        col: ""
+                        for col in metadata_cols
+                    }
+                metadata_dict[node_name][
+                    chronumental_add_inferred_date] = inferred_date
+            del inferred_dates
 
 
 def set_x_coords(root, chronumental_enabled):
