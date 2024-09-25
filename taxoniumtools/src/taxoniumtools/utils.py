@@ -109,7 +109,7 @@ def do_chronumental(mat, chronumental_reference_node, metadata_file,
                 if not os.path.exists(date_output_filename):
                     raise FileNotFoundError(
                         errno.ENOENT,
-                        f"Can't find default date output file in the expected lococation (try specifying a file name with --chronumental_date_output)",
+                        f"Can't find default date output file in the expected location (try specifying a file name with --chronumental_date_output)",
                         date_output_filename)
             metadata_cols.append(chronumental_add_inferred_date)
             inferred_dates = pd.read_csv(
