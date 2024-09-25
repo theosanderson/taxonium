@@ -26,7 +26,8 @@
       "profile": "http://genome.ucsc.edu/",
       "contributions": [
         "ideas",
-        "data"
+        "data",
+        "code"
       ]
     }
   ],
@@ -35,5 +36,7 @@
   "projectOwner": "theosanderson",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitType": "docs",
+  "commitConvention": "angular"
 }
