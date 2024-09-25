@@ -26,7 +26,7 @@ jobs:
           mv temp.json taxonium_electron/package.json
 
       - name: Upload package.json as artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: package
           path: taxonium_electron/package.json
