@@ -23,7 +23,7 @@ const ColorRamp = ({ ramp }) => {
   const gradientStyle = {
     background: `linear-gradient(to top, ${colorStops})`,
     width: "20px",
-    height: `${height+2}px`,
+    height: `${height + 2}px`,
     border: "1px solid #ccc",
     marginTop: "-15px",
   };
@@ -39,55 +39,52 @@ const ColorRamp = ({ ramp }) => {
 
   return (
     <div className=" mt-5">
-    <div
-      className="ml-7 "
-      style={{ display: "flex", alignItems: "center" }}
-    >
-      {/* Labels and Ticks Container */}
-      <div
-        style={{
-          position: "relative",
-          height: `${height}px`,
-          marginRight: "5px",
-          width: "auto",
-        }}
-      >
-        {labels.map((label, index) => (
-          <div
-            key={index}
-            style={{
-              position: "absolute",
-              bottom: `${label.position}%`,
-              left: "-25px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            {/* Label Text */}
+      <div className="ml-7 " style={{ display: "flex", alignItems: "center" }}>
+        {/* Labels and Ticks Container */}
+        <div
+          style={{
+            position: "relative",
+            height: `${height}px`,
+            marginRight: "5px",
+            width: "auto",
+          }}
+        >
+          {labels.map((label, index) => (
             <div
+              key={index}
               style={{
-                fontSize: "10px",
-                textAlign: "right",
-                whiteSpace: "nowrap",
-                marginRight: "3px",
+                position: "absolute",
+                bottom: `${label.position}%`,
+                left: "-25px",
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              {label.value.toFixed(2)}
+              {/* Label Text */}
+              <div
+                style={{
+                  fontSize: "10px",
+                  textAlign: "right",
+                  whiteSpace: "nowrap",
+                  marginRight: "3px",
+                }}
+              >
+                {label.value.toFixed(2)}
+              </div>
+              {/* Tick */}
+              <div
+                style={{
+                  width: "6px",
+                  height: "1px",
+                  backgroundColor: "#333",
+                }}
+              ></div>
             </div>
-            {/* Tick */}
-            <div
-              style={{
-                width: "6px",
-                height: "1px",
-                backgroundColor: "#333",
-              }}
-            ></div>
-          </div>
-        ))}
+          ))}
+        </div>
+        {/* Gradient */}
+        <div style={gradientStyle}></div>
       </div>
-      {/* Gradient */}
-      <div style={gradientStyle}></div>
-    </div>
     </div>
   );
 };
@@ -106,21 +103,21 @@ const Key = ({
 }) => {
   const numLegendEntries = 10;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
-  
+
   // sort by item.count in descending order
   const sortedKeyStuff = keyStuff.sort((a, b) => b.count - a.count);
-  
+
   // truncate to 10 items
   const isTruncated = sortedKeyStuff.length > numLegendEntries;
   const topTenKeyStuff = sortedKeyStuff.slice(0, numLegendEntries);
-  
+
   // if there is an item with value of "", remove it
   const filteredKeyStuff = topTenKeyStuff.filter((item) => item.value !== "");
-  
+
   if (colorByField === "None") {
     return null;
   }
-  
+
   if (!filteredKeyStuff || filteredKeyStuff.length == 0) {
     return null;
   }
@@ -151,20 +148,19 @@ const Key = ({
         </span>
       </h3>
 
-      {!collapsed && (
-        
-          (colorByField in colorRamps) ? ( <ColorRamp ramp={colorRamps[colorByField]} /> ) : (
-        <KeyContent
-          filteredKeyStuff={filteredKeyStuff}
-          setCurrentColorSettingKey={setCurrentColorSettingKey}
-          setColorSettingOpen={setColorSettingOpen}
-          setHoveredKey={setHoveredKey}
-          hoveredKey={hoveredKey}
-          isTruncated={isTruncated}
-        />
-          )
-        
-      )}
+      {!collapsed &&
+        (colorByField in colorRamps ? (
+          <ColorRamp ramp={colorRamps[colorByField]} />
+        ) : (
+          <KeyContent
+            filteredKeyStuff={filteredKeyStuff}
+            setCurrentColorSettingKey={setCurrentColorSettingKey}
+            setColorSettingOpen={setColorSettingOpen}
+            setHoveredKey={setHoveredKey}
+            hoveredKey={hoveredKey}
+            isTruncated={isTruncated}
+          />
+        ))}
     </div>
   );
 };
