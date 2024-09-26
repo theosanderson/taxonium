@@ -545,7 +545,10 @@ const useLayers = ({
   // Add x-axis layers with intelligent tick values
   const xAxisLayers = useMemo(() => {
     // Determine x-axis position
-    const xAxisY = viewState.min_y < -1000 ? -1000 : viewState.max_y - (viewState.max_y - viewState.min_y) * 0.05;
+    const xAxisY =
+      viewState.min_y < -1000
+        ? -1000
+        : viewState.max_y - (viewState.max_y - viewState.min_y) * 0.05;
 
     // Determine x-axis range
     const xAxisMinX = viewState.min_x;
