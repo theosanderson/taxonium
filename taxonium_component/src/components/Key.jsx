@@ -165,4 +165,51 @@ const Key = ({
   );
 };
 
+const KeyContent = ({
+  filteredKeyStuff,
+  setCurrentColorSettingKey,
+  setColorSettingOpen,
+  setHoveredKey,
+  hoveredKey,
+  isTruncated,
+}) => {
+  return (
+    <>
+      {filteredKeyStuff.map((item, index) => {
+        // item.color is [r, g, b]
+        const rgb = item.color;
+        const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        return (
+          <div
+            className="key-text text-xs text-gray-700 mt-0.5 break-all cursor-pointer"
+            key={index}
+            style={{
+              pointerEvents: "auto",
+            }}
+            onClick={() => {
+              setCurrentColorSettingKey(item.value);
+              setColorSettingOpen(true);
+            }}
+            onMouseEnter={() => {
+              setHoveredKey(item.value);
+            }}
+            onMouseLeave={() => setHoveredKey(null)}
+            title="Edit color"
+          >
+            <div
+              style={{ backgroundColor: color }}
+              className={`circle w-2 h-2 mr-2 rounded-full inline-block transform transition-transform ${
+                hoveredKey === item.value ? "scale-150" : "scale-100"
+              }`}
+            />
+            {item.value}
+          </div>
+        );
+      })}
+
+      {isTruncated && <div className="text-xs text-gray-700">...</div>}
+    </>
+  );
+};
+
 export default Key;
