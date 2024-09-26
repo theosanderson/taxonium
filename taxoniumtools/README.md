@@ -11,7 +11,6 @@ pip install taxoniumtools
 
 ## Usage
 
-
 ### Basic run
 
 First get some files:

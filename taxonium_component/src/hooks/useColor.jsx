@@ -18,7 +18,6 @@ const useColor = (config, colorMapping, colorByField) => {
 
   const toRGB_uncached = useCallback(
     (string) => {
-      console.log("colorRamps", config.colorRamps, colorByField);
       if (config.colorRamps && config.colorRamps[colorByField]) {
         const value = parseFloat(string);
         const output = colorScales.colorRamp(value);
@@ -41,7 +40,6 @@ const useColor = (config, colorMapping, colorByField) => {
           parseInt(color.slice(3, 5), 16),
           parseInt(color.slice(5, 7), 16),
         ];
-        console.log(rgb);
         return rgb;
       }
 

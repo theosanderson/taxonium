@@ -304,6 +304,7 @@ function Deck({
         colorByField={colorBy.colorByField}
         colorByGene={colorBy.colorByGene}
         colorByPosition={colorBy.colorByPosition}
+        colorRamps={config.colorRamps}
         config={config}
         setCurrentColorSettingKey={setCurrentColorSettingKey}
         setColorSettingOpen={setColorSettingOpen}
