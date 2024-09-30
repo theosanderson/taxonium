@@ -3506,6 +3506,18 @@ stream-buffers@~2.2.0:
   resolved "https://registry.yarnpkg.com/stream-buffers/-/stream-buffers-2.2.0.tgz#91d5f5130d1cef96dcfa7f726945188741d09ee4"
   integrity sha512-uyQK/mx5QjHun80FLJTfaWE7JtwfRMKBLkMne6udYOmvH0CawotVa7TfgYHzAnpphn4+TweIx1QKMnRIbipmUg==
 
+stream-chain@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/stream-chain/-/stream-chain-2.2.5.tgz#b30967e8f14ee033c5b9a19bbe8a2cba90ba0d09"
+  integrity sha512-1TJmBx6aSWqZ4tx7aTpBDXK0/e2hhcNSTV8+CbFJtDjbb+I1mZ8lHit0Grw9GRT+6JbIrrDd8esncgBi8aBXGA==
+
+stream-json@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/stream-json/-/stream-json-1.8.0.tgz#53f486b2e3b4496c506131f8d7260ba42def151c"
+  integrity sha512-HZfXngYHUAr1exT4fxlbc1IOce1RYxp2ldeaf97LYCOPSoOqY/1Psp7iGvpb+6JIOgkra9zDYnPX01hGAHzEPw==
+  dependencies:
+    stream-chain "^2.2.5"
+
 "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
@@ -3594,7 +3606,8 @@ tar@^6.0.5, tar@^6.1.11, tar@^6.1.2:
     express-queue "^0.0.13"
     node-fetch "^3.2.10"
     pako "^2.0.4"
-    taxonium_data_handling "file:../../../Library/Caches/Yarn/v6/npm-taxonium-backend-1.0.0-dee063ce-02ad-484a-9869-43d898d92144-1665540516221/node_modules/taxonium_data_handling"
+    readable-web-to-node-stream "^3.0.2"
+    taxonium_data_handling "file:../../Library/Caches/Yarn/v6/npm-taxonium-backend-1.0.0-54dbd3ec-85d3-4058-a62e-263bea13e9a0-1727736806855/node_modules/taxonium_data_handling"
     xml2js "^0.4.23"
 
 "taxonium_data_handling@file:../taxonium_data_handling":

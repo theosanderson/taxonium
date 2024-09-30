@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
+    "stream-json": "^1.8.0",
     "taxonium_backend": "file:../taxonium_backend"
   },
   "config": {
