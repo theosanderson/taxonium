@@ -8,7 +8,7 @@ import { processNewickAndMetadata } from "../utils/processNewick.js";
 import { processNextstrain } from "../utils/processNextstrain.js";
 import { ReadableWebToNodeStream } from "readable-web-to-node-stream";
 
-import {parser as jsonlParser} from "stream-json/jsonl/Parser";
+import { parser as jsonlParser } from "stream-json/jsonl/Parser";
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });

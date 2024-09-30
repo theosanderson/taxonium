@@ -1,4 +1,3 @@
-
 import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
@@ -29,12 +28,17 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
-export const setUpStream = (the_stream, data, sendStatusMessage, jsonlParser) => {
+export const setUpStream = (
+  the_stream,
+  data,
+  sendStatusMessage,
+  jsonlParser
+) => {
   const pipeline = the_stream.pipe(jsonlParser());
 
   let line_number = 0;
 
-  pipeline.on('data', decoded => {
+  pipeline.on("data", (decoded) => {
     if ((line_number % 10000 === 0 && line_number > 0) || line_number == 500) {
       console.log(`Processed ${formatNumber(line_number)} lines`);
       if (data.header.total_nodes) {
@@ -63,11 +67,11 @@ export const setUpStream = (the_stream, data, sendStatusMessage, jsonlParser) =>
     line_number++;
   });
 
-  pipeline.on('error', function (err) {
+  pipeline.on("error", function (err) {
     console.log(err);
   });
 
-  pipeline.on('end', function () {
+  pipeline.on("end", function () {
     console.log("end");
   });
 };
@@ -76,7 +80,7 @@ export const processJsonl = async (
   jsonl,
   sendStatusMessage,
   ReadableWebToNodeStream,
-  jsonlParser,
+  jsonlParser
 ) => {
   console.log("Worker processJsonl");
   const data = jsonl.data;
@@ -126,12 +130,16 @@ export const processJsonl = async (
 
   // Wait for the stream to finish
   await new Promise((resolve, reject) => {
-    the_stream.on('end', resolve);
-    the_stream.on('error', reject);
+    the_stream.on("end", resolve);
+    the_stream.on("error", reject);
   });
   console.log("done with stream");
 
-  const scale_y = 24e2 / (new_data.nodes.length > 10e3 ? new_data.nodes.length : new_data.nodes.length * 0.6666);
+  const scale_y =
+    24e2 /
+    (new_data.nodes.length > 10e3
+      ? new_data.nodes.length
+      : new_data.nodes.length * 0.6666);
   console.log("Scaling");
   for (const node of new_data.nodes) {
     node.y = roundToDp(node.y * scale_y, 6);
@@ -143,8 +151,16 @@ export const processJsonl = async (
 
   const overallMaxY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "max");
   const overallMinY = reduceMaxOrMin(new_data.nodes, (node) => node.y, "min");
-  const overallMaxX = reduceMaxOrMin(new_data.nodes, (node) => node.x_dist, "max");
-  const overallMinX = reduceMaxOrMin(new_data.nodes, (node) => node.x_dist, "min");
+  const overallMaxX = reduceMaxOrMin(
+    new_data.nodes,
+    (node) => node.x_dist,
+    "max"
+  );
+  const overallMinX = reduceMaxOrMin(
+    new_data.nodes,
+    (node) => node.x_dist,
+    "min"
+  );
 
   const root = new_data.nodes.find((node) => node.parent_id === node.node_id);
   const rootMutations = root.mutations;
@@ -162,7 +178,9 @@ export const processJsonl = async (
     overallMinX,
     overallMinY,
     y_positions,
-    mutations: new_data.header.mutations ? new_data.header.mutations : new_data.header.aa_mutations,
+    mutations: new_data.header.mutations
+      ? new_data.header.mutations
+      : new_data.header.aa_mutations,
     node_to_mut: new_data.node_to_mut,
     rootMutations: rootMutations,
     rootId: root.node_id,
@@ -174,10 +192,14 @@ export const processJsonl = async (
 
 export const generateConfig = (config, processedUploadedData) => {
   config.num_nodes = processedUploadedData.nodes.length;
-  config.initial_x = (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
-  config.initial_y = (processedUploadedData.overallMaxY + processedUploadedData.overallMinY) / 2;
+  config.initial_x =
+    (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
+  config.initial_y =
+    (processedUploadedData.overallMaxY + processedUploadedData.overallMinY) / 2;
   config.initial_zoom = config.initial_zoom ? config.initial_zoom : -2;
-  config.genes = [...new Set(processedUploadedData.mutations.map((x) => (x ? x.gene : null)))]
+  config.genes = [
+    ...new Set(processedUploadedData.mutations.map((x) => (x ? x.gene : null))),
+  ]
     .filter((x) => x)
     .sort();
 
@@ -216,7 +238,8 @@ export const generateConfig = (config, processedUploadedData) => {
   const prettyName = (x) => {
     if (x.startsWith("meta_")) {
       const bit = x.substring(5);
-      const capitalised_first_letter = bit.charAt(0).toUpperCase() + bit.slice(1);
+      const capitalised_first_letter =
+        bit.charAt(0).toUpperCase() + bit.slice(1);
       return capitalised_first_letter;
     }
     if (x === "mutation") {
