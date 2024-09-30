@@ -18,6 +18,9 @@ sudo /usr/bin/xattr -r -d com.apple.quarantine "/Applications/Taxonium.app"
 ```
 
 (if Taxonium is stored at that location)
+
+This may give a message `xattr: No such file: /Applications/Taxonium.app/Contents/Resources/app/node_modules/macos-alias/build/node_gyp_bins/python3` but that is not a problem
+
 :::
 
 ### Using the app
