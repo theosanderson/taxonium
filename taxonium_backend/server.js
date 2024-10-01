@@ -11,7 +11,7 @@ var xml2js = require("xml2js");
 var axios = require("axios");
 var pako = require("pako");
 const URL = require("url").URL;
-var jsonlParser = require("stream-json/jsonl/Parser").parser;
+var streamJson = require("stream-json");
 const ReadableWebToNodeStream = require("readable-web-to-node-stream");
 const { execSync } = require("child_process");
 const { Readable } = require("stream");
@@ -436,7 +436,8 @@ const loadData = async () => {
     supplied_object,
     logStatusMessage,
     ReadableWebToNodeStream.ReadableWebToNodeStream,
-    jsonlParser
+    streamJson.parser,
+    streamJson.streamValues
   );
 
   logStatusMessage({
