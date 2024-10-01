@@ -30,7 +30,13 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
-export const setUpStream = (the_stream, data, sendStatusMessage, parser, streamValues) => {
+export const setUpStream = (
+  the_stream,
+  data,
+  sendStatusMessage,
+  parser,
+  streamValues
+) => {
   const pipeline = the_stream
     .pipe(parser({ jsonStreaming: true }))
     .pipe(streamValues());
