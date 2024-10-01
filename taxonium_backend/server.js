@@ -12,6 +12,7 @@ var axios = require("axios");
 var pako = require("pako");
 const URL = require("url").URL;
 var streamJson = require("stream-json");
+var streamValues = require("stream-json/streamers/StreamValues").streamValues;
 const ReadableWebToNodeStream = require("readable-web-to-node-stream");
 const { execSync } = require("child_process");
 const { Readable } = require("stream");
@@ -437,7 +438,7 @@ const loadData = async () => {
     logStatusMessage,
     ReadableWebToNodeStream.ReadableWebToNodeStream,
     streamJson.parser,
-    streamJson.streamValues
+    streamValues
   );
 
   logStatusMessage({
