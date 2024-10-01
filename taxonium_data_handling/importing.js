@@ -2,7 +2,6 @@ import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
-
 const roundToDp = (number, dp) => {
   return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
 };
