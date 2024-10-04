@@ -8,7 +8,6 @@ image:
 maxSurge: "25%"
 maxUnavailable: "25%"
 
-
 dataUrl: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
 configJson: "config_public.json"
 maxmem: "7000"

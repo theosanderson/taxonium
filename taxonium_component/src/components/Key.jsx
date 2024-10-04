@@ -149,7 +149,7 @@ const Key = ({
       </h3>
 
       {!collapsed &&
-        ((colorRamps && colorByField in colorRamps) ? (
+        (colorRamps && colorByField in colorRamps ? (
           <ColorRamp ramp={colorRamps[colorByField]} />
         ) : (
           <KeyContent
