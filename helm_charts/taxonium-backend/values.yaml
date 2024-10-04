@@ -1,0 +1,31 @@
+replicaCount: 1
+
+image:
+  repository: theosanderson/taxonium_backend
+  tag: master
+  pullPolicy: Always
+
+maxSurge: "25%"
+maxUnavailable: "25%"
+
+
+dataUrl: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/latest_public.jsonl.gz"
+configJson: "config_public.json"
+maxmem: "7000"
+
+livenessProbe:
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+
+resources:
+  requests:
+    cpu: "1"
+    memory: 6500Mi

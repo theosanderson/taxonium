@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-taxonium-backend
+  labels:
+    app: {{ .Release.Name }}-taxonium-backend
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-taxonium-backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.maxSurge | default "25%" }}
+      maxUnavailable: {{ .Values.maxUnavailable | default "25%" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-taxonium-backend
+      annotations:
+        kubectl.kubernetes.io/restartedAt: {{ now | date "2006-01-02T15:04:05Z" | quote }}
+    spec:
+      containers:
+      - name: taxonium-backend
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DATA_URL
+          value: {{ .Values.dataUrl }}
+        - name: CONFIG_JSON
+          value: {{ .Values.configJson }}
+        - name: MAXMEM
+          value: {{ .Values.maxmem | quote }}
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
