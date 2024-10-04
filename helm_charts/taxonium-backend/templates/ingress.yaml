@@ -24,7 +24,7 @@ spec:
             backend:
               service:
                 name: {{ $.Release.Name }}-taxonium-backend
-                port: 
+                port:
                   number: {{ $.Values.service.port }}
           {{- end }}
     {{- end }}
