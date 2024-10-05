@@ -1,3 +1,4 @@
+
 {{- if .Values.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -14,11 +15,10 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ .Values.hostname | quote }}
       http:
         paths:
-          {{- range .paths }}
+          {{- range .Values.ingress.hosts[0].paths }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
             backend:
@@ -27,9 +27,10 @@ spec:
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}
-    {{- end }}
   {{- with .Values.ingress.tls }}
   tls:
-    {{- toYaml . | nindent 4 }}
+    - hosts:
+        - {{ $.Values.hostname | quote }}
+      secretName: {{ .secretName }}
   {{- end }}
 {{- end }}
