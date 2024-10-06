@@ -262,7 +262,7 @@ app.get("/nodes/", function (req, res) {
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
 
   // This will be sent as json
-  res.send({ nodes: result })
+  res.send({ nodes: result });
   console.log(
     "Request took " +
       (Date.now() - start_time) +
@@ -290,10 +290,6 @@ function startListening() {
     console.log("Non SSL on port " + command_options.port);
   }
 }
-
-
-
-
 
 async function getGenBankAuthors(genbank_accession) {
   const genbank_xml_url =
