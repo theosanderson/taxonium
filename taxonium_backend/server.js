@@ -148,7 +148,7 @@ app.get("/search", function (req, res) {
   };
 
   const result = filtering.singleSearch(forSingleSearch);
-  validateSIDandSend(result, req.query.sid, res);
+  res.send(result);
   console.log(
     "Found " +
       result.data.length +
@@ -211,7 +211,7 @@ app.get("/config", function (req, res) {
   config.rootMutations = processedData.rootMutations;
   config.rootId = processedData.rootId;
 
-  validateSIDandSend(config, req.query.sid, res);
+  res.send(config);
 });
 
 app.get("/nodes/", function (req, res) {
@@ -262,7 +262,7 @@ app.get("/nodes/", function (req, res) {
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
 
   // This will be sent as json
-  validateSIDandSend({ nodes: result }, req.query.sid, res);
+  res.send({ nodes: result })
   console.log(
     "Request took " +
       (Date.now() - start_time) +
@@ -291,78 +291,7 @@ function startListening() {
   }
 }
 
-let sid_cache = {};
 
-async function validateSID(sid) {
-  /*
-
-  Create a call to https://gpsapi.epicov.org/epi3/gps_api
-
-  with URL encoded version of the following parameters:
-
-  {"cmd":"state/session/validate",
-"client_id": "TEST-1234",
-"api": {"version":1},
-"sid":"RFWFYY...PQZNQQASXUR"}
-
-packaged as req
-*/
-  const caching_time = 1000 * 60 * 5; // 5 minutes
-  if (
-    sid_cache[sid] !== undefined &&
-    sid_cache[sid].time > Date.now() - caching_time &&
-    sid_cache[sid].validity === "ok"
-  ) {
-    console.log("Using cached validity");
-    return "ok";
-  }
-
-  const key = process.env.GPS_API_KEY;
-
-  const req_obj = {
-    cmd: "state/session/validate",
-    client_id: key,
-    api: { version: 1 },
-    sid: sid,
-  };
-  const req_raw = JSON.stringify(req_obj);
-  const req = encodeURIComponent(req_raw);
-  const url = "https://gpsapi.epicov.org/epi3/gps_api?req=" + req;
-  console.log(url);
-  response = await axios.get(url);
-  console.log("got response", response.data);
-  validity =
-    response.data && response.data.rc && response.data.rc === "ok"
-      ? "ok"
-      : "invalid";
-  console.log("validity", validity);
-  sid_cache[sid] = { validity: validity, time: Date.now() };
-  return validity;
-}
-
-async function validateSIDandSend(to_send, sid, res) {
-  if (!config.validate_SID) {
-    res.send(to_send);
-    return;
-  }
-  const validity = await validateSID(sid);
-
-  if (validity === "ok") {
-    res.send(to_send);
-  } else {
-    res.send({ error: "Invalid session ID" });
-  }
-}
-
-app.get("/validate/", async function (req, res) {
-  const start_time = new Date();
-  const query_sid = req.query.sid;
-  const validity = await validateSID(query_sid);
-  console.log("Got validity", validity);
-
-  res.send(validity);
-  console.log(new Date() - start_time);
-});
 
 
 
@@ -413,7 +342,7 @@ app.get("/node_details/", async (req, res) => {
     }
   }
 
-  validateSIDandSend(detailed_node, req.query.sid, res);
+  res.send(detailed_node);
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + node
   );
@@ -424,7 +353,7 @@ app.get("/tip_atts", async (req, res) => {
   const node_id = req.query.id;
   const att = req.query.att;
   const atts = filtering.getTipAtts(processedData.nodes, node_id, att);
-  validateSIDandSend(atts, req.query.sid, res);
+  res.send(atts);
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + atts
   );
