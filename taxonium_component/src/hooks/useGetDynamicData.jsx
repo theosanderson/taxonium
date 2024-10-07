@@ -64,7 +64,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
         viewState.max_x > dynamicData.lastBounds.max_x ||
         viewState.min_y < dynamicData.lastBounds.min_y ||
         viewState.max_y > dynamicData.lastBounds.max_y),
-    [viewState, dynamicData]
+    [viewState, dynamicData],
   );
 
   useEffect(() => {
@@ -80,7 +80,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
             setTimeoutRef(
               setTimeout(() => {
                 setTriggerRefresh({});
-              }, CHECK_AGAIN_TIME)
+              }, CHECK_AGAIN_TIME),
             );
             return;
           }
@@ -96,7 +96,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
               console.log(
                 "got result, bounds were",
                 boundsForQueries,
-                " result is "
+                " result is ",
               );
 
               setDynamicData((prevData) => {
@@ -125,7 +125,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
                         });
                       },
                       undefined,
-                      config
+                      config,
                     );
                   }
                 }
@@ -133,9 +133,9 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
               });
             },
             setTriggerRefresh,
-            config
+            config,
           );
-        }, DEBOUNCE_TIME)
+        }, DEBOUNCE_TIME),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -68,7 +68,7 @@ const getSVGfunction = (layers, viewState) => {
             let strokeColor, strokeWidth;
             if (layer.stroked) {
               strokeColor = accessOrConstant(layer.getLineColor, point).join(
-                ","
+                ",",
               );
               strokeWidth = accessOrConstant(layer.getLineWidth, point);
             }
@@ -112,7 +112,7 @@ const getSVGfunction = (layers, viewState) => {
             const size = accessOrConstant(layer.getSize, text);
             const alignment = accessOrConstant(
               layer.getAlignmentBaseline,
-              text
+              text,
             );
             const anchor = accessOrConstant(layer.getTextAnchor, text);
             const pixelOffset = accessOrConstant(layer.getPixelOffset, text);

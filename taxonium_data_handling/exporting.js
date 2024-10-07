@@ -3,7 +3,7 @@ const addAAmuts = (aaMuts, node) => {
   aaMuts.forEach((m) => {
     if (alreadyIn.includes(m.gene)) {
       node.branch_attrs.mutations[m.gene].push(
-        `${m.previous_residue}${m.residue_pos}${m.new_residue}`
+        `${m.previous_residue}${m.residue_pos}${m.new_residue}`,
       );
     } else {
       node.branch_attrs.mutations[m.gene] = [
@@ -16,7 +16,7 @@ const addAAmuts = (aaMuts, node) => {
 
 const addNucMuts = (nucMuts, node) => {
   node.branch_attrs.mutations["nuc"] = nucMuts.map(
-    (m) => `${m.previous_residue}${m.residue_pos}${m.new_residue}`
+    (m) => `${m.previous_residue}${m.residue_pos}${m.new_residue}`,
   );
 };
 
@@ -25,7 +25,7 @@ export const getNextstrainSubtreeJson = async (
   subtree_root_id,
   nodes,
   config,
-  mutations
+  mutations,
 ) => {
   const subtree_root = nodes.find((node) => node.node_id === subtree_root_id);
 
@@ -81,7 +81,7 @@ export const getNextstrainSubtreeJson = async (
         const aaMuts = muts.filter((m) => m.type === "aa");
 
         const nucMutsNoAmb = nucMuts.filter(
-          (m) => m.new_residue != "-" && m.previous_residue != "-"
+          (m) => m.new_residue != "-" && m.previous_residue != "-",
         );
         // TODO: Above discards ambiguities from distance calculation.
         // Do we want to do this? In mpx e.g. there are nodes with
