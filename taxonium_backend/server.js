@@ -13,7 +13,7 @@ var pako = require("pako");
 const URL = require("url").URL;
 const ReadableWebToNodeStream = require("readable-web-to-node-stream");
 const { execSync } = require("child_process");
-const { Readable } = require('stream');
+const { Readable } = require("stream");
 var importing;
 var filtering;
 var exporting;
@@ -214,13 +214,12 @@ app.get("/config", function (req, res) {
   res.send(config);
 });
 
-
-app.get('/mutations/', function(req, res) {
+app.get("/mutations/", function (req, res) {
   // Set headers for SSE
   res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive'
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
   });
 
   // Function to send SSE
@@ -241,7 +240,7 @@ app.get('/mutations/', function(req, res) {
       setImmediate(sendNextChunk);
     } else {
       // All mutations sent, end the stream
-      sendSSE('END');
+      sendSSE("END");
       res.end();
     }
   }
@@ -250,12 +249,11 @@ app.get('/mutations/', function(req, res) {
   sendNextChunk();
 
   // Handle client disconnect
-  req.on('close', () => {
+  req.on("close", () => {
     // No need to destroy a stream, just stop the process
     index = processedData.mutations.length; // This will stop sendNextChunk on next iteration
   });
 });
-
 
 app.get("/nodes/", function (req, res) {
   const start_time = Date.now();

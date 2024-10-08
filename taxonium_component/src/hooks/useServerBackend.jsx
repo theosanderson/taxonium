@@ -124,10 +124,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
   const getConfig = useCallback(
     (setResult) => {
       const url = `${backend_url}/config/?sid=${sid}`;
-      
+
       // Fetch initial config
-      axios.get(url)
-        .then(response => {
+      axios
+        .get(url)
+        .then((response) => {
           console.log("got config", response.data);
           if (response.data.error) {
             window.alert(
@@ -136,14 +137,14 @@ function useServerBackend(backend_url, sid, url_on_fail) {
             window.location.href = url_on_fail;
             return;
           }
-          
+
           const config = response.data;
           config.mutations = config.mutations ? config.mutations : [];
-       
+
           // Stream mutations
           const mutationsUrl = `${backend_url}/mutations/?sid=${sid}`;
           const eventSource = new EventSource(mutationsUrl);
-  
+
           eventSource.onmessage = (event) => {
             if (event.data === "END") {
               console.log("Finished receiving mutations");
@@ -151,13 +152,15 @@ function useServerBackend(backend_url, sid, url_on_fail) {
               setResult(config);
               return;
             }
-  
+
             try {
               const mutationsChunk = JSON.parse(event.data);
               if (Array.isArray(mutationsChunk)) {
                 config.mutations.push(...mutationsChunk);
                 setResult({ ...config });
-                console.log(`Received chunk of ${mutationsChunk.length} mutations`);
+                console.log(
+                  `Received chunk of ${mutationsChunk.length} mutations`
+                );
               } else {
                 console.error("Received non-array chunk:", mutationsChunk);
               }
@@ -165,16 +168,16 @@ function useServerBackend(backend_url, sid, url_on_fail) {
               console.error("Error parsing mutations chunk:", error);
             }
           };
-  
+
           eventSource.onerror = (error) => {
             console.error("EventSource failed:", error);
             eventSource.close();
           };
-  
+
           // Set initial config
           setResult(config);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching config:", error);
           if (url_on_fail) {
             window.alert("Failed to fetch config. Redirecting you.");
