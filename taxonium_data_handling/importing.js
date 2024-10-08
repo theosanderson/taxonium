@@ -3,7 +3,6 @@ import stream from "stream";
 import buffer from "buffer";
 import { send } from "process";
 
-
 class ChunkCounterStream extends stream.PassThrough {
   constructor(sendStatusMessage, options = {}) {
     super(options);
@@ -14,12 +13,12 @@ class ChunkCounterStream extends stream.PassThrough {
   _transform(chunk, encoding, callback) {
     this.chunkCount++;
     if (this.chunkCount % 100 === 0) {
-    this.sendStatusMessage({
-      message: `Processed ${this.chunkCount} groups of mutations`,
-      count: this.chunkCount
-    });
-  }
-    
+      this.sendStatusMessage({
+        message: `Processed ${this.chunkCount} groups of mutations`,
+        count: this.chunkCount,
+      });
+    }
+
     // Pass the chunk through unchanged
     this.push(chunk);
     callback();
@@ -29,12 +28,11 @@ class ChunkCounterStream extends stream.PassThrough {
     this.sendStatusMessage({
       message: `Finished processing. Total chunks: ${this.chunkCount}`,
       count: this.chunkCount,
-      finished: true
+      finished: true,
     });
     callback();
   }
 }
-
 
 class StreamSplitter extends stream.Transform {
   constructor(headerParser, dataParser, options = {}) {
@@ -55,7 +53,6 @@ class StreamSplitter extends stream.Transform {
         const headerData = data.slice(0, newlineIndex);
         const restData = data.slice(newlineIndex + 1);
 
-
         // Write header data to headerParser
         this.headerParser.write(headerData);
         this.headerParser.end();
@@ -68,7 +65,7 @@ class StreamSplitter extends stream.Transform {
         this.firstPart = false;
       } else {
         // No newline found, store data in buffer
-       this.headerParser.write(data);
+        this.headerParser.write(data);
       }
     } else {
       // After header is processed, pass data to dataParser
@@ -89,7 +86,6 @@ class StreamSplitter extends stream.Transform {
     callback();
   }
 }
-
 
 const roundToDp = (number, dp) => {
   return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
@@ -127,12 +123,12 @@ export const setUpStream = (
   // Header parser
   const headerParser = parser({ jsonStreaming: true });
   const headerPipeline = headerParser.pipe(streamValues());
-  headerPipeline.on('data', (chunk) => {
+  headerPipeline.on("data", (chunk) => {
     data.header = chunk.value;
     data.nodes = [];
     data.node_to_mut = {};
   });
-  headerPipeline.on('error', (err) => {
+  headerPipeline.on("error", (err) => {
     console.error("Header parser error:", err);
   });
 
@@ -192,7 +188,9 @@ export const setUpStream = (
   const splitter = new StreamSplitter(chunkCounterStream, dataParser);
 
   // Pipe the input stream through the splitter
-  the_stream.pipe(splitter).on("error", (err) => console.error("Splitter error:", err));
+  the_stream
+    .pipe(splitter)
+    .on("error", (err) => console.error("Splitter error:", err));
 
   // Handle the completion of the dataParser
   dataParser.on("finish", () => {
@@ -200,11 +198,12 @@ export const setUpStream = (
   });
 };
 
-
 export const processJsonl = async (
   jsonl,
   sendStatusMessage,
-  ReadableWebToNodeStream, parser, streamValues
+  ReadableWebToNodeStream,
+  parser,
+  streamValues
 ) => {
   console.log(
     "Worker processJsonl" //, jsonl
@@ -220,7 +219,7 @@ export const processJsonl = async (
     the_stream = new stream.PassThrough();
   }
   let new_data = {};
-  setUpStream(the_stream, new_data, sendStatusMessage,parser, streamValues);
+  setUpStream(the_stream, new_data, sendStatusMessage, parser, streamValues);
 
   if (status === "loaded") {
     const dataAsArrayBuffer = data;

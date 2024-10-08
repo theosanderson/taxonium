@@ -24,11 +24,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "dependencies": {
-   
-  },
+  "dependencies": {},
   "devDependencies": {
-     "stream-json": "^1.8.0",
+    "stream-json": "^1.8.0",
     "@fontsource/roboto": "^5.0.1",
     "@headlessui/react": "^1.7.17",
     "@jbrowse/core": "^2.5.0",
