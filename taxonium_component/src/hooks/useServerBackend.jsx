@@ -173,8 +173,6 @@ function useServerBackend(backend_url, sid, url_on_fail) {
             console.error("EventSource failed:", error);
             eventSource.close();
           };
-
-
         })
         .catch((error) => {
           console.error("Error fetching config:", error);
