@@ -173,6 +173,9 @@ function useServerBackend(backend_url, sid, url_on_fail) {
             console.error("EventSource failed:", error);
             eventSource.close();
             setResult(config);
+            // TODO atm we set the Result above for backwards compatibility with backends which don't stream mutations and use /config/
+            // instead. After a while we should stop doing this so that if the stream dies in the middle we don't get
+            // possible weird behavior.
           };
         })
         .catch((error) => {
