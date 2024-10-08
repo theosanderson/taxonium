@@ -227,8 +227,8 @@ app.get("/mutations/", function (req, res) {
     res.write(`data: ${data}\n\n`);
   }
 
-  // Send mutations in chunks of 1000
-  const chunkSize = 10000;
+  // Send mutations in chunks of 100000
+  const chunkSize = 100000;
   let index = 0;
 
   function sendNextChunk() {
