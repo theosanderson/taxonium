@@ -157,7 +157,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
               const mutationsChunk = JSON.parse(event.data);
               if (Array.isArray(mutationsChunk)) {
                 config.mutations.push(...mutationsChunk);
-                setResult({ ...config });
+                
                 console.log(
                   `Received chunk of ${mutationsChunk.length} mutations`
                 );
@@ -174,8 +174,6 @@ function useServerBackend(backend_url, sid, url_on_fail) {
             eventSource.close();
           };
 
-          // Set initial config
-          setResult(config);
         })
         .catch((error) => {
           console.error("Error fetching config:", error);
