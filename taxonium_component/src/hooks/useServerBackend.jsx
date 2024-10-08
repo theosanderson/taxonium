@@ -172,6 +172,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           eventSource.onerror = (error) => {
             console.error("EventSource failed:", error);
             eventSource.close();
+            setResult(config);
           };
         })
         .catch((error) => {
