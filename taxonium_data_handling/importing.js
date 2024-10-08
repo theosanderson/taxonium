@@ -65,22 +65,30 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
-export const setUpStream = (the_stream, data, sendStatusMessage) => {
+export const setUpStream = (the_stream, data, sendStatusMessage, StreamValues) => {
   const splitter = new StreamSplitter();
 
-  // Custom header parser (you can replace this with your own implementation)
-  const headerParser = new stream.Writable({
-    write(chunk, encoding, callback) {
-      const headerLine = chunk.toString().trim();
-      const decoded = JSON.parse(headerLine);
-      data.header = decoded;
-      data.nodes = [];
-      data.node_to_mut = {};
-      callback();
-    },
-  });
+  // Custom header parser using json-stream
+  const headerParser = stream.pipeline(
+    StreamValues.parser({ jsonStreaming: true }),
+    StreamValues.streamValues(),
+    new stream.Writable({
+      objectMode: true,
+      write(chunk, encoding, callback) {
+        data.header = chunk.value;
+        data.nodes = [];
+        data.node_to_mut = {};
+        callback();
+      },
+    }),
+    (err) => {
+      if (err) {
+        console.error("Header parser error:", err);
+      }
+    }
+  );
 
-  // Data parser for the rest of the stream
+  // Data parser for the rest of the stream (unchanged)
   let lineBuffer = "";
   let line_number = 0;
   const dataParser = new stream.Writable({
@@ -154,7 +162,7 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
 export const processJsonl = async (
   jsonl,
   sendStatusMessage,
-  ReadableWebToNodeStream
+  ReadableWebToNodeStream, StreamValues
 ) => {
   console.log(
     "Worker processJsonl" //, jsonl
@@ -170,7 +178,7 @@ export const processJsonl = async (
     the_stream = new stream.PassThrough();
   }
   let new_data = {};
-  setUpStream(the_stream, new_data, sendStatusMessage);
+  setUpStream(the_stream, new_data, sendStatusMessage,StreamValues);
 
   if (status === "loaded") {
     const dataAsArrayBuffer = data;

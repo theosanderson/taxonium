@@ -7,6 +7,7 @@ import {
 import { processNewickAndMetadata } from "../utils/processNewick.js";
 import { processNextstrain } from "../utils/processNextstrain.js";
 import { ReadableWebToNodeStream } from "readable-web-to-node-stream";
+import StreamValues from 'stream-json/streamers/StreamValues';
 
 console.log("worker starting");
 postMessage({ data: "Worker starting" });
@@ -211,7 +212,8 @@ onmessage = async (event) => {
     processedUploadedData = await processJsonl(
       data.data,
       sendStatusMessage,
-      ReadableWebToNodeStream
+      ReadableWebToNodeStream,
+      StreamValues
     );
     console.log("processedUploadedData created");
   } else if (
