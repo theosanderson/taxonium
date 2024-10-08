@@ -13,6 +13,7 @@ var pako = require("pako");
 const URL = require("url").URL;
 const ReadableWebToNodeStream = require("readable-web-to-node-stream");
 const { execSync } = require("child_process");
+const { Readable } = require('stream');
 var importing;
 var filtering;
 var exporting;
@@ -206,13 +207,55 @@ app.get("/config", function (req, res) {
     (processedData.overallMinY + processedData.overallMaxY) / 2;
   config.initial_zoom = -2;
   config.genes = processedData.genes;
-  config.mutations = processedData.mutations;
   config = { ...config, ...processedData.overwrite_config };
   config.rootMutations = processedData.rootMutations;
   config.rootId = processedData.rootId;
 
   validateSIDandSend(config, req.query.sid, res);
 });
+
+
+app.get('/mutations/', function(req, res) {
+  // Set headers for SSE
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive'
+  });
+
+  // Function to send SSE
+  function sendSSE(data) {
+    res.write(`data: ${data}\n\n`);
+  }
+
+  // Send mutations in chunks of 1000
+  const chunkSize = 10000;
+  let index = 0;
+
+  function sendNextChunk() {
+    const chunk = processedData.mutations.slice(index, index + chunkSize);
+    if (chunk.length > 0) {
+      sendSSE(JSON.stringify(chunk));
+      index += chunkSize;
+      // Schedule the next chunk
+      setImmediate(sendNextChunk);
+    } else {
+      // All mutations sent, end the stream
+      sendSSE('END');
+      res.end();
+    }
+  }
+
+  // Start sending chunks
+  sendNextChunk();
+
+  // Handle client disconnect
+  req.on('close', () => {
+    // No need to destroy a stream, just stop the process
+    index = processedData.mutations.length; // This will stop sendNextChunk on next iteration
+  });
+});
+
 
 app.get("/nodes/", function (req, res) {
   const start_time = Date.now();
