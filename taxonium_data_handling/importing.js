@@ -1,6 +1,91 @@
 import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
+import { send } from "process";
+
+class ChunkCounterStream extends stream.PassThrough {
+  constructor(sendStatusMessage, options = {}) {
+    super(options);
+    this.sendStatusMessage = sendStatusMessage;
+    this.chunkCount = 0;
+  }
+
+  _transform(chunk, encoding, callback) {
+    this.chunkCount++;
+    if (this.chunkCount % 100 === 0) {
+      this.sendStatusMessage({
+        message: `Processed ${this.chunkCount} groups of mutations`,
+        count: this.chunkCount,
+      });
+    }
+
+    // Pass the chunk through unchanged
+    this.push(chunk);
+    callback();
+  }
+
+  _flush(callback) {
+    this.sendStatusMessage({
+      message: `Finished processing. Total chunks: ${this.chunkCount}`,
+      count: this.chunkCount,
+      finished: true,
+    });
+    callback();
+  }
+}
+
+class StreamSplitter extends stream.Transform {
+  constructor(headerParser, dataParser, options = {}) {
+    super(options);
+    this.headerParser = headerParser;
+    this.dataParser = dataParser;
+    this.firstPart = true;
+    this.buffer = null; // Buffer to hold partial data
+  }
+
+  _transform(chunk, encoding, callback) {
+    let data = chunk;
+    let newlineIndex = data.indexOf(10); // ASCII code for '\n'
+
+    if (this.firstPart) {
+      if (newlineIndex !== -1) {
+        // Found newline, split the data
+        const headerData = data.slice(0, newlineIndex);
+        const restData = data.slice(newlineIndex + 1);
+
+        // Write header data to headerParser
+        this.headerParser.write(headerData);
+        this.headerParser.end();
+
+        // Write restData to dataParser
+        if (restData.length > 0) {
+          this.dataParser.write(restData);
+        }
+
+        this.firstPart = false;
+      } else {
+        // No newline found, store data in buffer
+        this.headerParser.write(data);
+      }
+    } else {
+      // After header is processed, pass data to dataParser
+      this.dataParser.write(data);
+    }
+
+    callback();
+  }
+
+  _flush(callback) {
+    if (this.firstPart && this.buffer) {
+      // No newline found in the entire stream, treat entire data as header
+      this.headerParser.write(this.buffer);
+      this.headerParser.end();
+      this.firstPart = false;
+    }
+    this.dataParser.end();
+    callback();
+  }
+}
 
 const roundToDp = (number, dp) => {
   return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
@@ -28,8 +113,57 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
-export const setUpStream = (the_stream, data, sendStatusMessage) => {
+export const setUpStream = (
+  the_stream,
+  data,
+  sendStatusMessage,
+  parser,
+  streamValues
+) => {
+  // Header parser
+  const headerParser = parser({ jsonStreaming: true });
+  const headerPipeline = headerParser.pipe(streamValues());
+  headerPipeline.on("data", (chunk) => {
+    data.header = chunk.value;
+    data.nodes = [];
+    data.node_to_mut = {};
+  });
+  headerPipeline.on("error", (err) => {
+    console.error("Header parser error:", err);
+  });
+
+  // Data parser for the rest of the stream
+  let lineBuffer = "";
+  let line_number = 0;
+  const dataParser = new stream.Writable({
+    write(chunk, encoding, callback) {
+      const chunkStr = chunk.toString();
+      let start = 0;
+      let end = chunkStr.indexOf("\n");
+
+      while (end !== -1) {
+        lineBuffer += chunkStr.slice(start, end);
+        processLine(lineBuffer, line_number);
+        line_number++;
+        lineBuffer = "";
+        start = end + 1;
+        end = chunkStr.indexOf("\n", start);
+      }
+
+      lineBuffer += chunkStr.slice(start);
+      callback();
+    },
+    final(callback) {
+      if (lineBuffer) {
+        processLine(lineBuffer, line_number);
+      }
+      callback();
+    },
+  });
+
   function processLine(line, line_number) {
+    if (line.trim() === "") return;
+
     if ((line_number % 10000 === 0 && line_number > 0) || line_number == 500) {
       console.log(`Processed ${formatNumber(line_number)} lines`);
       if (data.header.total_nodes) {
@@ -45,44 +179,31 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
         });
       }
     }
-    // console.log("LINE",line_number,line);
     const decoded = JSON.parse(line);
-    if (line_number === 0) {
-      data.header = decoded;
-      data.nodes = [];
-      data.node_to_mut = {};
-    } else {
-      data.node_to_mut[decoded.node_id] = decoded.mutations; // this is an int to ints map
-      data.nodes.push(decoded);
-    }
+    data.node_to_mut[decoded.node_id] = decoded.mutations;
+    data.nodes.push(decoded);
   }
-  let cur_line = "";
-  let line_counter = 0;
-  the_stream.on("data", function (data) {
-    cur_line += data.toString();
-    if (cur_line.includes("\n")) {
-      const lines = cur_line.split("\n");
-      cur_line = lines.pop();
-      lines.forEach((line) => {
-        processLine(line, line_counter);
-        line_counter++;
-      });
-    }
-  });
+  const chunkCounterStream = new ChunkCounterStream(sendStatusMessage);
+  chunkCounterStream.pipe(headerParser);
+  const splitter = new StreamSplitter(chunkCounterStream, dataParser);
 
-  the_stream.on("error", function (err) {
-    console.log(err);
-  });
+  // Pipe the input stream through the splitter
+  the_stream
+    .pipe(splitter)
+    .on("error", (err) => console.error("Splitter error:", err));
 
-  the_stream.on("end", function () {
-    console.log("end");
+  // Handle the completion of the dataParser
+  dataParser.on("finish", () => {
+    console.log("Finished processing the stream");
   });
 };
 
 export const processJsonl = async (
   jsonl,
   sendStatusMessage,
-  ReadableWebToNodeStream
+  ReadableWebToNodeStream,
+  parser,
+  streamValues
 ) => {
   console.log(
     "Worker processJsonl" //, jsonl
@@ -98,7 +219,7 @@ export const processJsonl = async (
     the_stream = new stream.PassThrough();
   }
   let new_data = {};
-  setUpStream(the_stream, new_data, sendStatusMessage);
+  setUpStream(the_stream, new_data, sendStatusMessage, parser, streamValues);
 
   if (status === "loaded") {
     const dataAsArrayBuffer = data;
