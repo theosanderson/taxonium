@@ -157,7 +157,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
               const mutationsChunk = JSON.parse(event.data);
               if (Array.isArray(mutationsChunk)) {
                 config.mutations.push(...mutationsChunk);
-                setResult({ ...config });
+
                 console.log(
                   `Received chunk of ${mutationsChunk.length} mutations`
                 );
@@ -172,10 +172,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           eventSource.onerror = (error) => {
             console.error("EventSource failed:", error);
             eventSource.close();
+            setResult(config);
+            // TODO atm we set the Result above for backwards compatibility with backends which don't stream mutations and use /config/
+            // instead. After a while we should stop doing this so that if the stream dies in the middle we don't get
+            // possible weird behavior.
           };
-
-          // Set initial config
-          setResult(config);
         })
         .catch((error) => {
           console.error("Error fetching config:", error);
