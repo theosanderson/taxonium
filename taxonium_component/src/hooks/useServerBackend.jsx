@@ -121,20 +121,69 @@ function useServerBackend(backend_url, sid, url_on_fail) {
     },
     [backend_url, sid]
   );
-
   const getConfig = useCallback(
     (setResult) => {
-      let url = backend_url + "/config/?sid=" + sid;
-      axios.get(url).then(function (response) {
-        console.log("got config", response.data);
-        if (response.data.error) {
-          window.alert(
-            response.data.error + (url_on_fail ? "\nRedirecting you." : "")
-          );
-          window.location.href = url_on_fail;
-        }
-        setResult(response.data);
-      });
+      const url = `${backend_url}/config/?sid=${sid}`;
+
+      // Fetch initial config
+      axios
+        .get(url)
+        .then((response) => {
+          console.log("got config", response.data);
+          if (response.data.error) {
+            window.alert(
+              response.data.error + (url_on_fail ? "\nRedirecting you." : "")
+            );
+            window.location.href = url_on_fail;
+            return;
+          }
+
+          const config = response.data;
+          config.mutations = config.mutations ? config.mutations : [];
+
+          // Stream mutations
+          const mutationsUrl = `${backend_url}/mutations/?sid=${sid}`;
+          const eventSource = new EventSource(mutationsUrl);
+
+          eventSource.onmessage = (event) => {
+            if (event.data === "END") {
+              console.log("Finished receiving mutations");
+              eventSource.close();
+              setResult(config);
+              return;
+            }
+
+            try {
+              const mutationsChunk = JSON.parse(event.data);
+              if (Array.isArray(mutationsChunk)) {
+                config.mutations.push(...mutationsChunk);
+                setResult({ ...config });
+                console.log(
+                  `Received chunk of ${mutationsChunk.length} mutations`
+                );
+              } else {
+                console.error("Received non-array chunk:", mutationsChunk);
+              }
+            } catch (error) {
+              console.error("Error parsing mutations chunk:", error);
+            }
+          };
+
+          eventSource.onerror = (error) => {
+            console.error("EventSource failed:", error);
+            eventSource.close();
+          };
+
+          // Set initial config
+          setResult(config);
+        })
+        .catch((error) => {
+          console.error("Error fetching config:", error);
+          if (url_on_fail) {
+            window.alert("Failed to fetch config. Redirecting you.");
+            window.location.href = url_on_fail;
+          }
+        });
     },
     [backend_url, sid, url_on_fail]
   );
