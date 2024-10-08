@@ -2,6 +2,44 @@ import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
+
+class StreamSplitter extends stream.Transform {
+  constructor(options = {}) {
+    super(options);
+    this.firstPart = true;
+    this.buffer = '';
+  }
+  _transform(chunk, encoding, callback) {
+    if (this.firstPart) {
+      const chunkStr = chunk.toString();
+      const newlineIndex = chunkStr.indexOf('\n');
+      if (newlineIndex !== -1) {
+        this.push(chunkStr.slice(0, newlineIndex + 1));
+        this.firstPart = false;
+        this.push(null); // End the first part
+        
+        // Start the second part
+        if (newlineIndex + 1 < chunkStr.length) {
+          this.push(chunkStr.slice(newlineIndex + 1));
+        }
+      } else {
+        this.push(chunkStr);
+      }
+    } else {
+      this.push(chunk);
+    }
+    
+    callback();
+  }
+  _flush(callback) {
+    if (this.firstPart) {
+      this.push(null); // End the first part
+      this.push(''); // Start the second part (empty in this case)
+    }
+    callback();
+  }
+}
+
 const roundToDp = (number, dp) => {
   return Math.round(number * Math.pow(10, dp)) / Math.pow(10, dp);
 };
@@ -29,7 +67,52 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
 }
 
 export const setUpStream = (the_stream, data, sendStatusMessage) => {
+  const splitter = new StreamSplitter();
+
+  // Custom header parser (you can replace this with your own implementation)
+  const headerParser = new stream.Writable({
+    write(chunk, encoding, callback) {
+      const headerLine = chunk.toString().trim();
+      const decoded = JSON.parse(headerLine);
+      data.header = decoded;
+      data.nodes = [];
+      data.node_to_mut = {};
+      callback();
+    }
+  });
+
+  // Data parser for the rest of the stream
+  let lineBuffer = '';
+  let line_number = 0;
+  const dataParser = new stream.Writable({
+    write(chunk, encoding, callback) {
+      const chunkStr = chunk.toString();
+      let start = 0;
+      let end = chunkStr.indexOf('\n');
+
+      while (end !== -1) {
+        lineBuffer += chunkStr.slice(start, end);
+        processLine(lineBuffer, line_number);
+        line_number++;
+        lineBuffer = '';
+        start = end + 1;
+        end = chunkStr.indexOf('\n', start);
+      }
+
+      lineBuffer += chunkStr.slice(start);
+      callback();
+    },
+    final(callback) {
+      if (lineBuffer) {
+        processLine(lineBuffer, line_number);
+      }
+      callback();
+    }
+  });
+
   function processLine(line, line_number) {
+    if (line.trim() === '') return;
+
     if ((line_number % 10000 === 0 && line_number > 0) || line_number == 500) {
       console.log(`Processed ${formatNumber(line_number)} lines`);
       if (data.header.total_nodes) {
@@ -45,37 +128,27 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
         });
       }
     }
-    // console.log("LINE",line_number,line);
     const decoded = JSON.parse(line);
-    if (line_number === 0) {
-      data.header = decoded;
-      data.nodes = [];
-      data.node_to_mut = {};
-    } else {
-      data.node_to_mut[decoded.node_id] = decoded.mutations; // this is an int to ints map
-      data.nodes.push(decoded);
-    }
+    data.node_to_mut[decoded.node_id] = decoded.mutations;
+    data.nodes.push(decoded);
   }
-  let cur_line = "";
-  let line_counter = 0;
-  the_stream.on("data", function (data) {
-    cur_line += data.toString();
-    if (cur_line.includes("\n")) {
-      const lines = cur_line.split("\n");
-      cur_line = lines.pop();
-      lines.forEach((line) => {
-        processLine(line, line_counter);
-        line_counter++;
-      });
-    }
-  });
 
-  the_stream.on("error", function (err) {
-    console.log(err);
-  });
+  // Set up the pipeline
+  the_stream
+    .pipe(splitter)
+    .on('error', (err) => console.error('Splitter error:', err));
 
-  the_stream.on("end", function () {
-    console.log("end");
+  splitter
+    .pipe(headerParser, { end: false })
+    .on('error', (err) => console.error('Header parser error:', err));
+
+  splitter
+    .pipe(dataParser)
+    .on('error', (err) => console.error('Data parser error:', err));
+
+  // Handle the completion of the stream
+  dataParser.on('finish', () => {
+    console.log("Finished processing the stream");
   });
 };
 
