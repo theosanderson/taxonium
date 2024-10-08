@@ -157,7 +157,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
               const mutationsChunk = JSON.parse(event.data);
               if (Array.isArray(mutationsChunk)) {
                 config.mutations.push(...mutationsChunk);
-                
+
                 console.log(
                   `Received chunk of ${mutationsChunk.length} mutations`
                 );
@@ -173,6 +173,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
             console.error("EventSource failed:", error);
             eventSource.close();
           };
+
 
         })
         .catch((error) => {
