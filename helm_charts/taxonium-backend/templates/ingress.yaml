@@ -1,0 +1,33 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-taxonium-backend
+  labels:
+    app: {{ .Release.Name }}-taxonium-backend
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.hostname | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-taxonium-backend
+                port:
+                  number: {{ .Values.service.port }}
+  {{- with .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ $.Values.hostname | quote }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
