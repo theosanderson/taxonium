@@ -2,22 +2,21 @@ import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
 
-
 class StreamSplitter extends stream.Transform {
   constructor(options = {}) {
     super(options);
     this.firstPart = true;
-    this.buffer = '';
+    this.buffer = "";
   }
   _transform(chunk, encoding, callback) {
     if (this.firstPart) {
       const chunkStr = chunk.toString();
-      const newlineIndex = chunkStr.indexOf('\n');
+      const newlineIndex = chunkStr.indexOf("\n");
       if (newlineIndex !== -1) {
         this.push(chunkStr.slice(0, newlineIndex + 1));
         this.firstPart = false;
         this.push(null); // End the first part
-        
+
         // Start the second part
         if (newlineIndex + 1 < chunkStr.length) {
           this.push(chunkStr.slice(newlineIndex + 1));
@@ -28,13 +27,13 @@ class StreamSplitter extends stream.Transform {
     } else {
       this.push(chunk);
     }
-    
+
     callback();
   }
   _flush(callback) {
     if (this.firstPart) {
       this.push(null); // End the first part
-      this.push(''); // Start the second part (empty in this case)
+      this.push(""); // Start the second part (empty in this case)
     }
     callback();
   }
@@ -78,25 +77,25 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
       data.nodes = [];
       data.node_to_mut = {};
       callback();
-    }
+    },
   });
 
   // Data parser for the rest of the stream
-  let lineBuffer = '';
+  let lineBuffer = "";
   let line_number = 0;
   const dataParser = new stream.Writable({
     write(chunk, encoding, callback) {
       const chunkStr = chunk.toString();
       let start = 0;
-      let end = chunkStr.indexOf('\n');
+      let end = chunkStr.indexOf("\n");
 
       while (end !== -1) {
         lineBuffer += chunkStr.slice(start, end);
         processLine(lineBuffer, line_number);
         line_number++;
-        lineBuffer = '';
+        lineBuffer = "";
         start = end + 1;
-        end = chunkStr.indexOf('\n', start);
+        end = chunkStr.indexOf("\n", start);
       }
 
       lineBuffer += chunkStr.slice(start);
@@ -107,11 +106,11 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
         processLine(lineBuffer, line_number);
       }
       callback();
-    }
+    },
   });
 
   function processLine(line, line_number) {
-    if (line.trim() === '') return;
+    if (line.trim() === "") return;
 
     if ((line_number % 10000 === 0 && line_number > 0) || line_number == 500) {
       console.log(`Processed ${formatNumber(line_number)} lines`);
@@ -136,18 +135,18 @@ export const setUpStream = (the_stream, data, sendStatusMessage) => {
   // Set up the pipeline
   the_stream
     .pipe(splitter)
-    .on('error', (err) => console.error('Splitter error:', err));
+    .on("error", (err) => console.error("Splitter error:", err));
 
   splitter
     .pipe(headerParser, { end: false })
-    .on('error', (err) => console.error('Header parser error:', err));
+    .on("error", (err) => console.error("Header parser error:", err));
 
   splitter
     .pipe(dataParser)
-    .on('error', (err) => console.error('Data parser error:', err));
+    .on("error", (err) => console.error("Data parser error:", err));
 
   // Handle the completion of the stream
-  dataParser.on('finish', () => {
+  dataParser.on("finish", () => {
     console.log("Finished processing the stream");
   });
 };
