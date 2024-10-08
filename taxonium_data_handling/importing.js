@@ -65,13 +65,13 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
-export const setUpStream = (the_stream, data, sendStatusMessage, StreamValues) => {
+export const setUpStream = (the_stream, data, sendStatusMessage, parser, streamValues) => {
   const splitter = new StreamSplitter();
 
   // Custom header parser using json-stream
   const headerParser = stream.pipeline(
-    StreamValues.parser({ jsonStreaming: true }),
-    StreamValues.streamValues(),
+    parser({ jsonStreaming: true }),
+    streamValues(),
     new stream.Writable({
       objectMode: true,
       write(chunk, encoding, callback) {
@@ -162,7 +162,7 @@ export const setUpStream = (the_stream, data, sendStatusMessage, StreamValues) =
 export const processJsonl = async (
   jsonl,
   sendStatusMessage,
-  ReadableWebToNodeStream, StreamValues
+  ReadableWebToNodeStream, parser, streamValues
 ) => {
   console.log(
     "Worker processJsonl" //, jsonl
@@ -178,7 +178,7 @@ export const processJsonl = async (
     the_stream = new stream.PassThrough();
   }
   let new_data = {};
-  setUpStream(the_stream, new_data, sendStatusMessage,StreamValues);
+  setUpStream(the_stream, new_data, sendStatusMessage,parser, streamValues);
 
   if (status === "loaded") {
     const dataAsArrayBuffer = data;
