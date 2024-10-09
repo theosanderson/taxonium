@@ -14,6 +14,9 @@ const URL = require("url").URL;
 const ReadableWebToNodeStream = require("readable-web-to-node-stream");
 const { execSync } = require("child_process");
 const { Readable } = require("stream");
+var parser = require("stream-json").parser;
+var streamValues = require("stream-json/streamers/StreamValues").streamValues;
+
 var importing;
 var filtering;
 var exporting;
@@ -434,7 +437,9 @@ const loadData = async () => {
   processedData = await importing.processJsonl(
     supplied_object,
     logStatusMessage,
-    ReadableWebToNodeStream.ReadableWebToNodeStream
+    ReadableWebToNodeStream.ReadableWebToNodeStream,
+    parser,
+    streamValues
   );
 
   logStatusMessage({
