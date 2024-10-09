@@ -113,7 +113,7 @@ const useColor = (config, colorMapping, colorByField) => {
         OXFORD_NANOPORE: [24, 32, 200],
         ION_TORRENT: [24, 160, 32],
         "Democratic Republic of the Congo": [17, 58, 99],
-        "Avian": [214, 58, 15],
+        Avian: [214, 58, 15],
       };
 
       if (string in specialCases) {
