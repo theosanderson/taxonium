@@ -17,7 +17,6 @@ const { Readable } = require("stream");
 var parser = require("stream-json").parser;
 var streamValues = require("stream-json/streamers/StreamValues").streamValues;
 
-
 var importing;
 var filtering;
 var exporting;
@@ -439,7 +438,7 @@ const loadData = async () => {
     supplied_object,
     logStatusMessage,
     ReadableWebToNodeStream.ReadableWebToNodeStream,
-     parser,
+    parser,
     streamValues
   );
 
