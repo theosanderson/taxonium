@@ -1,7 +1,6 @@
 import zlib from "zlib";
 import stream from "stream";
 import buffer from "buffer";
-import { send } from "process";
 
 class ChunkCounterStream extends stream.PassThrough {
   constructor(sendStatusMessage, options = {}) {
