@@ -61,11 +61,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
       const abortController = new AbortController();
 
       let url =
-        backend_url +
-        "/search/?json=" +
-        JSON.stringify(singleSearch) +
-        "&sid=" +
-        sid;
+    backend_url +
+    "/search/?json=" +
+    encodeURIComponent(JSON.stringify(singleSearch)) +
+    "&sid=" +
+    encodeURIComponent(sid);
 
       const xType =
         boundsForQueries && boundsForQueries.xType
