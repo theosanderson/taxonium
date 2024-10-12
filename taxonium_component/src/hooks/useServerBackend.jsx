@@ -63,9 +63,9 @@ function useServerBackend(backend_url, sid, url_on_fail) {
       let url =
         backend_url +
         "/search/?json=" +
-        JSON.stringify(singleSearch) +
+        encodeURIComponent(JSON.stringify(singleSearch)) +
         "&sid=" +
-        sid;
+        encodeURIComponent(sid);
 
       const xType =
         boundsForQueries && boundsForQueries.xType
