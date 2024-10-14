@@ -1,5 +1,4 @@
 FROM node:18-alpine AS builder
-ENV NODE_ENV production
 # Add a work directory
 WORKDIR /app
 COPY taxonium_website ./taxonium_website
@@ -7,11 +6,13 @@ COPY taxonium_data_handling ./taxonium_data_handling
 COPY taxonium_component ./taxonium_component
 WORKDIR /app/taxonium_website
 
+
+
 # Install dependencies for node-gyp from lzma-native
 RUN apk add --no-cache python3 make g++ jpeg-dev cairo-dev giflib-dev pango-dev
-RUN npm_config_build_from_source=true yarn add canvas
-RUN yarn --frozen-lockfile
-RUN yarn build
+RUN  NODE_OPTIONS=--max_old_space_size=4096 yarn --frozen-lockfile
+# Build the app with lots of memory
+RUN NODE_OPTIONS=--max_old_space_size=8096 yarn build
 
 # Bundle static assets with nginx
 FROM nginx:1.21.0-alpine as production
