@@ -13,10 +13,10 @@ import treeConfig from './trees.json';
 
 // Hardcoded list of paths to show in the showcase
 const SHOWCASE_PATHS = [
-  "sars-cov-2/cov2tree",
-  "visual-tree-of-life",
-  "taxonomy",
-  "mpx"
+  "sars-cov-2/public",
+  "taxonomy/visual",
+  "taxonomy/full",
+  "mpox/public"
 ];
 
 function checkLegacyHostname() {
