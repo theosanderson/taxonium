@@ -9,26 +9,29 @@ import useQueryAsState from "./hooks/useQueryAsState";
 import classNames from "classnames";
 import { useInputHelper } from "./hooks/useInputHelper";
 import InputSupplier from "./components/InputSupplier";
-import treeConfig from './trees.json';
+import treeConfig from "./trees.json";
 
 // Hardcoded list of paths to show in the showcase
 const SHOWCASE_PATHS = [
   "sars-cov-2/public",
   "taxonomy/visual",
   "taxonomy/full",
-  "mpox/public"
+  "mpox/public",
 ];
 
 function checkLegacyHostname() {
   const currentHostname = window.location.hostname;
-  
+
   // Look through all configurations for matching legacy hostnames
   for (const [path, config] of Object.entries(treeConfig)) {
-    if (config.legacyHostnames && config.legacyHostnames.includes(currentHostname)) {
+    if (
+      config.legacyHostnames &&
+      config.legacyHostnames.includes(currentHostname)
+    ) {
       // If we find a match, redirect to the new path
       // Preserve any query parameters
       const newPath = `${window.location.protocol}//${window.location.host}/${path}${window.location.search}`;
-      
+
       // Only redirect if we're not already on the correct path
       if (!window.location.pathname.startsWith(`/${path}`)) {
         window.location.href = newPath;
@@ -36,7 +39,7 @@ function checkLegacyHostname() {
       }
     }
   }
-  
+
   return false;
 }
 
@@ -45,10 +48,10 @@ function getConfigFromPath() {
   if (checkLegacyHostname()) {
     return null; // Return null as we're about to redirect
   }
-  
+
   // Remove leading slash and get full path
   const path = window.location.pathname.substring(1);
-  
+
   // Return the configuration for this path, if it exists
   return treeConfig[path] || null;
 }
@@ -57,19 +60,19 @@ function App() {
   useEffect(() => {
     import("taxonium-component");
   }, []);
-  
+
   const pathConfig = getConfigFromPath();
   const default_query = pathConfig || {};
-  
+
   const [uploadedData, setUploadedData] = useState(null);
   const [query, updateQuery] = useQueryAsState(default_query);
   const [title, setTitle] = useState(null);
   const [beingDragged, setBeingDragged] = useState(false);
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [overlayContent, setOverlayContent] = useState(null);
-  
+
   const dragTimeout = useRef(null);
- 
+
   const inputHelper = useInputHelper({
     setUploadedData,
     updateQuery,
@@ -95,7 +98,10 @@ function App() {
   }
 
   function onDragOver(ev) {
-    if (uploadedData && (uploadedData.status === "loaded" || uploadedData.status === "loading")) {
+    if (
+      uploadedData &&
+      (uploadedData.status === "loaded" || uploadedData.status === "loading")
+    ) {
       ev.preventDefault();
       return;
     }
@@ -116,7 +122,7 @@ function App() {
   }
 
   // Generate showcase items from hardcoded list
-  const showCase = SHOWCASE_PATHS.map(path => {
+  const showCase = SHOWCASE_PATHS.map((path) => {
     const config = treeConfig[path];
     if (!config) {
       console.warn(`No configuration found for showcase path: ${path}`);
@@ -125,7 +131,7 @@ function App() {
     return {
       title: config.title,
       url: `/${path}`,
-      desc: config.description
+      desc: config.description,
     };
   }).filter(Boolean); // Remove any null entries from missing configs
 
@@ -150,7 +156,7 @@ function App() {
           className={classNames(
             "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md",
             "flex justify-between items-center px-4 flex-shrink-0",
-             "h-16"
+            "h-16"
           )}
         >
           <h1 className="text-xl text-white flex items-center space-x-2">
@@ -190,11 +196,7 @@ function App() {
                 )}
               </>
             ) : (
-              <a
-                href="/"
-                className="hover:underline"
-                target="_top"
-              >
+              <a href="/" className="hover:underline" target="_top">
                 <CgListTree className="h-6 w-6 inline-block mr-2 -mt-1" />
                 <span className="font-bold">Taxonium</span>
               </a>
