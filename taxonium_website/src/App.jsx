@@ -69,8 +69,7 @@ function App() {
   const [overlayContent, setOverlayContent] = useState(null);
   
   const dragTimeout = useRef(null);
-  const isGisaid = window.location.toString().includes("epicov.org");
-  
+ 
   const inputHelper = useInputHelper({
     setUploadedData,
     updateQuery,
@@ -151,7 +150,7 @@ function App() {
           className={classNames(
             "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md",
             "flex justify-between items-center px-4 flex-shrink-0",
-            isGisaid ? "h-11" : "h-16"
+             "h-16"
           )}
         >
           <h1 className="text-xl text-white flex items-center space-x-2">
