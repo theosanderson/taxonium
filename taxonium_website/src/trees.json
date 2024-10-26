@@ -1,0 +1,36 @@
+{
+  "sars-cov-2/public": {
+    "backend": "https://api.cov2tree.org",
+    "title": "SARS-CoV-2",
+    "description": "All seven million public sequences of SARS-CoV-2 from the INSDC databases",
+    "legacyHostnames": ["cov2tree.org"]
+  },
+  "sars-cov-2/viridian": {
+    "backend": "https://viridian-api.cov2tree.org",
+    "title": "SARS-CoV-2 Viridian",
+    "description": "SARS-CoV-2 sequences processed through Viridian pipeline",
+    "legacyHostnames": ["viridian.taxonium.org"]
+  },
+  "mpox/public": {
+    "protoUrl": "https://mpx-tree.vercel.app/mpx.jsonl.gz",
+    "configUrl": "https://mpx-tree.vercel.app/config.json",
+    "title": "Mpox",
+    "description": "Mpox sequences from GenBank",
+    "legacyHostnames": ["mpx.taxonium.org"]
+  },
+  "taxonomy/full": {
+    "treeUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz",
+    "metaUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz",
+    "configUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json",
+    "ladderizeTree": true,
+    "title": "NCBI Taxonomy (full)",
+    "description": "Full 2.2M NCBI Taxonomy of species",
+    "legacyHostnames": ["taxonomy.taxonium.org"]
+  },
+  "taxonomy/visual": {
+    "protoUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/wikidata/out.jsonl.gz",
+    "title": "Wikidata visual tree of life",
+    "description": "The tree of life, showing species from Wikidata with images. Links to Wikipedia.",
+    "legacyHostnames": ["visualtreeoflife.taxonium.org"]
+  }
+}
