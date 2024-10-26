@@ -30,7 +30,7 @@ function checkLegacyHostname() {
     ) {
       // If we find a match, redirect to the new path
       // Preserve any query parameters
-      const newPath = `${window.location.protocol}//${window.location.host}/${path}${window.location.search}`;
+      const newPath = `//taxonium.org/${path}${window.location.search}`;
 
       // Only redirect if we're not already on the correct path
       if (!window.location.pathname.startsWith(`/${path}`)) {
