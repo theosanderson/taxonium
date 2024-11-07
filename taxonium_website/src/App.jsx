@@ -223,7 +223,7 @@ function App() {
                 <option value="">Select a tree</option>
                 {Object.entries(treeConfig).map(([path, config]) => (
                   <option key={path} value={path}>
-                    {config.path}
+                    {path}
                   </option>
                 ))}
               </Select>
