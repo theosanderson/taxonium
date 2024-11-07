@@ -34,7 +34,7 @@
     "legacyHostnames": ["visualtreeoflife.taxonium.org"]
   },
    "flu/H5N1-Outbreak": {
-     "backend": "https://h5n1outbreak.api.taxonium.org/",
+     "backend": "https://h5n1outbreak.api.taxonium.org",
      "title": "H5N1 outbreak tree",
     "description": "Outbreak tree of recent H5N1 outbreak, maintained by the UShER team"
   },
