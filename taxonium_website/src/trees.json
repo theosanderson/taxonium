@@ -33,6 +33,11 @@
     "description": "The tree of life, showing species from Wikidata with images. Links to Wikipedia.",
     "legacyHostnames": ["visualtreeoflife.taxonium.org"]
   },
+   "flu/H5N1-Outbreak": {
+     "backend": "https://h5n1outbreak.api.taxonium.org/",
+     "title": "H5N1 outbreak tree",
+    "description": "Outbreak tree of recent H5N1 outbreak, maintained by the UShER team"
+  },
   "flu/A/goose/Guangdong/1/1996(H5N1)/PB2": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007357.1/fluA.GCF_000864105.1.NC_007357.1.latest.taxonium.jsonl.gz"
   },
