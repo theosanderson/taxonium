@@ -18,6 +18,7 @@ const SHOWCASE_PATHS = [
   "taxonomy/visual",
   "taxonomy/full",
   "mpox/public",
+  "flu/H5N1-Outbreak"
 ];
 
 function checkLegacyHostname() {

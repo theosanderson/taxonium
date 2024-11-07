@@ -53,7 +53,7 @@
   "flu/A/goose/Guangdong/1/1996(H5N1)/NP": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007360.1/fluA.GCF_000864105.1.NC_007360.1.latest.taxonium.jsonl.gz"
   },
-  "flu/A/goose/Guangdong/1/1996(H5N1)/nan": {
+  "flu/A/goose/Guangdong/1/1996(H5N1)/NA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007361.1/fluA.GCF_000864105.1.NC_007361.1.latest.taxonium.jsonl.gz"
   },
   "flu/A/goose/Guangdong/1/1996(H5N1)/MP": {
@@ -77,7 +77,7 @@
   "flu/A/New York/392/2004(H3N2)/NP": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007369.1/fluA.GCF_000865085.1.NC_007369.1.latest.taxonium.jsonl.gz"
   },
-  "flu/A/New York/392/2004(H3N2)/nan": {
+  "flu/A/New York/392/2004(H3N2)/NA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007368.1/fluA.GCF_000865085.1.NC_007368.1.latest.taxonium.jsonl.gz"
   },
   "flu/A/New York/392/2004(H3N2)/MP": {
@@ -101,7 +101,7 @@
   "flu/A/California/07/2009(H1N1)/NP": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026436.1/fluA.GCF_001343785.1.NC_026436.1.latest.taxonium.jsonl.gz"
   },
-  "flu/A/California/07/2009(H1N1)/nan": {
+  "flu/A/California/07/2009(H1N1)/NA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026434.1/fluA.GCF_001343785.1.NC_026434.1.latest.taxonium.jsonl.gz"
   },
   "flu/A/California/07/2009(H1N1)/MP": {
@@ -125,7 +125,7 @@
   "flu/A/Puerto Rico/8/1934(H1N1)/NP": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002019.1/fluA.GCF_000865725.1.NC_002019.1.latest.taxonium.jsonl.gz"
   },
-  "flu/A/Puerto Rico/8/1934(H1N1)/nan": {
+  "flu/A/Puerto Rico/8/1934(H1N1)/NA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002018.1/fluA.GCF_000865725.1.NC_002018.1.latest.taxonium.jsonl.gz"
   },
   "flu/A/Puerto Rico/8/1934(H1N1)/MP": {
@@ -149,7 +149,7 @@
   "flu/A/Shanghai/02/2013(H7N9)/NP": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026426.1/fluA.GCF_000928555.1.NC_026426.1.latest.taxonium.jsonl.gz"
   },
-  "flu/A/Shanghai/02/2013(H7N9)/nan": {
+  "flu/A/Shanghai/02/2013(H7N9)/NA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026429.1/fluA.GCF_000928555.1.NC_026429.1.latest.taxonium.jsonl.gz"
   },
   "flu/A/Shanghai/02/2013(H7N9)/MP": {
@@ -173,7 +173,7 @@
   "flu/A/Korea/426/1968(H2N2)/NP": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007381.1/fluA.GCF_000866645.1.NC_007381.1.latest.taxonium.jsonl.gz"
   },
-  "flu/A/Korea/426/1968(H2N2)/nan": {
+  "flu/A/Korea/426/1968(H2N2)/NA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007382.1/fluA.GCF_000866645.1.NC_007382.1.latest.taxonium.jsonl.gz"
   },
   "flu/A/Korea/426/1968(H2N2)/MP": {
@@ -197,7 +197,7 @@
   "flu/A/Hong Kong/1073/99(H9N2)/NP": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004905.2/fluA.GCF_000851145.1.NC_004905.2.latest.taxonium.jsonl.gz"
   },
-  "flu/A/Hong Kong/1073/99(H9N2)/nan": {
+  "flu/A/Hong Kong/1073/99(H9N2)/NA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004909.1/fluA.GCF_000851145.1.NC_004909.1.latest.taxonium.jsonl.gz"
   },
   "flu/A/Hong Kong/1073/99(H9N2)/MP": {
