@@ -216,7 +216,7 @@ function App() {
               <Select
                 value={selectedTree}
                 onChange={(e) => setSelectedTree(e.target.value)}
-                className={window.width>600 ? "mr-4" : "hidden"}
+                className={window.width > 600 ? "mr-4" : "hidden"}
               >
                 <option value="">Select a tree</option>
                 {Object.entries(treeConfig).map(([path, config]) => (
