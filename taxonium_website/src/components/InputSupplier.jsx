@@ -71,7 +71,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
             <div>
               <Select
                 value={input.filetype}
-                className="border p-1 mr-4 ml-4 text-sm"
+                className="border p-1 mr-4 text-sm"
                 onChange={(e) => {
                   setInputs(
                     inputs.map((input, the_index) => {

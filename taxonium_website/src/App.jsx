@@ -216,7 +216,7 @@ function App() {
               <Select
                 value={new URL(window.location.href).pathname.substring(1)}
                 onChange={(e) => setSelectedTree(e.target.value)}
-                className={"mr-4 bg-gray-50"}
+                className={"mr-4 bg-gray-50 ml-4"}
               >
                 <option value="">Select a tree</option>
                 {Object.entries(treeConfig).map(([path, config]) => (
