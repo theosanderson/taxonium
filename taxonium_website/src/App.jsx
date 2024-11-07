@@ -215,9 +215,8 @@ function App() {
             {window.screen.width >= 600 && ( // Hide the menu on mobile
               <Select
                 value={
-                  new URL(window.location.href).pathname
-                    .split("/")[1]
-                    .split("?")[0] || ""
+
+                  new URL(window.location.href).pathname.substring(1)
                 }
                 onChange={(e) => setSelectedTree(e.target.value)}
                 className={"mr-4"}
