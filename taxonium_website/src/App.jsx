@@ -139,12 +139,10 @@ function App() {
 
   useEffect(() => {
     if (selectedTree) {
-      const newQuery = treeConfig[selectedTree];
-      if (newQuery) {
-        updateQuery(newQuery);
-      }
+      const newPath = `/${selectedTree}${window.location.search}`;
+      window.location.href = newPath; // Trigger a page refresh on selection change
     }
-  }, [selectedTree, updateQuery]);
+  }, [selectedTree]);
 
   return (
     <>
@@ -214,18 +212,20 @@ function App() {
             )}
           </h1>
           <div className="flex items-center">
-            <Select
-              value={selectedTree}
-              onChange={(e) => setSelectedTree(e.target.value)}
-              className="mr-4"
-            >
-              <option value="">Select a tree</option>
-              {Object.entries(treeConfig).map(([path, config]) => (
-                <option key={path} value={path}>
-                  {config.title}
-                </option>
-              ))}
-            </Select>
+            {window.screen.width >= 600 && ( // Hide the menu on mobile
+              <Select
+                value={selectedTree}
+                onChange={(e) => setSelectedTree(e.target.value)}
+                className="mr-4"
+              >
+                <option value="">Select a tree</option>
+                {Object.entries(treeConfig).map(([path, config]) => (
+                  <option key={path} value={path}>
+                    {config.title}
+                  </option>
+                ))}
+              </Select>
+            )}
             <button
               onClick={() => setAboutEnabled(true)}
               className="text-white font-bold hover:underline flex items-center"
