@@ -214,10 +214,7 @@ function App() {
           <div className="flex items-center">
             {window.screen.width >= 600 && ( // Hide the menu on mobile
               <Select
-                value={
-
-                  new URL(window.location.href).pathname.substring(1)
-                }
+                value={new URL(window.location.href).pathname.substring(1)}
                 onChange={(e) => setSelectedTree(e.target.value)}
                 className={"mr-4"}
               >
