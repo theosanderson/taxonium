@@ -10,6 +10,7 @@ import classNames from "classnames";
 import { useInputHelper } from "./hooks/useInputHelper";
 import InputSupplier from "./components/InputSupplier";
 import treeConfig from "./trees.json";
+import { Select } from "./components/Basic";
 
 // Hardcoded list of paths to show in the showcase
 const SHOWCASE_PATHS = [
@@ -70,6 +71,7 @@ function App() {
   const [beingDragged, setBeingDragged] = useState(false);
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [overlayContent, setOverlayContent] = useState(null);
+  const [selectedTree, setSelectedTree] = useState("");
 
   const dragTimeout = useRef(null);
 
@@ -134,6 +136,15 @@ function App() {
       desc: config.description,
     };
   }).filter(Boolean); // Remove any null entries from missing configs
+
+  useEffect(() => {
+    if (selectedTree) {
+      const newQuery = treeConfig[selectedTree];
+      if (newQuery) {
+        updateQuery(newQuery);
+      }
+    }
+  }, [selectedTree, updateQuery]);
 
   return (
     <>
@@ -202,7 +213,19 @@ function App() {
               </a>
             )}
           </h1>
-          <div className="flex">
+          <div className="flex items-center">
+            <Select
+              value={selectedTree}
+              onChange={(e) => setSelectedTree(e.target.value)}
+              className="mr-4"
+            >
+              <option value="">Select a tree</option>
+              {Object.entries(treeConfig).map(([path, config]) => (
+                <option key={path} value={path}>
+                  {config.title}
+                </option>
+              ))}
+            </Select>
             <button
               onClick={() => setAboutEnabled(true)}
               className="text-white font-bold hover:underline flex items-center"
