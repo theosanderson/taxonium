@@ -53,9 +53,10 @@ function getConfigFromPath() {
 
   // Remove leading slash and get full path
   const path = window.location.pathname.substring(1);
+  const decodedPath = decodeURIComponent(path);
 
   // Return the configuration for this path, if it exists
-  return treeConfig[path] || null;
+  return treeConfig[decodedPath] || null;
 }
 
 function App() {
