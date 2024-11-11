@@ -190,21 +190,27 @@ function App() {
                   </>
                 )}
                 {window.screen.width >= 600 && (
-  <>
-    <span className={`font-medium ${title.length > 12 ? 'text-lg' : ''}`}>{title}</span>
-    <div className="flex flex-row mt-4">
-      <CgListTree className="h- ml-1 w-4 mr-1" />
-      <span className="text-xs ml-1">visualised with </span>
-<a
-        href="/"
-        className="underline hover:no-underline text-xs ml-0.5"
-        target="_top"
-      >
-        <span>Taxonium</span>
-      </a>
-    </div>
-  </>
-)}
+                  <>
+                    <span
+                      className={`font-medium ${
+                        title.length > 12 ? "text-lg" : ""
+                      }`}
+                    >
+                      {title}
+                    </span>
+                    <div className="flex flex-row mt-4">
+                      <CgListTree className="h- ml-1 w-4 mr-1" />
+                      <span className="text-xs ml-1">visualised with </span>
+                      <a
+                        href="/"
+                        className="underline hover:no-underline text-xs ml-0.5"
+                        target="_top"
+                      >
+                        <span>Taxonium</span>
+                      </a>
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <a href="/" className="hover:underline" target="_top">
