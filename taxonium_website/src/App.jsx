@@ -175,7 +175,7 @@ function App() {
               <>
                 {window.screen.width < 600 && (
                   <>
-                    <span className="font-medium pr-2">{title}</span>
+                    <span className="font-medium pr-2 text-lg">{title}</span>
                     <span className="flex flex-col text-center">
                       <span className="text-xs">visualised with</span>
                       <a
