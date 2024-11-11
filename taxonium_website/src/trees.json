@@ -23,7 +23,7 @@
     "title": "Mpox",
     "description": "Mpox sequences from GenBank",
     "legacyHostnames": ["mpx.taxonium.org"],
-    "icon": "/usher.png",
+    "icon": "/apple-touch-icon.png",
     "maintainerMessage": "Maintained by the Taxonium team",
     "maintainerUrl": null
   },
@@ -35,7 +35,7 @@
     "title": "NCBI Taxonomy (full)",
     "description": "Full 2.2M NCBI Taxonomy of species",
     "legacyHostnames": ["taxonomy.taxonium.org"],
-    "icon": "/usher.png",
+    "icon": "/apple-touch-icon.png",
     "maintainerMessage": "Built by the Taxonium team from the NCBI phylogeny",
     "maintainerUrl": null
   },
@@ -44,7 +44,7 @@
     "title": "Wikidata visual tree of life",
     "description": "The tree of life, showing species from Wikidata with images. Links to Wikipedia.",
     "legacyHostnames": ["visualtreeoflife.taxonium.org"],
-    "icon": "/usher.png",
+    "icon": "/apple-touch-icon.png",
     "maintainerMessage": "Built by the Taxonium team from the Wikidata phylogeny",
     "maintainerUrl": null
   },
