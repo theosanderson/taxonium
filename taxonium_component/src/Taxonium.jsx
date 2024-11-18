@@ -84,7 +84,7 @@ function Taxonium({
     backendUrl ? backendUrl : query.backend,
     query.sid,
     url_on_fail,
-    sourceData
+    sourceData,
   );
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
@@ -100,7 +100,7 @@ function Taxonium({
     setTitle,
     query,
     configDict,
-    configUrl
+    configUrl,
   );
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
@@ -119,7 +119,7 @@ function Taxonium({
     (xType) => {
       updateQuery({ xType });
     },
-    [updateQuery]
+    [updateQuery],
   );
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =

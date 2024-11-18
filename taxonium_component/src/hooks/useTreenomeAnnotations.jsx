@@ -56,7 +56,7 @@ const useTreenomeAnnotations = (settings) => {
       }
       return output;
     },
-    [settings.chromosomeName]
+    [settings.chromosomeName],
   );
 
   const json = useMemo(() => {

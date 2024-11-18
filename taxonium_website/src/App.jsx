@@ -167,7 +167,7 @@ function App() {
           className={classNames(
             "from-gray-500 to-gray-600 bg-gradient-to-bl shadow-md",
             "flex justify-between items-center px-4 flex-shrink-0",
-            "h-16"
+            "h-16",
           )}
         >
           <h1 className="text-xl text-white flex items-center space-x-2">

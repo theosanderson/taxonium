@@ -75,7 +75,7 @@ const DeckSettingsModal = ({
                   checked={settings.displayTextForInternalNodes}
                   onChange={() =>
                     settings.setDisplayTextForInternalNodes(
-                      !settings.displayTextForInternalNodes
+                      !settings.displayTextForInternalNodes,
                     )
                   }
                 />{" "}
@@ -90,7 +90,7 @@ const DeckSettingsModal = ({
                   checked={settings.displayPointsForInternalNodes}
                   onChange={() =>
                     settings.setDisplayPointsForInternalNodes(
-                      !settings.displayPointsForInternalNodes
+                      !settings.displayPointsForInternalNodes,
                     )
                   }
                 />{" "}
@@ -110,7 +110,7 @@ const DeckSettingsModal = ({
                     onChange={() =>
                       settings.setMutationTypeEnabled(
                         key,
-                        !settings.mutationTypesEnabled[key]
+                        !settings.mutationTypesEnabled[key],
                       )
                     }
                   />{" "}
@@ -133,7 +133,7 @@ const DeckSettingsModal = ({
                   value={settings.thresholdForDisplayingText}
                   onChange={(e) =>
                     settings.setThresholdForDisplayingText(
-                      parseFloat(e.target.value)
+                      parseFloat(e.target.value),
                     )
                   }
                   step="0.1"
@@ -263,7 +263,7 @@ const DeckSettingsModal = ({
                 checked={settings.displaySearchesAsPoints}
                 onChange={() =>
                   settings.setDisplaySearchesAsPoints(
-                    !settings.displaySearchesAsPoints
+                    !settings.displaySearchesAsPoints,
                   )
                 }
               />{" "}

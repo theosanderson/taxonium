@@ -13,7 +13,7 @@ function useNodeDetails(nickname, backend) {
         backend.getDetails(node_id, setNodeDetails);
       }, 50);
     },
-    [backend]
+    [backend],
   );
   const clearNodeDetails = useCallback(() => {
     setNodeDetails(null);

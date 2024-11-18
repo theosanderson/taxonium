@@ -73,7 +73,7 @@ If you're working with basic HTML, you can include the Taxonium component using 
   <script>
     ReactDOM.render(
       React.createElement(Taxonium, { sourceData: sourceData }),
-      document.getElementById("root")
+      document.getElementById("root"),
     );
   </script>
 </body>
