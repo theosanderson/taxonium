@@ -7,7 +7,7 @@ const useConfig = (
   setTitle,
   query,
   configDict,
-  configUrl
+  configUrl,
 ) => {
   const [config, setConfig] = useState({
     title: "loading",

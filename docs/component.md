@@ -49,7 +49,7 @@ D,John,Fish`;
   <script>
     ReactDOM.render(
       React.createElement(Taxonium, { sourceData: sourceData }),
-      document.getElementById("root")
+      document.getElementById("root"),
     );
   </script>
 </body>

@@ -126,7 +126,7 @@ const Key = ({
     <div
       className={classNames(
         "px-2 border-right border bg-white opacity-90 absolute bottom-2 left-2 pt-1 pb-2",
-        collapsed ? "w-20" : "w-32"
+        collapsed ? "w-20" : "w-32",
       )}
       style={{
         zIndex: 10,
@@ -140,8 +140,8 @@ const Key = ({
         {collapsed
           ? "Key"
           : colorByField === "genotype"
-          ? colorByGene + ":" + colorByPosition
-          : prettifyName(colorByField, config)}
+            ? colorByGene + ":" + colorByPosition
+            : prettifyName(colorByField, config)}
         {/* Arrow to collapse up/down */}
         <span className="float-right text-xs cursor-pointer text-gray-600">
           {collapsed ? "▲" : "▼"}

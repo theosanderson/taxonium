@@ -31,7 +31,7 @@ function nexusToNewick(nexusString) {
     /([^:\,\(\)]+)/gims,
     (match) => {
       return translations[match] || match;
-    }
+    },
   );
 
   return { newick: translatedNewickString };

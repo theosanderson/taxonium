@@ -23,7 +23,7 @@ export class JBrowseErrorBoundary extends React.Component {
       error.message === "Invalid array length"
     ) {
       toast.error(
-        "Error displaying track. Please make sure your file is well-formatted (e.g., validated with https://github.com/EBIvariation/vcf-validator)."
+        "Error displaying track. Please make sure your file is well-formatted (e.g., validated with https://github.com/EBIvariation/vcf-validator).",
       );
     }
   }

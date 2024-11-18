@@ -34,7 +34,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       // set the new searchSpec array
       search.setSearchSpec(newSearchSpec);
     },
-    [search, getMyIndex]
+    [search, getMyIndex],
   );
 
   const enabled =

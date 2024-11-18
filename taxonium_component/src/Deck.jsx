@@ -73,7 +73,7 @@ function Deck({
   // Treenome state
   const setMouseXY = useCallback(
     (info) => view.setMouseXY([info.x, info.y]),
-    [view]
+    [view],
   );
   const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
 
@@ -99,7 +99,7 @@ function Deck({
         mouseDownPos.current &&
         Math.sqrt(
           Math.pow(mouseDownPos.current[0] - event.clientX, 2) +
-            Math.pow(mouseDownPos.current[1] - event.clientY, 2)
+            Math.pow(mouseDownPos.current[1] - event.clientY, 2),
         ) > pan_threshold
       ) {
         return false;
@@ -157,7 +157,7 @@ function Deck({
       onViewStateChange,
       xzoom,
       deckRef,
-    ]
+    ],
   );
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
@@ -175,7 +175,7 @@ function Deck({
         hoverDetails.clearNodeDetails();
       }
     },
-    [hoverDetails]
+    [hoverDetails],
   );
 
   const { layers, layerFilter, keyStuff, triggerSVGdownload } = useLayers({
