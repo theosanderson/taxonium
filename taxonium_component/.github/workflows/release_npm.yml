@@ -1,0 +1,35 @@
+name: Release Taxonium Component
+
+on:
+  release:
+    types: [created]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Update package version and release
+        run: |
+          cd taxonium_component
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "Current tag is $TAG_NAME"
+          jq ".version = \"$TAG_NAME\"" package.json > package.json.tmp && mv package.json.tmp package.json
+          yarn install
+          yarn build
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+          npm publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=4096

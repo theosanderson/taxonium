@@ -1,0 +1,72 @@
+name: Testing Python
+
+on:
+  workflow_call:
+  pull_request:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10", 3.11, 3.12]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ./taxoniumtools
+      - name: Download files
+        run: |
+          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.meta.tsv.gz
+          wget https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb
+          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.pb
+          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/test_config.json
+          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/test.nwk
+      - name: Basic test
+        run: |
+          usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --clade_types nextstrain,pango
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tfci-taxonium
+          path: tfci-taxonium.jsonl.gz
+      - name: Test with chronumental
+        run: |
+          pip install chronumental
+          usher_to_taxonium --input tfci.pb --output tfci-taxonium-chron.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --chronumental --chronumental_steps 300 --clade_types nextstrain,pango
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tfci-taxonium-chron
+          path: tfci-taxonium-chron.jsonl.gz
+      - name: Test with config
+        run: |
+          usher_to_taxonium --input tfci.pb --output tfci-taxonium-config.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --config_json test_config.json --name_internal_nodes
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tfci-taxonium-config
+          path: tfci-taxonium-config.jsonl.gz
+      - name: Test no genbank, no metadata
+        run: |
+          usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
+      - name: Test only varaible sites
+        run: |
+          usher_to_taxonium --input tfci.pb --output tfci-var.jsonl.gz  --only_variable_sites --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tfci-var
+          path: tfci-var.jsonl.gz
+      - name: Basic test, nwk
+        run: |
+          newick_to_taxonium --input test.nwk --output nwk.jsonl.gz
+      - uses: LouisBrunner/checks-action@v1.1.1
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Python tests
+          conclusion: ${{ job.status }}
