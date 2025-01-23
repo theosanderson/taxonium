@@ -37,6 +37,7 @@ jobs:
           name: tfci-taxonium
           path: tfci-taxonium.jsonl.gz
           compression-level: 9
+          overwrite: true
       - name: Test with chronumental
         run: |
           pip install chronumental
