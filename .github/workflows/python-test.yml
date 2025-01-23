@@ -11,71 +11,136 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8, 3.9, "3.10", 3.11, 3.12]
+      fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install ./taxoniumtools
-      - name: Download files
+
+      - name: Download test files
         run: |
-          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.meta.tsv.gz
-          wget https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb
-          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.pb
-          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/test_config.json
-          wget https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/test.nwk
+          wget -q https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.meta.tsv.gz
+          wget -q https://raw.githubusercontent.com/theosanderson/taxonium/master/taxoniumtools/test_data/hu1.gb
+          wget -q https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/tfci.pb
+          wget -q https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/test_config.json
+          wget -q https://github.com/theosanderson/taxonium/raw/master/taxoniumtools/test_data/test.nwk
+
       - name: Basic test
         run: |
-          usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --clade_types nextstrain,pango
-      - uses: actions/upload-artifact@v4
+          usher_to_taxonium \
+            --input tfci.pb \
+            --output tfci-taxonium.jsonl.gz \
+            --metadata tfci.meta.tsv.gz \
+            --genbank hu1.gb \
+            --columns genbank_accession,country,date,pangolin_lineage \
+            --clade_types nextstrain,pango
+
+      - name: Upload basic test artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: tfci-taxonium
+          name: tfci-taxonium-${{ matrix.python-version }}
           path: tfci-taxonium.jsonl.gz
           compression-level: 9
           overwrite: true
+          retention-days: 5
+
       - name: Test with chronumental
         run: |
           pip install chronumental
-          usher_to_taxonium --input tfci.pb --output tfci-taxonium-chron.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --chronumental --chronumental_steps 300 --clade_types nextstrain,pango
-      - uses: actions/upload-artifact@v4
+          usher_to_taxonium \
+            --input tfci.pb \
+            --output tfci-taxonium-chron.jsonl.gz \
+            --metadata tfci.meta.tsv.gz \
+            --genbank hu1.gb \
+            --columns genbank_accession,country,date,pangolin_lineage \
+            --chronumental \
+            --chronumental_steps 300 \
+            --clade_types nextstrain,pango
+
+      - name: Upload chronumental test artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: tfci-taxonium-chron
+          name: tfci-taxonium-chron-${{ matrix.python-version }}
           path: tfci-taxonium-chron.jsonl.gz
           compression-level: 9
           overwrite: true
+          retention-days: 5
+
       - name: Test with config
         run: |
-          usher_to_taxonium --input tfci.pb --output tfci-taxonium-config.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --config_json test_config.json --name_internal_nodes
-      - uses: actions/upload-artifact@v4
+          usher_to_taxonium \
+            --input tfci.pb \
+            --output tfci-taxonium-config.jsonl.gz \
+            --metadata tfci.meta.tsv.gz \
+            --genbank hu1.gb \
+            --columns genbank_accession,country,date,pangolin_lineage \
+            --config_json test_config.json \
+            --name_internal_nodes
+
+      - name: Upload config test artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: tfci-taxonium-config
+          name: tfci-taxonium-config-${{ matrix.python-version }}
           path: tfci-taxonium-config.jsonl.gz
           compression-level: 9
           overwrite: true
+          retention-days: 5
+
       - name: Test no genbank, no metadata
         run: |
-          usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
-      - name: Test only varaible sites
+          usher_to_taxonium \
+            --input tfci.pb \
+            --output tfci-bare.jsonl.gz
+
+      - name: Test only variable sites
         run: |
-          usher_to_taxonium --input tfci.pb --output tfci-var.jsonl.gz  --only_variable_sites --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
-      - uses: actions/upload-artifact@v4
+          usher_to_taxonium \
+            --input tfci.pb \
+            --output tfci-var.jsonl.gz \
+            --only_variable_sites \
+            --metadata tfci.meta.tsv.gz \
+            --genbank hu1.gb \
+            --columns genbank_accession,country,date,pangolin_lineage
+
+      - name: Upload variable sites test artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: tfci-var
+          name: tfci-var-${{ matrix.python-version }}
           path: tfci-var.jsonl.gz
           compression-level: 9
           overwrite: true
+          retention-days: 5
 
       - name: Basic test, nwk
         run: |
-          newick_to_taxonium --input test.nwk --output nwk.jsonl.gz
-      - uses: LouisBrunner/checks-action@v1.1.1
+          newick_to_taxonium \
+            --input test.nwk \
+            --output nwk.jsonl.gz
+
+      - name: Upload newick test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nwk-${{ matrix.python-version }}
+          path: nwk.jsonl.gz
+          compression-level: 9
+          overwrite: true
+          retention-days: 5
+
+      - name: Report test status
+        uses: LouisBrunner/checks-action@v2.0.0
         if: always()
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Python tests
+          name: Python ${{ matrix.python-version }} tests
           conclusion: ${{ job.status }}
