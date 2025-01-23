@@ -46,6 +46,7 @@ jobs:
           name: tfci-taxonium-chron
           path: tfci-taxonium-chron.jsonl.gz
           compression-level: 9
+          overwrite: true
       - name: Test with config
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-taxonium-config.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --config_json test_config.json --name_internal_nodes
@@ -54,6 +55,7 @@ jobs:
           name: tfci-taxonium-config
           path: tfci-taxonium-config.jsonl.gz
           compression-level: 9
+          overwrite: true
       - name: Test no genbank, no metadata
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
