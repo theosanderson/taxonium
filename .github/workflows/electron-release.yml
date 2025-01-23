@@ -26,10 +26,11 @@ jobs:
           mv temp.json taxonium_electron/package.json
 
       - name: Upload package.json as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: package
           path: taxonium_electron/package.json
+          compression-level: 9
 
   build-mac:
     needs: update-version
@@ -44,7 +45,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
       - name: Download updated package.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: package
           path: taxonium_electron/
@@ -72,16 +73,18 @@ jobs:
           find .
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/Taxonium-*-arm64.dmg
+          compression-level: 9
 
       - name: Store artifact 2
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/Taxonium-*-x64.dmg
+          compression-level: 9
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
@@ -99,7 +102,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
       - name: Download updated package.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: package
           path: taxonium_electron/
@@ -127,10 +130,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-* Setup.exe"
+          compression-level: 9
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
@@ -145,7 +149,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
       - name: Download updated package.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: package
           path: taxonium_electron/
@@ -170,16 +174,18 @@ jobs:
           find .
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/deb/x64/taxonium_*_amd64.deb
+          compression-level: 9
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/rpm/x64/Taxonium-*-1.x86_64.rpm
+          compression-level: 9
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}

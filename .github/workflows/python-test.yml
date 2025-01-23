@@ -32,35 +32,39 @@ jobs:
       - name: Basic test
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --clade_types nextstrain,pango
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: tfci-taxonium
           path: tfci-taxonium.jsonl.gz
+          compression-level: 9
       - name: Test with chronumental
         run: |
           pip install chronumental
           usher_to_taxonium --input tfci.pb --output tfci-taxonium-chron.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --chronumental --chronumental_steps 300 --clade_types nextstrain,pango
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: tfci-taxonium-chron
           path: tfci-taxonium-chron.jsonl.gz
+          compression-level: 9
       - name: Test with config
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-taxonium-config.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage --config_json test_config.json --name_internal_nodes
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: tfci-taxonium-config
           path: tfci-taxonium-config.jsonl.gz
+          compression-level: 9
       - name: Test no genbank, no metadata
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-bare.jsonl.gz
       - name: Test only varaible sites
         run: |
           usher_to_taxonium --input tfci.pb --output tfci-var.jsonl.gz  --only_variable_sites --metadata tfci.meta.tsv.gz --genbank hu1.gb --columns genbank_accession,country,date,pangolin_lineage
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: tfci-var
           path: tfci-var.jsonl.gz
+          compression-level: 9
       - name: Basic test, nwk
         run: |
           newick_to_taxonium --input test.nwk --output nwk.jsonl.gz
