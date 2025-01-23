@@ -59,6 +59,10 @@ function getConfigFromPath() {
   return treeConfig[decodedPath] || null;
 }
 
+function isOfficialTree(path) {
+  return treeConfig.hasOwnProperty(path);
+}
+
 function App() {
   useEffect(() => {
     import("taxonium-component");
@@ -140,7 +144,7 @@ function App() {
   }).filter(Boolean); // Remove any null entries from missing configs
 
   useEffect(() => {
-    if (selectedTree) {
+    if (selectedTree && isOfficialTree(selectedTree)) {
       const newPath = `/${selectedTree}${window.location.search}`;
       window.location.href = newPath; // Trigger a page refresh on selection change
     }
