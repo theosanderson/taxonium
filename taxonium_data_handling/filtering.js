@@ -137,7 +137,17 @@ function getPrecision(min_y, max_y) {
   return precision;
 }
 
-function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
+function getNodes(
+  data,
+  y_positions,
+  min_y,
+  max_y,
+  min_x,
+  max_x,
+  xType,
+  useHydratedMutations = false,
+  mutations = null
+) {
   console.log("GETNODES", min_y, max_y, min_x, max_x, xType);
   const start_time = Date.now();
   // get min_x, max_x, min_y, max_y from URL
@@ -155,7 +165,14 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType) {
   );
   const time3 = Date.now();
   console.log("Reducing took " + (time3 - time2) + "ms.");
-  const reduced = addParents(data, reduced_leaves);
+  let reduced = addParents(data, reduced_leaves);
+  if (useHydratedMutations) {
+    reduced = reduced.map((node) => {
+      const new_node = { ...node };
+      new_node.mutations = new_node.mutations.map((x) => mutations[x]);
+      return new_node;
+    });
+  }
 
   return reduced;
 }

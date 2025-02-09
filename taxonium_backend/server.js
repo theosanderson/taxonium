@@ -211,7 +211,9 @@ app.get("/config", function (req, res) {
   config.initial_zoom = -2;
   config.genes = processedData.genes;
   config = { ...config, ...processedData.overwrite_config };
-  config.rootMutations = processedData.rootMutations;
+  config.rootMutations = config.useHydratedMutations
+    ? processedData.rootMutations.map((x) => processedData.mutations[x])
+    : processedData.rootMutations;
   config.rootId = processedData.rootId;
 
   res.send(config);
@@ -300,7 +302,9 @@ app.get("/nodes/", function (req, res) {
       max_y,
       min_x,
       max_x,
-      req.query.xType
+      req.query.xType,
+      config.useHydratedMutations,
+      processedData.mutations
     );
   }
   console.log("Ready to send after " + (Date.now() - start_time) + "ms.");
@@ -464,7 +468,9 @@ const loadData = async () => {
     processedData.overallMaxY,
     processedData.overallMinX,
     processedData.overallMaxX,
-    "x_dist"
+    "x_dist",
+    config.useHydratedMutations,
+    processedData.mutations
   );
 
   cached_starting_values = result;
