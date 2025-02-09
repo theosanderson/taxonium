@@ -141,49 +141,48 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           }
 
           const config = response.data;
-          if(!config.useHydratedMutations) {
-          config.mutations = config.mutations ? config.mutations : [];
+          if (!config.useHydratedMutations) {
+            config.mutations = config.mutations ? config.mutations : [];
 
-          // Stream mutations
-          const mutationsUrl = `${backend_url}/mutations/?sid=${sid}`;
-          const eventSource = new EventSource(mutationsUrl);
+            // Stream mutations
+            const mutationsUrl = `${backend_url}/mutations/?sid=${sid}`;
+            const eventSource = new EventSource(mutationsUrl);
 
-          eventSource.onmessage = (event) => {
-            if (event.data === "END") {
-              console.log("Finished receiving mutations");
+            eventSource.onmessage = (event) => {
+              if (event.data === "END") {
+                console.log("Finished receiving mutations");
+                eventSource.close();
+                setResult(config);
+                return;
+              }
+
+              try {
+                const mutationsChunk = JSON.parse(event.data);
+                if (Array.isArray(mutationsChunk)) {
+                  config.mutations.push(...mutationsChunk);
+
+                  console.log(
+                    `Received chunk of ${mutationsChunk.length} mutations`
+                  );
+                } else {
+                  console.error("Received non-array chunk:", mutationsChunk);
+                }
+              } catch (error) {
+                console.error("Error parsing mutations chunk:", error);
+              }
+            };
+
+            eventSource.onerror = (error) => {
+              console.error("EventSource failed:", error);
               eventSource.close();
               setResult(config);
-              return;
-            }
+              // TODO atm we set the Result above for backwards compatibility with backends which don't stream mutations and use /config/
+              // instead. After a while we should stop doing this so that if the stream dies in the middle we don't get
+              // possible weird behavior.
+            };
+          }
+        })
 
-            try {
-              const mutationsChunk = JSON.parse(event.data);
-              if (Array.isArray(mutationsChunk)) {
-                config.mutations.push(...mutationsChunk);
-
-                console.log(
-                  `Received chunk of ${mutationsChunk.length} mutations`
-                );
-              } else {
-                console.error("Received non-array chunk:", mutationsChunk);
-              }
-            } catch (error) {
-              console.error("Error parsing mutations chunk:", error);
-            }
-          };
-
-          eventSource.onerror = (error) => {
-            console.error("EventSource failed:", error);
-            eventSource.close();
-            setResult(config);
-            // TODO atm we set the Result above for backwards compatibility with backends which don't stream mutations and use /config/
-            // instead. After a while we should stop doing this so that if the stream dies in the middle we don't get
-            // possible weird behavior.
-          };
-        }
-    }
-  )
-      
         .catch((error) => {
           console.error("Error fetching config:", error);
           if (url_on_fail) {
