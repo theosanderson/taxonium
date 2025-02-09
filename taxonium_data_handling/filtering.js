@@ -145,8 +145,8 @@ function getNodes(
   min_x,
   max_x,
   xType,
-  useHydratedMutations,
-  mutations
+  useHydratedMutations = false,
+  mutations = null
 ) {
   console.log("GETNODES", min_y, max_y, min_x, max_x, xType);
   const start_time = Date.now();
