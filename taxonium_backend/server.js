@@ -202,6 +202,8 @@ if (path_for_config && fs.existsSync(path_for_config)) {
   config = { title: "", source: "", no_file: true };
 }
 
+
+
 app.get("/config", function (req, res) {
   config.num_nodes = processedData.nodes.length;
   config.initial_x =
@@ -234,6 +236,7 @@ app.get("/mutations/", function (req, res) {
   const chunkSize = 10000;
   let index = 0;
 
+
   function sendNextChunk() {
     const chunk = processedData.mutations.slice(index, index + chunkSize);
     if (chunk.length > 0) {
@@ -249,7 +252,16 @@ app.get("/mutations/", function (req, res) {
   }
 
   // Start sending chunks
+
+  if(config.useHydratedMutations) {
+    // send dummy empty list
+    sendSSE(JSON.stringify([]));
+
+    
+  }
+  else{
   sendNextChunk();
+  }
 
   // Handle client disconnect
   req.on("close", () => {
