@@ -110,10 +110,12 @@ function useLocalBackend(uploaded_data) {
               (x) => config.mutations[x]
             );
           } else {
+            if(!config.useHydratedMutations){
             node.mutations = node.mutations.map(
               (mutation) => config.mutations[mutation]
             );
           }
+        }
         });
         setResult(receivedData);
       };

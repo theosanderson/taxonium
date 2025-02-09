@@ -39,9 +39,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
                 (x) => config.mutations[x]
               );
             } else {
+                if(!config.useHydratedMutations){
               node.mutations = node.mutations.map(
                 (mutation) => config.mutations[mutation]
               );
+            }
             }
           });
           setResult(response.data);
