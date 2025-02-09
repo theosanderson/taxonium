@@ -212,7 +212,7 @@ app.get("/config", function (req, res) {
   config.genes = processedData.genes;
   config = { ...config, ...processedData.overwrite_config };
   config.rootMutations = config.useHydratedMutations
-    ? processedData.rootMutations.map((x) => processedData.mutations[x])
+    ? []
     : processedData.rootMutations;
   config.rootId = processedData.rootId;
 
