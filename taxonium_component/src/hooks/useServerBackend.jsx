@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import axios from "axios";
 
-function useServerBackend(backend_url, sid, url_on_fail) {
+function useServerBackend(backend_url, sid) {
   const [statusMessage, setStatusMessage] = useState({ message: null });
   const queryNodes = useCallback(
     (boundsForQueries, setResult, setTriggerRefresh, config) => {
@@ -137,10 +137,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         .then((response) => {
           console.log("got config", response.data);
           if (response.data.error) {
-            window.alert(
-              response.data.error + (url_on_fail ? "\nRedirecting you." : "")
-            );
-            window.location.href = url_on_fail;
+            window.alert(response.data.error + "Error.");
             return;
           }
 
@@ -191,13 +188,11 @@ function useServerBackend(backend_url, sid, url_on_fail) {
 
         .catch((error) => {
           console.error("Error fetching config:", error);
-          if (url_on_fail) {
-            window.alert("Failed to fetch config. Redirecting you.");
-            window.location.href = url_on_fail;
-          }
+
+          window.alert("Failed to fetch config. ");
         });
     },
-    [backend_url, sid, url_on_fail]
+    [backend_url, sid]
   );
 
   const getTipAtts = useCallback(

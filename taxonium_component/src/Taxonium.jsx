@@ -23,8 +23,6 @@ import { Toaster } from "react-hot-toast";
 
 const default_query = getDefaultQuery();
 
-const URL_ON_FAIL = "https://fail.org/";
-
 function Taxonium({
   sourceData,
 
@@ -78,12 +76,9 @@ function Taxonium({
     mouseDownIsMinimap,
   });
 
-  const url_on_fail = URL_ON_FAIL ? URL_ON_FAIL : null;
-
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
     query.sid,
-    url_on_fail,
     sourceData
   );
   let hoverDetails = useHoverDetails();
