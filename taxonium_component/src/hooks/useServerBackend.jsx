@@ -188,9 +188,9 @@ function useServerBackend(backend_url, sid) {
 
         .catch((error) => {
           console.error("Error fetching config:", error);
-          if (url_on_fail) {
+          
             window.alert("Failed to fetch config. ");
-          }
+          
         });
     },
     [backend_url, sid]
