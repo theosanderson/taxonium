@@ -34,18 +34,15 @@ function useServerBackend(backend_url, sid, url_on_fail) {
         .then(function (response) {
           console.log("got data - yay", response.data);
           response.data.nodes.forEach((node) => {
-            if (node.node_id === config.rootId ){
+            if (node.node_id === config.rootId) {
               if (config.useHydratedMutations) {
                 node.mutations = config.rootMutations;
+              } else {
+                node.mutations = config.rootMutations.map(
+                  (x) => config.mutations[x]
+                );
               }
-              else{
-
-              
-              node.mutations = config.rootMutations.map(
-                (x) => config.mutations[x]
-              );
-            }
-           } else {
+            } else {
               if (!config.useHydratedMutations) {
                 node.mutations = node.mutations.map(
                   (mutation) => config.mutations[mutation]
@@ -187,13 +184,8 @@ function useServerBackend(backend_url, sid, url_on_fail) {
               // instead. After a while we should stop doing this so that if the stream dies in the middle we don't get
               // possible weird behavior.
             };
-          }
-          else
-          {
-          
+          } else {
             setResult(config);
-
-          
           }
         })
 
