@@ -164,7 +164,7 @@ function getNodes(data, y_positions, min_y, max_y, min_x, max_x, xType, useHydra
   }
 
   }
-  
+
 
   return reduced;
 }
