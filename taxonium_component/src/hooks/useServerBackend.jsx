@@ -141,6 +141,7 @@ function useServerBackend(backend_url, sid, url_on_fail) {
           }
 
           const config = response.data;
+          if(!config.useHydratedMutations) {
           config.mutations = config.mutations ? config.mutations : [];
 
           // Stream mutations
@@ -179,7 +180,10 @@ function useServerBackend(backend_url, sid, url_on_fail) {
             // instead. After a while we should stop doing this so that if the stream dies in the middle we don't get
             // possible weird behavior.
           };
-        })
+        }
+    }
+  )
+      
         .catch((error) => {
           console.error("Error fetching config:", error);
           if (url_on_fail) {
