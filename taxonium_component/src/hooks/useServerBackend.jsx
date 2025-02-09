@@ -137,9 +137,7 @@ function useServerBackend(backend_url, sid) {
         .then((response) => {
           console.log("got config", response.data);
           if (response.data.error) {
-            window.alert(
-              response.data.error + (  "\Error." : "")
-            );
+            window.alert(response.data.error + ("Error.": ""));
             return;
           }
 
@@ -192,7 +190,6 @@ function useServerBackend(backend_url, sid) {
           console.error("Error fetching config:", error);
           if (url_on_fail) {
             window.alert("Failed to fetch config. ");
-         
           }
         });
     },

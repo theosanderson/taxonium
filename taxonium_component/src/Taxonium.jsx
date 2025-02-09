@@ -23,7 +23,6 @@ import { Toaster } from "react-hot-toast";
 
 const default_query = getDefaultQuery();
 
-
 function Taxonium({
   sourceData,
 
