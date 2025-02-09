@@ -137,7 +137,7 @@ function useServerBackend(backend_url, sid) {
         .then((response) => {
           console.log("got config", response.data);
           if (response.data.error) {
-            window.alert(response.data.error + ("Error."));
+            window.alert(response.data.error + "Error.");
             return;
           }
 
