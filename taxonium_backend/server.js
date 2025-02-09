@@ -251,13 +251,7 @@ app.get("/mutations/", function (req, res) {
   }
 
   // Start sending chunks
-
-  if (config.useHydratedMutations) {
-    // send dummy empty list
-    sendSSE(JSON.stringify([]));
-  } else {
-    sendNextChunk();
-  }
+  sendNextChunk();
 
   // Handle client disconnect
   req.on("close", () => {
