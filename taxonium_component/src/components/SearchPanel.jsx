@@ -487,7 +487,7 @@ function SearchPanel({
               selectedDetails.nodeDetails[key] &&
               formatMetadataItem(key, selectedDetails)
           )}
-          {config.mutations.length > 0 &&
+          { ( (config.mutations && config.mutations.length)|| config.useHydratedMutations) > 0 &&
             selectedDetails.nodeDetails.node_id !==
               selectedDetails.nodeDetails.parent_id && (
               <>
