@@ -100,7 +100,9 @@ const NodeHoverTip = ({
           {colorBy.getNodeColorField(hoveredNode)}
         </span>
       )}
-
+      {
+        console.log("keys_to_display", config.keys_to_display)
+      }
       {config.keys_to_display.map(
         (key) =>
           hoveredNode[key] &&
@@ -122,7 +124,7 @@ const NodeHoverTip = ({
           )
       )}
 
-      {config.mutations.length > 0 && (
+      {( (config.mutations && config.mutations.length )|| config.useHydratedMutations > 0) && (
         <div>
           <div className="mutations text-xs">
             {mutations.map((mutation, i) => (
