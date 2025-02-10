@@ -2,12 +2,17 @@
 FROM node:17.9-alpine
 WORKDIR /app
 
+# Set default environment variables
 ENV MAXMEM=5000
+ENV CONFIG_OVERRIDE=""
+
+# Copy application code and dependencies
 COPY taxonium_backend ./taxonium_backend
 COPY taxonium_data_handling ./taxonium_data_handling
 WORKDIR /app/taxonium_backend
 RUN yarn --frozen-lockfile
 
-
 EXPOSE 80
-CMD node --experimental-fetch --max-old-space-size=$MAXMEM server.js --port 80 --data_url="$DATA_URL" --data_file="$DATA_FILE" --config_json="$CONFIG_JSON"
+
+# Pass the new --config_override parameter from the environment
+CMD node --experimental-fetch --max-old-space-size=$MAXMEM server.js --port 80 --data_url="$DATA_URL" --data_file="$DATA_FILE" --config_json="$CONFIG_JSON" --config_override="$CONFIG_OVERRIDE"

@@ -27,9 +27,11 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: DATA_URL
-          value: {{ .Values.dataUrl }}
+          value: {{ .Values.dataUrl | quote }}
         - name: CONFIG_JSON
-          value: {{ .Values.configJson }}
+          value: {{ .Values.configJson | quote }}
+        - name: CONFIG_OVERRIDE
+          value: {{ .Values.configOverride | quote }}
         - name: MAXMEM
           value: {{ .Values.maxmem | quote }}
         ports:
