@@ -27,6 +27,7 @@ program
   .option("--ssl", "use ssl")
   .option("--port <port>", "port", 8000)
   .option("--config_json <config_json>", "config json")
+  .option("--config_override <json>", "arbitrary JSON to override config keys")
   .option("--data_url <data url>", "data url")
   .option(
     "--data_file <data file>",
@@ -200,6 +201,19 @@ if (path_for_config && fs.existsSync(path_for_config)) {
   config = JSON.parse(fs.readFileSync(path_for_config));
 } else {
   config = { title: "", source: "", no_file: true };
+}
+
+if (command_options.config_override) {
+  try {
+    // Parse the override JSON string provided on the command line.
+    const overrides = JSON.parse(command_options.config_override);
+    // Merge key-by-key into the base config.
+    config = { ...config, ...overrides };
+    console.log("Configuration after override:", config);
+  } catch (err) {
+    console.error("Error parsing --config_override JSON:", err);
+    process.exit(1);
+  }
 }
 
 app.get("/config", function (req, res) {
