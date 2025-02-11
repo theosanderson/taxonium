@@ -136,6 +136,8 @@ function App() {
       title: config.title,
       url: `/${path}`,
       desc: config.description,
+      icon: config.icon,
+      maintainerMessage: config.maintainerMessage,
     };
   }).filter(Boolean); // Remove any null entries from missing configs
 
@@ -191,9 +193,18 @@ function App() {
                 )}
                 {window.screen.width >= 600 && (
                   <>
+                    {pathConfig &&
+                      pathConfig.maintainerMessage &&
+                      pathConfig.icon && (
+                        <img
+                          src={pathConfig.icon}
+                          className="w-6 h-6  rounded border-gray-400 border inline-block"
+                          title={pathConfig.maintainerMessage}
+                        />
+                      )}
                     <span
                       className={`font-medium ${
-                        title.length > 12 ? "text-lg" : ""
+                        title.length > 12 ? "text-lg leading-tight" : ""
                       }`}
                     >
                       {title}
@@ -284,6 +295,11 @@ function App() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {showCase.map((item, i) => (
                     <div key={i} className="border border-gray-300 rounded p-3">
+                      <img
+                        src={item.icon}
+                        className="w-6 h-6 rounded border-gray-500 mb-2 inline-block mr-2"
+                        title={item.maintainerMessage}
+                      />
                       <a
                         href={item.url}
                         className="text-gray-800 hover:underline"
