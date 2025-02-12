@@ -30,7 +30,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
   });
 
   const [tempURL, setTempURL] = useState("");
-  const [useProxy, setUseProxy] = useState(true); // New state for proxy usage
+  const [useProxy, setUseProxy] = useState(false); // New state for proxy usage
 
   const { inputs, setInputs } = inputHelper;
   const [addingText, setAddingText] = useState(false);
