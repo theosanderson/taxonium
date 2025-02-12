@@ -196,13 +196,11 @@ function App() {
                     {pathConfig &&
                       pathConfig.maintainerMessage &&
                       pathConfig.icon && (
-                     
-                          <img
-                            src={pathConfig.icon}
-                            className="w-6 h-6  rounded border-gray-400 border inline-block"
-                            title={pathConfig.maintainerMessage}
-                          />
-                       
+                        <img
+                          src={pathConfig.icon}
+                          className="w-6 h-6  rounded border-gray-400 border inline-block"
+                          title={pathConfig.maintainerMessage}
+                        />
                       )}
                     <span
                       className={`font-medium ${
