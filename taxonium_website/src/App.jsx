@@ -295,16 +295,16 @@ function App() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {showCase.map((item, i) => (
                     <div key={i} className="border border-gray-300 rounded p-3">
-                      <img
-                        src={item.icon}
-                        className="w-6 h-6 rounded border-gray-500 mb-2 inline-block mr-2"
-                        title={item.maintainerMessage}
-                      />
                       <a
                         href={item.url}
                         className="text-gray-800 hover:underline"
                         target="_top"
                       >
+                        <img
+                          src={item.icon}
+                          className="w-6 h-6 rounded border-gray-500 mb-2 inline-block mr-2"
+                          title={item.maintainerMessage}
+                        />
                         {item.title}
                       </a>
                       <p className="text-gray-600 text-sm">{item.desc}</p>
