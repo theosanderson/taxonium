@@ -245,10 +245,11 @@ export const processJsonl = async (
       const useProxy = window.confirm(
         "Download failed. This might be due to CORS restrictions. Would you like to try downloading through a proxy?"
       );
-      
+
       if (useProxy) {
         try {
-          const proxyUrl = "http://proxy.taxonium.org/?url=" + encodeURIComponent(url);
+          const proxyUrl =
+            "http://proxy.taxonium.org/?url=" + encodeURIComponent(url);
           response = await fetch(proxyUrl);
         } catch (proxyError) {
           console.log("Proxy fetch error", proxyError);

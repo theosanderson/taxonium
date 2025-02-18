@@ -1,8 +1,8 @@
 const PROXY_URL = "http://proxy.taxonium.org/?url=";
 
 export const downloadWithProxy = async (url, options = {}) => {
-  const { onDownloadProgress, responseType = 'arraybuffer' } = options;
-  
+  const { onDownloadProgress, responseType = "arraybuffer" } = options;
+
   try {
     const response = await axios.get(url, {
       responseType,
@@ -14,7 +14,7 @@ export const downloadWithProxy = async (url, options = {}) => {
     const useProxy = window.confirm(
       "Download failed. This might be due to CORS restrictions. Would you like to try downloading through a proxy?"
     );
-    
+
     if (useProxy) {
       const proxyUrl = PROXY_URL + encodeURIComponent(url);
       const response = await axios.get(proxyUrl, {
@@ -23,7 +23,7 @@ export const downloadWithProxy = async (url, options = {}) => {
       });
       return response;
     }
-    
+
     throw error; // Re-throw if user declines proxy
   }
 };

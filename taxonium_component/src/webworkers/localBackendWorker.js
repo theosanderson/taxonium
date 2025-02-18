@@ -48,7 +48,7 @@ const askUserForProxy = () => {
   return new Promise((resolve) => {
     postMessage({
       type: "proxy_prompt",
-      callback: (useProxy) => resolve(useProxy)
+      callback: (useProxy) => resolve(useProxy),
     });
   });
 };
@@ -232,7 +232,9 @@ onmessage = async (event) => {
       if (useProxy) {
         const proxyData = { ...data.data };
         if (proxyData.status === "url_supplied") {
-          proxyData.filename = "http://proxy.taxonium.org/?url=" + encodeURIComponent(proxyData.filename);
+          proxyData.filename =
+            "http://proxy.taxonium.org/?url=" +
+            encodeURIComponent(proxyData.filename);
         }
         processedUploadedData = await processJsonl(
           proxyData,
