@@ -27,7 +27,7 @@
     "maintainerMessage": "Maintained by the UShER team",
     "maintainerUrl": null
   },
-    "mpox/cladeIIb": {
+  "mpox/cladeIIb": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/014/621/545/GCF_014621545.1/UShER_hMPXV/mpxv.latest.masked.taxonium.jsonl.gz",
     "configUrl": "https://mpx-tree.vercel.app/config.json",
     "title": "Mpox Clade IIb",
