@@ -17,7 +17,8 @@ const SHOWCASE_PATHS = [
   "sars-cov-2/public",
   "taxonomy/visual",
   "taxonomy/full",
-  "mpox/public",
+  "mpox/clade-I",
+  "mpox/clade-IIb",
   "flu/H5N1-Outbreak",
 ];
 
