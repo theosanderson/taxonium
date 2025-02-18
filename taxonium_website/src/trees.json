@@ -37,7 +37,7 @@
   },
   "tuberculosis/SRA": {
     "backend": "https://mtb.api.taxonium.org",
-    "title": "Tuberculosis SRA",
+    "title": "M. tuberculosis",
     "description": "M. tuberculosis genomes assembled from data deposited in SRA",
     "icon": "/assets/usher.png",
     "maintainerMessage": "Maintained by the UShER team",
