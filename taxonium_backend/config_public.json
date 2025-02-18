@@ -17,7 +17,7 @@
     "meta_pango_lineage_usher",
     "meta_country"
   ],
-  "overlay": "TODO",
+  "overlay": "",
   "search_types": [
     { "name": "name", "label": "Name", "type": "text_match" },
     {
