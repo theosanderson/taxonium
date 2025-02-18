@@ -24,7 +24,7 @@
     "legacyHostnames": ["mpx.taxonium.org"],
     "icon": "/assets/usher.png",
     "maintainerMessage": "Maintained by the UShER team",
-    "maintainerUrl": null
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
   },
   "mpox/clade-IIb": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/014/621/545/GCF_014621545.1/UShER_hMPXV/mpxv.latest.masked.taxonium.jsonl.gz",
@@ -33,7 +33,15 @@
     "legacyHostnames": ["mpx.taxonium.org"],
     "icon": "/assets/usher.png",
     "maintainerMessage": "Maintained by the UShER team",
-    "maintainerUrl": null
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "tuberculosis/SRA": {
+    "backend": "https://mtb.api.taxonium.org",
+    "title": "M. tuberculosis",
+    "description": "M. tuberculosis genomes assembled from data deposited in SRA",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
   },
   "taxonomy/full": {
     "treeUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz",
