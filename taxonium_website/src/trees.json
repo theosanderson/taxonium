@@ -13,7 +13,7 @@
     "title": "SARS-CoV-2 Viridian",
     "description": "SARS-CoV-2 sequences processed through Viridian pipeline",
     "legacyHostnames": ["viridian.taxonium.org"],
-    "icon": "/assets/usher.png",
+    "icon": "/assets/people.png",
     "maintainerMessage": "Built by the Viridian authors",
     "maintainerUrl": null
   },
