@@ -26,7 +26,7 @@ jobs:
           mv temp.json taxonium_electron/package.json
 
       - name: Upload package.json as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: package
           path: taxonium_electron/package.json
@@ -72,13 +72,13 @@ jobs:
           find .
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/Taxonium-*-arm64.dmg
 
       - name: Store artifact 2
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/Taxonium-*-x64.dmg
@@ -127,7 +127,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-* Setup.exe"
@@ -170,13 +170,13 @@ jobs:
           find .
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/deb/x64/taxonium_*_amd64.deb
 
       - name: Store artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: taxonium_electron/out/make/rpm/x64/Taxonium-*-1.x86_64.rpm
