@@ -17,14 +17,24 @@
     "maintainerMessage": "Built by the Viridian authors",
     "maintainerUrl": null
   },
-  "mpox/public": {
-    "protoUrl": "https://mpx-tree.vercel.app/mpx.jsonl.gz",
+  "mpox/cladeI": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/857/045/GCF_000857045.1/UShER_MPXV_cladeI/mpxv.cladeI.latest.masked.taxonium.jsonl.gz",
     "configUrl": "https://mpx-tree.vercel.app/config.json",
-    "title": "Mpox",
-    "description": "Mpox sequences from GenBank",
+    "title": "Mpox Clade I",
+    "description": "Mpox Clade I",
     "legacyHostnames": ["mpx.taxonium.org"],
-    "icon": "/assets/apple-touch-icon.png",
-    "maintainerMessage": "Maintained by the Taxonium team",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": null
+  },
+    "mpox/cladeIIb": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/014/621/545/GCF_014621545.1/UShER_hMPXV/mpxv.latest.masked.taxonium.jsonl.gz",
+    "configUrl": "https://mpx-tree.vercel.app/config.json",
+    "title": "Mpox Clade IIb",
+    "description": "Clade IIb / 2017 outbreak",
+    "legacyHostnames": ["mpx.taxonium.org"],
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
     "maintainerUrl": null
   },
   "taxonomy/full": {
