@@ -38,7 +38,7 @@
   "tuberculosis/SRA": {
     "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/195/955/GCF_000195955.2/UShER_Mtb_SRA/mtb.20240912.mask10.jsonl.gz",
     "title": "Tuberculosis SRA",
-    "description": "M. tuberculosis genomes assembled from data desposited in SRA",
+    "description": "M. tuberculosis genomes assembled from data deposited in SRA",
     "icon": "/assets/usher.png",
     "maintainerMessage": "Maintained by the UShER team",
     "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
