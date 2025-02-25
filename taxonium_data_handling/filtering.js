@@ -22,10 +22,15 @@ const getNumericFilterFunction = (number_method, number_value) => {
   throw new Error("Invalid number_method: " + number_method);
 };
 
-const getRevertantMutationsSet = (all_data, node_to_mut, mutations, rootSequences) => {
+const getRevertantMutationsSet = (
+  all_data,
+  node_to_mut,
+  mutations,
+  rootSequences
+) => {
   // Initialize gene_sequence - preferably from rootSequences, fallback to rootMutations
   let gene_sequence;
-  
+
   if (rootSequences && rootSequences.aa) {
     // Use rootSequences if available
     gene_sequence = rootSequences.aa;
@@ -41,7 +46,7 @@ const getRevertantMutationsSet = (all_data, node_to_mut, mutations, rootSequence
       gene_sequence[m.gene][m.residue_pos] = m.new_residue;
     });
   }
-  
+
   const revertant_mutations = mutations.filter(
     (m) =>
       m.gene in gene_sequence &&
@@ -397,7 +402,14 @@ function searchFilteringIfUncached({
       position: spec.position,
       new_residue: spec.new_residue,
     };
-    return filterByGenotype(data, genotype, mutations, node_to_mut, all_data, rootSequences);
+    return filterByGenotype(
+      data,
+      genotype,
+      mutations,
+      node_to_mut,
+      all_data,
+      rootSequences
+    );
   } else if (spec.method === "number") {
     if (spec.number == "") {
       return [];
@@ -550,7 +562,14 @@ const getTipAtts = (input, node_id, attribute) => {
   return allAtts;
 };
 
-const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data, rootSequences) => {
+const filterByGenotype = (
+  data,
+  genotype,
+  mutations,
+  node_to_mut,
+  all_data,
+  rootSequences
+) => {
   const genotype_cache = {};
   const { gene, position, new_residue } = genotype;
 
@@ -613,11 +632,13 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data, root
       if (cur_node.parent_id === cur_node.node_id) {
         // We've reached the root node
         // Check if we have rootSequences data
-        if (rootSequences &&
-            rootSequences.aa && 
-            rootSequences.aa[gene] && 
-            rootSequences.aa[gene][position] === new_residue) {
-          to_label.forEach(node_id => {
+        if (
+          rootSequences &&
+          rootSequences.aa &&
+          rootSequences.aa[gene] &&
+          rootSequences.aa[gene][position] === new_residue
+        ) {
+          to_label.forEach((node_id) => {
             genotype_cache[node_id] = true;
           });
           return true;

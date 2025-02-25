@@ -302,13 +302,13 @@ export const processJsonl = async (
   const rootSequences = { nt: {}, aa: {} };
   if (rootMutations && rootMutations.length > 0) {
     // Group mutations by gene
-    rootMutations.forEach(mutIndex => {
-      const mut = new_data.header.mutations ? 
-        new_data.header.mutations[mutIndex] : 
-        new_data.header.aa_mutations[mutIndex];
-      
+    rootMutations.forEach((mutIndex) => {
+      const mut = new_data.header.mutations
+        ? new_data.header.mutations[mutIndex]
+        : new_data.header.aa_mutations[mutIndex];
+
       if (!mut) return;
-      
+
       if (mut.gene === "nt") {
         rootSequences.nt[mut.residue_pos] = mut.new_residue;
       } else {

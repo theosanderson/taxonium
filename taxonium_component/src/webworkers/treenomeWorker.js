@@ -97,7 +97,7 @@ const computeVariationData = async (data, type, ntBounds, jobId) => {
 
   const preorder_nodes = pre_order(nodes);
   const root = preorder_nodes.find((id) => id === lookup[id].parent_id);
-  
+
   // Use rootSequences from config
   if (data.data && data.data.config && data.data.config.rootSequences) {
     ref = data.data.config.rootSequences;
