@@ -66,8 +66,16 @@
   },
   "flu/H5N1-Outbreak": {
     "backend": "https://h5n1outbreak.api.taxonium.org",
-    "title": "H5N1 outbreak tree",
-    "description": "Outbreak tree of recent H5N1 outbreak",
+    "title": "H5N1 outbreak tree (B3.13)",
+    "description": "Outbreak tree of H5N1 B3.13 (cattle etc.) outbreak",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/H5N1-Outbreak-D1-1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_h5n1_D1.1_2024/h5n1_D1.1_2024.latest.jsonl.gz",
+    "title": "H5N1 outbreak tree (D1.1)",
+    "description": "Outbreak tree of H5N1 D1.1 (poultry etc.) outbreak",
     "icon": "/assets/usher.png",
     "maintainerMessage": "Maintained by the UShER team",
     "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
