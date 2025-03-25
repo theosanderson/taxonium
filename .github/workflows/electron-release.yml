@@ -74,23 +74,25 @@ jobs:
       - name: Store artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Build
+          name: Build-arm64
           path: taxonium_electron/out/make/Taxonium-*-arm64.dmg
 
       - name: Store artifact 2
         uses: actions/upload-artifact@v4
         with:
-          name: Build
+          name: Build-x64
           path: taxonium_electron/out/make/Taxonium-*-x64.dmg
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: taxonium_electron/out/make/Taxonium-*-arm64.dmg
+          asset_name: Taxonium-arm64.dmg
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: taxonium_electron/out/make/Taxonium-*-x64.dmg
+          asset_name: Taxonium-x64.dmg
   build-win:
     needs: update-version
     runs-on: windows-latest
@@ -129,13 +131,14 @@ jobs:
       - name: Store artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Build
+          name: Build-win
           path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-* Setup.exe"
 
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: "taxonium_electron/out/make/squirrel.windows/x64/Taxonium-* Setup.exe"
+          asset_name: Taxonium-Setup.exe
 
   build-linux:
     needs: update-version
@@ -172,19 +175,21 @@ jobs:
       - name: Store artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Build
+          name: Build-deb
           path: taxonium_electron/out/make/deb/x64/taxonium_*_amd64.deb
 
       - name: Store artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Build
+          name: Build-rpm
           path: taxonium_electron/out/make/rpm/x64/Taxonium-*-1.x86_64.rpm
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: taxonium_electron/out/make/rpm/x64/Taxonium-*-1.x86_64.rpm
+          asset_name: Taxonium.rpm
       - uses: shogo82148/actions-upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: taxonium_electron/out/make/deb/x64/taxonium_*_amd64.deb
+          asset_name: Taxonium.deb
