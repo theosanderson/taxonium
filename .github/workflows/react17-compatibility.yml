@@ -107,10 +107,44 @@ jobs:
       - name: Run React 17 compatibility test
         run: |
           cd react17-test-app
-          CI=true yarn test --passWithNoTests
+          yarn test
           
-      - name: Build React 17 app
-        if: success()
+      - name: Verify Taxonium can be imported in React 17
         run: |
           cd react17-test-app
-          yarn build
+          
+          # Create a script to import and test Taxonium
+          cat > test-import.js << EOF
+          const React = require('react');
+          const path = require('path');
+          
+          try {
+            // Test if we can require the built Taxonium component
+            // Point directly to the dist directory to avoid ESM issues
+            const taxoniumPath = path.resolve('../taxonium_component/dist/taxonium-component.umd.js');
+            console.log("Attempting to load Taxonium from:", taxoniumPath);
+            
+            // We need to set global.React because the UMD build expects it
+            global.React = React;
+            
+            // This is the actual test - can we require the component
+            const taxoniumImport = require(taxoniumPath);
+            
+            if (!taxoniumImport) {
+              console.error("Failed to import Taxonium component");
+              process.exit(1);
+            }
+            
+            console.log("Successfully imported Taxonium in React 17 environment");
+            console.log("✓ React 17 import compatibility test passed!");
+            process.exit(0);
+          } catch (error) {
+            console.error("Error importing Taxonium:", error.message);
+            process.exit(1);
+          }
+          EOF
+          
+          # Run the import test
+          node test-import.js
+          
+    
