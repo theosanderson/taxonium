@@ -51,6 +51,7 @@ jobs:
             "name": "react17-test-app",
             "version": "1.0.0",
             "private": true,
+            "type": "module",
             "dependencies": {
               "react": "^17.0.2",
               "react-dom": "^17.0.2",
@@ -64,8 +65,8 @@ jobs:
           
           # Create test file
           cat > test.js << EOF
-          const React = require('react');
-          const taxonium = require('taxonium-component');
+          import React from 'react';
+          import * as taxonium from 'taxonium-component';
           
           // Check if Taxonium component can be imported
           if (!taxonium) {
@@ -97,6 +98,7 @@ jobs:
           }
           
           console.log('React 17 compatibility test passed!');
+          // In ESM modules, we should use process.exit() in a more controlled way
           process.exit(0);
           EOF
           
