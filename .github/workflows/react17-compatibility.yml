@@ -20,16 +20,6 @@ jobs:
           node-version: 16
           cache: 'yarn'
           
-      # - name: Install dependencies in taxonium_data_handling
-      #   run: |
-      #     cd taxonium_data_handling
-      #     yarn install --frozen-lockfile
-          
-      # - name: Build taxonium_data_handling
-      #   run: |
-      #     cd taxonium_data_handling
-      #     yarn build
-          
       - name: Install dependencies in taxonium_component
         run: |
           cd taxonium_component
@@ -40,72 +30,74 @@ jobs:
           cd taxonium_component
           yarn build
           
-      - name: Create React 17 test app
+      - name: Create React 17 test app with create-react-app
         run: |
-          mkdir -p react17-test-app
+          npx create-react-app react17-test-app
           cd react17-test-app
           
-          # Initialize package.json
-          cat > package.json << EOF
-          {
-            "name": "react17-test-app",
-            "version": "1.0.0",
-            "private": true,
-            "type": "module",
-            "dependencies": {
-              "react": "^17.0.2",
-              "react-dom": "^17.0.2",
-              "taxonium-component": "file:../taxonium_component"
-            },
-            "scripts": {
-              "test": "node test.js"
-            }
-          }
-          EOF
+          # Downgrade to React 17
+          yarn add react@17.0.2 react-dom@17.0.2
           
-          # Create test file
-          cat > test.js << EOF
+          # Install the locally built taxonium-component
+          yarn add file:../taxonium_component
+          
+          # Create a simple test component
+          cat > src/App.js << EOF
           import React from 'react';
-          import * as taxonium from 'taxonium-component';
+          import { Taxonium } from 'taxonium-component';
+          import './App.css';
           
-          // Check if Taxonium component can be imported
-          if (!taxonium) {
-            console.error('Failed to import taxonium-component');
-            process.exit(1);
+          // Simple data for test
+          const simpleData = {
+            status: "loaded",
+            filename: "test.nwk",
+            data: "((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);",
+            filetype: "nwk"
+          };
+          
+          function App() {
+            return (
+              <div className="App">
+                <header className="App-header">
+                  <h1>Taxonium React 17 Compatibility Test</h1>
+                  <p>This component can be imported and used in React 17</p>
+                  <div id="taxonium-test-container" style={{ width: '100%', height: '100px', border: '1px solid white' }}>
+                    <Taxonium sourceData={simpleData} />
+                  </div>
+                </header>
+              </div>
+            );
           }
           
-          console.log('Successfully imported taxonium-component in a React 17 environment');
-          
-          // Check if the main component exists
-          if (!taxonium.Taxonium) {
-            console.error('Taxonium component not found in the package');
-            process.exit(1);
-          }
-          
-          console.log('Taxonium component exists in the package');
-          
-          // Test if we can create a React element from the component
-          try {
-            const element = React.createElement(taxonium.Taxonium, {});
-            if (!element) {
-              console.error('Failed to create React element from Taxonium component');
-              process.exit(1);
-            }
-            console.log('Successfully created React element from Taxonium component');
-          } catch (error) {
-            console.error('Error creating React element:', error);
-            process.exit(1);
-          }
-          
-          console.log('React 17 compatibility test passed!');
-          // In ESM modules, we should use process.exit() in a more controlled way
-          process.exit(0);
+          export default App;
           EOF
           
-          # Install dependencies
-          yarn install
+          # Create a simple test
+          cat > src/App.test.js << EOF
+          import { render, screen } from '@testing-library/react';
+          import App from './App';
+          
+          test('renders the Taxonium component in React 17', () => {
+            // This will throw an error if Taxonium cannot be imported or rendered
+            render(<App />);
+            
+            // Check if the header content renders
+            const headerElement = screen.getByText(/Taxonium React 17 Compatibility Test/i);
+            expect(headerElement).toBeInTheDocument();
+            
+            // Check if the test container for Taxonium exists
+            const containerElement = document.getElementById('taxonium-test-container');
+            expect(containerElement).toBeInTheDocument();
+          });
+          EOF
           
       - name: Run React 17 compatibility test
         run: |
           cd react17-test-app
-          yarn test
+          CI=true yarn test --passWithNoTests
+          
+      - name: Build React 17 app
+        if: success()
+        run: |
+          cd react17-test-app
+          yarn build
