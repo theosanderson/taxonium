@@ -17,10 +17,12 @@
     "@jbrowse/plugin-data-management": "^3.4.0",
     "@jbrowse/react-linear-genome-view": "^3.1.0",
     "@tailwindcss/vite": "^4.1.6",
+    "axios": "^1.9.0",
     "deck.gl": "^9.1.12",
     "headlessui": "^0.0.0",
     "jbrowse": "^0.0.1-security",
     "react": "^19.1.0",
+    "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
@@ -28,7 +30,11 @@
     "react-spinners": "^0.17.0",
     "react-tabs": "^6.1.0",
     "react-tooltip": "^5.28.1",
-    "tailwindcss": "^4.1.6"
+    "readable-web-to-node-stream": "^5.0.0",
+    "scale-color-perceptual": "^1.1.2",
+    "stream-json": "^1.9.1",
+    "tailwindcss": "^4.1.6",
+    "taxonium_data_handling": "file:../taxonium_data_handling"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.6",
