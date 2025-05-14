@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dependencies": "cd .. && yarn install"
   },
   "dependencies": {
     "classnames": "^2.3.2",
@@ -17,7 +18,7 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^5.2.0",
     "react-tooltip": "^4.2.21",
-   "taxonium-component": "workspace:*"
+    "taxonium-component": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.39.0",
