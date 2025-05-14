@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useRef, useState } from "react";
 import "@fontsource/roboto";
-import "@jbrowse/plugin-data-management";
+//import "@jbrowse/plugin-data-management";
 import "../App.css";
 import useTreenomeAnnotations from "../hooks/useTreenomeAnnotations";
 /*
