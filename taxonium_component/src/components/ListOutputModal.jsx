@@ -59,7 +59,7 @@ const ListOutputModal = ({
           <div className="flex-1">
             <label>
               <select
-                className="block  w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                className="block  w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded-sm shadow-sm leading-tight focus:outline-hidden focus:shadow-outline"
                 value={selectedKey}
                 onChange={(e) => setSelectedKey(e.target.value)}
               >
@@ -73,7 +73,7 @@ const ListOutputModal = ({
           </div>
           <div>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:shadow-outline"
               onClick={() => setListOutputModalOpen(false)}
             >
               Close
@@ -90,7 +90,7 @@ const ListOutputModal = ({
         )}
         {!loading && listOutput.length > 0 && (
           <textarea
-            className="w-full h-64 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 shadow leading-tight focus:outline-none focus:shadow-outline"
+            className="w-full h-64 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 shadow-sm leading-tight focus:outline-hidden focus:shadow-outline"
             value={listOutput.join("\n")}
             readOnly
           />

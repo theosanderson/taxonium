@@ -17,7 +17,7 @@ export default defineConfig({
       protocolImports: true,
     }),
     react(), 
-    //cssInjectedByJsPlugin(),
+    cssInjectedByJsPlugin(),
     tailwindcss()
     //  commonjs({ include: 'node_modules/**', }),
   ],
