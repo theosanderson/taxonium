@@ -4,7 +4,7 @@ import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
 import { MdArrowForward, MdArrowDownward } from "react-icons/md";
-import ReactTooltip from "react-tooltip";
+import {Tooltip as ReactTooltip} from "react-tooltip";
 import prettifyName from "../utils/prettifyName";
 
 import { FaSearch, FaShare } from "react-icons/fa";
@@ -57,9 +57,7 @@ function SearchPanel({
   perNodeFunctions,
   toggleSidebar,
 }) {
-  useEffect(() => {
-    ReactTooltip.rebuild();
-  });
+ 
 
   const covSpectrumQuery = useMemo(() => {
     if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {

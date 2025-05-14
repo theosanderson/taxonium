@@ -12,12 +12,22 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@fontsource/roboto": "^5.2.5",
+    "@headlessui/react": "^2.2.3",
+    "@jbrowse/plugin-data-management": "^3.4.0",
+    "@jbrowse/react-linear-genome-view": "^3.1.0",
     "@tailwindcss/vite": "^4.1.6",
     "deck.gl": "^9.1.12",
+    "headlessui": "^0.0.0",
+    "jbrowse": "^0.0.1-security",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
+    "react-modal": "^3.16.3",
     "react-spinners": "^0.17.0",
+    "react-tabs": "^6.1.0",
+    "react-tooltip": "^5.28.1",
     "tailwindcss": "^4.1.6"
   },
   "devDependencies": {
