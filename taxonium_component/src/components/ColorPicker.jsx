@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SketchPicker } from "react-color";
+//import { SketchPicker } from "react-color";
 
 const rgbToList = (rgb) => {
   return [rgb.r, rgb.g, rgb.b];
@@ -71,12 +71,14 @@ function ColorPicker({ color, setColor }) {
         }}
         onClick={handleClose}
       />
+      { /*
       <SketchPicker
         color={rgbColor}
         onChange={handleColorChange}
         presetColors={[]}
         disableAlpha={true}
       />
+      */}
     </div>
   );
 }
