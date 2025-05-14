@@ -14,44 +14,57 @@ export default defineConfig({
       exclude: ["fs"],
       protocolImports: true,
     }),
-    react(),
+    react({
+      // This ensures React is properly treated as external
+      jsxRuntime: "automatic",
+    }),
     cssInjectedByJsPlugin(),
     tailwindcss(),
-    //  commonjs({ include: 'node_modules/**', }),
   ],
   define: {
     "process.env": { NODE_ENV: JSON.stringify("production") },
   },
 
   build: {
-    //extry: 'src/index.js',
-
     lib: {
       entry: "src/index.js",
-      name: "Taxonium", // give your library a name
+      name: "Taxonium",
       fileName: (format) => `taxonium-component.${format}.js`,
-      //  formats: ['iife']
+      formats: ["es", "umd"], // Be explicit about formats
     },
-
-    //entry: 'src/App.jsx',
-
+    minify: true,
+    sourcemap: true,
+    
     rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ["react", "react-dom", "prop-types"],
+      // Make sure to externalize deps that shouldn't be bundled
+      external: [
+        "react", 
+        "react-dom", 
+        "react/jsx-runtime", // Important addition!
+        "prop-types"
+      ],
       output: {
         // Provide global variables to use in the UMD build
-        // for externalized deps
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react/jsx-runtime": "jsxRuntime",
+          "prop-types": "PropTypes",
         },
+        // Ensure chunking is handled properly
+        manualChunks: undefined,
       },
     },
+    
+    // Prevents code splitting that might include React
+    cssCodeSplit: false,
+    emptyOutDir: true,
   },
+  
   optimizeDeps: {
-    include: [], //add 'prop-types' here
+    exclude: ["react", "react-dom", "prop-types"],
   },
+  
   resolve: {
     alias: {
       "vite-plugin-node-polyfills/shims/buffer": path.resolve(
@@ -81,6 +94,7 @@ export default defineConfig({
         "dist",
         "index.cjs"
       ),
+     
     },
   },
 });
