@@ -1,8 +1,5 @@
-// https://github.com/baruchiro/use-route-as-state
-// (via @richardgoater)
-
 import { useCallback, useMemo, useEffect, useRef } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const queryParamsToObject = (search) => {
   const params = {};
@@ -16,18 +13,8 @@ const objectToQueryParams = (obj) =>
   "?" +
   Object.keys(obj)
     .filter((key) => obj[key] !== undefined)
-    .map((key) => `${key}=${obj[key]}`)
+    .map((key) => `${key}=${encodeURIComponent(obj[key])}`) // Directly encode here
     .join("&");
-
-const encodeValues = (obj) => {
-  const nextObj = {};
-  for (const [key, value] of Object.entries(obj)) {
-    if (value !== undefined) {
-      nextObj[key] = encodeURIComponent(value);
-    }
-  }
-  return nextObj;
-};
 
 const removeUndefined = (obj) => {
   const nextObj = {};
@@ -39,8 +26,8 @@ const removeUndefined = (obj) => {
   return nextObj;
 };
 
-const useQueryAsState = (defaultValues) => {
-  const history = useHistory();
+const useQueryAsState = (defaultValues = {}) => {
+  const navigate = useNavigate();
   const { pathname, search } = useLocation();
 
   const decodedSearch = useMemo(() => queryParamsToObject(search), [search]);
@@ -53,20 +40,25 @@ const useQueryAsState = (defaultValues) => {
   const updateQuery = useCallback(
     (updatedParams, method = "push") => {
       const { pathname, decodedSearch } = updateRef.current;
-      const new_vals = { ...decodedSearch, ...updatedParams };
+      const newParams = { ...decodedSearch, ...updatedParams };
+
+      // Remove null values from the query parameters
       Object.keys(updatedParams).forEach((key) => {
-        const value = updatedParams[key];
-        if (value === null) {
-          delete new_vals[key];
+        if (updatedParams[key] === null) {
+          delete newParams[key];
         }
       });
-      history[method](pathname + objectToQueryParams(encodeValues(new_vals)));
+
+      navigate({
+        pathname,
+        search: objectToQueryParams(newParams),
+      }, { replace: method === "replace" }); // Use the replace option for "replace" method
     },
-    [history]
+    [navigate]
   );
 
   const queryWithDefault = useMemo(
-    () => Object.assign({}, defaultValues, removeUndefined(decodedSearch)),
+    () => ({ ...defaultValues, ...removeUndefined(decodedSearch) }),
     [decodedSearch, defaultValues]
   );
 

@@ -11,6 +11,12 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/taxonium-component.es.js",
+      "require": "./dist/taxonium-component.umd.js"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/theosanderson/taxonium",
@@ -18,7 +24,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": " vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",

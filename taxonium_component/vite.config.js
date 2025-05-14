@@ -17,10 +17,13 @@ export default defineConfig({
       protocolImports: true,
     }),
     react(), 
-    cssInjectedByJsPlugin(),
+    //cssInjectedByJsPlugin(),
     tailwindcss()
     //  commonjs({ include: 'node_modules/**', }),
   ],
+  define: {
+    "process.env": {"NODE_ENV": JSON.stringify("production") },
+  },
 
   build: {
     //extry: 'src/index.js',
@@ -37,7 +40,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["react", "react-dom"],
+      external: ["react", "react-dom","prop-types"],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps

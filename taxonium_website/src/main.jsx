@@ -10,9 +10,9 @@ const root = createRoot(container);
 
 // Render your app with the router
 root.render(
-  <React.StrictMode>
+
     <Router>
       <App />
     </Router>
-  </React.StrictMode>
+  
 );
