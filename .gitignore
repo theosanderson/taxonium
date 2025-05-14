@@ -18,3 +18,4 @@ taxonium_component/storybook-static/**
 **/_version.py
 */node_modules/**
 .aider*
+**/install-state.gz
