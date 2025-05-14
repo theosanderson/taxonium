@@ -18,7 +18,7 @@ import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import getDefaultQuery from "./utils/getDefaultQuery";
-import ReactTooltip from "react-tooltip";
+import {Tooltip as ReactTooltip} from "react-tooltip";
 import { Toaster } from "react-hot-toast";
 
 const default_query = getDefaultQuery();

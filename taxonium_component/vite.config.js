@@ -1,20 +1,24 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
-import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import path from "path";
+import cssInjectedByJsPlugin from 
+"vite-plugin-css-injected-by-js";
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   worker: {
     format: "umd",
   },
   plugins: [
-    react(),
-    cssInjectedByJsPlugin(),
+
     nodePolyfills({
       exclude: ["fs"],
       protocolImports: true,
     }),
-
+    react(), 
+    cssInjectedByJsPlugin(),
+    tailwindcss()
     //  commonjs({ include: 'node_modules/**', }),
   ],
 
@@ -47,4 +51,37 @@ export default defineConfig({
   optimizeDeps: {
     include: [], //add 'prop-types' here
   },
+  resolve: {
+    alias: {
+        'vite-plugin-node-polyfills/shims/buffer': path.resolve(
+            __dirname,
+            'node_modules',
+            'vite-plugin-node-polyfills',
+            'shims',
+            'buffer',
+            'dist',
+            'index.cjs'
+        ),
+        'vite-plugin-node-polyfills/shims/global': path.resolve(
+            __dirname,
+            'node_modules',
+            'vite-plugin-node-polyfills',
+            'shims',
+            'global',
+            'dist',
+            'index.cjs'
+        ),
+        'vite-plugin-node-polyfills/shims/process': path.resolve(
+            __dirname,
+            'node_modules',
+            'vite-plugin-node-polyfills',
+            'shims',
+            'process',
+            'dist',
+            'index.cjs'
+        )
+    }
+  },
 });
+
+

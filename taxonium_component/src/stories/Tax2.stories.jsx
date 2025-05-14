@@ -1,4 +1,3 @@
-import { within, userEvent } from "@storybook/testing-library";
 import { useState } from "react";
 import Taxonium from "../Taxonium";
 
