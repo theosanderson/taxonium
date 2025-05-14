@@ -1,25 +1,25 @@
-import { useState } from 'react';
-import ColorSettingModal from './ColorSettingModal';
-import { Button } from './Basic';
+import { useState } from "react";
+import ColorSettingModal from "./ColorSettingModal";
+import { Button } from "./Basic";
 
 export default {
-  title: 'Taxonium/ColorSettingModal',
+  title: "Taxonium/ColorSettingModal",
   component: ColorSettingModal,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 // Set up Modal for Storybook
 // This is needed for react-modal to work properly in Storybook
-import { useEffect } from 'react';
-import Modal from 'react-modal';
+import { useEffect } from "react";
+import Modal from "react-modal";
 
 const ModalWrapper = ({ children }) => {
   useEffect(() => {
     // Set the app element for accessibility
-    Modal.setAppElement('#storybook-root');
+    Modal.setAppElement("#storybook-root");
     return () => {
       // Clean up
     };
@@ -29,7 +29,11 @@ const ModalWrapper = ({ children }) => {
 };
 
 // Wrapper component to manage state for the ColorSettingModal
-const ColorSettingModalWithState = ({ initialColor, title, initiallyOpen = false }) => {
+const ColorSettingModalWithState = ({
+  initialColor,
+  title,
+  initiallyOpen = false,
+}) => {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
   const [color, setColor] = useState(initialColor);
 
@@ -57,28 +61,28 @@ const ColorSettingModalWithState = ({ initialColor, title, initiallyOpen = false
 
 export const DefaultClosed = {
   render: () => (
-    <ColorSettingModalWithState 
-      initialColor={[100, 150, 200]} 
-      title="Select Background Color" 
+    <ColorSettingModalWithState
+      initialColor={[100, 150, 200]}
+      title="Select Background Color"
     />
   ),
 };
 
 export const InitiallyOpen = {
   render: () => (
-    <ColorSettingModalWithState 
-      initialColor={[255, 100, 100]} 
-      title="Select Highlight Color" 
-      initiallyOpen={true} 
+    <ColorSettingModalWithState
+      initialColor={[255, 100, 100]}
+      title="Select Highlight Color"
+      initiallyOpen={true}
     />
   ),
 };
 
 export const GreenExample = {
   render: () => (
-    <ColorSettingModalWithState 
-      initialColor={[50, 200, 100]} 
-      title="Select Tree Color" 
+    <ColorSettingModalWithState
+      initialColor={[50, 200, 100]}
+      title="Select Tree Color"
     />
   ),
 };

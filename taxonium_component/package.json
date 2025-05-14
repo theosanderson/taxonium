@@ -1,5 +1,5 @@
 {
-"name": "taxonium-component",
+  "name": "taxonium-component",
   "version": "0.0.0",
   "description": "React component for exploring large phylogenetic trees in the browser",
   "keywords": [

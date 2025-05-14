@@ -49,10 +49,13 @@ const useQueryAsState = (defaultValues = {}) => {
         }
       });
 
-      navigate({
-        pathname,
-        search: objectToQueryParams(newParams),
-      }, { replace: method === "replace" }); // Use the replace option for "replace" method
+      navigate(
+        {
+          pathname,
+          search: objectToQueryParams(newParams),
+        },
+        { replace: method === "replace" }
+      ); // Use the replace option for "replace" method
     },
     [navigate]
   );

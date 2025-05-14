@@ -12,7 +12,7 @@ import {
 import { protect, unprotect } from "mobx-state-tree";
 
 function JBrowsePanel(props) {
-  return ("TODO")
+  return "TODO";
   const treenomeAnnotations = useTreenomeAnnotations(props.settings);
 
   const assembly = useMemo(() => {

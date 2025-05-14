@@ -1,13 +1,13 @@
-import { fn } from '@storybook/test';
-import JBrowsePanel from './JBrowsePanel';
+import { fn } from "@storybook/test";
+import JBrowsePanel from "./JBrowsePanel";
 
 export default {
-  title: 'Taxonium/JBrowsePanel',
+  title: "Taxonium/JBrowsePanel",
   component: JBrowsePanel,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 // Note: JBrowsePanel requires complex props and may not render fully in Storybook without mocks
@@ -16,7 +16,8 @@ export const JBrowsePanelInfo = {
     <div className="p-4 border border-gray-300 rounded m-4">
       <h3 className="text-lg font-semibold mb-2">JBrowsePanel</h3>
       <p className="mb-2">
-        This component integrates the JBrowse linear genome browser into Taxonium.
+        This component integrates the JBrowse linear genome browser into
+        Taxonium.
       </p>
       <ul className="list-disc pl-5 mb-3">
         <li>Displays genomic data in a linear view</li>
@@ -25,8 +26,9 @@ export const JBrowsePanelInfo = {
         <li>Syncs view with other components via the treenomeState</li>
       </ul>
       <p className="text-sm text-gray-600">
-        Note: This component requires complex props including JBrowse state management 
-        and may not render fully in Storybook without proper data and context providers.
+        Note: This component requires complex props including JBrowse state
+        management and may not render fully in Storybook without proper data and
+        context providers.
       </p>
     </div>
   ),
@@ -35,11 +37,12 @@ export const JBrowsePanelInfo = {
 export const Default = {
   args: {
     settings: {
-      chromosomeName: 'chromosome',
+      chromosomeName: "chromosome",
       isCov2Tree: true,
     },
     treenomeState: {
-      genome: 'ACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTG',
+      genome:
+        "ACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTG",
       genomeSize: 29903,
       ntBounds: [0, 29903],
       ntBoundsExt: null,
@@ -47,7 +50,7 @@ export const Default = {
       setNtBounds: fn(),
       setNtBoundsExt: fn(),
       setPxPerBp: fn(),
-    }
+    },
   },
 };
 

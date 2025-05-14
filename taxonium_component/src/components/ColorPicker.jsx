@@ -71,7 +71,7 @@ function ColorPicker({ color, setColor }) {
         }}
         onClick={handleClose}
       />
-      { /*
+      {/*
       <SketchPicker
         color={rgbColor}
         onChange={handleColorChange}

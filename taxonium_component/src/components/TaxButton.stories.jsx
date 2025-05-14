@@ -1,20 +1,20 @@
-import { fn } from '@storybook/test';
-import TaxButton from './TaxButton';
-import { FaSearch, FaCamera, FaHome, FaCog } from 'react-icons/fa';
+import { fn } from "@storybook/test";
+import TaxButton from "./TaxButton";
+import { FaSearch, FaCamera, FaHome, FaCog } from "react-icons/fa";
 
 export default {
-  title: 'Taxonium/TaxButton',
+  title: "Taxonium/TaxButton",
   component: TaxButton,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const WithIcon = {
   args: {
     onClick: fn(),
-    title: 'Search',
+    title: "Search",
     children: <FaSearch className="mx-auto w-5 h-5" />,
   },
 };
@@ -22,15 +22,15 @@ export const WithIcon = {
 export const WithText = {
   args: {
     onClick: fn(),
-    title: 'Home Button',
-    children: 'Home',
+    title: "Home Button",
+    children: "Home",
   },
 };
 
 export const WithIconAndText = {
   args: {
     onClick: fn(),
-    title: 'Settings',
+    title: "Settings",
     children: (
       <>
         <FaCog className="mx-auto w-4 h-4 mb-1" />

@@ -1,13 +1,13 @@
-import { fn } from '@storybook/test';
-import SearchDisplayToggle from './SearchDisplayToggle';
+import { fn } from "@storybook/test";
+import SearchDisplayToggle from "./SearchDisplayToggle";
 
 export default {
-  title: 'Taxonium/SearchDisplayToggle',
+  title: "Taxonium/SearchDisplayToggle",
   component: SearchDisplayToggle,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const DisplayingAsPoints = {

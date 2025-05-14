@@ -1,13 +1,13 @@
-import { fn } from '@storybook/test';
-import { TreenomeButtons } from './TreenomeButtons';
+import { fn } from "@storybook/test";
+import { TreenomeButtons } from "./TreenomeButtons";
 
 export default {
-  title: 'Taxonium/TreenomeButtons',
+  title: "Taxonium/TreenomeButtons",
   component: TreenomeButtons,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const Default = {
@@ -30,7 +30,7 @@ export const WithFunctionalHandlers = {
   args: {
     loading: false,
     requestOpenSettings: () => {
-      alert('Settings dialog would open here (simulated in Storybook)');
+      alert("Settings dialog would open here (simulated in Storybook)");
     },
     settings: {},
   },

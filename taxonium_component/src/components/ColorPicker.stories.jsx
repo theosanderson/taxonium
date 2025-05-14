@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import ColorPicker from './ColorPicker';
+import { useState } from "react";
+import ColorPicker from "./ColorPicker";
 
 export default {
-  title: 'Taxonium/ColorPicker',
+  title: "Taxonium/ColorPicker",
   component: ColorPicker,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 // Wrapper component to manage state for the ColorPicker
@@ -35,6 +35,6 @@ export const Black = {
 export const White = {
   render: () => <ColorPickerWithState initialColor={[255, 255, 255]} />,
   parameters: {
-    backgrounds: { default: 'dark' },
+    backgrounds: { default: "dark" },
   },
 };

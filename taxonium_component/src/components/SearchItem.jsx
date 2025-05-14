@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import  DebounceInput  from "./DebounceInput";
+import DebounceInput from "./DebounceInput";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
-import { Tooltip as ReactTooltip } from 'react-tooltip'
+import { Tooltip as ReactTooltip } from "react-tooltip";
 const number_methods = [">", "<", ">=", "<=", "=="];
 
 // title case
@@ -105,7 +105,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
   if (singleSearchSpec.type === "boolean" && !singleSearchSpec.boolean_method) {
     singleSearchSpec.boolean_method = "and";
   }
- 
+
   return (
     <>
       <Select

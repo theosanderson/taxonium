@@ -10,9 +10,7 @@ const root = createRoot(container);
 
 // Render your app with the router
 root.render(
-
-    <Router>
-      <App />
-    </Router>
-  
+  <Router>
+    <App />
+  </Router>
 );

@@ -1,43 +1,56 @@
-import { fn } from '@storybook/test';
-import SearchTopLayerItem from './SearchTopLayerItem';
+import { fn } from "@storybook/test";
+import SearchTopLayerItem from "./SearchTopLayerItem";
 
 export default {
-  title: 'Taxonium/SearchTopLayerItem',
+  title: "Taxonium/SearchTopLayerItem",
   component: SearchTopLayerItem,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 // Mock config with search types and genes
 const mockConfig = {
   search_types: [
-    { name: 'text', label: 'Text', type: 'text_match', controls: true },
-    { name: 'mutation', label: 'Mutation', type: 'mutation' },
-    { name: 'genotype', label: 'Genotype', type: 'genotype' },
-    { name: 'boolean', label: 'Boolean', type: 'boolean' },
+    { name: "text", label: "Text", type: "text_match", controls: true },
+    { name: "mutation", label: "Mutation", type: "mutation" },
+    { name: "genotype", label: "Genotype", type: "genotype" },
+    { name: "boolean", label: "Boolean", type: "boolean" },
   ],
-  genes: ['S', 'N', 'E', 'M', 'ORF1a', 'ORF1b', 'ORF3a', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9b'],
+  genes: [
+    "S",
+    "N",
+    "E",
+    "M",
+    "ORF1a",
+    "ORF1b",
+    "ORF3a",
+    "ORF6",
+    "ORF7a",
+    "ORF7b",
+    "ORF8",
+    "ORF9b",
+  ],
 };
 
 // Base mock search object
 const mockSearch = {
   searchSpec: [
     {
-      key: 'search1',
-      type: 'text',
-      method: 'text_match',
-      text: 'England',
+      key: "search1",
+      type: "text",
+      method: "text_match",
+      text: "England",
       controls: true,
     },
     {
-      key: 'search2',
-      type: 'mutation',
-      method: 'mutation',
-      gene: 'S',
+      key: "search2",
+      type: "mutation",
+      method: "mutation",
+      gene: "S",
       position: 484,
-      new_residue: 'K',
+      new_residue: "K",
       min_tips: 5,
     },
   ],
@@ -50,8 +63,8 @@ const mockSearch = {
     search2: false,
   },
   searchLoadingStatus: {
-    search1: 'done',
-    search2: 'done',
+    search1: "done",
+    search2: "done",
   },
   setSearchSpec: fn(),
   setEnabled: fn(),
@@ -63,13 +76,13 @@ const mockSearch = {
 export const TextSearch = {
   args: {
     singleSearchSpec: {
-      key: 'search1',
-      type: 'text',
-      method: 'text_match',
-      text: 'England',
+      key: "search1",
+      type: "text",
+      method: "text_match",
+      text: "England",
       controls: true,
     },
-    myKey: 'search1',
+    myKey: "search1",
     search: mockSearch,
     config: mockConfig,
   },
@@ -78,15 +91,15 @@ export const TextSearch = {
 export const MutationSearch = {
   args: {
     singleSearchSpec: {
-      key: 'search2',
-      type: 'mutation',
-      method: 'mutation',
-      gene: 'S',
+      key: "search2",
+      type: "mutation",
+      method: "mutation",
+      gene: "S",
       position: 484,
-      new_residue: 'K',
+      new_residue: "K",
       min_tips: 5,
     },
-    myKey: 'search2',
+    myKey: "search2",
     search: mockSearch,
     config: mockConfig,
   },
@@ -95,15 +108,15 @@ export const MutationSearch = {
 export const DisabledSearch = {
   args: {
     singleSearchSpec: {
-      key: 'search2',
-      type: 'mutation',
-      method: 'mutation',
-      gene: 'S',
+      key: "search2",
+      type: "mutation",
+      method: "mutation",
+      gene: "S",
       position: 484,
-      new_residue: 'K',
+      new_residue: "K",
       min_tips: 5,
     },
-    myKey: 'search2',
+    myKey: "search2",
     search: {
       ...mockSearch,
       searchesEnabled: {
@@ -118,22 +131,22 @@ export const DisabledSearch = {
 export const LoadingSearch = {
   args: {
     singleSearchSpec: {
-      key: 'search3',
-      type: 'text',
-      method: 'text_match',
-      text: 'Loading example',
+      key: "search3",
+      type: "text",
+      method: "text_match",
+      text: "Loading example",
       controls: true,
     },
-    myKey: 'search3',
+    myKey: "search3",
     search: {
       ...mockSearch,
       searchSpec: [
         ...mockSearch.searchSpec,
         {
-          key: 'search3',
-          type: 'text',
-          method: 'text_match',
-          text: 'Loading example',
+          key: "search3",
+          type: "text",
+          method: "text_match",
+          text: "Loading example",
           controls: true,
         },
       ],
@@ -147,7 +160,7 @@ export const LoadingSearch = {
       },
       searchLoadingStatus: {
         ...mockSearch.searchLoadingStatus,
-        search3: 'loading',
+        search3: "loading",
       },
     },
     config: mockConfig,
@@ -157,22 +170,22 @@ export const LoadingSearch = {
 export const NoResults = {
   args: {
     singleSearchSpec: {
-      key: 'search4',
-      type: 'text',
-      method: 'text_match',
-      text: 'No results example',
+      key: "search4",
+      type: "text",
+      method: "text_match",
+      text: "No results example",
       controls: true,
     },
-    myKey: 'search4',
+    myKey: "search4",
     search: {
       ...mockSearch,
       searchSpec: [
         ...mockSearch.searchSpec,
         {
-          key: 'search4',
-          type: 'text',
-          method: 'text_match',
-          text: 'No results example',
+          key: "search4",
+          type: "text",
+          method: "text_match",
+          text: "No results example",
           controls: true,
         },
       ],
@@ -186,7 +199,7 @@ export const NoResults = {
       },
       searchLoadingStatus: {
         ...mockSearch.searchLoadingStatus,
-        search4: 'done',
+        search4: "done",
       },
     },
     config: mockConfig,

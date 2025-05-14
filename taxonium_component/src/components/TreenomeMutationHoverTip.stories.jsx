@@ -1,35 +1,35 @@
-import TreenomeMutationHoverTip from './TreenomeMutationHoverTip';
+import TreenomeMutationHoverTip from "./TreenomeMutationHoverTip";
 
 export default {
-  title: 'Taxonium/TreenomeMutationHoverTip',
+  title: "Taxonium/TreenomeMutationHoverTip",
   component: TreenomeMutationHoverTip,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 // Mock reference information
 const mockReferenceInfo = {
   aa: {
-    'S:484': 'E',
-    'N:203': 'R',
-    'ORF1a:3606': 'L',
+    "S:484": "E",
+    "N:203": "R",
+    "ORF1a:3606": "L",
   },
   nt: {
-    '23063': 'A', 
-    '28881': 'G',
-    '11083': 'G',
+    23063: "A",
+    28881: "G",
+    11083: "G",
   },
 };
 
 // Base props for all stories
 const baseProps = {
   colorHook: {
-    toRGBCSS: (value) => 'rgb(128, 128, 128)',
+    toRGBCSS: (value) => "rgb(128, 128, 128)",
   },
   colorBy: {
-    colorByField: 'lineage',
+    colorByField: "lineage",
   },
   config: {},
   treenomeReferenceInfo: mockReferenceInfo,
@@ -43,10 +43,10 @@ export const AminoAcidMutation = {
       y: 100,
       object: {
         m: {
-          type: 'aa',
-          gene: 'S',
-          residue_pos: '484',
-          new_residue: 'K',
+          type: "aa",
+          gene: "S",
+          residue_pos: "484",
+          new_residue: "K",
         },
       },
     },
@@ -61,9 +61,9 @@ export const NucleotideMutation = {
       y: 100,
       object: {
         m: {
-          type: 'nt',
-          residue_pos: '23063',
-          new_residue: 'T',
+          type: "nt",
+          residue_pos: "23063",
+          new_residue: "T",
         },
       },
     },
@@ -96,10 +96,10 @@ export const ReferenceMutation = {
       y: 100,
       object: {
         m: {
-          type: 'aa',
-          gene: 'S',
-          residue_pos: '484',
-          new_residue: 'E', // Same as reference, should render null
+          type: "aa",
+          gene: "S",
+          residue_pos: "484",
+          new_residue: "E", // Same as reference, should render null
         },
       },
     },

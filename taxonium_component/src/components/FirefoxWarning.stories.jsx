@@ -1,17 +1,17 @@
-import FirefoxWarning from './FirefoxWarning';
+import FirefoxWarning from "./FirefoxWarning";
 
 export default {
-  title: 'Taxonium/FirefoxWarning',
+  title: "Taxonium/FirefoxWarning",
   component: FirefoxWarning,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const Default = {
   args: {
-    className: 'bg-yellow-100 p-4 rounded text-yellow-800 mb-4',
+    className: "bg-yellow-100 p-4 rounded text-yellow-800 mb-4",
   },
 };
 
@@ -19,6 +19,6 @@ export const Default = {
 // The story is provided for documentation purposes, but it won't render anything
 export const WithCustomStyling = {
   args: {
-    className: 'bg-red-100 p-4 rounded text-red-800 mb-4 border border-red-300',
+    className: "bg-red-100 p-4 rounded text-red-800 mb-4 border border-red-300",
   },
 };

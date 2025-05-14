@@ -1,14 +1,14 @@
-import { fn } from '@storybook/test';
-import Deck from './Deck';
-import React, { useRef } from 'react';
+import { fn } from "@storybook/test";
+import Deck from "./Deck";
+import React, { useRef } from "react";
 
 export default {
-  title: 'Taxonium/Deck',
+  title: "Taxonium/Deck",
   component: Deck,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 // Create mock data and props for the Deck component
@@ -19,12 +19,14 @@ const createMockProps = (overrides = {}) => {
   return {
     data: {
       data: {
-        nodes: overrides.noData ? [] : [
-          { node_id: '1', x: 0, y: 0 },
-          { node_id: '2', x: 100, y: 50 },
-        ],
+        nodes: overrides.noData
+          ? []
+          : [
+              { node_id: "1", x: 0, y: 0 },
+              { node_id: "2", x: 100, y: 50 },
+            ],
       },
-      status: overrides.loading ? 'loading' : 'loaded',
+      status: overrides.loading ? "loading" : "loaded",
     },
     search: {
       searchSpec: [],
@@ -32,7 +34,7 @@ const createMockProps = (overrides = {}) => {
       searchResults: {},
     },
     treenomeState: {
-      genome: overrides.treenomeEnabled ? 'ACTGACTG' : '',
+      genome: overrides.treenomeEnabled ? "ACTGACTG" : "",
       handleResize: fn(),
       ntBounds: [0, 1000],
       genomeSize: 1000,
@@ -44,12 +46,9 @@ const createMockProps = (overrides = {}) => {
       },
       zoomReset: fn(),
       onViewStateChange: fn(),
-      views: [
-        { id: 'main' },
-        { id: 'browser-axis' },
-      ],
+      views: [{ id: "main" }, { id: "browser-axis" }],
       zoomIncrement: fn(),
-      zoomAxis: 'X',
+      zoomAxis: "X",
       setZoomAxis: fn(),
       xzoom: 1,
       modelMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
@@ -57,14 +56,14 @@ const createMockProps = (overrides = {}) => {
     },
     colorHook: {
       toRGB: () => [128, 128, 128],
-      toRGBCSS: () => 'rgb(128, 128, 128)',
+      toRGBCSS: () => "rgb(128, 128, 128)",
     },
     colorBy: {
-      colorByField: 'lineage',
-      colorByGene: 'S',
+      colorByField: "lineage",
+      colorByGene: "S",
       colorByPosition: 484,
-      getNodeColorField: () => 'Alpha',
-      colorByOptions: ['lineage', 'country', 'date', 'genotype', 'None'],
+      getNodeColorField: () => "Alpha",
+      colorByOptions: ["lineage", "country", "date", "genotype", "None"],
     },
     hoverDetails: {
       nodeDetails: null,
@@ -72,14 +71,14 @@ const createMockProps = (overrides = {}) => {
       clearNodeDetails: fn(),
     },
     config: {
-      name_accessor: 'name',
-      keys_to_display: ['country', 'date', 'lineage'],
+      name_accessor: "name",
+      keys_to_display: ["country", "date", "lineage"],
       mutations: true,
       useHydratedMutations: 1,
-      genes: ['S', 'N', 'E', 'M', 'ORF1a', 'ORF1b'],
+      genes: ["S", "N", "E", "M", "ORF1a", "ORF1b"],
     },
     statusMessage: overrides.statusMessage || null,
-    xType: 'x_dist',
+    xType: "x_dist",
     settings: {
       minimapEnabled: true,
       displayTextForInternalNodes: false,
@@ -90,15 +89,15 @@ const createMockProps = (overrides = {}) => {
       opacity: 0.8,
       prettyStroke: {
         enabled: false,
-        color: '#000000',
+        color: "#000000",
         width: 0.5,
       },
       displaySearchesAsPoints: true,
       searchPointSize: 5,
-      terminalNodeLabelColor: '#000000',
-      lineColor: '#555555',
-      cladeLabelColor: '#333333',
-      chromosomeName: 'NC_045512v2',
+      terminalNodeLabelColor: "#000000",
+      lineColor: "#555555",
+      cladeLabelColor: "#333333",
+      chromosomeName: "NC_045512v2",
       setChromosomeName: fn(),
       isCov2Tree: true,
       treenomeEnabled: overrides.treenomeEnabled || false,
@@ -107,14 +106,16 @@ const createMockProps = (overrides = {}) => {
       miniMutationsMenu: () => null,
     },
     selectedDetails: {
-      nodeDetails: overrides.selectedNode ? {
-        node_id: '1',
-        name: 'Sample1',
-        country: 'UK',
-        date: '2020-03-15',
-        lineage: 'Alpha',
-        mutations: [],
-      } : null,
+      nodeDetails: overrides.selectedNode
+        ? {
+            node_id: "1",
+            name: "Sample1",
+            country: "UK",
+            date: "2020-03-15",
+            lineage: "Alpha",
+            mutations: [],
+          }
+        : null,
       getNodeDetails: fn(),
       clearNodeDetails: fn(),
     },
@@ -134,14 +135,10 @@ const createMockProps = (overrides = {}) => {
 const DeckWrapper = (props) => {
   const deckRef = useRef(null);
   const jbrowseRef = useRef(null);
-  
+
   return (
-    <div style={{ width: '100%', height: '100vh' }}>
-      <Deck 
-        {...props} 
-        deckRef={deckRef}
-        jbrowseRef={jbrowseRef}
-      />
+    <div style={{ width: "100%", height: "100vh" }}>
+      <Deck {...props} deckRef={deckRef} jbrowseRef={jbrowseRef} />
     </div>
   );
 };
@@ -156,7 +153,7 @@ export const Loading = {
   args: createMockProps({
     loading: true,
     statusMessage: {
-      message: 'Loading tree data...',
+      message: "Loading tree data...",
       percentage: 45,
     },
   }),
@@ -181,7 +178,7 @@ export const NoData = {
   args: createMockProps({
     noData: true,
     statusMessage: {
-      message: 'No data available',
+      message: "No data available",
     },
   }),
 };

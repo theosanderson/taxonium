@@ -1,19 +1,19 @@
-import { fn } from '@storybook/test';
-import { Button, Select } from './Basic';
+import { fn } from "@storybook/test";
+import { Button, Select } from "./Basic";
 
 export default {
-  title: 'Taxonium/Basic',
+  title: "Taxonium/Basic",
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const DefaultButton = {
   render: (args) => <Button {...args}>Click me</Button>,
   args: {
     onClick: fn(),
-    title: 'Default button',
+    title: "Default button",
   },
 };
 
@@ -21,17 +21,17 @@ export const ButtonWithClassName = {
   render: (args) => <Button {...args}>Custom Button</Button>,
   args: {
     onClick: fn(),
-    className: 'bg-blue-100 hover:bg-blue-200 text-blue-800',
-    title: 'Button with custom className',
+    className: "bg-blue-100 hover:bg-blue-200 text-blue-800",
+    title: "Button with custom className",
   },
 };
 
 export const LinkButton = {
   render: (args) => <Button {...args}>Link Button</Button>,
   args: {
-    href: 'https://example.com',
-    target: '_blank',
-    title: 'Button that acts as a link',
+    href: "https://example.com",
+    target: "_blank",
+    title: "Button that acts as a link",
   },
 };
 
@@ -45,8 +45,8 @@ export const DefaultSelect = {
   ),
   args: {
     onChange: fn(),
-    value: 'option1',
-    title: 'Default select dropdown',
+    value: "option1",
+    title: "Default select dropdown",
   },
 };
 
@@ -60,8 +60,8 @@ export const SelectWithClassName = {
   ),
   args: {
     onChange: fn(),
-    value: 'option2',
-    className: 'border-blue-300 focus:ring-blue-500 focus:border-blue-500',
-    title: 'Select with custom className',
+    value: "option2",
+    className: "border-blue-300 focus:ring-blue-500 focus:border-blue-500",
+    title: "Select with custom className",
   },
 };

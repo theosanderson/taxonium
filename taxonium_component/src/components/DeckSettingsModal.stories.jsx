@@ -1,20 +1,20 @@
-import { fn } from '@storybook/test';
-import DeckSettingsModal from './DeckSettingsModal';
+import { fn } from "@storybook/test";
+import DeckSettingsModal from "./DeckSettingsModal";
 
 export default {
-  title: 'Taxonium/DeckSettingsModal',
+  title: "Taxonium/DeckSettingsModal",
   component: DeckSettingsModal,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const Default = {
   args: {
     deckSettingsOpen: true,
     setDeckSettingsOpen: fn(),
-    noneColor: '#CCCCCC',
+    noneColor: "#CCCCCC",
     setNoneColor: fn(),
     settings: {
       minimapEnabled: true,
@@ -33,7 +33,7 @@ export const Default = {
       setOpacity: fn(),
       prettyStroke: {
         enabled: false,
-        color: '#000000',
+        color: "#000000",
         width: 0.5,
       },
       setPrettyStroke: fn(),
@@ -41,19 +41,19 @@ export const Default = {
       setDisplaySearchesAsPoints: fn(),
       searchPointSize: 5,
       setSearchPointSize: fn(),
-      terminalNodeLabelColor: '#000000',
+      terminalNodeLabelColor: "#000000",
       setTerminalNodeLabelColor: fn(),
-      lineColor: '#555555',
+      lineColor: "#555555",
       setLineColor: fn(),
-      cladeLabelColor: '#333333',
+      cladeLabelColor: "#333333",
       setCladeLabelColor: fn(),
       mutationTypesEnabled: {
         aa: true,
-        nt: false
+        nt: false,
       },
-      setMutationTypeEnabled: fn()
-    }
-  }
+      setMutationTypeEnabled: fn(),
+    },
+  },
 };
 
 export const WithPrettyStrokeEnabled = {
@@ -63,16 +63,16 @@ export const WithPrettyStrokeEnabled = {
       ...Default.args.settings,
       prettyStroke: {
         enabled: true,
-        color: '#3366FF',
-        width: 1.2
-      }
-    }
-  }
+        color: "#3366FF",
+        width: 1.2,
+      },
+    },
+  },
 };
 
 export const ModalClosed = {
   args: {
     ...Default.args,
-    deckSettingsOpen: false
-  }
+    deckSettingsOpen: false,
+  },
 };
