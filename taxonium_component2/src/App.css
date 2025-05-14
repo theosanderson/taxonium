@@ -1,42 +1,81 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* ./your-css-folder/styles.css */
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tx-button:focus-visible {
+  @apply outline-none ring-offset-0 ring-1 ring-gray-800 border-gray-800;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* JBrowse customization */
+.MuiPaper-root.MuiPaper-rounded.MuiPaper-elevation {
+  box-shadow: none !important;
+  padding: 0px !important;
+  margin: 0px !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#view-browser-axis > div > span > div > div > div > div:nth-child(1) {
+  display: none !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.jss2 {
+  margin: 0px !important;
 }
 
-.card {
-  padding: 2em;
+p[data-testid="refLabel-NC_045512v2"] {
+  display: none !important;
 }
 
-.read-the-docs {
-  color: #888;
+[class*="PrivateSwitchBase-input-"] + svg {
+  color: "#2463eb" !important;
+}
+
+.sidebar-toggle {
+  border: 2px solid rgb(136, 135, 135) !important;
+  border-radius: 3px;
+  margin: 10px;
+}
+
+.sidebar-open {
+  transition: right 0.3s ease-in-out !important;
+}
+
+.sidebar-closed {
+  transition: right 0.3s ease-in-out !important;
+
+  position: absolute;
+  width: 60px;
+  right: 0px;
+}
+
+.search-panel {
+  width: 100% !important;
+}
+
+select,
+input {
+  border-color: #c7ccd8 !important;
+}
+
+.infoTooltip {
+  max-width: 200px;
+  font-size: 12pt !important;
+  pointer-events: auto !important;
+}
+.infoTooltip :hover {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.tooltipLink {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+button[data-testid="addTrackNextButton"] {
+  background-color: #858585;
+}
+
+.MuiDialog-container > div > div > .MuiScopedCssBaseline-root {
+  padding: 15px;
 }
