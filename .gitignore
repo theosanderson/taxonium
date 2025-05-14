@@ -19,5 +19,4 @@ taxonium_component/storybook-static/**
 */node_modules/**
 .aider*
 
-**/.yarn*
 node_modules
