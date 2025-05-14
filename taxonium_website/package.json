@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "bootstrap": "NODE_OPTIONS='--max-old-space-size=5096' yarn --cwd ../taxonium_component install --production=false && yarn --cwd ../taxonium_component build",
+"bootstrap": "NODE_OPTIONS='--max-old-space-size=5096' npm --prefix ../taxonium_component install --no-production && npm --prefix ../taxonium_component run build",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
