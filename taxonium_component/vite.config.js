@@ -34,14 +34,14 @@ export default defineConfig({
     },
     minify: true,
     sourcemap: true,
-    
+
     rollupOptions: {
       // Make sure to externalize deps that shouldn't be bundled
       external: [
-        "react", 
-        "react-dom", 
+        "react",
+        "react-dom",
         "react/jsx-runtime", // Important addition!
-        "prop-types"
+        "prop-types",
       ],
       output: {
         // Provide global variables to use in the UMD build
@@ -55,16 +55,16 @@ export default defineConfig({
         manualChunks: undefined,
       },
     },
-    
+
     // Prevents code splitting that might include React
     cssCodeSplit: false,
     emptyOutDir: true,
   },
-  
+
   optimizeDeps: {
     exclude: ["react", "react-dom", "prop-types"],
   },
-  
+
   resolve: {
     alias: {
       "vite-plugin-node-polyfills/shims/buffer": path.resolve(
@@ -94,7 +94,6 @@ export default defineConfig({
         "dist",
         "index.cjs"
       ),
-     
     },
   },
 });
