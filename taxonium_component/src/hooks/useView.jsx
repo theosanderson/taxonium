@@ -88,8 +88,7 @@ class MyOrthographicController extends OrthographicController {
     }
     if (event.type === "wheel") {
       const { ControllerState } = this;
-      
-     
+
       this._controllerState = new ControllerState({
         makeViewport: this.makeViewport,
         ...this.props,

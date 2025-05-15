@@ -100,7 +100,7 @@ const NodeHoverTip = ({
           {colorBy.getNodeColorField(hoveredNode)}
         </span>
       )}
-    
+
       {config.keys_to_display.map(
         (key) =>
           hoveredNode[key] &&
