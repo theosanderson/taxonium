@@ -37,12 +37,13 @@ export default defineConfig({
 
     rollupOptions: {
       // Make sure to externalize deps that shouldn't be bundled
-      external: [
+     /* external: [
         "react",
         "react-dom",
         "react/jsx-runtime", // Important addition!
         "prop-types",
       ],
+      */
       output: {
         // Provide global variables to use in the UMD build
         globals: {
@@ -62,7 +63,7 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    exclude: ["react", "react-dom", "prop-types"],
+   // exclude: ["react", "react-dom", "prop-types"],
   },
 
   resolve: {
