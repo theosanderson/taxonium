@@ -16,7 +16,7 @@ export const Button = ({
       <a
         className={classNames(
           "tx-button no-underline",
-          "border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700",
+          "border border-gray-400 shadow-xs rounded-sm py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700",
           className
         )}
         href={href}
@@ -31,7 +31,7 @@ export const Button = ({
       <button
         className={classNames(
           "tx-button",
-          "border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700",
+          "border border-gray-400 shadow-xs rounded-sm py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700",
           className
         )}
         onClick={onClick}

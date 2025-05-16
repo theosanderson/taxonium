@@ -1,15 +1,18 @@
 import React, { useMemo, useEffect, useRef, useState } from "react";
 import "@fontsource/roboto";
-import "@jbrowse/plugin-data-management";
+//import "@jbrowse/plugin-data-management";
 import "../App.css";
 import useTreenomeAnnotations from "../hooks/useTreenomeAnnotations";
+/*
 import {
   createViewState,
   JBrowseLinearGenomeView,
 } from "@jbrowse/react-linear-genome-view";
+ */
 import { protect, unprotect } from "mobx-state-tree";
 
 function JBrowsePanel(props) {
+  return "TODO";
   const treenomeAnnotations = useTreenomeAnnotations(props.settings);
 
   const assembly = useMemo(() => {

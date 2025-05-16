@@ -91,7 +91,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
             {num_results > 0 && (
               <>
                 <Button
-                  className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border  text-gray-700 "
+                  className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded-sm border-gray-300 border  text-gray-700 "
                   onClick={() => {
                     search.setZoomToSearch({ index: getMyIndex() });
                   }}
@@ -108,7 +108,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
                     config &&
                     !config.disable_permalink && (
                       <Button
-                        className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded border-gray-300 border text-gray-700"
+                        className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded-sm border-gray-300 border text-gray-700"
                         onClick={() => {
                           setPermaLinkModalOpen(true);
                         }}
