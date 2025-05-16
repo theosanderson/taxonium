@@ -2,105 +2,18 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   OrthographicView,
   OrthographicController,
-  //OrthographicViewport,
 } from "@deck.gl/core";
 
 let globalSetZoomAxis = () => {};
 const defaultViewState = {
   zoom: -2,
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
-
   pitch: 0,
   bearing: 0,
   minimap: { zoom: -3, target: [250, 1000] },
   "browser-main": { zoom: -2, target: [0, 1000] },
   "browser-axis": { zoom: -2, target: [0, 1000] },
 };
-
-class MyOrthographicController extends OrthographicController {
-  // on construction
-
-  // Default handler for the `wheel` event.
-  onWheel(event) {
-    const controlKey =
-      event.srcEvent.ctrlKey || event.srcEvent.metaKey || event.srcEvent.altKey;
-
-    if (!this.scrollZoom) {
-      return false;
-    }
-    event.preventDefault();
-
-    const pos = this.getCenter(event);
-    if (!this.isPointInBounds(pos, event)) {
-      return false;
-    }
-
-    let { speed = 0.01, smooth = false, zoomAxis = "Y" } = this.scrollZoom;
-    if (controlKey) {
-      zoomAxis = "X";
-      globalSetZoomAxis(zoomAxis);
-    }
-    const { delta } = event;
-
-    // Map wheel delta to relative scale
-    let scale = 2 / (1 + Math.exp(-Math.abs(delta * speed)));
-    if (delta < 0 && scale !== 0) {
-      scale = 1 / scale;
-    }
-
-    const newControllerState = this.controllerState.zoom({ pos, scale });
-
-    let transitionDuration = smooth ? 250 : 1;
-    if (zoomAxis === "X") {
-      transitionDuration = 0;
-    }
-
-    this.updateViewport(
-      newControllerState,
-      {
-        ...this._getTransitionProps({ around: pos }),
-        transitionDuration: transitionDuration,
-      },
-      {
-        isZooming: zoomAxis === "Y",
-        isPanning: true,
-      }
-    );
-
-    if (controlKey) {
-      zoomAxis = "Y";
-      globalSetZoomAxis(zoomAxis);
-    }
-    return true;
-  }
-
-  handleEvent(event) {
-    if (event.pointerType === "touch") {
-      if (event.type === "pinchmove") {
-        if (
-          this.scrollZoom &&
-          this.scrollZoom.zoomAxis &&
-          this.scrollZoom.zoomAxis === "X"
-        ) {
-          return false;
-        }
-      }
-    }
-    if (event.type === "wheel") {
-      const { ControllerState } = this;
-
-      this._controllerState = new ControllerState({
-        makeViewport: this.makeViewport,
-        ...this.props,
-        ...this.state,
-      });
-
-      return this.onWheel(event);
-    } else {
-      super.handleEvent(event);
-    }
-  }
-}
 
 const useView = ({
   settings,
@@ -116,19 +29,6 @@ const useView = ({
   // TODO target needs to be [0,0]
   const [viewState, setViewState] = useState(defaultViewState);
   useEffect(() => {
-    // setViewState((prevState) => {
-    //   return {
-    //     ...prevState,
-    //     target: [
-    //       window.screen.width < 600
-    //         ? 500
-    //         : settings.treenomeEnabled
-    //         ? 2600
-    //         : 1400,
-    //       1000,
-    //     ],
-    //   };
-    // });
     setXzoom(
       window.screen.width < 600 ? -1 : settings.treenomeEnabled ? -1 : 0
     );
@@ -142,6 +42,27 @@ const useView = ({
     };
   }, [viewState]);
 
+  /**
+   * Shared controller props so each interactive view behaves consistently.
+   * Enable smooth wheel zooming via scrollZoom.smooth.
+   */
+  const controllerProps = useMemo(
+    () => ({
+      type: OrthographicController,
+      zoomAxis,
+      /**
+       * Smooth wheel zooming. Adjust `speed` to taste (lower => slower zoom).
+       * Docs: https://deck.gl/docs/api-reference/core/controller ([deck.gl](https://deck.gl/docs/api-reference/core/controller?utm_source=chatgpt.com))
+       */
+      scrollZoom: { smooth: false, speed: 0.005 },
+      /**
+       * Gentle easing after pan/zoom (optional but pleasant).
+       */
+      inertia: true,
+    }),
+    [zoomAxis]
+  );
+
   const views = useMemo(() => {
     return [
       ...(settings.minimapEnabled && !settings.treenomeEnabled
@@ -153,8 +74,7 @@ const useView = ({
               width: "20%",
               height: "35%",
               borderWidth: "1px",
-              controller: true,
-              // clear: true,
+              controller: controllerProps,
             }),
           ]
         : []),
@@ -162,38 +82,30 @@ const useView = ({
         ? [
             new OrthographicView({
               id: "browser-axis",
-              controller: false,
+              controller: false, // axis viewport stays passive
               x: "40%",
               y: "0%",
               width: "60%",
             }),
             new OrthographicView({
               id: "browser-main",
-              controller: false,
+              controller: controllerProps,
               x: "40%",
               width: "60%",
             }),
           ]
         : []),
-      ...[
-        new OrthographicView({
-          id: "main",
-          controller: {
-            type: MyOrthographicController,
-            scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
-          },
-          width: settings.treenomeEnabled ? "40%" : "100%",
-          initialViewState: viewState,
-        }),
-      ],
+      new OrthographicView({
+        id: "main",
+        controller: controllerProps,
+        width: settings.treenomeEnabled ? "40%" : "100%",
+        initialViewState: viewState,
+      }),
       ...(settings.treenomeEnabled
         ? [
             new OrthographicView({
               id: "main-overlay",
-              controller: {
-                type: MyOrthographicController,
-                scrollZoom: { smooth: true, zoomAxis: zoomAxis, xzoom: xzoom },
-              },
+              controller: controllerProps,
               width: "100%",
               initialViewState: viewState,
             }),
@@ -201,11 +113,10 @@ const useView = ({
         : []),
     ];
   }, [
+    controllerProps,
     viewState,
-    zoomAxis,
     settings.minimapEnabled,
     settings.treenomeEnabled,
-    xzoom,
   ]);
 
   const [mouseXY, setMouseXY] = useState([0, 0]);
@@ -246,15 +157,12 @@ const useView = ({
       }
       const localZoomAxis = overrideZoomAxis || zoomAxis;
 
-      // check oldViewState has a initial_xzoom property or set it to initial_xzoom
       if (viewId === "minimap") {
         return;
       }
 
-      //const temp_viewport = new OrthographicViewport(viewS
       const oldScaleY = 2 ** oldViewState.zoom;
       const newScaleY = 2 ** newViewState.zoom;
-      // eslint-disable-line no-unused-vars
 
       if (mouseDownIsMinimap && !specialMinimap && oldScaleY === newScaleY) {
         return;
