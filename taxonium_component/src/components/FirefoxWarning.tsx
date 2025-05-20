@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* React functional component that warns you if you are using Firefox that the page will be slow. Only shows if using firefox. */
 
 const FirefoxWarning = ({ className }) => {

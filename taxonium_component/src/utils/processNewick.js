@@ -8,7 +8,7 @@ import {
 import pako from "pako";
 import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
-import nexusToNewick from "../utils/nexusToNewick.js";
+import nexusToNewick from "../utils/nexusToNewick";
 const emptyList = [];
 
 async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {

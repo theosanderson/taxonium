@@ -1,3 +1,4 @@
+// @ts-nocheck
 const TaxButton = ({ children, onClick, title }) => {
   return (
     <button
