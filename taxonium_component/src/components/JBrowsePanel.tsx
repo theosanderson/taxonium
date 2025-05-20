@@ -11,7 +11,12 @@ import {
 
 import { protect, unprotect } from "mobx-state-tree";
 
-function JBrowsePanel(props) {
+interface JBrowsePanelProps {
+  treenomeState: Record<string, any>;
+  settings: Record<string, any>;
+}
+
+function JBrowsePanel(props: JBrowsePanelProps) {
   //return "TODO";
   const treenomeAnnotations = useTreenomeAnnotations(props.settings);
 
@@ -48,7 +53,7 @@ function JBrowsePanel(props) {
     props.settings.chromosomeName,
   ]);
 
-  const [userTracks, setUserTracks] = useState([]);
+  const [userTracks, setUserTracks] = useState<Record<string, unknown>[]>([]);
 
   const tracks = useMemo(() => {
     const covTracks = [

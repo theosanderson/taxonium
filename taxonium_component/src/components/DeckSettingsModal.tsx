@@ -25,10 +25,18 @@ const settingsModalStyle = {
   },
 };
 
-const prettifyMutationTypes = {
+const prettifyMutationTypes: Record<string, string> = {
   aa: "Amino acid",
   nt: "Nucleotide",
 };
+
+interface DeckSettingsModalProps {
+  settings: Record<string, any>;
+  deckSettingsOpen: boolean;
+  setDeckSettingsOpen: (open: boolean) => void;
+  noneColor: number[];
+  setNoneColor: (color: number[]) => void;
+}
 
 const DeckSettingsModal = ({
   settings,
@@ -36,7 +44,7 @@ const DeckSettingsModal = ({
   setDeckSettingsOpen,
   noneColor,
   setNoneColor,
-}) => {
+}: DeckSettingsModalProps) => {
   return (
     <Modal
       isOpen={deckSettingsOpen}

@@ -40,7 +40,7 @@ function Taxonium({
   setTitle,
 }) {
   const [backupQuery, setBackupQuery] = useState(default_query);
-  const backupUpdateQuery = useCallback((newQuery) => {
+  const backupUpdateQuery = useCallback((newQuery: Record<string, unknown>) => {
     setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
   }, []);
   // if query and updateQuery are not provided, use the backupQuery
@@ -80,6 +80,9 @@ function Taxonium({
     query.sid,
     sourceData
   );
+  if (!backend) {
+    return null;
+  }
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {

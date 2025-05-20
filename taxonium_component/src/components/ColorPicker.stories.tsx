@@ -11,7 +11,11 @@ export default {
 };
 
 // Wrapper component to manage state for the ColorPicker
-const ColorPickerWithState = ({ initialColor }) => {
+interface ColorPickerWithStateProps {
+  initialColor: number[];
+}
+
+const ColorPickerWithState = ({ initialColor }: ColorPickerWithStateProps) => {
   const [color, setColor] = useState(initialColor);
   return <ColorPicker color={color} setColor={setColor} />;
 };
