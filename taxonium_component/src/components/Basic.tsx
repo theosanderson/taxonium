@@ -7,7 +7,7 @@ export const Button = ({
   title,
   href,
   target,
-}) => {
+}: any) => {
   if (href && onClick) {
     throw new Error("Button cannot have both href and onClick");
   }
@@ -43,7 +43,13 @@ export const Button = ({
   }
 };
 
-export const Select = ({ onChange, className, children, value, title }) => {
+export const Select = ({
+  onChange,
+  className,
+  children,
+  value,
+  title,
+}: any) => {
   return (
     <select
       className={classNames(
