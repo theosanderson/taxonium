@@ -141,10 +141,7 @@ function Deck({
           requestIsFromMinimapPan: true,
           viewState: {
             ...viewState,
-            target: [
-              pickInfo.coordinate[0] ,
-              pickInfo.coordinate[1],
-            ],
+            target: [pickInfo.coordinate[0], pickInfo.coordinate[1]],
           },
         });
       }

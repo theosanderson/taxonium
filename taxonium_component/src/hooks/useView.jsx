@@ -84,10 +84,9 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
 
   const onViewStateChange = useCallback(
     ({ viewState: newViewState, viewId, requestIsFromMinimapPan }) => {
-      if(mouseDownIsMinimap && !requestIsFromMinimapPan) {
+      if (mouseDownIsMinimap && !requestIsFromMinimapPan) {
         return false;
       }
-
 
       console.log("onViewStateChange", newViewState);
       (newViewState.minimap = { zoom: -3, target: [250, 1000] }),
