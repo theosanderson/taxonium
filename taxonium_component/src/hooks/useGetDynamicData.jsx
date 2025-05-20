@@ -12,7 +12,14 @@ function addNodeLookup(data) {
   return output;
 }
 
-function useGetDynamicData(backend, colorBy, viewState, config, xType, deckSize) {
+function useGetDynamicData(
+  backend,
+  colorBy,
+  viewState,
+  config,
+  xType,
+  deckSize
+) {
   const { queryNodes } = backend;
   const [dynamicData, setDynamicData] = useState({
     status: "not_started",
@@ -36,7 +43,10 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType, deckSize)
           Math.abs(vs.zoom[1] - boundsForQueries.zoom[1]) > 0.5))
     ) {
       if (window.log) {
-        console.log([vs.min_x, boundsForQueries ? boundsForQueries.min_x : null]);
+        console.log([
+          vs.min_x,
+          boundsForQueries ? boundsForQueries.min_x : null,
+        ]);
       }
       console.log("VIEWSTATE", vs);
 

@@ -13,9 +13,7 @@ const defaultViewState = {
   "browser-axis": { zoom: -2, target: [0, 1000] },
 };
 
-const useView = ({ settings,  deckSize }) => {
-
-
+const useView = ({ settings, deckSize }) => {
   const [viewState, setViewState] = useState(defaultViewState);
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
@@ -28,7 +26,7 @@ const useView = ({ settings,  deckSize }) => {
       scrollZoom: true,
       zoomAxis: "Y",
     }),
-    [],
+    []
   );
 
   const views = useMemo(() => {
@@ -43,7 +41,7 @@ const useView = ({ settings,  deckSize }) => {
           height: "35%",
           borderWidth: "1px",
           controller: controllerProps,
-        }),
+        })
       );
     }
     if (settings.treenomeEnabled) {
@@ -60,7 +58,7 @@ const useView = ({ settings,  deckSize }) => {
           controller: controllerProps,
           x: "40%",
           width: "60%",
-        }),
+        })
       );
     }
     vs.push(
@@ -69,7 +67,7 @@ const useView = ({ settings,  deckSize }) => {
         controller: controllerProps,
         width: settings.treenomeEnabled ? "40%" : "100%",
         initialViewState: viewState,
-      }),
+      })
     );
     if (settings.treenomeEnabled) {
       vs.push(
@@ -78,7 +76,7 @@ const useView = ({ settings,  deckSize }) => {
           controller: controllerProps,
           width: "100%",
           initialViewState: viewState,
-        }),
+        })
       );
     }
     return vs;
