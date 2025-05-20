@@ -26,6 +26,34 @@ import Key from "./components/Key";
 
 const MemoizedKey = React.memo(Key);
 
+interface DeckSize {
+  width: number;
+  height: number;
+}
+
+interface DeckProps {
+  data: any;
+  search: any;
+  treenomeState: any;
+  view: any;
+  colorHook: any;
+  colorBy: any;
+  hoverDetails: any;
+  config: any;
+  statusMessage: { percentage?: number; message?: string } | null;
+  xType: string;
+  settings: any;
+  selectedDetails: any;
+  setDeckSize: (size: DeckSize) => void;
+  deckSize: DeckSize;
+  isCurrentlyOutsideBounds: boolean;
+  deckRef: React.RefObject<any>;
+  jbrowseRef: React.RefObject<any>;
+  setAdditionalColorMapping: (mapping: unknown) => void;
+  mouseDownIsMinimap: boolean;
+  setMouseDownIsMinimap: (val: boolean) => void;
+}
+
 function Deck({
   data,
   search,
@@ -47,7 +75,8 @@ function Deck({
   setAdditionalColorMapping,
   mouseDownIsMinimap,
   setMouseDownIsMinimap,
-}) {
+}: DeckProps) {
+
   const zoomReset = view.zoomReset;
   const snapshot = useSnapshot(deckRef);
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
@@ -72,7 +101,7 @@ function Deck({
 
   // Treenome state
   const setMouseXY = useCallback(
-    (info) => view.setMouseXY([info.x, info.y]),
+    (info: { x: number; y: number }) => view.setMouseXY([info.x, info.y]),
     [view]
   );
   const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
@@ -80,7 +109,7 @@ function Deck({
   const mouseDownPos = useRef<[number, number] | null>(null);
 
   const onClickOrMouseMove = useCallback(
-    (event) => {
+    (event: any) => {
       if (event._reactName === "onClick") {
         setMouseDownIsMinimap(false);
       }
@@ -152,7 +181,7 @@ function Deck({
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
   const setHoverInfo = useCallback(
-    (info) => {
+    (info: any) => {
       setHoverInfoRaw(info);
 
       if (info && info.object) {
@@ -255,8 +284,8 @@ function Deck({
         setDeckSettingsOpen={setDeckSettingsOpen}
         settings={settings}
         noneColor={colorHook.toRGB("None")}
-        setNoneColor={(color) => {
-          setAdditionalColorMapping((x) => {
+        setNoneColor={(color: number[]) => {
+          setAdditionalColorMapping((x: any) => {
             return { ...x, None: color };
           });
         }}
@@ -265,8 +294,8 @@ function Deck({
         isOpen={colorSettingOpen}
         setIsOpen={setColorSettingOpen}
         color={colorHook.toRGB(currentColorSettingKey)}
-        setColor={(color) => {
-          setAdditionalColorMapping((x) => {
+        setColor={(color: number[]) => {
+          setAdditionalColorMapping((x: any) => {
             return { ...x, [currentColorSettingKey]: color };
           });
         }}
