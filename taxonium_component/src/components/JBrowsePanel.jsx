@@ -8,7 +8,7 @@ import {
   createViewState,
   JBrowseLinearGenomeView,
 } from "@jbrowse/react-linear-genome-view";
- 
+
 import { protect, unprotect } from "mobx-state-tree";
 
 function JBrowsePanel(props) {
