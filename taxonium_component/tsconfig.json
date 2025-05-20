@@ -5,7 +5,7 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "bundler",
-    "strict": false, // You can make this true later
+    "strict": true, // You can make this true later
     "allowJs": true, // Critical for incremental migration
     "checkJs": false, // Can enable later
     "resolveJsonModule": true,
