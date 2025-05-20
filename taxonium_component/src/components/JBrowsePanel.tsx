@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo, useEffect, useRef, useState } from "react";
 import "@fontsource/roboto";
 //import "@jbrowse/plugin-data-management";

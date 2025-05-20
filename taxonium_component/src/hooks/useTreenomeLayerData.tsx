@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback, useMemo, useEffect, useState } from "react";
 
 import workerSpec from "../webworkers/treenomeWorker.js?worker&inline";

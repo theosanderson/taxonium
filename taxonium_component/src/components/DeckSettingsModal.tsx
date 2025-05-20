@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import Modal from "react-modal";
 import ColorPicker from "./ColorPicker";
