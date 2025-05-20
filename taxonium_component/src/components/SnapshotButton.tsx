@@ -30,7 +30,7 @@ const SnapshotButton = ({ svgFunction, pixelFunction, deckSize }) => {
           onClose={setIsOpen}
         >
           <div className="min-h-screen px-4 text-center">
-            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+            <div className="fixed inset-0 bg-black opacity-30" />
 
             <span
               className="inline-block h-screen align-middle"
