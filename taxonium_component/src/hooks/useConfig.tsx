@@ -4,7 +4,7 @@ import type { Backend, Config } from "../types/backend";
 const useConfig = (
   backend: Backend,
   view: any,
-  setOverlayContent: (content: unknown) => void,
+  setOverlayContent: (content: React.ReactNode) => void,
   setTitle: (title: string) => void,
   query: any,
   configDict: any,
@@ -14,6 +14,8 @@ const useConfig = (
     title: "loading",
     source: "",
     num_nodes: 0,
+    rootMutations: [],
+    rootId: "",
   });
 
   useEffect(() => {

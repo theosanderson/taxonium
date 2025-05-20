@@ -32,7 +32,7 @@ interface DeckSize {
   height: number;
 }
 
-interface DeckProps {
+export interface DeckProps {
   data: any;
   search: any;
   treenomeState: any;

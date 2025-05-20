@@ -1,4 +1,6 @@
 import { useMemo, useCallback, useRef } from "react";
+import type { Config, NodeLookupData } from "../types/backend";
+import type { Node } from "../types/node";
 
 interface WindowWithCc extends Window {
   cc?: unknown;
@@ -7,11 +9,22 @@ interface WindowWithCc extends Window {
 let cachedColorByPosition: number | null = null; // todo do this with state
 let cachedColorByGene: string | null = null; // todo do this with state
 
+interface ColorByState {
+  colorByField: string;
+  setColorByField: (field: string) => void;
+  colorByOptions: string[];
+  getNodeColorField: (node: Node, dataset: NodeLookupData) => string;
+  colorByPosition: number;
+  setColorByPosition: (pos: number) => void;
+  colorByGene: string;
+  setColorByGene: (gene: string) => void;
+}
+
 function useColorBy(
-  config: any,
-  query: any,
-  updateQuery: (q: any) => void
-): any {
+  config: Config,
+  query: Record<string, any>,
+  updateQuery: (q: Record<string, any>) => void
+): ColorByState {
   const colorCacheRef = useRef<Record<string, string>>({});
   const colorByConfig = useMemo(() => {
     return query.color ? JSON.parse(query.color) : {};

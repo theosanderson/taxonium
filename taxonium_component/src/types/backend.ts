@@ -34,6 +34,7 @@ export interface Config {
   genes?: string[];
   mutations?: Mutation[];
   useHydratedMutations?: boolean;
+  colorRamps?: Record<string, { scale: [number, string][] }>;
   [key: string]: unknown;
 }
 

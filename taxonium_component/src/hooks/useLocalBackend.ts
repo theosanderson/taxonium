@@ -5,6 +5,7 @@ import type {
   NodeDetails,
   SearchResult,
   QueryBounds,
+  LocalBackend,
 } from "../types/backend";
 
 // test
@@ -73,7 +74,9 @@ worker.onmessage = (event) => {
   }
 };
 
-function useLocalBackend(uploaded_data: Record<string, unknown> | null) {
+function useLocalBackend(
+  uploaded_data: Record<string, unknown> | null
+): LocalBackend {
   const [statusMessage, setStatusMessage] = useState<
     | { percentage?: number; message?: string | null }
     | null

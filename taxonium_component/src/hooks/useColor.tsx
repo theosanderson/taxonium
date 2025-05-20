@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import scale from "scale-color-perceptual";
 import { scaleLinear, ScaleLinear } from "d3-scale";
+import type { Config } from "../types/backend";
 
 const rgb_cache: Record<string, [number, number, number]> = {};
 
@@ -10,7 +11,7 @@ interface ColorRamps {
   };
 }
 
-interface ConfigWithColor {
+interface ConfigWithColor extends Config {
   colorRamps?: ColorRamps;
 }
 
@@ -18,21 +19,22 @@ const useColor = (
   config: ConfigWithColor,
   colorMapping: Record<string, [number, number, number]>,
   colorByField: string
-) => {
+): { toRGB: (val: string | number) => [number, number, number]; toRGBCSS: (val: string | number) => string } => {
   const colorScales = useMemo(() => {
-    const scales: { colorRamp?: ScaleLinear<number, string> } = {};
+    const scales: { colorRamp?: ScaleLinear<string, string> } = {};
     if (config.colorRamps && config.colorRamps[colorByField]) {
       const { scale: rampScale } = config.colorRamps[colorByField];
       const domain: number[] = rampScale.map((d) => d[0]);
       const range: string[] = rampScale.map((d) => d[1]);
-      scales.colorRamp =
-        scaleLinear<number, string>().domain(domain).range(range);
+      scales.colorRamp = scaleLinear<string, string>()
+        .domain(domain)
+        .range(range);
     }
     return scales;
   }, [config.colorRamps, colorByField]);
 
   const toRGB_uncached = useCallback(
-    (value: string | number) => {
+    (value: string | number): [number, number, number] => {
       if (config.colorRamps && config.colorRamps[colorByField]) {
         const numeric = parseFloat(String(value));
         const output = colorScales.colorRamp?.(numeric);
@@ -42,7 +44,7 @@ const useColor = (
         const as_list = output
           .slice(4, -1)
           .split(",")
-          .map((d) => parseInt(d));
+          .map((d) => parseInt(d)) as [number, number, number];
         return as_list;
       }
 
@@ -138,7 +140,7 @@ const useColor = (
       let str = String(value);
       str = str.split("").reverse().join("");
       let hash = 0;
-      if (str.length === 0) return hash;
+      if (str.length === 0) return [0, 0, 0];
       for (let i = 0; i < str.length; i++) {
         hash = str.charCodeAt(i) + ((hash << 5) - hash);
         hash = hash & hash;
@@ -157,7 +159,7 @@ const useColor = (
   );
 
   const toRGB = useCallback(
-    (val: string | number) => {
+    (val: string | number): [number, number, number] => {
       if (typeof val === "string" && rgb_cache[val] && !colorMapping[val]) {
         return rgb_cache[val];
       } else {
@@ -172,7 +174,7 @@ const useColor = (
   );
 
   const toRGBCSS = useCallback(
-    (val: string | number) => {
+    (val: string | number): string => {
       const output = toRGB(val);
       return `rgb(${output[0]},${output[1]},${output[2]})`;
     },

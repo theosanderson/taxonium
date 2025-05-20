@@ -1,5 +1,5 @@
 import { fn } from "@storybook/test";
-import Deck from "./Deck";
+import Deck, { DeckProps } from "./Deck";
 import React, { useRef } from "react";
 
 export default {
@@ -12,7 +12,7 @@ export default {
 };
 
 // Create mock data and props for the Deck component
-const createMockProps = (overrides: Record<string, unknown> = {}) => {
+const createMockProps = (overrides: Record<string, unknown> = {}): DeckProps => {
   const deckRef = { current: { pickObject: fn() } };
   const jbrowseRef = { current: null };
 
@@ -127,12 +127,10 @@ const createMockProps = (overrides: Record<string, unknown> = {}) => {
     mouseDownIsMinimap: false,
     setMouseDownIsMinimap: fn(),
     ...overrides,
-  };
+  } as DeckProps;
 };
 
 // Create a wrapper component to provide necessary refs
-type DeckProps = ReturnType<typeof createMockProps>;
-
 const DeckWrapper = (props: DeckProps) => {
   const deckRef = useRef(null);
   const jbrowseRef = useRef(null);

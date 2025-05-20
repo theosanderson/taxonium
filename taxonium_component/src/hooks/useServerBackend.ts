@@ -7,9 +7,13 @@ import type {
   QueryBounds,
   NodeDetails,
   SearchResult,
+  ServerBackend,
 } from "../types/backend";
 
-function useServerBackend(backend_url: string | null, sid: string | null) {
+function useServerBackend(
+  backend_url: string | null,
+  sid: string | null
+): ServerBackend {
   const [statusMessage, setStatusMessage] = useState<
     | { percentage?: number; message?: string | null }
     | null
