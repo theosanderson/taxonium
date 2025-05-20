@@ -7,6 +7,7 @@ import {
 } from "@deck.gl/layers";
 
 import { useMemo, useCallback } from "react";
+import computeBounds from "../utils/computeBounds";
 import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
 
@@ -32,6 +33,7 @@ const useLayers = ({
   data,
   search,
   viewState,
+  deckSize,
   colorHook,
   setHoverInfo,
   hoverInfo,
@@ -139,6 +141,11 @@ const useLayers = ({
       : [];
   }, [base_data, settings.displayPointsForInternalNodes]);
 
+  const computedViewState = useMemo(
+    () => computeBounds({ ...viewState }, deckSize),
+    [viewState, deckSize],
+  );
+
   const outer_bounds = [
     [-100000, -100000],
     [100000, -100000],
@@ -147,10 +154,22 @@ const useLayers = ({
     [-100000, -100000],
   ];
   const inner_bounds = [
-    [viewState.min_x, viewState.min_y < -1000 ? -1000 : viewState.min_y],
-    [viewState.max_x, viewState.min_y < -1000 ? -1000 : viewState.min_y],
-    [viewState.max_x, viewState.max_y > 10000 ? 10000 : viewState.max_y],
-    [viewState.min_x, viewState.max_y > 10000 ? 10000 : viewState.max_y],
+    [
+      computedViewState.min_x,
+      computedViewState.min_y < -1000 ? -1000 : computedViewState.min_y,
+    ],
+    [
+      computedViewState.max_x,
+      computedViewState.min_y < -1000 ? -1000 : computedViewState.min_y,
+    ],
+    [
+      computedViewState.max_x,
+      computedViewState.max_y > 10000 ? 10000 : computedViewState.max_y,
+    ],
+    [
+      computedViewState.min_x,
+      computedViewState.max_y > 10000 ? 10000 : computedViewState.max_y,
+    ],
   ];
 
   const bound_contour = [[outer_bounds, inner_bounds]];

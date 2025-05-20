@@ -180,6 +180,7 @@ function Deck({
     data,
     search,
     viewState,
+    deckSize,
     colorHook,
     setHoverInfo,
     hoverInfo,
