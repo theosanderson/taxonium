@@ -72,7 +72,7 @@
     "react-spinners": "^0.17.0",
     "react-tabs": "^6.1.0",
     "react-tooltip": "^5.28.1",
-    "readable-web-to-node-stream": "^5.0.0",
+    "readable-web-to-node-stream": "^4.0.0",
     "scale-color-perceptual": "^1.1.2",
     "storybook": "^8.6.12",
     "stream-json": "^1.9.1",

@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
-import path from "path";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import tailwindcss from "@tailwindcss/vite";
 
@@ -67,34 +66,9 @@ export default defineConfig({
   },
 
   resolve: {
-    alias: {
-      "vite-plugin-node-polyfills/shims/buffer": path.resolve(
-        __dirname,
-        "node_modules",
-        "vite-plugin-node-polyfills",
-        "shims",
-        "buffer",
-        "dist",
-        "index.cjs"
-      ),
-      "vite-plugin-node-polyfills/shims/global": path.resolve(
-        __dirname,
-        "node_modules",
-        "vite-plugin-node-polyfills",
-        "shims",
-        "global",
-        "dist",
-        "index.cjs"
-      ),
-      "vite-plugin-node-polyfills/shims/process": path.resolve(
-        __dirname,
-        "node_modules",
-        "vite-plugin-node-polyfills",
-        "shims",
-        "process",
-        "dist",
-        "index.cjs"
-      ),
-    },
+    alias:{
+     'process/': 'process/browser',
+    }
+    
   },
 });
