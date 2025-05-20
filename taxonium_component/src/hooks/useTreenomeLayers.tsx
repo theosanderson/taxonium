@@ -1,19 +1,54 @@
 import { useMemo, useCallback, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import useTreenomeLayerData from "./useTreenomeLayerData";
+import type { Mutation } from "../types/node";
+
+interface TreenomeState {
+  xBounds: [number, number];
+  yBounds: [number, number];
+  ntBounds: [number, number];
+  baseYBounds: [number, number];
+  genomeSize: number;
+}
+
+interface DynamicData {
+  data: { nodes: Array<Record<string, unknown>> };
+  base_data?: { nodes: Array<Record<string, unknown>> };
+}
+
+interface Settings {
+  treenomeEnabled: boolean;
+  isCov2Tree: boolean;
+  mutationTypesEnabled: { aa: boolean; nt: boolean };
+}
+
+interface VariationDatum {
+  m: NumericMutation;
+  y: [number, number];
+}
+
+type NumericMutation = Mutation & {
+  residue_pos: number;
+  gene: string;
+  new_residue: string;
+  nuc_for_codon?: number;
+};
 
 const useTreenomeLayers = (
-  treenomeState,
-  data,
-  viewState,
-  colorHook,
-  setHoverInfo,
-  settings,
-  treenomeReferenceInfo,
-  setTreenomeReferenceInfo,
-  selectedDetails
+  treenomeState: TreenomeState,
+  data: DynamicData,
+  viewState: Record<string, unknown>,
+  colorHook: { toRGB: (value: string) => [number, number, number] },
+  setHoverInfo: (info: unknown) => void,
+  settings: Settings,
+  treenomeReferenceInfo: Record<string, Record<string, string>>,
+  setTreenomeReferenceInfo: (info: Record<string, Record<string, string>>) => void,
+  selectedDetails: { nodeDetails?: { y: number } | null }
 ) => {
-  const myGetPolygonOffset = ({ layerIndex }) => [0, -(layerIndex + 999) * 100];
+  const myGetPolygonOffset = ({ layerIndex }: { layerIndex: number }) => [
+    0,
+    -(layerIndex + 999) * 100,
+  ];
   const modelMatrixFixedX = useMemo(() => {
     return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
   }, [viewState.zoom]);
@@ -60,7 +95,7 @@ const useTreenomeLayers = (
   }, [settings.isCov2Tree]);
 
   const ntToCov2Gene = useCallback(
-    (nt) => {
+    (nt: number) => {
       if (cov2Genes !== null) {
         for (const gene of Object.keys(cov2Genes)) {
           const [start, end, color] = cov2Genes[gene];
@@ -89,7 +124,7 @@ const useTreenomeLayers = (
     }
   }, [computedReference, treenomeReferenceInfo, setTreenomeReferenceInfo]);
   const ntToX = useCallback(
-    (nt) => {
+    (nt: number) => {
       return (
         treenomeState.xBounds[0] +
         ((nt - treenomeState.ntBounds[0]) /
@@ -102,7 +137,7 @@ const useTreenomeLayers = (
   );
 
   const getNtPos = useCallback(
-    (mut) => {
+    (mut: NumericMutation) => {
       if (mut.gene === "nt") {
         return mut.residue_pos - 1;
       }
@@ -117,14 +152,14 @@ const useTreenomeLayers = (
   );
 
   const main_variation_aa_common_props = {
-    onHover: (info) => setHoverInfo(info),
+    onHover: (info: unknown) => setHoverInfo(info),
     pickable: true,
-    getColor: (d) => {
+    getColor: (d: VariationDatum) => {
       if (cov2Genes !== null) {
         return d.m.new_residue !==
           treenomeReferenceInfo["aa"][d.m.gene + ":" + d.m.residue_pos]
           ? colorHook.toRGB(d.m.new_residue)
-          : cov2Genes[d.m.gene][2].map((c) => 245 - 0.2 * (245 - c));
+          : cov2Genes[d.m.gene][2].map((c: number) => 245 - 0.2 * (245 - c));
       } else {
         return d.m.new_residue !==
           treenomeReferenceInfo["aa"][d.m.gene + ":" + d.m.residue_pos]
@@ -133,7 +168,7 @@ const useTreenomeLayers = (
       }
     },
     modelMatrix: modelMatrixFixedX,
-    getSourcePosition: (d) => {
+    getSourcePosition: (d: VariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -148,7 +183,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + aaWidth / 2, d.y[0] - variation_padding];
     },
-    getTargetPosition: (d) => {
+    getTargetPosition: (d: VariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -163,7 +198,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + aaWidth / 2, d.y[1] + variation_padding];
     },
-    getWidth: (d) => {
+    getWidth: (d: VariationDatum) => {
       return aaWidth;
     },
     updateTriggers: {
@@ -200,9 +235,9 @@ const useTreenomeLayers = (
   };
 
   const main_variation_nt_common_props = {
-    onHover: (info) => setHoverInfo(info),
+    onHover: (info: unknown) => setHoverInfo(info),
     pickable: true,
-    getColor: (d) => {
+    getColor: (d: VariationDatum) => {
       let color = [0, 0, 0];
       switch (d.m.new_residue) {
         case "A":
@@ -225,14 +260,14 @@ const useTreenomeLayers = (
         if (d.m.new_residue === treenomeReferenceInfo["nt"][d.m.residue_pos]) {
           const gene = ntToCov2Gene(d.m.residue_pos);
           if (gene !== null) {
-            return cov2Genes[gene][2].map((c) => 245 - 0.2 * (245 - c));
+            return cov2Genes[gene][2].map((c: number) => 245 - 0.2 * (245 - c));
           }
         }
       }
       return color;
     },
     modelMatrix: modelMatrixFixedX,
-    getSourcePosition: (d) => {
+    getSourcePosition: (d: VariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -247,7 +282,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + ntWidth / 2, d.y[0] - variation_padding];
     },
-    getTargetPosition: (d) => {
+    getTargetPosition: (d: VariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -262,7 +297,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + ntWidth / 2, d.y[1] + variation_padding];
     },
-    getWidth: (d) => {
+    getWidth: (d: VariationDatum) => {
       return ntWidth;
     },
     updateTriggers: {
@@ -389,7 +424,7 @@ const useTreenomeLayers = (
     data: background_layer_data,
 
     // data: [ [[-1000, -1000], [-1000, 1000], [1000, 1000], [1000, -1000]] ] ,
-    getPolygon: (d) => d,
+    getPolygon: (d: number[][]) => d,
     modelMatrix: modelMatrixFixedX,
     lineWidthUnits: "pixels",
     getLineWidth: 0,
@@ -399,12 +434,25 @@ const useTreenomeLayers = (
     getPolygonOffset: myGetPolygonOffset,
   };
 
+  interface ColoredPolygon {
+    x: number[][];
+    c: number[];
+  }
+
+  interface Polygon {
+    x: number[][];
+  }
+
+  interface SelectedPolygon {
+    p: number[][];
+  }
+
   const dynamic_browser_background_sublayer = {
     layerType: "SolidPolygonLayer",
     id: "browser-loaded-dynamic-background-sublayer",
     data: dynamic_browser_background_data,
-    getPolygon: (d) => d.x,
-    getFillColor: (d) => d.c,
+    getPolygon: (d: ColoredPolygon) => d.x,
+    getFillColor: (d: ColoredPolygon) => d.c,
     getPolygonOffset: myGetPolygonOffset,
     modelMatrix: modelMatrixFixedX,
   };
@@ -414,8 +462,8 @@ const useTreenomeLayers = (
     id: "browser-loaded-dynamic-background",
     data: dynamic_background_data,
     modelMatrix: modelMatrixFixedX,
-    getPolygon: (d) => d.x,
-    getFillColor: (d) => [...d.c, 0.2 * 255],
+    getPolygon: (d: ColoredPolygon) => d.x,
+    getFillColor: (d: ColoredPolygon) => [...d.c, 0.2 * 255],
     getPolygonOffset: myGetPolygonOffset,
   };
   const browser_outline_layer = {
@@ -431,7 +479,7 @@ const useTreenomeLayers = (
         ],
       },
     ],
-    getPolygon: (d) => d.x,
+    getPolygon: (d: Polygon) => d.x,
     modelMatrix: modelMatrixFixedX,
     lineWidthUnits: "pixels",
     getLineWidth: 1,
@@ -446,7 +494,7 @@ const useTreenomeLayers = (
     layerType: "PolygonLayer",
     id: "browser-loaded-selected-node",
     data: selected_node_data,
-    getPolygon: (d) => d.p,
+    getPolygon: (d: SelectedPolygon) => d.p,
     modelMatrix: modelMatrixFixedX,
     lineWidthUnits: "pixels",
     getLineWidth: 0.4,

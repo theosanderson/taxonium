@@ -2,11 +2,21 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 import workerSpec from "../webworkers/treenomeWorker.js?worker&inline";
 
+interface TreenomeState {
+  ntBounds: [number, number];
+  genomeSize: number;
+}
+
+interface Settings {
+  treenomeEnabled: boolean;
+  mutationTypesEnabled: { aa: boolean; nt: boolean };
+}
+
 const useTreenomeLayerData = (
-  data,
-  treenomeState,
-  settings,
-  selectedDetails
+  data: { data: { nodes: Array<Record<string, unknown>> } },
+  treenomeState: TreenomeState,
+  settings: Settings,
+  selectedDetails: { nodeDetails?: { y: number } | null }
 ) => {
   const [varDataAa, setVarDataAa] = useState([]);
   const [varDataNt, setVarDataNt] = useState([]);
@@ -22,7 +32,7 @@ const useTreenomeLayerData = (
   const worker = useMemo(() => new workerSpec(), []);
 
   worker.onmessage = useCallback(
-    (e) => {
+    (e: MessageEvent<any>) => {
       if (!treenomeReferenceInfo && e.data.treenomeReferenceInfo) {
         setTreenomeReferenceInfo(e.data.treenomeReferenceInfo);
       }
