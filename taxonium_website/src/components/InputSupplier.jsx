@@ -24,7 +24,6 @@ const prettyTypes = {
 const fileTypes = Object.keys(prettyTypes);
 
 export const InputSupplier = ({ inputHelper, className }) => {
-
   const [tempURL, setTempURL] = useState("");
   const [useProxy, setUseProxy] = useState(false); // New state for proxy usage
 
