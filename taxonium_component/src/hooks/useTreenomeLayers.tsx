@@ -15,26 +15,6 @@ const useTreenomeLayers = (
   selectedDetails
 ) => {
   const myGetPolygonOffset = ({ layerIndex }) => [0, -(layerIndex + 999) * 100];
-  const modelMatrixFixedX = useMemo(() => {
-    return [
-      1 / 2 ** viewState.zoom,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-    ];
-  }, [viewState.zoom]);
 
   const variation_padding = useMemo(() => {
     if (!data.data.nodes) {
@@ -150,7 +130,6 @@ const useTreenomeLayers = (
           : [245, 245, 245];
       }
     },
-    modelMatrix: modelMatrixFixedX,
     getSourcePosition: (d) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
@@ -249,7 +228,6 @@ const useTreenomeLayers = (
       }
       return color;
     },
-    modelMatrix: modelMatrixFixedX,
     getSourcePosition: (d) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
@@ -408,7 +386,6 @@ const useTreenomeLayers = (
 
     // data: [ [[-1000, -1000], [-1000, 1000], [1000, 1000], [1000, -1000]] ] ,
     getPolygon: (d) => d,
-    modelMatrix: modelMatrixFixedX,
     lineWidthUnits: "pixels",
     getLineWidth: 0,
     filled: true,
@@ -424,14 +401,12 @@ const useTreenomeLayers = (
     getPolygon: (d) => d.x,
     getFillColor: (d) => d.c,
     getPolygonOffset: myGetPolygonOffset,
-    modelMatrix: modelMatrixFixedX,
   };
 
   const dynamic_browser_background_layer = {
     layerType: "SolidPolygonLayer",
     id: "browser-loaded-dynamic-background",
     data: dynamic_background_data,
-    modelMatrix: modelMatrixFixedX,
     getPolygon: (d) => d.x,
     getFillColor: (d) => [...d.c, 0.2 * 255],
     getPolygonOffset: myGetPolygonOffset,
@@ -450,7 +425,6 @@ const useTreenomeLayers = (
       },
     ],
     getPolygon: (d) => d.x,
-    modelMatrix: modelMatrixFixedX,
     lineWidthUnits: "pixels",
     getLineWidth: 1,
     getLineColor: [100, 100, 100],
@@ -465,7 +439,6 @@ const useTreenomeLayers = (
     id: "browser-loaded-selected-node",
     data: selected_node_data,
     getPolygon: (d) => d.p,
-    modelMatrix: modelMatrixFixedX,
     lineWidthUnits: "pixels",
     getLineWidth: 0.4,
     opacity: 0.1,

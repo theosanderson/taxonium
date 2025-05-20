@@ -65,10 +65,6 @@ function Deck({
     onViewStateChange,
     views,
     zoomIncrement,
-
-    zoomAxis,
-    setZoomAxis,
-    xzoom,
   } = view;
 
   // Treenome state
@@ -143,10 +139,7 @@ function Deck({
           specialMinimap: true,
           viewState: {
             ...viewState,
-            target: [
-              pickInfo.coordinate[0] / 2 ** (viewState.zoom - xzoom),
-              pickInfo.coordinate[1],
-            ],
+            target: [pickInfo.coordinate[0], pickInfo.coordinate[1]],
           },
         });
       }
@@ -156,7 +149,6 @@ function Deck({
       mouseDownIsMinimap,
       viewState,
       onViewStateChange,
-      xzoom,
       deckRef,
     ]
   );
@@ -188,9 +180,7 @@ function Deck({
     hoverInfo,
     colorBy,
     xType,
-    modelMatrix: view.modelMatrix,
     selectedDetails,
-    xzoom,
     settings,
     isCurrentlyOutsideBounds,
     config,
@@ -320,8 +310,6 @@ function Deck({
         deckSize={deckSize}
         zoomReset={zoomReset}
         zoomIncrement={zoomIncrement}
-        zoomAxis={zoomAxis}
-        setZoomAxis={setZoomAxis}
         snapshot={snapshot}
         loading={data.status === "loading"}
         requestOpenSettings={() => setDeckSettingsOpen(true)}

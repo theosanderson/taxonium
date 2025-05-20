@@ -33,7 +33,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
             boundsForQueries.min_y + viewState.real_height / 2 ||
           viewState.max_y >
             boundsForQueries.max_y - viewState.real_height / 2 ||
-          Math.abs(viewState.zoom - boundsForQueries.zoom) > 0.5))
+          Math.abs(viewState.zoom[1] - boundsForQueries.zoom) > 0.5))
     ) {
       if (window.log) {
         console.log([viewState.min_x, boundsForQueries.min_x]);
@@ -46,7 +46,7 @@ function useGetDynamicData(backend, colorBy, viewState, config, xType) {
         max_x: viewState.max_x + viewState.real_width,
         min_y: viewState.min_y - viewState.real_height,
         max_y: viewState.max_y + viewState.real_height,
-        zoom: viewState.zoom,
+        zoom: viewState.zoom[1],
         xType: xType,
       };
 

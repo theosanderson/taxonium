@@ -42,17 +42,14 @@ const createMockProps = (overrides = {}) => {
     },
     view: {
       viewState: {
-        zoom: 2,
+        zoom: [2, 2],
         target: [0, 0],
       },
       zoomReset: fn(),
       onViewStateChange: fn(),
       views: [{ id: "main" }, { id: "browser-axis" }],
       zoomIncrement: fn(),
-      zoomAxis: "X",
-      setZoomAxis: fn(),
-      xzoom: 1,
-      modelMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+      zoomAxis: "Y",
       setMouseXY: fn(),
     },
     colorHook: {

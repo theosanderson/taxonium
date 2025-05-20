@@ -14,8 +14,6 @@ export default {
 export const Default = {
   args: {
     loading: false,
-    setZoomAxis: fn(),
-    zoomAxis: "X",
     snapshot: fn(),
     zoomIncrement: fn(),
     requestOpenSettings: fn(),
@@ -33,9 +31,3 @@ export const Loading = {
   },
 };
 
-export const VerticalZoomAxis = {
-  args: {
-    ...Default.args,
-    zoomAxis: "Y",
-  },
-};

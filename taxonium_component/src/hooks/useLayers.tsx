@@ -38,9 +38,7 @@ const useLayers = ({
   hoverInfo,
   colorBy,
   xType,
-  modelMatrix,
   selectedDetails,
-  xzoom,
   settings,
   isCurrentlyOutsideBounds,
   config,
@@ -173,7 +171,6 @@ const useLayers = ({
     pickable: true,
     radiusUnits: "pixels",
     onHover: (info) => setHoverInfo(info),
-    modelMatrix: modelMatrix,
     updateTriggers: {
       getFillColor: [detailed_data, getNodeColorField, colorHook],
       getRadius: [settings.nodeSize],
@@ -196,8 +193,6 @@ const useLayers = ({
         : 1,
 
     onHover: (info) => setHoverInfo(info),
-
-    modelMatrix: modelMatrix,
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
       getTargetPosition: [detailed_data, xType],
@@ -218,7 +213,6 @@ const useLayers = ({
           selectedDetails.nodeDetails.node_id === d.node_id
         ? 2.5
         : 1,
-    modelMatrix: modelMatrix,
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
       getTargetPosition: [detailed_data, xType],
@@ -290,7 +284,6 @@ const useLayers = ({
       id: "main-selected",
       filled: false,
       stroked: true,
-      modelMatrix,
 
       getLineColor: [0, 0, 0],
       getPosition: (d) => {
@@ -311,7 +304,6 @@ const useLayers = ({
       id: "main-hovered",
       filled: false,
       stroked: true,
-      modelMatrix,
 
       getLineColor: [0, 0, 0],
       getPosition: (d) => {
@@ -338,7 +330,6 @@ const useLayers = ({
       getTextAnchor: "end",
       getAlignmentBaseline: "center",
       getSize: 11,
-      modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [getX],
       },
@@ -358,7 +349,7 @@ const useLayers = ({
     );
   }
 
-  const proportionalToNodesOnScreen = config.num_tips / 2 ** viewState.zoom;
+  const proportionalToNodesOnScreen = config.num_tips / 2 ** viewState.zoom[1];
 
   // If leaves are fewer than max_text_number, add a text layer
   if (
@@ -386,7 +377,6 @@ const useLayers = ({
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
       getSize: data.data.nodes.length < 200 ? 12 : 9.5,
-      modelMatrix: modelMatrix,
       getPixelOffset: [10, 0],
     };
 
@@ -502,7 +492,6 @@ const useLayers = ({
       getFillColor: settings.displaySearchesAsPoints
         ? lineColor
         : [255, 0, 0, 0],
-      modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [xType],
       },

@@ -16,8 +16,6 @@ import SnapshotButton from "./SnapshotButton";
 
 export const DeckButtons = ({
   loading,
-  setZoomAxis,
-  zoomAxis,
   snapshot,
   zoomIncrement,
   requestOpenSettings,
@@ -76,26 +74,6 @@ export const DeckButtons = ({
         >
           <TiCog className="mx-auto w-5 h-5 inline-block" />
         </TaxButton>
-        {/*<TaxButton
-        onClick={() => {
-          setZoomAxis(zoomAxis === "X" ? "Y" : "X");
-        }}
-        title={
-          zoomAxis === "X"
-            ? "Switch to vertical zoom"
-            : "Switch to horizontal zoom (you can also hold Ctrl key)"
-        }
-      >
-
-        <TiZoom className="mx-auto  w-5 h-5 inline-block m-0" />
-        {zoomAxis === "Y" ? (
-          <BiMoveVertical className="mx-auto  w-5 h-5 inline-block m-0" />
-        ) : (
-          <>
-            <BiMoveHorizontal className="mx-auto  w-5 h-5 inline-block m-0" />
-          </>
-        )}
-        </TaxButton>*/}
         <TaxButton
           onClick={() => {
             zoomReset();
