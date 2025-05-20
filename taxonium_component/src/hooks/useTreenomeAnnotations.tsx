@@ -1,8 +1,9 @@
-// @ts-nocheck
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const useTreenomeAnnotations = (settings) => {
-  const [trackList, setTrackList] = useState([]);
+  // Track list as returned from UCSC API. We don't currently define a
+  // detailed type for this structure, so fall back to `any`.
+  const [trackList, setTrackList] = useState<any>({});
   const baseUrl = "https://hgdownload.soe.ucsc.edu";
 
   async function getTrackList() {
@@ -30,7 +31,10 @@ const useTreenomeAnnotations = (settings) => {
         return null;
       }
       const fullUrl = `${baseUrl}${url}`;
-      const output = {
+      // The structure returned here is consumed by JBrowse which expects
+      // additional fields not described in our local types, so we keep it
+      // as a loosely-typed object.
+      const output: any = {
         trackId: key,
         name: name,
         assemblyNames: [settings.chromosomeName],

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo, useCallback, useState, useEffect } from "react";
 
 const useTreenomeState = (data, deckRef, view, settings) => {
@@ -99,7 +98,9 @@ const useTreenomeState = (data, deckRef, view, settings) => {
     }
   }, [settings.treenomeEnabled]);
 
-  const [jbrowseLoaded, setJbrowseLoaded] = useState(false);
+  // Stores either a boolean or a reference to the JBrowse element once it is
+  // detected. We keep the type loose to avoid type errors during detection.
+  const [jbrowseLoaded, setJbrowseLoaded] = useState<any>(false);
   const [handled, setHandled] = useState(false);
   useEffect(() => {
     if (jbrowseLoaded && !handled) {
