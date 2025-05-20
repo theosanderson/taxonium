@@ -171,9 +171,7 @@ export const InputSupplier = ({ inputHelper, className }) => {
       {!addingText && (
         <>
           <div>
-            <label
-              className="tx-button border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 cursor-pointer mb-3 inline-block"
-            >
+            <label className="tx-button border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 cursor-pointer mb-3 inline-block">
               Choose files
               <input
                 className="hidden"
