@@ -1,4 +1,19 @@
-export function getDefaultSearch(config: any, key?: string) {
+export interface SearchSpec {
+  key: string;
+  type: string;
+  method: string;
+  text: string;
+  gene: string;
+  position: number;
+  new_residue: string;
+  min_tips: number;
+}
+
+export interface SearchUtilConfig {
+  defaultSearch?: SearchSpec;
+}
+
+export function getDefaultSearch(config: SearchUtilConfig | null, key?: string): SearchSpec {
   if (!key) {
     key = Math.random().toString(36).substring(2, 15);
     console.log("generated key", key);

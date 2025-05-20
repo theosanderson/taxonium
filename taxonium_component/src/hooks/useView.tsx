@@ -1,5 +1,17 @@
 import { useState, useMemo, useCallback } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
+import type { OrthographicViewProps } from "@deck.gl/core";
+
+interface ViewStateChangeParameters<ViewStateT> {
+  viewId: string;
+  viewState: ViewStateT;
+  interactionState: Record<string, unknown>;
+  oldViewState?: ViewStateT;
+}
+
+interface StyledViewProps extends OrthographicViewProps {
+  borderWidth?: string;
+}
 
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
@@ -13,8 +25,10 @@ const defaultViewState = {
   "browser-axis": { zoom: -2, target: [0, 1000] },
 };
 
+type ViewStateType = typeof defaultViewState;
+
 const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
-  const [viewState, setViewState] = useState(defaultViewState);
+  const [viewState, setViewState] = useState<ViewStateType>(defaultViewState);
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
 
@@ -41,7 +55,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
           height: "35%",
           borderWidth: "1px",
           controller: controllerProps,
-        } as any)
+        } as StyledViewProps)
       );
     }
     if (settings.treenomeEnabled) {
@@ -52,13 +66,13 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
           x: "40%",
           y: "0%",
           width: "60%",
-        } as any),
+        } as StyledViewProps),
         new OrthographicView({
           id: "browser-main",
           controller: controllerProps,
           x: "40%",
           width: "60%",
-        } as any)
+        } as StyledViewProps)
       );
     }
     vs.push(
@@ -67,7 +81,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
         controller: controllerProps,
         width: settings.treenomeEnabled ? "40%" : "100%",
         initialViewState: viewState,
-      } as any)
+      } as StyledViewProps)
     );
     if (settings.treenomeEnabled) {
       vs.push(
@@ -76,24 +90,24 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
           controller: controllerProps,
           width: "100%",
           initialViewState: viewState,
-        } as any)
+        } as StyledViewProps)
       );
     }
     return vs;
   }, [controllerProps, viewState, settings]);
 
   const onViewStateChange = useCallback(
-    ({ viewState: newViewState, viewId, requestIsFromMinimapPan }) => {
+    ({ viewState: newViewState, viewId, requestIsFromMinimapPan }: ViewStateChangeParameters<ViewStateType> & { requestIsFromMinimapPan?: boolean }) => {
       if (mouseDownIsMinimap && !requestIsFromMinimapPan) {
         return false;
       }
 
-      (newViewState as any).minimap = { zoom: -3, target: [250, 1000] };
-      (newViewState as any)["browser-main"] = {
-        zoom: [-3, (newViewState as any).zoom[1]],
-        target: [250, (newViewState as any).target[1]],
+      newViewState.minimap = { zoom: -3, target: [250, 1000] };
+      newViewState["browser-main"] = {
+        zoom: -3,
+        target: [250, (newViewState as ViewStateType).target[1]],
       };
-      setViewState(newViewState as any);
+      setViewState(newViewState);
 
       return newViewState;
     },
@@ -102,7 +116,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
 
   const zoomIncrement = useCallback(
     (increment, axis = zoomAxis) => {
-      setViewState((vs: any) => {
+      setViewState((vs: ViewStateType) => {
         if (Array.isArray(vs.zoom)) {
           const newZoom = [...vs.zoom];
           if (axis === "X") {
@@ -113,9 +127,9 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
             newZoom[0] = newZoom[0] + increment;
             newZoom[1] = newZoom[1] + increment;
           }
-          return { ...vs, zoom: newZoom };
+          return { ...vs, zoom: newZoom } as ViewStateType;
         }
-        return { ...vs, zoom: vs.zoom + increment };
+        return { ...vs, zoom: (vs.zoom as number) + increment } as ViewStateType;
       });
     },
     [zoomAxis]

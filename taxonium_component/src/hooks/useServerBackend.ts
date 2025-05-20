@@ -206,7 +206,7 @@ function useServerBackend(backend_url, sid) {
         "&sid=" +
         sid;
       axios.get(url).then(function (response) {
-        callback((response as any).err, response.data);
+        callback((response.data as { err?: unknown }).err, response.data);
       });
     },
     [backend_url, sid]

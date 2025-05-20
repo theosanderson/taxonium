@@ -12,6 +12,19 @@ function addNodeLookup(data) {
   return output;
 }
 
+interface NodeData {
+  nodes: Array<Record<string, unknown>>;
+  [key: string]: unknown;
+}
+
+interface DynamicData {
+  status: string;
+  data: NodeData;
+  base_data?: NodeData;
+  base_data_is_invalid?: boolean;
+  lastBounds?: Record<string, number>;
+}
+
 function useGetDynamicData(
   backend,
   colorBy,
@@ -21,9 +34,9 @@ function useGetDynamicData(
   deckSize
 ) {
   const { queryNodes } = backend;
-  const [dynamicData, setDynamicData] = useState<any>({
+  const [dynamicData, setDynamicData] = useState<DynamicData>({
     status: "not_started",
-    data: [],
+    data: { nodes: [] },
   });
 
   let [boundsForQueries, setBoundsForQueries] = useState(null);
@@ -42,7 +55,7 @@ function useGetDynamicData(
           vs.max_y > boundsForQueries.max_y - vs.real_height / 2 ||
           Math.abs(vs.zoom[1] - boundsForQueries.zoom[1]) > 0.5))
     ) {
-      if ((window as any).log) {
+      if ((window as Window & { log?: boolean }).log) {
         console.log([
           vs.min_x,
           boundsForQueries ? boundsForQueries.min_x : null,

@@ -1,5 +1,9 @@
 import { useMemo, useEffect, useCallback } from "react";
 
+interface WindowWithCc extends Window {
+  cc?: unknown;
+}
+
 let colorCache = {}; // todo do this with state
 let cachedColorByPosition = null; // todo do this with state
 let cachedColorByGene = null; // todo do this with state
@@ -26,7 +30,7 @@ function useColorBy(config, query, updateQuery) {
     ? config.colorBy
     : { colorByOptions: [] };
 
-  (window as any).cc = colorCache;
+  (window as WindowWithCc).cc = colorCache;
 
   const setColorByField = useCallback(
     (field) => {
