@@ -118,7 +118,7 @@ function Taxonium({
   );
 
   const { data, boundsForQueries, isCurrentlyOutsideBounds } =
-    useGetDynamicData(backend, colorBy, view.viewState, config, xType);
+    useGetDynamicData(backend, colorBy, view.viewState, config, xType, deckSize);
 
   const perNodeFunctions = usePerNodeFunctions(data, config);
 
