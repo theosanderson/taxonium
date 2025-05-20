@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 
 interface DebounceInputProps {
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  value: string | number;
+  onChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   debounceTime?: number;
   className?: string;
   placeholder?: string;
