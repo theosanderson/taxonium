@@ -107,7 +107,7 @@ function Deck({
 
       //console.log("onClickOrMouseMove", event);
 
-      const pickInfo = deckRef.current.pickObject({
+      const pickInfo = deckRef.current?.pickObject({
         x: event.nativeEvent.offsetX,
         y: event.nativeEvent.offsetY,
         radius: 10,

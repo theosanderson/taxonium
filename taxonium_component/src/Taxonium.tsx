@@ -10,6 +10,7 @@ import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
 import { useMemo, useState, useRef } from "react";
+import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import useConfig from "./hooks/useConfig";
@@ -63,8 +64,8 @@ function Taxonium({
     setAboutEnabled = () => {};
   }
 
-  const deckRef = useRef<any>(null);
-  const jbrowseRef = useRef<any>(null);
+  const deckRef = useRef<DeckGLRef | null>(null);
+  const jbrowseRef = useRef<HTMLSpanElement | null>(null);
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const [deckSize, setDeckSize] = useState(null);
