@@ -28,7 +28,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "check-types": "tsc --noEmit"
   },
   "peerDependencies": {
     "prop-types": "^15.8.1",
@@ -77,6 +78,7 @@
     "stream-json": "^1.9.1",
     "tailwindcss": "^4.1.6",
     "taxonium_data_handling": "file:../taxonium_data_handling",
+    "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-node-polyfills": "^0.17.0",
