@@ -1,4 +1,22 @@
 import classNames from "classnames";
+import { ReactNode, MouseEventHandler, ChangeEventHandler } from "react";
+
+export interface ButtonProps {
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  className?: string;
+  children?: ReactNode;
+  title?: string;
+  href?: string;
+  target?: string;
+}
+
+export interface SelectProps {
+  onChange?: ChangeEventHandler<HTMLSelectElement>;
+  className?: string;
+  children?: ReactNode;
+  value?: string | number | readonly string[];
+  title?: string;
+}
 
 export const Button = ({
   onClick,
@@ -7,7 +25,7 @@ export const Button = ({
   title,
   href,
   target,
-}: any) => {
+}: ButtonProps) => {
   if (href && onClick) {
     throw new Error("Button cannot have both href and onClick");
   }
@@ -49,7 +67,7 @@ export const Select = ({
   children,
   value,
   title,
-}: any) => {
+}: SelectProps) => {
   return (
     <select
       className={classNames(
