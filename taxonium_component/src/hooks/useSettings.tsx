@@ -2,7 +2,13 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import getDefaultQuery from "../utils/getDefaultQuery";
 const default_query = getDefaultQuery();
-export const useSettings = ({ query, updateQuery }) => {
+
+interface UseSettingsProps {
+  query: any;
+  updateQuery: (q: any) => void;
+}
+
+export const useSettings = ({ query, updateQuery }: UseSettingsProps) => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
     useState(false);
@@ -51,7 +57,7 @@ export const useSettings = ({ query, updateQuery }) => {
   }, [query.treenomeEnabled]);
 
   const setTreenomeEnabled = useCallback(
-    (value) => {
+    (value: boolean) => {
       updateQuery({ treenomeEnabled: JSON.stringify(value) });
       toast(`Treenome Browser is now ${value ? "enabled" : "disabled"}`, {
         position: "bottom-center",
@@ -61,15 +67,15 @@ export const useSettings = ({ query, updateQuery }) => {
   );
 
   const filterMutations = useCallback(
-    (mutations) => {
+    (mutations: any[]) => {
       return mutations.filter(
-        (mutation) => mutationTypesEnabled[mutation.type]
+        (mutation: any) => mutationTypesEnabled[mutation.type]
       );
     },
     [mutationTypesEnabled]
   );
 
-  const setMutationTypeEnabled = (key, enabled) => {
+  const setMutationTypeEnabled = (key: string, enabled: boolean) => {
     const newMutationTypesEnabled = { ...mutationTypesEnabled };
     newMutationTypesEnabled[key] = enabled;
     updateQuery({

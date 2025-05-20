@@ -122,8 +122,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
 
   const zoomIncrement = useCallback(
     (increment: number, axis: string | undefined = zoomAxis) => {
-      setViewState((vs: ViewStateType) => {
-        if (Array.isArray(vs.zoom)) {
+        setViewState((vs: ViewStateType) => {
           const newZoom = [...vs.zoom];
           if (axis === "X") {
             newZoom[0] = newZoom[0] + increment;
@@ -134,9 +133,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
             newZoom[1] = newZoom[1] + increment;
           }
           return { ...vs, zoom: newZoom } as ViewStateType;
-        }
-        return { ...vs, zoom: (vs.zoom as number) + increment } as ViewStateType;
-      });
+        });
     },
     [zoomAxis]
   );

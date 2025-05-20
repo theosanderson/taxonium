@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
-function usePerNodeFunctions(data, config) {
-  const getNodeGenotype = (node_id) => {
+function usePerNodeFunctions(data: any, config: any) {
+  const getNodeGenotype = (node_id: string) => {
     console.log("data", data);
 
     let data_to_use;
@@ -20,14 +20,14 @@ function usePerNodeFunctions(data, config) {
     }
     let cur_node = data_to_use.nodeLookup[node_id];
 
-    const assembled_mutations = [];
+    const assembled_mutations: any[] = [];
 
     while (cur_node.parent_id !== cur_node.node_id) {
       const nt_mutations = cur_node.mutations.filter(
-        (mutation) => mutation.type === "nt"
+        (mutation: any) => mutation.type === "nt"
       );
       const filtered_nt_mutations = nt_mutations.filter(
-        (mutation) =>
+        (mutation: any) =>
           !assembled_mutations.some(
             (m) => m.residue_pos === mutation.residue_pos
           )
@@ -37,7 +37,7 @@ function usePerNodeFunctions(data, config) {
     }
     return assembled_mutations;
   };
-  const getCovSpectrumQuery = (node_id) => {
+  const getCovSpectrumQuery = (node_id: string) => {
     const genotype = getNodeGenotype(node_id);
     if (!genotype) {
       return "";

@@ -6,7 +6,11 @@ interface WindowWithAnalytics extends Window {
   gtag?: (...args: unknown[]) => void;
 }
 
-function useBackend(backend_url, sid, uploaded_data) {
+function useBackend(
+  backend_url: string | null | undefined,
+  sid: string | null | undefined,
+  uploaded_data: any
+) {
   const serverBackend = useServerBackend(backend_url, sid);
   const localBackend = useLocalBackend(uploaded_data);
   if (backend_url) {

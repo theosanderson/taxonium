@@ -13,7 +13,7 @@ const useTreenomeState = (
   const [bpWidth, setBpWidth] = useState(0);
 
   const [genomeSize, setGenomeSize] = useState(0);
-  const [genome, setGenome] = useState(null);
+  const [genome, setGenome] = useState<string | null>(null);
 
   useEffect(() => {
     if (
