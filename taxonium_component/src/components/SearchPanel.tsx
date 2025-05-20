@@ -158,9 +158,9 @@ function SearchPanel({
               {" "}
               <FaShare className="inline-block" />
             </a>
-            <ReactTooltipAny
-              id="menu_descendants"
-              getContent={(dataTip) => (
+              <ReactTooltipAny
+                id="menu_descendants"
+                getContent={(dataTip: string | undefined) => (
                 <div>
                   <h2>For this clade:</h2>
                   <div className="mb-3">
@@ -322,7 +322,7 @@ function SearchPanel({
               }
               className="text-gray-500 text-xs py-0.5"
             >
-              {config.x_accessors.map((x) => (
+              {config.x_accessors.map((x: keyof typeof prettify_x_types) => (
                 <option key={x} value={x}>
                   {prettify_x_types[x]}
                 </option>
@@ -376,11 +376,11 @@ function SearchPanel({
               colorBy.setColorByField(e.target.value)
             }
           >
-            {colorBy.colorByOptions.map((item) => (
-              <option key={item} value={item}>
-                {prettifyName(item, config)}
-              </option>
-            ))}
+              {colorBy.colorByOptions.map((item: string) => (
+                <option key={item} value={item}>
+                  {prettifyName(item, config)}
+                </option>
+              ))}
           </Select>
         </div>
         {colorBy.colorByField === "genotype" && (
@@ -395,11 +395,11 @@ function SearchPanel({
                 className="w-20"
               >
                 {config.genes &&
-                  config.genes.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                    config.genes.map((item: string) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
               </Select>
             </label>
             <label className="space-x-2">
@@ -522,17 +522,17 @@ function SearchPanel({
                   {settings.miniMutationsMenu()}
                 </div>
                 <div className="text-xs leading-5 mt-1 text-gray-700">
-                  {settings
-                    .filterMutations(selectedDetails.nodeDetails.mutations)
-                    .sort((a, b) => {
-                      if (a.gene !== b.gene) {
-                        return a.gene > b.gene ? 1 : -1;
-                      }
-                      return parseInt(a.residue_pos) > parseInt(b.residue_pos)
-                        ? 1
-                        : -1;
-                    })
-                    .map((mutation, i) => (
+                    {settings
+                      .filterMutations(selectedDetails.nodeDetails.mutations)
+                      .sort((a: any, b: any) => {
+                        if (a.gene !== b.gene) {
+                          return a.gene > b.gene ? 1 : -1;
+                        }
+                        return parseInt(a.residue_pos) > parseInt(b.residue_pos)
+                          ? 1
+                          : -1;
+                      })
+                      .map((mutation: any, i: number) => (
                       <span key={mutation.mutation_id}>
                         {i > 0 && <>, </>}
                         <div className="inline-block">
