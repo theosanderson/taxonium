@@ -169,6 +169,7 @@ function Taxonium({
     <div className="w-full h-full flex">
       <Toaster />
       <ReactTooltip
+        id="global-tooltip"
         delayHide={400}
         className="infoTooltip"
         place="top"

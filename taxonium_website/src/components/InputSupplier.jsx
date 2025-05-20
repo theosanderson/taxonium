@@ -1,8 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { BsTrash, BsQuestionCircle } from "react-icons/bs";
 import { Button, Select } from "./Basic";
 import { BiFile, BiLink } from "react-icons/bi";
-import ReactTooltip from "react-tooltip";
 
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
@@ -25,10 +24,6 @@ const prettyTypes = {
 const fileTypes = Object.keys(prettyTypes);
 
 export const InputSupplier = ({ inputHelper, className }) => {
-  useEffect(() => {
-    ReactTooltip.rebuild();
-  });
-
   const [tempURL, setTempURL] = useState("");
   const [useProxy, setUseProxy] = useState(false); // New state for proxy usage
 
@@ -123,7 +118,8 @@ export const InputSupplier = ({ inputHelper, className }) => {
                 </label>{" "}
                 <button
                   style={{ cursor: "default" }}
-                  data-tip="Ladderizing will preserve the tree's topology, but sort the nodes according to how many descendants they have"
+                  data-tooltip-id="global-tooltip"
+                  data-tooltip-content="Ladderizing will preserve the tree's topology, but sort the nodes according to how many descendants they have"
                 >
                   <span
                     style={{
