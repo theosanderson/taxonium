@@ -5,14 +5,14 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "bundler",
-    "strict": false,  // You can make this true later
-    "allowJs": true,  // Critical for incremental migration
+    "strict": false, // You can make this true later
+    "allowJs": true, // Critical for incremental migration
     "checkJs": false, // Can enable later
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "noEmit": true,
-    "jsx": "react-jsx",  // If using React
+    "jsx": "react-jsx", // If using React
     "skipLibCheck": true
   },
   "include": ["src"]
