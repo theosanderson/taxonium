@@ -2,8 +2,10 @@ import { useCallback } from "react";
 
 const useSnapshot = (deckRef) => {
   const snapshot = useCallback(() => {
-    let canvas = deckRef.current.deck.canvas;
-    deckRef.current.deck.redraw(true);
+    const deck = deckRef.current?.deck;
+    if (!deck) return;
+    const canvas = deck.canvas;
+    deck.redraw(true);
     let a = document.createElement("a");
 
     a.href = canvas
