@@ -10,24 +10,32 @@ import { useMemo, useCallback } from "react";
 import computeBounds from "../utils/computeBounds";
 import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
+import type { Node } from "../types/node";
+import type { NodeLookupData } from "../types/backend";
 
-const getKeyStuff = (getNodeColorField, colorByField, dataset, toRGB) => {
-  const counts = {};
+const getKeyStuff = (
+  getNodeColorField: (node: Node, data: NodeLookupData) => string | number,
+  colorByField: string,
+  dataset: NodeLookupData,
+  toRGB: (value: string | number) => [number, number, number]
+) => {
+  const counts: Record<string, number> = {};
   for (const node of dataset.nodes) {
     const value = getNodeColorField(node, dataset);
-    if (value in counts) {
-      counts[value]++;
+    const key = String(value);
+    if (key in counts) {
+      counts[key]++;
     } else {
-      counts[value] = 1;
+      counts[key] = 1;
     }
   }
   const keys = Object.keys(counts);
-  const output = [];
+  const output: Array<{ value: string; count: number; color: [number, number, number] }> = [];
   for (const key of keys) {
     output.push({ value: key, count: counts[key], color: toRGB(key) });
   }
   return output;
-};
+}; 
 
 const useLayers = ({
   data,

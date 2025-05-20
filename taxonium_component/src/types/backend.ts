@@ -61,3 +61,50 @@ export interface DynamicDataWithLookup {
   base_data: NodeLookupData;
   [key: string]: unknown;
 }
+
+export interface StatusMessage {
+  percentage?: number;
+  message?: string | null;
+  [key: string]: unknown;
+}
+
+import type { Dispatch, SetStateAction } from "react";
+
+export interface BaseBackend {
+  queryNodes(
+    boundsForQueries: QueryBounds | null,
+    setResult: (res: NodesResponse) => void,
+    setTriggerRefresh: (v: Record<string, unknown>) => void,
+    config: Config
+  ): void;
+  singleSearch(
+    singleSearch: unknown,
+    boundsForQueries: QueryBounds | null,
+    setResult: (res: SearchResult) => void
+  ): { abortController: { abort: () => void } };
+  getDetails(node_id: string | number, setResult: (res: NodeDetails) => void): void;
+  getConfig(setResult: (res: Config) => void): void;
+  setStatusMessage: Dispatch<SetStateAction<StatusMessage | null>>;
+  statusMessage: StatusMessage | null;
+  getTipAtts(
+    nodeId: string | number,
+    selectedKey: string,
+    callback: (err: unknown, data: unknown) => void
+  ): void;
+  getNextstrainJson(nodeId: string | number, config: Config): void;
+  type: "local" | "server";
+}
+
+export interface ServerBackend extends BaseBackend {
+  type: "server";
+  backend_url: string | null;
+  getNextstrainJsonUrl(nodeId: string | number, config: Config): string;
+}
+
+export interface LocalBackend extends BaseBackend {
+  type: "local";
+  backend_url?: undefined;
+  getNextstrainJsonUrl?(nodeId: string | number, config: Config): string;
+}
+
+export type Backend = ServerBackend | LocalBackend;
