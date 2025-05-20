@@ -25,6 +25,22 @@ interface DynamicData {
   lastBounds?: Record<string, number>;
 }
 
+export function isOutsideBounds(
+  vs: Record<string, number>,
+  dynamicData: DynamicData | null
+) {
+  return (
+    vs.min_x !== undefined &&
+    dynamicData &&
+    dynamicData.lastBounds &&
+    dynamicData.lastBounds.min_x !== undefined &&
+    (vs.min_x < dynamicData.lastBounds.min_x ||
+      vs.max_x > dynamicData.lastBounds.max_x ||
+      vs.min_y < dynamicData.lastBounds.min_y ||
+      vs.max_y > dynamicData.lastBounds.max_y)
+  );
+}
+
 function useGetDynamicData(
   backend,
   colorBy,
@@ -81,16 +97,7 @@ function useGetDynamicData(
 
   const isCurrentlyOutsideBounds = useMemo(() => {
     const vs = computeBounds({ ...viewState }, deckSize);
-    return (
-      vs.min_x &&
-      dynamicData &&
-      dynamicData.lastBounds &&
-      dynamicData.lastBounds.min_x &&
-      (vs.min_x < dynamicData.lastBounds.min_x ||
-        vs.max_x > dynamicData.lastBounds.max_x ||
-        vs.min_y < dynamicData.lastBounds.min_y ||
-        vs.max_y > dynamicData.lastBounds.max_y)
-    );
+    return isOutsideBounds(vs, dynamicData);
   }, [viewState, dynamicData, deckSize]);
 
   useEffect(() => {
