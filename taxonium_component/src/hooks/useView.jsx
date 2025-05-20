@@ -25,7 +25,7 @@ const useView = ({ settings }) => {
       type: OrthographicController,
       scrollZoom: true,
     }),
-    [],
+    []
   );
 
   const views = useMemo(() => {
@@ -40,7 +40,7 @@ const useView = ({ settings }) => {
           height: "35%",
           borderWidth: "1px",
           controller: controllerProps,
-        }),
+        })
       );
     }
     if (settings.treenomeEnabled) {
@@ -57,7 +57,7 @@ const useView = ({ settings }) => {
           controller: controllerProps,
           x: "40%",
           width: "60%",
-        }),
+        })
       );
     }
     vs.push(
@@ -66,7 +66,7 @@ const useView = ({ settings }) => {
         controller: controllerProps,
         width: settings.treenomeEnabled ? "40%" : "100%",
         initialViewState: viewState,
-      }),
+      })
     );
     if (settings.treenomeEnabled) {
       vs.push(
@@ -75,7 +75,7 @@ const useView = ({ settings }) => {
           controller: controllerProps,
           width: "100%",
           initialViewState: viewState,
-        }),
+        })
       );
     }
     return vs;

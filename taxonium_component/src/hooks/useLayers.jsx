@@ -66,7 +66,7 @@ const useLayers = ({
     treenomeReferenceInfo,
     setTreenomeReferenceInfo,
     selectedDetails,
-    isCurrentlyOutsideBounds,
+    isCurrentlyOutsideBounds
   );
   layers.push(...treenomeLayers);
 
@@ -92,11 +92,11 @@ const useLayers = ({
 
   const clade_data = useMemo(() => {
     const initial_data = detailed_data.nodes.filter(
-      (n) => n.clades && n.clades[clade_accessor],
+      (n) => n.clades && n.clades[clade_accessor]
     );
 
     const rev_sorted_by_num_tips = initial_data.sort(
-      (a, b) => b.num_tips - a.num_tips,
+      (a, b) => b.num_tips - a.num_tips
     );
 
     // pick top settings.minTipsForCladeText
@@ -124,7 +124,7 @@ const useLayers = ({
       (node) =>
         node.is_tip ||
         (node.is_tip === undefined && node.num_tips === 1) ||
-        settings.displayPointsForInternalNodes,
+        settings.displayPointsForInternalNodes
     );
   }, [detailed_data, settings.displayPointsForInternalNodes]);
 
@@ -134,7 +134,7 @@ const useLayers = ({
           (node) =>
             node.is_tip ||
             (node.is_tip === undefined && node.num_tips === 1) ||
-            settings.displayPointsForInternalNodes,
+            settings.displayPointsForInternalNodes
         )
       : [];
   }, [base_data, settings.displayPointsForInternalNodes]);
@@ -189,9 +189,9 @@ const useLayers = ({
       d === (hoverInfo && hoverInfo.object)
         ? 3
         : selectedDetails.nodeDetails &&
-            selectedDetails.nodeDetails.node_id === d.node_id
-          ? 3.5
-          : 1,
+          selectedDetails.nodeDetails.node_id === d.node_id
+        ? 3.5
+        : 1,
 
     onHover: (info) => setHoverInfo(info),
 
@@ -213,9 +213,9 @@ const useLayers = ({
       d === (hoverInfo && hoverInfo.object)
         ? 2
         : selectedDetails.nodeDetails &&
-            selectedDetails.nodeDetails.node_id === d.node_id
-          ? 2.5
-          : 1,
+          selectedDetails.nodeDetails.node_id === d.node_id
+        ? 2.5
+        : 1,
     modelMatrix: modelMatrix,
     updateTriggers: {
       getSourcePosition: [detailed_data, xType],
@@ -352,7 +352,7 @@ const useLayers = ({
       fillin_scatter_layer,
       clade_label_layer,
       selectedLayer,
-      hoveredLayer,
+      hoveredLayer
     );
   }
 
@@ -372,7 +372,7 @@ const useLayers = ({
       data: data.data.nodes.filter((node) =>
         settings.displayTextForInternalNodes
           ? true
-          : node.is_tip || (node.is_tip === undefined && node.num_tips === 1),
+          : node.is_tip || (node.is_tip === undefined && node.num_tips === 1)
       ),
       getPosition: (d) => [getX(d), d.y],
       getText: (d) => d[config.name_accessor],
@@ -555,7 +555,7 @@ const useLayers = ({
 
       return first_bit;
     },
-    [isCurrentlyOutsideBounds],
+    [isCurrentlyOutsideBounds]
   );
 
   const processedLayers = layers
@@ -581,7 +581,7 @@ const useLayers = ({
 
   const { triggerSVGdownload } = getSVGfunction(
     layers.filter((x) => x !== null),
-    viewState,
+    viewState
   );
 
   return { layers: processedLayers, layerFilter, keyStuff, triggerSVGdownload };
