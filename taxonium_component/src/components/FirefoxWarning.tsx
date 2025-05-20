@@ -1,9 +1,20 @@
-// @ts-nocheck
-/* React functional component that warns you if you are using Firefox that the page will be slow. Only shows if using firefox. */
+/* React functional component that warns you if you are using Firefox that the
+page will be slow. Only shows if using firefox. */
 
-const FirefoxWarning = ({ className }) => {
+export interface FirefoxWarningProps {
+  className?: string;
+}
+
+/**
+ * Firefox exposes `InstallTrigger` as a global. Declare it so TypeScript knows
+ * about it when this component checks for its presence.
+ */
+declare const InstallTrigger: unknown;
+
+const FirefoxWarning = ({ className }: FirefoxWarningProps) => {
+  // Feature currently disabled because Firefox works best for large trees on
+  // MacOS
   return null;
-  // this feature currently disabled because Firefox works best for large trees on MacOS
   const isFirefox = typeof InstallTrigger !== "undefined";
   if (isFirefox) {
     return (
