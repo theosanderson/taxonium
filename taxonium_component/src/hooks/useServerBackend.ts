@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback, useMemo, useState } from "react";
 import axios from "axios";
 
@@ -207,7 +206,7 @@ function useServerBackend(backend_url, sid) {
         "&sid=" +
         sid;
       axios.get(url).then(function (response) {
-        callback(response.err, response.data);
+        callback((response as any).err, response.data);
       });
     },
     [backend_url, sid]

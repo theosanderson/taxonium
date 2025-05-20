@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { SketchPicker } from "react-color";
 
@@ -11,7 +10,7 @@ const listToRgb = (list) => {
 };
 
 function ColorPicker({ color, setColor }) {
-  const rgbColor = listToRgb(color);
+  const rgbColor = listToRgb(color) as any;
   const [showPicker, setShowPicker] = useState(false);
 
   const togglePicker = () => {
