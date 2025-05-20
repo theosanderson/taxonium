@@ -45,7 +45,7 @@ function ColorPicker({ color, setColor }) {
               height: "14px",
               borderRadius: "2px",
               background: `rgba(${rgbColor.r},${rgbColor.g},${rgbColor.b},${
-                rgbColor.a || 1
+                (rgbColor as any).a || 1
               })`,
             }}
           />

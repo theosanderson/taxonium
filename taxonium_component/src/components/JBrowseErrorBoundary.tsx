@@ -1,7 +1,7 @@
 import React from "react";
 import { toast } from "react-hot-toast";
 
-export class JBrowseErrorBoundary extends React.Component {
+export class JBrowseErrorBoundary extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = { fileError: false, otherError: false };
