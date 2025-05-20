@@ -21,7 +21,7 @@ const useConfig = (
       const viewState = {
         ...view.viewState,
         target: [2000, results.initial_y],
-        zoom: results.initial_zoom,
+        zoom: [-2, 0],
       };
 
       const oldViewState = { ...viewState };

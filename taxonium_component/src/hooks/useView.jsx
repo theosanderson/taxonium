@@ -1,10 +1,12 @@
 import { useState, useMemo, useCallback } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
 
+
+
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 const defaultViewState = {
-  zoom: -2,
+  zoom: [-2, 0],
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
   pitch: 0,
   bearing: 0,
@@ -24,6 +26,7 @@ const useView = ({ settings }) => {
     () => ({
       type: OrthographicController,
       scrollZoom: true,
+      zoomAxis: 'Y'
     }),
     [],
   );
@@ -82,12 +85,13 @@ const useView = ({ settings }) => {
   }, [controllerProps, viewState, settings]);
 
   const onViewStateChange = useCallback(({ viewState: newViewState }) => {
+    console.log("onViewStateChange", newViewState);
     setViewState(newViewState);
     return newViewState;
   }, []);
 
   const zoomIncrement = useCallback((increment) => {
-    setViewState((vs) => ({ ...vs, zoom: vs.zoom + increment }));
+    //setViewState((vs) => ({ ...vs, zoom: vs.zoom + increment }));
   }, []);
 
   const zoomReset = useCallback(() => {
