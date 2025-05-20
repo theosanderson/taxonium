@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import type { HoverDetails, Mutation, Node } from "../types/node";
 
 const fixName = (name: string) => {
   return name;
@@ -13,12 +14,12 @@ const fixAuthors = (authors: string) => {
 };
 
 interface NodeHoverTipProps {
-  hoverInfo: any;
-  hoverDetails: any;
+  hoverInfo: { x: number; y: number; object: Node } | null;
+  hoverDetails?: HoverDetails | null;
   colorHook: any;
   colorBy: any;
   config: any;
-  filterMutations: (mutations: any[]) => any[];
+  filterMutations: (mutations: Mutation[]) => Mutation[];
   deckSize: { width: number; height: number };
 }
 
@@ -35,14 +36,16 @@ const NodeHoverTip = ({
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
       const starting = hoverInfo.object.mutations;
       // sort by gene and then by residue_pos
-    return starting.sort((a: any, b: any) => {
+      return starting.sort((a: Mutation, b: Mutation) => {
         if (a.gene !== b.gene) {
           return a.gene > b.gene ? 1 : -1;
         }
-        return parseInt(a.residue_pos) > parseInt(b.residue_pos) ? 1 : -1;
+        return parseInt(a.residue_pos ?? "0") > parseInt(b.residue_pos ?? "0")
+          ? 1
+          : -1;
       });
     } else {
-      return [];
+      return [] as Mutation[];
     }
   }, [hoverInfo]);
 
@@ -53,7 +56,7 @@ const NodeHoverTip = ({
   if (!hoverInfo) {
     return null;
   }
-  const hoveredNode = hoverInfo.object;
+  const hoveredNode: Node = hoverInfo.object;
   if (
     !hoveredNode ||
     hoveredNode.node_id === undefined ||
@@ -136,7 +139,7 @@ const NodeHoverTip = ({
         config.useHydratedMutations > 0) && (
         <div>
           <div className="mutations text-xs">
-            {mutations.map((mutation: any, i: number) => (
+            {mutations.map((mutation: Mutation, i: number) => (
               <span key={mutation.mutation_id}>
                 {i > 0 && <>, </>}
                 <div className="inline-block">
@@ -149,7 +152,7 @@ const NodeHoverTip = ({
             {mutations.length === 0 && (
               <div className="text-xs italic">
                 No{" "}
-                {filterMutations([{ type: "nt" }]).length === 0 ? (
+                {filterMutations([{ type: "nt" } as Mutation]).length === 0 ? (
                   <>coding</>
                 ) : (
                   <></>
