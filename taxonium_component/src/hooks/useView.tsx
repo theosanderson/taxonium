@@ -27,7 +27,13 @@ const defaultViewState = {
 
 type ViewStateType = typeof defaultViewState;
 
-const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
+interface UseViewProps {
+  settings: any;
+  deckSize: any;
+  mouseDownIsMinimap: boolean;
+}
+
+const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   const [viewState, setViewState] = useState<ViewStateType>(defaultViewState);
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
@@ -115,7 +121,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
   );
 
   const zoomIncrement = useCallback(
-    (increment, axis = zoomAxis) => {
+    (increment: number, axis: string | undefined = zoomAxis) => {
       setViewState((vs: ViewStateType) => {
         if (Array.isArray(vs.zoom)) {
           const newZoom = [...vs.zoom];

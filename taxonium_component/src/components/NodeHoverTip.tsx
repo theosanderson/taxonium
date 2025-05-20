@@ -1,16 +1,26 @@
 import { useMemo } from "react";
 
-const fixName = (name) => {
+const fixName = (name: string) => {
   return name;
   //return typeof name == "string"
   //   ? name.replace("hCoV-19/", "hCoV-19/\n")
   //   : name;
 };
 
-const fixAuthors = (authors) => {
+const fixAuthors = (authors: string) => {
   // make sure comma is always followed by space
   return authors.replace(/,([^\s])/g, ", $1");
 };
+
+interface NodeHoverTipProps {
+  hoverInfo: any;
+  hoverDetails: any;
+  colorHook: any;
+  colorBy: any;
+  config: any;
+  filterMutations: (mutations: any[]) => any[];
+  deckSize: { width: number; height: number };
+}
 
 const NodeHoverTip = ({
   hoverInfo,
@@ -20,12 +30,12 @@ const NodeHoverTip = ({
   config,
   filterMutations,
   deckSize,
-}) => {
+}: NodeHoverTipProps) => {
   const initial_mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
       const starting = hoverInfo.object.mutations;
       // sort by gene and then by residue_pos
-      return starting.sort((a, b) => {
+    return starting.sort((a: any, b: any) => {
         if (a.gene !== b.gene) {
           return a.gene > b.gene ? 1 : -1;
         }
@@ -102,7 +112,7 @@ const NodeHoverTip = ({
       )}
 
       {config.keys_to_display.map(
-        (key) =>
+        (key: string) =>
           hoveredNode[key] &&
           !(config.metadataTypes && config.metadataTypes[key] === "sequence") &&
           !(
@@ -126,7 +136,7 @@ const NodeHoverTip = ({
         config.useHydratedMutations > 0) && (
         <div>
           <div className="mutations text-xs">
-            {mutations.map((mutation, i) => (
+            {mutations.map((mutation: any, i: number) => (
               <span key={mutation.mutation_id}>
                 {i > 0 && <>, </>}
                 <div className="inline-block">

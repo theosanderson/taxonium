@@ -2,7 +2,11 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { FaCircle, FaRegCircle } from "react-icons/fa";
 
-const SearchDisplayToggle = ({ settings }) => {
+interface SearchDisplayToggleProps {
+  settings: any;
+}
+
+const SearchDisplayToggle = ({ settings }: SearchDisplayToggleProps) => {
   const { displaySearchesAsPoints, setDisplaySearchesAsPoints } = settings;
   const toggleDisplay = () => {
     // Toggle the displaySearchesAsPoints value

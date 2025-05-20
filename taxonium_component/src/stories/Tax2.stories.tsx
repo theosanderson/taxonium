@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Taxonium from "../Taxonium";
 
-const WithState = (args) => {
+const WithState = (args: any) => {
   const [state, setState] = useState({});
-  const updateQuery = (newState) => {
+  const updateQuery = (newState: any) => {
     setState({ ...state, ...newState });
   };
   return (

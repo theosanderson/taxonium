@@ -21,24 +21,43 @@ import SearchDisplayToggle from "./SearchDisplayToggle";
 
 const prettify_x_types = { x_dist: "Distance", x_time: "Time" };
 
-const formatNumber = (num) => {
+const formatNumber = (num: number | null) => {
   return num !== null && typeof num === "number" ? num.toLocaleString() : "";
 };
 
-const formatNumberIfNumber = (possNum) => {
+const formatNumberIfNumber = (possNum: number | string) => {
   return typeof possNum === "number" ? possNum.toLocaleString() : possNum;
 };
-const fixName = (name) => {
+const fixName = (name: string) => {
   return name;
   //return typeof name == "string"
   //  ? name.replace("hCoV-19/", "hCoV-19/\n")
   //  : name;
 };
 
-const fixAuthors = (authors) => {
+const fixAuthors = (authors: string) => {
   // make sure comma is always followed by space
   return authors.replace(/,([^\s])/g, ", $1");
 };
+
+interface SearchPanelProps {
+  search: any;
+  colorBy: any;
+  config: any;
+  selectedDetails: any;
+  overlayContent: any;
+  setAboutEnabled: (enabled: boolean) => void;
+  colorHook: any;
+  xType: string;
+  setxType: (val: string) => void;
+  settings: any;
+  backend: any;
+  className?: string;
+  treenomeState: any;
+  view: any;
+  perNodeFunctions: any;
+  toggleSidebar: () => void;
+}
 
 function SearchPanel({
   search,
@@ -57,7 +76,7 @@ function SearchPanel({
   view,
   perNodeFunctions,
   toggleSidebar,
-}) {
+}: SearchPanelProps) {
   const covSpectrumQuery = useMemo(() => {
     if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
       return perNodeFunctions.getCovSpectrumQuery(
@@ -77,7 +96,7 @@ function SearchPanel({
     }
   };
 
-  const formatMetadataItem = (key) => {
+  const formatMetadataItem = (key: string) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
     if (key === "num_tips" && selectedDetails.nodeDetails[key] === 1) return;
 

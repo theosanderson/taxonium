@@ -1,16 +1,16 @@
 import { useState } from "react";
 import Taxonium from "../Taxonium";
 
-const WithState = (args) => {
+const WithState = (args: any) => {
   const [state, setState] = useState({});
-  const updateQuery = (newState) => {
+  const updateQuery = (newState: any) => {
     setState({ ...state, ...newState });
   };
   return <Taxonium {...args} query={state} updateQuery={updateQuery} />;
 };
 
 // Wrapper component to ensure consistent sizing
-const SizedWrapper = ({ children }) => (
+const SizedWrapper = ({ children }: { children: React.ReactNode }) => (
   <div style={{ width: "100%", height: "500px" }}>{children}</div>
 );
 
@@ -18,7 +18,7 @@ export default {
   title: "Example/Page",
   component: Taxonium,
   decorators: [
-    (Story) => (
+    (Story: any) => (
       <SizedWrapper>
         <Story />
       </SizedWrapper>

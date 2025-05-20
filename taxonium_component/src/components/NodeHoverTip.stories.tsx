@@ -11,7 +11,7 @@ export default {
 
 // Create mock color hook
 const mockColorHook = {
-  toRGBCSS: (value) => {
+  toRGBCSS: (value: string) => {
     const colorMap = {
       Alpha: "rgb(200, 100, 100)",
       Beta: "rgb(100, 200, 100)",
@@ -26,8 +26,8 @@ const mockColorHook = {
 };
 
 // Filter mutations based on type
-const filterMutations = (mutations) => {
-  return mutations.filter((m) => m.type !== "nt");
+const filterMutations = (mutations: any[]) => {
+  return mutations.filter((m: any) => m.type !== "nt");
 };
 
 // Base config for all stories
@@ -85,7 +85,7 @@ export const TerminalNode = {
     colorHook: mockColorHook,
     colorBy: {
       colorByField: "lineage",
-      getNodeColorField: (node) => node.lineage,
+      getNodeColorField: (node: any) => node.lineage,
     },
     config: baseConfig,
     filterMutations: filterMutations,
@@ -106,7 +106,7 @@ export const InternalNode = {
     colorHook: mockColorHook,
     colorBy: {
       colorByField: "lineage",
-      getNodeColorField: (node) => node.lineage,
+      getNodeColorField: (node: any) => node.lineage,
     },
     config: baseConfig,
     filterMutations: filterMutations,
@@ -122,7 +122,7 @@ export const GenotypeColoring = {
       colorByField: "genotype",
       colorByGene: "S",
       colorByPosition: "484",
-      getNodeColorField: (node) => "G",
+      getNodeColorField: (node: any) => "G",
     },
     config: baseConfig,
     filterMutations: filterMutations,
@@ -146,7 +146,7 @@ export const WithAcknowledgements = {
     colorHook: mockColorHook,
     colorBy: {
       colorByField: "lineage",
-      getNodeColorField: (node) => node.lineage,
+      getNodeColorField: (node: any) => node.lineage,
     },
     config: baseConfig,
     filterMutations: filterMutations,
@@ -164,7 +164,7 @@ export const BottomRightPosition = {
     colorHook: mockColorHook,
     colorBy: {
       colorByField: "lineage",
-      getNodeColorField: (node) => node.lineage,
+      getNodeColorField: (node: any) => node.lineage,
     },
     config: baseConfig,
     filterMutations: filterMutations,

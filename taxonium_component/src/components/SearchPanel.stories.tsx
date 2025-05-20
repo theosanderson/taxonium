@@ -44,8 +44,8 @@ const mockConfig = {
 };
 
 const mockColorHook = {
-  toRGBCSS: (value) => {
-    const colorMap = {
+  toRGBCSS: (value: string) => {
+    const colorMap: Record<string, string> = {
       Alpha: "rgb(200, 100, 100)",
       Beta: "rgb(100, 200, 100)",
       Gamma: "rgb(100, 100, 200)",
@@ -85,7 +85,7 @@ const mockColorBy = {
   colorByField: "lineage",
   colorByOptions: ["lineage", "country", "date", "genotype", "None"],
   setColorByField: fn(),
-  getNodeColorField: (node) => node.lineage,
+  getNodeColorField: (node: any) => node.lineage,
   colorByGene: "S",
   colorByPosition: 484,
   setColorByGene: fn(),
@@ -133,14 +133,14 @@ const mockSettings = {
   setDisplaySearchesAsPoints: fn(),
   treenomeEnabled: false,
   setTreenomeEnabled: fn(),
-  filterMutations: (mutations) => mutations.filter((m) => m.type !== "nt"),
+  filterMutations: (mutations: any[]) => mutations.filter((m: any) => m.type !== "nt"),
   miniMutationsMenu: () => <div>Mutations Menu</div>,
 };
 
 const mockBackend = {
   type: "server",
   backend_url: "https://api.taxonium.org",
-  getTipAtts: (nodeId, key, callback) => {
+  getTipAtts: (nodeId: any, key: any, callback: any) => {
     setTimeout(() => {
       callback(null, ["Sample1", "Sample2", "Sample3"]);
     }, 500);
