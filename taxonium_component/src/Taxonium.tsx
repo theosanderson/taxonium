@@ -1,4 +1,3 @@
-// @ts-nocheck
 import "./App.css";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
@@ -20,6 +19,7 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import getDefaultQuery from "./utils/getDefaultQuery";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+const ReactTooltipAny: any = ReactTooltip;
 import { Toaster } from "react-hot-toast";
 
 const default_query = getDefaultQuery();
@@ -63,8 +63,8 @@ function Taxonium({
     setAboutEnabled = () => {};
   }
 
-  const deckRef = useRef();
-  const jbrowseRef = useRef();
+  const deckRef = useRef<any>(null);
+  const jbrowseRef = useRef<any>(null);
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
   const [deckSize, setDeckSize] = useState(null);
@@ -72,8 +72,6 @@ function Taxonium({
   const view = useView({
     settings,
     deckSize,
-    deckRef,
-    jbrowseRef,
     mouseDownIsMinimap,
   });
 
@@ -101,13 +99,13 @@ function Taxonium({
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
-    const initial = config.colorMapping ? config.colorMapping : {};
+    const initial = (config as any).colorMapping ? (config as any).colorMapping : {};
     return { ...initial, ...additionalColorMapping };
-  }, [config.colorMapping, additionalColorMapping]);
+  }, [(config as any).colorMapping, additionalColorMapping]);
   const colorHook = useColor(config, colorMapping, colorBy.colorByField);
 
   //TODO: this is always true for now
-  config.enable_ns_download = true;
+  (config as any).enable_ns_download = true;
 
   const xType = query.xType ? query.xType : "x_dist";
 
@@ -169,7 +167,7 @@ function Taxonium({
   return (
     <div className="w-full h-full flex">
       <Toaster />
-      <ReactTooltip
+      <ReactTooltipAny
         id="global-tooltip"
         delayHide={400}
         className="infoTooltip"
@@ -195,7 +193,6 @@ function Taxonium({
             colorHook={colorHook}
             colorBy={colorBy}
             config={config}
-            ariaHideApp={false} // sadly with or without this the app is not suitable for screen readers
             hoverDetails={hoverDetails}
             selectedDetails={selectedDetails}
             xType={xType}

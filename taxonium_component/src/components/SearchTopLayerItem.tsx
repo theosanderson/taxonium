@@ -1,4 +1,3 @@
-// @ts-nocheck
 import SearchItem from "./SearchItem";
 import { FaSearch, FaLink, FaTrash } from "react-icons/fa";
 import { useCallback, useState } from "react";
@@ -54,7 +53,11 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
         A permalink that will link to a tree zoomed to this search is below:
         <br />
         <textarea
-          onclick="this.focus();this.select()"
+          onClick={(e) => {
+            const target = e.target as HTMLTextAreaElement;
+            target.focus();
+            target.select();
+          }}
           value={window.location.href + "&zoomToSearch=" + getMyIndex()}
           className="border p-2 m-4 text-xs w-full bg-neutral-100"
           readOnly={true}

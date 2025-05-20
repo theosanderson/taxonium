@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
@@ -162,7 +161,7 @@ const useSearch = ({
 
           singleSearchWrapper(key, this_json, boundsForQueries, (result) => {
             setSearchResults((prevState) => {
-              const new_result = {
+              const new_result: any = {
                 boundingBox: boundsForQueries,
                 result: result,
               };
@@ -181,7 +180,7 @@ const useSearch = ({
                   } else {
                     singleSearchWrapper(key, this_json, null, (result) => {
                       setSearchResults((prevState) => {
-                        let new_result = prevState[key];
+                        let new_result: any = prevState[key];
                         if (new_result) {
                           new_result.overview = result.data;
                         } else {

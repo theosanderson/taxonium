@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo, useCallback, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import useTreenomeLayerData from "./useTreenomeLayerData";
@@ -83,7 +82,7 @@ const useTreenomeLayers = (
     computedReference,
     cachedVarDataAa,
     cachedVarDataNt,
-  ] = useTreenomeLayerData(data, treenomeState, settings);
+  ] = useTreenomeLayerData(data, treenomeState, settings, selectedDetails);
   useEffect(() => {
     if (!treenomeReferenceInfo) {
       setTreenomeReferenceInfo(computedReference);

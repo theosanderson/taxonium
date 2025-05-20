@@ -1,8 +1,8 @@
-// @ts-nocheck
 /// app.js
 import React, { useState, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
 import { View } from "@deck.gl/core";
+const DeckView: any = View;
 import useLayers from "./hooks/useLayers";
 import JBrowsePanel from "./components/JBrowsePanel";
 import { ClipLoader } from "react-spinners";
@@ -77,7 +77,7 @@ function Deck({
   );
   const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
 
-  const mouseDownPos = useRef();
+  const mouseDownPos = useRef<[number, number] | null>(null);
 
   const onClickOrMouseMove = useCallback(
     (event) => {
@@ -335,11 +335,12 @@ function Deck({
         }}
         onAfterRender={(event) => {
           if (isNaN(deckSize.width)) {
-            setDeckSize(event.target.parentElement.getBoundingClientRect());
+            const target = (event as any).target as HTMLElement;
+            setDeckSize(target.parentElement!.getBoundingClientRect());
           }
         }}
       >
-        <View id="browser-axis">
+        <DeckView id="browser-axis">
           <div
             style={{
               width: "100%",
@@ -374,8 +375,8 @@ function Deck({
             }}
             settings={settings}
           />
-        </View>
-        <View id="main"></View>
+        </DeckView>
+        <DeckView id="main"></DeckView>
       </DeckGL>
     </div>
   );

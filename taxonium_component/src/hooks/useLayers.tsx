@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   LineLayer,
   ScatterplotLayer,
@@ -68,8 +67,7 @@ const useLayers = ({
     settings,
     treenomeReferenceInfo,
     setTreenomeReferenceInfo,
-    selectedDetails,
-    isCurrentlyOutsideBounds
+    selectedDetails
   );
   layers.push(...treenomeLayers);
 

@@ -18,7 +18,7 @@ function useNodeDetails(nickname, backend) {
   const clearNodeDetails = useCallback(() => {
     setNodeDetails(null);
   }, []);
-  return { nodeDetails, getNodeDetails, clearNodeDetails };
+  return { nodeDetails, getNodeDetails, clearNodeDetails, setNodeDetails };
 }
 
 export default useNodeDetails;

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useMemo, useState } from "react";
 import computeBounds from "../utils/computeBounds";
 
@@ -22,7 +21,7 @@ function useGetDynamicData(
   deckSize
 ) {
   const { queryNodes } = backend;
-  const [dynamicData, setDynamicData] = useState({
+  const [dynamicData, setDynamicData] = useState<any>({
     status: "not_started",
     data: [],
   });
@@ -43,7 +42,7 @@ function useGetDynamicData(
           vs.max_y > boundsForQueries.max_y - vs.real_height / 2 ||
           Math.abs(vs.zoom[1] - boundsForQueries.zoom[1]) > 0.5))
     ) {
-      if (window.log) {
+      if ((window as any).log) {
         console.log([
           vs.min_x,
           boundsForQueries ? boundsForQueries.min_x : null,
