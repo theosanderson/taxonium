@@ -7,13 +7,14 @@ import { MdArrowForward, MdArrowDownward } from "react-icons/md";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import prettifyName from "../utils/prettifyName";
+import { SearchState } from "../types/search";
 
 import { FaSearch, FaShare } from "react-icons/fa";
 
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, ChangeEvent } from "react";
 
 import classNames from "classnames";
 
@@ -41,7 +42,7 @@ const fixAuthors = (authors: string) => {
 };
 
 interface SearchPanelProps {
-  search: any;
+  search: SearchState;
   colorBy: any;
   config: any;
   selectedDetails: any;
@@ -316,7 +317,9 @@ function SearchPanel({
             <span className="text-gray-500 text-sm">Tree type:</span>
             <Select
               value={xType}
-              onChange={(e) => setxType(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setxType(e.target.value)
+              }
               className="text-gray-500 text-xs py-0.5"
             >
               {config.x_accessors.map((x) => (
@@ -339,7 +342,7 @@ function SearchPanel({
                 type="checkbox"
                 className="m-3 inline-block"
                 checked={settings.treenomeEnabled}
-                onChange={(event) => {
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   settings.setTreenomeEnabled(!settings.treenomeEnabled);
                 }}
               />
@@ -369,7 +372,9 @@ function SearchPanel({
           </h2>
           <Select
             value={colorBy.colorByField}
-            onChange={(e) => colorBy.setColorByField(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+              colorBy.setColorByField(e.target.value)
+            }
           >
             {colorBy.colorByOptions.map((item) => (
               <option key={item} value={item}>
@@ -384,7 +389,9 @@ function SearchPanel({
               <span>Gene</span>
               <Select
                 value={colorBy.colorByGene}
-                onChange={(e) => colorBy.setColorByGene(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                  colorBy.setColorByGene(e.target.value)
+                }
                 className="w-20"
               >
                 {config.genes &&
@@ -399,7 +406,7 @@ function SearchPanel({
               <span>Residue</span>
               <input
                 value={colorBy.colorByPosition}
-                onChange={(e) =>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   colorBy.setColorByPosition(
                     e.target.value !== "" ? parseInt(e.target.value) : ""
                   )

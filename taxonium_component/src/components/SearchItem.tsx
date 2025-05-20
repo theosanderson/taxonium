@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import DebounceInput from "./DebounceInput";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
+import { SearchSpec } from "../types/search";
 const number_methods = [">", "<", ">=", "<=", "=="];
 
 // title case
@@ -13,8 +14,8 @@ const toTitleCase = (str: string) => {
 
 const bool_methods = ["and", "or", "not"];
 interface SearchItemProps {
-  singleSearchSpec: any;
-  setThisSearchSpec: (spec: any) => void;
+  singleSearchSpec: SearchSpec;
+  setThisSearchSpec: (spec: SearchSpec) => void;
   config: any;
 }
 
@@ -116,7 +117,9 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
       <Select
         className="inline-block w-42  border py-1 px-1 text-grey-darkest text-sm mr-1"
         value={singleSearchSpec.type}
-        onChange={(e: any) => setTypeTo(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+          setTypeTo(e.target.value)
+        }
       >
         {types.map((type: any) => (
           <option key={type.name} value={type.name}>
@@ -128,7 +131,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
         <DebounceInput
           className="inline-block w-40 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
-          onChange={(e: any) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setThisSearchSpec({
               ...singleSearchSpec,
               text: e.target.value,
@@ -141,7 +144,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
           element="textarea"
           className="block w-56 h-32 border py-1 px-1 text-grey-darkest text-sm"
           value={singleSearchSpec.text}
-          onChange={(e: any) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
             setThisSearchSpec({
               ...singleSearchSpec,
               text: e.target.value,
@@ -161,7 +164,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
               checked={
                 singleSearchSpec.method === "text_exact" || is_multi_text
               }
-              onChange={(e: any) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 if (e.target.checked) {
                   setThisSearchSpec({
                     ...singleSearchSpec,
@@ -185,7 +188,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
               type="checkbox"
               title="Multi-line"
               checked={is_multi_text}
-              onChange={(e: any) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 if (e.target.checked) {
                   setThisSearchSpec({
                     ...singleSearchSpec,
@@ -218,7 +221,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             <label className="text-sm mr-2 ">Gene: </label>
             <Select
               value={singleSearchSpec.gene}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setThisSearchSpec({ ...singleSearchSpec, gene: e.target.value })
               }
               className="inline-block w-40 border py-1 px-1 text-grey-darkest text-sm h-8"
@@ -238,7 +241,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             <DebounceInput
               type="number"
               value={singleSearchSpec.position}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setThisSearchSpec({
                   ...singleSearchSpec,
                   position: e.target.value,
@@ -252,7 +255,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             </label>
             <Select
               value={singleSearchSpec.new_residue}
-              onChange={(e: any) => {
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 setThisSearchSpec({
                   ...singleSearchSpec,
                   new_residue: e.target.value,
@@ -281,7 +284,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             <DebounceInput
               type="number"
               value={singleSearchSpec.min_tips}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setThisSearchSpec({
                   ...singleSearchSpec,
                   min_tips: e.target.value,
@@ -297,7 +300,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
         <>
           <Select
             value={singleSearchSpec.boolean_method}
-            onChange={(e: any) =>
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setThisSearchSpec({
                 ...singleSearchSpec,
                 boolean_method: e.target.value,
@@ -313,7 +316,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
           </Select>
 
           <div className="pl-5 pt-3 border-gray-300 border-solid border-2">
-            {singleSearchSpec.subspecs.map((subspec: any, i: number) => (
+            {singleSearchSpec.subspecs.map((subspec: SearchSpec, i: number) => (
               <div
                 key={i}
                 // divider style border at bottom
@@ -321,11 +324,11 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
               >
                 <SearchItem
                   singleSearchSpec={subspec}
-                  setThisSearchSpec={(new_subspec: any) => {
+                  setThisSearchSpec={(new_subspec: SearchSpec) => {
                     setThisSearchSpec({
                       ...singleSearchSpec,
                       subspecs: singleSearchSpec.subspecs.map(
-                        (foundsubspec: any, i: number) =>
+                        (foundsubspec: SearchSpec, i: number) =>
                           i === singleSearchSpec.subspecs.indexOf(subspec)
                             ? new_subspec
                             : foundsubspec
@@ -337,11 +340,11 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
                 {/* Deelete button */}
                 <button
                   className="text-red-500 text-sm hover:text-red-700 ml-3"
-                  onClick={() => {
-                    setThisSearchSpec({
-                      ...singleSearchSpec,
-                      subspecs: singleSearchSpec.subspecs.filter(
-                        (compsubspec: any, i: number) =>
+              onClick={() => {
+                setThisSearchSpec({
+                  ...singleSearchSpec,
+                  subspecs: singleSearchSpec.subspecs.filter(
+                        (compsubspec: SearchSpec, i: number) =>
                           i !== singleSearchSpec.subspecs.indexOf(subspec)
                       ),
                     });
@@ -376,7 +379,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
         <div>
           <Select
             value={singleSearchSpec.number_method}
-              onChange={(e: any) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setThisSearchSpec({
                 ...singleSearchSpec,
                 number_method: e.target.value,
@@ -393,7 +396,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
           <DebounceInput
             type="number"
             value={singleSearchSpec.number}
-            onChange={(e: any) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setThisSearchSpec({
                 ...singleSearchSpec,
                 number: e.target.value,
