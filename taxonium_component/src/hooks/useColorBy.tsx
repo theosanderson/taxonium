@@ -1,14 +1,14 @@
-import { useMemo, useEffect, useCallback } from "react";
+import { useMemo, useCallback, useRef } from "react";
 
 interface WindowWithCc extends Window {
   cc?: unknown;
 }
 
-let colorCache = {}; // todo do this with state
 let cachedColorByPosition = null; // todo do this with state
 let cachedColorByGene = null; // todo do this with state
 
 function useColorBy(config, query, updateQuery) {
+  const colorCacheRef = useRef<Record<string, string>>({});
   const colorByConfig = useMemo(() => {
     return query.color ? JSON.parse(query.color) : {};
   }, [query.color]);
@@ -30,7 +30,7 @@ function useColorBy(config, query, updateQuery) {
     ? config.colorBy
     : { colorByOptions: [] };
 
-  (window as WindowWithCc).cc = colorCache;
+  (window as WindowWithCc).cc = colorCacheRef.current;
 
   const setColorByField = useCallback(
     (field) => {
@@ -60,7 +60,7 @@ function useColorBy(config, query, updateQuery) {
         colorByGene != cachedColorByGene
       ) {
         /* Should be able to increase perf by moving this cache invalidation to setColorByGene and setColorByPosition */
-        colorCache = {};
+        colorCacheRef.current = {};
         cachedColorByPosition = colorByPosition;
         cachedColorByGene = colorByGene;
       }
@@ -69,9 +69,9 @@ function useColorBy(config, query, updateQuery) {
       }
 
       if (colorByField === "genotype") {
-        if (colorCache[node.node_id]) {
+        if (colorCacheRef.current[node.node_id]) {
           //console.log("using cache");
-          return colorCache[node.node_id];
+          return colorCacheRef.current[node.node_id];
         }
         let result;
         const relevantMutations = node.mutations.filter(
@@ -99,7 +99,7 @@ function useColorBy(config, query, updateQuery) {
             }
           }
         }
-        colorCache[node.node_id] = result;
+        colorCacheRef.current[node.node_id] = result;
         return result;
       } else {
         return node[colorByField];
