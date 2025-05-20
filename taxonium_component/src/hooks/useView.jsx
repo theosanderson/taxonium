@@ -93,9 +93,26 @@ const useView = ({ settings, deckSize }) => {
     []
   );
 
-  const zoomIncrement = useCallback((increment) => {
-    //setViewState((vs) => ({ ...vs, zoom: vs.zoom + increment }));
-  }, []);
+  const zoomIncrement = useCallback(
+    (increment, axis = zoomAxis) => {
+      setViewState((vs) => {
+        if (Array.isArray(vs.zoom)) {
+          const newZoom = [...vs.zoom];
+          if (axis === "X") {
+            newZoom[0] = newZoom[0] + increment;
+          } else if (axis === "Y") {
+            newZoom[1] = newZoom[1] + increment;
+          } else {
+            newZoom[0] = newZoom[0] + increment;
+            newZoom[1] = newZoom[1] + increment;
+          }
+          return { ...vs, zoom: newZoom };
+        }
+        return { ...vs, zoom: vs.zoom + increment };
+      });
+    },
+    [zoomAxis]
+  );
 
   const zoomReset = useCallback(() => {
     setViewState(defaultViewState);
