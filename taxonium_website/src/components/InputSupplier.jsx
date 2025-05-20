@@ -171,19 +171,29 @@ export const InputSupplier = ({ inputHelper, className }) => {
       {!addingText && (
         <>
           <div>
-            <input
-              className="text-sm mb-3"
-              type="file"
-              multiple="multiple"
-              onChange={(e) => {
-                for (const file of e.target.files) {
-                  inputHelper.readFile(file);
-                }
+            <label
+              className="tx-button border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 cursor-pointer mb-3 inline-block"
+            >
+              Choose files
+              <input
+                className="hidden"
+                type="file"
+                multiple="multiple"
+                onChange={(e) => {
+                  for (const file of e.target.files) {
+                    inputHelper.readFile(file);
+                  }
 
-                // empty this
-                e.target.value = "";
-              }}
-            />
+                  // empty this
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            <span className="ml-2 text-sm text-gray-600">
+              {inputs.length === 0
+                ? "No files chosen"
+                : `${inputs.length} file${inputs.length > 1 ? "s" : ""} chosen`}
+            </span>
           </div>
           <div>
             <input
