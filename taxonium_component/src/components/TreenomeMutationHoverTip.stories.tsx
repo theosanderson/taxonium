@@ -26,7 +26,7 @@ const mockReferenceInfo = {
 // Base props for all stories
 const baseProps = {
   colorHook: {
-    toRGBCSS: (value) => "rgb(128, 128, 128)",
+    toRGBCSS: (value: unknown) => "rgb(128, 128, 128)",
   },
   colorBy: {
     colorByField: "lineage",

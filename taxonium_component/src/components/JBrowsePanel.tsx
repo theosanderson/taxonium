@@ -296,7 +296,9 @@ function JBrowsePanel(props: JBrowsePanelProps) {
       state.session.view
     ) {
       freezeTracks.forEach((t) =>
-        state.session.view.showTrack(t.configuration.trackId)
+        state.session.view.showTrack(
+          (t as { configuration: { trackId: string } }).configuration.trackId
+        )
       );
     }
   }, [freezeTracks, state]);

@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import scale from "scale-color-perceptual";
 import { scaleLinear, ScaleLinear } from "d3-scale";
 
-let rgb_cache = {};
+const rgb_cache: Record<string, [number, number, number]> = {};
 
 interface ColorRamps {
   [key: string]: {
@@ -136,15 +136,15 @@ const useColor = (
 
       let str = String(value);
       str = str.split("").reverse().join("");
-      var hash = 0;
+      let hash = 0;
       if (str.length === 0) return hash;
-      for (var i = 0; i < str.length; i++) {
+      for (let i = 0; i < str.length; i++) {
         hash = str.charCodeAt(i) + ((hash << 5) - hash);
         hash = hash & hash;
       }
-      var rgb = [0, 0, 0];
-      for (i = 0; i < 3; i++) {
-        var value = (hash >> (i * 8)) & 255;
+      let rgb: [number, number, number] = [0, 0, 0];
+      for (let i = 0; i < 3; i++) {
+        const value = (hash >> (i * 8)) & 255;
         rgb[i] = value;
       }
       if (rgb[0] + rgb[1] + rgb[2] < 150 || rgb[0] + rgb[1] + rgb[2] > 500) {

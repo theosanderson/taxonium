@@ -3,10 +3,21 @@ import { Dialog, Transition, DialogBackdrop, DialogPanel } from "@headlessui/rea
 import { BiCamera } from "react-icons/bi";
 import TaxButton from "./TaxButton";
 
-const SnapshotButton = ({ svgFunction, pixelFunction, deckSize }) => {
+interface DeckSize {
+  width: number;
+  height: number;
+}
+
+interface SnapshotButtonProps {
+  svgFunction: (size: DeckSize) => void;
+  pixelFunction: () => void;
+  deckSize: DeckSize;
+}
+
+const SnapshotButton = ({ svgFunction, pixelFunction, deckSize }: SnapshotButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  function snapshot(option) {
+  function snapshot(option: "pixels" | "SVG") {
     if (option === "pixels") {
       pixelFunction();
     } else if (option === "SVG") {

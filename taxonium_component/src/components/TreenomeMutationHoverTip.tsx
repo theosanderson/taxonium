@@ -6,7 +6,7 @@ interface HoverInfo {
   object: { m?: NumericMutation };
 }
 
-interface NumericMutation extends Mutation {
+interface NumericMutation extends Omit<Mutation, "residue_pos"> {
   residue_pos: number;
   gene: string;
   new_residue: string;

@@ -49,12 +49,12 @@ export const Closed = {
 export const WithHandlers = {
   args: {
     treenomeSettingsOpen: true,
-    setTreenomeSettingsOpen: (value) => {
+    setTreenomeSettingsOpen: (value: boolean) => {
       alert(`Modal would ${value ? "open" : "close"} (simulated in Storybook)`);
     },
     settings: {
       chromosomeName: "NC_045512v2",
-      setChromosomeName: (value) => {
+      setChromosomeName: (value: string) => {
         alert(
           `Chromosome name would be set to: ${value} (simulated in Storybook)`
         );

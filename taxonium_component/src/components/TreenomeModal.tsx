@@ -14,11 +14,21 @@ const settingsModalStyle = {
   },
 };
 
+interface TreenomeModalProps {
+  treenomeSettingsOpen: boolean;
+  setTreenomeSettingsOpen: (open: boolean) => void;
+  settings: {
+    chromosomeName: string;
+    setChromosomeName: (name: string) => void;
+    isCov2Tree?: boolean;
+  };
+}
+
 const TreenomeModal = ({
   treenomeSettingsOpen,
   setTreenomeSettingsOpen,
   settings,
-}) => {
+}: TreenomeModalProps) => {
   const [inputChromosome, setInputChromosome] = useState(
     settings.chromosomeName
   );

@@ -6,7 +6,17 @@ import { formatNumber } from "../utils/formatNumber";
 import { ClipLoader } from "react-spinners";
 import Modal from "react-modal";
 
-function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
+import type { SearchSpec, SearchState } from "../types/search";
+import type { Config } from "../types/backend";
+
+interface SearchTopLayerItemProps {
+  singleSearchSpec: SearchSpec;
+  myKey: string;
+  search: SearchState;
+  config: Config;
+}
+
+function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }: SearchTopLayerItemProps) {
   const myLoadingStatus = search.searchLoadingStatus[myKey];
 
   const [permaLinkModalOpen, setPermaLinkModalOpen] = useState(false);
@@ -18,12 +28,14 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }) {
       : "Loading";
 
   const getMyIndex = useCallback(() => {
-    const index = search.searchSpec.findIndex((item) => item.key === myKey);
+    const index = search.searchSpec.findIndex(
+      (item: SearchSpec) => item.key === myKey
+    );
     return index;
   }, [search.searchSpec, myKey]);
 
   const setThisSearchSpec = useCallback(
-    (thisSpec) => {
+    (thisSpec: SearchSpec) => {
       // find the index of the item in the searchSpec array
       const index = getMyIndex();
 
