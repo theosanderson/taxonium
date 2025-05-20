@@ -1,7 +1,5 @@
 import React, { useState, Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-
-const DialogOverlay = (Dialog as any).Overlay as React.ComponentType<any>;
+import { Dialog, Transition, DialogBackdrop } from "@headlessui/react";
 import { BiCamera } from "react-icons/bi";
 import TaxButton from "./TaxButton";
 
@@ -32,7 +30,7 @@ const SnapshotButton = ({ svgFunction, pixelFunction, deckSize }) => {
           onClose={setIsOpen}
         >
           <div className="min-h-screen px-4 text-center">
-            <DialogOverlay className="fixed inset-0 bg-black opacity-30" />
+            <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
 
             <span
               className="inline-block h-screen align-middle"
