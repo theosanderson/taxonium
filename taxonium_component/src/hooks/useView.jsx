@@ -1,8 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
 
-
-
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 const defaultViewState = {
@@ -26,7 +24,7 @@ const useView = ({ settings }) => {
     () => ({
       type: OrthographicController,
       scrollZoom: true,
-      zoomAxis: 'Y'
+      zoomAxis: "Y",
     }),
     [],
   );
