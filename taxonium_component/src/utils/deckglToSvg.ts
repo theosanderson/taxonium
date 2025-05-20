@@ -1,19 +1,39 @@
 import computeBounds from "./computeBounds";
 
-const getSVGfunction = (layers, viewState) => {
-  const accessOrConstant = (accessor, node) => {
+interface ViewState {
+  min_y: number;
+  max_y: number;
+  min_x: number;
+  max_x: number;
+}
+
+interface DeckSize {
+  width: number;
+  height: number;
+}
+
+const getSVGfunction = (
+  layers: any[],
+  viewState: ViewState
+): { triggerSVGdownload: (deckSize?: DeckSize) => void } => {
+  const accessOrConstant = <T, R>(accessor: ((node: T) => R) | R, node: T): R => {
     if (typeof accessor === "function") {
-      return accessor(node);
+      return (accessor as (node: T) => R)(node);
     } else {
-      return accessor;
+      return accessor as R;
     }
   };
-  const normalise = (value, min, max) => {
+  const normalise = (value: number, min: number, max: number): number => {
     return (value - min) / (max - min);
   };
 
-  const getSVG = (layers, viewState, svgWidth, svgHeight) => {
-    const applyBounds = (point) => {
+  const getSVG = (
+    layers: any[],
+    viewState: ViewState,
+    svgWidth: number,
+    svgHeight: number
+  ): string => {
+    const applyBounds = (point: [number, number]): [number, number] => {
       const minY = viewState.min_y;
       const maxY = viewState.max_y;
       const minX = viewState.min_x;
@@ -140,7 +160,7 @@ const getSVGfunction = (layers, viewState) => {
     return svgContent;
   };
 
-  function triggerSVGdownload(deckSize) {
+  function triggerSVGdownload(deckSize?: DeckSize) {
     if (!deckSize) {
       deckSize = { width: 600, height: 600 };
     }

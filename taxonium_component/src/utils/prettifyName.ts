@@ -1,4 +1,8 @@
-const prettifyName = (name, config) => {
+interface Config {
+  customNames?: Record<string, string>;
+}
+
+const prettifyName = (name: string, config?: Config) => {
   if (config && config.customNames && config.customNames[name]) {
     return config.customNames[name];
   }

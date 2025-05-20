@@ -1,4 +1,8 @@
-function reduceMaxOrMin(array, accessFunction, maxOrMin) {
+function reduceMaxOrMin<T>(
+  array: T[],
+  accessFunction: (item: T) => number,
+  maxOrMin: "max" | "min"
+): number {
   if (maxOrMin === "max") {
     return accessFunction(
       array.reduce(function (max, item) {
@@ -12,6 +16,8 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
       })
     );
   }
+
+  return NaN;
 }
 
 export default reduceMaxOrMin;
