@@ -1,4 +1,3 @@
-// @ts-nocheck
 function nexusToNewick(nexusString) {
   // get Translate section if present
   const translateBlock = nexusString.match(/Translate(.*?);/gims);
