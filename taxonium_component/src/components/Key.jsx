@@ -125,7 +125,7 @@ const Key = ({
   return (
     <div
       className={classNames(
-        "px-2 border-right border bg-white opacity-90 absolute bottom-2 left-2 pt-1 pb-2",
+        "px-2 border-right border bg-white border-gray-200 opacity-90 absolute bottom-2 left-2 pt-1 pb-2",
         collapsed ? "w-20" : "w-32"
       )}
       style={{
