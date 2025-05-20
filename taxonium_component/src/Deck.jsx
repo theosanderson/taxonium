@@ -1,9 +1,9 @@
 /// app.js
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, Suspense } from "react";
 import DeckGL from "@deck.gl/react";
 import { View } from "@deck.gl/core";
 import useLayers from "./hooks/useLayers";
-import JBrowsePanel from "./components/JBrowsePanel";
+const JBrowsePanel = React.lazy(() => import("./components/JBrowsePanel"));
 import { ClipLoader } from "react-spinners";
 import {
   CircularProgressbarWithChildren,
@@ -361,10 +361,12 @@ function Deck({
           >
             <span ref={jbrowseRef}>
               <JBrowseErrorBoundary>
-                <JBrowsePanel
-                  treenomeState={treenomeState}
-                  settings={settings}
-                />
+                <Suspense fallback={<ClipLoader size={100} color={"#666"} />}>
+                  <JBrowsePanel
+                    treenomeState={treenomeState}
+                    settings={settings}
+                  />
+                </Suspense>
               </JBrowseErrorBoundary>
               <TreenomeModal
                 treenomeSettingsOpen={treenomeSettingsOpen}
