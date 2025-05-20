@@ -63,12 +63,6 @@ D,John,Fish`;
 npm install taxonium-component
 ```
 
-or
-
-```
-yarn add taxonium-component
-```
-
 ### Import and use Taxonium Component in your React jsx
 
 ```js
