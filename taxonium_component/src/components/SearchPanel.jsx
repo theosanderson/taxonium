@@ -230,17 +230,17 @@ function SearchPanel({
 
   return (
     <div
-      className={classNames("flex flex-col px-4 divide-y text-sm", className)}
+      className={classNames("flex flex-col px-4 divide-y text-sm border-gray-200", className)}
     >
-      <button onClick={toggleSidebar}>
+      <button onClick={toggleSidebar} className="border-gray-200">
         <br />
         {window.innerWidth > 768 ? (
-          <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle" />
+          <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle border-gray-200" />
         ) : (
-          <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle" />
+          <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle border-gray-200" />
         )}
       </button>
-      <div className="space-y-2 py-3">
+      <div className="space-y-2 py-3 border-gray-200">
         {config.num_tips && (
           <>
             <p className="text-gray-500 text-sm">
@@ -334,7 +334,7 @@ function SearchPanel({
             </span>
           )}
       </div>
-      <div className="py-3 space-y-2">
+      <div className="py-3 space-y-2 border-gray-200">
         <div className="flex space-x-2">
           <h2 className="font-bold text-gray-700 flex items-center whitespace-nowrap">
             <BiPalette className="mr-1.5 text-gray-500 h-5 w-5" />
