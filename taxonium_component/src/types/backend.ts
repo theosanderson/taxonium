@@ -24,7 +24,12 @@ export interface Config {
   initial_x?: number;
   initial_y?: number;
   initial_zoom?: number;
-  rootMutations: Mutation[];
+  /**
+   * When {@link useHydratedMutations} is false this array contains indices into
+   * the {@link mutations} array. When true it contains {@link Mutation}
+   * objects.  Allow both to keep the type checker happy during migration.
+   */
+  rootMutations: Array<Mutation | number>;
   rootId: string | number;
   genes?: string[];
   mutations?: Mutation[];

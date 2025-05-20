@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import type { Node, Mutation } from "../types/node";
 import axios from "axios";
 import type {
   Config,
@@ -48,20 +49,20 @@ function useServerBackend(backend_url: string | null, sid: string | null) {
         .get(url)
         .then(function (response) {
           console.log("got data - yay", response.data);
-          response.data.nodes.forEach((node) => {
+          response.data.nodes.forEach((node: Node) => {
             if (node.node_id === config.rootId) {
               if (config.useHydratedMutations) {
-                node.mutations = config.rootMutations;
+                node.mutations = config.rootMutations as Mutation[];
               } else {
-                node.mutations = config.rootMutations.map(
-                  (x) => config.mutations[x]
-                );
+                node.mutations = (config.rootMutations as unknown as number[])
+                  .map((x) => config.mutations?.[x])
+                  .filter(Boolean) as Mutation[];
               }
             } else {
               if (!config.useHydratedMutations) {
-                node.mutations = node.mutations.map(
-                  (mutation) => config.mutations[mutation]
-                );
+                node.mutations = (node.mutations as unknown as number[])
+                  .map((mutation: number) => config.mutations?.[mutation])
+                  .filter(Boolean) as Mutation[];
               }
             }
           });
@@ -70,7 +71,7 @@ function useServerBackend(backend_url: string | null, sid: string | null) {
         .catch(function (error) {
           console.log(error);
           window.alert(error);
-          setResult([]);
+          setResult({ nodes: [] } as NodesResponse);
           setTriggerRefresh({});
         });
     },
@@ -90,7 +91,7 @@ function useServerBackend(backend_url: string | null, sid: string | null) {
         "/search/?json=" +
         encodeURIComponent(JSON.stringify(singleSearch)) +
         "&sid=" +
-        encodeURIComponent(sid);
+        encodeURIComponent(sid ?? "");
 
       const xType =
         boundsForQueries && boundsForQueries.xType
@@ -130,7 +131,7 @@ function useServerBackend(backend_url: string | null, sid: string | null) {
           }
           console.log(error);
           window.alert(error);
-          setResult([]);
+          setResult({ key: "", nodes: [] } as SearchResult);
         });
       return { abortController };
     },
@@ -215,7 +216,11 @@ function useServerBackend(backend_url: string | null, sid: string | null) {
   );
 
   const getTipAtts = useCallback(
-    (nodeId, selectedKey, callback) => {
+    (
+      nodeId: string | number,
+      selectedKey: string,
+      callback: (err: unknown, data: unknown) => void,
+    ) => {
       let url =
         backend_url +
         "/tip_atts?id=" +
@@ -232,14 +237,14 @@ function useServerBackend(backend_url: string | null, sid: string | null) {
   );
 
   const getNextstrainJsonUrl = useCallback(
-    (nodeId, config) => {
+    (nodeId: string | number, config: Config) => {
       return backend_url + "/nextstrain_json/" + nodeId;
     },
     [backend_url]
   );
 
   const getNextstrainJson = useCallback(
-    (nodeId, config) => {
+    (nodeId: string | number, config: Config) => {
       const url = getNextstrainJsonUrl(nodeId, config);
       // load this
       window.location.href = url;
