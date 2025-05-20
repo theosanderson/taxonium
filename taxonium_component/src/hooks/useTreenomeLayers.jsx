@@ -15,24 +15,7 @@ const useTreenomeLayers = (
 ) => {
   const myGetPolygonOffset = ({ layerIndex }) => [0, -(layerIndex + 999) * 100];
   const modelMatrixFixedX = useMemo(() => {
-    return [
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-    ];
+    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
   }, [viewState.zoom]);
 
   const variation_padding = useMemo(() => {
