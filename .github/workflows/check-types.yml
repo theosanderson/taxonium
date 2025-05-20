@@ -2,13 +2,13 @@ name: TypeScript check-types
 
 on:
   push:
-    branches: [master]
     paths:
       - 'taxonium_component/**'
+      - 'taxonium_data_handling/**'
   pull_request:
-    branches: [master]
     paths:
       - 'taxonium_component/**'
+      - 'taxonium_data_handling/**'
   workflow_dispatch:
 
 jobs:
