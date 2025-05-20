@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from "react";
-import { Dialog, Transition, DialogBackdrop } from "@headlessui/react";
+import { Dialog, Transition, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { BiCamera } from "react-icons/bi";
 import TaxButton from "./TaxButton";
 
@@ -29,38 +29,40 @@ const SnapshotButton = ({ svgFunction, pixelFunction, deckSize }) => {
           open={isOpen}
           onClose={setIsOpen}
         >
-          <div className="min-h-screen px-4 text-center">
-            <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
-
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-
-            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-              <Dialog.Title
-                as="h3"
-                className="text-lg font-medium leading-6 text-gray-900"
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <DialogBackdrop className="fixed inset-0 -z-10 bg-black opacity-30" />
+            
+            <div className="min-h-screen px-4 text-center flex items-center justify-center">
+              <span
+                className="inline-block h-screen align-middle"
+                aria-hidden="true"
               >
-                Choose format
-              </Dialog.Title>
+                &#8203;
+              </span>
+              
+              <DialogPanel className="w-full max-w-md p-6 overflow-hidden text-left align-middle bg-white shadow-xl rounded-2xl">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Choose format
+                </Dialog.Title>
 
-              <div className="mt-4">
-                <button
-                  onClick={() => snapshot("SVG")}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  SVG (vector)
-                </button>
-                <button
-                  onClick={() => snapshot("pixels")}
-                  className="ml-4 text-blue-600 hover:text-blue-800"
-                >
-                  PNG
-                </button>
-              </div>
+                <div className="mt-4">
+                  <button
+                    onClick={() => snapshot("SVG")}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    SVG (vector)
+                  </button>
+                  <button
+                    onClick={() => snapshot("pixels")}
+                    className="ml-4 text-blue-600 hover:text-blue-800"
+                  >
+                    PNG
+                  </button>
+                </div>
+              </DialogPanel>
             </div>
           </div>
         </Dialog>
