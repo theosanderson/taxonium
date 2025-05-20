@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { JBrowseErrorBoundary } from "./JBrowseErrorBoundary";
 
 export default {

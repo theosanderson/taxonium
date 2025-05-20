@@ -1,4 +1,3 @@
-// @ts-nocheck
 import NodeHoverTip from "./NodeHoverTip";
 
 export default {

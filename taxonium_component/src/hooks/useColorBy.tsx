@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo, useEffect, useCallback } from "react";
 
 let colorCache = {}; // todo do this with state
@@ -27,7 +26,7 @@ function useColorBy(config, query, updateQuery) {
     ? config.colorBy
     : { colorByOptions: [] };
 
-  window.cc = colorCache;
+  (window as any).cc = colorCache;
 
   const setColorByField = useCallback(
     (field) => {

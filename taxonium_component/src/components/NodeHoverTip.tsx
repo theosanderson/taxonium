@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo } from "react";
 
 const fixName = (name) => {
@@ -56,7 +55,7 @@ const NodeHoverTip = ({
   const flip_vert = hoverInfo.y > deckSize.height * 0.66;
   const flip_horiz = hoverInfo.x > deckSize.width * 0.66;
 
-  const style = {
+  const style: React.CSSProperties = {
     position: "absolute",
     zIndex: 1,
     pointerEvents: "none",
@@ -171,7 +170,7 @@ const NodeHoverTip = ({
             </div>
           </div>
         )}
-      {window.show_ids ? (
+      {(window as any).show_ids ? (
         <div className="mt-3 text-xs text-gray-400">{hoveredNode.node_id}</div>
       ) : null}
     </div>
