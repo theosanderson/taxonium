@@ -82,9 +82,13 @@ const useView = ({ settings, deckSize }) => {
     return vs;
   }, [controllerProps, viewState, settings]);
 
-  const onViewStateChange = useCallback(({ viewState: newViewState }) => {
+  const onViewStateChange = useCallback(({ viewState: newViewState, viewId }) => {
+   
+    
     console.log("onViewStateChange", newViewState);
+    newViewState.minimap = { zoom: -3, target: [250, 1000] },
     setViewState(newViewState);
+
     return newViewState;
   }, []);
 
