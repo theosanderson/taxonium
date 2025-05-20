@@ -138,11 +138,11 @@ function Deck({
       ) {
         onViewStateChange({
           oldViewState: viewState,
-          specialMinimap: true,
+          requestIsFromMinimapPan: true,
           viewState: {
             ...viewState,
             target: [
-              pickInfo.coordinate[0] / 2 ** viewState.zoom,
+              pickInfo.coordinate[0] ,
               pickInfo.coordinate[1],
             ],
           },

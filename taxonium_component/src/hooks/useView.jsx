@@ -13,7 +13,7 @@ const defaultViewState = {
   "browser-axis": { zoom: -2, target: [0, 1000] },
 };
 
-const useView = ({ settings, deckSize }) => {
+const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
   const [viewState, setViewState] = useState(defaultViewState);
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
@@ -83,14 +83,19 @@ const useView = ({ settings, deckSize }) => {
   }, [controllerProps, viewState, settings]);
 
   const onViewStateChange = useCallback(
-    ({ viewState: newViewState, viewId }) => {
+    ({ viewState: newViewState, viewId, requestIsFromMinimapPan }) => {
+      if(mouseDownIsMinimap && !requestIsFromMinimapPan) {
+        return false;
+      }
+
+
       console.log("onViewStateChange", newViewState);
       (newViewState.minimap = { zoom: -3, target: [250, 1000] }),
         setViewState(newViewState);
 
       return newViewState;
     },
-    []
+    [mouseDownIsMinimap]
   );
 
   const zoomIncrement = useCallback(
