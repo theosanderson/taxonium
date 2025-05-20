@@ -3,7 +3,7 @@
 const FirefoxWarning = ({ className }) => {
   return null;
   // this feature currently disabled because Firefox works best for large trees on MacOS
-  const isFirefox = typeof InstallTrigger !== "undefined";
+  const isFirefox = typeof (window as any).InstallTrigger !== "undefined";
   if (isFirefox) {
     return (
       <div className={className}>
