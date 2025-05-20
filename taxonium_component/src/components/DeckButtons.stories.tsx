@@ -30,4 +30,3 @@ export const Loading = {
     loading: true,
   },
 };
-

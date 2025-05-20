@@ -110,7 +110,9 @@ const useView = ({ settings, deckSize }) => {
   const zoomIncrement = useCallback(
     (increment, axis = "Y") => {
       setViewState((prev) => {
-        const zoom = Array.isArray(prev.zoom) ? [...prev.zoom] : [prev.zoom, prev.zoom];
+        const zoom = Array.isArray(prev.zoom)
+          ? [...prev.zoom]
+          : [prev.zoom, prev.zoom];
         if (axis === "Y") {
           zoom[1] += increment;
         } else {

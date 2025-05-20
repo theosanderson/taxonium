@@ -144,13 +144,7 @@ function Deck({
         });
       }
     },
-    [
-      selectedDetails,
-      mouseDownIsMinimap,
-      viewState,
-      onViewStateChange,
-      deckRef,
-    ]
+    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, deckRef]
   );
 
   const [hoverInfo, setHoverInfoRaw] = useState(null);
