@@ -1,4 +1,4 @@
-export function getDefaultSearch(config, key) {
+export function getDefaultSearch(config: any, key?: string) {
   if (!key) {
     key = Math.random().toString(36).substring(2, 15);
     console.log("generated key", key);

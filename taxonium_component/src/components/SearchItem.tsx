@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from "react";
 import DebounceInput from "./DebounceInput";
 import { Select } from "./Basic";
@@ -74,14 +73,14 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }) => {
 
   const specific_configurations = Object.fromEntries(
     types.map((type) => {
-      const obj = {
-        method: type.type,
+      const obj: any = {
+        method: (type as any).type,
       };
-      if (type.controls) {
-        obj.controls = type.controls;
+      if ((type as any).controls) {
+        obj.controls = (type as any).controls;
       }
 
-      return [type.name, obj];
+      return [(type as any).name, obj];
     })
   );
 

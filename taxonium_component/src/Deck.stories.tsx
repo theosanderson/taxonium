@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { fn } from "@storybook/test";
 import Deck from "./Deck";
 import React, { useRef } from "react";
@@ -13,7 +12,7 @@ export default {
 };
 
 // Create mock data and props for the Deck component
-const createMockProps = (overrides = {}) => {
+const createMockProps = (overrides: any = {}) => {
   const deckRef = { current: { pickObject: fn() } };
   const jbrowseRef = { current: null };
 
