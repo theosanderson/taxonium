@@ -1,3 +1,5 @@
+import computeBounds from "./computeBounds";
+
 const getSVGfunction = (layers, viewState) => {
   const accessOrConstant = (accessor, node) => {
     if (typeof accessor === "function") {
@@ -147,7 +149,8 @@ const getSVGfunction = (layers, viewState) => {
     }
     const svgWidth = deckSize.width;
     const svgHeight = deckSize.height;
-    const svgContent = getSVG(layers, viewState, svgWidth, svgHeight);
+    const viewStateWithBounds = computeBounds({ ...viewState }, deckSize);
+    const svgContent = getSVG(layers, viewStateWithBounds, svgWidth, svgHeight);
     if (!svgContent) {
       return;
     }
