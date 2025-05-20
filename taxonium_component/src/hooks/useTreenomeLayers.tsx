@@ -71,7 +71,7 @@ const useTreenomeLayers = (
   const ntWidth = useMemo(() => {
     return aaWidth / 3;
   }, [aaWidth]);
-  const cov2Genes = useMemo(() => {
+  const cov2Genes = useMemo<Record<string, [number, number, [number, number, number]]> | null>(() => {
     if (settings.isCov2Tree) {
       return {
         // [start, end, [color]]
@@ -90,7 +90,7 @@ const useTreenomeLayers = (
         ORF10: [29558, 29675, [90, 200, 216]],
       };
     } else {
-      return null;
+    return null;
     }
   }, [settings.isCov2Tree]);
 
@@ -119,7 +119,7 @@ const useTreenomeLayers = (
     cachedVarDataNt,
   ] = useTreenomeLayerData(data, treenomeState, settings, selectedDetails);
   useEffect(() => {
-    if (!treenomeReferenceInfo) {
+    if (!treenomeReferenceInfo && computedReference) {
       setTreenomeReferenceInfo(computedReference);
     }
   }, [computedReference, treenomeReferenceInfo, setTreenomeReferenceInfo]);
@@ -173,8 +173,9 @@ const useTreenomeLayers = (
         return [[0, 0]];
       }
       let mut = d.m;
-      let ntPos = getNtPos(mut);
+      const ntPos = getNtPos(mut);
       if (
+        ntPos === undefined ||
         ntPos < treenomeState.ntBounds[0] ||
         ntPos > treenomeState.ntBounds[1]
       ) {
@@ -188,8 +189,9 @@ const useTreenomeLayers = (
         return [[0, 0]];
       }
       let mut = d.m;
-      let ntPos = getNtPos(mut);
+      const ntPos = getNtPos(mut);
       if (
+        ntPos === undefined ||
         ntPos < treenomeState.ntBounds[0] ||
         ntPos > treenomeState.ntBounds[1]
       ) {
@@ -272,8 +274,9 @@ const useTreenomeLayers = (
         return [[0, 0]];
       }
       let mut = d.m;
-      let ntPos = getNtPos(mut);
+      const ntPos = getNtPos(mut);
       if (
+        ntPos === undefined ||
         ntPos < treenomeState.ntBounds[0] ||
         ntPos > treenomeState.ntBounds[1]
       ) {
@@ -287,8 +290,9 @@ const useTreenomeLayers = (
         return [[0, 0]];
       }
       let mut = d.m;
-      let ntPos = getNtPos(mut);
+      const ntPos = getNtPos(mut);
       if (
+        ntPos === undefined ||
         ntPos < treenomeState.ntBounds[0] ||
         ntPos > treenomeState.ntBounds[1]
       ) {

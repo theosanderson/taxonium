@@ -18,12 +18,19 @@ const useTreenomeLayerData = (
   settings: Settings,
   selectedDetails: { nodeDetails?: { y: number } | null }
 ) => {
-  const [varDataAa, setVarDataAa] = useState([]);
-  const [varDataNt, setVarDataNt] = useState([]);
+  interface VariationDatum {
+    m: Record<string, unknown>;
+    y: [number, number];
+  }
+
+  const [varDataAa, setVarDataAa] = useState<VariationDatum[]>([]);
+  const [varDataNt, setVarDataNt] = useState<VariationDatum[]>([]);
   const [numNodes, setNumNodes] = useState(0);
-  const [cachedVarDataAa, setCachedVarDataAa] = useState([]);
-  const [cachedVarDataNt, setCachedVarDataNt] = useState([]);
-  const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
+  const [cachedVarDataAa, setCachedVarDataAa] = useState<VariationDatum[]>([]);
+  const [cachedVarDataNt, setCachedVarDataNt] = useState<VariationDatum[]>([]);
+  const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState<
+    Record<string, Record<string, string>> | null
+  >(null);
   const [didFirstAa, setDidFirstAa] = useState(false);
   const [didFirstNt, setDidFirstNt] = useState(false);
 
@@ -190,6 +197,12 @@ const useTreenomeLayerData = (
     treenomeReferenceInfo,
     cachedVarDataAa,
     cachedVarDataNt,
+  ] as [
+    VariationDatum[],
+    VariationDatum[],
+    Record<string, Record<string, string>> | null,
+    VariationDatum[],
+    VariationDatum[]
   ];
 };
 

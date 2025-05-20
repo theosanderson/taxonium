@@ -12,7 +12,11 @@ export default {
 
 // Mock backend function that simulates getting tip attributes
 const mockBackend = {
-  getTipAtts: (nodeId, selectedKey, callback) => {
+  getTipAtts: (
+    nodeId: string,
+    selectedKey: string,
+    callback: (err: unknown, result: string[]) => void
+  ) => {
     setTimeout(() => {
       if (selectedKey === "names") {
         callback(null, [
@@ -87,7 +91,13 @@ export const WithData = {
     ...baseArgs,
     listOutputModalOpen: true,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({
+    canvasElement,
+    args,
+  }: {
+    canvasElement: HTMLElement;
+    args: Record<string, unknown>;
+  }) => {
     // This simulates selecting a different option but won't work fully in Storybook
     // For actual testing, this component would need to be tested in context
   },
@@ -98,7 +108,11 @@ export const Loading = {
     ...baseArgs,
     listOutputModalOpen: true,
     backend: {
-      getTipAtts: (nodeId, selectedKey, callback) => {
+      getTipAtts: (
+        nodeId: string,
+        selectedKey: string,
+        callback: (err: unknown, result: string[]) => void
+      ) => {
         // Never calls the callback to simulate perpetual loading state
       },
     },

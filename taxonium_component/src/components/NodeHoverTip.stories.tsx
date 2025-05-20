@@ -12,7 +12,7 @@ export default {
 // Create mock color hook
 const mockColorHook = {
   toRGBCSS: (value: string) => {
-    const colorMap = {
+    const colorMap: Record<string, string> = {
       Alpha: "rgb(200, 100, 100)",
       Beta: "rgb(100, 200, 100)",
       Gamma: "rgb(100, 100, 200)",

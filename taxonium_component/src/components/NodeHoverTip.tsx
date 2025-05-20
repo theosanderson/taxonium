@@ -37,8 +37,10 @@ const NodeHoverTip = ({
       const starting = hoverInfo.object.mutations;
       // sort by gene and then by residue_pos
       return starting.sort((a: Mutation, b: Mutation) => {
-        if (a.gene !== b.gene) {
-          return a.gene > b.gene ? 1 : -1;
+        const geneA = a.gene ?? "";
+        const geneB = b.gene ?? "";
+        if (geneA !== geneB) {
+          return geneA > geneB ? 1 : -1;
         }
         return parseInt(a.residue_pos ?? "0") > parseInt(b.residue_pos ?? "0")
           ? 1

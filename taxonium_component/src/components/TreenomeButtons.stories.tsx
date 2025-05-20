@@ -1,5 +1,5 @@
 import { fn } from "@storybook/test";
-import { TreenomeButtons } from "./TreenomeButtons";
+import { TreenomeButtons, TreenomeButtonsProps } from "./TreenomeButtons";
 
 export default {
   title: "Taxonium/TreenomeButtons",
@@ -38,7 +38,7 @@ export const WithFunctionalHandlers = {
 
 // Add a container to see the absolute positioning in action
 export const WithContainer = {
-  render: (args) => (
+  render: (args: TreenomeButtonsProps) => (
     <div className="relative border border-gray-300 w-96 h-64">
       <TreenomeButtons {...args} />
     </div>
