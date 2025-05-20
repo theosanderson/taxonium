@@ -23,10 +23,7 @@ const getSVGfunction = (layers, viewState) => {
       const y = normalise(initial[1], minY, maxY);
       return [x * svgWidth, y * svgHeight];
     };
-    if (!viewState.min_x) {
-      window.alert("Please zoom in and out a little before SVG export");
-      return false;
-    }
+  
     let svgContent = `<svg xmlns='http://www.w3.org/2000/svg' width="${svgWidth}" height="${svgHeight}">`;
 
     for (const layer of layers) {
