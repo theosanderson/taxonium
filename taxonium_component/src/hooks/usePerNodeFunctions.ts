@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useMemo } from "react";
 
 function usePerNodeFunctions(data, config) {

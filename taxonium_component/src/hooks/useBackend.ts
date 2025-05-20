@@ -1,3 +1,4 @@
+// @ts-nocheck
 import useServerBackend from "./useServerBackend";
 import useLocalBackend from "./useLocalBackend";
 

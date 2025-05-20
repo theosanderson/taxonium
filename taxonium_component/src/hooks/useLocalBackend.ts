@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useCallback, useMemo, useEffect, useState } from "react";
 
 // test

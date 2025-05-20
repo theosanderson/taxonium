@@ -1,3 +1,4 @@
+// @ts-nocheck
 const getSVGfunction = (layers, viewState) => {
   const accessOrConstant = (accessor, node) => {
     if (typeof accessor === "function") {

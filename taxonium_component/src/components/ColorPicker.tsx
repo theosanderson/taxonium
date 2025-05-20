@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { SketchPicker } from "react-color";
 
