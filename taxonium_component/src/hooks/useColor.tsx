@@ -4,7 +4,21 @@ import { scaleLinear, ScaleLinear } from "d3-scale";
 
 let rgb_cache = {};
 
-const useColor = (config, colorMapping, colorByField) => {
+interface ColorRamps {
+  [key: string]: {
+    scale: [number, string][];
+  };
+}
+
+interface ConfigWithColor {
+  colorRamps?: ColorRamps;
+}
+
+const useColor = (
+  config: ConfigWithColor,
+  colorMapping: Record<string, [number, number, number]>,
+  colorByField: string
+) => {
   const colorScales = useMemo(() => {
     const scales: { colorRamp?: ScaleLinear<number, string> } = {};
     if (config.colorRamps && config.colorRamps[colorByField]) {
@@ -17,10 +31,10 @@ const useColor = (config, colorMapping, colorByField) => {
   }, [config.colorRamps, colorByField]);
 
   const toRGB_uncached = useCallback(
-    (string) => {
+    (value: string | number) => {
       if (config.colorRamps && config.colorRamps[colorByField]) {
-        const value = parseFloat(string);
-        const output = colorScales.colorRamp(value);
+        const numeric = parseFloat(String(value));
+        const output = colorScales.colorRamp?.(numeric);
         if (!output) {
           return [120, 120, 120];
         }
@@ -31,8 +45,8 @@ const useColor = (config, colorMapping, colorByField) => {
         return as_list;
       }
 
-      if (typeof string === "number") {
-        const log10 = Math.log10(string);
+      if (typeof value === "number") {
+        const log10 = Math.log10(value);
         const color = scale.plasma(log10 / 10);
         // convert from hex to rgb
         const rgb = [
@@ -43,8 +57,8 @@ const useColor = (config, colorMapping, colorByField) => {
         return rgb;
       }
 
-      if (string in colorMapping) {
-        return colorMapping[string];
+      if (typeof value === "string" && value in colorMapping) {
+        return colorMapping[value];
       }
 
       const amino_acids = {
@@ -72,26 +86,26 @@ const useColor = (config, colorMapping, colorByField) => {
         Z: [0, 0, 0],
       };
 
-      if (amino_acids[string]) {
-        return amino_acids[string];
+      if (typeof value === "string" && amino_acids[value]) {
+        return amino_acids[value];
       }
 
-      if (string === undefined) {
+      if (value === undefined) {
         return [200, 200, 200];
       }
-      if (string === "") {
+      if (value === "") {
         return [200, 200, 200];
       }
-      if (string === "unknown") {
+      if (value === "unknown") {
         return [200, 200, 200];
       }
-      if (string === "None") {
+      if (value === "None") {
         return [220, 220, 220];
       }
-      if (string === "N/A") {
+      if (value === "N/A") {
         return [180, 180, 180];
       }
-      if (string === "NA") {
+      if (value === "NA") {
         return [180, 180, 180];
       }
 
@@ -116,15 +130,16 @@ const useColor = (config, colorMapping, colorByField) => {
         Avian: [214, 58, 15],
       };
 
-      if (string in specialCases) {
-        return specialCases[string];
+      if (typeof value === "string" && value in specialCases) {
+        return specialCases[value];
       }
 
-      string = string.split("").reverse().join("");
+      let str = String(value);
+      str = str.split("").reverse().join("");
       var hash = 0;
-      if (string.length === 0) return hash;
-      for (var i = 0; i < string.length; i++) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+      if (str.length === 0) return hash;
+      for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
         hash = hash & hash;
       }
       var rgb = [0, 0, 0];
@@ -133,7 +148,7 @@ const useColor = (config, colorMapping, colorByField) => {
         rgb[i] = value;
       }
       if (rgb[0] + rgb[1] + rgb[2] < 150 || rgb[0] + rgb[1] + rgb[2] > 500) {
-        return toRGB_uncached(string + "_");
+        return toRGB_uncached(str + "_");
       }
       return rgb;
     },
@@ -141,12 +156,14 @@ const useColor = (config, colorMapping, colorByField) => {
   );
 
   const toRGB = useCallback(
-    (string) => {
-      if (rgb_cache[string] && !colorMapping[string]) {
-        return rgb_cache[string];
+    (val: string | number) => {
+      if (typeof val === "string" && rgb_cache[val] && !colorMapping[val]) {
+        return rgb_cache[val];
       } else {
-        const result = toRGB_uncached(string);
-        rgb_cache[string] = result;
+        const result = toRGB_uncached(val);
+        if (typeof val === "string") {
+          rgb_cache[val] = result;
+        }
         return result;
       }
     },
@@ -154,8 +171,8 @@ const useColor = (config, colorMapping, colorByField) => {
   );
 
   const toRGBCSS = useCallback(
-    (string) => {
-      const output = toRGB(string);
+    (val: string | number) => {
+      const output = toRGB(val);
       return `rgb(${output[0]},${output[1]},${output[2]})`;
     },
     [toRGB]

@@ -1,3 +1,27 @@
+import type { HoverDetails, Mutation } from "../types/node";
+
+interface HoverInfo {
+  x: number;
+  y: number;
+  object: { m?: NumericMutation };
+}
+
+interface NumericMutation extends Mutation {
+  residue_pos: number;
+  gene: string;
+  new_residue: string;
+  type: string;
+}
+
+interface TreenomeMutationHoverTipProps {
+  hoverInfo: HoverInfo | null;
+  hoverDetails?: HoverDetails | null;
+  colorHook: unknown;
+  colorBy: unknown;
+  config: unknown;
+  treenomeReferenceInfo: Record<"aa" | "nt", Record<string, string>> | null;
+}
+
 const TreenomeMutationHoverTip = ({
   hoverInfo,
   hoverDetails,
@@ -5,7 +29,7 @@ const TreenomeMutationHoverTip = ({
   colorBy,
   config,
   treenomeReferenceInfo,
-}) => {
+}: TreenomeMutationHoverTipProps) => {
   if (!hoverInfo || !treenomeReferenceInfo) {
     return null;
   }

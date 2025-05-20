@@ -11,7 +11,7 @@ function useBackend(
   sid: string | null | undefined,
   uploaded_data: Record<string, unknown> | null
 ) {
-  const serverBackend = useServerBackend(backend_url, sid);
+  const serverBackend = useServerBackend(backend_url ?? null, sid ?? null);
   const localBackend = useLocalBackend(uploaded_data);
   if (backend_url) {
     const w = window as WindowWithAnalytics;
