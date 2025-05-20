@@ -66,6 +66,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "process/": "process",
+      "stream/web": "web-streams-polyfill/dist/ponyfill",
     },
   },
 });
