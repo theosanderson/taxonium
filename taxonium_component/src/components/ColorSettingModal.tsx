@@ -2,6 +2,14 @@ import React from "react";
 import Modal from "react-modal";
 import ColorPicker from "./ColorPicker";
 
+interface ColorSettingModalProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  color: number[];
+  setColor: (color: number[]) => void;
+  title: string;
+}
+
 const modalStyle = {
   content: {
     top: "50%",
@@ -19,7 +27,13 @@ const modalStyle = {
   },
 };
 
-const ColorSettingModal = ({ isOpen, setIsOpen, color, setColor, title }) => {
+const ColorSettingModal = ({
+  isOpen,
+  setIsOpen,
+  color,
+  setColor,
+  title,
+}: ColorSettingModalProps) => {
   return (
     <Modal
       isOpen={isOpen}

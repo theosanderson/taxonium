@@ -1,5 +1,6 @@
 import { fn } from "@storybook/test";
-import { Button, Select } from "./Basic";
+import { Button, Select, ButtonProps, SelectProps } from "./Basic";
+import type { ComponentProps } from "react";
 
 export default {
   title: "Taxonium/Basic",
@@ -10,7 +11,7 @@ export default {
 };
 
 export const DefaultButton = {
-  render: (args) => <Button {...args}>Click me</Button>,
+  render: (args: ButtonProps) => <Button {...args}>Click me</Button>,
   args: {
     onClick: fn(),
     title: "Default button",
@@ -18,7 +19,7 @@ export const DefaultButton = {
 };
 
 export const ButtonWithClassName = {
-  render: (args) => <Button {...args}>Custom Button</Button>,
+  render: (args: ButtonProps) => <Button {...args}>Custom Button</Button>,
   args: {
     onClick: fn(),
     className: "bg-blue-100 hover:bg-blue-200 text-blue-800",
@@ -27,7 +28,7 @@ export const ButtonWithClassName = {
 };
 
 export const LinkButton = {
-  render: (args) => <Button {...args}>Link Button</Button>,
+  render: (args: ButtonProps) => <Button {...args}>Link Button</Button>,
   args: {
     href: "https://example.com",
     target: "_blank",
@@ -36,7 +37,7 @@ export const LinkButton = {
 };
 
 export const DefaultSelect = {
-  render: (args) => (
+  render: (args: SelectProps) => (
     <Select {...args}>
       <option value="option1">Option 1</option>
       <option value="option2">Option 2</option>
@@ -51,7 +52,7 @@ export const DefaultSelect = {
 };
 
 export const SelectWithClassName = {
-  render: (args) => (
+  render: (args: SelectProps) => (
     <Select {...args}>
       <option value="option1">Option 1</option>
       <option value="option2">Option 2</option>

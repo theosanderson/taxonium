@@ -12,7 +12,7 @@ export default {
 };
 
 // Create mock data and props for the Deck component
-const createMockProps = (overrides: any = {}) => {
+const createMockProps = (overrides: Record<string, unknown> = {}) => {
   const deckRef = { current: { pickObject: fn() } };
   const jbrowseRef = { current: null };
 
@@ -131,7 +131,9 @@ const createMockProps = (overrides: any = {}) => {
 };
 
 // Create a wrapper component to provide necessary refs
-const DeckWrapper = (props) => {
+type DeckProps = ReturnType<typeof createMockProps>;
+
+const DeckWrapper = (props: DeckProps) => {
   const deckRef = useRef(null);
   const jbrowseRef = useRef(null);
 
@@ -143,12 +145,12 @@ const DeckWrapper = (props) => {
 };
 
 export const Default = {
-  render: (args) => <DeckWrapper {...args} />,
+  render: (args: DeckProps) => <DeckWrapper {...args} />,
   args: createMockProps(),
 };
 
 export const Loading = {
-  render: (args) => <DeckWrapper {...args} />,
+  render: (args: DeckProps) => <DeckWrapper {...args} />,
   args: createMockProps({
     loading: true,
     statusMessage: {
@@ -159,21 +161,21 @@ export const Loading = {
 };
 
 export const WithTreenomeEnabled = {
-  render: (args) => <DeckWrapper {...args} />,
+  render: (args: DeckProps) => <DeckWrapper {...args} />,
   args: createMockProps({
     treenomeEnabled: true,
   }),
 };
 
 export const WithSelectedNode = {
-  render: (args) => <DeckWrapper {...args} />,
+  render: (args: DeckProps) => <DeckWrapper {...args} />,
   args: createMockProps({
     selectedNode: true,
   }),
 };
 
 export const NoData = {
-  render: (args) => <DeckWrapper {...args} />,
+  render: (args: DeckProps) => <DeckWrapper {...args} />,
   args: createMockProps({
     noData: true,
     statusMessage: {

@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 
+interface DebounceInputProps {
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  debounceTime?: number;
+  className?: string;
+  placeholder?: string;
+  type?: string;
+  element?: "input" | "textarea";
+  [key: string]: unknown;
+}
+
 const DebounceInput = ({
   value,
   onChange,
@@ -7,8 +18,9 @@ const DebounceInput = ({
   className = "",
   placeholder = "",
   type = "text",
+  element = "input",
   ...props
-}) => {
+}: DebounceInputProps) => {
   // Internal state to track the input value
   const [inputValue, setInputValue] = useState(value);
 
@@ -34,13 +46,10 @@ const DebounceInput = ({
     const handler = setTimeout(() => {
       // Create a synthetic event that mimics a native onChange event
       const event = {
-        target: {
-          value: inputValue,
-        },
-        // Add any other properties you might need from a synthetic event
+        target: { value: inputValue } as EventTarget & HTMLInputElement,
         preventDefault: () => {},
         stopPropagation: () => {},
-      };
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
 
       // Call the onChange handler with our synthetic event
       onChangeRef.current(event);
@@ -53,9 +62,23 @@ const DebounceInput = ({
   }, [inputValue, debounceTime, value]);
 
   // Handle input changes
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setInputValue(e.target.value);
   };
+
+  if (element === "textarea") {
+    return (
+      <textarea
+        value={inputValue}
+        onChange={handleChange}
+        className={className}
+        placeholder={placeholder}
+        {...props}
+      />
+    );
+  }
 
   return (
     <input

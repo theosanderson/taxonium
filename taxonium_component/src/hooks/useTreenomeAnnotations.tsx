@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const useTreenomeAnnotations = (settings) => {
+const useTreenomeAnnotations = (settings: { chromosomeName: string }) => {
   // Track list as returned from UCSC API. Keep loosely typed.
   const [trackList, setTrackList] = useState<Record<string, unknown>>({});
   const baseUrl = "https://hgdownload.soe.ucsc.edu";
@@ -20,7 +20,12 @@ const useTreenomeAnnotations = (settings) => {
   }, []);
 
   const getJson = useCallback(
-    (track, key, name, category) => {
+    (
+      track: Record<string, any>,
+      key: string,
+      name: string,
+      category: string[]
+    ): Record<string, unknown> | null => {
       const url = track.bigDataUrl;
       if (!url) {
         return null;
@@ -64,13 +69,13 @@ const useTreenomeAnnotations = (settings) => {
   );
 
   const json = useMemo(() => {
-    let allJson = [];
+    let allJson: Record<string, unknown>[] = [];
     const tl = trackList.wuhCor1 as Record<string, any>;
     for (const key in tl) {
       const track = tl[key];
       if (!track.bigDataUrl) {
         for (const childKey in track) {
-          let childJson = {};
+          let childJson: Record<string, unknown> | null = null;
           const child = track[childKey];
           if (!child.bigDataUrl) {
             continue;
@@ -84,7 +89,12 @@ const useTreenomeAnnotations = (settings) => {
           }
         }
       }
-      let thisJson = getJson(track, key, track.longLabel, ["UCSC Tracks"]);
+      let thisJson: Record<string, unknown> | null = getJson(
+        track,
+        key,
+        track.longLabel,
+        ["UCSC Tracks"]
+      );
       if (thisJson) {
         allJson.push(thisJson);
       }

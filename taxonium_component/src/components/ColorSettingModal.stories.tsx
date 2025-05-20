@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, PropsWithChildren } from "react";
 import ColorSettingModal from "./ColorSettingModal";
 import { Button } from "./Basic";
 
@@ -13,10 +13,9 @@ export default {
 
 // Set up Modal for Storybook
 // This is needed for react-modal to work properly in Storybook
-import { useEffect } from "react";
 import Modal from "react-modal";
 
-const ModalWrapper = ({ children }) => {
+const ModalWrapper = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     // Set the app element for accessibility
     Modal.setAppElement("#storybook-root");
@@ -29,11 +28,17 @@ const ModalWrapper = ({ children }) => {
 };
 
 // Wrapper component to manage state for the ColorSettingModal
+interface ColorSettingModalWithStateProps {
+  initialColor: number[];
+  title: string;
+  initiallyOpen?: boolean;
+}
+
 const ColorSettingModalWithState = ({
   initialColor,
   title,
   initiallyOpen = false,
-}) => {
+}: ColorSettingModalWithStateProps) => {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
   const [color, setColor] = useState(initialColor);
 

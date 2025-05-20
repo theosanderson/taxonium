@@ -1,16 +1,27 @@
 import React, { useState } from "react";
 import { SketchPicker } from "react-color";
 
-const rgbToList = (rgb) => {
+interface RGBColor {
+  r: number;
+  g: number;
+  b: number;
+  a?: number;
+}
+
+interface ColorPickerProps {
+  color: number[];
+  setColor: (color: number[]) => void;
+}
+const rgbToList = (rgb: RGBColor): number[] => {
   return [rgb.r, rgb.g, rgb.b];
 };
-const listToRgb = (list) => {
+const listToRgb = (list: number[]): RGBColor => {
   const color = { r: list[0], g: list[1], b: list[2] };
   return color;
 };
 
-function ColorPicker({ color, setColor }) {
-  const rgbColor = listToRgb(color) as any;
+function ColorPicker({ color, setColor }: ColorPickerProps) {
+  const rgbColor = listToRgb(color);
   const [showPicker, setShowPicker] = useState(false);
 
   const togglePicker = () => {
@@ -21,7 +32,7 @@ function ColorPicker({ color, setColor }) {
     setShowPicker(false);
   };
 
-  const handleColorChange = (newColor) => {
+  const handleColorChange = (newColor: { rgb: RGBColor }) => {
     setColor(rgbToList(newColor.rgb));
   };
 

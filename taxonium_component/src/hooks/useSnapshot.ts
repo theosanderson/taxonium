@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-const useSnapshot = (deckRef) => {
+const useSnapshot = (deckRef: React.MutableRefObject<any>): (() => void) => {
   const snapshot = useCallback(() => {
     let canvas = deckRef.current.deck.canvas;
     deckRef.current.deck.redraw(true);
