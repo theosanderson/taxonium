@@ -20,7 +20,6 @@
     "react-icons": "^4.8.0",
     "react-modal": "^3.16.3",
     "react-router-dom": "^7.6.0",
-    "react-tooltip": "^4.2.21",
     "taxonium-component": "file:../taxonium_component"
   },
   "devDependencies": {
@@ -34,6 +33,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "react-tooltip": "^5.28.1",
     "tailwindcss": "^4.1.6",
     "vite": "^6.3.5"
   },
