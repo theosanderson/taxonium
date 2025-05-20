@@ -13,7 +13,9 @@ const defaultViewState = {
   "browser-axis": { zoom: -2, target: [0, 1000] },
 };
 
-const useView = ({ settings }) => {
+const useView = ({ settings,  deckSize }) => {
+
+
   const [viewState, setViewState] = useState(defaultViewState);
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
@@ -82,10 +84,33 @@ const useView = ({ settings }) => {
     return vs;
   }, [controllerProps, viewState, settings]);
 
+  const computeBounds = useCallback(
+    (vs) => {
+      if (!deckSize) return vs;
+      const zoom = Array.isArray(vs.zoom) ? vs.zoom : [vs.zoom, vs.zoom];
+      const real_width = deckSize.width / 2 ** zoom[0];
+      const real_height = deckSize.height / 2 ** zoom[1];
+      vs.real_width = real_width;
+      vs.real_height = real_height;
+      vs.min_x = vs.target[0] - real_width / 2;
+      vs.max_x = vs.target[0] + real_width / 2;
+      vs.min_y = vs.target[1] - real_height / 2;
+      vs.max_y = vs.target[1] + real_height / 2;
+      vs.minimap = { zoom: [-3, -3], target: [250, 1000] };
+      return vs;
+    },
+    [deckSize]
+  );
+
+
   const onViewStateChange = useCallback(({ viewState: newViewState }) => {
+
+
     console.log("onViewStateChange", newViewState);
-    setViewState(newViewState);
-    return newViewState;
+    const newerViewState = computeBounds(newViewState);
+    console.log("newerViewState", newerViewState);
+    setViewState(newerViewState);
+    return newerViewState;
   }, []);
 
   const zoomIncrement = useCallback((increment) => {
