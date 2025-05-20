@@ -64,6 +64,7 @@
     "globals": "^16.0.0",
     "headlessui": "^0.0.0",
     "jbrowse": "^0.0.1-security",
+    "jsdom": "^26.1.0",
     "playwright": "^1.52.0",
     "react-circular-progressbar": "^2.2.0",
     "react-color": "^2.19.3",
