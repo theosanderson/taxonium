@@ -9,7 +9,7 @@ interface WindowWithAnalytics extends Window {
 function useBackend(
   backend_url: string | null | undefined,
   sid: string | null | undefined,
-  uploaded_data: any
+  uploaded_data: Record<string, unknown> | null
 ) {
   const serverBackend = useServerBackend(backend_url, sid);
   const localBackend = useLocalBackend(uploaded_data);

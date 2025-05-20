@@ -1,4 +1,11 @@
 import { useCallback, useMemo, useEffect, useState } from "react";
+import type {
+  Config,
+  NodesResponse,
+  NodeDetails,
+  SearchResult,
+  QueryBounds,
+} from "../types/backend";
 
 // test
 console.log("new worker");
@@ -66,7 +73,7 @@ worker.onmessage = (event) => {
   }
 };
 
-function useLocalBackend(uploaded_data) {
+function useLocalBackend(uploaded_data: Record<string, unknown> | null) {
   const [statusMessage, setStatusMessage] = useState({ message: null });
   onStatusReceipt = (receivedData) => {
     console.log("STATUS:", receivedData.data);
@@ -93,7 +100,12 @@ function useLocalBackend(uploaded_data) {
   }, [uploaded_data]);
 
   const queryNodes = useCallback(
-    async (boundsForQueries, setResult, setTriggerRefresh, config) => {
+    async (
+      boundsForQueries: QueryBounds | null,
+      setResult: (res: NodesResponse) => void,
+      setTriggerRefresh: (v: Record<string, unknown>) => void,
+      config: Config
+    ) => {
       console.log("queryNodes", boundsForQueries);
       worker.postMessage({
         type: "query",
@@ -122,7 +134,11 @@ function useLocalBackend(uploaded_data) {
   );
 
   const singleSearch = useCallback(
-    (singleSearch, boundsForQueries, setResult) => {
+    (
+      singleSearch: string,
+      boundsForQueries: QueryBounds | null,
+      setResult: (res: SearchResult) => void
+    ) => {
       const key = JSON.parse(singleSearch).key;
       console.log("singleSearch", singleSearch, "key", key);
       worker.postMessage({
@@ -150,19 +166,22 @@ function useLocalBackend(uploaded_data) {
     []
   );
 
-  const getDetails = useCallback((node_id, setResult) => {
-    console.log("getDetails", node_id);
-    worker.postMessage({
-      type: "details",
-      node_id: node_id,
-    });
-    onDetailsReceipt = (receivedData) => {
-      console.log("got details result", receivedData);
-      setResult(receivedData);
-    };
-  }, []);
+  const getDetails = useCallback(
+    (node_id: string | number, setResult: (res: NodeDetails) => void) => {
+      console.log("getDetails", node_id);
+      worker.postMessage({
+        type: "details",
+        node_id: node_id,
+      });
+      onDetailsReceipt = (receivedData) => {
+        console.log("got details result", receivedData);
+        setResult(receivedData);
+      };
+    },
+    []
+  );
 
-  const getConfig = useCallback((setResult) => {
+  const getConfig = useCallback((setResult: (res: Config) => void) => {
     console.log("getConfig");
     worker.postMessage({
       type: "config",
@@ -174,7 +193,12 @@ function useLocalBackend(uploaded_data) {
     };
   }, []);
 
-  const getTipAtts = useCallback((nodeId, selectedKey, callback) => {
+  const getTipAtts = useCallback(
+    (
+      nodeId: string | number,
+      selectedKey: string,
+      callback: (err: unknown, data: unknown) => void
+    ) => {
     console.log("getTipAtts", nodeId, selectedKey);
     worker.postMessage({
       type: "list",
@@ -188,7 +212,7 @@ function useLocalBackend(uploaded_data) {
     };
   }, []);
 
-  const getNextstrainJson = useCallback((nodeId, config) => {
+  const getNextstrainJson = useCallback((nodeId: string | number, config: Config) => {
     console.log("getNextstrainJson", nodeId);
     worker.postMessage({
       type: "nextstrain",

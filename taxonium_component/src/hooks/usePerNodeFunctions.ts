@@ -1,6 +1,8 @@
-import { useMemo } from "react";
 
-function usePerNodeFunctions(data: any, config: any) {
+import type { DynamicDataWithLookup, Config } from "../types/backend";
+import type { Mutation, Node } from "../types/node";
+
+function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
   const getNodeGenotype = (node_id: string) => {
     console.log("data", data);
 
@@ -18,16 +20,16 @@ function usePerNodeFunctions(data: any, config: any) {
       );
       return null;
     }
-    let cur_node = data_to_use.nodeLookup[node_id];
+    let cur_node: Node = data_to_use.nodeLookup[node_id];
 
-    const assembled_mutations: any[] = [];
+    const assembled_mutations: Mutation[] = [];
 
     while (cur_node.parent_id !== cur_node.node_id) {
       const nt_mutations = cur_node.mutations.filter(
-        (mutation: any) => mutation.type === "nt"
+        (mutation: Mutation) => mutation.type === "nt"
       );
       const filtered_nt_mutations = nt_mutations.filter(
-        (mutation: any) =>
+        (mutation: Mutation) =>
           !assembled_mutations.some(
             (m) => m.residue_pos === mutation.residue_pos
           )

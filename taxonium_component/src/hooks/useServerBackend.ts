@@ -1,10 +1,22 @@
 import { useCallback, useMemo, useState } from "react";
 import axios from "axios";
+import type {
+  Config,
+  NodesResponse,
+  QueryBounds,
+  NodeDetails,
+  SearchResult,
+} from "../types/backend";
 
-function useServerBackend(backend_url, sid) {
+function useServerBackend(backend_url: string | null, sid: string | null) {
   const [statusMessage, setStatusMessage] = useState({ message: null });
   const queryNodes = useCallback(
-    (boundsForQueries, setResult, setTriggerRefresh, config) => {
+    (
+      boundsForQueries: QueryBounds | null,
+      setResult: (res: NodesResponse) => void,
+      setTriggerRefresh: (v: Record<string, unknown>) => void,
+      config: Config
+    ) => {
       let url = backend_url + "/nodes/?type=leaves&sid=" + sid;
       if (
         boundsForQueries &&
@@ -63,7 +75,11 @@ function useServerBackend(backend_url, sid) {
   );
 
   const singleSearch = useCallback(
-    (singleSearch, boundsForQueries, setResult) => {
+    (
+      singleSearch: unknown,
+      boundsForQueries: QueryBounds | null,
+      setResult: (res: SearchResult) => void
+    ) => {
       const abortController = new AbortController();
 
       let url =
@@ -119,7 +135,7 @@ function useServerBackend(backend_url, sid) {
   );
 
   const getDetails = useCallback(
-    (node_id, setResult) => {
+    (node_id: string | number, setResult: (res: NodeDetails) => void) => {
       let url = backend_url + "/node_details/?id=" + node_id + "&sid=" + sid;
       axios.get(url).then(function (response) {
         setResult(response.data);
@@ -128,7 +144,7 @@ function useServerBackend(backend_url, sid) {
     [backend_url, sid]
   );
   const getConfig = useCallback(
-    (setResult) => {
+    (setResult: (res: Config) => void) => {
       const url = `${backend_url}/config/?sid=${sid}`;
 
       // Fetch initial config
