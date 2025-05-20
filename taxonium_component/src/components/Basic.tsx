@@ -43,7 +43,13 @@ export const Button = ({
   }
 };
 
-export const Select = ({ onChange, className, children, value, title }: any) => {
+export const Select = ({
+  onChange,
+  className,
+  children,
+  value,
+  title,
+}: any) => {
   return (
     <select
       className={classNames(
