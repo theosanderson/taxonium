@@ -82,7 +82,7 @@ function Deck({
   const [deckSettingsOpen, setDeckSettingsOpen] = useState(false);
   const [colorSettingOpen, setColorSettingOpen] = useState(false);
   const [currentColorSettingKey, setCurrentColorSettingKey] = useState("a");
-  const [hoveredKey, setHoveredKey] = useState(null);
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const [treenomeSettingsOpen, setTreenomeSettingsOpen] = useState(false);
 
   //console.log("DATA is ", data);

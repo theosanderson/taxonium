@@ -74,7 +74,10 @@ worker.onmessage = (event) => {
 };
 
 function useLocalBackend(uploaded_data: Record<string, unknown> | null) {
-  const [statusMessage, setStatusMessage] = useState({ message: null });
+  const [statusMessage, setStatusMessage] = useState<
+    | { percentage?: number; message?: string | null }
+    | null
+  >({ message: null });
   onStatusReceipt = (receivedData) => {
     console.log("STATUS:", receivedData.data);
     if (receivedData.data.error) {

@@ -9,7 +9,10 @@ import type {
 } from "../types/backend";
 
 function useServerBackend(backend_url: string | null, sid: string | null) {
-  const [statusMessage, setStatusMessage] = useState({ message: null });
+  const [statusMessage, setStatusMessage] = useState<
+    | { percentage?: number; message?: string | null }
+    | null
+  >({ message: null });
   const queryNodes = useCallback(
     (
       boundsForQueries: QueryBounds | null,

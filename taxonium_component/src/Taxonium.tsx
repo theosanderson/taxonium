@@ -12,6 +12,7 @@ import useHoverDetails from "./hooks/useHoverDetails";
 import { useMemo, useState, useRef } from "react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
+import type { DynamicDataWithLookup } from "./types/backend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
@@ -21,6 +22,32 @@ import getDefaultQuery from "./utils/getDefaultQuery";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import { Toaster } from "react-hot-toast";
+
+interface SourceData {
+  status: string;
+  filename: string;
+  filetype: string;
+  data?: string;
+  [key: string]: unknown;
+}
+
+interface TaxoniumProps {
+  sourceData?: SourceData;
+  backendUrl?: string;
+  configDict?: Record<string, unknown>;
+  configUrl?: string;
+  query?: Record<string, any>;
+  updateQuery?: (q: Record<string, any>) => void;
+  overlayContent?: React.ReactNode;
+  setAboutEnabled?: (val: boolean) => void;
+  setOverlayContent?: (content: React.ReactNode) => void;
+  setTitle?: (title: string) => void;
+}
+
+interface DeckSize {
+  width: number;
+  height: number;
+}
 
 const default_query = getDefaultQuery();
 
@@ -38,14 +65,16 @@ function Taxonium({
   setAboutEnabled,
   setOverlayContent,
   setTitle,
-}) {
+}: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery: Record<string, unknown>) => {
     setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
   }, []);
   // if query and updateQuery are not provided, use the backupQuery
-  if (!query && !updateQuery) {
+  if (!query) {
     query = backupQuery;
+  }
+  if (!updateQuery) {
     updateQuery = backupUpdateQuery;
   }
 
@@ -67,7 +96,10 @@ function Taxonium({
   const jbrowseRef = useRef<any>(null);
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
-  const [deckSize, setDeckSize] = useState(null);
+  const [deckSize, setDeckSize] = useState<DeckSize>({
+    width: NaN,
+    height: NaN,
+  });
   const settings = useSettings({ query, updateQuery });
   const view = useView({
     settings,
@@ -76,9 +108,9 @@ function Taxonium({
   });
 
   const backend = useBackend(
-    backendUrl ? backendUrl : query.backend,
-    query.sid,
-    sourceData
+    backendUrl ? backendUrl : (query as Record<string, any>).backend,
+    (query as Record<string, any>).sid,
+    sourceData ?? null
   );
   if (!backend) {
     return null;
@@ -113,8 +145,8 @@ function Taxonium({
   const xType = query.xType ? query.xType : "x_dist";
 
   const setxType = useCallback(
-    (xType) => {
-      updateQuery({ xType });
+    (xType: string) => {
+      updateQuery!({ xType });
     },
     [updateQuery]
   );
@@ -129,7 +161,10 @@ function Taxonium({
       deckSize
     );
 
-  const perNodeFunctions = usePerNodeFunctions(data, config);
+  const perNodeFunctions = usePerNodeFunctions(
+    data as unknown as DynamicDataWithLookup,
+    config
+  );
 
   useEffect(() => {
     // If there is no distance data, default to time

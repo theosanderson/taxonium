@@ -1,17 +1,31 @@
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
 
+interface ListOutputModalProps {
+  backend: {
+    getTipAtts: (
+      nodeId: string,
+      key: string,
+      callback: (err: unknown, res: string[]) => void
+    ) => void;
+  };
+  listOutputModalOpen: boolean;
+  setListOutputModalOpen: (open: boolean) => void;
+  nodeId: string;
+  possibleKeys: string[];
+}
+
 const ListOutputModal = ({
   backend,
   listOutputModalOpen,
   setListOutputModalOpen,
   nodeId,
   possibleKeys,
-}) => {
+}: ListOutputModalProps) => {
   // display the output in a textarea
 
-  const [selectedKey, setSelectedKey] = useState(possibleKeys[0]);
-  const [listOutput, setListOutput] = useState([]);
+  const [selectedKey, setSelectedKey] = useState<string>(possibleKeys[0]);
+  const [listOutput, setListOutput] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

@@ -2,7 +2,39 @@ import prettifyName from "../utils/prettifyName";
 import { useState } from "react";
 import classNames from "classnames";
 
-const ColorRamp = ({ ramp }) => {
+interface ColorRampType {
+  scale: [number, string][];
+}
+
+export interface KeyItem {
+  value: string;
+  count: number;
+  color: [number, number, number];
+}
+
+interface KeyProps {
+  keyStuff: KeyItem[];
+  colorByField: string;
+  colorByGene?: string;
+  colorByPosition?: string;
+  config: Record<string, unknown>;
+  setCurrentColorSettingKey: (key: string) => void;
+  setColorSettingOpen: (open: boolean) => void;
+  hoveredKey: string | null;
+  setHoveredKey: (key: string | null) => void;
+  colorRamps?: Record<string, ColorRampType>;
+}
+
+interface KeyContentProps {
+  filteredKeyStuff: KeyItem[];
+  setCurrentColorSettingKey: (key: string) => void;
+  setColorSettingOpen: (open: boolean) => void;
+  setHoveredKey: (key: string | null) => void;
+  hoveredKey: string | null;
+  isTruncated: boolean;
+}
+
+const ColorRamp = ({ ramp }: { ramp: ColorRampType }) => {
   const scale = ramp.scale;
 
   // Extract values and colors from the scale
@@ -100,7 +132,7 @@ const Key = ({
   hoveredKey,
   setHoveredKey,
   colorRamps,
-}) => {
+}: KeyProps) => {
   const numLegendEntries = 10;
   const [collapsed, setCollapsed] = useState(window.innerWidth < 800);
 
@@ -172,7 +204,7 @@ const KeyContent = ({
   setHoveredKey,
   hoveredKey,
   isTruncated,
-}) => {
+}: KeyContentProps) => {
   return (
     <>
       {filteredKeyStuff.map((item, index) => {

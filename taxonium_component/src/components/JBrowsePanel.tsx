@@ -11,9 +11,14 @@ import {
 
 import { protect, unprotect } from "mobx-state-tree";
 
+interface Settings {
+  chromosomeName: string;
+  [key: string]: unknown;
+}
+
 interface JBrowsePanelProps {
   treenomeState: Record<string, any>;
-  settings: Record<string, any>;
+  settings: Settings;
 }
 
 function JBrowsePanel(props: JBrowsePanelProps) {
@@ -239,8 +244,8 @@ function JBrowsePanel(props: JBrowsePanelProps) {
     };
   }, []);
 
-  const [freezeTracks, setFreezeTracks] = useState([]);
-  const [enabledTracks, setEnabledTracks] = useState([]);
+  const [freezeTracks, setFreezeTracks] = useState<Record<string, unknown>[]>([]);
+  const [enabledTracks, setEnabledTracks] = useState<Record<string, unknown>[]>([]);
 
   const state = useMemo(() => {
     setFreezeTracks(enabledTracks);
@@ -302,7 +307,7 @@ function JBrowsePanel(props: JBrowsePanelProps) {
     }
   }, [state]);
 
-  const [showThis, setShowThis] = useState(null);
+  const [showThis, setShowThis] = useState<string | null>(null);
 
   useEffect(() => {
     if (showThis && state && state.session && state.session.view) {
