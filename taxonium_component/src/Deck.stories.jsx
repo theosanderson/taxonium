@@ -50,7 +50,6 @@ const createMockProps = (overrides = {}) => {
       zoomIncrement: fn(),
       zoomAxis: "X",
       setZoomAxis: fn(),
-      xzoom: 1,
       modelMatrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
       setMouseXY: fn(),
     },
