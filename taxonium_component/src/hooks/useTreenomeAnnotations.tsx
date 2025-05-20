@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const useTreenomeAnnotations = (settings) => {
-  // Track list as returned from UCSC API. We don't currently define a
-  // detailed type for this structure, so fall back to `any`.
-  const [trackList, setTrackList] = useState<any>({});
+  // Track list as returned from UCSC API. Keep loosely typed.
+  const [trackList, setTrackList] = useState<Record<string, unknown>>({});
   const baseUrl = "https://hgdownload.soe.ucsc.edu";
 
   async function getTrackList() {
@@ -34,7 +33,7 @@ const useTreenomeAnnotations = (settings) => {
       // The structure returned here is consumed by JBrowse which expects
       // additional fields not described in our local types, so we keep it
       // as a loosely-typed object.
-      const output: any = {
+      const output: Record<string, unknown> = {
         trackId: key,
         name: name,
         assemblyNames: [settings.chromosomeName],
@@ -66,8 +65,9 @@ const useTreenomeAnnotations = (settings) => {
 
   const json = useMemo(() => {
     let allJson = [];
-    for (const key in trackList.wuhCor1) {
-      const track = trackList.wuhCor1[key];
+    const tl = trackList.wuhCor1 as Record<string, any>;
+    for (const key in tl) {
+      const track = tl[key];
       if (!track.bigDataUrl) {
         for (const childKey in track) {
           let childJson = {};

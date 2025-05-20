@@ -14,7 +14,7 @@ const default_query = {
 };
 
 // first_search is currently unused, but remains for backwards compatibility
-const getDefaultQuery = (first_search?: any) => {
+const getDefaultQuery = () => {
   return { ...default_query };
 };
 

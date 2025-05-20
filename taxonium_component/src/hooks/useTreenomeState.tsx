@@ -99,8 +99,8 @@ const useTreenomeState = (data, deckRef, view, settings) => {
   }, [settings.treenomeEnabled]);
 
   // Stores either a boolean or a reference to the JBrowse element once it is
-  // detected. We keep the type loose to avoid type errors during detection.
-  const [jbrowseLoaded, setJbrowseLoaded] = useState<any>(false);
+  // detected.
+  const [jbrowseLoaded, setJbrowseLoaded] = useState<HTMLElement | false>(false);
   const [handled, setHandled] = useState(false);
   useEffect(() => {
     if (jbrowseLoaded && !handled) {
