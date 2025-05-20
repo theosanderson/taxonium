@@ -156,7 +156,7 @@ async function cleanup(tree) {
     node.node_id = i;
   });
 
-  tree.node = tree.node.map((node, i) => {
+  tree.node = tree.node.map((node) => {
     const cleaned = {
       name: node.name.replace(/'/g, ""),
       parent_id: node.parent ? node.parent.node_id : node.node_id,

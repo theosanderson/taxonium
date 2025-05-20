@@ -82,7 +82,6 @@ function parseNewickKeyValue(newickKVString, obj_to_set) {
   // Regular expression that matches key=value pairs, accounting for commas within {}
   const regex = /(&?\w+)=({[^}]*}|[^,]*)/g;
 
-  const result = [];
   let match;
 
   // Use the RegExp.exec() method to find all matches in the string
@@ -99,7 +98,7 @@ async function cleanup(tree) {
     node.node_id = i;
   });
 
-  tree.node = tree.node.map((node, i) => {
+  tree.node = tree.node.map((node) => {
     const to_return = {
       name: node.name.replace(/'/g, ""),
       parent_id: node.parent ? node.parent.node_id : node.node_id,
