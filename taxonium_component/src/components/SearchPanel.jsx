@@ -130,8 +130,8 @@ function SearchPanel({
         {key === "num_tips" && (
           <span className="ml-1">
             <a
-              data-for="menu_descendants"
-              data-tip="8"
+              data-tooltip-id="menu_descendants"
+              data-tooltip-content="8"
               className="cursor-pointer"
             >
               {" "}
@@ -322,8 +322,8 @@ function SearchPanel({
               />
               <button
                 style={{ cursor: "default" }}
-                data-tip="Display a browser with each genome's mutations alongside the tree.&nbsp;<a href='https://docs.taxonium.org/en/latest/treenome.html' class='tooltipLink' target='_blank'>Learn more</a>"
-                data-html={true}
+                data-tooltip-id="global-tooltip"
+                data-tooltip-html="Display a browser with each genome's mutations alongside the tree.&nbsp;<a href='https://docs.taxonium.org/en/latest/treenome.html' class='tooltipLink' target='_blank'>Learn more</a>"
               >
                 <span
                   style={{ display: "inline-block", verticalAlign: "middle" }}

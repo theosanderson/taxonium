@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import DebounceInput from "./DebounceInput";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
-import { Tooltip as ReactTooltip } from "react-tooltip";
 const number_methods = [">", "<", ">=", "<=", "=="];
 
 // title case

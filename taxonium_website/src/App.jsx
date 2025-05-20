@@ -1,4 +1,5 @@
 import React, { useState, Suspense, useRef, useEffect } from "react";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import AboutOverlay from "./components/AboutOverlay";
 import TaxoniumBit from "./components/TaxoniumBit";
 import { CgListTree } from "react-icons/cg";
@@ -157,6 +158,15 @@ function App() {
         enabled={aboutEnabled}
         setEnabled={setAboutEnabled}
         overlayContent={overlayContent}
+      />
+      <ReactTooltip
+        id="global-tooltip"
+        delayHide={400}
+        className="infoTooltip"
+        place="top"
+        backgroundColor="#e5e7eb"
+        textColor="#000"
+        effect="solid"
       />
 
       <div
