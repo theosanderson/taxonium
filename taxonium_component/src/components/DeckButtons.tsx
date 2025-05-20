@@ -23,7 +23,7 @@ interface DeckButtonsProps {
   requestOpenSettings: () => void;
   zoomReset: () => void;
   settings: Record<string, unknown>;
-  deckSize: { width: number; height: number } | null;
+  deckSize: { width: number; height: number };
   triggerSVGdownload: () => void;
 }
 

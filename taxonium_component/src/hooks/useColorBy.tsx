@@ -4,10 +4,14 @@ interface WindowWithCc extends Window {
   cc?: unknown;
 }
 
-let cachedColorByPosition = null; // todo do this with state
-let cachedColorByGene = null; // todo do this with state
+let cachedColorByPosition: number | null = null; // todo do this with state
+let cachedColorByGene: string | null = null; // todo do this with state
 
-function useColorBy(config, query, updateQuery) {
+function useColorBy(
+  config: any,
+  query: any,
+  updateQuery: (q: any) => void
+): any {
   const colorCacheRef = useRef<Record<string, string>>({});
   const colorByConfig = useMemo(() => {
     return query.color ? JSON.parse(query.color) : {};
@@ -33,28 +37,28 @@ function useColorBy(config, query, updateQuery) {
   (window as WindowWithCc).cc = colorCacheRef.current;
 
   const setColorByField = useCallback(
-    (field) => {
+    (field: string) => {
       updateQuery({ color: JSON.stringify({ ...colorByConfig, field }) });
     },
     [colorByConfig, updateQuery]
   );
 
   const setColorByGene = useCallback(
-    (gene) => {
+    (gene: string) => {
       updateQuery({ color: JSON.stringify({ ...colorByConfig, gene }) });
     },
     [colorByConfig, updateQuery]
   );
 
   const setColorByPosition = useCallback(
-    (pos) => {
+    (pos: number) => {
       updateQuery({ color: JSON.stringify({ ...colorByConfig, pos }) });
     },
     [colorByConfig, updateQuery]
   );
 
   const getNodeColorField = useCallback(
-    (node, dataset) => {
+    (node: any, dataset: any) => {
       if (
         colorByPosition != cachedColorByPosition ||
         colorByGene != cachedColorByGene

@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
+import type { Backend, Config } from "../types/backend";
 
 const useConfig = (
-  backend,
-  view,
-  setOverlayContent,
-  setTitle,
-  query,
-  configDict,
-  configUrl
+  backend: Backend,
+  view: any,
+  setOverlayContent: (content: unknown) => void,
+  setTitle: (title: string) => void,
+  query: any,
+  configDict: any,
+  configUrl: string | undefined
 ) => {
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState<Config>({
     title: "loading",
     source: "",
     num_nodes: 0,

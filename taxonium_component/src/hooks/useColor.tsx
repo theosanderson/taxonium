@@ -23,9 +23,10 @@ const useColor = (
     const scales: { colorRamp?: ScaleLinear<number, string> } = {};
     if (config.colorRamps && config.colorRamps[colorByField]) {
       const { scale: rampScale } = config.colorRamps[colorByField];
-      const domain = rampScale.map((d) => d[0]);
-      const range = rampScale.map((d) => d[1]);
-      scales.colorRamp = scaleLinear<number, string>().domain(domain).range(range);
+      const domain: number[] = rampScale.map((d) => d[0]);
+      const range: string[] = rampScale.map((d) => d[1]);
+      scales.colorRamp =
+        scaleLinear<number, string>().domain(domain).range(range);
     }
     return scales;
   }, [config.colorRamps, colorByField]);
@@ -61,7 +62,7 @@ const useColor = (
         return colorMapping[value];
       }
 
-      const amino_acids = {
+      const amino_acids: Record<string, [number, number, number]> = {
         A: [230, 25, 75],
         R: [60, 180, 75],
         N: [255, 225, 25],
@@ -110,7 +111,7 @@ const useColor = (
       }
 
       // Special cases for specific strings
-      const specialCases = {
+      const specialCases: Record<string, [number, number, number]> = {
         USA: [95, 158, 245],
         "B.1.2": [95, 158, 245],
         South_Africa: [9, 191, 255],

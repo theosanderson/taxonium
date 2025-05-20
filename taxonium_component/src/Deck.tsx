@@ -23,6 +23,7 @@ import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
+import type { StatusMessage } from "./types/backend";
 
 const MemoizedKey = React.memo(Key);
 
@@ -40,7 +41,7 @@ interface DeckProps {
   colorBy: any;
   hoverDetails: any;
   config: any;
-  statusMessage: { percentage?: number; message?: string } | null;
+  statusMessage: StatusMessage | null;
   xType: string;
   settings: any;
   selectedDetails: any;
