@@ -1,12 +1,71 @@
-# React + Vite
+# Taxonium Component
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+`taxonium-component` provides the tree viewer used by [Taxonium](https://taxonium.org) as a reusable React component.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Install the package from npm:
 
-## Expanding the ESLint configuration
+```bash
+npm install taxonium-component
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Embedding in a React application
+
+```jsx
+import Taxonium from "taxonium-component";
+
+function App() {
+  return <Taxonium backendUrl="https://api.cov2tree.org" />;
+}
+
+export default App;
+```
+
+## Using script tags
+
+```html
+<div id="root"></div>
+
+<!-- Peer dependencies -->
+<script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+
+<!-- Taxonium component -->
+<script src="https://unpkg.com/taxonium-component"></script>
+<script>
+  const sourceData = {
+    status: "loaded",
+    filename: "test.nwk",
+    data: "((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);",
+    filetype: "nwk",
+  };
+  ReactDOM.render(
+    React.createElement(Taxonium, { sourceData }),
+    document.getElementById("root")
+  );
+</script>
+```
+
+## Building the library
+
+To build the component from source:
+
+```bash
+cd taxonium_component
+npm install
+npm run build
+```
+
+The compiled files will appear in the `dist` directory.
+
+## Demo
+
+A Storybook demo can be started locally with:
+
+```bash
+npm run storybook
+```
+
+This will launch an example at [http://localhost:6006](http://localhost:6006).
+
