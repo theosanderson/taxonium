@@ -3,11 +3,11 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 
 // test
 console.log("new worker");
-//const workerPath = "../webworkers/localBackendWorker.js";
+//const workerPath = "../webworkers/localBackendWorker.ts";
 
-import workerSpec from "../webworkers/localBackendWorker.js?worker&inline";
+import workerSpec from "../webworkers/localBackendWorker.ts?worker&inline";
 
-//const url = new URL('../webworkers/localBackendWorker.js', import.meta.url)
+//const url = new URL('../webworkers/localBackendWorker.ts', import.meta.url)
 //const getWorker = () => new Worker(url, { type: 'module' })
 
 const worker = new workerSpec();
