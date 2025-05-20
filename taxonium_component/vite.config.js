@@ -12,7 +12,6 @@ export default defineConfig({
     nodePolyfills({
       exclude: ["fs"],
       protocolImports: true,
-   
     }),
     react({
       // This ensures React is properly treated as external
@@ -21,9 +20,7 @@ export default defineConfig({
     cssInjectedByJsPlugin(),
     tailwindcss(),
   ],
-  define: {
-   
-  },
+  define: {},
 
   build: {
     lib: {
@@ -67,9 +64,8 @@ export default defineConfig({
   },
 
   resolve: {
-   alias: {
-     'process/': 'process'
-   }
-    
+    alias: {
+      "process/": "process",
+    },
   },
 });
