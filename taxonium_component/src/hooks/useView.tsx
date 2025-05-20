@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useMemo, useCallback } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
 
@@ -42,7 +41,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
           height: "35%",
           borderWidth: "1px",
           controller: controllerProps,
-        })
+        } as any)
       );
     }
     if (settings.treenomeEnabled) {
@@ -53,13 +52,13 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
           x: "40%",
           y: "0%",
           width: "60%",
-        }),
+        } as any),
         new OrthographicView({
           id: "browser-main",
           controller: controllerProps,
           x: "40%",
           width: "60%",
-        })
+        } as any)
       );
     }
     vs.push(
@@ -68,7 +67,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
         controller: controllerProps,
         width: settings.treenomeEnabled ? "40%" : "100%",
         initialViewState: viewState,
-      })
+      } as any)
     );
     if (settings.treenomeEnabled) {
       vs.push(
@@ -77,7 +76,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
           controller: controllerProps,
           width: "100%",
           initialViewState: viewState,
-        })
+        } as any)
       );
     }
     return vs;
@@ -89,9 +88,12 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
         return false;
       }
 
-      newViewState.minimap = { zoom: -3, target: [250, 1000] };
-      newViewState['browser-main'] = { zoom: [-3,newViewState.zoom[1]], target: [250, newViewState.target[1]] };
-        setViewState(newViewState);
+      (newViewState as any).minimap = { zoom: -3, target: [250, 1000] };
+      (newViewState as any)["browser-main"] = {
+        zoom: [-3, (newViewState as any).zoom[1]],
+        target: [250, (newViewState as any).target[1]],
+      };
+      setViewState(newViewState as any);
 
       return newViewState;
     },
@@ -100,7 +102,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }) => {
 
   const zoomIncrement = useCallback(
     (increment, axis = zoomAxis) => {
-      setViewState((vs) => {
+      setViewState((vs: any) => {
         if (Array.isArray(vs.zoom)) {
           const newZoom = [...vs.zoom];
           if (axis === "X") {

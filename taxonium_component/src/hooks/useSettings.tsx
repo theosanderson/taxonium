@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import getDefaultQuery from "../utils/getDefaultQuery";

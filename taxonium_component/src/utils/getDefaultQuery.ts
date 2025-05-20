@@ -13,7 +13,8 @@ const default_query = {
   treenomeEnabled: false,
 };
 
-const getDefaultQuery = (first_search) => {
+// first_search is currently unused, but remains for backwards compatibility
+const getDefaultQuery = (first_search?: any) => {
   return { ...default_query };
 };
 
