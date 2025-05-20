@@ -230,7 +230,10 @@ function SearchPanel({
 
   return (
     <div
-      className={classNames("flex flex-col px-4 divide-y text-sm border-gray-200", className)}
+      className={classNames(
+        "flex flex-col px-4 divide-y text-sm border-gray-200",
+        className
+      )}
     >
       <button onClick={toggleSidebar} className="border-gray-200">
         <br />

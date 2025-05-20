@@ -14,7 +14,10 @@
   ::after,
   ::backdrop,
   ::file-selector-button {
-    border-color: theme('colors.gray.200', 'currentColor'); /* Reverts to gray-200, falling back to currentColor if gray-200 is not defined */
+    border-color: theme(
+      "colors.gray.200",
+      "currentColor"
+    ); /* Reverts to gray-200, falling back to currentColor if gray-200 is not defined */
   }
 }
 
