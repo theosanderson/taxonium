@@ -1,24 +1,35 @@
-// @ts-nocheck
 import React from "react";
 import { toast } from "react-hot-toast";
 
-export class JBrowseErrorBoundary extends React.Component {
-  constructor(props) {
+interface JBrowseErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface JBrowseErrorBoundaryState {
+  fileError: boolean;
+  otherError: boolean;
+}
+
+export class JBrowseErrorBoundary extends React.Component<
+  JBrowseErrorBoundaryProps,
+  JBrowseErrorBoundaryState
+> {
+  constructor(props: JBrowseErrorBoundaryProps) {
     super(props);
     this.state = { fileError: false, otherError: false };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error): JBrowseErrorBoundaryState {
     if (
       error.message === "invalid SceneGraph arguments" ||
       error.message === "Invalid array length"
     ) {
-      return { fileError: true };
+      return { fileError: true, otherError: false };
     }
-    return { otherError: true };
+    return { fileError: false, otherError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     if (
       error.message === "invalid SceneGraph arguments" ||
       error.message === "Invalid array length"

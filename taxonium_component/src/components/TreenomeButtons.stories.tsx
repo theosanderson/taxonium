@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { fn } from "@storybook/test";
 import { TreenomeButtons } from "./TreenomeButtons";
 

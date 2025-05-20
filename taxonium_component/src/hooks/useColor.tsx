@@ -1,18 +1,17 @@
-// @ts-nocheck
 import { useCallback, useMemo } from "react";
 import scale from "scale-color-perceptual";
-import { scaleLinear } from "d3-scale";
+import { scaleLinear, ScaleLinear } from "d3-scale";
 
 let rgb_cache = {};
 
 const useColor = (config, colorMapping, colorByField) => {
   const colorScales = useMemo(() => {
-    const scales = {};
+    const scales: { colorRamp?: ScaleLinear<number, string> } = {};
     if (config.colorRamps && config.colorRamps[colorByField]) {
       const { scale: rampScale } = config.colorRamps[colorByField];
       const domain = rampScale.map((d) => d[0]);
       const range = rampScale.map((d) => d[1]);
-      scales.colorRamp = scaleLinear().domain(domain).range(range);
+      scales.colorRamp = scaleLinear<number, string>().domain(domain).range(range);
     }
     return scales;
   }, [config.colorRamps, colorByField]);

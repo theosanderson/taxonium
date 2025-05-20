@@ -1,4 +1,3 @@
-// @ts-nocheck
 import TreenomeMutationHoverTip from "./TreenomeMutationHoverTip";
 
 export default {

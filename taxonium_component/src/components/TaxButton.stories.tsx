@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { fn } from "@storybook/test";
 import TaxButton from "./TaxButton";
 import { FaSearch, FaCamera, FaHome, FaCog } from "react-icons/fa";

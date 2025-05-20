@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 import { toast } from "react-hot-toast";
 import { FaCircle, FaRegCircle } from "react-icons/fa";

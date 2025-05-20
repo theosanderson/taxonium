@@ -1,4 +1,3 @@
-// @ts-nocheck
 import FirefoxWarning from "./FirefoxWarning";
 
 export default {
