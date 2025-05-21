@@ -153,7 +153,7 @@ const NodeHoverTip = ({
             {mutations.length === 0 && (
               <div className="text-xs italic">
                 No{" "}
-                {filterMutations([{ type: "nt" } as Mutation]).length === 0 ? (
+                {filterMutations([{ type: "nt" }]).length === 0 ? (
                   <>coding</>
                 ) : (
                   <></>
