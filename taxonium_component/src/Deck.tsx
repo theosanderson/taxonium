@@ -50,7 +50,9 @@ export interface DeckProps {
   isCurrentlyOutsideBounds: boolean;
   deckRef: React.RefObject<any>;
   jbrowseRef: React.RefObject<any>;
-  setAdditionalColorMapping: (mapping: unknown) => void;
+  setAdditionalColorMapping: React.Dispatch<
+    React.SetStateAction<Record<string, unknown>>
+  >;
   mouseDownIsMinimap: boolean;
   setMouseDownIsMinimap: (val: boolean) => void;
 }

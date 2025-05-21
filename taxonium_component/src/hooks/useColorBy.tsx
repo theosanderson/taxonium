@@ -88,15 +88,15 @@ function useColorBy(
           //console.log("using cache");
           return colorCacheRef.current[node.node_id];
         }
-        let result;
+        let result: string;
         const relevantMutations = node.mutations.filter(
           (mut: Mutation) =>
             mut.residue_pos === colorByPosition && mut.gene === colorByGene
         );
         if (relevantMutations.length > 0) {
-          result = relevantMutations[0].new_residue;
+          result = relevantMutations[0].new_residue || "X";
         } else {
-          const parent_id = node.parent_id;
+          const parent_id = node.parent_id as string;
           if (parent_id === node.node_id) {
             result = "X";
           } else {

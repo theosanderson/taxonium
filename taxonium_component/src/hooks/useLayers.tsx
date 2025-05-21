@@ -100,14 +100,14 @@ const useLayers = ({
   );
   layers.push(...treenomeLayers);
 
-  const getX = useCallback((node) => node[xType], [xType]);
+  const getX = useCallback((node: Node) => node[xType], [xType]);
 
   const detailed_data = useMemo(() => {
-    if (data.data && data.data.nodes) {
-      data.data.nodes.forEach((node) => {
-        node.parent_x = getX(data.data.nodeLookup[node.parent_id]);
-        node.parent_y = data.data.nodeLookup[node.parent_id].y;
-      });
+      if (data.data && data.data.nodes) {
+        data.data.nodes.forEach((node: Node) => {
+          node.parent_x = getX(data.data.nodeLookup[node.parent_id as string]);
+          node.parent_y = data.data.nodeLookup[node.parent_id as string].y;
+        });
       return data.data;
     } else {
       return { nodes: [], nodeLookup: {} };
@@ -122,11 +122,11 @@ const useLayers = ({
 
   const clade_data = useMemo(() => {
     const initial_data = detailed_data.nodes.filter(
-      (n) => n.clades && n.clades[clade_accessor]
+      (n: Node) => n.clades && n.clades[clade_accessor]
     );
 
     const rev_sorted_by_num_tips = initial_data.sort(
-      (a, b) => b.num_tips - a.num_tips
+      (a: Node, b: Node) => b.num_tips - a.num_tips
     );
 
     // pick top settings.minTipsForCladeText
@@ -135,11 +135,13 @@ const useLayers = ({
   }, [detailed_data.nodes, settings.maxCladeTexts, clade_accessor]);
 
   const base_data = useMemo(() => {
-    if (data.base_data && data.base_data.nodes) {
-      data.base_data.nodes.forEach((node) => {
-        node.parent_x = getX(data.base_data.nodeLookup[node.parent_id]);
-        node.parent_y = data.base_data.nodeLookup[node.parent_id].y;
-      });
+      if (data.base_data && data.base_data.nodes) {
+        data.base_data.nodes.forEach((node: Node) => {
+          node.parent_x = getX(
+            data.base_data.nodeLookup[node.parent_id as string]
+          );
+          node.parent_y = data.base_data.nodeLookup[node.parent_id as string].y;
+        });
       return {
         nodes: data.base_data.nodes,
         nodeLookup: data.base_data.nodeLookup,
@@ -151,7 +153,7 @@ const useLayers = ({
 
   const detailed_scatter_data = useMemo(() => {
     return detailed_data.nodes.filter(
-      (node) =>
+      (node: Node) =>
         node.is_tip ||
         (node.is_tip === undefined && node.num_tips === 1) ||
         settings.displayPointsForInternalNodes
@@ -161,7 +163,7 @@ const useLayers = ({
   const minimap_scatter_data = useMemo(() => {
     return base_data
       ? base_data.nodes.filter(
-          (node) =>
+          (node: Node) =>
             node.is_tip ||
             (node.is_tip === undefined && node.num_tips === 1) ||
             settings.displayPointsForInternalNodes
@@ -203,8 +205,8 @@ const useLayers = ({
   const bound_contour = [[outer_bounds, inner_bounds]];
 
   const scatter_layer_common_props = {
-    getPosition: (d) => [getX(d), d.y],
-    getFillColor: (d) => toRGB(getNodeColorField(d, detailed_data)),
+    getPosition: (d: Node) => [getX(d), d.y],
+    getFillColor: (d: Node) => toRGB(getNodeColorField(d, detailed_data)),
     getRadius: settings.nodeSize,
     // radius in pixels
     // we had to get rid of the below because it was messing up the genotype colours
@@ -217,7 +219,7 @@ const useLayers = ({
     lineWidthScale: 1,
     pickable: true,
     radiusUnits: "pixels",
-    onHover: (info) => setHoverInfo(info),
+    onHover: (info: any) => setHoverInfo(info),
     modelMatrix: modelMatrix,
     updateTriggers: {
       getFillColor: [detailed_data, getNodeColorField, colorHook],
@@ -227,12 +229,12 @@ const useLayers = ({
   };
 
   const line_layer_horiz_common_props = {
-    getSourcePosition: (d) => [getX(d), d.y],
-    getTargetPosition: (d) => [d.parent_x, d.y],
+    getSourcePosition: (d: Node) => [getX(d), d.y],
+    getTargetPosition: (d: Node) => [d.parent_x, d.y],
     getColor: lineColor,
     pickable: true,
     widthUnits: "pixels",
-    getWidth: (d) =>
+    getWidth: (d: Node) =>
       d === (hoverInfo && hoverInfo.object)
         ? 3
         : selectedDetails.nodeDetails &&
@@ -240,7 +242,7 @@ const useLayers = ({
         ? 3.5
         : 1,
 
-    onHover: (info) => setHoverInfo(info),
+    onHover: (info: any) => setHoverInfo(info),
 
     modelMatrix: modelMatrix,
     updateTriggers: {
@@ -251,12 +253,12 @@ const useLayers = ({
   };
 
   const line_layer_vert_common_props = {
-    getSourcePosition: (d) => [d.parent_x, d.y],
-    getTargetPosition: (d) => [d.parent_x, d.parent_y],
-    onHover: (info) => setHoverInfo(info),
+    getSourcePosition: (d: Node) => [d.parent_x, d.y],
+    getTargetPosition: (d: Node) => [d.parent_x, d.parent_y],
+    onHover: (info: any) => setHoverInfo(info),
     getColor: lineColor,
     pickable: true,
-    getWidth: (d) =>
+    getWidth: (d: Node) =>
       d === (hoverInfo && hoverInfo.object)
         ? 2
         : selectedDetails.nodeDetails &&
@@ -288,13 +290,13 @@ const useLayers = ({
         }
       : null;
 
-    const fillin_scatter_layer = {
-      layerType: "ScatterplotLayer",
-      ...scatter_layer_common_props,
-      id: "fillin-scatter",
-      data: minimap_scatter_data,
-      getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
-    };
+      const fillin_scatter_layer = {
+        layerType: "ScatterplotLayer",
+        ...scatter_layer_common_props,
+        id: "fillin-scatter",
+        data: minimap_scatter_data,
+        getFillColor: (d: Node) => toRGB(getNodeColorField(d, base_data)),
+      };
 
     const main_line_layer = {
       layerType: "LineLayer",
@@ -338,9 +340,9 @@ const useLayers = ({
       modelMatrix,
 
       getLineColor: [0, 0, 0],
-      getPosition: (d) => {
-        return [d[xType], d.y];
-      },
+        getPosition: (d: Node) => {
+          return [d[xType], d.y];
+        },
       lineWidthUnits: "pixels",
       lineWidthScale: 2,
     };
@@ -359,9 +361,9 @@ const useLayers = ({
       modelMatrix,
 
       getLineColor: [0, 0, 0],
-      getPosition: (d) => {
-        return [d[xType], d.y];
-      },
+        getPosition: (d: Node) => {
+          return [d[xType], d.y];
+        },
       lineWidthUnits: "pixels",
       lineWidthScale: 2,
     };
@@ -371,8 +373,8 @@ const useLayers = ({
       id: "main-clade-node",
       getPixelOffset: [-5, -6],
       data: clade_data,
-      getPosition: (d) => [getX(d), d.y],
-      getText: (d) => d.clades[clade_accessor],
+        getPosition: (d: Node) => [getX(d), d.y],
+        getText: (d: Node) => d.clades[clade_accessor],
 
       getColor: settings.cladeLabelColor,
       getAngle: 0,
@@ -403,7 +405,8 @@ const useLayers = ({
     );
   }
 
-  const proportionalToNodesOnScreen = config.num_tips / 2 ** viewState.zoom;
+  const proportionalToNodesOnScreen =
+    (config as any).num_tips / 2 ** viewState.zoom;
 
   // If leaves are fewer than max_text_number, add a text layer
   if (
@@ -416,13 +419,13 @@ const useLayers = ({
       id: "main-text-node",
       fontFamily: "Roboto, sans-serif",
       fontWeight: 100,
-      data: data.data.nodes.filter((node) =>
-        settings.displayTextForInternalNodes
-          ? true
-          : node.is_tip || (node.is_tip === undefined && node.num_tips === 1)
-      ),
-      getPosition: (d) => [getX(d), d.y],
-      getText: (d) => d[config.name_accessor],
+        data: data.data.nodes.filter((node: Node) =>
+          settings.displayTextForInternalNodes
+            ? true
+            : node.is_tip || (node.is_tip === undefined && node.num_tips === 1)
+        ),
+        getPosition: (d: Node) => [getX(d), d.y],
+        getText: (d: Node) => d[(config as any).name_accessor],
 
       getColor: settings.terminalNodeLabelColor,
       getAngle: 0,
@@ -442,16 +445,16 @@ const useLayers = ({
     layerType: "ScatterplotLayer",
     id: "minimap-scatter",
     data: minimap_scatter_data,
-    getPolygonOffset: ({ layerIndex }) => [0, -4000],
-    getPosition: (d) => [getX(d), d.y],
-    getFillColor: (d) => toRGB(getNodeColorField(d, base_data)),
+      getPolygonOffset: ({ layerIndex }: { layerIndex: number }) => [0, -4000],
+      getPosition: (d: Node) => [getX(d), d.y],
+      getFillColor: (d: Node) => toRGB(getNodeColorField(d, base_data)),
     // radius in pixels
     getRadius: 2,
     getLineColor: [100, 100, 100],
 
     opacity: 0.6,
     radiusUnits: "pixels",
-    onHover: (info) => setHoverInfo(info),
+      onHover: (info: any) => setHoverInfo(info),
     updateTriggers: {
       getFillColor: [base_data, getNodeColorField],
       getPosition: [minimap_scatter_data, xType],
@@ -461,10 +464,10 @@ const useLayers = ({
   const minimap_line_horiz = {
     layerType: "LineLayer",
     id: "minimap-line-horiz",
-    getPolygonOffset: ({ layerIndex }) => [0, -4000],
+      getPolygonOffset: ({ layerIndex }: { layerIndex: number }) => [0, -4000],
     data: base_data.nodes,
-    getSourcePosition: (d) => [getX(d), d.y],
-    getTargetPosition: (d) => [d.parent_x, d.y],
+      getSourcePosition: (d: Node) => [getX(d), d.y],
+      getTargetPosition: (d: Node) => [d.parent_x, d.y],
     getColor: lineColor,
     updateTriggers: {
       getSourcePosition: [base_data, xType],
@@ -475,10 +478,10 @@ const useLayers = ({
   const minimap_line_vert = {
     layerType: "LineLayer",
     id: "minimap-line-vert",
-    getPolygonOffset: ({ layerIndex }) => [0, -4000],
+      getPolygonOffset: ({ layerIndex }: { layerIndex: number }) => [0, -4000],
     data: base_data.nodes,
-    getSourcePosition: (d) => [d.parent_x, d.y],
-    getTargetPosition: (d) => [d.parent_x, d.parent_y],
+      getSourcePosition: (d: Node) => [d.parent_x, d.y],
+      getTargetPosition: (d: Node) => [d.parent_x, d.parent_y],
     getColor: lineColor,
 
     updateTriggers: {
@@ -491,36 +494,36 @@ const useLayers = ({
     layerType: "PolygonLayer",
     id: "minimap-bound-background",
     data: [outer_bounds],
-    getPolygon: (d) => d,
+    getPolygon: (d: any) => d,
     pickable: true,
     stroked: true,
     opacity: 0.3,
     filled: true,
-    getPolygonOffset: ({ layerIndex }) => [0, -2000],
+    getPolygonOffset: ({ layerIndex }: { layerIndex: number }) => [0, -2000],
 
-    getFillColor: (d) => [255, 255, 255],
+    getFillColor: (d: any) => [255, 255, 255],
   };
 
   const minimap_bound_polygon = {
     layerType: "PolygonLayer",
     id: "minimap-bound-line",
     data: bound_contour,
-    getPolygon: (d) => d,
+    getPolygon: (d: any) => d,
     pickable: true,
     stroked: true,
     opacity: 0.3,
     filled: true,
     wireframe: true,
-    getFillColor: (d) => [240, 240, 240],
+    getFillColor: (d: any) => [240, 240, 240],
     getLineColor: [80, 80, 80],
     getLineWidth: 1,
     lineWidthUnits: "pixels",
-    getPolygonOffset: ({ layerIndex }) => [0, -6000],
+    getPolygonOffset: ({ layerIndex }: { layerIndex: number }) => [0, -6000],
   };
 
   const { searchSpec, searchResults, searchesEnabled } = search;
 
-  const search_layers = searchSpec.map((spec, i) => {
+  const search_layers = searchSpec.map((spec: any, i: number) => {
     const data = searchResults[spec.key]
       ? searchResults[spec.key].result.data
       : [];
@@ -532,7 +535,7 @@ const useLayers = ({
 
       data: data,
       id: "main-search-scatter-" + spec.key,
-      getPosition: (d) => [d[xType], d.y],
+      getPosition: (d: Node) => [d[xType], d.y],
       getLineColor: settings.displaySearchesAsPoints ? [0, 0, 0] : lineColor,
       getRadius: settings.displaySearchesAsPoints
         ? settings.searchPointSize
@@ -554,7 +557,7 @@ const useLayers = ({
     };
   });
 
-  const search_mini_layers = searchSpec.map((spec, i) => {
+  const search_mini_layers = searchSpec.map((spec: any, i: number) => {
     const data = searchResults[spec.key]
       ? searchResults[spec.key].overview
       : [];
@@ -563,10 +566,10 @@ const useLayers = ({
     return {
       layerType: "ScatterplotLayer",
       data: data,
-      getPolygonOffset: ({ layerIndex }) => [0, -9000],
+      getPolygonOffset: ({ layerIndex }: { layerIndex: number }) => [0, -9000],
       id: "mini-search-scatter-" + spec.key,
       visible: searchesEnabled[spec.key],
-      getPosition: (d) => [d[xType], d.y],
+      getPosition: (d: Node) => [d[xType], d.y],
       getLineColor: lineColor,
       getRadius: 5 + 2 * i,
       radiusUnits: "pixels",
@@ -587,7 +590,7 @@ const useLayers = ({
   layers.push(minimap_bound_polygon);
 
   const layerFilter = useCallback(
-    ({ layer, viewport, renderPass }) => {
+    ({ layer, viewport, renderPass }: { layer: any; viewport: any; renderPass: any }) => {
       const first_bit =
         (layer.id.startsWith("main") && viewport.id === "main") ||
         (layer.id.startsWith("mini") && viewport.id === "minimap") ||

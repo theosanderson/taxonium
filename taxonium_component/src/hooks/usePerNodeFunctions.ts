@@ -35,7 +35,7 @@ function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
           )
       );
       assembled_mutations.push(...filtered_nt_mutations);
-      cur_node = data_to_use.nodeLookup[cur_node.parent_id];
+      cur_node = data_to_use.nodeLookup[cur_node.parent_id as string];
     }
     return assembled_mutations;
   };
@@ -44,7 +44,9 @@ function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
     if (!genotype) {
       return "";
     }
-    const genotypes = genotype.map((m) => m.residue_pos + m.new_residue);
+    const genotypes = genotype.map(
+      (m) => `${m.residue_pos ?? ""}${m.new_residue ?? ""}`
+    );
     const num_genotypes = genotypes.length;
     const query = `[${num_genotypes}-of:${genotypes.join(", ")}]`;
     const url_encoded_query = encodeURIComponent(query);

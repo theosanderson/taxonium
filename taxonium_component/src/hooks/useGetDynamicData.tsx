@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Backend, Config, QueryBounds, NodeLookupData } from "../types/backend";
+import type {
+  Backend,
+  Config,
+  QueryBounds,
+  NodeLookupData,
+  NodesResponse,
+} from "../types/backend";
 import computeBounds from "../utils/computeBounds";
 
 const DEBOUNCE_TIME = 100;
@@ -18,7 +24,7 @@ interface DynamicData {
   data: NodeLookupData;
   base_data?: NodeLookupData;
   base_data_is_invalid?: boolean;
-  lastBounds?: Record<string, number>;
+  lastBounds?: QueryBounds;
 }
 
 function useGetDynamicData(
@@ -49,11 +55,11 @@ function useGetDynamicData(
       !boundsForQueries ||
       xType !== boundsForQueries.xType ||
       (true &&
-        (vs.min_x < boundsForQueries.min_x + vs.real_width / 2 ||
-          vs.max_x > boundsForQueries.max_x - vs.real_width / 2 ||
-          vs.min_y < boundsForQueries.min_y + vs.real_height / 2 ||
-          vs.max_y > boundsForQueries.max_y - vs.real_height / 2 ||
-          Math.abs(vs.zoom[1] - boundsForQueries.zoom[1]) > 0.5))
+        (vs.min_x < (boundsForQueries!.min_x! + vs.real_width / 2) ||
+          vs.max_x > (boundsForQueries!.max_x! - vs.real_width / 2) ||
+          vs.min_y < (boundsForQueries!.min_y! + vs.real_height / 2) ||
+          vs.max_y > (boundsForQueries!.max_y! - vs.real_height / 2) ||
+          Math.abs(vs.zoom[1] - boundsForQueries!.zoom![1]) > 0.5))
     ) {
       if ((window as Window & { log?: boolean }).log) {
         console.log([
@@ -85,24 +91,28 @@ function useGetDynamicData(
       vs.min_x &&
       dynamicData &&
       dynamicData.lastBounds &&
-      dynamicData.lastBounds.min_x &&
-      (vs.min_x < dynamicData.lastBounds.min_x ||
-        vs.max_x > dynamicData.lastBounds.max_x ||
-        vs.min_y < dynamicData.lastBounds.min_y ||
-        vs.max_y > dynamicData.lastBounds.max_y)
+      dynamicData.lastBounds.min_x !== undefined &&
+      (vs.min_x < dynamicData.lastBounds.min_x! ||
+        vs.max_x > dynamicData.lastBounds.max_x! ||
+        vs.min_y < dynamicData.lastBounds.min_y! ||
+        vs.max_y > dynamicData.lastBounds.max_y!)
     );
   }, [viewState, dynamicData, deckSize]);
 
   useEffect(() => {
-    if (config.title !== "loading") {
-      clearTimeout(timeoutRef);
-      setTimeoutRef(
+      if (config.title !== "loading") {
+        if (timeoutRef) {
+          clearTimeout(timeoutRef);
+        }
+        setTimeoutRef(
         setTimeout(() => {
           if (!boundsForQueries) return;
 
           if (dynamicData.status === "loading") {
             console.log("not trying to get as we are still loading");
-            clearTimeout(timeoutRef);
+            if (timeoutRef) {
+              clearTimeout(timeoutRef);
+            }
             setTimeoutRef(
               setTimeout(() => {
                 setTriggerRefresh({});
@@ -117,8 +127,8 @@ function useGetDynamicData(
 
           queryNodes(
             boundsForQueries,
-
-              (result: NodeLookupData) => {
+            (result: NodesResponse) => {
+              const nodeResult = result as NodeLookupData;
               console.log(
                 "got result, bounds were",
                 boundsForQueries,
@@ -126,33 +136,34 @@ function useGetDynamicData(
               );
 
               setDynamicData((prevData) => {
-                const new_result = {
+                const new_result: DynamicData = {
                   ...prevData,
                   status: "loaded",
-                  data: addNodeLookup(result),
+                    data: addNodeLookup(nodeResult),
                   lastBounds: boundsForQueries,
                 };
-                if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
-                  new_result.base_data = addNodeLookup(result);
+                if (!boundsForQueries || isNaN(boundsForQueries!.min_x as number)) {
+                    new_result.base_data = addNodeLookup(nodeResult);
                 } else {
                   if (!prevData.base_data || prevData.base_data_is_invalid) {
                     console.log("query for minimap");
-                    queryNodes(
-                      null,
-                        (base_result: NodeLookupData) => {
-                        setDynamicData((prevData) => {
-                          const new_result = {
-                            ...prevData,
-                            status: "loaded",
-                            base_data: addNodeLookup(base_result),
-                            base_data_is_invalid: false,
-                          };
-                          return new_result;
-                        });
-                      },
-                      undefined,
-                      config
-                    );
+                      queryNodes(
+                        null,
+                        (base_result: NodesResponse) => {
+                          const nodeBase = base_result as NodeLookupData;
+                          setDynamicData((prevData) => {
+                            const new_result: DynamicData = {
+                              ...prevData,
+                              status: "loaded",
+                              base_data: addNodeLookup(nodeBase),
+                              base_data_is_invalid: false,
+                            };
+                            return new_result;
+                          });
+                        },
+                        setTriggerRefresh,
+                        config
+                      );
                   }
                 }
                 return new_result;

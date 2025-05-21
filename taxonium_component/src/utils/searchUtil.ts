@@ -1,13 +1,4 @@
-export interface SearchSpec {
-  key: string;
-  type: string;
-  method: string;
-  text: string;
-  gene: string;
-  position: number;
-  new_residue: string;
-  min_tips: number;
-}
+import type { SearchSpec } from "../types/search";
 
 export interface SearchUtilConfig {
   defaultSearch?: SearchSpec;

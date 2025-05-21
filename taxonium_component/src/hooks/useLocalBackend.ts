@@ -7,6 +7,7 @@ import type {
   QueryBounds,
   LocalBackend,
 } from "../types/backend";
+import type { Node, Mutation } from "../types/node";
 
 // test
 console.log("new worker");
@@ -122,15 +123,18 @@ function useLocalBackend(
         console.log(
           "got query result" //, receivedData
         );
-        receivedData.nodes.forEach((node) => {
+        receivedData.nodes.forEach((node: Node) => {
+          if (!config.mutations) return;
           if (node.node_id === config.rootId) {
-            node.mutations = config.rootMutations.map(
-              (x) => config.mutations[x]
-            );
+            node.mutations = config.rootMutations
+              .map((x) => (typeof x === "number" ? config.mutations?.[x] : x))
+              .filter(Boolean) as Mutation[];
           } else {
-            node.mutations = node.mutations.map(
-              (mutation) => config.mutations[mutation]
-            );
+            node.mutations = node.mutations
+              .map((mutation: Mutation | number) =>
+                typeof mutation === "number" ? config.mutations?.[mutation] : mutation
+              )
+              .filter(Boolean) as Mutation[];
           }
         });
         setResult(receivedData);

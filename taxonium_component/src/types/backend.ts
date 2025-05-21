@@ -61,8 +61,7 @@ export interface SearchResult {
   [key: string]: unknown;
 }
 
-export interface NodeLookupData {
-  nodes: Node[];
+export interface NodeLookupData extends NodesResponse {
   nodeLookup: Record<string, Node>;
   [key: string]: unknown;
 }

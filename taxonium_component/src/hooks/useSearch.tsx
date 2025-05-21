@@ -98,16 +98,16 @@ const useSearch = ({
       }
       searchControllers[key] = [];
 
-      const { abortController } = singleSearch(
-        this_json,
-        boundsForQueries,
-        (x) => {
-          setInflightSearches((prev) =>
-            prev.filter((s) => s !== everything_string)
-          );
-          setter(x);
-        }
-      );
+        const { abortController } = singleSearch(
+          this_json,
+          boundsForQueries,
+          (x: any) => {
+            setInflightSearches((prev) =>
+              prev.filter((s: string) => s !== everything_string)
+            );
+            setter(x);
+          }
+        );
       searchControllers[key] = [
         ...searchControllers[key],
         { con: abortController, bounds: boundsForQueries },
@@ -119,7 +119,7 @@ const useSearch = ({
 
   useEffect(() => {
     // Remove search results which are no longer in the search spec
-    const spec_keys = searchSpec.map((spec) => spec.key);
+    const spec_keys = searchSpec.map((spec: SearchSpec) => spec.key);
     const result_keys = Object.keys(searchResults);
     const keys_to_remove = result_keys.filter(
       (key) => !spec_keys.includes(key)
@@ -130,7 +130,7 @@ const useSearch = ({
 
     // create object that maps from keys to json strings of specs
     const spec_json: Record<string, string> = {};
-    searchSpec.forEach((spec) => {
+    searchSpec.forEach((spec: SearchSpec) => {
       spec_json[spec.key] = JSON.stringify(spec);
     });
 
@@ -252,9 +252,9 @@ const useSearch = ({
     }, 50);
   };
 
-  const deleteTopLevelSearch = (key: string) => {
-    setSearchSpec(searchSpec.filter((s) => s.key !== key));
-  };
+    const deleteTopLevelSearch = (key: string) => {
+      setSearchSpec(searchSpec.filter((s: SearchSpec) => s.key !== key));
+    };
 
   const lineColors: [number, number, number][] = [
     [255, 0, 0],
@@ -282,12 +282,12 @@ const useSearch = ({
         console.log("no overview for index", index);
         return;
       }
-      const min_y = reduceMaxOrMin(overview, (d) => d.y, "min");
-      const max_y = reduceMaxOrMin(overview, (d) => d.y, "max");
+        const min_y = reduceMaxOrMin(overview, (d: any) => d.y, "min");
+        const max_y = reduceMaxOrMin(overview, (d: any) => d.y, "max");
       // eslint-disable-next-line no-unused-vars
-      const min_x = reduceMaxOrMin(overview, (d) => d[xType], "min");
+        const min_x = reduceMaxOrMin(overview, (d: any) => d[xType], "min");
       // eslint-disable-next-line no-unused-vars
-      const max_x = reduceMaxOrMin(overview, (d) => d[xType], "max");
+        const max_x = reduceMaxOrMin(overview, (d: any) => d[xType], "max");
 
       console.log("Doing zoom", min_y, max_y, min_x, max_x);
 
@@ -320,7 +320,7 @@ const useSearch = ({
         basicTarget: settings.treenomeEnabled ? false : true,
       });
       updateQuery({ zoomToSearch: undefined });
-      setZoomToSearch(undefined);
+        setZoomToSearch(null);
     }
   }, [
     zoomToSearch,
