@@ -4,9 +4,9 @@ import useTreenomeLayerData from "./useTreenomeLayerData";
 import type {
   TreenomeState as BaseTreenomeState,
   TreenomeSettings as BaseSettings,
-  NumericMutation,
-  NumericVariationDatum,
+  MutationVariationDatum,
 } from "../types/treenome";
+import type { Mutation } from "../types/node";
 import type { DynamicData } from "../types/backend";
 
 interface TreenomeState extends BaseTreenomeState {
@@ -122,15 +122,15 @@ const useTreenomeLayers = (
   );
 
   const getNtPos = useCallback(
-    (mut: NumericMutation) => {
+    (mut: Mutation) => {
       if (mut.gene === "nt") {
-        return mut.residue_pos - 1;
+        return mut.residue_pos! - 1;
       }
       if (mut.nuc_for_codon !== undefined) {
         return mut.nuc_for_codon - 1;
       }
       if (cov2Genes !== null) {
-        return cov2Genes[mut.gene][0] + (mut.residue_pos - 1) * 3 - 1;
+        return cov2Genes[mut.gene!][0] + (mut.residue_pos! - 1) * 3 - 1;
       }
     },
     [cov2Genes]
@@ -139,21 +139,21 @@ const useTreenomeLayers = (
   const main_variation_aa_common_props = {
     onHover: (info: unknown) => setHoverInfo(info),
     pickable: true,
-    getColor: (d: NumericVariationDatum) => {
+    getColor: (d: MutationVariationDatum) => {
       if (cov2Genes !== null) {
         return d.m.new_residue !==
-          treenomeReferenceInfo["aa"][d.m.gene + ":" + d.m.residue_pos]
-          ? colorHook.toRGB(d.m.new_residue)
-          : cov2Genes[d.m.gene][2].map((c: number) => 245 - 0.2 * (245 - c));
+          treenomeReferenceInfo["aa"][`${d.m.gene!}:${d.m.residue_pos!}`]
+          ? colorHook.toRGB(d.m.new_residue!)
+          : cov2Genes[d.m.gene!][2].map((c: number) => 245 - 0.2 * (245 - c));
       } else {
         return d.m.new_residue !==
-          treenomeReferenceInfo["aa"][d.m.gene + ":" + d.m.residue_pos]
-          ? colorHook.toRGB(d.m.new_residue)
+          treenomeReferenceInfo["aa"][`${d.m.gene!}:${d.m.residue_pos!}`]
+          ? colorHook.toRGB(d.m.new_residue!)
           : [245, 245, 245];
       }
     },
     modelMatrix: modelMatrixFixedX,
-    getSourcePosition: (d: NumericVariationDatum) => {
+    getSourcePosition: (d: MutationVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -169,7 +169,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + aaWidth / 2, d.y[0] - variation_padding];
     },
-    getTargetPosition: (d: NumericVariationDatum) => {
+    getTargetPosition: (d: MutationVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -185,7 +185,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + aaWidth / 2, d.y[1] + variation_padding];
     },
-    getWidth: (d: NumericVariationDatum) => {
+    getWidth: (d: MutationVariationDatum) => {
       return aaWidth;
     },
     updateTriggers: {
@@ -224,7 +224,7 @@ const useTreenomeLayers = (
   const main_variation_nt_common_props = {
     onHover: (info: unknown) => setHoverInfo(info),
     pickable: true,
-    getColor: (d: NumericVariationDatum) => {
+    getColor: (d: MutationVariationDatum) => {
       let color = [0, 0, 0];
       switch (d.m.new_residue) {
         case "A":
@@ -244,8 +244,8 @@ const useTreenomeLayers = (
           break;
       }
       if (cov2Genes !== null) {
-        if (d.m.new_residue === treenomeReferenceInfo["nt"][d.m.residue_pos]) {
-          const gene = ntToCov2Gene(d.m.residue_pos);
+        if (d.m.new_residue === treenomeReferenceInfo["nt"][d.m.residue_pos!]) {
+          const gene = ntToCov2Gene(d.m.residue_pos!);
           if (gene !== null) {
             return cov2Genes[gene][2].map((c: number) => 245 - 0.2 * (245 - c));
           }
@@ -254,7 +254,7 @@ const useTreenomeLayers = (
       return color;
     },
     modelMatrix: modelMatrixFixedX,
-    getSourcePosition: (d: NumericVariationDatum) => {
+    getSourcePosition: (d: MutationVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -270,7 +270,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + ntWidth / 2, d.y[0] - variation_padding];
     },
-    getTargetPosition: (d: NumericVariationDatum) => {
+    getTargetPosition: (d: MutationVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -286,7 +286,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + ntWidth / 2, d.y[1] + variation_padding];
     },
-    getWidth: (d: NumericVariationDatum) => {
+    getWidth: (d: MutationVariationDatum) => {
       return ntWidth;
     },
     updateTriggers: {

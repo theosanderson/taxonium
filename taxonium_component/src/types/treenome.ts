@@ -5,15 +5,7 @@ export interface VariationDatum<M = any> {
   y: [number, number];
 }
 
-export interface NumericMutation extends Omit<Mutation, "residue_pos"> {
-  residue_pos: number;
-  gene: string;
-  new_residue: string;
-  type?: string;
-  nuc_for_codon?: number;
-}
-
-export type NumericVariationDatum = VariationDatum<NumericMutation>;
+export type MutationVariationDatum = VariationDatum<Mutation>;
 
 export interface TreenomeState {
   ntBounds: [number, number];

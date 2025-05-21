@@ -5,6 +5,7 @@ export interface Mutation {
   residue_pos?: number;
   new_residue?: string;
   type?: string;
+  nuc_for_codon?: number;
   [key: string]: any;
 }
 
