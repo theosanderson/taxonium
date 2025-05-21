@@ -1,6 +1,12 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import type { SearchState, SearchSpec } from "../types/search";
-import type { DeckSize } from "../types/common";
+import type {
+  SearchState,
+  SearchSpec,
+  SearchResults,
+  SearchBackendResult,
+  SearchResultItem,
+} from "../types/search";
+import type { QueryBounds } from "../types/backend";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
@@ -9,12 +15,12 @@ const default_query = getDefaultQuery();
 interface UseSearchParams {
   data: any;
   config: any;
-  boundsForQueries: any;
+  boundsForQueries: QueryBounds | null;
   view: any;
   backend: any;
   query: any;
-  updateQuery: (q: any) => void;
-  deckSize: DeckSize | null;
+  updateQuery: (q: Record<string, unknown>) => void;
+  deckSize: { width: number; height: number } | null;
   xType: string;
   settings: any;
 }
@@ -35,7 +41,10 @@ const useSearch = ({
 
   const [inflightSearches, setInflightSearches] = useState<string[]>([]);
 
-  const [searchControllers, setSearchControllers] = useState<Record<string, any[]>>({});
+  const [searchControllers, setSearchControllers] = useState<Record<
+    string,
+    { con: { abort: () => void }; bounds: QueryBounds | null }[]
+  >>({});
 
   const searchSpec = useMemo(() => {
     if (!query.srch) {
@@ -65,7 +74,7 @@ const useSearch = ({
     });
   };
 
-  const [searchResults, setSearchResults] = useState<Record<string, any>>({});
+  const [searchResults, setSearchResults] = useState<SearchResults>({});
   const [jsonSearch, setJsonSearch] = useState<Record<string, string>>({});
 
   const timeouts = useRef<Record<string, ReturnType<typeof setTimeout> | undefined>>({});
@@ -79,8 +88,8 @@ const useSearch = ({
     (
       key: string,
       this_json: string,
-      boundsForQueries: any,
-      setter: (result: any) => void
+      boundsForQueries: QueryBounds | null,
+      setter: (result: SearchBackendResult) => void
     ) => {
       const everything = { key, this_json, boundsForQueries };
       const everything_string = JSON.stringify(everything);
@@ -102,7 +111,7 @@ const useSearch = ({
         const { abortController } = singleSearch(
           this_json,
           boundsForQueries,
-          (x: any) => {
+          (x: SearchBackendResult) => {
             setInflightSearches((prev) =>
               prev.filter((s: string) => s !== everything_string)
             );
@@ -181,7 +190,7 @@ const useSearch = ({
 
           singleSearchWrapper(key, this_json, boundsForQueries, (result) => {
             setSearchResults((prevState) => {
-              const new_result: any = {
+              const new_result: SearchResultItem = {
                 boundingBox: boundsForQueries,
                 result: result,
               };
@@ -195,16 +204,20 @@ const useSearch = ({
                 ) {
                   new_result.overview = prevState[key].overview;
                 } else {
-                  if (!boundsForQueries || isNaN(boundsForQueries.min_x)) {
+                  if (
+                    !boundsForQueries ||
+                    isNaN(boundsForQueries.min_x ?? NaN)
+                  ) {
                     new_result.overview = result.data;
                   } else {
                     singleSearchWrapper(key, this_json, null, (result) => {
                       setSearchResults((prevState) => {
-                        let new_result: any = prevState[key];
+                        let new_result: SearchResultItem | undefined =
+                          prevState[key];
                         if (new_result) {
                           new_result.overview = result.data;
                         } else {
-                          new_result = { overview: result.data };
+                          new_result = { overview: result.data } as SearchResultItem;
                         }
                         return {
                           ...prevState,

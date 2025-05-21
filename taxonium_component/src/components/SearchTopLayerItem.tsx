@@ -81,7 +81,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }: SearchT
           type="checkbox"
           style={{
             outline:
-              enabled && num_results > 0
+              enabled && typeof num_results === "number" && num_results > 0
                 ? `2px solid rgb(${thecolor[0]},${thecolor[1]},${thecolor[2]})`
                 : "0px",
             outlineOffset: "2px",
@@ -101,10 +101,11 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }: SearchT
             {" "}
             {num_results !== "Loading" && (
               <>
-                {formatNumber(num_results)} result{num_results === 1 ? "" : "s"}
+                {formatNumber(num_results)} result
+                {typeof num_results === "number" && num_results === 1 ? "" : "s"}
               </>
             )}{" "}
-            {num_results > 0 && (
+            {typeof num_results === "number" && num_results > 0 && (
               <>
                 <Button
                   className="inline-block bg-gray-100 text-xs mx-auto h-5 rounded-sm border-gray-300 border  text-gray-700 "
