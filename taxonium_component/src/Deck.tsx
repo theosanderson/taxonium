@@ -1,8 +1,8 @@
 /// app.js
 import React, { useState, useCallback, useRef } from "react";
-import DeckGL from "@deck.gl/react";
+import DeckGL, { type DeckGLRef } from "@deck.gl/react";
 import { View } from "@deck.gl/core";
-const DeckView: any = View;
+const DeckView = View as unknown as React.ComponentType<Record<string, unknown>>;
 import useLayers from "./hooks/useLayers";
 import JBrowsePanel from "./components/JBrowsePanel";
 import { ClipLoader } from "react-spinners";
@@ -48,8 +48,8 @@ export interface DeckProps {
   setDeckSize: (size: DeckSize) => void;
   deckSize: DeckSize;
   isCurrentlyOutsideBounds: boolean;
-  deckRef: React.RefObject<any>;
-  jbrowseRef: React.RefObject<any>;
+  deckRef: React.RefObject<DeckGLRef | null>;
+  jbrowseRef: React.RefObject<HTMLSpanElement | null>;
   setAdditionalColorMapping: React.Dispatch<
     React.SetStateAction<Record<string, unknown>>
   >;
@@ -139,14 +139,14 @@ function Deck({
 
       //console.log("onClickOrMouseMove", event);
 
-      const pickInfo = deckRef.current.pickObject({
+      const pickInfo = deckRef.current?.pickObject({
         x: event.nativeEvent.offsetX,
         y: event.nativeEvent.offsetY,
         radius: 10,
       });
 
       if (event._reactName === "onPointerDown") {
-        if (pickInfo && pickInfo.viewport.id === "minimap") {
+        if (pickInfo && pickInfo.viewport?.id === "minimap") {
           setMouseDownIsMinimap(true);
         } else {
           setMouseDownIsMinimap(false);
@@ -154,7 +154,7 @@ function Deck({
       }
       if (
         pickInfo &&
-        pickInfo.viewport.id === "main" &&
+        pickInfo.viewport?.id === "main" &&
         event._reactName === "onClick"
       ) {
         selectedDetails.getNodeDetails(pickInfo.object.node_id);
@@ -166,7 +166,7 @@ function Deck({
 
       if (
         pickInfo &&
-        pickInfo.viewport.id === "minimap" &&
+        pickInfo.viewport?.id === "minimap" &&
         mouseDownIsMinimap
       ) {
         onViewStateChange({
@@ -174,7 +174,7 @@ function Deck({
           requestIsFromMinimapPan: true,
           viewState: {
             ...viewState,
-            target: [pickInfo.coordinate[0], pickInfo.coordinate[1]],
+            target: [pickInfo.coordinate?.[0] ?? 0, pickInfo.coordinate?.[1] ?? 0],
           },
         });
       }
