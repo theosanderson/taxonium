@@ -1,4 +1,5 @@
 import type { Node, Mutation } from "./node";
+import type React from "react";
 
 export interface QueryBounds {
   min_x?: number;
@@ -35,6 +36,10 @@ export interface Config {
   mutations?: Mutation[];
   useHydratedMutations?: boolean;
   colorRamps?: Record<string, { scale: [number, string][] }>;
+  colorBy?: {
+    colorByOptions: string[];
+  };
+  overlay?: React.ReactNode;
   [key: string]: unknown;
 }
 

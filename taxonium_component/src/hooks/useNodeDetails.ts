@@ -1,11 +1,12 @@
 import { useState, useCallback, useRef } from "react";
+import type { Backend, NodeDetails } from "../types/backend";
 
-function useNodeDetails(nickname, backend) {
-  const [nodeDetails, setNodeDetails] = useState(null);
-  const timeout = useRef(null);
+function useNodeDetails(nickname: string, backend: Backend) {
+  const [nodeDetails, setNodeDetails] = useState<NodeDetails | null>(null);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const getNodeDetails = useCallback(
-    (node_id) => {
+    (node_id: string | number) => {
       if (timeout.current) {
         clearTimeout(timeout.current);
       }

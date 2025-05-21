@@ -1,8 +1,22 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import type { SearchState, SearchSpec } from "../types/search";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 const default_query = getDefaultQuery();
+
+interface UseSearchParams {
+  data: any;
+  config: any;
+  boundsForQueries: any;
+  view: any;
+  backend: any;
+  query: any;
+  updateQuery: (q: any) => void;
+  deckSize: { width: number; height: number } | null;
+  xType: string;
+  settings: any;
+}
 
 const useSearch = ({
   data,
@@ -15,12 +29,12 @@ const useSearch = ({
   deckSize,
   xType,
   settings,
-}) => {
+}: UseSearchParams): SearchState => {
   const { singleSearch } = backend;
 
-  const [inflightSearches, setInflightSearches] = useState([]);
+  const [inflightSearches, setInflightSearches] = useState<string[]>([]);
 
-  const [searchControllers, setSearchControllers] = useState({});
+  const [searchControllers, setSearchControllers] = useState<Record<string, any[]>>({});
 
   const searchSpec = useMemo(() => {
     if (!query.srch) {
@@ -31,37 +45,42 @@ const useSearch = ({
     return JSON.parse(query.srch);
   }, [query.srch]);
 
-  const [zoomToSearch, setZoomToSearch] = useState(
+  const [zoomToSearch, setZoomToSearch] = useState<{ index: number } | null>(
     query.zoomToSearch ? { index: query.zoomToSearch } : null
   );
   const searchesEnabled = query.enabled
     ? JSON.parse(query.enabled)
     : JSON.parse(default_query.enabled);
 
-  const setEnabled = (key, enabled) => {
+  const setEnabled = (key: string, enabled: boolean) => {
     console.log("setEnabled", key, enabled);
     const newSearchesEnabled = { ...searchesEnabled, [key]: enabled };
     updateQuery({ enabled: JSON.stringify(newSearchesEnabled) });
   };
 
-  const setSearchSpec = (newSearchSpec) => {
+  const setSearchSpec = (newSearchSpec: SearchSpec[]) => {
     updateQuery({
       srch: JSON.stringify(newSearchSpec),
     });
   };
 
-  const [searchResults, setSearchResults] = useState({});
-  const [jsonSearch, setJsonSearch] = useState({});
+  const [searchResults, setSearchResults] = useState<Record<string, any>>({});
+  const [jsonSearch, setJsonSearch] = useState<Record<string, string>>({});
 
-  const timeouts = useRef({});
-  const [searchLoadingStatus, setSearchLoadingStatus] = useState({});
+  const timeouts = useRef<Record<string, ReturnType<typeof setTimeout> | undefined>>({});
+  const [searchLoadingStatus, setSearchLoadingStatus] = useState<Record<string, string>>({});
 
-  const setIndividualSearchLoadingStatus = (key, status) => {
+  const setIndividualSearchLoadingStatus = (key: string, status: string) => {
     setSearchLoadingStatus((prev) => ({ ...prev, [key]: status }));
   };
 
   const singleSearchWrapper = useCallback(
-    (key, this_json, boundsForQueries, setter) => {
+    (
+      key: string,
+      this_json: string,
+      boundsForQueries: any,
+      setter: (result: any) => void
+    ) => {
       const everything = { key, this_json, boundsForQueries };
       const everything_string = JSON.stringify(everything);
       if (inflightSearches.includes(everything_string)) {
@@ -110,7 +129,7 @@ const useSearch = ({
     });
 
     // create object that maps from keys to json strings of specs
-    const spec_json = {};
+    const spec_json: Record<string, string> = {};
     searchSpec.forEach((spec) => {
       spec_json[spec.key] = JSON.stringify(spec);
     });
@@ -121,7 +140,7 @@ const useSearch = ({
     );
 
     // also add any result where the result type is not complete, and the bounding box has changed
-    const result_changed = Object.keys(searchResults).filter((key) => {
+    const result_changed = Object.keys(searchResults).filter((key: string) => {
       if (
         !(searchResults[key].result.type === "complete") &&
         searchResults[key].boundingBox !== boundsForQueries
@@ -150,7 +169,7 @@ const useSearch = ({
 
     // if there are changed json strings, update the search results
     if (all_changed.length > 0) {
-      all_changed.forEach((key) => {
+      all_changed.forEach((key: string) => {
         console.log("searching for " + key, JSON.parse(spec_json[key]));
 
         const this_json = spec_json[key];
@@ -233,11 +252,11 @@ const useSearch = ({
     }, 50);
   };
 
-  const deleteTopLevelSearch = (key) => {
+  const deleteTopLevelSearch = (key: string) => {
     setSearchSpec(searchSpec.filter((s) => s.key !== key));
   };
 
-  const lineColors = [
+  const lineColors: [number, number, number][] = [
     [255, 0, 0],
     [0, 0, 255],
     [0, 255, 0],
@@ -246,7 +265,8 @@ const useSearch = ({
     [255, 255, 0],
   ];
 
-  const getLineColor = (index) => lineColors[index % lineColors.length];
+  const getLineColor = (index: number): [number, number, number] =>
+    lineColors[index % lineColors.length];
 
   useEffect(() => {
     if (zoomToSearch && deckSize) {

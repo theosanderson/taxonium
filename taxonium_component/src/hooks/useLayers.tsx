@@ -11,7 +11,7 @@ import computeBounds from "../utils/computeBounds";
 import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
 import type { Node } from "../types/node";
-import type { NodeLookupData } from "../types/backend";
+import type { NodeLookupData, Config } from "../types/backend";
 
 const getKeyStuff = (
   getNodeColorField: (node: Node, data: NodeLookupData) => string | number,
@@ -35,7 +35,28 @@ const getKeyStuff = (
     output.push({ value: key, count: counts[key], color: toRGB(key) });
   }
   return output;
-}; 
+};
+
+interface UseLayersProps {
+  data: any;
+  search: any;
+  viewState: any;
+  deckSize: { width: number; height: number } | null;
+  colorHook: any;
+  setHoverInfo: (info: any) => void;
+  hoverInfo: any;
+  colorBy: any;
+  xType: string;
+  modelMatrix: any;
+  selectedDetails: any;
+  settings: any;
+  isCurrentlyOutsideBounds: boolean;
+  config: Config;
+  treenomeState: any;
+  treenomeReferenceInfo: any;
+  setTreenomeReferenceInfo: any;
+  hoveredKey: any;
+}
 
 const useLayers = ({
   data,
@@ -56,7 +77,7 @@ const useLayers = ({
   treenomeReferenceInfo,
   setTreenomeReferenceInfo,
   hoveredKey,
-}) => {
+}: UseLayersProps) => {
   const lineColor = settings.lineColor;
   const getNodeColorField = colorBy.getNodeColorField;
   const colorByField = colorBy.colorByField;

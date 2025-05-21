@@ -52,12 +52,12 @@ const useColor = (
         const log10 = Math.log10(value);
         const color = scale.plasma(log10 / 10);
         // convert from hex to rgb
-        const rgb = [
-          parseInt(color.slice(1, 3), 16),
-          parseInt(color.slice(3, 5), 16),
-          parseInt(color.slice(5, 7), 16),
-        ];
-        return rgb;
+      const rgb: [number, number, number] = [
+        parseInt(color.slice(1, 3), 16),
+        parseInt(color.slice(3, 5), 16),
+        parseInt(color.slice(5, 7), 16),
+      ];
+      return rgb;
       }
 
       if (typeof value === "string" && value in colorMapping) {

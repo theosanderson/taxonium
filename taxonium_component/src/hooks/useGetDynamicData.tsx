@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import type { Backend, Config, QueryBounds, NodeLookupData } from "../types/backend";
 import computeBounds from "../utils/computeBounds";
 
 const DEBOUNCE_TIME = 100;
 const CHECK_AGAIN_TIME = 100;
-function addNodeLookup(data) {
-  const output = {
+function addNodeLookup(data: NodeLookupData): NodeLookupData {
+  const output: NodeLookupData = {
     ...data,
     nodeLookup: Object.fromEntries(data.nodes.map((n) => [n.node_id, n])),
   };
@@ -12,36 +13,35 @@ function addNodeLookup(data) {
   return output;
 }
 
-interface NodeData {
-  nodes: Array<Record<string, unknown>>;
-  [key: string]: unknown;
-}
-
 interface DynamicData {
   status: string;
-  data: NodeData;
-  base_data?: NodeData;
+  data: NodeLookupData;
+  base_data?: NodeLookupData;
   base_data_is_invalid?: boolean;
   lastBounds?: Record<string, number>;
 }
 
 function useGetDynamicData(
-  backend,
-  colorBy,
-  viewState,
-  config,
-  xType,
-  deckSize
-) {
+  backend: Backend,
+  colorBy: any,
+  viewState: any,
+  config: Config,
+  xType: string,
+  deckSize: { width: number; height: number } | null
+): {
+  data: DynamicData;
+  boundsForQueries: QueryBounds | null;
+  isCurrentlyOutsideBounds: boolean;
+} {
   const { queryNodes } = backend;
   const [dynamicData, setDynamicData] = useState<DynamicData>({
     status: "not_started",
-    data: { nodes: [] },
+    data: { nodes: [], nodeLookup: {} },
   });
 
-  let [boundsForQueries, setBoundsForQueries] = useState(null);
-  let [triggerRefresh, setTriggerRefresh] = useState({});
-  let [timeoutRef, setTimeoutRef] = useState(null);
+  let [boundsForQueries, setBoundsForQueries] = useState<QueryBounds | null>(null);
+  let [triggerRefresh, setTriggerRefresh] = useState<Record<string, unknown>>({});
+  let [timeoutRef, setTimeoutRef] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const vs = computeBounds({ ...viewState }, deckSize);
@@ -65,7 +65,7 @@ function useGetDynamicData(
 
       console.log("updating parameters to query");
 
-      const newBoundForQuery = {
+      const newBoundForQuery: QueryBounds = {
         min_x: vs.min_x - vs.real_width,
         max_x: vs.max_x + vs.real_width,
         min_y: vs.min_y - vs.real_height,
@@ -118,7 +118,7 @@ function useGetDynamicData(
           queryNodes(
             boundsForQueries,
 
-            (result) => {
+              (result: NodeLookupData) => {
               console.log(
                 "got result, bounds were",
                 boundsForQueries,
@@ -139,7 +139,7 @@ function useGetDynamicData(
                     console.log("query for minimap");
                     queryNodes(
                       null,
-                      (base_result) => {
+                        (base_result: NodeLookupData) => {
                         setDynamicData((prevData) => {
                           const new_result = {
                             ...prevData,

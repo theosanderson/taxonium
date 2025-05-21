@@ -19,15 +19,15 @@ import workerSpec from "../webworkers/localBackendWorker.js?worker&inline";
 
 const worker = new workerSpec();
 
-let onQueryReceipt = (receivedData) => {};
-let onStatusReceipt = (receivedData) => {
+let onQueryReceipt: (receivedData: any) => void = () => {};
+let onStatusReceipt: (receivedData: any) => void = (receivedData) => {
   console.log("STATUS:", receivedData.data);
 };
 
-let onConfigReceipt = (receivedData) => {};
-let onDetailsReceipt = (receivedData) => {};
-let onListReceipt = (receivedData) => {};
-let onNextStrainReceipt = (receivedData) => {
+let onConfigReceipt: (receivedData: any) => void = () => {};
+let onDetailsReceipt: (receivedData: any) => void = () => {};
+let onListReceipt: (receivedData: any) => void = () => {};
+let onNextStrainReceipt: (receivedData: any) => void = (receivedData) => {
   console.log("NEXT STRAIN:", receivedData);
   // create a blob with this data and trigger download
   const blob = new Blob([JSON.stringify(receivedData)], {
@@ -44,7 +44,7 @@ let onNextStrainReceipt = (receivedData) => {
   window.URL.revokeObjectURL(url);
 };
 
-let searchSetters = {};
+let searchSetters: Record<string, (data: SearchResult) => void> = {};
 
 worker.onmessage = (event) => {
   console.log(

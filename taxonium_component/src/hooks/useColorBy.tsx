@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useRef } from "react";
 import type { Config, NodeLookupData } from "../types/backend";
-import type { Node } from "../types/node";
+import type { Node, Mutation } from "../types/node";
 
 interface WindowWithCc extends Window {
   cc?: unknown;
@@ -43,9 +43,7 @@ function useColorBy(
   const colorByPosition =
     colorByConfig.pos !== undefined ? colorByConfig.pos : 484;
 
-  const { colorByOptions } = config.colorBy
-    ? config.colorBy
-    : { colorByOptions: [] };
+  const colorByOptions = config.colorBy?.colorByOptions ?? [];
 
   (window as WindowWithCc).cc = colorCacheRef.current;
 
@@ -71,7 +69,7 @@ function useColorBy(
   );
 
   const getNodeColorField = useCallback(
-    (node: any, dataset: any) => {
+    (node: Node, dataset: NodeLookupData): string => {
       if (
         colorByPosition != cachedColorByPosition ||
         colorByGene != cachedColorByGene
@@ -92,7 +90,7 @@ function useColorBy(
         }
         let result;
         const relevantMutations = node.mutations.filter(
-          (mut) =>
+          (mut: Mutation) =>
             mut.residue_pos === colorByPosition && mut.gene === colorByGene
         );
         if (relevantMutations.length > 0) {
@@ -125,7 +123,7 @@ function useColorBy(
     [colorByField, colorByGene, colorByPosition]
   );
 
-  return useMemo(() => {
+  return useMemo<ColorByState>(() => {
     return {
       colorByField,
       setColorByField,
