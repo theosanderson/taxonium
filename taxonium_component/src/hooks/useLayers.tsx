@@ -12,7 +12,7 @@ import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
 import type { Node } from "../types/node";
 import type { NodeLookupData, Config, DynamicData } from "../types/backend";
-import type { DeckSize } from "../types/common";
+import type { DeckSize, HoverInfo } from "../types/common";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
 import type { SearchState } from "../types/search";
@@ -54,19 +54,21 @@ interface UseLayersProps {
   viewState: ViewState;
   deckSize: DeckSize | null;
   colorHook: ColorHook;
-  setHoverInfo: (info: any) => void;
-  hoverInfo: any;
+  setHoverInfo: (info: HoverInfo<Node> | null) => void;
+  hoverInfo: HoverInfo<Node> | null;
   colorBy: ColorBy;
   xType: string;
-  modelMatrix: any;
+  modelMatrix: number[];
   selectedDetails: SelectedDetails;
   settings: Settings;
   isCurrentlyOutsideBounds: boolean;
   config: Config;
   treenomeState: TreenomeState;
-  treenomeReferenceInfo: any;
-  setTreenomeReferenceInfo: any;
-  hoveredKey: any;
+  treenomeReferenceInfo: Record<"aa" | "nt", Record<string, string>> | null;
+  setTreenomeReferenceInfo: (
+    info: Record<"aa" | "nt", Record<string, string>>,
+  ) => void;
+  hoveredKey: string | null;
 }
 
 const useLayers = ({
@@ -103,9 +105,9 @@ const useLayers = ({
     data,
     viewState,
     colorHook,
-    setHoverInfo,
+    setHoverInfo as (info: unknown) => void,
     settings,
-    treenomeReferenceInfo,
+    treenomeReferenceInfo as any,
     setTreenomeReferenceInfo,
     selectedDetails as any,
   );
@@ -229,7 +231,7 @@ const useLayers = ({
     lineWidthScale: 1,
     pickable: true,
     radiusUnits: "pixels",
-    onHover: (info: any) => setHoverInfo(info),
+    onHover: (info: HoverInfo<Node>) => setHoverInfo(info),
     modelMatrix: modelMatrix,
     updateTriggers: {
       getFillColor: [detailed_data, getNodeColorField, colorHook],
@@ -252,7 +254,7 @@ const useLayers = ({
           ? 3.5
           : 1,
 
-    onHover: (info: any) => setHoverInfo(info),
+    onHover: (info: HoverInfo<Node>) => setHoverInfo(info),
 
     modelMatrix: modelMatrix,
     updateTriggers: {
@@ -265,7 +267,7 @@ const useLayers = ({
   const line_layer_vert_common_props = {
     getSourcePosition: (d: Node) => [d.parent_x, d.y],
     getTargetPosition: (d: Node) => [d.parent_x, d.parent_y],
-    onHover: (info: any) => setHoverInfo(info),
+    onHover: (info: HoverInfo<Node>) => setHoverInfo(info),
     getColor: lineColor,
     pickable: true,
     getWidth: (d: Node) =>
@@ -464,7 +466,7 @@ const useLayers = ({
 
     opacity: 0.6,
     radiusUnits: "pixels",
-    onHover: (info: any) => setHoverInfo(info),
+    onHover: (info: HoverInfo<Node>) => setHoverInfo(info),
     updateTriggers: {
       getFillColor: [base_data, getNodeColorField],
       getPosition: [minimap_scatter_data, xType],

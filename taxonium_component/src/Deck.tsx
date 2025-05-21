@@ -31,7 +31,8 @@ import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
 import type { StatusMessage, DynamicData, Config } from "./types/backend";
-import type { DeckSize } from "./types/common";
+import type { DeckSize, HoverInfo } from "./types/common";
+import type { Node, Mutation } from "./types/node";
 import type { ColorHook, ColorBy } from "./types/color";
 
 const MemoizedKey = React.memo(Key);
@@ -112,7 +113,9 @@ function Deck({
     (info: { x: number; y: number }) => view.setMouseXY([info.x, info.y]),
     [view]
   );
-  const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState(null);
+  const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState<
+    Record<"aa" | "nt", Record<string, string>> | null
+  >(null);
 
   const mouseDownPos = useRef<[number, number] | null>(null);
 
@@ -188,16 +191,19 @@ function Deck({
     [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, deckRef]
   );
 
-  const [hoverInfo, setHoverInfoRaw] = useState(null);
+  const [hoverInfo, setHoverInfoRaw] = useState<
+    HoverInfo<Node | { m?: Mutation }> | null
+  >(null);
   const setHoverInfo = useCallback(
-    (info: any) => {
+    (info: HoverInfo<Node | { m?: Mutation }> | null) => {
       setHoverInfoRaw(info);
 
-      if (info && info.object) {
+      if (info && info.object && "node_id" in info.object) {
+        const nodeObj = info.object as Node;
         if (hoverDetails.setNodeDetails) {
-          hoverDetails.setNodeDetails(info.object);
+          hoverDetails.setNodeDetails(nodeObj);
         } else if (hoverDetails.getNodeDetails) {
-          hoverDetails.getNodeDetails(info.object.node_id);
+          hoverDetails.getNodeDetails(nodeObj.node_id);
         }
       } else {
         hoverDetails.clearNodeDetails();
@@ -212,8 +218,8 @@ function Deck({
     viewState,
     deckSize,
     colorHook,
-    setHoverInfo,
-    hoverInfo,
+    setHoverInfo: setHoverInfo as (info: HoverInfo<Node> | null) => void,
+    hoverInfo: hoverInfo as HoverInfo<Node> | null,
     colorBy,
     xType,
     modelMatrix: view.modelMatrix,
@@ -311,7 +317,7 @@ function Deck({
         title={currentColorSettingKey}
       />
       <NodeHoverTip
-        hoverInfo={hoverInfo}
+        hoverInfo={hoverInfo as HoverInfo<Node> | null}
         hoverDetails={hoverDetails}
         colorHook={colorHook}
         colorBy={colorBy}
@@ -320,7 +326,7 @@ function Deck({
         deckSize={deckSize}
       />
       <TreenomeMutationHoverTip
-        hoverInfo={hoverInfo}
+        hoverInfo={hoverInfo as HoverInfo<{ m?: Mutation }> | null}
         hoverDetails={hoverDetails}
         colorHook={colorHook}
         colorBy={colorBy}
