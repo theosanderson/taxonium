@@ -23,7 +23,10 @@ const useConfig = (
     backend.getConfig((results) => {
       const viewState = {
         ...view.viewState,
-        target: [2000, results.initial_y],
+        target: [
+          results.initial_x !== undefined ? results.initial_x : 2000,
+          results.initial_y,
+        ],
         zoom: [-2, 0],
       };
 
