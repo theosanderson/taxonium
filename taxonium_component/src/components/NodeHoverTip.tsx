@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { HoverDetails, Mutation, Node } from "../types/node";
-import type { DeckSize } from "../types/common";
+import type { DeckSize, HoverInfo } from "../types/common";
 
 const fixName = (name: string) => {
   return name;
@@ -15,7 +15,7 @@ const fixAuthors = (authors: string) => {
 };
 
 interface NodeHoverTipProps {
-  hoverInfo: { x: number; y: number; object: Node } | null;
+  hoverInfo: HoverInfo<Node> | null;
   hoverDetails?: HoverDetails | null;
   colorHook: any;
   colorBy: any;
