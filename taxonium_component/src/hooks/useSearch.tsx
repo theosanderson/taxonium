@@ -5,8 +5,9 @@ import type {
   SearchResults,
   SearchBackendResult,
   SearchResultItem,
+  SearchControllerEntry,
 } from "../types/search";
-import type { QueryBounds, DynamicData, Config } from "../types/backend";
+import type { QueryBounds, DynamicData, Config, Backend } from "../types/backend";
 import type { Query } from "../types/query";
 import type { View } from "./useView";
 import { getDefaultSearch } from "../utils/searchUtil";
@@ -20,7 +21,7 @@ interface UseSearchParams {
   config: Config;
   boundsForQueries: QueryBounds | null;
   view: View;
-  backend: any;
+  backend: Backend;
   query: Query;
   updateQuery: (q: Partial<Query>) => void;
   deckSize: { width: number; height: number } | null;
@@ -44,10 +45,9 @@ const useSearch = ({
 
   const [inflightSearches, setInflightSearches] = useState<string[]>([]);
 
-  const [searchControllers, setSearchControllers] = useState<Record<
-    string,
-    { con: { abort: () => void }; bounds: QueryBounds | null }[]
-  >>({});
+  const [searchControllers, setSearchControllers] = useState<
+    Record<string, SearchControllerEntry[]>
+  >({});
 
   const searchSpec = useMemo(() => {
     if (!query.srch) {
@@ -102,7 +102,7 @@ const useSearch = ({
       setInflightSearches((prev) => [...prev, everything_string]);
 
       if (searchControllers[key]) {
-        searchControllers[key].forEach((controller) => {
+        searchControllers[key].forEach((controller: SearchControllerEntry) => {
           if (controller && boundsForQueries == controller.bounds) {
             console.log("cancelling for ", key);
             controller.con.abort();

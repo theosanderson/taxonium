@@ -135,7 +135,7 @@ function useServerBackend(
           }
           console.log(error);
           window.alert(error);
-          setResult({ key: "", nodes: [] } as SearchResult);
+          setResult({ type: "", data: [], total_count: 0, key: "" } as SearchResult);
         });
       return { abortController };
     },

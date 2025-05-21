@@ -31,6 +31,11 @@ export interface SearchResultItem {
 
 export type SearchResults = Record<string, SearchResultItem>;
 
+export interface SearchControllerEntry {
+  con: { abort: () => void };
+  bounds: QueryBounds | null;
+}
+
 export interface SearchState {
   searchSpec: SearchSpec[];
   setSearchSpec: (spec: SearchSpec[]) => void;

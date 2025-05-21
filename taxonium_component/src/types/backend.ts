@@ -64,9 +64,10 @@ export interface NodeDetails extends Node {
 }
 
 export interface SearchResult {
-  key: string;
-  nodes?: Node[];
-  count?: number;
+  type: string;
+  data: Node[];
+  total_count: number;
+  key?: string;
   [key: string]: unknown;
 }
 
