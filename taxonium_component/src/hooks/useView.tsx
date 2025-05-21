@@ -111,7 +111,12 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
 
       newViewState.minimap = { zoom: -3, target: [250, 1000] };
       newViewState["browser-main"] = {
-        zoom: [-3, newViewState.zoom[1]],
+        zoom: [
+          -3,
+          Array.isArray(newViewState.zoom)
+            ? newViewState.zoom[1]
+            : (newViewState.zoom as number),
+        ],
         target: [0, (newViewState as any).target[1]],
       };
       setViewState(newViewState);
