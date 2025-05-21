@@ -355,14 +355,14 @@ function JBrowsePanel(props: JBrowsePanelProps) {
       return;
     }
     const v = state.session.view;
-    v.navToLocString(
+    v.navToLocString?.(
       props.settings.chromosomeName +
         ":" +
         props.treenomeState.ntBoundsExt[0] +
         ".." +
         props.treenomeState.ntBoundsExt[1]
     );
-    props.treenomeState.setNtBoundsExt(null);
+    props.treenomeState.setNtBoundsExt?.(null);
   }, [props.settings.chromosomeName, props.treenomeState, state.session.view]);
 
   useEffect(() => {
