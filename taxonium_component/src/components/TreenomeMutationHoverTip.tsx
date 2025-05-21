@@ -1,4 +1,5 @@
-import type { HoverDetails, Mutation } from "../types/node";
+import type { HoverDetails } from "../types/node";
+import type { NumericMutation } from "../types/treenome";
 
 interface HoverInfo {
   x: number;
@@ -6,12 +7,6 @@ interface HoverInfo {
   object: { m?: NumericMutation };
 }
 
-interface NumericMutation extends Omit<Mutation, "residue_pos"> {
-  residue_pos: number;
-  gene: string;
-  new_residue: string;
-  type: string;
-}
 
 interface TreenomeMutationHoverTipProps {
   hoverInfo: HoverInfo | null;

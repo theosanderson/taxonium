@@ -1,12 +1,12 @@
 import { useMemo, useCallback, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import useTreenomeLayerData from "./useTreenomeLayerData";
-import type { Mutation } from "../types/node";
 import type {
   TreenomeState as BaseTreenomeState,
   TreenomeSettings as BaseSettings,
+  NumericMutation,
+  NumericVariationDatum,
 } from "../types/treenome";
-import type { VariationDatum } from "../types/treenome";
 
 interface TreenomeState extends BaseTreenomeState {
   xBounds: [number, number];
@@ -22,15 +22,6 @@ interface DynamicData {
 interface Settings extends BaseSettings {
   isCov2Tree: boolean;
 }
-
-type NumericMutation = Mutation & {
-  residue_pos: number;
-  gene: string;
-  new_residue: string;
-  nuc_for_codon?: number;
-};
-
-type NumericVariationDatum = VariationDatum<NumericMutation>;
 
 const useTreenomeLayers = (
   treenomeState: TreenomeState,
