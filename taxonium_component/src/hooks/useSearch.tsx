@@ -8,6 +8,7 @@ import type {
 } from "../types/search";
 import type { QueryBounds, DynamicData, Config } from "../types/backend";
 import type { Query } from "../types/query";
+import type { View } from "./useView";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
@@ -18,7 +19,7 @@ interface UseSearchParams {
   data: DynamicData;
   config: Config;
   boundsForQueries: QueryBounds | null;
-  view: any;
+  view: View;
   backend: any;
   query: Query;
   updateQuery: (q: Partial<Query>) => void;

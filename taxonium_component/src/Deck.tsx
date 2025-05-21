@@ -19,6 +19,7 @@ import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
 import { TreenomeButtons } from "./components/TreenomeButtons";
 import type { Settings } from "./types/settings";
+import type { View as ViewType } from "./hooks/useView";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
@@ -35,7 +36,7 @@ export interface DeckProps {
   data: DynamicData;
   search: any;
   treenomeState: any;
-  view: any;
+  view: ViewType;
   colorHook: ColorHook;
   colorBy: ColorBy;
   hoverDetails: any;

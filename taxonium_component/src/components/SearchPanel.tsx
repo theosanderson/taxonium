@@ -11,6 +11,7 @@ import { SearchState } from "../types/search";
 import type { Config } from "../types/backend";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
+import type { View } from "../hooks/useView";
 
 import { FaSearch, FaShare } from "react-icons/fa";
 
@@ -58,7 +59,7 @@ interface SearchPanelProps {
   backend: any;
   className?: string;
   treenomeState: any;
-  view: any;
+  view: View;
   perNodeFunctions: any;
   toggleSidebar: () => void;
 }

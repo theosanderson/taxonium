@@ -161,3 +161,19 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
 };
 
 export default useView;
+
+export interface View {
+  viewState: any;
+  setViewState: React.Dispatch<React.SetStateAction<any>>;
+  onViewStateChange: any;
+  views: any;
+  zoomAxis: string;
+  setZoomAxis: React.Dispatch<React.SetStateAction<string>>;
+  modelMatrix: number[];
+  zoomIncrement: (increment: number, axis?: string) => void;
+  xzoom: number;
+  mouseXY: number[];
+  setMouseXY: React.Dispatch<React.SetStateAction<number[]>>;
+  baseViewState: any;
+  zoomReset: () => void;
+}
