@@ -1,8 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { BsTrash, BsQuestionCircle } from "react-icons/bs";
 import { Button, Select } from "./Basic";
 import { BiFile, BiLink } from "react-icons/bi";
-import ReactTooltip from "react-tooltip";
 
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return "0 Bytes";
@@ -25,10 +24,6 @@ const prettyTypes = {
 const fileTypes = Object.keys(prettyTypes);
 
 export const InputSupplier = ({ inputHelper, className }) => {
-  useEffect(() => {
-    ReactTooltip.rebuild();
-  });
-
   const [tempURL, setTempURL] = useState("");
   const [useProxy, setUseProxy] = useState(false); // New state for proxy usage
 
@@ -123,7 +118,8 @@ export const InputSupplier = ({ inputHelper, className }) => {
                 </label>{" "}
                 <button
                   style={{ cursor: "default" }}
-                  data-tip="Ladderizing will preserve the tree's topology, but sort the nodes according to how many descendants they have"
+                  data-tooltip-id="global-tooltip"
+                  data-tooltip-content="Ladderizing will preserve the tree's topology, but sort the nodes according to how many descendants they have"
                 >
                   <span
                     style={{
@@ -171,19 +167,27 @@ export const InputSupplier = ({ inputHelper, className }) => {
       {!addingText && (
         <>
           <div>
-            <input
-              className="text-sm mb-3"
-              type="file"
-              multiple="multiple"
-              onChange={(e) => {
-                for (const file of e.target.files) {
-                  inputHelper.readFile(file);
-                }
+            <label className="tx-button border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 cursor-pointer mb-3 inline-block">
+              Choose files
+              <input
+                className="hidden"
+                type="file"
+                multiple="multiple"
+                onChange={(e) => {
+                  for (const file of e.target.files) {
+                    inputHelper.readFile(file);
+                  }
 
-                // empty this
-                e.target.value = "";
-              }}
-            />
+                  // empty this
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            <span className="ml-2 text-sm text-gray-600">
+              {inputs.length === 0
+                ? "No files chosen"
+                : `${inputs.length} file${inputs.length > 1 ? "s" : ""} chosen`}
+            </span>
           </div>
           <div>
             <input

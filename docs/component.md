@@ -63,12 +63,6 @@ D,John,Fish`;
 npm install taxonium-component
 ```
 
-or
-
-```
-yarn add taxonium-component
-```
-
 ### Import and use Taxonium Component in your React jsx
 
 ```js
@@ -112,3 +106,26 @@ sourceData: {
       filetype: "nwk",
     }
 ```
+
+## Building the library
+
+To build the component yourself, run:
+
+```bash
+cd taxonium_component
+npm install
+npm run build
+```
+
+The bundles will be written to `taxonium_component/dist`.
+
+## Demo
+
+You can experiment with the component locally via Storybook:
+
+```bash
+npm run storybook
+```
+
+By default Storybook runs at [http://localhost:6006](http://localhost:6006).
+

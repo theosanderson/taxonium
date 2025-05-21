@@ -1,0 +1,1 @@
+Always use `npm` not `yarn`. Always run `npm run check-types` and aim to ensure 0 errors before committing.

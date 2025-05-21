@@ -2,49 +2,71 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   worker: {
     format: "umd",
   },
   plugins: [
-    react(),
-    cssInjectedByJsPlugin(),
     nodePolyfills({
       exclude: ["fs"],
       protocolImports: true,
     }),
-
-    //  commonjs({ include: 'node_modules/**', }),
+    react({
+      // This ensures React is properly treated as external
+      jsxRuntime: "automatic",
+    }),
+    cssInjectedByJsPlugin(),
+    tailwindcss(),
   ],
+  define: {},
 
   build: {
-    //extry: 'src/index.js',
-
     lib: {
       entry: "src/index.js",
-      name: "Taxonium", // give your library a name
+      name: "Taxonium",
       fileName: (format) => `taxonium-component.${format}.js`,
-      //  formats: ['iife']
+      formats: ["es", "umd"], // Be explicit about formats
     },
-
-    //entry: 'src/App.jsx',
+    minify: true,
+    sourcemap: true,
 
     rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ["react", "react-dom"],
+      // Make sure to externalize deps that shouldn't be bundled
+      external: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime", // Important addition!
+        "prop-types",
+      ],
+
       output: {
         // Provide global variables to use in the UMD build
-        // for externalized deps
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react/jsx-runtime": "jsxRuntime",
+          "prop-types": "PropTypes",
         },
+        // Ensure chunking is handled properly
+        manualChunks: undefined,
       },
     },
+
+    // Prevents code splitting that might include React
+    cssCodeSplit: false,
+    emptyOutDir: true,
   },
+
   optimizeDeps: {
-    include: [], //add 'prop-types' here
+    // exclude: ["react", "react-dom", "prop-types"],
+  },
+
+  resolve: {
+    alias: {
+      "process/": "process",
+      "stream/web": "web-streams-polyfill/dist/ponyfill",
+    },
   },
 });

@@ -1,87 +1,71 @@
-# Taxonium component
+# Taxonium Component
 
-This React component allows phylogenetic trees of up to millions of nodes to be efficiently viewed in the browser.
+`taxonium-component` provides the tree viewer used by [Taxonium](https://taxonium.org) as a reusable React component.
 
-You can try out Taxonium at [taxonium.org](https://taxonium.org).
+## Installation
 
-You can also find fuller [documentation for the component](https://docs.taxonium.org/en/latest/component.html) and how to embed it in your own site.
-
-## Getting started
-
-Here's an example of how to set up the source data and use the Taxonium component in React and basic HTML.
-
-First, set up the source data in JavaScript:
-
-```js
-const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
-
-const metadata_text = `Node,Name,Species
-A,Bob,Cow
-B,Jim,Cow
-C,Joe,Fish
-D,John,Fish`;
-
-// Metadata is optional
-const metadata = {
-  filename: "test.csv",
-  data: metadata_text,
-  status: "loaded",
-  filetype: "meta_csv",
-};
-
-const sourceData = {
-  status: "loaded",
-  filename: "test.nwk",
-  data: nwk,
-  filetype: "nwk",
-  metadata: metadata,
-};
-```
-
-In React, you can use the Taxonium component as follows:
+Install the package from npm:
 
 ```bash
-yarn add taxonium-component
-# or npm install  taxonium-component
+npm install taxonium-component
 ```
 
-```js
+## Embedding in a React application
+
+```jsx
 import Taxonium from "taxonium-component";
 
-const App = () => {
-  return <Taxonium sourceData={sourceData} />;
-};
+function App() {
+  return <Taxonium backendUrl="https://api.cov2tree.org" />;
+}
+
+export default App;
 ```
 
-If you're working with basic HTML, you can include the Taxonium component using a script tag:
+## Using script tags
 
 ```html
-<body>
-  <div id="root"></div>
+<div id="root"></div>
 
-  <!-- Include peer dependencies -->
-  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+<!-- Peer dependencies -->
+<script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 
-  <!-- Include Taxonium Component -->
-  <script src="https://unpkg.com/taxonium-component"></script>
-
-  <script>
-    // Source data code from above
-  </script>
-
-  <script>
-    ReactDOM.render(
-      React.createElement(Taxonium, { sourceData: sourceData }),
-      document.getElementById("root")
-    );
-  </script>
-</body>
+<!-- Taxonium component -->
+<script src="https://unpkg.com/taxonium-component"></script>
+<script>
+  const sourceData = {
+    status: "loaded",
+    filename: "test.nwk",
+    data: "((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);",
+    filetype: "nwk",
+  };
+  ReactDOM.render(
+    React.createElement(Taxonium, { sourceData }),
+    document.getElementById("root")
+  );
+</script>
 ```
 
-### Developing the package
+## Building the library
+
+To build the component from source:
 
 ```bash
-yarn install
-yarn storybook
+cd taxonium_component
+npm install
+npm run build
 ```
+
+The compiled files will appear in the `dist` directory.
+
+## Demo
+
+A Storybook demo can be started locally with:
+
+```bash
+npm run storybook
+```
+
+This will launch an example at [http://localhost:6006](http://localhost:6006).
+

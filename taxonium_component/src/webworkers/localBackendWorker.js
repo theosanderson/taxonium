@@ -4,7 +4,7 @@ import {
   processJsonl,
   generateConfig,
 } from "taxonium_data_handling/importing.js";
-import { processNewickAndMetadata } from "../utils/processNewick.js";
+import { processNewickAndMetadata } from "../utils/processNewick";
 import { processNextstrain } from "../utils/processNextstrain.js";
 import { ReadableWebToNodeStream } from "readable-web-to-node-stream";
 import { parser } from "stream-json";
@@ -64,10 +64,8 @@ export const queryNodes = async (boundsForQueries) => {
 
   const {
     nodes,
-    // eslint-disable-next-line no-unused-vars
     overallMaxX,
     overallMaxY,
-    // eslint-disable-next-line no-unused-vars
     overallMinX,
     overallMinY,
     y_positions,
@@ -118,10 +116,8 @@ const search = async (search, bounds) => {
 
   const {
     nodes,
-    // eslint-disable-next-line no-unused-vars
     overallMaxX,
     overallMaxY,
-    // eslint-disable-next-line no-unused-vars
     overallMinX,
     overallMinY,
     y_positions,
