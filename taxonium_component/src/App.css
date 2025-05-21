@@ -1,8 +1,11 @@
 /* ./your-css-folder/styles.css */
 @import "tailwindcss";
+
+@plugin "@tailwindcss/forms";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 .tx-button:focus-visible {
   @apply outline-none ring-offset-0 ring-1 ring-gray-800 border-gray-800;
