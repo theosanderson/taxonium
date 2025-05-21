@@ -13,7 +13,7 @@ interface KeyProps {
   keyStuff: KeyItem[];
   colorByField: string;
   colorByGene?: string;
-  colorByPosition?: string;
+  colorByPosition?: number | string;
   config: Record<string, unknown>;
   setCurrentColorSettingKey: (key: string) => void;
   setColorSettingOpen: (open: boolean) => void;

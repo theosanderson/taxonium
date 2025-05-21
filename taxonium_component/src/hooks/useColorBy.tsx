@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useRef } from "react";
 import type { Config, NodeLookupData } from "../types/backend";
 import type { Node, Mutation } from "../types/node";
+import type { ColorBy } from "../types/color";
 import type { Query } from "../types/query";
 
 interface WindowWithCc extends Window {
@@ -10,23 +11,13 @@ interface WindowWithCc extends Window {
 let cachedColorByPosition: number | null = null; // todo do this with state
 let cachedColorByGene: string | null = null; // todo do this with state
 
-interface ColorByState {
-  colorByField: string;
-  setColorByField: (field: string) => void;
-  colorByOptions: string[];
-  getNodeColorField: (node: Node, dataset: NodeLookupData) => string;
-  colorByPosition: number;
-  setColorByPosition: (pos: number) => void;
-  colorByGene: string;
-  setColorByGene: (gene: string) => void;
-}
 
 function useColorBy(
   config: Config,
   query: Query,
   updateQuery: (q: Partial<Query>) => void
-): ColorByState {
-  const colorCacheRef = useRef<Record<string, string>>({});
+): ColorBy {
+  const colorCacheRef = useRef<Record<string, string | number>>({});
   const colorByConfig = useMemo(() => {
     return query.color ? JSON.parse(query.color) : {};
   }, [query.color]);
@@ -70,7 +61,7 @@ function useColorBy(
   );
 
   const getNodeColorField = useCallback(
-    (node: Node, dataset: NodeLookupData): string => {
+    (node: Node, dataset?: NodeLookupData): string | number => {
       if (
         colorByPosition != cachedColorByPosition ||
         colorByGene != cachedColorByGene
@@ -89,7 +80,7 @@ function useColorBy(
           //console.log("using cache");
           return colorCacheRef.current[node.node_id];
         }
-        let result: string;
+        let result: string | number;
         const relevantMutations = node.mutations.filter(
           (mut: Mutation) =>
             mut.residue_pos === colorByPosition && mut.gene === colorByGene
@@ -124,7 +115,7 @@ function useColorBy(
     [colorByField, colorByGene, colorByPosition]
   );
 
-  return useMemo<ColorByState>(() => {
+  return useMemo<ColorBy>(() => {
     return {
       colorByField,
       setColorByField,

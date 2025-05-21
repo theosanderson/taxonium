@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 import scale from "scale-color-perceptual";
 import { scaleLinear, ScaleLinear } from "d3-scale";
 import type { Config } from "../types/backend";
+import type { ColorHook } from "../types/color";
 
 const rgb_cache: Record<string, [number, number, number]> = {};
 
@@ -9,7 +10,7 @@ const useColor = (
   config: Config,
   colorMapping: Record<string, [number, number, number]>,
   colorByField: string
-): { toRGB: (val: string | number) => [number, number, number]; toRGBCSS: (val: string | number) => string } => {
+): ColorHook => {
   const colorScales = useMemo(() => {
     const scales: { colorRamp?: ScaleLinear<string, string> } = {};
     if (config.colorRamps && config.colorRamps[colorByField]) {

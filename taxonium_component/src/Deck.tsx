@@ -26,6 +26,7 @@ import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
 import type { StatusMessage, DynamicData, Config } from "./types/backend";
 import type { DeckSize } from "./types/common";
+import type { ColorHook, ColorBy } from "./types/color";
 
 const MemoizedKey = React.memo(Key);
 
@@ -35,8 +36,8 @@ export interface DeckProps {
   search: any;
   treenomeState: any;
   view: any;
-  colorHook: any;
-  colorBy: any;
+  colorHook: ColorHook;
+  colorBy: ColorBy;
   hoverDetails: any;
   config: Config;
   statusMessage: StatusMessage | null;

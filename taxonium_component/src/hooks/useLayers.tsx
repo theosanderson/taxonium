@@ -13,6 +13,7 @@ import getSVGfunction from "../utils/deckglToSvg";
 import type { Node } from "../types/node";
 import type { NodeLookupData, Config, DynamicData } from "../types/backend";
 import type { DeckSize } from "../types/common";
+import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
 
 const getKeyStuff = (
@@ -48,10 +49,10 @@ interface UseLayersProps {
   search: any;
   viewState: any;
   deckSize: DeckSize | null;
-  colorHook: any;
+  colorHook: ColorHook;
   setHoverInfo: (info: any) => void;
   hoverInfo: any;
-  colorBy: any;
+  colorBy: ColorBy;
   xType: string;
   modelMatrix: any;
   selectedDetails: any;

@@ -9,6 +9,7 @@ const ReactTooltipAny: any = ReactTooltip;
 import prettifyName from "../utils/prettifyName";
 import { SearchState } from "../types/search";
 import type { Config } from "../types/backend";
+import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
 
 import { FaSearch, FaShare } from "react-icons/fa";
@@ -45,12 +46,12 @@ const fixAuthors = (authors: string) => {
 
 interface SearchPanelProps {
   search: SearchState;
-  colorBy: any;
+  colorBy: ColorBy;
   config: Config;
   selectedDetails: any;
   overlayContent: any;
   setAboutEnabled: (enabled: boolean) => void;
-  colorHook: any;
+  colorHook: ColorHook;
   xType: string;
   setxType: (val: string) => void;
   settings: Settings;
@@ -373,11 +374,11 @@ function SearchPanel({
             }
             :
           </h2>
-          <Select
-            value={colorBy.colorByField}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              colorBy.setColorByField(e.target.value)
-            }
+            <Select
+              value={colorBy.colorByField}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                colorBy.setColorByField?.(e.target.value)
+              }
           >
               {colorBy.colorByOptions.map((item: string) => (
                 <option key={item} value={item}>
@@ -393,7 +394,7 @@ function SearchPanel({
               <Select
                 value={colorBy.colorByGene}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  colorBy.setColorByGene(e.target.value)
+                  colorBy.setColorByGene?.(e.target.value)
                 }
                 className="w-20"
               >
@@ -410,8 +411,8 @@ function SearchPanel({
               <input
                 value={colorBy.colorByPosition}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  colorBy.setColorByPosition(
-                    e.target.value !== "" ? parseInt(e.target.value) : ""
+                  colorBy.setColorByPosition?.(
+                    e.target.value !== "" ? parseInt(e.target.value) : 0
                   )
                 }
                 type="number"
