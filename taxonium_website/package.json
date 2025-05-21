@@ -35,7 +35,8 @@
     "eslint-plugin-react-refresh": "^0.3.4",
     "react-tooltip": "^5.28.1",
     "tailwindcss": "^4.1.6",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
   },
   "packageManager": "yarn@4.0.2+sha512.4e502bea682e7d8004561f916f1da2dfbe6f718024f6aa50bf8cd86f38ea3a94a7f1bf854a9ca666dd8eafcfb8d44baaa91bf5c7876e79a7aeac952c332f0e88"
 }
