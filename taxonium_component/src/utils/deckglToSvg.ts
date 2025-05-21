@@ -1,4 +1,5 @@
 import computeBounds from "./computeBounds";
+import type { DeckSize } from "../types/common";
 
 interface ViewState {
   min_y: number;
@@ -7,10 +8,6 @@ interface ViewState {
   max_x: number;
 }
 
-interface DeckSize {
-  width: number;
-  height: number;
-}
 
 const getSVGfunction = (
   layers: any[],

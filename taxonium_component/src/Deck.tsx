@@ -24,13 +24,10 @@ import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
 import type { StatusMessage, DynamicData } from "./types/backend";
+import type { DeckSize } from "./types/common";
 
 const MemoizedKey = React.memo(Key);
 
-interface DeckSize {
-  width: number;
-  height: number;
-}
 
 export interface DeckProps {
   data: DynamicData;

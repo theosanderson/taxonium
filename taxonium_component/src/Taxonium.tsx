@@ -22,6 +22,7 @@ import getDefaultQuery from "./utils/getDefaultQuery";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import { Toaster } from "react-hot-toast";
+import type { DeckSize } from "./types/common";
 
 interface SourceData {
   status: string;
@@ -44,10 +45,6 @@ interface TaxoniumProps {
   setTitle?: (title: string) => void;
 }
 
-interface DeckSize {
-  width: number;
-  height: number;
-}
 
 const default_query = getDefaultQuery();
 
