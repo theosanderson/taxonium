@@ -7,6 +7,7 @@ import type {
   SearchResultItem,
 } from "../types/search";
 import type { QueryBounds, DynamicData, Config } from "../types/backend";
+import type { Query } from "../types/query";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
@@ -18,8 +19,8 @@ interface UseSearchParams {
   boundsForQueries: QueryBounds | null;
   view: any;
   backend: any;
-  query: any;
-  updateQuery: (q: Record<string, unknown>) => void;
+  query: Query;
+  updateQuery: (q: Partial<Query>) => void;
   deckSize: { width: number; height: number } | null;
   xType: string;
   settings: any;
@@ -50,17 +51,17 @@ const useSearch = ({
     if (!query.srch) {
       //updateQuery({ srch: default_query.srch });
       //console.log("setting default search", default_query.srch);
-      return JSON.parse(default_query.srch);
+      return JSON.parse(default_query.srch as string);
     }
-    return JSON.parse(query.srch);
+    return JSON.parse(query.srch as string);
   }, [query.srch]);
 
   const [zoomToSearch, setZoomToSearch] = useState<{ index: number } | null>(
     query.zoomToSearch ? { index: query.zoomToSearch } : null
   );
   const searchesEnabled = query.enabled
-    ? JSON.parse(query.enabled)
-    : JSON.parse(default_query.enabled);
+    ? JSON.parse(query.enabled as string)
+    : JSON.parse(default_query.enabled as string);
 
   const setEnabled = (key: string, enabled: boolean) => {
     console.log("setEnabled", key, enabled);

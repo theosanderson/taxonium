@@ -1,12 +1,13 @@
 import { useState, useEffect, type ReactNode } from "react";
 import type { Backend, Config } from "../types/backend";
+import type { Query } from "../types/query";
 
 const useConfig = (
   backend: Backend,
   view: any,
   setOverlayContent: (content: ReactNode) => void,
   setTitle: (title: string) => void,
-  query: any,
+  query: Query,
   configDict: any,
   configUrl: string | undefined
 ) => {

@@ -45,7 +45,7 @@ export interface DeckProps {
   setDeckSize: (size: DeckSize) => void;
   deckSize: DeckSize;
   isCurrentlyOutsideBounds: boolean;
-  deckRef: React.RefObject<DeckGLRef | null>;
+  deckRef: React.MutableRefObject<DeckGLRef | null>;
   jbrowseRef: React.RefObject<HTMLSpanElement | null>;
   setAdditionalColorMapping: React.Dispatch<
     React.SetStateAction<Record<string, unknown>>

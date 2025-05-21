@@ -1,11 +1,12 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import getDefaultQuery from "../utils/getDefaultQuery";
+import type { Query } from "../types/query";
 const default_query = getDefaultQuery();
 
 interface UseSettingsProps {
-  query: any;
-  updateQuery: (q: any) => void;
+  query: Query;
+  updateQuery: (q: Partial<Query>) => void;
 }
 
 export const useSettings = ({ query, updateQuery }: UseSettingsProps) => {
@@ -44,16 +45,16 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps) => {
 
   const mutationTypesEnabled = useMemo(() => {
     if (!query.mutationTypesEnabled) {
-      return JSON.parse(default_query.mutationTypesEnabled);
+      return JSON.parse(default_query.mutationTypesEnabled as string);
     }
-    return JSON.parse(query.mutationTypesEnabled);
+    return JSON.parse(query.mutationTypesEnabled as string);
   }, [query.mutationTypesEnabled]);
 
   const treenomeEnabled = useMemo(() => {
     if (!query.treenomeEnabled) {
       return false;
     }
-    return JSON.parse(query.treenomeEnabled);
+    return JSON.parse(query.treenomeEnabled as string);
   }, [query.treenomeEnabled]);
 
   const setTreenomeEnabled = useCallback(

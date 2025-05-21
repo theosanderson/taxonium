@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useRef } from "react";
 import type { Config, NodeLookupData } from "../types/backend";
 import type { Node, Mutation } from "../types/node";
+import type { Query } from "../types/query";
 
 interface WindowWithCc extends Window {
   cc?: unknown;
@@ -22,8 +23,8 @@ interface ColorByState {
 
 function useColorBy(
   config: Config,
-  query: Record<string, any>,
-  updateQuery: (q: Record<string, any>) => void
+  query: Query,
+  updateQuery: (q: Partial<Query>) => void
 ): ColorByState {
   const colorCacheRef = useRef<Record<string, string>>({});
   const colorByConfig = useMemo(() => {

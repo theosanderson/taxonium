@@ -10,6 +10,7 @@ import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
 import { useMemo, useState, useRef } from "react";
+import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
@@ -19,6 +20,7 @@ import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import getDefaultQuery from "./utils/getDefaultQuery";
+import type { Query } from "./types/query";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import { Toaster } from "react-hot-toast";
@@ -37,8 +39,8 @@ interface TaxoniumProps {
   backendUrl?: string;
   configDict?: Record<string, unknown>;
   configUrl?: string;
-  query?: Record<string, any>;
-  updateQuery?: (q: Record<string, any>) => void;
+  query?: Query;
+  updateQuery?: (q: Partial<Query>) => void;
   overlayContent?: React.ReactNode;
   setAboutEnabled?: (val: boolean) => void;
   setOverlayContent?: (content: React.ReactNode) => void;
@@ -64,7 +66,7 @@ function Taxonium({
   setTitle,
 }: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
-  const backupUpdateQuery = useCallback((newQuery: Record<string, unknown>) => {
+  const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
     setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
   }, []);
   // if query and updateQuery are not provided, use the backupQuery
@@ -89,7 +91,7 @@ function Taxonium({
     setAboutEnabled = () => {};
   }
 
-  const deckRef = useRef<any>(null);
+  const deckRef = useRef<DeckGLRef | null>(null);
   const jbrowseRef = useRef<any>(null);
   const [mouseDownIsMinimap, setMouseDownIsMinimap] = useState(false);
 
@@ -105,8 +107,8 @@ function Taxonium({
   });
 
   const backend = useBackend(
-    backendUrl ? backendUrl : (query as Record<string, any>).backend,
-    (query as Record<string, any>).sid,
+    backendUrl ? backendUrl : query.backend,
+    query.sid,
     sourceData ?? null
   );
   if (!backend) {
