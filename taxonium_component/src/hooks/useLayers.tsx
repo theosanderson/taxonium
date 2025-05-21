@@ -18,6 +18,7 @@ import type { Settings } from "../types/settings";
 import type { SearchState } from "../types/search";
 import type { TreenomeState } from "../types/treenome";
 import type { HoverDetailsState, SelectedDetails } from "../types/ui";
+import type { ViewState } from "../types/view";
 
 const getKeyStuff = (
   getNodeColorField: (node: Node, data: NodeLookupData) => string | number,
@@ -50,7 +51,7 @@ const getKeyStuff = (
 interface UseLayersProps {
   data: DynamicData;
   search: SearchState;
-  viewState: any;
+  viewState: ViewState;
   deckSize: DeckSize | null;
   colorHook: ColorHook;
   setHoverInfo: (info: any) => void;
@@ -415,7 +416,7 @@ const useLayers = ({
   }
 
   const proportionalToNodesOnScreen =
-    (config as any).num_tips / 2 ** viewState.zoom;
+    (config as any).num_tips / 2 ** (viewState.zoom as number);
 
   // If leaves are fewer than max_text_number, add a text layer
   if (

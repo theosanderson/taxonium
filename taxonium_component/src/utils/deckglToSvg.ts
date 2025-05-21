@@ -1,12 +1,6 @@
 import computeBounds from "./computeBounds";
 import type { DeckSize } from "../types/common";
-
-interface ViewState {
-  min_y: number;
-  max_y: number;
-  min_x: number;
-  max_x: number;
-}
+import type { ViewState } from "../types/view";
 
 
 const getSVGfunction = (
@@ -31,10 +25,10 @@ const getSVGfunction = (
     svgHeight: number
   ): string => {
     const applyBounds = (point: [number, number]): [number, number] => {
-      const minY = viewState.min_y;
-      const maxY = viewState.max_y;
-      const minX = viewState.min_x;
-      const maxX = viewState.max_x;
+      const minY = viewState.min_y as number;
+      const maxY = viewState.max_y as number;
+      const minX = viewState.min_x as number;
+      const maxX = viewState.max_x as number;
       const initial = point;
       const x = normalise(initial[0], minX, maxX);
       const y = normalise(initial[1], minY, maxY);

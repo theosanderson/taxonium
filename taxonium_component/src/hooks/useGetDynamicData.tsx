@@ -9,6 +9,7 @@ import type {
 } from "../types/backend";
 import type { DeckSize } from "../types/common";
 import type { ColorBy } from "../types/color";
+import type { ViewState } from "../types/view";
 import computeBounds from "../utils/computeBounds";
 
 const DEBOUNCE_TIME = 100;
@@ -25,7 +26,7 @@ function addNodeLookup(data: NodeLookupData): NodeLookupData {
 function useGetDynamicData(
   backend: Backend,
   colorBy: ColorBy,
-  viewState: any,
+  viewState: ViewState,
   config: Config,
   xType: string,
   deckSize: DeckSize | null

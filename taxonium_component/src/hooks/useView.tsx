@@ -3,6 +3,7 @@ import { OrthographicView, OrthographicController } from "@deck.gl/core";
 import type { OrthographicViewProps } from "@deck.gl/core";
 import type { Settings } from "../types/settings";
 import type { DeckSize } from "../types/common";
+import type { ViewState } from "../types/view";
 
 interface ViewStateChangeParameters<ViewStateT> {
   viewId: string;
@@ -17,7 +18,7 @@ interface StyledViewProps extends OrthographicViewProps {
 
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-const defaultViewState = {
+const defaultViewState: ViewState = {
   zoom: [-2, 0],
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
   pitch: 0,
@@ -27,7 +28,7 @@ const defaultViewState = {
   "browser-axis": { zoom: -2, target: [0, 1000] },
 };
 
-type ViewStateType = typeof defaultViewState;
+type ViewStateType = ViewState;
 
 interface UseViewProps {
   settings: Settings;
@@ -113,7 +114,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
       newViewState.minimap = { zoom: -3, target: [250, 1000] };
       newViewState["browser-main"] = {
         zoom: -3,
-        target: [250, (newViewState as ViewStateType).target[1]],
+        target: [250, (newViewState as any).target[1]],
       };
       setViewState(newViewState);
 
@@ -125,7 +126,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   const zoomIncrement = useCallback(
     (increment: number, axis: string | undefined = zoomAxis) => {
         setViewState((vs: ViewStateType) => {
-          const newZoom = [...vs.zoom];
+          const newZoom = [...(vs.zoom as [number, number])];
           if (axis === "X") {
             newZoom[0] = newZoom[0] + increment;
           } else if (axis === "Y") {
@@ -164,8 +165,8 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
 export default useView;
 
 export interface View {
-  viewState: any;
-  setViewState: React.Dispatch<React.SetStateAction<any>>;
+  viewState: ViewState;
+  setViewState: React.Dispatch<React.SetStateAction<ViewState>>;
   onViewStateChange: any;
   views: any;
   zoomAxis: string;
@@ -175,6 +176,6 @@ export interface View {
   xzoom: number;
   mouseXY: number[];
   setMouseXY: React.Dispatch<React.SetStateAction<number[]>>;
-  baseViewState: any;
+  baseViewState: ViewState;
   zoomReset: () => void;
 }

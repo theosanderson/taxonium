@@ -69,9 +69,11 @@ worker.onmessage = (event: MessageEvent<LocalBackendMessage>) => {
     case "query":
       onQueryReceipt(data.data);
       break;
-    case "search":
-      searchSetters[data.data.key](data.data);
-      break;
+      case "search":
+        if (data.data.key) {
+          searchSetters[data.data.key]?.(data.data);
+        }
+        break;
     case "config":
       onConfigReceipt(data.data);
       break;
