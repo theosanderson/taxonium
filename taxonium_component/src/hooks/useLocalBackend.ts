@@ -7,6 +7,16 @@ import type {
   QueryBounds,
   LocalBackend,
 } from "../types/backend";
+import type {
+  StatusData,
+  QueryData,
+  SearchData,
+  ConfigData,
+  DetailsData,
+  ListData,
+  NextStrainData,
+  LocalBackendMessage,
+} from "../types/localBackendWorker";
 import type { Node, Mutation } from "../types/node";
 
 // test
@@ -20,15 +30,17 @@ import workerSpec from "../webworkers/localBackendWorker.js?worker&inline";
 
 const worker = new workerSpec();
 
-let onQueryReceipt: (receivedData: any) => void = () => {};
-let onStatusReceipt: (receivedData: any) => void = (receivedData) => {
+let onQueryReceipt: (receivedData: NodesResponse) => void = () => {};
+let onStatusReceipt: (receivedData: StatusData) => void = (receivedData) => {
   console.log("STATUS:", receivedData.data);
 };
 
-let onConfigReceipt: (receivedData: any) => void = () => {};
-let onDetailsReceipt: (receivedData: any) => void = () => {};
-let onListReceipt: (receivedData: any) => void = () => {};
-let onNextStrainReceipt: (receivedData: any) => void = (receivedData) => {
+let onConfigReceipt: (receivedData: Config) => void = () => {};
+let onDetailsReceipt: (receivedData: NodeDetails) => void = () => {};
+let onListReceipt: (receivedData: ListData["data"]) => void = () => {};
+let onNextStrainReceipt: (receivedData: NextStrainData["data"]) => void = (
+  receivedData
+) => {
   console.log("NEXT STRAIN:", receivedData);
   // create a blob with this data and trigger download
   const blob = new Blob([JSON.stringify(receivedData)], {
@@ -47,31 +59,33 @@ let onNextStrainReceipt: (receivedData: any) => void = (receivedData) => {
 
 let searchSetters: Record<string, (data: SearchResult) => void> = {};
 
-worker.onmessage = (event) => {
-  console.log(
-    "got message from worker" //, event.data
-  );
-  if (event.data.type === "status") {
-    onStatusReceipt(event.data);
-  }
-  if (event.data.type === "query") {
-    onQueryReceipt(event.data.data);
-  }
-  if (event.data.type === "search") {
-    // console.log("SEARCHRES", event.data.data);
-    searchSetters[event.data.data.key](event.data.data);
-  }
-  if (event.data.type === "config") {
-    onConfigReceipt(event.data.data);
-  }
-  if (event.data.type === "details") {
-    onDetailsReceipt(event.data.data);
-  }
-  if (event.data.type === "list") {
-    onListReceipt(event.data.data);
-  }
-  if (event.data.type === "nextstrain") {
-    onNextStrainReceipt(event.data.data);
+worker.onmessage = (event: MessageEvent<LocalBackendMessage>) => {
+  console.log("got message from worker");
+  const data = event.data;
+  switch (data.type) {
+    case "status":
+      onStatusReceipt(data);
+      break;
+    case "query":
+      onQueryReceipt(data.data);
+      break;
+    case "search":
+      searchSetters[data.data.key](data.data);
+      break;
+    case "config":
+      onConfigReceipt(data.data);
+      break;
+    case "details":
+      onDetailsReceipt(data.data);
+      break;
+    case "list":
+      onListReceipt(data.data);
+      break;
+    case "nextstrain":
+      onNextStrainReceipt(data.data);
+      break;
+    default:
+      break;
   }
 };
 
@@ -88,7 +102,7 @@ function useLocalBackend(
       window.alert(receivedData.data.error);
       console.log("ERROR33:", receivedData.data.error);
     }
-    const total_nodes = receivedData.data.total;
+    const total_nodes = receivedData.data.total as number | undefined;
     if (total_nodes && total_nodes > 6000000) {
       if (1) {
         window.alert(
