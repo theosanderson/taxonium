@@ -1,9 +1,10 @@
 import React from "react";
 import { toast } from "react-hot-toast";
+import type { Settings } from "../types/settings";
 import { FaCircle, FaRegCircle } from "react-icons/fa";
 
 interface SearchDisplayToggleProps {
-  settings: any;
+  settings: Settings;
 }
 
 const SearchDisplayToggle = ({ settings }: SearchDisplayToggleProps) => {

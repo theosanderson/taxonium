@@ -18,6 +18,7 @@ import TreenomeMutationHoverTip from "./components/TreenomeMutationHoverTip";
 import { DeckButtons } from "./components/DeckButtons";
 import DeckSettingsModal from "./components/DeckSettingsModal";
 import { TreenomeButtons } from "./components/TreenomeButtons";
+import type { Settings } from "./types/settings";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
@@ -40,7 +41,7 @@ export interface DeckProps {
   config: Config;
   statusMessage: StatusMessage | null;
   xType: string;
-  settings: any;
+  settings: Settings;
   selectedDetails: any;
   setDeckSize: (size: DeckSize) => void;
   deckSize: DeckSize;

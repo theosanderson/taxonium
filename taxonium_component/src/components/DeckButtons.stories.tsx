@@ -1,5 +1,6 @@
 import { fn } from "@storybook/test";
 import { DeckButtons } from "./DeckButtons";
+import type { Settings } from "../types/settings";
 
 export default {
   title: "Taxonium/DeckButtons",
@@ -19,7 +20,7 @@ export const Default = {
     zoomIncrement: fn(),
     requestOpenSettings: fn(),
     zoomReset: fn(),
-    settings: {},
+    settings: {} as unknown as Settings,
     deckSize: { width: 800, height: 600 },
     triggerSVGdownload: fn(),
   },

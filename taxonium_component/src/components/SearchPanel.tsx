@@ -9,6 +9,7 @@ const ReactTooltipAny: any = ReactTooltip;
 import prettifyName from "../utils/prettifyName";
 import { SearchState } from "../types/search";
 import type { Config } from "../types/backend";
+import type { Settings } from "../types/settings";
 
 import { FaSearch, FaShare } from "react-icons/fa";
 
@@ -52,7 +53,7 @@ interface SearchPanelProps {
   colorHook: any;
   xType: string;
   setxType: (val: string) => void;
-  settings: any;
+  settings: Settings;
   backend: any;
   className?: string;
   treenomeState: any;

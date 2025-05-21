@@ -1,5 +1,6 @@
 import { fn } from "@storybook/test";
 import SearchDisplayToggle from "./SearchDisplayToggle";
+import type { Settings } from "../types/settings";
 
 export default {
   title: "Taxonium/SearchDisplayToggle",
@@ -15,7 +16,7 @@ export const DisplayingAsPoints = {
     settings: {
       displaySearchesAsPoints: true,
       setDisplaySearchesAsPoints: fn(),
-    },
+    } as unknown as Settings,
   },
 };
 
@@ -24,7 +25,7 @@ export const DisplayingAsCircles = {
     settings: {
       displaySearchesAsPoints: false,
       setDisplaySearchesAsPoints: fn(),
-    },
+    } as unknown as Settings,
   },
 };
 

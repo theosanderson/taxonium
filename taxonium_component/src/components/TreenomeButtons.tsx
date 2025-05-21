@@ -9,6 +9,7 @@ import {
 
 import { TiZoom, TiCog } from "react-icons/ti";
 import { ClipLoader } from "react-spinners";
+import type { Settings } from "../types/settings";
 
 interface TaxButtonProps {
   children: React.ReactNode;
@@ -32,7 +33,7 @@ const TaxButton = ({ children, onClick, title }: TaxButtonProps) => {
 export interface TreenomeButtonsProps {
   loading: boolean;
   requestOpenSettings: () => void;
-  settings: Record<string, unknown>;
+  settings: Settings;
 }
 
 export const TreenomeButtons = ({

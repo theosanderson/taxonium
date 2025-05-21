@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import getDefaultQuery from "../utils/getDefaultQuery";
+import type { Settings, PrettyStroke } from "../types/settings";
 import type { Query } from "../types/query";
 const default_query = getDefaultQuery();
 
@@ -9,7 +10,7 @@ interface UseSettingsProps {
   updateQuery: (q: Partial<Query>) => void;
 }
 
-export const useSettings = ({ query, updateQuery }: UseSettingsProps) => {
+export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
     useState(false);
@@ -23,7 +24,7 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps) => {
 
   const [opacity, setOpacity] = useState(0.6);
 
-  const [prettyStroke, setPrettyStroke] = useState({
+  const [prettyStroke, setPrettyStroke] = useState<PrettyStroke>({
     enabled: false,
     color: [76, 87, 106],
     width: 1,

@@ -1,11 +1,12 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import type { DynamicData } from "../types/backend";
+import type { Settings } from "../types/settings";
 
 const useTreenomeState = (
   data: DynamicData,
   deckRef: any,
   view: any,
-  settings: any
+  settings: Settings
 ) => {
   const [yBounds, setYBounds] = useState([0, 0]);
   const [baseYBounds, setBaseYBounds] = useState([0, 0]);

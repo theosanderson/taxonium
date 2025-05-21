@@ -1,5 +1,6 @@
 import { fn } from "@storybook/test";
 import DeckSettingsModal from "./DeckSettingsModal";
+import type { Settings } from "../types/settings";
 
 export default {
   title: "Taxonium/DeckSettingsModal",
@@ -52,7 +53,7 @@ export const Default = {
         nt: false,
       },
       setMutationTypeEnabled: fn(),
-    },
+    } as unknown as Settings,
   },
 };
 
@@ -66,7 +67,7 @@ export const WithPrettyStrokeEnabled = {
         color: "#3366FF",
         width: 1.2,
       },
-    },
+    } as unknown as Settings,
   },
 };
 

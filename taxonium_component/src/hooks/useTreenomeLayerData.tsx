@@ -5,13 +5,11 @@ import type { VariationDatum } from "../types/treenome";
 
 import type {
   TreenomeState as BaseTreenomeState,
-  TreenomeSettings as BaseSettings,
 } from "../types/treenome";
 import type { DynamicData } from "../types/backend";
+import type { Settings } from "../types/settings";
 
 interface TreenomeState extends BaseTreenomeState {}
-
-interface Settings extends BaseSettings {}
 
 const useTreenomeLayerData = (
   data: DynamicData,

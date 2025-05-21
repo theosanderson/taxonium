@@ -1,4 +1,5 @@
 import React from "react";
+import type { Settings } from "../types/settings";
 import Modal from "react-modal";
 import ColorPicker from "./ColorPicker";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
@@ -31,7 +32,7 @@ const prettifyMutationTypes: Record<string, string> = {
 };
 
 interface DeckSettingsModalProps {
-  settings: Record<string, any>;
+  settings: Settings;
   deckSettingsOpen: boolean;
   setDeckSettingsOpen: (open: boolean) => void;
   noneColor: number[];

@@ -14,6 +14,7 @@ import { ClipLoader } from "react-spinners";
 import TaxButton from "./TaxButton";
 import SnapshotButton from "./SnapshotButton";
 import type { DeckSize } from "../types/common";
+import type { Settings } from "../types/settings";
 
 interface DeckButtonsProps {
   loading: boolean;
@@ -23,7 +24,7 @@ interface DeckButtonsProps {
   zoomIncrement: (delta: number, axis: string) => void;
   requestOpenSettings: () => void;
   zoomReset: () => void;
-  settings: Record<string, unknown>;
+  settings: Settings;
   deckSize: DeckSize;
   triggerSVGdownload: () => void;
 }

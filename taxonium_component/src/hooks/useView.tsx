@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
 import type { OrthographicViewProps } from "@deck.gl/core";
+import type { Settings } from "../types/settings";
 
 interface ViewStateChangeParameters<ViewStateT> {
   viewId: string;
@@ -28,7 +29,7 @@ const defaultViewState = {
 type ViewStateType = typeof defaultViewState;
 
 interface UseViewProps {
-  settings: any;
+  settings: Settings;
   deckSize: any;
   mouseDownIsMinimap: boolean;
 }

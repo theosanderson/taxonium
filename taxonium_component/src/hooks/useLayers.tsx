@@ -13,6 +13,7 @@ import getSVGfunction from "../utils/deckglToSvg";
 import type { Node } from "../types/node";
 import type { NodeLookupData, Config, DynamicData } from "../types/backend";
 import type { DeckSize } from "../types/common";
+import type { Settings } from "../types/settings";
 
 const getKeyStuff = (
   getNodeColorField: (node: Node, data: NodeLookupData) => string | number,
@@ -54,7 +55,7 @@ interface UseLayersProps {
   xType: string;
   modelMatrix: any;
   selectedDetails: any;
-  settings: any;
+  settings: Settings;
   isCurrentlyOutsideBounds: boolean;
   config: Config;
   treenomeState: any;

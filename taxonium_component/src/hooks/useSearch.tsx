@@ -11,6 +11,7 @@ import type { Query } from "../types/query";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
+import type { Settings } from "../types/settings";
 const default_query = getDefaultQuery();
 
 interface UseSearchParams {
@@ -23,7 +24,7 @@ interface UseSearchParams {
   updateQuery: (q: Partial<Query>) => void;
   deckSize: { width: number; height: number } | null;
   xType: string;
-  settings: any;
+  settings: Settings;
 }
 
 const useSearch = ({

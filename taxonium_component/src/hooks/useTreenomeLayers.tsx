@@ -3,20 +3,16 @@ import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import useTreenomeLayerData from "./useTreenomeLayerData";
 import type {
   TreenomeState as BaseTreenomeState,
-  TreenomeSettings as BaseSettings,
   MutationVariationDatum,
 } from "../types/treenome";
 import type { Mutation } from "../types/node";
 import type { DynamicData } from "../types/backend";
+import type { Settings } from "../types/settings";
 
 interface TreenomeState extends BaseTreenomeState {
   xBounds: [number, number];
   yBounds: [number, number];
   baseYBounds: [number, number];
-}
-
-interface Settings extends BaseSettings {
-  isCov2Tree: boolean;
 }
 
 const useTreenomeLayers = (

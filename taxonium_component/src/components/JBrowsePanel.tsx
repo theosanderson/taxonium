@@ -12,13 +12,8 @@ import {
 import { protect, unprotect } from "mobx-state-tree";
 import type {
   TreenomeState as BaseTreenomeState,
-  TreenomeSettings as BaseSettings,
 } from "../types/treenome";
-
-interface Settings extends BaseSettings {
-  chromosomeName: string;
-  [key: string]: unknown;
-}
+import type { Settings } from "../types/settings";
 
 interface TreenomeState extends BaseTreenomeState {
   genome?: string | null;
