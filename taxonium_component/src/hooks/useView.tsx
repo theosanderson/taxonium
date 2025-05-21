@@ -19,7 +19,7 @@ interface StyledViewProps extends OrthographicViewProps {
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 const defaultViewState: ViewState = {
-  zoom: [-2, 0],
+  zoom: [0, -2],
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
   pitch: 0,
   bearing: 0,
