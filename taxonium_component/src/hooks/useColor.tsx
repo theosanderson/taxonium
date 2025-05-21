@@ -5,18 +5,8 @@ import type { Config } from "../types/backend";
 
 const rgb_cache: Record<string, [number, number, number]> = {};
 
-interface ColorRamps {
-  [key: string]: {
-    scale: [number, string][];
-  };
-}
-
-interface ConfigWithColor extends Config {
-  colorRamps?: ColorRamps;
-}
-
 const useColor = (
-  config: ConfigWithColor,
+  config: Config,
   colorMapping: Record<string, [number, number, number]>,
   colorByField: string
 ): { toRGB: (val: string | number) => [number, number, number]; toRGBCSS: (val: string | number) => string } => {

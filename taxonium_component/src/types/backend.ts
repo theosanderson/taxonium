@@ -1,5 +1,6 @@
 import type { Node, Mutation } from "./node";
 import type React from "react";
+import type { ColorRamps } from "./common";
 
 export interface QueryBounds {
   min_x?: number;
@@ -35,7 +36,7 @@ export interface Config {
   genes?: string[];
   mutations?: Mutation[];
   useHydratedMutations?: boolean;
-  colorRamps?: Record<string, { scale: [number, string][] }>;
+  colorRamps?: ColorRamps;
   colorBy?: {
     colorByOptions: string[];
   };

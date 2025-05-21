@@ -1,10 +1,7 @@
 import prettifyName from "../utils/prettifyName";
 import { useState } from "react";
 import classNames from "classnames";
-
-interface ColorRampType {
-  scale: [number, string][];
-}
+import type { ColorRamp, ColorRamps } from "../types/common";
 
 export interface KeyItem {
   value: string;
@@ -22,7 +19,7 @@ interface KeyProps {
   setColorSettingOpen: (open: boolean) => void;
   hoveredKey: string | null;
   setHoveredKey: (key: string | null) => void;
-  colorRamps?: Record<string, ColorRampType>;
+  colorRamps?: ColorRamps;
 }
 
 interface KeyContentProps {
@@ -34,7 +31,7 @@ interface KeyContentProps {
   isTruncated: boolean;
 }
 
-const ColorRamp = ({ ramp }: { ramp: ColorRampType }) => {
+const ColorRamp = ({ ramp }: { ramp: ColorRamp }) => {
   const scale = ramp.scale;
 
   // Extract values and colors from the scale
