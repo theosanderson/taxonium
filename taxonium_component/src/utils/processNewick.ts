@@ -9,12 +9,20 @@ import pako from "pako";
 import axios from "axios";
 import reduceMaxOrMin from "./reduceMaxOrMin";
 import nexusToNewick from "../utils/nexusToNewick";
-const emptyList = [];
+import type { StatusMessage } from "../types/backend";
+import type {
+  NewickFile,
+  MetadataFile,
+  ProcessedTree,
+  InputFile,
+} from "../types/newick";
+const emptyList: any[] = [];
 
-async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
-  if (!sendStatusMessage) {
-    sendStatusMessage = () => {};
-  }
+async function do_fetch(
+  url: string,
+  sendStatusMessage: (msg: StatusMessage) => void = () => {},
+  whatIsBeingDownloaded: string
+): Promise<string> {
   // send progress on downloadProgress
 
   if (url.endsWith(".gz")) {
@@ -23,7 +31,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
       onDownloadProgress: (progress) => {
         sendStatusMessage({
           message: "Downloading compressed " + whatIsBeingDownloaded,
-          percentage: (progress.loaded / progress.total) * 100,
+          percentage: (progress.loaded / (progress.total ?? progress.loaded)) * 100,
         });
       },
     });
@@ -38,7 +46,7 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
       onDownloadProgress: (progress) => {
         sendStatusMessage({
           message: "Downloading " + whatIsBeingDownloaded,
-          percentage: (progress.loaded / progress.total) * 100,
+          percentage: (progress.loaded / (progress.total ?? progress.loaded)) * 100,
         });
       },
     });
@@ -48,37 +56,41 @@ async function do_fetch(url, sendStatusMessage, whatIsBeingDownloaded) {
   }
 }
 
-function fetch_or_extract(file_obj, sendStatusMessage, whatIsBeingDownloaded) {
+async function fetch_or_extract(
+  file_obj: InputFile,
+  sendStatusMessage: (msg: StatusMessage) => void,
+  whatIsBeingDownloaded: string
+): Promise<string> {
   if (file_obj.status === "url_supplied") {
-    return do_fetch(
-      file_obj.filename,
-      sendStatusMessage,
-      whatIsBeingDownloaded
-    );
+    return do_fetch(file_obj.filename, sendStatusMessage, whatIsBeingDownloaded);
   } else if (file_obj.status === "loaded") {
     if (file_obj.filename.includes(".gz")) {
-      const compressed_data = file_obj.data;
+      const compressed_data = file_obj.data as ArrayBuffer;
       sendStatusMessage({
         message: "Decompressing compressed " + whatIsBeingDownloaded,
       });
-      const inflated = pako.ungzip(compressed_data);
+      const inflated = pako.ungzip(new Uint8Array(compressed_data));
       const text = new TextDecoder("utf-8").decode(inflated);
       return text;
     } else {
       // convert array buffer to string
-      let text;
+      let text: string;
       // if type is not string, assume it is arraybuffer
       if (typeof file_obj.data === "string") {
         text = file_obj.data;
       } else {
-        text = new TextDecoder("utf-8").decode(file_obj.data);
+        text = new TextDecoder("utf-8").decode(file_obj.data as ArrayBuffer);
       }
       return text;
     }
   }
+  return "";
 }
 
-function parseNewickKeyValue(newickKVString, obj_to_set) {
+function parseNewickKeyValue(
+  newickKVString: string,
+  obj_to_set: Record<string, unknown>
+): void {
   // Regular expression that matches key=value pairs, accounting for commas within {}
   const regex = /(&?\w+)=({[^}]*}|[^,]*)/g;
 
@@ -93,12 +105,12 @@ function parseNewickKeyValue(newickKVString, obj_to_set) {
   }
 }
 
-async function cleanup(tree) {
-  tree.node.forEach((node, i) => {
+function cleanup(tree: any): void {
+  tree.node.forEach((node: any, i: number) => {
     node.node_id = i;
   });
 
-  tree.node = tree.node.map((node) => {
+  tree.node = tree.node.map((node: any) => {
     const to_return = {
       name: node.name.replace(/'/g, ""),
       parent_id: node.parent ? node.parent.node_id : node.node_id,
@@ -119,21 +131,24 @@ async function cleanup(tree) {
 
   const scale_y = 2000;
 
-  const all_xes = tree.node.map((node) => node.x_dist);
-  all_xes.sort((a, b) => a - b);
+  const all_xes = tree.node.map((node: any) => node.x_dist);
+  all_xes.sort((a: number, b: number) => a - b);
   const ref_x_percentile = 0.99;
   const ref_x = all_xes[Math.floor(all_xes.length * ref_x_percentile)];
 
   const scale_x = 450 / ref_x;
 
-  tree.node.forEach((node) => {
+  tree.node.forEach((node: any) => {
     node.x_dist = node.x_dist * scale_x;
     node.y = node.y * scale_y;
   });
 }
 
-export async function processNewick(data, sendStatusMessage) {
-  let the_data;
+export async function processNewick(
+  data: NewickFile,
+  sendStatusMessage: (msg: StatusMessage) => void
+): Promise<ProcessedTree> {
+  let the_data: string;
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
@@ -157,15 +172,15 @@ export async function processNewick(data, sendStatusMessage) {
   the_data = the_data.replaceAll("\n", "");
   the_data = the_data.replaceAll("\r", "");
 
-  const tree = kn_parse(the_data);
+  const tree: any = kn_parse(the_data);
   console.log("tree", tree);
 
-  function assignNumTips(node) {
+  function assignNumTips(node: any): number {
     if (node.child.length === 0) {
       node.num_tips = 1;
     } else {
       node.num_tips = 0;
-      node.child.forEach((child) => {
+      node.child.forEach((child: any) => {
         node.num_tips += assignNumTips(child);
       });
     }
@@ -173,11 +188,11 @@ export async function processNewick(data, sendStatusMessage) {
     return node.num_tips;
   }
 
-  function sortWithNumTips(node) {
-    node.child.sort((a, b) => {
+  function sortWithNumTips(node: any): void {
+    node.child.sort((a: any, b: any) => {
       return a.num_tips - b.num_tips;
     });
-    node.child.forEach((child) => {
+    node.child.forEach((child: any) => {
       sortWithNumTips(child);
     });
   }
@@ -200,7 +215,7 @@ export async function processNewick(data, sendStatusMessage) {
   });
 
   // sort on y:
-  tree.node.sort((a, b) => a.y - b.y);
+  tree.node.sort((a: any, b: any) => a.y - b.y);
 
   sendStatusMessage({
     message: "Re-processing",
@@ -209,13 +224,13 @@ export async function processNewick(data, sendStatusMessage) {
   cleanup(tree);
   console.log("tree", tree);
 
-  const overallMaxX = reduceMaxOrMin(tree.node, (x) => x.x_dist, "max");
-  const overallMinX = reduceMaxOrMin(tree.node, (x) => x.x_dist, "min");
-  const overallMaxY = reduceMaxOrMin(tree.node, (x) => x.y, "max");
-  const overallMinY = reduceMaxOrMin(tree.node, (x) => x.y, "min");
-  const y_positions = tree.node.map((x) => x.y);
+  const overallMaxX = reduceMaxOrMin(tree.node, (x: any) => x.x_dist, "max");
+  const overallMinX = reduceMaxOrMin(tree.node, (x: any) => x.x_dist, "min");
+  const overallMaxY = reduceMaxOrMin(tree.node, (x: any) => x.y, "max");
+  const overallMinY = reduceMaxOrMin(tree.node, (x: any) => x.y, "min");
+  const y_positions = tree.node.map((x: any) => x.y);
 
-  const output = {
+  const output: ProcessedTree = {
     nodes: tree.node,
     overallMaxX,
     overallMaxY,
@@ -232,17 +247,20 @@ export async function processNewick(data, sendStatusMessage) {
   return output;
 }
 
-export async function processMetadataFile(data, sendStatusMessage) {
-  const logStatusToConsole = (message) => {
+export async function processMetadataFile(
+  data: MetadataFile,
+  sendStatusMessage: (msg: StatusMessage) => void
+): Promise<[Map<string, Record<string, string>>, string[]]> {
+  const logStatusToConsole = (message: StatusMessage) => {
     console.log(message.message);
   };
-  let the_data;
+  let the_data: string;
 
   the_data = await fetch_or_extract(data, logStatusToConsole, "metadata");
 
   const lines = the_data.split("\n");
-  const output = new Map();
-  let splitFunction;
+  const output = new Map<string, Record<string, string>>();
+  let splitFunction: (line: string) => string[];
 
   if (data.filetype == "meta_tsv") {
     splitFunction = (x) => x.split("\t");
@@ -258,7 +276,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
     );
   }
 
-  let headers;
+  let headers: string[] = [];
 
   lines.forEach((line, i) => {
     if (i % 10000 === 0) {
@@ -281,7 +299,7 @@ export async function processMetadataFile(data, sendStatusMessage) {
       } else {
         name = values[0];
       }
-      const as_obj = {};
+      const as_obj: Record<string, string> = {};
       values.slice(1).forEach((value, j) => {
         as_obj["meta_" + headers[j + 1]] = value;
       });
@@ -296,11 +314,15 @@ export async function processMetadataFile(data, sendStatusMessage) {
   return [output, headers];
 }
 
-export async function processNewickAndMetadata(data, sendStatusMessage) {
+export async function processNewickAndMetadata(
+  data: NewickFile,
+  sendStatusMessage: (msg: StatusMessage) => void
+): Promise<ProcessedTree> {
   const treePromise = processNewick(data, sendStatusMessage);
-  let tree, metadata_double;
-  let metadata = new Map();
-  let headers = [];
+  let tree: ProcessedTree;
+  let metadata_double: [Map<string, Record<string, string>>, string[]];
+  let metadata = new Map<string, Record<string, string>>();
+  let headers: string[] = [];
   const metadataInput = data.metadata;
   if (!metadataInput) {
     tree = await treePromise;
@@ -313,12 +335,12 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
     [metadata, headers] = metadata_double;
   }
 
-  const blanks = Object.fromEntries(
+  const blanks: Record<string, string> = Object.fromEntries(
     headers.slice(1).map((x) => ["meta_" + x, ""])
   );
 
-  const all_keys = new Set();
-  tree.nodes.forEach((node) => {
+  const all_keys = new Set<string>();
+  tree.nodes.forEach((node: any) => {
     // get all the keys that start with "meta_"
     const meta_keys = Object.keys(node).filter((x) => x.startsWith("meta_"));
     // add them to the set
@@ -328,19 +350,19 @@ export async function processNewickAndMetadata(data, sendStatusMessage) {
   });
   console.log("all_keys", all_keys);
   // update the blanks object to include all the keys
-  all_keys.forEach((key) => {
+  all_keys.forEach((key: string) => {
     if (!blanks[key]) {
       blanks[key] = "";
     }
   });
   console.log("blanks", blanks);
 
-  const blanksList = Object.entries(blanks);
+  const blanksList: [string, string][] = Object.entries(blanks);
 
   sendStatusMessage({
     message: "Assigning metadata to nodes",
   });
-  tree.nodes.forEach((node) => {
+  tree.nodes.forEach((node: any) => {
     const this_metadata = metadata.get(node.name);
     // add blanks for any properties not currently set
     blanksList.forEach(([key, value]) => {

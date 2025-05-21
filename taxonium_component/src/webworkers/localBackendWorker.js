@@ -4,7 +4,7 @@ import {
   processJsonl,
   generateConfig,
 } from "taxonium_data_handling/importing.js";
-import { processNewickAndMetadata } from "../utils/processNewick.js";
+import { processNewickAndMetadata } from "../utils/processNewick";
 import { processNextstrain } from "../utils/processNextstrain.js";
 import { ReadableWebToNodeStream } from "readable-web-to-node-stream";
 import { parser } from "stream-json";
