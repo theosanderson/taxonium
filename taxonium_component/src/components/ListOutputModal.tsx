@@ -1,17 +1,12 @@
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
+import type { Backend } from "../types/backend";
 
 interface ListOutputModalProps {
-  backend: {
-    getTipAtts: (
-      nodeId: string,
-      key: string,
-      callback: (err: unknown, res: string[]) => void
-    ) => void;
-  };
+  backend: Backend;
   listOutputModalOpen: boolean;
   setListOutputModalOpen: (open: boolean) => void;
-  nodeId: string;
+  nodeId: string | number;
   possibleKeys: string[];
 }
 
@@ -41,7 +36,7 @@ const ListOutputModal = ({
         if (err) {
           console.log(err);
         } else {
-          setListOutput(res);
+          setListOutput(res as string[]);
         }
         setLoading(false);
       });

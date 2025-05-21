@@ -8,9 +8,10 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import prettifyName from "../utils/prettifyName";
 import { SearchState } from "../types/search";
-import type { Config } from "../types/backend";
+import type { Config, Backend } from "../types/backend";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
+import type { SelectedDetails, OverlayContent } from "../types/ui";
 import type { View } from "../hooks/useView";
 
 import { FaSearch, FaShare } from "react-icons/fa";
@@ -49,14 +50,14 @@ interface SearchPanelProps {
   search: SearchState;
   colorBy: ColorBy;
   config: Config;
-  selectedDetails: any;
-  overlayContent: any;
+  selectedDetails: SelectedDetails;
+  overlayContent: OverlayContent["content"];
   setAboutEnabled: (enabled: boolean) => void;
   colorHook: ColorHook;
   xType: string;
   setxType: (val: string) => void;
   settings: Settings;
-  backend: any;
+  backend: Backend;
   className?: string;
   treenomeState: any;
   view: View;
@@ -83,37 +84,41 @@ function SearchPanel({
   toggleSidebar,
 }: SearchPanelProps) {
   const cfg = config as Record<string, any>;
+  const selectedNodeDetails =
+    selectedDetails.nodeDetails as Record<string, any> | null;
   const covSpectrumQuery = useMemo(() => {
-    if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
+    if (selectedNodeDetails && selectedNodeDetails.node_id) {
       return perNodeFunctions.getCovSpectrumQuery(
-        selectedDetails.nodeDetails.node_id
+        selectedNodeDetails.node_id
       );
     } else {
       return null;
     }
-  }, [selectedDetails.nodeDetails]);
+  }, [selectedNodeDetails]);
 
   const [listOutputModalOpen, setListOutputModalOpen] = useState(false);
 
   const handleDownloadJson = () => {
-    if (selectedDetails.nodeDetails) {
-      const node_id = selectedDetails.nodeDetails.node_id;
+    if (selectedNodeDetails) {
+      const node_id = selectedNodeDetails.node_id as string | number;
       backend.getNextstrainJson(node_id, config);
     }
   };
 
   const formatMetadataItem = (key: string) => {
     // if matches a markdown link "[abc](https://abc.com)" then..
-    if (key === "num_tips" && selectedDetails.nodeDetails[key] === 1) return;
+    if (key === "num_tips" && selectedNodeDetails && selectedNodeDetails[key] === 1)
+      return;
 
     if (
-      selectedDetails.nodeDetails &&
-      selectedDetails.nodeDetails[key] &&
-      selectedDetails.nodeDetails[key].match &&
-      selectedDetails.nodeDetails[key].match(/\[.*\]\(.*\)/)
+      selectedNodeDetails &&
+      selectedNodeDetails[key] &&
+      (selectedNodeDetails[key] as any).match &&
+      (selectedNodeDetails[key] as any).match(/\[.*\]\(.*\)/)
     ) {
-      const [, text, url] =
-        selectedDetails.nodeDetails[key].match(/\[(.*)\]\((.*)\)/);
+      const [, text, url] = (selectedNodeDetails[key] as string).match(
+        /\[(.*)\]\((.*)\)/
+      )!;
       return (
         <div className="text-sm mt-1" key={key}>
           <a
@@ -133,7 +138,7 @@ function SearchPanel({
         <div className="text-sm mt-1" key={key}>
           <span className="font-semibold">{prettifyName(key, config)}:</span>{" "}
           <div className="text-xs font-mono break-all">
-            {selectedDetails.nodeDetails[key]}
+            {selectedNodeDetails ? selectedNodeDetails[key] : ""}
           </div>
         </div>
       );
@@ -145,13 +150,13 @@ function SearchPanel({
         {colorBy.colorByField === key ? (
           <span
             style={{
-              color: colorHook.toRGBCSS(selectedDetails.nodeDetails[key]),
+              color: colorHook.toRGBCSS(selectedNodeDetails ? selectedNodeDetails[key] : ""),
             }}
           >
-            {selectedDetails.nodeDetails[key]}
+            {selectedNodeDetails ? selectedNodeDetails[key] : ""}
           </span>
         ) : (
-          formatNumberIfNumber(selectedDetails.nodeDetails[key])
+          formatNumberIfNumber(selectedNodeDetails ? selectedNodeDetails[key] : "")
         )}
         {key === "num_tips" && (
           <span className="ml-1">
@@ -173,7 +178,7 @@ function SearchPanel({
                       className=""
                       onClick={() => {
                         if (
-                          selectedDetails.nodeDetails.num_tips > 100000 &&
+                    selectedNodeDetails && selectedNodeDetails.num_tips > 100000 &&
                           !(window as any).warning_shown
                         ) {
                           // pop up a warning and ask if we want to continue
@@ -191,7 +196,7 @@ function SearchPanel({
                   </div>
 
                   {cfg.enable_ns_download &&
-                    selectedDetails.nodeDetails[key] < 1000000 &&
+                    selectedNodeDetails && selectedNodeDetails[key] < 1000000 &&
                     !cfg.from_newick && (
                       <>
                         <div className="mb-3">
@@ -201,8 +206,9 @@ function SearchPanel({
                         </div>
 
                         {backend.type === "server" &&
+                          backend.backend_url &&
                           !backend.backend_url.includes("localhost") &&
-                          selectedDetails.nodeDetails[key] < 20000 && (
+                          selectedNodeDetails && selectedNodeDetails[key] < 20000 && (
                             <>
                               <div className="mb-3">
                                 <Button
@@ -211,7 +217,7 @@ function SearchPanel({
                                     "https://nextstrain.org/fetch/" +
                                     backend
                                       .getNextstrainJsonUrl(
-                                        selectedDetails.nodeDetails.node_id,
+                                        selectedNodeDetails!.node_id,
                                         config
                                       )
                                       .replace("https://", "")
@@ -451,10 +457,10 @@ function SearchPanel({
           </Button>
         </div>
       </div>
-      {selectedDetails.nodeDetails && (
+      {selectedNodeDetails && (
         <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none overflow-auto">
           <ListOutputModal
-            nodeId={selectedDetails.nodeDetails.node_id}
+            nodeId={selectedNodeDetails.node_id}
             backend={backend}
             possibleKeys={["name", ...(cfg.keys_to_display as string[])]}
             listOutputModalOpen={listOutputModalOpen}
@@ -462,23 +468,20 @@ function SearchPanel({
           />
           <header className="flex items-start justify-between">
             <h2 className="font-bold whitespace-pre-wrap text-sm">
-              {selectedDetails.nodeDetails[cfg.name_accessor as string] !== "" ? (
-                fixName(selectedDetails.nodeDetails[cfg.name_accessor as string])
+              {selectedNodeDetails[cfg.name_accessor as string] !== "" ? (
+                fixName(selectedNodeDetails[cfg.name_accessor as string])
               ) : (
                 <i>
                   Internal node{" "}
-                  <small>{selectedDetails.nodeDetails.node_id}</small>
+                  <small>{selectedNodeDetails.node_id}</small>
                 </i>
               )}
-              {selectedDetails.nodeDetails.parent_id !==
-                selectedDetails.nodeDetails.node_id && (
+              {selectedNodeDetails.parent_id !== selectedNodeDetails.node_id && (
                 <button
                   className="inline-block text-sm text-gray-700 hover:text-black ml-2"
                   title="Select parent"
                   onClick={() => {
-                    selectedDetails.getNodeDetails(
-                      selectedDetails.nodeDetails.parent_id
-                    );
+                    selectedDetails.getNodeDetails(selectedNodeDetails.parent_id);
                   }}
                 >
                   <RiArrowLeftUpLine className="inline-block mr-2" />
@@ -493,9 +496,9 @@ function SearchPanel({
               close
             </button>
           </header>
-          {selectedDetails.nodeDetails["meta_ThumbnailURL"] && (
+          {selectedNodeDetails["meta_ThumbnailURL"] && (
             <img
-              src={selectedDetails.nodeDetails["meta_ThumbnailURL"]}
+              src={selectedNodeDetails["meta_ThumbnailURL"] as string}
               alt="thumbnail"
             />
           )}
@@ -504,22 +507,20 @@ function SearchPanel({
             <span
               style={{
                 color: colorHook.toRGBCSS(
-                  colorBy.getNodeColorField(selectedDetails.nodeDetails)
+                  colorBy.getNodeColorField(selectedNodeDetails as any)
                 ),
               }}
             >
               {colorBy.colorByGene}:{colorBy.colorByPosition}
-              {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
+              {colorBy.getNodeColorField(selectedNodeDetails as any)}
             </span>
           )}
           {[...(cfg.keys_to_display as string[]), "num_tips"].map(
-            (key) =>
-              selectedDetails.nodeDetails[key] &&
-              formatMetadataItem(key)
+            (key) => selectedNodeDetails && selectedNodeDetails[key] && formatMetadataItem(key)
           )}
           {((config.mutations && config.mutations.length) || cfg.useHydratedMutations) &&
-            selectedDetails.nodeDetails.node_id !==
-              selectedDetails.nodeDetails.parent_id && (
+            selectedNodeDetails &&
+            selectedNodeDetails.node_id !== selectedNodeDetails.parent_id && (
               <>
                 <div className="text-xs font-bold mt-2 mb-0 text-gray-700 justify-between flex">
                   <div className="pt-1">Mutations at this node:</div>{" "}
@@ -527,7 +528,7 @@ function SearchPanel({
                 </div>
                 <div className="text-xs leading-5 mt-1 text-gray-700">
                     {settings
-                      .filterMutations(selectedDetails.nodeDetails.mutations)
+                      .filterMutations(selectedNodeDetails.mutations)
                       .sort((a: any, b: any) => {
                         if (a.gene !== b.gene) {
                           return a.gene > b.gene ? 1 : -1;
@@ -546,7 +547,7 @@ function SearchPanel({
                         </div>
                       </span>
                     ))}
-                  {selectedDetails.nodeDetails.mutations.length === 0 && (
+                  {selectedNodeDetails.mutations.length === 0 && (
                     <div className=" italic">
                       No{" "}
                       {settings.filterMutations([{ type: "nt" }]).length ===
@@ -563,11 +564,11 @@ function SearchPanel({
             )}
 
           <div>
-            {selectedDetails.nodeDetails.acknowledgements && (
+            {selectedNodeDetails.acknowledgements && (
               <div className="text-xs mt-3  text-gray-700 mr-3">
                 <div className="mt-1 justify">
                   <b className="font-semibold">Authors:</b>{" "}
-                  {selectedDetails.nodeDetails.acknowledgements.authors}
+                  {selectedNodeDetails.acknowledgements.authors}
                 </div>
               </div>
             )}
