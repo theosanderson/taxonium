@@ -1,5 +1,6 @@
 import { fn } from "@storybook/test";
 import SearchTopLayerItem from "./SearchTopLayerItem";
+import { SearchMethod } from "../types/search";
 
 export default {
   title: "Taxonium/SearchTopLayerItem",
@@ -40,14 +41,14 @@ const mockSearch = {
     {
       key: "search1",
       type: "text",
-      method: "text_match",
+      method: SearchMethod.TEXT_MATCH,
       text: "England",
       controls: true,
     },
     {
       key: "search2",
       type: "mutation",
-      method: "mutation",
+      method: SearchMethod.MUTATION,
       gene: "S",
       position: 484,
       new_residue: "K",
@@ -78,7 +79,7 @@ export const TextSearch = {
     singleSearchSpec: {
       key: "search1",
       type: "text",
-      method: "text_match",
+      method: SearchMethod.TEXT_MATCH,
       text: "England",
       controls: true,
     },
@@ -93,7 +94,7 @@ export const MutationSearch = {
     singleSearchSpec: {
       key: "search2",
       type: "mutation",
-      method: "mutation",
+      method: SearchMethod.MUTATION,
       gene: "S",
       position: 484,
       new_residue: "K",
@@ -110,7 +111,7 @@ export const DisabledSearch = {
     singleSearchSpec: {
       key: "search2",
       type: "mutation",
-      method: "mutation",
+      method: SearchMethod.MUTATION,
       gene: "S",
       position: 484,
       new_residue: "K",
@@ -133,7 +134,7 @@ export const LoadingSearch = {
     singleSearchSpec: {
       key: "search3",
       type: "text",
-      method: "text_match",
+      method: SearchMethod.TEXT_MATCH,
       text: "Loading example",
       controls: true,
     },
@@ -145,7 +146,7 @@ export const LoadingSearch = {
         {
           key: "search3",
           type: "text",
-          method: "text_match",
+          method: SearchMethod.TEXT_MATCH,
           text: "Loading example",
           controls: true,
         },
@@ -172,7 +173,7 @@ export const NoResults = {
     singleSearchSpec: {
       key: "search4",
       type: "text",
-      method: "text_match",
+      method: SearchMethod.TEXT_MATCH,
       text: "No results example",
       controls: true,
     },
@@ -184,7 +185,7 @@ export const NoResults = {
         {
           key: "search4",
           type: "text",
-          method: "text_match",
+          method: SearchMethod.TEXT_MATCH,
           text: "No results example",
           controls: true,
         },

@@ -1,4 +1,5 @@
 import type { SearchSpec } from "../types/search";
+import { SearchMethod } from "../types/search";
 
 export interface SearchUtilConfig {
   defaultSearch?: SearchSpec;
@@ -14,8 +15,8 @@ export function getDefaultSearch(config: SearchUtilConfig | null, key?: string):
   }
   return {
     key,
-    type: "name",
-    method: "text_match",
+    type: SearchMethod.NAME,
+    method: SearchMethod.TEXT_MATCH,
     text: "",
     gene: "S",
     position: 484,

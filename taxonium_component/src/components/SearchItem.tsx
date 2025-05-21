@@ -2,9 +2,20 @@ import React, { useEffect } from "react";
 import DebounceInput from "./DebounceInput";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
-import { SearchSpec } from "../types/search";
+import {
+  SearchSpec,
+  SearchMethod,
+  NumberMethod,
+  BooleanMethod,
+} from "../types/search";
 import type { Config, SearchType } from "../types/backend";
-const number_methods = [">", "<", ">=", "<=", "=="];
+const number_methods = [
+  NumberMethod.GT,
+  NumberMethod.LT,
+  NumberMethod.GTE,
+  NumberMethod.LTE,
+  NumberMethod.EQ,
+];
 
 // title case
 const toTitleCase = (str: string) => {
@@ -13,7 +24,11 @@ const toTitleCase = (str: string) => {
   });
 };
 
-const bool_methods = ["and", "or", "not"];
+const bool_methods = [
+  BooleanMethod.AND,
+  BooleanMethod.OR,
+  BooleanMethod.NOT,
+];
 interface SearchItemProps {
   singleSearchSpec: SearchSpec;
   setThisSearchSpec: (spec: SearchSpec) => void;
@@ -61,13 +76,13 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
   // if method is number and number is not set and number_method is not set, set number_method to "="
   useEffect(() => {
     if (
-      singleSearchSpec.method === "number" &&
+      singleSearchSpec.method === SearchMethod.NUMBER &&
       !singleSearchSpec.number &&
       !singleSearchSpec.number_method
     ) {
       setThisSearchSpec({
         ...singleSearchSpec,
-        number_method: "==",
+        number_method: NumberMethod.EQ,
         number: 0,
       });
     }
@@ -77,12 +92,12 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
     singleSearchSpec.number_method,
   ]);
 
-  const text_types = ["text_exact", "text_match"];
+  const text_types = [SearchMethod.TEXT_EXACT, SearchMethod.TEXT_MATCH];
 
   const specific_configurations = Object.fromEntries(
     types.map((type: SearchType) => {
-      const obj: { method: string; controls?: boolean } = {
-        method: type.type,
+      const obj: { method: SearchMethod; controls?: boolean } = {
+        method: type.type as SearchMethod,
       };
       if (type.controls) {
         obj.controls = type.controls;
@@ -100,13 +115,15 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
     });
   };
 
-  const is_text = text_types.includes(singleSearchSpec.method ?? "");
+  const is_text = text_types.includes(
+    (singleSearchSpec.method ?? "") as SearchMethod
+  );
 
-  const is_multi_text = singleSearchSpec.method === "text_per_line";
+  const is_multi_text = singleSearchSpec.method === SearchMethod.TEXT_PER_LINE;
 
   // Ensure boolean searches always have subspecs and a boolean method
   const subspecs = singleSearchSpec.subspecs ?? [];
-  const boolean_method = singleSearchSpec.boolean_method ?? "and";
+  const boolean_method = singleSearchSpec.boolean_method ?? BooleanMethod.AND;
 
   return (
     <>
@@ -158,18 +175,18 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
               type="checkbox"
               title="Exact match"
               checked={
-                singleSearchSpec.method === "text_exact" || is_multi_text
+                singleSearchSpec.method === SearchMethod.TEXT_EXACT || is_multi_text
               }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 if (e.target.checked) {
                   setThisSearchSpec({
                     ...singleSearchSpec,
-                    method: "text_exact",
+                    method: SearchMethod.TEXT_EXACT,
                   });
                 } else {
                   setThisSearchSpec({
                     ...singleSearchSpec,
-                    method: "text_match",
+                    method: SearchMethod.TEXT_MATCH,
                   });
                 }
               }}
@@ -188,12 +205,12 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
                 if (e.target.checked) {
                   setThisSearchSpec({
                     ...singleSearchSpec,
-                    method: "text_per_line",
+                    method: SearchMethod.TEXT_PER_LINE,
                   });
                 } else {
                   setThisSearchSpec({
                     ...singleSearchSpec,
-                    method: "text_match",
+                    method: SearchMethod.TEXT_MATCH,
                   });
                 }
               }}
@@ -299,7 +316,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setThisSearchSpec({
                 ...singleSearchSpec,
-                boolean_method: e.target.value,
+                boolean_method: e.target.value as BooleanMethod,
               })
             }
             className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm mr-1"
@@ -368,17 +385,17 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
           </div>
         </>
       )}
-      {singleSearchSpec.method === "number" && (
+      {singleSearchSpec.method === SearchMethod.NUMBER && (
         // heading with name
         // interface with select box for less than, greater than, greater than or equal to, less than or equal to, equal to
         // then a number input
         <div>
           <Select
             value={singleSearchSpec.number_method}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setThisSearchSpec({
                 ...singleSearchSpec,
-                number_method: e.target.value,
+                number_method: e.target.value as NumberMethod,
               })
             }
             className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm mr-1"

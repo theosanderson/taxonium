@@ -1,5 +1,10 @@
 import { fn } from "@storybook/test";
 import SearchItem from "./SearchItem";
+import {
+  SearchMethod,
+  NumberMethod,
+  BooleanMethod,
+} from "../types/search";
 
 export default {
   title: "Taxonium/SearchItem",
@@ -40,7 +45,7 @@ export const TextSearch = {
   args: {
     singleSearchSpec: {
       type: "text",
-      method: "text_match",
+      method: SearchMethod.TEXT_MATCH,
       text: "Sample search text",
       controls: true,
     },
@@ -53,7 +58,7 @@ export const ExactTextSearch = {
   args: {
     singleSearchSpec: {
       type: "text",
-      method: "text_exact",
+      method: SearchMethod.TEXT_EXACT,
       text: "Sample exact search",
       controls: true,
     },
@@ -66,7 +71,7 @@ export const MultiLineTextSearch = {
   args: {
     singleSearchSpec: {
       type: "text",
-      method: "text_per_line",
+      method: SearchMethod.TEXT_PER_LINE,
       text: "Sample 1\nSample 2\nSample 3",
       controls: true,
     },
@@ -79,7 +84,7 @@ export const MutationSearch = {
   args: {
     singleSearchSpec: {
       type: "mutation",
-      method: "mutation",
+      method: SearchMethod.MUTATION,
       gene: "S",
       position: 484,
       new_residue: "K",
@@ -94,7 +99,7 @@ export const GenotypeSearch = {
   args: {
     singleSearchSpec: {
       type: "genotype",
-      method: "genotype",
+      method: SearchMethod.GENOTYPE,
       gene: "S",
       position: 484,
       new_residue: "K",
@@ -108,7 +113,7 @@ export const RevertantSearch = {
   args: {
     singleSearchSpec: {
       type: "revertant",
-      method: "revertant",
+      method: SearchMethod.REVERTANT,
       min_tips: 10,
     },
     setThisSearchSpec: fn(),
@@ -120,8 +125,8 @@ export const NumberSearch = {
   args: {
     singleSearchSpec: {
       type: "date",
-      method: "number",
-      number_method: ">",
+      method: SearchMethod.NUMBER,
+      number_method: NumberMethod.GT,
       number: 2020,
     },
     setThisSearchSpec: fn(),
@@ -133,17 +138,17 @@ export const BooleanSearch = {
   args: {
     singleSearchSpec: {
       type: "boolean",
-      boolean_method: "and",
+      boolean_method: BooleanMethod.AND,
       subspecs: [
         {
           type: "text",
-          method: "text_match",
+          method: SearchMethod.TEXT_MATCH,
           text: "UK",
           controls: true,
         },
         {
           type: "mutation",
-          method: "mutation",
+          method: SearchMethod.MUTATION,
           gene: "S",
           position: 484,
           new_residue: "K",

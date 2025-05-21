@@ -1,19 +1,45 @@
 import type { QueryBounds } from "./backend";
 import type { Node } from "./node";
 
+export enum SearchMethod {
+  TEXT_MATCH = "text_match",
+  TEXT_EXACT = "text_exact",
+  TEXT_PER_LINE = "text_per_line",
+  MUTATION = "mutation",
+  GENOTYPE = "genotype",
+  REVERTANT = "revertant",
+  NUMBER = "number",
+  BOOLEAN = "boolean",
+  NAME = "name",
+}
+
+export enum BooleanMethod {
+  AND = "and",
+  OR = "or",
+  NOT = "not",
+}
+
+export enum NumberMethod {
+  GT = ">",
+  LT = "<",
+  GTE = ">=",
+  LTE = "<=",
+  EQ = "==",
+}
+
 export interface SearchSpec {
   key: string;
   type: string;
-  method?: string;
+  method?: SearchMethod;
   text?: string;
   controls?: boolean;
   gene?: string;
   position?: number;
   new_residue?: string;
   min_tips?: number;
-  boolean_method?: string;
+  boolean_method?: BooleanMethod;
   subspecs?: SearchSpec[];
-  number_method?: string;
+  number_method?: NumberMethod;
   number?: number;
 }
 

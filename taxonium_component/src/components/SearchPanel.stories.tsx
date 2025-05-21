@@ -1,5 +1,6 @@
 import { fn } from "@storybook/test";
 import SearchPanel from "./SearchPanel";
+import { SearchMethod } from "../types/search";
 
 export default {
   title: "Taxonium/SearchPanel",
@@ -64,14 +65,14 @@ const mockSearch = {
     {
       key: "1",
       type: "text",
-      method: "text_match",
+      method: SearchMethod.TEXT_MATCH,
       text: "England",
       controls: true,
     },
     {
       key: "2",
       type: "mutation",
-      method: "mutation",
+      method: SearchMethod.MUTATION,
       gene: "S",
       position: 484,
       new_residue: "K",
