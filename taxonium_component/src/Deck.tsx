@@ -23,7 +23,7 @@ import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
-import type { StatusMessage, DynamicData } from "./types/backend";
+import type { StatusMessage, DynamicData, Config } from "./types/backend";
 import type { DeckSize } from "./types/common";
 
 const MemoizedKey = React.memo(Key);
@@ -37,7 +37,7 @@ export interface DeckProps {
   colorHook: any;
   colorBy: any;
   hoverDetails: any;
-  config: any;
+  config: Config;
   statusMessage: StatusMessage | null;
   xType: string;
   settings: any;

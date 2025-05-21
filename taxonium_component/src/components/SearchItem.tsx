@@ -3,6 +3,7 @@ import DebounceInput from "./DebounceInput";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
 import { SearchSpec } from "../types/search";
+import type { Config } from "../types/backend";
 const number_methods = [">", "<", ">=", "<=", "=="];
 
 // title case
@@ -16,11 +17,11 @@ const bool_methods = ["and", "or", "not"];
 interface SearchItemProps {
   singleSearchSpec: SearchSpec;
   setThisSearchSpec: (spec: SearchSpec) => void;
-  config: any;
+  config: Config;
 }
 
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemProps) => {
-  const types = config.search_types ? config.search_types : [];
+  const types = (config.search_types as any[]) ?? [];
 
   const all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
   const mut_aa_options = ["any"].concat(all_amino_acids).concat(["*"]);
@@ -36,7 +37,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
         ...singleSearchSpec,
         new_residue: "A",
         position: 0,
-        gene: config.genes[0],
+        gene: (config.genes ?? [])[0] ?? "",
       });
     }
   }, [singleSearchSpec.type, singleSearchSpec.new_residue]);
@@ -46,13 +47,13 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
       singleSearchSpec.type === "mutation" &&
       (!singleSearchSpec.new_residue ||
         !mut_aa_options.includes(singleSearchSpec.new_residue) ||
-        (config.genes && !config.genes.includes(singleSearchSpec.gene)))
+        (config.genes && !config.genes.includes(singleSearchSpec.gene ?? "")))
     ) {
       setThisSearchSpec({
         ...singleSearchSpec,
         new_residue: "any",
         position: 0,
-        gene: config.genes[0],
+        gene: (config.genes ?? [])[0] ?? "",
       });
     }
   }, [singleSearchSpec.type, singleSearchSpec.new_residue]);
@@ -357,7 +358,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
                   ...singleSearchSpec,
                   subspecs: [
                     ...subspecs,
-                    getDefaultSearch(config),
+                    getDefaultSearch(config as any),
                   ],
                 });
               }}

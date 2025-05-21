@@ -6,7 +6,7 @@ import type {
   SearchBackendResult,
   SearchResultItem,
 } from "../types/search";
-import type { QueryBounds, DynamicData } from "../types/backend";
+import type { QueryBounds, DynamicData, Config } from "../types/backend";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
@@ -14,7 +14,7 @@ const default_query = getDefaultQuery();
 
 interface UseSearchParams {
   data: DynamicData;
-  config: any;
+  config: Config;
   boundsForQueries: QueryBounds | null;
   view: any;
   backend: any;
@@ -258,7 +258,7 @@ const useSearch = ({
   const addNewTopLevelSearch = () => {
     console.log("addNewTopLevelSearch");
     // get a random string key
-    const newSearch = getDefaultSearch(config);
+    const newSearch = getDefaultSearch(config as any);
 
     setSearchSpec([...searchSpec, newSearch]);
     setTimeout(() => {

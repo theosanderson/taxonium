@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { HoverDetails, Mutation, Node } from "../types/node";
 import type { DeckSize, HoverInfo } from "../types/common";
+import type { Config } from "../types/backend";
 
 const fixName = (name: string) => {
   return name;
@@ -19,7 +20,7 @@ interface NodeHoverTipProps {
   hoverDetails?: HoverDetails | null;
   colorHook: any;
   colorBy: any;
-  config: any;
+  config: Config;
   filterMutations: (mutations: Mutation[]) => Mutation[];
   deckSize: DeckSize;
 }
@@ -33,6 +34,9 @@ const NodeHoverTip = ({
   filterMutations,
   deckSize,
 }: NodeHoverTipProps) => {
+  const nameAccessor = config.name_accessor as string;
+  const keysToDisplay = (config.keys_to_display as string[]) || [];
+  const metadataTypes = config.metadataTypes as Record<string, string> | undefined;
   const initial_mutations = useMemo(() => {
     if (hoverInfo && hoverInfo.object && hoverInfo.object.mutations) {
       const starting = hoverInfo.object.mutations;
@@ -95,8 +99,8 @@ const NodeHoverTip = ({
       }}
     >
       <h2 className="font-bold whitespace-pre-wrap">
-        {hoveredNode[config.name_accessor] !== "" ? (
-          fixName(hoveredNode[config.name_accessor])
+        {hoveredNode[nameAccessor] !== "" ? (
+          fixName(hoveredNode[nameAccessor] as string)
         ) : (
           <i>Internal node</i>
         )}
@@ -115,10 +119,10 @@ const NodeHoverTip = ({
         </span>
       )}
 
-      {config.keys_to_display.map(
+      {keysToDisplay.map(
         (key: string) =>
           hoveredNode[key] &&
-          !(config.metadataTypes && config.metadataTypes[key] === "sequence") &&
+          !(metadataTypes && metadataTypes[key] === "sequence") &&
           !(
             typeof hoveredNode[key] === "string" &&
             hoveredNode[key].match(/\[.*\]\(.*\)/)
@@ -137,7 +141,7 @@ const NodeHoverTip = ({
       )}
 
       {((config.mutations && config.mutations.length) ||
-        config.useHydratedMutations > 0) && (
+        config.useHydratedMutations) && (
         <div>
           <div className="mutations text-xs">
             {mutations.map((mutation: Mutation, i: number) => (

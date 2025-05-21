@@ -8,6 +8,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import prettifyName from "../utils/prettifyName";
 import { SearchState } from "../types/search";
+import type { Config } from "../types/backend";
 
 import { FaSearch, FaShare } from "react-icons/fa";
 
@@ -44,7 +45,7 @@ const fixAuthors = (authors: string) => {
 interface SearchPanelProps {
   search: SearchState;
   colorBy: any;
-  config: any;
+  config: Config;
   selectedDetails: any;
   overlayContent: any;
   setAboutEnabled: (enabled: boolean) => void;
@@ -78,6 +79,7 @@ function SearchPanel({
   perNodeFunctions,
   toggleSidebar,
 }: SearchPanelProps) {
+  const cfg = config as Record<string, any>;
   const covSpectrumQuery = useMemo(() => {
     if (selectedDetails.nodeDetails && selectedDetails.nodeDetails.node_id) {
       return perNodeFunctions.getCovSpectrumQuery(
@@ -123,7 +125,7 @@ function SearchPanel({
       );
     }
 
-    if (config.metadataTypes && config.metadataTypes[key] === "sequence") {
+    if (cfg.metadataTypes && cfg.metadataTypes[key] === "sequence") {
       return (
         <div className="text-sm mt-1" key={key}>
           <span className="font-semibold">{prettifyName(key, config)}:</span>{" "}
@@ -185,9 +187,9 @@ function SearchPanel({
                     </Button>
                   </div>
 
-                  {config.enable_ns_download &&
+                  {cfg.enable_ns_download &&
                     selectedDetails.nodeDetails[key] < 1000000 &&
-                    !config.from_newick && (
+                    !cfg.from_newick && (
                       <>
                         <div className="mb-3">
                           <Button className="" onClick={handleDownloadJson}>
@@ -222,7 +224,7 @@ function SearchPanel({
                       </>
                     )}
 
-                  {config.covspectrum_links && (
+                  {cfg.covspectrum_links && (
                     <div className="mb-3">
                       <Button
                         href={covSpectrumQuery}
@@ -265,12 +267,12 @@ function SearchPanel({
         )}
       </button>
       <div className="space-y-2 py-3 border-gray-200">
-        {config.num_tips && (
+        {cfg.num_tips && (
           <>
             <p className="text-gray-500 text-sm">
               {overlayContent ? (
                 <>
-                  <span title={config.date_created ? config.date_created : ""}>
+                  <span title={cfg.date_created ? cfg.date_created : ""}>
                     Displaying
                   </span>{" "}
                   <button
@@ -279,20 +281,20 @@ function SearchPanel({
                       setAboutEnabled(true);
                     }}
                   >
-                    {formatNumber(config.num_tips)}{" "}
-                    {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
+                    {formatNumber(cfg.num_tips)}{" "}
+                    {cfg.tipPluralNoun ? cfg.tipPluralNoun : "sequences"}
                   </button>{" "}
-                  {config.source && ` from ${config.source}`}
+                  {cfg.source && ` from ${cfg.source}`}
                 </>
               ) : (
                 <>
-                  Displaying {formatNumber(config.num_tips)}{" "}
-                  {config.tipPluralNoun ? config.tipPluralNoun : "sequences"}
-                  {config.source && ` from ${config.source}`}
+                  Displaying {formatNumber(cfg.num_tips)}{" "}
+                  {cfg.tipPluralNoun ? cfg.tipPluralNoun : "sequences"}
+                  {cfg.source && ` from ${cfg.source}`}
                 </>
               )}
             </p>
-            {config.enabled_by_gisaid && (
+            {cfg.enabled_by_gisaid && (
               <span className="text-gray-500 mt-1">
                 Enabled by data from{" "}
                 <a
@@ -312,7 +314,7 @@ function SearchPanel({
             )}
           </>
         )}
-        {config.x_accessors && config.x_accessors.length > 1 && (
+        {cfg.x_accessors && cfg.x_accessors.length > 1 && (
           <label className="space-x-2 text-sm block">
             <span className="text-gray-500 text-sm">Tree type:</span>
             <Select
@@ -322,7 +324,7 @@ function SearchPanel({
               }
               className="text-gray-500 text-xs py-0.5"
             >
-              {config.x_accessors.map((x: keyof typeof prettify_x_types) => (
+              {cfg.x_accessors.map((x: keyof typeof prettify_x_types) => (
                 <option key={x} value={x}>
                   {prettify_x_types[x]}
                 </option>
@@ -451,14 +453,14 @@ function SearchPanel({
           <ListOutputModal
             nodeId={selectedDetails.nodeDetails.node_id}
             backend={backend}
-            possibleKeys={["name", ...config.keys_to_display]}
+            possibleKeys={["name", ...(cfg.keys_to_display as string[])]}
             listOutputModalOpen={listOutputModalOpen}
             setListOutputModalOpen={setListOutputModalOpen}
           />
           <header className="flex items-start justify-between">
             <h2 className="font-bold whitespace-pre-wrap text-sm">
-              {selectedDetails.nodeDetails[config.name_accessor] !== "" ? (
-                fixName(selectedDetails.nodeDetails[config.name_accessor])
+              {selectedDetails.nodeDetails[cfg.name_accessor as string] !== "" ? (
+                fixName(selectedDetails.nodeDetails[cfg.name_accessor as string])
               ) : (
                 <i>
                   Internal node{" "}
@@ -507,13 +509,12 @@ function SearchPanel({
               {colorBy.getNodeColorField(selectedDetails.nodeDetails)}
             </span>
           )}
-          {[...config.keys_to_display, "num_tips"].map(
+          {[...(cfg.keys_to_display as string[]), "num_tips"].map(
             (key) =>
               selectedDetails.nodeDetails[key] &&
               formatMetadataItem(key)
           )}
-          {((config.mutations && config.mutations.length) ||
-            config.useHydratedMutations) > 0 &&
+          {((config.mutations && config.mutations.length) || cfg.useHydratedMutations) &&
             selectedDetails.nodeDetails.node_id !==
               selectedDetails.nodeDetails.parent_id && (
               <>
