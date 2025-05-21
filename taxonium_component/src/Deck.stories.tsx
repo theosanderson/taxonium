@@ -25,8 +25,12 @@ const createMockProps = (overrides: Record<string, unknown> = {}): DeckProps => 
   return {
     data: {
       data: {
-        nodes,
-        nodeLookup: Object.fromEntries(nodes.map((n) => [n.node_id, n])),
+        nodes: overrides.noData
+          ? []
+          : [
+              { node_id: 1, x: 0, y: 0 },
+              { node_id: 2, x: 100, y: 50 },
+            ],
       },
       status: overrides.loading ? "loading" : "loaded",
     },
@@ -109,7 +113,7 @@ const createMockProps = (overrides: Record<string, unknown> = {}): DeckProps => 
     selectedDetails: {
       nodeDetails: overrides.selectedNode
         ? {
-            node_id: "1",
+            node_id: 1,
             name: "Sample1",
             country: "UK",
             date: "2020-03-15",

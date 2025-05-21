@@ -528,7 +528,7 @@ function SearchPanel({
                         if (a.gene !== b.gene) {
                           return a.gene > b.gene ? 1 : -1;
                         }
-                        return parseInt(a.residue_pos) > parseInt(b.residue_pos)
+                        return (a.residue_pos ?? 0) > (b.residue_pos ?? 0)
                           ? 1
                           : -1;
                       })

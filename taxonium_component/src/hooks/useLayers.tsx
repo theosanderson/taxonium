@@ -106,8 +106,8 @@ const useLayers = ({
   const detailed_data = useMemo(() => {
       if (data.data && data.data.nodes) {
         data.data.nodes.forEach((node: Node) => {
-          node.parent_x = getX(data.data.nodeLookup[node.parent_id as string]);
-          node.parent_y = data.data.nodeLookup[node.parent_id as string].y;
+          node.parent_x = getX(data.data.nodeLookup[node.parent_id!]);
+          node.parent_y = data.data.nodeLookup[node.parent_id!].y;
         });
       return data.data;
     } else {
@@ -136,13 +136,13 @@ const useLayers = ({
   }, [detailed_data.nodes, settings.maxCladeTexts, clade_accessor]);
 
   const base_data = useMemo(() => {
-    if (data.base_data && data.base_data.nodes) {
-      data.base_data.nodes.forEach((node: Node) => {
-        node.parent_x = getX(
-          data.base_data!.nodeLookup[node.parent_id as string]
-        );
-        node.parent_y = data.base_data!.nodeLookup[node.parent_id as string].y;
-      });
+      if (data.base_data && data.base_data.nodes) {
+        data.base_data.nodes.forEach((node: Node) => {
+          node.parent_x = getX(
+            data.base_data.nodeLookup[node.parent_id!]
+          );
+          node.parent_y = data.base_data.nodeLookup[node.parent_id!].y;
+        });
       return {
         nodes: data.base_data.nodes,
         nodeLookup: data.base_data.nodeLookup,

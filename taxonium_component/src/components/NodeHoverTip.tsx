@@ -43,9 +43,7 @@ const NodeHoverTip = ({
         if (geneA !== geneB) {
           return geneA > geneB ? 1 : -1;
         }
-        return parseInt(a.residue_pos ?? "0") > parseInt(b.residue_pos ?? "0")
-          ? 1
-          : -1;
+        return (a.residue_pos ?? 0) > (b.residue_pos ?? 0) ? 1 : -1;
       });
     } else {
       return [] as Mutation[];

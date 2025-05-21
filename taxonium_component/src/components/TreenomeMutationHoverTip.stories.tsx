@@ -45,7 +45,7 @@ export const AminoAcidMutation = {
         m: {
           type: "aa",
           gene: "S",
-          residue_pos: "484",
+          residue_pos: 484,
           new_residue: "K",
         },
       },
@@ -62,7 +62,7 @@ export const NucleotideMutation = {
       object: {
         m: {
           type: "nt",
-          residue_pos: "23063",
+          residue_pos: 23063,
           new_residue: "T",
         },
       },
@@ -98,7 +98,7 @@ export const ReferenceMutation = {
         m: {
           type: "aa",
           gene: "S",
-          residue_pos: "484",
+          residue_pos: 484,
           new_residue: "E", // Same as reference, should render null
         },
       },

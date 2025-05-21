@@ -96,7 +96,7 @@ function useColorBy(
         if (relevantMutations.length > 0) {
           result = relevantMutations[0].new_residue || "X";
         } else {
-          const parent_id = node.parent_id as string;
+          const parent_id = node.parent_id ?? node.node_id;
           if (parent_id === node.node_id) {
             result = "X";
           } else {

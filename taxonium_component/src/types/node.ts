@@ -1,16 +1,16 @@
 export interface Mutation {
-  mutation_id?: string;
+  mutation_id?: number;
   gene?: string;
   previous_residue?: string;
-  residue_pos?: string;
+  residue_pos?: number;
   new_residue?: string;
   type?: string;
   [key: string]: any;
 }
 
 export interface Node {
-  node_id: string;
-  parent_id?: string;
+  node_id: number;
+  parent_id?: number;
   mutations: Mutation[];
   [key: string]: any;
 }

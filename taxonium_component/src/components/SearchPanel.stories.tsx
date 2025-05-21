@@ -94,8 +94,8 @@ const mockColorBy = {
 
 const mockSelectedDetails = {
   nodeDetails: {
-    node_id: "12345",
-    parent_id: "123",
+    node_id: 12345,
+    parent_id: 123,
     name: "hCoV-19/England/ABCD/2020",
     country: "UK",
     date: "2020-03-15",
@@ -104,18 +104,18 @@ const mockSelectedDetails = {
     num_tips: 150,
     mutations: [
       {
-        mutation_id: "1",
+        mutation_id: 1,
         gene: "S",
         previous_residue: "D",
-        residue_pos: "614",
+        residue_pos: 614,
         new_residue: "G",
         type: "aa",
       },
       {
-        mutation_id: "2",
+        mutation_id: 2,
         gene: "N",
         previous_residue: "R",
-        residue_pos: "203",
+        residue_pos: 203,
         new_residue: "K",
         type: "aa",
       },

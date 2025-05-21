@@ -3,7 +3,7 @@ import type { DynamicDataWithLookup, Config } from "../types/backend";
 import type { Mutation, Node } from "../types/node";
 
 function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
-  const getNodeGenotype = (node_id: string) => {
+  const getNodeGenotype = (node_id: number) => {
     console.log("data", data);
 
     let data_to_use;
@@ -35,11 +35,11 @@ function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
           )
       );
       assembled_mutations.push(...filtered_nt_mutations);
-      cur_node = data_to_use.nodeLookup[cur_node.parent_id as string];
+      cur_node = data_to_use.nodeLookup[cur_node.parent_id!];
     }
     return assembled_mutations;
   };
-  const getCovSpectrumQuery = (node_id: string) => {
+  const getCovSpectrumQuery = (node_id: number) => {
     const genotype = getNodeGenotype(node_id);
     if (!genotype) {
       return "";
