@@ -1,16 +1,16 @@
 import { useCallback, useMemo, useEffect, useState } from "react";
 
 import workerSpec from "../webworkers/treenomeWorker.js?worker&inline";
+import type { VariationDatum } from "../types/treenome";
 
-interface TreenomeState {
-  ntBounds: [number, number];
-  genomeSize: number;
-}
+import type {
+  TreenomeState as BaseTreenomeState,
+  TreenomeSettings as BaseSettings,
+} from "../types/treenome";
 
-interface Settings {
-  treenomeEnabled: boolean;
-  mutationTypesEnabled: { aa: boolean; nt: boolean };
-}
+interface TreenomeState extends BaseTreenomeState {}
+
+interface Settings extends BaseSettings {}
 
 const useTreenomeLayerData = (
   data: { data: { nodes: Array<Record<string, unknown>> } },
@@ -18,16 +18,12 @@ const useTreenomeLayerData = (
   settings: Settings,
   selectedDetails: { nodeDetails?: { y: number } | null }
 ) => {
-  interface VariationDatum {
-    m: Record<string, unknown>;
-    y: [number, number];
-  }
 
-  const [varDataAa, setVarDataAa] = useState<VariationDatum[]>([]);
-  const [varDataNt, setVarDataNt] = useState<VariationDatum[]>([]);
+  const [varDataAa, setVarDataAa] = useState<VariationDatum<Record<string, unknown>>[]>([]);
+  const [varDataNt, setVarDataNt] = useState<VariationDatum<Record<string, unknown>>[]>([]);
   const [numNodes, setNumNodes] = useState(0);
-  const [cachedVarDataAa, setCachedVarDataAa] = useState<VariationDatum[]>([]);
-  const [cachedVarDataNt, setCachedVarDataNt] = useState<VariationDatum[]>([]);
+  const [cachedVarDataAa, setCachedVarDataAa] = useState<VariationDatum<Record<string, unknown>>[]>([]);
+  const [cachedVarDataNt, setCachedVarDataNt] = useState<VariationDatum<Record<string, unknown>>[]>([]);
   const [treenomeReferenceInfo, setTreenomeReferenceInfo] = useState<
     Record<string, Record<string, string>> | null
   >(null);
@@ -198,11 +194,11 @@ const useTreenomeLayerData = (
     cachedVarDataAa,
     cachedVarDataNt,
   ] as [
-    VariationDatum[],
-    VariationDatum[],
+    VariationDatum<Record<string, unknown>>[],
+    VariationDatum<Record<string, unknown>>[],
     Record<string, Record<string, string>> | null,
-    VariationDatum[],
-    VariationDatum[]
+    VariationDatum<Record<string, unknown>>[],
+    VariationDatum<Record<string, unknown>>[]
   ];
 };
 

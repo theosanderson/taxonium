@@ -10,14 +10,27 @@ import {
 } from "@jbrowse/react-linear-genome-view";
 
 import { protect, unprotect } from "mobx-state-tree";
+import type {
+  TreenomeState as BaseTreenomeState,
+  TreenomeSettings as BaseSettings,
+} from "../types/treenome";
 
-interface Settings {
+interface Settings extends BaseSettings {
   chromosomeName: string;
   [key: string]: unknown;
 }
 
+interface TreenomeState extends BaseTreenomeState {
+  genome?: string | null;
+  ntBoundsExt?: [number, number] | null;
+  setNtBounds: (b: [number, number]) => void;
+  setNtBoundsExt?: (b: [number, number] | null) => void;
+  pxPerBp: number;
+  setPxPerBp: (v: number) => void;
+}
+
 interface JBrowsePanelProps {
-  treenomeState: Record<string, any>;
+  treenomeState: TreenomeState;
   settings: Settings;
 }
 

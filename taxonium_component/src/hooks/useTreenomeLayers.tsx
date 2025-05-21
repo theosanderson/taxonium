@@ -2,13 +2,16 @@ import { useMemo, useCallback, useEffect } from "react";
 import { LineLayer, PolygonLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import useTreenomeLayerData from "./useTreenomeLayerData";
 import type { Mutation } from "../types/node";
+import type {
+  TreenomeState as BaseTreenomeState,
+  TreenomeSettings as BaseSettings,
+} from "../types/treenome";
+import type { VariationDatum } from "../types/treenome";
 
-interface TreenomeState {
+interface TreenomeState extends BaseTreenomeState {
   xBounds: [number, number];
   yBounds: [number, number];
-  ntBounds: [number, number];
   baseYBounds: [number, number];
-  genomeSize: number;
 }
 
 interface DynamicData {
@@ -16,15 +19,8 @@ interface DynamicData {
   base_data?: { nodes: Array<Record<string, unknown>> };
 }
 
-interface Settings {
-  treenomeEnabled: boolean;
+interface Settings extends BaseSettings {
   isCov2Tree: boolean;
-  mutationTypesEnabled: { aa: boolean; nt: boolean };
-}
-
-interface VariationDatum {
-  m: NumericMutation;
-  y: [number, number];
 }
 
 type NumericMutation = Mutation & {
@@ -33,6 +29,8 @@ type NumericMutation = Mutation & {
   new_residue: string;
   nuc_for_codon?: number;
 };
+
+type NumericVariationDatum = VariationDatum<NumericMutation>;
 
 const useTreenomeLayers = (
   treenomeState: TreenomeState,
@@ -154,7 +152,7 @@ const useTreenomeLayers = (
   const main_variation_aa_common_props = {
     onHover: (info: unknown) => setHoverInfo(info),
     pickable: true,
-    getColor: (d: VariationDatum) => {
+    getColor: (d: NumericVariationDatum) => {
       if (cov2Genes !== null) {
         return d.m.new_residue !==
           treenomeReferenceInfo["aa"][d.m.gene + ":" + d.m.residue_pos]
@@ -168,7 +166,7 @@ const useTreenomeLayers = (
       }
     },
     modelMatrix: modelMatrixFixedX,
-    getSourcePosition: (d: VariationDatum) => {
+    getSourcePosition: (d: NumericVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -184,7 +182,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + aaWidth / 2, d.y[0] - variation_padding];
     },
-    getTargetPosition: (d: VariationDatum) => {
+    getTargetPosition: (d: NumericVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -200,7 +198,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + aaWidth / 2, d.y[1] + variation_padding];
     },
-    getWidth: (d: VariationDatum) => {
+    getWidth: (d: NumericVariationDatum) => {
       return aaWidth;
     },
     updateTriggers: {
@@ -239,7 +237,7 @@ const useTreenomeLayers = (
   const main_variation_nt_common_props = {
     onHover: (info: unknown) => setHoverInfo(info),
     pickable: true,
-    getColor: (d: VariationDatum) => {
+    getColor: (d: NumericVariationDatum) => {
       let color = [0, 0, 0];
       switch (d.m.new_residue) {
         case "A":
@@ -269,7 +267,7 @@ const useTreenomeLayers = (
       return color;
     },
     modelMatrix: modelMatrixFixedX,
-    getSourcePosition: (d: VariationDatum) => {
+    getSourcePosition: (d: NumericVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -285,7 +283,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + ntWidth / 2, d.y[0] - variation_padding];
     },
-    getTargetPosition: (d: VariationDatum) => {
+    getTargetPosition: (d: NumericVariationDatum) => {
       if (!treenomeState.ntBounds) {
         return [[0, 0]];
       }
@@ -301,7 +299,7 @@ const useTreenomeLayers = (
       let x = ntToX(ntPos);
       return [x + ntWidth / 2, d.y[1] + variation_padding];
     },
-    getWidth: (d: VariationDatum) => {
+    getWidth: (d: NumericVariationDatum) => {
       return ntWidth;
     },
     updateTriggers: {
