@@ -431,7 +431,7 @@ function SearchPanel({
           </div>
         )}
       </div>
-      <div className="py-3 flex flex-col md:min-h-0">
+      <div className="py-3 flex flex-col md:min-h-0 border-gray-200">
         <h2 className="font-bold text-gray-700 flex justify-between items-center mb-2">
           <div className="flex items-center">
             <FaSearch className="ml-1 mr-1.5 text-gray-500 h-4 w-4" />
@@ -459,7 +459,7 @@ function SearchPanel({
         </div>
       </div>
       {selectedNodeDetails && (
-        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none overflow-auto">
+        <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none overflow-auto border-gray-200">
           <ListOutputModal
             nodeId={selectedNodeDetails.node_id}
             backend={backend}
