@@ -6,6 +6,7 @@ import type {
   NodeLookupData,
   NodesResponse,
 } from "../types/backend";
+import type { DeckSize } from "../types/common";
 import computeBounds from "../utils/computeBounds";
 
 const DEBOUNCE_TIME = 100;
@@ -33,7 +34,7 @@ function useGetDynamicData(
   viewState: any,
   config: Config,
   xType: string,
-  deckSize: { width: number; height: number } | null
+  deckSize: DeckSize | null
 ): {
   data: DynamicData;
   boundsForQueries: QueryBounds | null;

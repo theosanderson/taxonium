@@ -12,6 +12,7 @@ import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
 import type { Node } from "../types/node";
 import type { NodeLookupData, Config } from "../types/backend";
+import type { DeckSize } from "../types/common";
 
 const getKeyStuff = (
   getNodeColorField: (node: Node, data: NodeLookupData) => string | number,
@@ -41,7 +42,7 @@ interface UseLayersProps {
   data: any;
   search: any;
   viewState: any;
-  deckSize: { width: number; height: number } | null;
+  deckSize: DeckSize | null;
   colorHook: any;
   setHoverInfo: (info: any) => void;
   hoverInfo: any;

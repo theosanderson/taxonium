@@ -13,6 +13,7 @@ import { MdOutlineZoomOutMap } from "react-icons/md";
 import { ClipLoader } from "react-spinners";
 import TaxButton from "./TaxButton";
 import SnapshotButton from "./SnapshotButton";
+import type { DeckSize } from "../types/common";
 
 interface DeckButtonsProps {
   loading: boolean;
@@ -23,7 +24,7 @@ interface DeckButtonsProps {
   requestOpenSettings: () => void;
   zoomReset: () => void;
   settings: Record<string, unknown>;
-  deckSize: { width: number; height: number };
+  deckSize: DeckSize;
   triggerSVGdownload: () => void;
 }
 

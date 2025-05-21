@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import type { SearchState, SearchSpec } from "../types/search";
+import type { DeckSize } from "../types/common";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
@@ -13,7 +14,7 @@ interface UseSearchParams {
   backend: any;
   query: any;
   updateQuery: (q: any) => void;
-  deckSize: { width: number; height: number } | null;
+  deckSize: DeckSize | null;
   xType: string;
   settings: any;
 }

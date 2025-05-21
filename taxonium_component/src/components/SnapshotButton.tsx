@@ -1,12 +1,13 @@
 import React, { useState, Fragment } from "react";
-import { Dialog, Transition, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import {
+  Dialog,
+  Transition,
+  DialogBackdrop,
+  DialogPanel,
+} from "@headlessui/react";
 import { BiCamera } from "react-icons/bi";
 import TaxButton from "./TaxButton";
-
-interface DeckSize {
-  width: number;
-  height: number;
-}
+import type { DeckSize } from "../types/common";
 
 interface SnapshotButtonProps {
   svgFunction: (size: DeckSize) => void;

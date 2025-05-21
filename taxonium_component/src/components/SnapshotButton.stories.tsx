@@ -1,5 +1,6 @@
 import { fn } from "@storybook/test";
 import SnapshotButton from "./SnapshotButton";
+import type { DeckSize } from "../types/common";
 
 export default {
   title: "Taxonium/SnapshotButton",
@@ -22,7 +23,7 @@ export const Default = {
 // snapshot functionality depends on the implementation of svgFunction and pixelFunction
 export const WithFunctionalHandlers = {
   args: {
-    svgFunction: (deckSize: { width: number; height: number }) => {
+    svgFunction: (deckSize: DeckSize) => {
       console.log("SVG snapshot triggered with deck size:", deckSize);
       // In a real environment, this would trigger SVG download
       alert("SVG download would start now (simulated in Storybook)");
