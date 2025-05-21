@@ -10,3 +10,11 @@ export interface ColorRamp {
 export interface ColorRamps {
   [key: string]: ColorRamp;
 }
+
+
+
+export interface HoverInfo<T> {
+  x: number;
+  y: number;
+  object: T;
+}
