@@ -66,6 +66,24 @@ export interface NodeLookupData extends NodesResponse {
   [key: string]: unknown;
 }
 
+/**
+ * Represents dynamic data returned from the backend including
+ * optional base data and query bounds information used for
+ * minimap rendering.
+ */
+export interface DynamicData {
+  /** Status of the data loading process (e.g. "loading" or "loaded") */
+  status: string;
+  /** Data for the current viewport */
+  data: NodeLookupData;
+  /** Optional data for the minimap */
+  base_data?: NodeLookupData;
+  /** Whether the cached base data is no longer valid */
+  base_data_is_invalid?: boolean;
+  /** Bounds that produced the current {@link data} */
+  lastBounds?: QueryBounds;
+}
+
 export interface DynamicDataWithLookup {
   data: NodeLookupData;
   base_data: NodeLookupData;

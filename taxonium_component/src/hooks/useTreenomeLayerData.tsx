@@ -7,13 +7,14 @@ import type {
   TreenomeState as BaseTreenomeState,
   TreenomeSettings as BaseSettings,
 } from "../types/treenome";
+import type { DynamicData } from "../types/backend";
 
 interface TreenomeState extends BaseTreenomeState {}
 
 interface Settings extends BaseSettings {}
 
 const useTreenomeLayerData = (
-  data: { data: { nodes: Array<Record<string, unknown>> } },
+  data: DynamicData,
   treenomeState: TreenomeState,
   settings: Settings,
   selectedDetails: { nodeDetails?: { y: number } | null }

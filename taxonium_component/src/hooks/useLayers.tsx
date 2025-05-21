@@ -11,7 +11,7 @@ import computeBounds from "../utils/computeBounds";
 import useTreenomeLayers from "./useTreenomeLayers";
 import getSVGfunction from "../utils/deckglToSvg";
 import type { Node } from "../types/node";
-import type { NodeLookupData, Config } from "../types/backend";
+import type { NodeLookupData, Config, DynamicData } from "../types/backend";
 import type { DeckSize } from "../types/common";
 
 const getKeyStuff = (
@@ -39,7 +39,7 @@ const getKeyStuff = (
 };
 
 interface UseLayersProps {
-  data: any;
+  data: DynamicData;
   search: any;
   viewState: any;
   deckSize: DeckSize | null;
@@ -136,13 +136,13 @@ const useLayers = ({
   }, [detailed_data.nodes, settings.maxCladeTexts, clade_accessor]);
 
   const base_data = useMemo(() => {
-      if (data.base_data && data.base_data.nodes) {
-        data.base_data.nodes.forEach((node: Node) => {
-          node.parent_x = getX(
-            data.base_data.nodeLookup[node.parent_id as string]
-          );
-          node.parent_y = data.base_data.nodeLookup[node.parent_id as string].y;
-        });
+    if (data.base_data && data.base_data.nodes) {
+      data.base_data.nodes.forEach((node: Node) => {
+        node.parent_x = getX(
+          data.base_data!.nodeLookup[node.parent_id as string]
+        );
+        node.parent_y = data.base_data!.nodeLookup[node.parent_id as string].y;
+      });
       return {
         nodes: data.base_data.nodes,
         nodeLookup: data.base_data.nodeLookup,

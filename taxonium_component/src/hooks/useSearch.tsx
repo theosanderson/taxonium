@@ -6,14 +6,14 @@ import type {
   SearchBackendResult,
   SearchResultItem,
 } from "../types/search";
-import type { QueryBounds } from "../types/backend";
+import type { QueryBounds, DynamicData } from "../types/backend";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import reduceMaxOrMin from "../utils/reduceMaxOrMin";
 const default_query = getDefaultQuery();
 
 interface UseSearchParams {
-  data: any;
+  data: DynamicData;
   config: any;
   boundsForQueries: QueryBounds | null;
   view: any;

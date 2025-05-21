@@ -1,7 +1,8 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
+import type { DynamicData } from "../types/backend";
 
 const useTreenomeState = (
-  data: any,
+  data: DynamicData,
   deckRef: any,
   view: any,
   settings: any
@@ -30,11 +31,12 @@ const useTreenomeState = (
         let size = 0;
         let genome = "";
         for (let mut of node.mutations) {
-          if (mut.gene === "nt") {
-            if (size < mut.residue_pos) {
-              size = mut.residue_pos;
+          if (mut.gene === "nt" && mut.residue_pos !== undefined) {
+            const pos = Number(mut.residue_pos);
+            if (size < pos) {
+              size = pos;
             }
-            genome += mut.new_residue;
+            genome += mut.new_residue ?? "";
           }
         }
         setGenomeSize(size);

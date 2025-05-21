@@ -23,7 +23,7 @@ import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
 import ColorSettingModal from "./components/ColorSettingModal";
 import Key from "./components/Key";
-import type { StatusMessage } from "./types/backend";
+import type { StatusMessage, DynamicData } from "./types/backend";
 
 const MemoizedKey = React.memo(Key);
 
@@ -33,7 +33,7 @@ interface DeckSize {
 }
 
 export interface DeckProps {
-  data: any;
+  data: DynamicData;
   search: any;
   treenomeState: any;
   view: any;

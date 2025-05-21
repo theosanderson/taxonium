@@ -7,16 +7,12 @@ import type {
   NumericMutation,
   NumericVariationDatum,
 } from "../types/treenome";
+import type { DynamicData } from "../types/backend";
 
 interface TreenomeState extends BaseTreenomeState {
   xBounds: [number, number];
   yBounds: [number, number];
   baseYBounds: [number, number];
-}
-
-interface DynamicData {
-  data: { nodes: Array<Record<string, unknown>> };
-  base_data?: { nodes: Array<Record<string, unknown>> };
 }
 
 interface Settings extends BaseSettings {

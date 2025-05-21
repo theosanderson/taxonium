@@ -5,6 +5,7 @@ import type {
   QueryBounds,
   NodeLookupData,
   NodesResponse,
+  DynamicData,
 } from "../types/backend";
 import type { DeckSize } from "../types/common";
 import computeBounds from "../utils/computeBounds";
@@ -18,14 +19,6 @@ function addNodeLookup(data: NodeLookupData): NodeLookupData {
   };
   console.log("cc");
   return output;
-}
-
-interface DynamicData {
-  status: string;
-  data: NodeLookupData;
-  base_data?: NodeLookupData;
-  base_data_is_invalid?: boolean;
-  lastBounds?: QueryBounds;
 }
 
 function useGetDynamicData(

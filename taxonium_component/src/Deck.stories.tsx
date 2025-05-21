@@ -15,16 +15,18 @@ export default {
 const createMockProps = (overrides: Record<string, unknown> = {}): DeckProps => {
   const deckRef = { current: { pickObject: fn() } };
   const jbrowseRef = { current: null };
+  const nodes = overrides.noData
+    ? []
+    : [
+        { node_id: "1", x: 0, y: 0, mutations: [] },
+        { node_id: "2", x: 100, y: 50, mutations: [] },
+      ];
 
   return {
     data: {
       data: {
-        nodes: overrides.noData
-          ? []
-          : [
-              { node_id: "1", x: 0, y: 0 },
-              { node_id: "2", x: 100, y: 50 },
-            ],
+        nodes,
+        nodeLookup: Object.fromEntries(nodes.map((n) => [n.node_id, n])),
       },
       status: overrides.loading ? "loading" : "loaded",
     },
