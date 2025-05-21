@@ -3,7 +3,7 @@ import DebounceInput from "./DebounceInput";
 import { Select } from "./Basic";
 import { getDefaultSearch } from "../utils/searchUtil";
 import { SearchSpec } from "../types/search";
-import type { Config } from "../types/backend";
+import type { Config, SearchType } from "../types/backend";
 const number_methods = [">", "<", ">=", "<=", "=="];
 
 // title case
@@ -21,7 +21,7 @@ interface SearchItemProps {
 }
 
 const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemProps) => {
-  const types = (config.search_types as any[]) ?? [];
+  const types = (config.search_types as SearchType[]) ?? [];
 
   const all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
   const mut_aa_options = ["any"].concat(all_amino_acids).concat(["*"]);
@@ -80,15 +80,15 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
   const text_types = ["text_exact", "text_match"];
 
   const specific_configurations = Object.fromEntries(
-    types.map((type: any) => {
-      const obj: any = {
-        method: (type as any).type,
+    types.map((type: SearchType) => {
+      const obj: { method: string; controls?: boolean } = {
+        method: type.type,
       };
-      if ((type as any).controls) {
-        obj.controls = (type as any).controls;
+      if (type.controls) {
+        obj.controls = type.controls;
       }
 
-      return [(type as any).name, obj];
+      return [type.name, obj];
     })
   );
 
@@ -117,7 +117,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
           setTypeTo(e.target.value)
         }
       >
-        {types.map((type: any) => (
+        {types.map((type: SearchType) => (
           <option key={type.name} value={type.name}>
             {type.label}
           </option>

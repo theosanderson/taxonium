@@ -2,6 +2,13 @@ import type { Node, Mutation } from "./node";
 import type React from "react";
 import type { ColorRamps } from "./common";
 
+export interface SearchType {
+  name: string;
+  label: string;
+  type: string;
+  controls?: boolean;
+}
+
 export interface QueryBounds {
   min_x?: number;
   max_x?: number;
@@ -40,6 +47,7 @@ export interface Config {
   colorBy?: {
     colorByOptions: string[];
   };
+  search_types?: SearchType[];
   overlay?: React.ReactNode;
   [key: string]: unknown;
 }
