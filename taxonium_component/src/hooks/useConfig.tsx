@@ -29,7 +29,7 @@ const useConfig = (
           results.initial_x !== undefined ? results.initial_x : 2000,
           results.initial_y,
         ],
-        zoom: [0, -2]
+        //zoom: [0, -2]
         
 
       };
