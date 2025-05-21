@@ -10,3 +10,10 @@ export interface SelectedDetails {
 export interface OverlayContent {
   content: React.ReactNode | null;
 }
+
+export interface HoverDetailsState {
+  nodeDetails: NodeDetails | null;
+  setNodeDetails: (details: NodeDetails | null) => void;
+  clearNodeDetails: () => void;
+  getNodeDetails?: (id: string | number) => void;
+}

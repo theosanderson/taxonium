@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import type { HoverDetails, Mutation, Node } from "../types/node";
+import type { Mutation, Node } from "../types/node";
+import type { HoverDetailsState } from "../types/ui";
 import type { DeckSize, HoverInfo } from "../types/common";
 import type { Config } from "../types/backend";
 import type { ColorHook, ColorBy } from "../types/color";
@@ -18,7 +19,7 @@ const fixAuthors = (authors: string) => {
 
 interface NodeHoverTipProps {
   hoverInfo: HoverInfo<Node> | null;
-  hoverDetails?: HoverDetails | null;
+  hoverDetails?: HoverDetailsState | null;
   colorHook: ColorHook;
   colorBy: ColorBy;
   config: Config;
@@ -175,16 +176,16 @@ const NodeHoverTip = ({
           <div className="text-xs mt-3  mr-3">
             <div className="mt-1">
               <b className="font-semibold">Originating laboratory:</b>{" "}
-              {hoverDetails.nodeDetails.acknowledgements.covv_orig_lab}
+              {hoverDetails.nodeDetails.acknowledgements.covv_orig_lab ?? ""}
             </div>
             <div className="mt-1">
               <b className="font-semibold">Submitting laboratory:</b>{" "}
-              {hoverDetails.nodeDetails.acknowledgements.covv_subm_lab}
+              {hoverDetails.nodeDetails.acknowledgements.covv_subm_lab ?? ""}
             </div>
             <div className="mt-1 justify">
               <b className="font-semibold">Authors:</b>{" "}
               {fixAuthors(
-                hoverDetails.nodeDetails.acknowledgements.covv_authors
+                hoverDetails.nodeDetails.acknowledgements.covv_authors ?? ""
               )}
             </div>
           </div>

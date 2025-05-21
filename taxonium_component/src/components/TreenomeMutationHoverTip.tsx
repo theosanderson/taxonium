@@ -1,4 +1,5 @@
-import type { HoverDetails, Mutation } from "../types/node";
+import type { Mutation } from "../types/node";
+import type { HoverDetailsState } from "../types/ui";
 
 interface HoverInfo {
   x: number;
@@ -9,7 +10,7 @@ interface HoverInfo {
 
 interface TreenomeMutationHoverTipProps {
   hoverInfo: HoverInfo | null;
-  hoverDetails?: HoverDetails | null;
+  hoverDetails?: HoverDetailsState | null;
   colorHook: unknown;
   colorBy: unknown;
   config: unknown;

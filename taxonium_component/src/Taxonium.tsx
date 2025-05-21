@@ -18,6 +18,7 @@ import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
+import type { TreenomeState } from "./types/treenome";
 import { useCallback } from "react";
 import getDefaultQuery from "./utils/getDefaultQuery";
 import type { Query } from "./types/query";
@@ -237,7 +238,7 @@ function Taxonium({
             setDeckSize={setDeckSize}
             deckSize={deckSize}
             isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
-            treenomeState={treenomeState}
+            treenomeState={treenomeState as unknown as TreenomeState}
             deckRef={deckRef}
             mouseDownIsMinimap={mouseDownIsMinimap}
             setMouseDownIsMinimap={setMouseDownIsMinimap}
@@ -277,7 +278,7 @@ function Taxonium({
               xType={xType}
               setxType={setxType}
               settings={settings}
-              treenomeState={treenomeState}
+              treenomeState={treenomeState as unknown as TreenomeState}
               view={view}
               overlayContent={overlayContent}
               setAboutEnabled={setAboutEnabled}

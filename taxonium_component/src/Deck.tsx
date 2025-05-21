@@ -20,6 +20,9 @@ import DeckSettingsModal from "./components/DeckSettingsModal";
 import { TreenomeButtons } from "./components/TreenomeButtons";
 import type { Settings } from "./types/settings";
 import type { View as ViewType } from "./hooks/useView";
+import type { SearchState } from "./types/search";
+import type { TreenomeState } from "./types/treenome";
+import type { HoverDetailsState, SelectedDetails } from "./types/ui";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
@@ -34,17 +37,17 @@ const MemoizedKey = React.memo(Key);
 
 export interface DeckProps {
   data: DynamicData;
-  search: any;
-  treenomeState: any;
+  search: SearchState;
+  treenomeState: TreenomeState;
   view: ViewType;
   colorHook: ColorHook;
   colorBy: ColorBy;
-  hoverDetails: any;
+  hoverDetails: HoverDetailsState;
   config: Config;
   statusMessage: StatusMessage | null;
   xType: string;
   settings: Settings;
-  selectedDetails: any;
+  selectedDetails: SelectedDetails;
   setDeckSize: (size: DeckSize) => void;
   deckSize: DeckSize;
   isCurrentlyOutsideBounds: boolean;
@@ -112,14 +115,15 @@ function Deck({
   const mouseDownPos = useRef<[number, number] | null>(null);
 
   const onClickOrMouseMove = useCallback(
-    (event: any) => {
-      if (event._reactName === "onClick") {
+    (event: React.MouseEvent) => {
+      const reactEvent = event as any;
+      if (reactEvent._reactName === "onClick") {
         setMouseDownIsMinimap(false);
       }
-      if (event.buttons === 0 && event._reactName === "onPointerMove") {
+      if (event.buttons === 0 && reactEvent._reactName === "onPointerMove") {
         return false;
       }
-      if (event._reactName === "onPointerDown") {
+      if (reactEvent._reactName === "onPointerDown") {
         mouseDownPos.current = [event.clientX, event.clientY];
       }
       const pan_threshold = 10;
@@ -127,7 +131,7 @@ function Deck({
       // then we assume that the user is panning and just return. Use Pythagorean
       // theorem to calculate the distance
       if (
-        event._reactName === "onClick" &&
+        reactEvent._reactName === "onClick" &&
         mouseDownPos.current &&
         Math.sqrt(
           Math.pow(mouseDownPos.current[0] - event.clientX, 2) +
@@ -145,7 +149,7 @@ function Deck({
         radius: 10,
       });
 
-      if (event._reactName === "onPointerDown") {
+      if (reactEvent._reactName === "onPointerDown") {
         if (pickInfo && pickInfo.viewport?.id === "minimap") {
           setMouseDownIsMinimap(true);
         } else {
@@ -155,12 +159,12 @@ function Deck({
       if (
         pickInfo &&
         pickInfo.viewport?.id === "main" &&
-        event._reactName === "onClick"
+        reactEvent._reactName === "onClick"
       ) {
         selectedDetails.getNodeDetails(pickInfo.object.node_id);
       }
 
-      if (!pickInfo && event._reactName === "onClick") {
+      if (!pickInfo && reactEvent._reactName === "onClick") {
         selectedDetails.clearNodeDetails();
       }
 
@@ -190,7 +194,7 @@ function Deck({
       if (info && info.object) {
         if (hoverDetails.setNodeDetails) {
           hoverDetails.setNodeDetails(info.object);
-        } else {
+        } else if (hoverDetails.getNodeDetails) {
           hoverDetails.getNodeDetails(info.object.node_id);
         }
       } else {
@@ -361,7 +365,7 @@ function Deck({
         onResize={(size) => {
           setDeckSize(size);
           window.setTimeout(() => {
-            treenomeState.handleResize();
+            (treenomeState as any).handleResize();
           }, 50);
           console.log("resize", size);
         }}
@@ -384,10 +388,10 @@ function Deck({
           >
             <span ref={jbrowseRef}>
               <JBrowseErrorBoundary>
-                <JBrowsePanel
-                  treenomeState={treenomeState}
-                  settings={settings}
-                />
+                  <JBrowsePanel
+                    treenomeState={treenomeState as any}
+                    settings={settings}
+                  />
               </JBrowseErrorBoundary>
               <TreenomeModal
                 treenomeSettingsOpen={treenomeSettingsOpen}

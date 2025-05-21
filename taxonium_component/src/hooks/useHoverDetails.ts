@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
 
 import type { NodeDetails } from "../types/backend";
+import type { HoverDetailsState } from "../types/ui";
 
-function useHoverDetails() {
+function useHoverDetails(): HoverDetailsState {
   const [nodeDetails, setNodeDetails] = useState<NodeDetails | null>(null);
 
   const clearNodeDetails = useCallback(() => {

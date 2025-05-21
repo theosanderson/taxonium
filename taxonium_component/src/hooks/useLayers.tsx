@@ -15,6 +15,9 @@ import type { NodeLookupData, Config, DynamicData } from "../types/backend";
 import type { DeckSize } from "../types/common";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
+import type { SearchState } from "../types/search";
+import type { TreenomeState } from "../types/treenome";
+import type { HoverDetailsState, SelectedDetails } from "../types/ui";
 
 const getKeyStuff = (
   getNodeColorField: (node: Node, data: NodeLookupData) => string | number,
@@ -46,7 +49,7 @@ const getKeyStuff = (
 
 interface UseLayersProps {
   data: DynamicData;
-  search: any;
+  search: SearchState;
   viewState: any;
   deckSize: DeckSize | null;
   colorHook: ColorHook;
@@ -55,11 +58,11 @@ interface UseLayersProps {
   colorBy: ColorBy;
   xType: string;
   modelMatrix: any;
-  selectedDetails: any;
+  selectedDetails: SelectedDetails;
   settings: Settings;
   isCurrentlyOutsideBounds: boolean;
   config: Config;
-  treenomeState: any;
+  treenomeState: TreenomeState;
   treenomeReferenceInfo: any;
   setTreenomeReferenceInfo: any;
   hoveredKey: any;
@@ -95,7 +98,7 @@ const useLayers = ({
 
   // Treenome Browser layers
   const treenomeLayers = useTreenomeLayers(
-    treenomeState,
+    treenomeState as any,
     data,
     viewState,
     colorHook,
@@ -103,7 +106,7 @@ const useLayers = ({
     settings,
     treenomeReferenceInfo,
     setTreenomeReferenceInfo,
-    selectedDetails,
+    selectedDetails as any,
   );
   layers.push(...treenomeLayers);
 
@@ -625,21 +628,21 @@ const useLayers = ({
   const processedLayers = layers
     .filter((x) => x !== null)
     .map((layer) => {
-      if (layer.layerType === "ScatterplotLayer") {
-        return new ScatterplotLayer(layer);
-      }
-      if (layer.layerType === "LineLayer") {
-        return new LineLayer(layer);
-      }
-      if (layer.layerType === "PolygonLayer") {
-        return new PolygonLayer(layer);
-      }
-      if (layer.layerType === "TextLayer") {
-        return new TextLayer(layer);
-      }
-      if (layer.layerType === "SolidPolygonLayer") {
-        return new SolidPolygonLayer(layer);
-      }
+        if (layer.layerType === "ScatterplotLayer") {
+          return new ScatterplotLayer(layer as any);
+        }
+        if (layer.layerType === "LineLayer") {
+          return new LineLayer(layer as any);
+        }
+        if (layer.layerType === "PolygonLayer") {
+          return new PolygonLayer(layer as any);
+        }
+        if (layer.layerType === "TextLayer") {
+          return new TextLayer(layer as any);
+        }
+        if (layer.layerType === "SolidPolygonLayer") {
+          return new SolidPolygonLayer(layer as any);
+        }
       console.log("could not map layer spec for ", layer);
     });
 

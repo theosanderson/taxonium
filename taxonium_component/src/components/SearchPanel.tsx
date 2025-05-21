@@ -12,6 +12,7 @@ import type { Config, Backend } from "../types/backend";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
 import type { SelectedDetails, OverlayContent } from "../types/ui";
+import type { TreenomeState } from "../types/treenome";
 import type { View } from "../hooks/useView";
 
 import { FaSearch, FaShare } from "react-icons/fa";
@@ -59,7 +60,7 @@ interface SearchPanelProps {
   settings: Settings;
   backend: Backend;
   className?: string;
-  treenomeState: any;
+  treenomeState: TreenomeState;
   view: View;
   perNodeFunctions: any;
   toggleSidebar: () => void;
@@ -341,8 +342,8 @@ function SearchPanel({
             </Select>
           </label>
         )}
-        {treenomeState.genome &&
-          treenomeState.genome.length > 0 &&
+        {(treenomeState as any).genome &&
+          (treenomeState as any).genome.length > 0 &&
           window.location &&
           !window.location.href.includes("disabletreenome") && (
             <span>
