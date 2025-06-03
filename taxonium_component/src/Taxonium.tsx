@@ -26,6 +26,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import { Toaster } from "react-hot-toast";
 import type { DeckSize } from "./types/common";
+import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
 
 interface SourceData {
   status: string;
@@ -113,7 +114,11 @@ function Taxonium({
     sourceData ?? null
   );
   if (!backend) {
-    return null;
+    return (
+      <div className="p-4 bg-red-50 text-red-800">
+        Failed to initialise backend.
+      </div>
+    );
   }
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
@@ -203,8 +208,9 @@ function Taxonium({
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
-    <div className="w-full h-full flex">
-      <Toaster />
+    <GlobalErrorBoundary>
+      <div className="w-full h-full flex">
+        <Toaster />
       <ReactTooltipAny
         id="global-tooltip"
         delayHide={400}
@@ -289,6 +295,7 @@ function Taxonium({
         </div>
       </div>
     </div>
+    </GlobalErrorBoundary>
   );
 }
 
