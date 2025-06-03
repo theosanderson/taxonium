@@ -22,6 +22,10 @@ function App() {
 export default App;
 ```
 
+`Taxonium` now includes an internal error boundary. If the component
+encounters an unexpected error it will display a helpful message rather
+than leaving a blank screen.
+
 ## Using script tags
 
 ```html
