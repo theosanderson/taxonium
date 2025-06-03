@@ -35,7 +35,7 @@ interface SourceData {
   [key: string]: unknown;
 }
 
-interface TaxoniumProps {
+export interface TaxoniumProps {
   sourceData?: SourceData;
   backendUrl?: string;
   configDict?: Record<string, unknown>;
