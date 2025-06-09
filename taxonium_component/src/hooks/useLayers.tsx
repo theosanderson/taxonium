@@ -380,6 +380,11 @@ const useLayers = ({
       lineWidthScale: 2,
     };
 
+    const zoomY = Array.isArray(viewState.zoom)
+      ? viewState.zoom[1]
+      : (viewState.zoom as number);
+    const textSizeForZoom = Math.max(8, Math.min(24, 11 * Math.pow(2, zoomY)));
+
     const clade_label_layer = {
       layerType: "TextLayer",
       id: "main-clade-node",
@@ -396,7 +401,7 @@ const useLayers = ({
       billboard: true,
       getTextAnchor: "end",
       getAlignmentBaseline: "center",
-      getSize: 11,
+      getSize: textSizeForZoom,
       modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [getX],
@@ -418,7 +423,7 @@ const useLayers = ({
   }
 
   const proportionalToNodesOnScreen =
-    (config as any).num_tips / 2 ** (viewState.zoom as number);
+    (config as any).num_tips / 2 ** zoomY;
 
   // If leaves are fewer than max_text_number, add a text layer
   if (
@@ -445,7 +450,14 @@ const useLayers = ({
       billboard: true,
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
-      getSize: data.data.nodes.length < 200 ? 12 : 9.5,
+      getSize:
+        Math.max(
+          8,
+          Math.min(
+            24,
+            (data.data.nodes.length < 200 ? 12 : 9.5) * Math.pow(2, zoomY)
+          )
+        ),
       modelMatrix: modelMatrix,
       getPixelOffset: [10, 0],
     };
