@@ -18,7 +18,7 @@ Taxonium is now available as a React component. There are a few different ways y
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 
   <!-- Include Taxonium Component -->
-  <script src="https://unpkg.com/taxonium-component@2.0.227"></script>
+  <script src="https://unpkg.com/taxonium-component@2.0.100"></script>
 
   <script>
     const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
