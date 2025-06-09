@@ -188,6 +188,10 @@ const useLayers = ({
     [viewState, deckSize],
   );
 
+  const zoomY = Array.isArray(viewState.zoom)
+    ? viewState.zoom[1]
+    : (viewState.zoom as number);
+
   const outer_bounds = [
     [-100000, -100000],
     [100000, -100000],
@@ -380,9 +384,6 @@ const useLayers = ({
       lineWidthScale: 2,
     };
 
-    const zoomY = Array.isArray(viewState.zoom)
-      ? viewState.zoom[1]
-      : (viewState.zoom as number);
     const textSizeForZoom = Math.max(8, Math.min(24, 11 * Math.pow(2, zoomY)));
 
     const clade_label_layer = {
