@@ -384,7 +384,6 @@ const useLayers = ({
       lineWidthScale: 2,
     };
 
-    const textSizeForZoom = Math.max(8, Math.min(24, 11 * Math.pow(2, zoomY)));
 
     const clade_label_layer = {
       layerType: "TextLayer",
@@ -402,7 +401,7 @@ const useLayers = ({
       billboard: true,
       getTextAnchor: "end",
       getAlignmentBaseline: "center",
-      getSize: textSizeForZoom,
+      getSize: 11,
       modelMatrix: modelMatrix,
       updateTriggers: {
         getPosition: [getX],
