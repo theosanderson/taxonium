@@ -8,7 +8,7 @@ exports.default = async function(context) {
   // Path to the problematic taxonium_data_handling directory
   const problematicPath = path.join(
     appDir, 
-    'Taxonium.app/Contents/Resources/app.asar.unpacked/node_modules/taxonium-component/node_modules/taxonium_data_handling'
+    'Taxonium.app/Contents/Resources/app.asar.unpacked/node_modules/'
   );
   
   // Check if it exists (could be a symlink or directory)
