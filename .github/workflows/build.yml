@@ -81,7 +81,10 @@ jobs:
 
     - name: Build Electron app for Linux
       if: matrix.os == 'ubuntu-latest'
-      run: npm run build:linux
+      run: |
+        # Clean any previous build artifacts
+        rm -rf dist
+        npm run build:linux
 
     - name: Build Electron app for Windows
       if: matrix.os == 'windows-latest'
