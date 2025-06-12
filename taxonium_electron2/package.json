@@ -60,8 +60,7 @@
     "includeSubNodeModules": true,
     "asar": true,
     "asarUnpack": [
-      "**/taxonium_backend/**/*",
-      "**/taxonium_data_handling/**/*"
+      "**/taxonium_backend/**/*"
     ],
     "npmRebuild": false,
     "mac": {
