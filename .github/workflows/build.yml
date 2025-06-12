@@ -5,6 +5,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: taxonium_electron2
+
 jobs:
   build:
     strategy:
@@ -29,6 +33,7 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
+        cache-dependency-path: taxonium_electron2/package-lock.json
 
     - name: Install dependencies
       run: npm ci
@@ -74,8 +79,8 @@ jobs:
       with:
         name: taxonium-mac
         path: |
-          dist/*.dmg
-          dist/*.zip
+          taxonium_electron2/dist/*.dmg
+          taxonium_electron2/dist/*.zip
         if-no-files-found: error
 
     - name: Upload Linux artifacts
@@ -84,9 +89,9 @@ jobs:
       with:
         name: taxonium-linux
         path: |
-          dist/*.deb
-          dist/*.rpm
-          dist/*.AppImage
+          taxonium_electron2/dist/*.deb
+          taxonium_electron2/dist/*.rpm
+          taxonium_electron2/dist/*.AppImage
         if-no-files-found: error
 
     - name: Upload Windows artifacts
@@ -95,8 +100,8 @@ jobs:
       with:
         name: taxonium-windows
         path: |
-          dist/*.exe
-          dist/*.msi
+          taxonium_electron2/dist/*.exe
+          taxonium_electron2/dist/*.msi
         if-no-files-found: error
 
   release:
