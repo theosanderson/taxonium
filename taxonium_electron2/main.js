@@ -56,11 +56,22 @@ function spawnBackend(filePath) {
 
   backendPort = getRandomPort();
   const binaryPath = getNodeBinaryPath();
-  const scriptPath = path.join(__dirname, 'node_modules/taxonium_backend/server.js');
+  
+  // Handle path differently when in asar archive
+  let scriptPath;
+  if (isPackaged && __dirname.includes('app.asar')) {
+    // When packaged, the unpacked files are in app.asar.unpacked
+    scriptPath = path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), 'node_modules/taxonium_backend/server.js');
+  } else {
+    scriptPath = path.join(__dirname, 'node_modules/taxonium_backend/server.js');
+  }
+  
   const maxOldSpaceArg = `--max-old-space-size=${bytesToMb(maxMemory)}`;
   
   console.log('Script path:', scriptPath);
   console.log('File to load:', filePath);
+  console.log('Is packaged:', isPackaged);
+  console.log('__dirname:', __dirname);
 
   const args = [maxOldSpaceArg, scriptPath, '--data_file', filePath, '--port', backendPort];
 
@@ -133,7 +144,6 @@ function createWindow() {
   // In development, load from Vite dev server
   if (process.env.NODE_ENV !== 'production') {
     mainWindow.loadURL('http://localhost:5173');
-    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, 'dist/index.html'));
   }

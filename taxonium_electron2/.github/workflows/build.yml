@@ -1,0 +1,124 @@
+name: Build Electron App
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download Node binaries
+      shell: bash
+      run: |
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          # Use PowerShell to download on Windows
+          powershell -Command "
+            New-Item -ItemType Directory -Force -Path binaries
+            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_arm64mac' -OutFile 'binaries/node18_arm64mac'
+            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64mac' -OutFile 'binaries/node18_x64mac'
+            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe' -OutFile 'binaries/node18.exe'
+            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64linux' -OutFile 'binaries/node18_x64linux'
+          "
+        else
+          # Use bash script on macOS and Linux
+          chmod +x download.sh
+          ./download.sh
+        fi
+
+    - name: Build React app
+      run: npm run build
+
+    - name: Build Electron app for macOS
+      if: matrix.os == 'macos-latest'
+      run: npm run build:mac
+      env:
+        CSC_IDENTITY_AUTO_DISCOVERY: false
+
+    - name: Build Electron app for Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: npm run build:linux
+
+    - name: Build Electron app for Windows
+      if: matrix.os == 'windows-latest'
+      run: npm run build:win
+
+    - name: Upload macOS artifacts
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: taxonium-mac
+        path: |
+          dist/*.dmg
+          dist/*.zip
+        if-no-files-found: error
+
+    - name: Upload Linux artifacts
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: taxonium-linux
+        path: |
+          dist/*.deb
+          dist/*.rpm
+          dist/*.AppImage
+        if-no-files-found: error
+
+    - name: Upload Windows artifacts
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: taxonium-windows
+        path: |
+          dist/*.exe
+          dist/*.msi
+        if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: release-artifacts
+
+    - name: Display structure of downloaded files
+      run: ls -la release-artifacts/*/
+
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: release-artifacts/**/*
+        draft: true
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
