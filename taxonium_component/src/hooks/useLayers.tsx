@@ -450,14 +450,7 @@ const useLayers = ({
       billboard: true,
       getTextAnchor: "start",
       getAlignmentBaseline: "center",
-      getSize:
-        Math.max(
-          8,
-          Math.min(
-            24,
-            (data.data.nodes.length < 200 ? 12 : 9.5) * Math.pow(2, zoomY)
-          )
-        ),
+      getSize: data.data.nodes.length < 200 ? 12 : 9.5,
       modelMatrix: modelMatrix,
       getPixelOffset: [10, 0],
     };
