@@ -103,7 +103,10 @@
         }
       ]
     },
-    "afterSign": "build/notarize.js",
-    "afterPack": "build/dereferenceSymlinks.js"
+    "afterPack": "build/dereferenceSymlinks.js",
+    "notarize": 
+    {
+      "teamId": "W8NLF47P75"
+    }
   }
 }
