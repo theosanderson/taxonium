@@ -60,7 +60,9 @@
     "includeSubNodeModules": true,
     "asar": true,
     "asarUnpack": [
-      "**/taxonium_backend/**/*"
+      "**/taxonium_backend/**/*",
+      "**/taxonium-component/**/*",
+      "**/taxonium_data_handling/**/*"
     ],
     "npmRebuild": false,
     "mac": {
@@ -101,6 +103,7 @@
         }
       ]
     },
-    "afterSign": "build/notarize.js"
+    "afterSign": "build/notarize.js",
+    "afterPack": "build/dereferenceSymlinks.js"
   }
 }
