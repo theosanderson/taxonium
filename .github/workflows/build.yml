@@ -81,7 +81,25 @@ jobs:
 
     - name: Build Electron app for macOS
       if: matrix.os == 'macos-latest'
-      run: npm run build:mac
+      run: |
+        set +e  # Don't exit on error
+        OUTPUT=$(npm run build:mac 2>&1)
+        BUILD_EXIT_CODE=$?
+        echo "$OUTPUT"
+        
+        if [ $BUILD_EXIT_CODE -ne 0 ]; then
+          echo "Build failed, attempting to retrieve notarization log..."
+          # Find the most recent notarization submission ID from the output
+          SUBMISSION_ID=$(echo "$OUTPUT" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | tail -1)
+          if [ ! -z "$SUBMISSION_ID" ]; then
+            echo "Found submission ID: $SUBMISSION_ID"
+            echo "Retrieving notarization log..."
+            xcrun notarytool log "$SUBMISSION_ID" --apple-id "$APPLE_ID" --password "$APPLE_APP_SPECIFIC_PASSWORD" --team-id "$APPLE_TEAM_ID"
+          else
+            echo "Could not find submission ID in output"
+          fi
+          exit $BUILD_EXIT_CODE
+        fi
       env:
         CSC_LINK: ${{ secrets.MAC_CERTS }}
         CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
@@ -90,6 +108,7 @@ jobs:
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         USE_HARD_LINKS: false
         CSC_FOR_PULL_REQUEST: true
+        DEBUG: electron-builder,@electron/notarize
 
     - name: Build Electron app for Linux
       if: matrix.os == 'ubuntu-latest'
