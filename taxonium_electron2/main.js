@@ -142,7 +142,7 @@ function createWindow() {
   console.log('IPC handler for ondragstart is registered');
 
   // In development, load from Vite dev server
-  if (process.env.NODE_ENV !== 'production') {
+  if (!isPackaged) {
     mainWindow.loadURL('http://localhost:5173');
   } else {
     mainWindow.loadFile(path.join(__dirname, 'dist/index.html'));
