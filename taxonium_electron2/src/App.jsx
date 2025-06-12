@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Taxonium from 'taxonium-component';
+import Taxonium from 'taxonium-component'; // Possibly this should look at the dist folde within the package
 import './App.css';
 
 function App() {
