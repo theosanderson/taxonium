@@ -4,7 +4,7 @@ Taxonium is now available as a React component. There are a few different ways y
 
 ```{eval-rst}
 .. note::
-    This component is new and in flux. It requires React 18 as a peer dependency.
+    This component is new and in flux.
 ```
 
 ## Basic HTML
@@ -31,26 +31,12 @@ Taxonium is now available as a React component. There are a few different ways y
 <body>
   <div id="root"></div>
 
-  <!-- Import map to resolve bare module specifiers -->
-  <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom": "https://esm.sh/react-dom@18.2.0",
-        "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
-        "prop-types": "https://esm.sh/prop-types@15.8.1"
-      }
-    }
-  </script>
-
-  <!-- Main application using ES modules -->
   <script type="module">
-    import React from 'https://esm.sh/react@18.2.0';
-    import ReactDOM from 'https://esm.sh/react-dom@18.2.0';
-    import Taxonium from 'https://unpkg.com/taxonium-component@latest/dist/taxonium-component.es.js';
+    import React from 'https://esm.sh/react@19';
+    import { createRoot } from 'https://esm.sh/react-dom@19/client';
+    import Taxonium from 'https://esm.sh/taxonium-component';
 
     const { createElement: h } = React;
-    const { createRoot } = ReactDOM;
 
     function App() {
       const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
