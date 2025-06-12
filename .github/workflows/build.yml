@@ -45,7 +45,7 @@ jobs:
     - name: Backend deps
       run: |
         cd ../taxonium_backend
-        npm ci --legacy-peer-deps
+        npm install --legacy-peer-deps
     
     - name: Build taxonium_component
       run: |
