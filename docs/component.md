@@ -38,6 +38,7 @@ Taxonium is now available as a React component. There are a few different ways y
 
     const { createElement: h } = React;
 
+
     function App() {
       const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
 
