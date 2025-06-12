@@ -45,6 +45,7 @@
     "directories": {
       "output": "dist"
     },
+    "derefSymlinks": true,
     "files": [
       "main.js",
       "preload.js",
