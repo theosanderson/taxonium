@@ -21,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@electron/notarize": "^2.5.0",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.0",
     "electron": "^33.3.1",
@@ -35,8 +36,8 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "taxonium-component": "file:../taxonium_component",
-    "taxonium_backend": "file:../taxonium_backend"
+    "taxonium_backend": "file:../taxonium_backend",
+    "taxonium-component": "file:../taxonium_component"
   },
   "build": {
     "appId": "com.taxonium.electron",
@@ -62,6 +63,45 @@
       "**/taxonium_backend/**/*",
       "**/taxonium_data_handling/**/*"
     ],
-    "npmRebuild": false
+    "npmRebuild": false,
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "afterSign": "build/notarize.js"
   }
 }
