@@ -7,7 +7,12 @@
     "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
     "dev:vite": "vite",
     "dev:electron": "wait-on http://localhost:5173 && electron .",
-    "build": "vite build && electron-builder",
+    "build": "vite build",
+    "build:electron": "electron-builder",
+    "build:all": "npm run build && npm run build:electron",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:win": "npm run build && electron-builder --win",
+    "build:linux": "npm run build && electron-builder --linux",
     "preview": "vite preview"
   },
   "keywords": [],

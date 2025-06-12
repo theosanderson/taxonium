@@ -7,6 +7,7 @@ function App() {
   const [backendUrl, setBackendUrl] = useState(null);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   
   // Example configuration
   const configDict = {
@@ -15,29 +16,6 @@ function App() {
     showLegend: true,
     showMinimap: true,
     showTipLabels: true,
-  };
-
-  // Sample data for initial display
-  const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
-  const metadata_text = `Node,Name,Species
-A,Bob,Cow
-B,Jim,Cow
-C,Joe,Fish
-D,John,Fish`;
-
-  const metadata = {
-    filename: "test.csv",
-    data: metadata_text,
-    status: "loaded",
-    filetype: "meta_csv",
-  };
-
-  const sourceData = {
-    status: "loaded",
-    filename: "test.nwk",
-    data: nwk,
-    filetype: "nwk",
-    metadata: metadata,
   };
 
   useEffect(() => {
@@ -53,6 +31,12 @@ D,John,Fish`;
         setBackendUrl(url);
         setLoading(false);
       });
+
+      window.electronAPI.onFileDropped((filePath) => {
+        console.log('File dropped (confirmed):', filePath);
+        setLoading(true);
+        setStatus(`Loading file: ${filePath}`);
+      });
     }
 
     // Cleanup listeners
@@ -60,7 +44,27 @@ D,John,Fish`;
       if (window.electronAPI) {
         window.electronAPI.removeAllListeners('backend-status');
         window.electronAPI.removeAllListeners('backend-url');
+        window.electronAPI.removeAllListeners('file-dropped');
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    // Listen for drag events from preload
+    const handleDragEnter = () => {
+      setDragOver(true);
+    };
+    
+    const handleDragLeave = () => {
+      setDragOver(false);
+    };
+
+    window.addEventListener('drag-enter', handleDragEnter);
+    window.addEventListener('drag-leave', handleDragLeave);
+
+    return () => {
+      window.removeEventListener('drag-enter', handleDragEnter);
+      window.removeEventListener('drag-leave', handleDragLeave);
     };
   }, []);
 
@@ -81,26 +85,29 @@ D,John,Fish`;
   return (
     <div className="App">
       {!backendUrl && (
-        <div className="controls">
-          <button onClick={handleOpenFile} disabled={loading}>
-            {loading ? 'Loading...' : 'Open File'}
-          </button>
-          {status && <div className="status">{status}</div>}
-          <div className="info">
-            Or view sample data below:
+        <div className={`controls ${dragOver ? 'drag-over' : ''}`}>
+          <div className="drop-zone">
+            <button onClick={handleOpenFile} disabled={loading}>
+              {loading ? 'Loading...' : 'Open File'}
+            </button>
+            <div className="drop-text">
+              or drag and drop a file onto this window
+            </div>
+            {status && <div className="status">{status}</div>}
           </div>
         </div>
       )}
       
-      <div className="taxonium-container">
-        <Taxonium
-          configDict={configDict}
-          query={query}
-          updateQuery={setQuery}
-          sourceData={!backendUrl ? sourceData : undefined}
-          backendUrl={backendUrl}
-        />
-      </div>
+      {backendUrl && (
+        <div className="taxonium-container">
+          <Taxonium
+            configDict={configDict}
+            query={query}
+            updateQuery={setQuery}
+            backendUrl={backendUrl}
+          />
+        </div>
+      )}
     </div>
   );
 }

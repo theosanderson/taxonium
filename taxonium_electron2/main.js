@@ -22,6 +22,10 @@ const isPackaged = app.isPackaged ||
 
 // Get Node binary path based on platform
 function getNodeBinaryPath() {
+  console.log('__dirname:', __dirname);
+  console.log('process.resourcesPath:', process.resourcesPath);
+  console.log('isPackaged:', isPackaged);
+  
   let binaryFilename = '';
   if (process.platform === 'win32') {
     binaryFilename = 'node18.exe';
@@ -35,7 +39,13 @@ function getNodeBinaryPath() {
     ? path.join(process.resourcesPath, 'binaries')
     : path.join(__dirname, 'binaries');
 
-  return path.join(binaryDirectory, binaryFilename);
+  console.log('Binary directory:', binaryDirectory);
+  console.log('Binary filename:', binaryFilename);
+  
+  const fullPath = path.join(binaryDirectory, binaryFilename);
+  console.log('Full binary path:', fullPath);
+  
+  return fullPath;
 }
 
 // Spawn backend server
@@ -48,6 +58,9 @@ function spawnBackend(filePath) {
   const binaryPath = getNodeBinaryPath();
   const scriptPath = path.join(__dirname, 'node_modules/taxonium_backend/server.js');
   const maxOldSpaceArg = `--max-old-space-size=${bytesToMb(maxMemory)}`;
+  
+  console.log('Script path:', scriptPath);
+  console.log('File to load:', filePath);
 
   const args = [maxOldSpaceArg, scriptPath, '--data_file', filePath, '--port', backendPort];
 
@@ -68,17 +81,18 @@ function spawnBackend(filePath) {
   backendProcess.on('message', (data) => {
     console.log('Backend message:', data);
     mainWindow.webContents.send('backend-status', data);
+    
+    // Check if backend has finished loading
+    if (data.status === 'loaded') {
+      const backendUrl = `http://localhost:${backendPort}`;
+      console.log('Backend loaded, sending URL:', backendUrl);
+      mainWindow.webContents.send('backend-url', backendUrl);
+    }
   });
 
   backendProcess.on('exit', (code) => {
     console.log(`Backend process exited with code ${code}`);
   });
-
-  // Send backend URL to renderer once it's ready
-  setTimeout(() => {
-    const backendUrl = `http://localhost:${backendPort}`;
-    mainWindow.webContents.send('backend-url', backendUrl);
-  }, 2000);
 }
 
 function createWindow() {
@@ -91,7 +105,11 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      webSecurity: true
+      webSecurity: true,
+      // Enable file drag and drop
+      webviewTag: false,
+      // This might help with file paths
+      experimentalFeatures: true
     },
     titleBarStyle: 'default',
     backgroundColor: '#ffffff',
@@ -101,6 +119,16 @@ function createWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
+
+  // Handle file drops from preload
+  ipcMain.on('ondragstart', (event, filePath) => {
+    console.log('Main process received file drop:', filePath);
+    spawnBackend(filePath);
+    mainWindow.webContents.send('file-dropped', filePath);
+  });
+  
+  // Log that IPC handler is set up
+  console.log('IPC handler for ondragstart is registered');
 
   // In development, load from Vite dev server
   if (process.env.NODE_ENV !== 'production') {
@@ -121,12 +149,7 @@ function createWindow() {
 // IPC handlers
 ipcMain.handle('open-file-dialog', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
-    properties: ['openFile'],
-    filters: [
-      { name: 'Tree Files', extensions: ['nwk', 'newick', 'tree', 'nex', 'nexus'] },
-      { name: 'JSON Files', extensions: ['json', 'jsonl'] },
-      { name: 'All Files', extensions: ['*'] }
-    ]
+    properties: ['openFile']
   });
 
   if (!result.canceled && result.filePaths.length > 0) {
@@ -135,6 +158,12 @@ ipcMain.handle('open-file-dialog', async () => {
     return filePath;
   }
   return null;
+});
+
+ipcMain.handle('open-file', async (event, filePath) => {
+  console.log('Opening file from drag and drop:', filePath);
+  spawnBackend(filePath);
+  return filePath;
 });
 
 app.whenReady().then(createWindow);

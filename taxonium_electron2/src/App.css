@@ -10,16 +10,53 @@
 
 .controls {
   position: absolute;
-  top: 20px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: 1000;
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
-  min-width: 300px;
+  min-width: 400px;
+  border: 2px dashed #ccc;
+  transition: all 0.3s ease;
+}
+
+.controls.drag-over {
+  border-color: #4CAF50;
+  background: #f0f8f0;
+  transform: translate(-50%, -50%) scale(1.02);
+  box-shadow: 0 4px 30px rgba(76, 175, 80, 0.2);
+}
+
+.controls.drag-over .drop-zone {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.controls.drag-over .drop-text {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .controls button {
@@ -48,10 +85,10 @@
   font-size: 14px;
 }
 
-.info {
-  margin-top: 15px;
-  color: #888;
+.drop-text {
+  color: #666;
   font-size: 14px;
+  margin-top: -10px;
 }
 
 .taxonium-container {
