@@ -38,22 +38,31 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Build taxonium_component
+      run: |
+        cd ../taxonium_component
+        npm ci --legacy-peer-deps
+        npm run build
+
     - name: Download Node binaries
       shell: bash
       run: |
+        mkdir -p binaries
         if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          # Use PowerShell to download on Windows
+          # Download Windows binary
           powershell -Command "
-            New-Item -ItemType Directory -Force -Path binaries
-            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_arm64mac' -OutFile 'binaries/node18_arm64mac'
-            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64mac' -OutFile 'binaries/node18_x64mac'
             Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe' -OutFile 'binaries/node18.exe'
-            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64linux' -OutFile 'binaries/node18_x64linux'
           "
-        else
-          # Use bash script on macOS and Linux
-          chmod +x download.sh
-          ./download.sh
+        elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          # Download Linux binary
+          wget -q https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64linux -O binaries/node18_x64linux
+          chmod +x binaries/node18_x64linux
+        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          # Download both macOS binaries (x64 and arm64) since we build universal
+          wget -q https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64mac -O binaries/node18_x64mac
+          wget -q https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_arm64mac -O binaries/node18_arm64mac
+          chmod +x binaries/node18_x64mac
+          chmod +x binaries/node18_arm64mac
         fi
 
     - name: Build React app
