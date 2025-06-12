@@ -10,49 +10,69 @@ Taxonium is now available as a React component. There are a few different ways y
 ## Basic HTML
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taxonium Demo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    #root {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
 <body>
   <div id="root"></div>
 
-  <!-- Include peer dependencies -->
-  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script type="module">
+    import React from 'https://esm.sh/react@19';
+    import { createRoot } from 'https://esm.sh/react-dom@19/client';
+    import Taxonium from 'https://esm.sh/taxonium-component';
 
-  <!-- Include Taxonium Component -->
-  <script src="https://unpkg.com/taxonium-component@2.0.100"></script>
+    const { createElement: h } = React;
 
-  <script>
-    const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
 
-    const metadata_text = `Node,Name,Species
+    function App() {
+      const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
+
+      const metadata_text = `Node,Name,Species
 A,Bob,Cow
 B,Jim,Cow
 C,Joe,Fish
 D,John,Fish`;
 
-    // Metadata is optional
-    const metadata = {
-      filename: "test.csv",
-      data: metadata_text,
-      status: "loaded",
-      filetype: "meta_csv",
-    };
+      // Metadata is optional
+      const metadata = {
+        filename: "test.csv",
+        data: metadata_text,
+        status: "loaded",
+        filetype: "meta_csv",
+      };
 
-    const sourceData = {
-      status: "loaded",
-      filename: "test.nwk",
-      data: nwk,
-      filetype: "nwk",
-      metadata: metadata,
-    };
-  </script>
+      const sourceData = {
+        status: "loaded",
+        filename: "test.nwk",
+        data: nwk,
+        filetype: "nwk",
+        metadata: metadata,
+      };
+      
+      return h(Taxonium, { sourceData: sourceData });
+    }
 
-  <script>
-    ReactDOM.render(
-      React.createElement(Taxonium, { sourceData: sourceData }),
-      document.getElementById("root")
-    );
+    const container = document.getElementById('root');
+    const root = createRoot(container);
+    root.render(h(App));
   </script>
 </body>
+</html>
 ```
 
 ## In a React project
