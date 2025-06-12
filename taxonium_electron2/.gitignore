@@ -6,3 +6,4 @@ dist-electron/
 .vite/
 .env
 .env.local
+binaries/

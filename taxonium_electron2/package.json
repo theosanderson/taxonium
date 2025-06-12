@@ -24,7 +24,8 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "taxonium-component": "file:../taxonium_component"
+    "taxonium-component": "file:../taxonium_component",
+    "taxonium_backend": "file:../taxonium_backend"
   },
   "build": {
     "appId": "com.taxonium.electron",
@@ -36,6 +37,12 @@
       "main.js",
       "preload.js",
       "dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "binaries",
+        "to": "binaries"
+      }
     ]
   }
 }

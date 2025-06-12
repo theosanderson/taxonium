@@ -4,6 +4,54 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.controls {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  min-width: 300px;
+}
+
+.controls button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.controls button:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.controls button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.info {
+  margin-top: 15px;
+  color: #888;
+  font-size: 14px;
 }
 
 .taxonium-container {
