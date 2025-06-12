@@ -89,6 +89,7 @@ jobs:
         APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
         APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         USE_HARD_LINKS: false
+        CSC_FOR_PULL_REQUEST: true
 
     - name: Build Electron app for Linux
       if: matrix.os == 'ubuntu-latest'
