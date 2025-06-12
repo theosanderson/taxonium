@@ -45,7 +45,9 @@ jobs:
       run: |
         cd ../taxonium_component
         npm ci --legacy-peer-deps
-        NODE_OPTIONS="--max-old-space-size=8192" npm run build
+        npm run build
+      env:
+        NODE_OPTIONS: --max-old-space-size=8192
 
     - name: Download Node binaries
       shell: bash
