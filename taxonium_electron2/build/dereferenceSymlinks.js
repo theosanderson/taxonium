@@ -11,14 +11,21 @@ exports.default = async function(context) {
     'Taxonium.app/Contents/Resources/app.asar.unpacked/node_modules/taxonium-component/node_modules/taxonium_data_handling'
   );
   
-  // Check if it exists and remove it
-  if (fs.existsSync(problematicPath)) {
-    console.log('Removing problematic directory:', problematicPath);
-    try {
+  // Check if it exists (could be a symlink or directory)
+  try {
+    const stats = fs.lstatSync(problematicPath);
+    if (stats.isSymbolicLink()) {
+      console.log('Removing problematic symlink:', problematicPath);
+      fs.unlinkSync(problematicPath);
+      console.log('Successfully removed taxonium_data_handling symlink');
+    } else if (stats.isDirectory()) {
+      console.log('Removing problematic directory:', problematicPath);
       fs.rmSync(problematicPath, { recursive: true, force: true });
       console.log('Successfully removed taxonium_data_handling directory');
-    } catch (err) {
-      console.error('Error removing directory:', err);
+    }
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.error('Error handling problematic path:', err);
     }
   }
 };
