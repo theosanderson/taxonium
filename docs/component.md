@@ -4,55 +4,88 @@ Taxonium is now available as a React component. There are a few different ways y
 
 ```{eval-rst}
 .. note::
-    This component is new and in flux.
+    This component is new and in flux. It requires React 18 as a peer dependency.
 ```
 
 ## Basic HTML
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taxonium Demo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    #root {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
 <body>
   <div id="root"></div>
 
-  <!-- Include peer dependencies -->
-  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <!-- Import map to resolve bare module specifiers -->
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom": "https://esm.sh/react-dom@18.2.0",
+        "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+        "prop-types": "https://esm.sh/prop-types@15.8.1"
+      }
+    }
+  </script>
 
-  <!-- Include Taxonium Component -->
-  <script src="https://unpkg.com/taxonium-component"></script>
+  <!-- Main application using ES modules -->
+  <script type="module">
+    import React from 'https://esm.sh/react@18.2.0';
+    import ReactDOM from 'https://esm.sh/react-dom@18.2.0';
+    import Taxonium from 'https://unpkg.com/taxonium-component@latest/dist/taxonium-component.es.js';
 
-  <script>
-    const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
+    const { createElement: h } = React;
+    const { createRoot } = ReactDOM;
 
-    const metadata_text = `Node,Name,Species
+    function App() {
+      const nwk = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
+
+      const metadata_text = `Node,Name,Species
 A,Bob,Cow
 B,Jim,Cow
 C,Joe,Fish
 D,John,Fish`;
 
-    // Metadata is optional
-    const metadata = {
-      filename: "test.csv",
-      data: metadata_text,
-      status: "loaded",
-      filetype: "meta_csv",
-    };
+      // Metadata is optional
+      const metadata = {
+        filename: "test.csv",
+        data: metadata_text,
+        status: "loaded",
+        filetype: "meta_csv",
+      };
 
-    const sourceData = {
-      status: "loaded",
-      filename: "test.nwk",
-      data: nwk,
-      filetype: "nwk",
-      metadata: metadata,
-    };
-  </script>
+      const sourceData = {
+        status: "loaded",
+        filename: "test.nwk",
+        data: nwk,
+        filetype: "nwk",
+        metadata: metadata,
+      };
+      
+      return h(Taxonium, { sourceData: sourceData });
+    }
 
-  <script>
-    ReactDOM.render(
-      React.createElement(Taxonium, { sourceData: sourceData }),
-      document.getElementById("root")
-    );
+    const container = document.getElementById('root');
+    const root = createRoot(container);
+    root.render(h(App));
   </script>
 </body>
+</html>
 ```
 
 ## In a React project
