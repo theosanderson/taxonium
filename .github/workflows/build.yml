@@ -79,6 +79,7 @@ jobs:
       run: npm run build:mac
       env:
         CSC_IDENTITY_AUTO_DISCOVERY: false
+        USE_HARD_LINKS: false
 
     - name: Build Electron app for Linux
       if: matrix.os == 'ubuntu-latest'
@@ -86,10 +87,14 @@ jobs:
         # Clean any previous build artifacts
         rm -rf dist
         npm run build:linux
+      env:
+        USE_HARD_LINKS: false
 
     - name: Build Electron app for Windows
       if: matrix.os == 'windows-latest'
       run: npm run build:win
+      env:
+        USE_HARD_LINKS: false
 
     - name: Upload macOS artifacts
       if: matrix.os == 'macos-latest'
