@@ -45,6 +45,7 @@
     "directories": {
       "output": "dist"
     },
+    "icon": "build/icon.png",
     "files": [
       "main.js",
       "preload.js",
