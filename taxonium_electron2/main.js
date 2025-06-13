@@ -59,12 +59,13 @@ function spawnBackend(filePath) {
   
   // Handle path differently when in asar archive
   let scriptPath;
-  if (isPackaged && __dirname.includes('app.asar')) {
-    // When packaged, the unpacked files are in app.asar.unpacked
-    scriptPath = path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), 'node_modules/taxonium_backend/server.js');
+  // script is in binaries/taxonium_backend/server.js
+  if (isPackaged) {
+    scriptPath = path.join(process.resourcesPath, 'app', 'binaries', 'taxonium_backend', 'server.js');
   } else {
-    scriptPath = path.join(__dirname, 'node_modules/taxonium_backend/server.js');
+    scriptPath = path.join(__dirname, 'binaries', 'taxonium_backend', 'server.js');
   }
+  
   
   const maxOldSpaceArg = `--max-old-space-size=${bytesToMb(maxMemory)}`;
   

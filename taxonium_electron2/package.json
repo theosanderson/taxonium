@@ -9,7 +9,8 @@
     "dev:electron": "wait-on http://localhost:5173 && electron .",
     "build": "vite build",
     "preview": "vite preview",
-    "make": "npm run build && electron-forge make",
+    "premake": "cp -rL node_modules/taxonium_backend binaries/",
+    "make": "npm run premake && npm run build && electron-forge make",
     "start": "electron-forge start"
   },
   "keywords": [],
