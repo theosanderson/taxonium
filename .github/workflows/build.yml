@@ -132,44 +132,41 @@ jobs:
           taxonium_electron2/dist/*.msi
         if-no-files-found: error
 
-  upload-to-release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'created'
-    
-    steps:
-    - name: Download all artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: release-artifacts
-
-    - name: Display structure of downloaded files
-      run: ls -la release-artifacts/*/
-
-    - name: Upload macOS DMG
+    # Release uploads - macOS
+    - name: Upload macOS DMG to Release
+      if: matrix.os == 'macos-latest' && github.event_name == 'release'
       uses: shogo82148/actions-upload-release-asset@v1
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: release-artifacts/taxonium-mac/*.dmg
+        asset_path: taxonium_electron2/dist/*.dmg
         asset_name: Taxonium-macOS.dmg
+      continue-on-error: true
 
-    - name: Upload Windows installer
+    # Release uploads - Windows
+    - name: Upload Windows installer to Release
+      if: matrix.os == 'windows-latest' && github.event_name == 'release'
       uses: shogo82148/actions-upload-release-asset@v1
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: release-artifacts/taxonium-windows/*.exe
+        asset_path: taxonium_electron2/dist/*.exe
         asset_name: Taxonium-Setup.exe
+      continue-on-error: true
 
-    - name: Upload Linux DEB
+    # Release uploads - Linux
+    - name: Upload Linux DEB to Release
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'release'
       uses: shogo82148/actions-upload-release-asset@v1
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: release-artifacts/taxonium-linux/*.deb
+        asset_path: taxonium_electron2/dist/*.deb
         asset_name: Taxonium.deb
+      continue-on-error: true
 
-    - name: Upload Linux RPM
+    - name: Upload Linux RPM to Release
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'release'
       uses: shogo82148/actions-upload-release-asset@v1
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: release-artifacts/taxonium-linux/*.rpm
+        asset_path: taxonium_electron2/dist/*.rpm
         asset_name: Taxonium.rpm
+      continue-on-error: true
