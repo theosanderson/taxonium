@@ -36,7 +36,7 @@ function getNodeBinaryPath() {
   }
 
   const binaryDirectory = isPackaged 
-    ? path.join(process.resourcesPath, 'binaries')
+    ? path.join(process.resourcesPath, 'app', 'binaries')
     : path.join(__dirname, 'binaries');
 
   console.log('Binary directory:', binaryDirectory);
