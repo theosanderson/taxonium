@@ -8,24 +8,24 @@
     "dev:vite": "vite",
     "dev:electron": "wait-on http://localhost:5173 && electron .",
     "build": "vite build",
-    "build:electron": "electron-builder",
-    "build:all": "npm run build && npm run build:electron",
-    "build:mac": "npm run build && electron-builder --mac",
-    "build:win": "npm run build && electron-builder --win",
-    "build:linux": "npm run build && electron-builder --linux",
-    "package": "npm run build && electron-builder --dir",
-    "dist": "npm run build && electron-builder",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "make": "npm run build && electron-forge make",
+    "start": "electron-forge start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@electron-forge/cli": "^7.8.1",
+    "@electron-forge/maker-deb": "^7.8.1",
+    "@electron-forge/maker-rpm": "^7.8.1",
+    "@electron-forge/maker-squirrel": "^7.8.1",
+    "@electron-forge/maker-zip": "^7.8.1",
+    "@electron-forge/plugin-vite": "^7.8.1",
     "@electron/notarize": "^2.5.0",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.0",
     "electron": "^33.3.1",
-    "electron-builder": "^24.6.4",
     "vite": "^6.0.3",
     "wait-on": "^8.0.1"
   },
@@ -38,73 +38,5 @@
     "react-dom": "^19.0.0",
     "taxonium_backend": "file:../taxonium_backend",
     "taxonium-component": "file:../taxonium_component"
-  },
-  "build": {
-    "appId": "com.taxonium.electron",
-    "productName": "Taxonium",
-    "directories": {
-      "output": "dist"
-    },
-    "icon": "build/icon.png",
-    "files": [
-      "main.js",
-      "preload.js",
-      "dist/**/*",
-      "node_modules/**/*"
-    ],
-    "extraResources": [
-      {
-        "from": "binaries",
-        "to": "binaries"
-      }
-    ],
-    "includeSubNodeModules": true,
-    "asar": true,
-    "asarUnpack": [
-      "**/taxonium_backend/**/*",
-      "**/taxonium-component/**/*",
-      "**/taxonium_data_handling/**/*"
-    ],
-    "npmRebuild": false,
-    "mac": {
-      "category": "public.app-category.developer-tools",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ]
-     
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    },
-    "afterPack": "build/dereferenceSymlinks.js"
   }
 }

@@ -318,11 +318,14 @@ const useSearch = ({
         ? [oldViewState.target[0], (min_y + max_y) / 2]
         : [(min_x + max_x) / 2, (min_y + max_y) / 2];
 
+      const currentZoom = Array.isArray(view.viewState.zoom)
+        ? view.viewState.zoom[0]
+        : view.viewState.zoom;
       const viewState = {
         ...view.viewState,
         real_target: undefined,
         target: new_target,
-        zoom: [view.viewState.zoom[0], newZoom],
+        zoom: [currentZoom, newZoom],
       };
       console.log(
         "zoom to search new VS",
