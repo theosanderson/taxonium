@@ -7,6 +7,7 @@ let mainWindow;
 let backendProcess;
 let backendPort;
 
+
 // Calculate max memory for backend (3/4 of system memory)
 const totalMemory = os.totalmem();
 const maxMemory = (totalMemory * 3) / 4;
