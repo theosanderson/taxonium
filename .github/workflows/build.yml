@@ -101,14 +101,14 @@ jobs:
           exit $BUILD_EXIT_CODE
         fi
       env:
-        CSC_LINK: ${{ secrets.MAC_CERTS }}
-        CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
-        APPLE_ID: ${{ secrets.APPLE_ID }}
-        APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+       # CSC_LINK: ${{ secrets.MAC_CERTS }}
+       # CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
+       # APPLE_ID: ${{ secrets.APPLE_ID }}
+       # APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+      #  APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         USE_HARD_LINKS: false
-        CSC_FOR_PULL_REQUEST: true
-        DEBUG: electron-builder,@electron/notarize
+      #  CSC_FOR_PULL_REQUEST: true
+  #      DEBUG: electron-builder,@electron/notarize
 
     - name: Build Electron app for Linux
       if: matrix.os == 'ubuntu-latest'
