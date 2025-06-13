@@ -322,7 +322,7 @@ const useSearch = ({
         ...view.viewState,
         real_target: undefined,
         target: new_target,
-        zoom: newZoom,
+        zoom: [view.viewState.zoom[0], newZoom],
       };
       console.log(
         "zoom to search new VS",

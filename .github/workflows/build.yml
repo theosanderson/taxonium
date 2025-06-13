@@ -1,0 +1,175 @@
+name: Build Electron App
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  release:
+    types:
+      - created
+
+defaults:
+  run:
+    working-directory: taxonium_electron2
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: taxonium_electron2/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Backend deps
+      run: |
+        cd ../taxonium_backend
+        npm install --legacy-peer-deps
+    
+    - name: Build taxonium_component
+      run: |
+        cd ../taxonium_component
+        npm ci --legacy-peer-deps
+        npm run build
+      env:
+        NODE_OPTIONS: --max-old-space-size=8192
+
+    - name: Download Node binaries
+      shell: bash
+      run: |
+        mkdir -p binaries
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          # Download Windows binary
+          powershell -Command "
+            Invoke-WebRequest -Uri 'https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18.exe' -OutFile 'binaries/node18.exe'
+          "
+        elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          # Download Linux binary
+          wget -q https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64linux -O binaries/node18_x64linux
+          chmod +x binaries/node18_x64linux
+        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          # Download both macOS binaries (x64 and arm64) since we build universal
+          wget -q https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_x64mac -O binaries/node18_x64mac
+          wget -q https://cov2tree.nyc3.cdn.digitaloceanspaces.com/node_binaries/node18_arm64mac -O binaries/node18_arm64mac
+          chmod +x binaries/node18_x64mac
+          chmod +x binaries/node18_arm64mac
+        fi
+
+    - name: Build React app
+      run: npm run build
+
+    - name: Build Electron app for macOS
+      if: matrix.os == 'macos-latest'
+      run: npm run build:mac
+      env:
+        CSC_IDENTITY_AUTO_DISCOVERY: false
+        USE_HARD_LINKS: false
+
+    - name: Build Electron app for Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        # Clean any previous build artifacts
+        rm -rf dist
+        npm run build:linux
+      env:
+        USE_HARD_LINKS: false
+
+    - name: Build Electron app for Windows
+      if: matrix.os == 'windows-latest'
+      run: npm run build:win
+      env:
+        USE_HARD_LINKS: false
+
+    - name: Upload macOS artifacts
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: taxonium-mac
+        path: |
+          taxonium_electron2/dist/*.dmg
+          taxonium_electron2/dist/*.zip
+        if-no-files-found: error
+
+    - name: Upload Linux artifacts
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: taxonium-linux
+        path: |
+          taxonium_electron2/dist/*.deb
+          taxonium_electron2/dist/*.rpm
+          taxonium_electron2/dist/*.AppImage
+        if-no-files-found: error
+
+    - name: Upload Windows artifacts
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: taxonium-windows
+        path: |
+          taxonium_electron2/dist/*.exe
+          taxonium_electron2/dist/*.msi
+        if-no-files-found: error
+
+  upload-to-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'created'
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: release-artifacts
+
+    - name: Display structure of downloaded files
+      run: ls -la release-artifacts/*/
+
+    - name: Upload macOS DMG
+      uses: shogo82148/actions-upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: release-artifacts/taxonium-mac/*.dmg
+        asset_name: Taxonium-macOS.dmg
+
+    - name: Upload Windows installer
+      uses: shogo82148/actions-upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: release-artifacts/taxonium-windows/*.exe
+        asset_name: Taxonium-Setup.exe
+
+    - name: Upload Linux DEB
+      uses: shogo82148/actions-upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: release-artifacts/taxonium-linux/*.deb
+        asset_name: Taxonium.deb
+
+    - name: Upload Linux RPM
+      uses: shogo82148/actions-upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: release-artifacts/taxonium-linux/*.rpm
+        asset_name: Taxonium.rpm

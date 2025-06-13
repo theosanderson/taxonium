@@ -1,0 +1,113 @@
+.App {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  min-width: 400px;
+  border: 2px dashed #ccc;
+  transition: all 0.3s ease;
+}
+
+.controls.drag-over {
+  border-color: #4CAF50;
+  background: #f0f8f0;
+  transform: translate(-50%, -50%) scale(1.02);
+  box-shadow: 0 4px 30px rgba(76, 175, 80, 0.2);
+}
+
+.controls.drag-over .drop-zone {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.controls.drag-over .drop-text {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.controls button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.controls button:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.controls button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.drop-text {
+  color: #666;
+  font-size: 14px;
+  margin-top: -10px;
+}
+
+.taxonium-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Override default body margins for full screen */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}

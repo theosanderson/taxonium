@@ -1,0 +1,67 @@
+{
+  "name": "taxonium-electron",
+  "version": "1.0.0",
+  "description": "Taxonium Electron App with React",
+  "main": "main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && electron .",
+    "build": "vite build",
+    "build:electron": "electron-builder",
+    "build:all": "npm run build && npm run build:electron",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:win": "npm run build && electron-builder --win",
+    "build:linux": "npm run build && electron-builder --linux",
+    "package": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "electron": "^33.3.1",
+    "electron-builder": "^24.6.4",
+    "vite": "^6.0.3",
+    "wait-on": "^8.0.1"
+  },
+  "overrides": {
+    "minimatch": "^9.0.3",
+    "brace-expansion": "^2.0.1"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "taxonium-component": "file:../taxonium_component",
+    "taxonium_backend": "file:../taxonium_backend"
+  },
+  "build": {
+    "appId": "com.taxonium.electron",
+    "productName": "Taxonium",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "binaries",
+        "to": "binaries"
+      }
+    ],
+    "includeSubNodeModules": true,
+    "asar": true,
+    "asarUnpack": [
+      "**/taxonium_backend/**/*",
+      "**/taxonium_data_handling/**/*"
+    ],
+    "npmRebuild": false
+  }
+}

@@ -188,6 +188,10 @@ const useLayers = ({
     [viewState, deckSize],
   );
 
+  const zoomY = Array.isArray(viewState.zoom)
+    ? viewState.zoom[1]
+    : (viewState.zoom as number);
+
   const outer_bounds = [
     [-100000, -100000],
     [100000, -100000],
@@ -380,6 +384,7 @@ const useLayers = ({
       lineWidthScale: 2,
     };
 
+
     const clade_label_layer = {
       layerType: "TextLayer",
       id: "main-clade-node",
@@ -418,7 +423,7 @@ const useLayers = ({
   }
 
   const proportionalToNodesOnScreen =
-    (config as any).num_tips / 2 ** (viewState.zoom as number);
+    (config as any).num_tips / 2 ** zoomY;
 
   // If leaves are fewer than max_text_number, add a text layer
   if (
