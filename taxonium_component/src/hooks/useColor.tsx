@@ -41,14 +41,16 @@ const useColor = (
 
       if (typeof value === "number") {
         const log10 = Math.log10(value);
-        const color = scale.plasma(log10 / 10);
+        const scaled = log10 / 10;
+        const clamped = Math.min(1, Math.max(0, scaled));
+        const color = scale.plasma(clamped);
         // convert from hex to rgb
-      const rgb: [number, number, number] = [
-        parseInt(color.slice(1, 3), 16),
-        parseInt(color.slice(3, 5), 16),
-        parseInt(color.slice(5, 7), 16),
-      ];
-      return rgb;
+        const rgb: [number, number, number] = [
+          parseInt(color.slice(1, 3), 16),
+          parseInt(color.slice(3, 5), 16),
+          parseInt(color.slice(5, 7), 16),
+        ];
+        return rgb;
       }
 
       if (typeof value === "string" && value in colorMapping) {
