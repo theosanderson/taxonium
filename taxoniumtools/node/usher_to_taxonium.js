@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 const protobuf = require('protobufjs');
+const cliProgress = require('cli-progress');
 const { kn_parse } = require('./jstree');
 
 // simple parser for GenBank file returning sequence and CDS gene coordinates
@@ -225,6 +226,8 @@ function collectMutations(nodeMutations) {
   const index = new Map();
   const perNode = [];
   const perNodeObjs = [];
+  const bar = new cliProgress.SingleBar({hideCursor:true}, cliProgress.Presets.shades_classic);
+  bar.start(nodeMutations.length, 0);
   nodeMutations.forEach(list => {
     const idxs = [];
     const objs = [];
@@ -246,7 +249,9 @@ function collectMutations(nodeMutations) {
     }
     perNode.push(idxs);
     perNodeObjs.push(objs);
+    bar.increment();
   });
+  bar.stop();
   return {all, perNode, perNodeObjs};
 }
 
@@ -258,7 +263,7 @@ function preorder(n, arr=[]) {
 
 async function main() {
   if (process.argv.length < 6) {
-    console.error('Usage: node usher_to_taxonium.js <input.pb> <metadata.tsv> <genbank.gb> <output.jsonl(.gz)> [clade_types] [columns]');
+    console.error('Usage: node usher_to_taxonium.js <input.pb(.gz)> <metadata.tsv> <genbank.gb> <output.jsonl(.gz)> [clade_types] [columns]');
     process.exit(1);
   }
   const input = process.argv[2];
@@ -272,7 +277,8 @@ async function main() {
   const root = await protobuf.load(protoPath);
   const Data = root.lookupType('Parsimony.data');
 
-  const buffer = fs.readFileSync(input);
+  let buffer = fs.readFileSync(input);
+  if (input.endsWith('.gz')) buffer = zlib.gunzipSync(buffer);
   const message = Data.decode(buffer);
 
   const tree = kn_parse(message.newick.replace(/\n/g,'').replace(/;\s*$/,''));
@@ -321,6 +327,8 @@ async function main() {
     walk(tree.root,{});
   }
 
+  const prepBar = new cliProgress.SingleBar({hideCursor:true}, cliProgress.Presets.shades_classic);
+  prepBar.start(preorderNodes.length, 0);
   preorderNodes.forEach((node,i) => {
     node.mut_idx = perNodeNucIdx[i].slice();
     node.edge_length = node.mut_idx.length;
@@ -329,7 +337,9 @@ async function main() {
       node.clades = {};
       cladeTypes.forEach((t,j)=>{ node.clades[t] = meta.cladeAnnotations[j] || ''; });
     }
+    prepBar.increment();
   });
+  prepBar.stop();
 
   expandCondensedNodes(tree.root, message.condensedNodes);
   assignNumTips(tree.root);
@@ -352,7 +362,8 @@ async function main() {
   const fileStream = outputPath.endsWith('.gz') ? fs.createWriteStream(outputPath) : null;
   if(fileStream) outStream.pipe(fileStream);
   outStream.write(JSON.stringify(first)+'\n');
-
+  const writeBar = new cliProgress.SingleBar({hideCursor:true}, cliProgress.Presets.shades_classic);
+  writeBar.start(nodesSorted.length, 0);
   nodesSorted.forEach(n => {
     const obj = {
       name: n.name || '',
@@ -369,7 +380,9 @@ async function main() {
     if (meta) Object.assign(obj, meta);
     else metaKeys.forEach(k => obj[k]='');
     outStream.write(JSON.stringify(obj)+'\n');
+    writeBar.increment();
   });
+  writeBar.stop();
 
   outStream.end();
   if(fileStream) fileStream.on('finish', () => console.log('Wrote', outputPath));
