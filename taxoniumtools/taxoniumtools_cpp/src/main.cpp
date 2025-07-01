@@ -120,6 +120,7 @@ int main(int argc, char* argv[]) {
             else internal_count++;
         });
         
+        size_t actual_node_count = leaf_count + internal_count;
         std::cout << "Loaded tree with " << tree->get_num_nodes() << " nodes (" 
                   << leaf_count << " leaves, " << internal_count << " internal)" << std::endl;
         
@@ -137,7 +138,7 @@ int main(int argc, char* argv[]) {
             }
             
             if (opts.show_progress) {
-                ProgressBar metadata_progress(tree->get_num_nodes(), "Applying metadata");
+                ProgressBar metadata_progress(actual_node_count, "Applying metadata");
                 metadata_reader.apply_to_tree(tree.get(), [&](size_t current) {
                     metadata_progress.update(current);
                 });
@@ -168,7 +169,7 @@ int main(int argc, char* argv[]) {
             std::cout << "Reference sequence length: " << reference_sequence.length() << std::endl;
             
             if (opts.show_progress) {
-                ProgressBar aa_progress(tree->get_num_nodes(), "Annotating amino acid mutations");
+                ProgressBar aa_progress(actual_node_count, "Annotating amino acid mutations");
                 tree->annotate_aa_mutations(genes, reference_sequence, [&](size_t current) {
                     aa_progress.update(current);
                 });
@@ -227,7 +228,7 @@ int main(int argc, char* argv[]) {
         JSONLWriter writer(opts.output_file);
         
         if (opts.show_progress) {
-            ProgressBar write_progress(tree->get_num_nodes(), "Writing JSONL");  
+            ProgressBar write_progress(actual_node_count, "Writing JSONL");  
             writer.write_tree(tree.get(), [&](size_t current) {
                 write_progress.update(current);
             });

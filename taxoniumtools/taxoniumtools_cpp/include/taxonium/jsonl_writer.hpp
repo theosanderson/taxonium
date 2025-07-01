@@ -5,6 +5,7 @@
 #include <fstream>
 #include <memory>
 #include <functional>
+#include <yyjson.h>
 
 namespace taxonium {
 
@@ -35,11 +36,17 @@ private:
                               const std::unordered_map<Node*, size_t>& node_to_index,
                               std::ostream& stream);
     
-    // Convert mutation to JSON object
+    // Convert mutation to JSON object (legacy string-based)
     std::string mutation_to_json(const Mutation& mut, size_t index);
     
-    // Convert AA mutation to JSON object
+    // Convert AA mutation to JSON object (legacy string-based)
     std::string aa_mutation_to_json(const AAMutation& aa_mut, size_t index);
+    
+    // Convert mutation to yyjson object
+    yyjson_mut_val* mutation_to_yyjson(const Mutation& mut, size_t index, yyjson_mut_doc* doc);
+    
+    // Convert AA mutation to yyjson object
+    yyjson_mut_val* aa_mutation_to_yyjson(const AAMutation& aa_mut, size_t index, yyjson_mut_doc* doc);
     
     // Escape string for JSON
     std::string escape_json(const std::string& s);

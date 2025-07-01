@@ -8,6 +8,7 @@
 #include <map>
 #include <tuple>
 #include <set>
+#include <yyjson.h>
 
 #ifdef USE_TBB
 #include <tbb/parallel_for.h>
@@ -105,11 +106,13 @@ void JSONLWriter::write_tree(Tree* tree, std::function<void(size_t)> progress_ca
 }
 
 void JSONLWriter::write_header(Tree* tree) {
-    std::stringstream ss;
-    ss << "{";
+    // Create yyjson document
+    yyjson_mut_doc* doc = yyjson_mut_doc_new(nullptr);
+    yyjson_mut_val* root = yyjson_mut_obj(doc);
+    yyjson_mut_doc_set_root(doc, root);
     
     // Version
-    ss << "\"version\":\"2.1.2\",";
+    yyjson_mut_obj_add_str(doc, root, "version", "2.1.2");
     
     // Collect all mutations following Python's approach
     std::vector<Mutation> all_nt_mutations;
@@ -152,44 +155,53 @@ void JSONLWriter::write_header(Tree* tree) {
         mutation_content_to_index[key] = index++;
     }
     
-    // Write mutations array (like Python's all_mut_objects)
-    ss << "\"mutations\":[";
+    // Create mutations array
+    yyjson_mut_val* mutations = yyjson_mut_arr(doc);
     size_t mut_index = 0;
     
-    // Write AA mutations first (to match Python order)
+    // Add AA mutations first (to match Python order)
     for (const auto& aa_mut : all_aa_mutations) {
-        if (mut_index > 0) ss << ",";
-        ss << aa_mutation_to_json(aa_mut, mut_index);
+        yyjson_mut_val* mut_obj = aa_mutation_to_yyjson(aa_mut, mut_index, doc);
+        yyjson_mut_arr_append(mutations, mut_obj);
         mut_index++;
     }
     
-    // Write NT mutations second
+    // Add NT mutations second
     for (const auto& mut : all_nt_mutations) {
-        if (mut_index > 0) ss << ",";
-        ss << mutation_to_json(mut, mut_index);
+        yyjson_mut_val* mut_obj = mutation_to_yyjson(mut, mut_index, doc);
+        yyjson_mut_arr_append(mutations, mut_obj);
         mut_index++;
     }
     
-    ss << "],";
+    yyjson_mut_obj_add_val(doc, root, "mutations", mutations);
     
     // Total nodes - count from sorted list
     auto all_nodes = tree->get_nodes_sorted_by_y();
-    ss << "\"total_nodes\":" << all_nodes.size() << ",";
+    yyjson_mut_obj_add_uint(doc, root, "total_nodes", all_nodes.size());
     
-    // Config
-    ss << "\"config\":{";
-    ss << "\"num_tips\":" << tree->get_num_tips() << ",";
+    // Config object
+    yyjson_mut_val* config = yyjson_mut_obj(doc);
+    yyjson_mut_obj_add_uint(doc, config, "num_tips", tree->get_num_tips());
     
     // Date created
     auto now = std::chrono::system_clock::now();
     auto time_t = std::chrono::system_clock::to_time_t(now);
     std::tm tm = *std::localtime(&time_t);
-    ss << "\"date_created\":\"" << std::put_time(&tm, "%Y-%m-%d") << "\"";
+    std::stringstream date_ss;
+    date_ss << std::put_time(&tm, "%Y-%m-%d");
+    std::string date_str = date_ss.str();
+    yyjson_mut_val* date_val = yyjson_mut_str(doc, date_str.c_str());
+    yyjson_mut_obj_add_val(doc, config, "date_created", date_val);
     
-    ss << "}";  // End config
-    ss << "}\n";  // End header
+    yyjson_mut_obj_add_val(doc, root, "config", config);
     
-    *output_stream << ss.str();
+    // Write to stream
+    const char* json_str = yyjson_mut_write(doc, 0, nullptr);
+    *output_stream << json_str << "\n";
+    
+    // Cleanup
+    free((void*)json_str);
+    yyjson_mut_doc_free(doc);
 }
 
 void JSONLWriter::write_node(Node* node, size_t node_index,
@@ -200,36 +212,33 @@ void JSONLWriter::write_node(Node* node, size_t node_index,
 void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
                                        const std::unordered_map<Node*, size_t>& node_to_index,
                                        std::ostream& stream) {
-    std::stringstream ss;
-    ss << "{";
+    // Create yyjson document for this node
+    yyjson_mut_doc* doc = yyjson_mut_doc_new(nullptr);
+    yyjson_mut_val* root = yyjson_mut_obj(doc);
+    yyjson_mut_doc_set_root(doc, root);
     
     // Name (always include)
-    ss << "\"name\":\"" << escape_json(node->name) << "\",";
+    yyjson_mut_obj_add_str(doc, root, "name", node->name.c_str());
     
-    // Coordinates
-    ss << std::fixed << std::setprecision(5);  // Match Python precision
-    ss << "\"x_dist\":" << node->x_coord << ",";
+    // Coordinates (use same precision as Python)
+    yyjson_mut_obj_add_real(doc, root, "x_dist", node->x_coord);
     
     // Y coordinate - output as integer for leaves to match Python
     if (node->is_leaf()) {
-        ss << "\"y\":" << static_cast<int>(node->y_coord) << ",";
+        yyjson_mut_obj_add_int(doc, root, "y", static_cast<int>(node->y_coord));
     } else {
-        ss << "\"y\":" << node->y_coord << ",";
+        yyjson_mut_obj_add_real(doc, root, "y", node->y_coord);
     }
     
     // Mutations (as indices) - always include even if empty
-    // Like Python's: object['mutations'] += [input_to_index[my_input] for my_input in node.aa_muts]
-    ss << "\"mutations\":[";
-    bool first = true;
+    yyjson_mut_val* mutations = yyjson_mut_arr(doc);
     
     // Add amino acid mutations first (to match Python order)
     for (const auto& aa_mut : node->aa_mutations) {
         std::string key = aa_mutation_to_key(aa_mut);
         auto it = mutation_content_to_index.find(key);
         if (it != mutation_content_to_index.end()) {
-            if (!first) ss << ",";
-            ss << it->second;
-            first = false;
+            yyjson_mut_arr_add_uint(doc, mutations, it->second);
         }
     }
     
@@ -238,62 +247,60 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
         std::string key = mutation_to_key(mut);
         auto it = mutation_content_to_index.find(key);
         if (it != mutation_content_to_index.end()) {
-            if (!first) ss << ",";
-            ss << it->second;
-            first = false;
+            yyjson_mut_arr_add_uint(doc, mutations, it->second);
         }
     }
     
-    ss << "],";
+    yyjson_mut_obj_add_val(doc, root, "mutations", mutations);
     
     // Is tip
-    ss << "\"is_tip\":" << (node->is_leaf() ? "true" : "false") << ",";
+    yyjson_mut_obj_add_bool(doc, root, "is_tip", node->is_leaf());
     
     // Parent - for root node, parent_id equals its own node_id
     if (node->parent) {
         auto it = node_to_index.find(node->parent);
         if (it != node_to_index.end()) {
-            ss << "\"parent_id\":" << it->second << ",";
+            yyjson_mut_obj_add_uint(doc, root, "parent_id", it->second);
         }
     } else {
         // Root node: parent_id equals its own node_id
-        ss << "\"parent_id\":" << node_index << ",";
+        yyjson_mut_obj_add_uint(doc, root, "parent_id", node_index);
     }
     
     // Node ID
-    ss << "\"node_id\":" << node_index << ",";
+    yyjson_mut_obj_add_uint(doc, root, "node_id", node_index);
     
     // Number of tips
-    ss << "\"num_tips\":" << node->num_tips << ",";
+    yyjson_mut_obj_add_uint(doc, root, "num_tips", node->num_tips);
     
     // Children (only for internal nodes that have children)
     if (!node->is_leaf()) {
-        ss << "\"child_nodes\":[";
-        bool first = true;
+        yyjson_mut_val* children = yyjson_mut_arr(doc);
         for (const auto& child : node->children) {
             auto it = node_to_index.find(child.get());
             if (it != node_to_index.end()) {
-                if (!first) ss << ",";
-                ss << it->second;
-                first = false;
+                yyjson_mut_arr_add_uint(doc, children, it->second);
             }
         }
-        ss << "],";
+        yyjson_mut_obj_add_val(doc, root, "child_nodes", children);
     }
     
-    // Metadata
+    // Metadata - use yyjson's string duplication to handle temporary strings
     for (const auto& [key, value] : node->metadata) {
-        ss << "\"meta_" << escape_json(key) << "\":\"" << escape_json(value) << "\",";
+        std::string meta_key = "meta_" + key;
+        // Use the _copy versions to ensure strings are copied into the document
+        yyjson_mut_val* key_val = yyjson_mut_str(doc, meta_key.c_str());
+        yyjson_mut_val* val_val = yyjson_mut_str(doc, value.c_str());
+        yyjson_mut_obj_add(root, key_val, val_val);
     }
     
-    // Remove trailing comma
-    std::string result = ss.str();
-    if (result.back() == ',') {
-        result.pop_back();
-    }
+    // Write to stream
+    const char* json_str = yyjson_mut_write(doc, 0, nullptr);
+    stream << json_str << "\n";
     
-    result += "}\n";
-    stream << result;
+    // Cleanup
+    free((void*)json_str);
+    yyjson_mut_doc_free(doc);
 }
 
 std::string JSONLWriter::mutation_to_json(const Mutation& mut, size_t index) {
@@ -325,6 +332,40 @@ std::string JSONLWriter::aa_mutation_to_json(const AAMutation& aa_mut, size_t in
     
     ss << "}";
     return ss.str();
+}
+
+yyjson_mut_val* JSONLWriter::mutation_to_yyjson(const Mutation& mut, size_t index, yyjson_mut_doc* doc) {
+    yyjson_mut_val* obj = yyjson_mut_obj(doc);
+    
+    yyjson_mut_obj_add_str(doc, obj, "gene", "nt");
+    
+    // Use character arrays to avoid temporary string issues
+    char prev_residue[2] = {nuc_to_char(mut.par_nuc), '\0'};
+    yyjson_mut_obj_add_str(doc, obj, "previous_residue", prev_residue);
+    
+    yyjson_mut_obj_add_uint(doc, obj, "residue_pos", mut.position);
+    
+    char new_residue[2] = {nuc_to_char(mut.mut_nuc), '\0'};
+    yyjson_mut_obj_add_str(doc, obj, "new_residue", new_residue);
+    
+    yyjson_mut_obj_add_uint(doc, obj, "mutation_id", index);
+    yyjson_mut_obj_add_str(doc, obj, "type", "nt");
+    
+    return obj;
+}
+
+yyjson_mut_val* JSONLWriter::aa_mutation_to_yyjson(const AAMutation& aa_mut, size_t index, yyjson_mut_doc* doc) {
+    yyjson_mut_val* obj = yyjson_mut_obj(doc);
+    
+    yyjson_mut_obj_add_str(doc, obj, "gene", aa_mut.gene.c_str());
+    yyjson_mut_obj_add_str(doc, obj, "previous_residue", aa_mut.ref_aa.c_str());
+    yyjson_mut_obj_add_uint(doc, obj, "residue_pos", aa_mut.codon_position);
+    yyjson_mut_obj_add_str(doc, obj, "new_residue", aa_mut.alt_aa.c_str());
+    yyjson_mut_obj_add_uint(doc, obj, "mutation_id", index);
+    yyjson_mut_obj_add_uint(doc, obj, "nuc_for_codon", aa_mut.nuc_for_codon);
+    yyjson_mut_obj_add_str(doc, obj, "type", "aa");
+    
+    return obj;
 }
 
 std::string JSONLWriter::escape_json(const std::string& s) {

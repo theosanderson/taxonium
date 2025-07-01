@@ -20,6 +20,15 @@ find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
 
+# Add yyjson (high-performance JSON library)
+include(FetchContent)
+FetchContent_Declare(
+    yyjson
+    GIT_REPOSITORY https://github.com/ibireme/yyjson.git
+    GIT_TAG 0.10.0
+)
+FetchContent_MakeAvailable(yyjson)
+
 # Find TBB
 find_package(TBB QUIET)
 if(NOT TBB_FOUND)
@@ -63,6 +72,7 @@ target_link_libraries(taxoniumtools_lib
     ${Protobuf_LIBRARIES}
     Threads::Threads
     ZLIB::ZLIB
+    yyjson
 )
 
 if(USE_TBB)
