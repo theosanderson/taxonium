@@ -64,13 +64,13 @@ void Tree::ladderize_helper(Node* node, bool ascending) {
         ladderize_helper(child.get(), ascending);
     }
     
-    // Sort children by number of tips
+    // Sort children by number of tips (simple version that was working better)
     std::sort(node->children.begin(), node->children.end(),
         [ascending](const std::unique_ptr<Node>& a, const std::unique_ptr<Node>& b) {
             if (ascending) {
-                return a->num_tips < b->num_tips;
+                return a->num_tips > b->num_tips;  // Reversed to match Python
             } else {
-                return a->num_tips > b->num_tips;
+                return a->num_tips < b->num_tips;  // Reversed to match Python
             }
         });
 }
@@ -78,8 +78,8 @@ void Tree::ladderize_helper(Node* node, bool ascending) {
 void Tree::calculate_coordinates() {
     if (!root) return;
     
-    // First, calculate number of tips for each node
-    root->calculate_num_tips();
+    // num_tips should already be calculated before ladderizing
+    // root->calculate_num_tips(); // Moved to main.cpp
     
     // Set edge lengths based on mutation count
     traverse_preorder([](Node* node) {

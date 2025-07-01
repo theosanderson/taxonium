@@ -130,6 +130,9 @@ int main(int argc, char* argv[]) {
         // Process tree
         std::cout << "Processing tree..." << std::endl;
         
+        // First calculate number of tips for ladderizing
+        tree->get_root()->calculate_num_tips();
+        
         // Ladderize tree
         tree->ladderize(false);  // descending order
         
