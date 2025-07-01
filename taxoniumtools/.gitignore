@@ -9,6 +9,10 @@ build/
 *.jsonl
 *.log
 
+# Debug/temporary files
+debug_*
+simple_test*
+
 # Python cache
 __pycache__/
 *.pyc

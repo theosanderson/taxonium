@@ -7,6 +7,7 @@
 #include <ctime>
 #include <map>
 #include <tuple>
+#include <set>
 
 #ifdef USE_TBB
 #include <tbb/parallel_for.h>
@@ -102,54 +103,62 @@ void JSONLWriter::write_header(Tree* tree) {
     // Version
     ss << "\"version\":\"2.1.2\",";
     
-    // Collect all unique nucleotide mutations from all nodes
-    std::map<std::tuple<std::string, int32_t, Nucleotide, Nucleotide>, size_t> unique_mutations;
-    std::vector<Mutation> all_mutations_vec;
+    // Collect all mutations following Python's approach
+    std::vector<Mutation> all_nt_mutations;
+    std::vector<AAMutation> all_aa_mutations;
+    std::set<std::string> seen_mutations;
     
-    // Collect all unique amino acid mutations from all nodes
-    std::map<std::tuple<std::string, int32_t, std::string, std::string>, size_t> unique_aa_mutations;
-    std::vector<AAMutation> all_aa_mutations_vec;
-    
+    // First pass: collect all unique mutations (like Python's get_all_aa_muts and get_all_nuc_muts)
     tree->traverse_preorder([&](Node* node) {
-        // Process nucleotide mutations
-        for (auto& mut : node->mutations) {
-            auto key = std::make_tuple(mut.chromosome, mut.position, mut.par_nuc, mut.mut_nuc);
-            if (unique_mutations.find(key) == unique_mutations.end()) {
-                size_t index = all_mutations_vec.size();
-                unique_mutations[key] = index;
-                all_mutations_vec.push_back(mut);
+        // Collect nucleotide mutations
+        for (const auto& mut : node->mutations) {
+            std::string key = mutation_to_key(mut);
+            if (seen_mutations.find(key) == seen_mutations.end()) {
+                seen_mutations.insert(key);
+                all_nt_mutations.push_back(mut);
             }
-            mutation_to_index[&mut] = unique_mutations[key];
         }
         
-        // Process amino acid mutations
-        for (auto& aa_mut : node->aa_mutations) {
-            auto key = std::make_tuple(aa_mut.gene, aa_mut.codon_position, aa_mut.ref_aa, aa_mut.alt_aa);
-            if (unique_aa_mutations.find(key) == unique_aa_mutations.end()) {
-                size_t index = all_mutations_vec.size() + all_aa_mutations_vec.size();
-                unique_aa_mutations[key] = index;
-                all_aa_mutations_vec.push_back(aa_mut);
+        // Collect amino acid mutations
+        for (const auto& aa_mut : node->aa_mutations) {
+            std::string key = aa_mutation_to_key(aa_mut);
+            if (seen_mutations.find(key) == seen_mutations.end()) {
+                seen_mutations.insert(key);
+                all_aa_mutations.push_back(aa_mut);
             }
-            aa_mutation_to_index[&aa_mut] = unique_aa_mutations[key];
         }
     });
     
-    // Write mutations array (both nucleotide and amino acid)
+    // Second pass: create sequential index mapping (like Python's enumerate(all_mut_inputs))
+    size_t index = 0;
+    
+    // Add AA mutations first (to match Python order)
+    for (const auto& aa_mut : all_aa_mutations) {
+        std::string key = aa_mutation_to_key(aa_mut);
+        mutation_content_to_index[key] = index++;
+    }
+    
+    // Add NT mutations second 
+    for (const auto& mut : all_nt_mutations) {
+        std::string key = mutation_to_key(mut);
+        mutation_content_to_index[key] = index++;
+    }
+    
+    // Write mutations array (like Python's all_mut_objects)
     ss << "\"mutations\":[";
-    size_t total_mutations = all_mutations_vec.size() + all_aa_mutations_vec.size();
     size_t mut_index = 0;
     
-    // Write nucleotide mutations
-    for (size_t i = 0; i < all_mutations_vec.size(); ++i) {
+    // Write AA mutations first (to match Python order)
+    for (const auto& aa_mut : all_aa_mutations) {
         if (mut_index > 0) ss << ",";
-        ss << mutation_to_json(all_mutations_vec[i], mut_index);
+        ss << aa_mutation_to_json(aa_mut, mut_index);
         mut_index++;
     }
     
-    // Write amino acid mutations
-    for (size_t i = 0; i < all_aa_mutations_vec.size(); ++i) {
+    // Write NT mutations second
+    for (const auto& mut : all_nt_mutations) {
         if (mut_index > 0) ss << ",";
-        ss << aa_mutation_to_json(all_aa_mutations_vec[i], mut_index);
+        ss << mutation_to_json(mut, mut_index);
         mut_index++;
     }
     
@@ -201,23 +210,26 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     }
     
     // Mutations (as indices) - always include even if empty
+    // Like Python's: object['mutations'] += [input_to_index[my_input] for my_input in node.aa_muts]
     ss << "\"mutations\":[";
     bool first = true;
     
-    // Add nucleotide mutations
-    for (const auto& mut : node->mutations) {
-        auto it = mutation_to_index.find(const_cast<Mutation*>(&mut));
-        if (it != mutation_to_index.end()) {
+    // Add amino acid mutations first (to match Python order)
+    for (const auto& aa_mut : node->aa_mutations) {
+        std::string key = aa_mutation_to_key(aa_mut);
+        auto it = mutation_content_to_index.find(key);
+        if (it != mutation_content_to_index.end()) {
             if (!first) ss << ",";
             ss << it->second;
             first = false;
         }
     }
     
-    // Add amino acid mutations
-    for (const auto& aa_mut : node->aa_mutations) {
-        auto it = aa_mutation_to_index.find(const_cast<AAMutation*>(&aa_mut));
-        if (it != aa_mutation_to_index.end()) {
+    // Add nucleotide mutations second
+    for (const auto& mut : node->mutations) {
+        std::string key = mutation_to_key(mut);
+        auto it = mutation_content_to_index.find(key);
+        if (it != mutation_content_to_index.end()) {
             if (!first) ss << ",";
             ss << it->second;
             first = false;
@@ -327,6 +339,16 @@ std::string JSONLWriter::escape_json(const std::string& s) {
         }
     }
     return ss.str();
+}
+
+std::string JSONLWriter::mutation_to_key(const Mutation& mut) {
+    return "nt:" + mut.chromosome + ":" + std::to_string(mut.position) + ":" + 
+           nuc_to_char(mut.par_nuc) + ":" + nuc_to_char(mut.mut_nuc);
+}
+
+std::string JSONLWriter::aa_mutation_to_key(const AAMutation& aa_mut) {
+    return "aa:" + aa_mut.gene + ":" + std::to_string(aa_mut.codon_position) + ":" + 
+           aa_mut.ref_aa + ":" + aa_mut.alt_aa;
 }
 
 } // namespace taxonium

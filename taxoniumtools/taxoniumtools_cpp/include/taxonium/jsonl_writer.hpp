@@ -11,8 +11,8 @@ class JSONLWriter {
 private:
     std::unique_ptr<std::ostream> output_stream;
     bool is_gzipped;
-    std::unordered_map<Mutation*, size_t> mutation_to_index;
-    std::unordered_map<AAMutation*, size_t> aa_mutation_to_index;
+    // Content-based mutation indexing (like Python's input_to_index)
+    std::unordered_map<std::string, size_t> mutation_content_to_index;
     
 public:
     explicit JSONLWriter(const std::string& filename);
@@ -42,6 +42,10 @@ private:
     
     // Escape string for JSON
     std::string escape_json(const std::string& s);
+    
+    // Helper functions for content-based mutation keys
+    std::string mutation_to_key(const Mutation& mut);
+    std::string aa_mutation_to_key(const AAMutation& aa_mut);
 };
 
 } // namespace taxonium
