@@ -207,16 +207,6 @@ pip install cmake  # or use system package manager
 3. **Use SSD storage**: For large files, SSD improves I/O performance
 4. **Compress output**: Use `.jsonl.gz` for smaller output files
 
-## Comparison with Python Version
-
-| Feature | C++ Version | Python Version |
-|---------|-------------|----------------|
-| **Speed** | 0.14s | 2.03s |
-| **Memory** | 27 MB | 172 MB |
-| **GenBank Support** | ✅ | ✅ |
-| **Metadata** | ✅ | ✅ |
-| **AA Mutations** | ✅ | ✅ |
-| **Output Format** | Identical | Identical |
 
 The C++ version provides the same biological accuracy with dramatically better performance.
 
