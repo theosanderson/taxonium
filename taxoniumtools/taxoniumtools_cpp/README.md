@@ -3,7 +3,9 @@
 
 EXPERIMENTALL!!!!!!
 
-A high-performance C++ implementation of taxoniumtools for converting Usher protobuf files to Taxonium JSONL format. This implementation provides significant speed and memory improvements while maintaining full feature parity with the Python version.
+A high-performance C++ implementation of taxoniumtools for converting Usher protobuf files to Taxonium JSONL format. 
+
+NOT FINISHED - WRITTEN BY AN LLM, AS IS REST OF THE README
 
 ## Performance Benefits
 
