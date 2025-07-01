@@ -129,6 +129,7 @@ int main(int argc, char* argv[]) {
         if (!opts.metadata_file.empty()) {
             std::cout << "Loading metadata: " << opts.metadata_file << std::endl;
             
+            auto meta_load_start = std::chrono::high_resolution_clock::now();
             if (opts.show_progress) {
                 ProgressBar load_progress(1, "Loading metadata file");
                 metadata_reader.load(opts.metadata_file, opts.columns, opts.key_column);
@@ -136,7 +137,11 @@ int main(int argc, char* argv[]) {
             } else {
                 metadata_reader.load(opts.metadata_file, opts.columns, opts.key_column);
             }
+            auto meta_load_end = std::chrono::high_resolution_clock::now();
+            auto meta_load_duration = std::chrono::duration_cast<std::chrono::milliseconds>(meta_load_end - meta_load_start);
+            std::cout << "⏱️  Metadata loading: " << meta_load_duration.count() / 1000.0 << "s" << std::endl;
             
+            auto meta_apply_start = std::chrono::high_resolution_clock::now();
             if (opts.show_progress) {
                 ProgressBar metadata_progress(actual_node_count, "Applying metadata");
                 metadata_reader.apply_to_tree(tree.get(), [&](size_t current) {
@@ -146,6 +151,9 @@ int main(int argc, char* argv[]) {
             } else {
                 metadata_reader.apply_to_tree(tree.get());
             }
+            auto meta_apply_end = std::chrono::high_resolution_clock::now();
+            auto meta_apply_duration = std::chrono::duration_cast<std::chrono::milliseconds>(meta_apply_end - meta_apply_start);
+            std::cout << "⏱️  Metadata application: " << meta_apply_duration.count() / 1000.0 << "s" << std::endl;
         }
         
         // Parse genbank file if provided
@@ -153,6 +161,7 @@ int main(int argc, char* argv[]) {
             std::cout << "Loading genbank file: " << opts.genbank_file << std::endl;
             GenbankParser genbank_parser;
             
+            auto genbank_start = std::chrono::high_resolution_clock::now();
             if (opts.show_progress) {
                 ProgressBar genbank_progress(1, "Parsing genbank file");
                 genbank_parser.parse(opts.genbank_file);
@@ -160,6 +169,9 @@ int main(int argc, char* argv[]) {
             } else {
                 genbank_parser.parse(opts.genbank_file);
             }
+            auto genbank_end = std::chrono::high_resolution_clock::now();
+            auto genbank_duration = std::chrono::duration_cast<std::chrono::milliseconds>(genbank_end - genbank_start);
+            std::cout << "⏱️  Genbank parsing: " << genbank_duration.count() / 1000.0 << "s" << std::endl;
             
             auto genes = genbank_parser.get_genes();
             std::cout << "Loaded " << genes.size() << " genes from genbank file" << std::endl;
@@ -168,6 +180,7 @@ int main(int argc, char* argv[]) {
             std::string reference_sequence = genbank_parser.get_reference_sequence();
             std::cout << "Reference sequence length: " << reference_sequence.length() << std::endl;
             
+            auto aa_start = std::chrono::high_resolution_clock::now();
             if (opts.show_progress) {
                 ProgressBar aa_progress(actual_node_count, "Annotating amino acid mutations");
                 tree->annotate_aa_mutations(genes, reference_sequence, [&](size_t current) {
@@ -179,11 +192,15 @@ int main(int argc, char* argv[]) {
                 tree->annotate_aa_mutations(genes, reference_sequence);
                 tree->set_gene_details(genes);
             }
+            auto aa_end = std::chrono::high_resolution_clock::now();
+            auto aa_duration = std::chrono::duration_cast<std::chrono::milliseconds>(aa_end - aa_start);
+            std::cout << "⏱️  Amino acid annotation: " << aa_duration.count() / 1000.0 << "s" << std::endl;
         }
         
         // Process tree
         std::cout << "Processing tree..." << std::endl;
         
+        auto process_start = std::chrono::high_resolution_clock::now();
         if (opts.show_progress) {
             ProgressBar process_progress(1, "Processing tree structure");
             
@@ -217,6 +234,9 @@ int main(int argc, char* argv[]) {
             // Calculate coordinates
             tree->calculate_coordinates();
         }
+        auto process_end = std::chrono::high_resolution_clock::now();
+        auto process_duration = std::chrono::duration_cast<std::chrono::milliseconds>(process_end - process_start);
+        std::cout << "⏱️  Tree processing: " << process_duration.count() / 1000.0 << "s" << std::endl;
         
         // Filter mutations if requested
         if (opts.only_variable_sites) {
@@ -227,6 +247,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Writing output to: " << opts.output_file << std::endl;
         JSONLWriter writer(opts.output_file);
         
+        auto write_start = std::chrono::high_resolution_clock::now();
         if (opts.show_progress) {
             ProgressBar write_progress(actual_node_count, "Writing JSONL");  
             writer.write_tree(tree.get(), [&](size_t current) {
@@ -236,6 +257,9 @@ int main(int argc, char* argv[]) {
         } else {
             writer.write_tree(tree.get());
         }
+        auto write_end = std::chrono::high_resolution_clock::now();
+        auto write_duration = std::chrono::duration_cast<std::chrono::milliseconds>(write_end - write_start);
+        std::cout << "⏱️  JSONL writing: " << write_duration.count() / 1000.0 << "s" << std::endl;
         
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
