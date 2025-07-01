@@ -11,6 +11,7 @@
 #ifdef USE_TBB
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
+#include <tbb/concurrent_vector.h>
 #endif
 
 namespace taxonium {
@@ -308,6 +309,13 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
     // Create a nucleotide-to-codon mapping like Python's nuc_to_codon
     std::unordered_map<int32_t, std::vector<std::pair<int32_t, int32_t>>> nuc_to_codon; // position -> [(gene_idx, codon_pos), ...]
     
+    // Pre-calculate total positions for reserve
+    size_t total_positions = 0;
+    for (const auto& gene : genes) {
+        total_positions += (gene.end - gene.start);
+    }
+    nuc_to_codon.reserve(total_positions);
+    
     for (size_t gene_idx = 0; gene_idx < genes.size(); ++gene_idx) {
         const auto& gene = genes[gene_idx];
         
@@ -322,8 +330,9 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
         }
     }
     
+    
     // Progress tracking
-    size_t processed_nodes = 0;
+    std::atomic<size_t> processed_nodes{0};
     
     // Recursive function to annotate AA mutations (following Python's recursive_mutation_analysis)
     std::function<void(Node*, std::unordered_map<int32_t, char>&)> annotate_node = 
@@ -334,12 +343,17 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
         
         // Group mutations by codon (like Python's by_codon)
         std::unordered_map<std::string, std::vector<Mutation>> by_codon; // "gene_idx:codon_num" -> mutations
+        by_codon.reserve(node->mutations.size()); // Reserve space
         
         for (const auto& mutation : node->mutations) {
             int32_t zero_indexed_pos = mutation.position - 1;
-            if (nuc_to_codon.find(zero_indexed_pos) != nuc_to_codon.end()) {
-                for (const auto& codon_info : nuc_to_codon[zero_indexed_pos]) {
-                    std::string key = std::to_string(codon_info.first) + ":" + std::to_string(codon_info.second);
+            auto it = nuc_to_codon.find(zero_indexed_pos);
+            if (it != nuc_to_codon.end()) {
+                for (const auto& codon_info : it->second) {
+                    // More efficient key construction
+                    std::string key;
+                    key.reserve(20); // Most keys will be shorter
+                    key = std::to_string(codon_info.first) + ":" + std::to_string(codon_info.second);
                     by_codon[key].push_back(mutation);
                 }
             }
@@ -386,17 +400,24 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
             
             // Handle reverse strand genes
             if (gene.strand == '-') {
-                // Reverse complement both codons
+                // Reverse complement both codons using lookup table
                 auto complement_seq = [](const std::string& seq) {
                     std::string comp;
+                    comp.reserve(seq.size());
                     for (char c : seq) {
+                        // Direct inline complement
+                        char complement = c;
                         switch(c) {
-                            case 'A': comp += 'T'; break;
-                            case 'T': comp += 'A'; break;
-                            case 'C': comp += 'G'; break;
-                            case 'G': comp += 'C'; break;
-                            default: comp += c; break;
+                            case 'A': complement = 'T'; break;
+                            case 'T': complement = 'A'; break;
+                            case 'C': complement = 'G'; break;
+                            case 'G': complement = 'C'; break;
+                            case 'a': complement = 't'; break;
+                            case 't': complement = 'a'; break;
+                            case 'c': complement = 'g'; break;
+                            case 'g': complement = 'c'; break;
                         }
+                        comp += complement;
                     }
                     return comp;
                 };
@@ -428,9 +449,9 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
         }
         
         // Report progress
-        processed_nodes++;
+        size_t current = processed_nodes.fetch_add(1) + 1;
         if (progress_callback) {
-            progress_callback(processed_nodes);
+            progress_callback(current);
         }
         
         // Recursively process children
