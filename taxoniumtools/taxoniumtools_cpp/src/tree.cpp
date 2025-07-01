@@ -64,13 +64,46 @@ void Tree::ladderize_helper(Node* node, bool ascending) {
         ladderize_helper(child.get(), ascending);
     }
     
-    // Sort children by number of tips (simple version that was working better)
+    // Sort children exactly like Python but keep the REVERSED direction that was working
     std::sort(node->children.begin(), node->children.end(),
         [ascending](const std::unique_ptr<Node>& a, const std::unique_ptr<Node>& b) {
+            // 1. Primary: number of descendants (tips) - REVERSED
+            if (a->num_tips != b->num_tips) {
+                if (ascending) {
+                    return a->num_tips > b->num_tips;  // Reversed
+                } else {
+                    return a->num_tips < b->num_tips;  // Reversed
+                }
+            }
+            
+            // 2. Secondary: edge_length is not None (both always have it in C++)
+            // Skip this check since both always have edge_length
+            
+            // 3. Tertiary: edge length value - REVERSED  
+            if (a->edge_length != b->edge_length) {
+                if (ascending) {
+                    return a->edge_length > b->edge_length;  // Reversed
+                } else {
+                    return a->edge_length < b->edge_length;  // Reversed
+                }
+            }
+            
+            // 4. Quaternary: label is not None (name empty vs non-empty)
+            bool a_has_name = !a->name.empty();
+            bool b_has_name = !b->name.empty();
+            if (a_has_name != b_has_name) {
+                if (ascending) {
+                    return !a_has_name > !b_has_name;  // Reversed
+                } else {
+                    return !a_has_name < !b_has_name;  // Reversed
+                }
+            }
+            
+            // 5. Quinary: label (name) value - REVERSED
             if (ascending) {
-                return a->num_tips > b->num_tips;  // Reversed to match Python
+                return a->name > b->name;  // Reversed
             } else {
-                return a->num_tips < b->num_tips;  // Reversed to match Python
+                return a->name < b->name;  // Reversed
             }
         });
 }
@@ -81,10 +114,8 @@ void Tree::calculate_coordinates() {
     // num_tips should already be calculated before ladderizing
     // root->calculate_num_tips(); // Moved to main.cpp
     
-    // Set edge lengths based on mutation count
-    traverse_preorder([](Node* node) {
-        node->edge_length = static_cast<double>(node->mutations.size());
-    });
+    // edge_length should already be calculated before ladderizing
+    // (moved to main.cpp)
     
     // Set DFS indices
     size_t index = 0;

@@ -133,6 +133,11 @@ int main(int argc, char* argv[]) {
         // First calculate number of tips for ladderizing
         tree->get_root()->calculate_num_tips();
         
+        // Set edge lengths based on mutation count (needed for ladderizing)
+        tree->traverse_preorder([](Node* node) {
+            node->edge_length = static_cast<double>(node->mutations.size());
+        });
+        
         // Ladderize tree
         tree->ladderize(false);  // descending order
         
