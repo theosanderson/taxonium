@@ -8,6 +8,7 @@
 #include <map>
 #include <tuple>
 #include <set>
+#include <cmath>
 #include <yyjson.h>
 
 #ifdef USE_TBB
@@ -225,8 +226,9 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     const char* name_str = node->name.empty() ? "" : node->name.c_str();
     yyjson_mut_obj_add_str(doc, root, "name", name_str);
     
-    // Coordinates (use same precision as Python)
-    yyjson_mut_obj_add_real(doc, root, "x_dist", node->x_coord);
+    // Coordinates - round to 5 decimal places to match Python
+    double rounded_x = std::round(node->x_coord * 100000.0) / 100000.0;
+    yyjson_mut_obj_add_real(doc, root, "x_dist", rounded_x);
     
     // Y coordinate - output as integer for leaves to match Python
     if (node->is_leaf()) {
@@ -346,15 +348,14 @@ yyjson_mut_val* JSONLWriter::mutation_to_yyjson(const Mutation& mut, size_t inde
     
     yyjson_mut_obj_add_str(doc, obj, "gene", "nt");
     
-    // Use character arrays to avoid temporary string issues
-    char prev_residue[2] = {nuc_to_char(mut.par_nuc), '\0'};
-    yyjson_mut_obj_add_str(doc, obj, "previous_residue", prev_residue);
+    // Convert nucleotides to strings  
+    std::string prev_residue_str(1, nuc_to_char(mut.par_nuc));
+    std::string new_residue_str(1, nuc_to_char(mut.mut_nuc));
     
+    // Add string values directly (yyjson will copy them)
+    yyjson_mut_obj_add_strcpy(doc, obj, "previous_residue", prev_residue_str.c_str());
     yyjson_mut_obj_add_uint(doc, obj, "residue_pos", mut.position);
-    
-    char new_residue[2] = {nuc_to_char(mut.mut_nuc), '\0'};
-    yyjson_mut_obj_add_str(doc, obj, "new_residue", new_residue);
-    
+    yyjson_mut_obj_add_strcpy(doc, obj, "new_residue", new_residue_str.c_str());
     yyjson_mut_obj_add_uint(doc, obj, "mutation_id", index);
     yyjson_mut_obj_add_str(doc, obj, "type", "nt");
     
