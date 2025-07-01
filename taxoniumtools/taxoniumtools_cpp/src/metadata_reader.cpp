@@ -5,10 +5,15 @@
 #include <iostream>
 #include <algorithm>
 #include <atomic>
+#include <mutex>
+#include <thread>
+#include <vector>
 
 #ifdef USE_TBB
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
+#include <tbb/concurrent_queue.h>
+#include <tbb/task_group.h>
 #endif
 
 #ifdef USE_BOOST
@@ -17,6 +22,23 @@
 #endif
 
 namespace taxonium {
+
+// Fast tab-splitting function to avoid stringstream overhead
+std::vector<std::string> fast_split(const std::string& line, char delimiter) {
+    std::vector<std::string> result;
+    size_t start = 0;
+    size_t end = line.find(delimiter);
+    
+    while (end != std::string::npos) {
+        result.push_back(line.substr(start, end - start));
+        start = end + 1;
+        end = line.find(delimiter, start);
+    }
+    
+    // Add the last token
+    result.push_back(line.substr(start));
+    return result;
+}
 
 void MetadataReader::load(const std::string& filename, 
                           const std::string& columns_str,
@@ -59,19 +81,15 @@ void MetadataReader::load(const std::string& filename,
         throw std::runtime_error("Empty metadata file");
     }
     
-    // Parse header
-    std::vector<std::string> headers;
-    std::stringstream header_ss(header_line);
-    std::string header;
+    // Parse header using fast_split
+    std::vector<std::string> headers = fast_split(header_line, '\t');
     int key_column_index = -1;
-    int index = 0;
     
-    while (std::getline(header_ss, header, '\t')) {
-        headers.push_back(header);
-        if (header == key_column) {
+    for (int index = 0; index < headers.size(); ++index) {
+        if (headers[index] == key_column) {
             key_column_index = index;
+            break;
         }
-        index++;
     }
     
     if (key_column_index == -1) {
@@ -103,15 +121,74 @@ void MetadataReader::load(const std::string& filename,
     }
     
     // Read data
+#ifdef USE_TBB
+    // Bounded concurrent queue to limit memory usage
+    tbb::concurrent_bounded_queue<std::string> line_queue;
+    line_queue.set_capacity(1000); // Process in chunks of 1000 lines
+    std::atomic<bool> done_reading{false};
+    
+    // Mutex for string pool and metadata map
+    std::mutex pool_mutex;
+    std::mutex metadata_mutex;
+    
+    // Producer thread
+    std::thread producer([&]() {
+        std::string line;
+        while (std::getline(*input, line)) {
+            line_queue.push(line); // Will block if queue is full
+        }
+        done_reading = true;
+    });
+    
+    // Consumer threads
+    const size_t num_consumers = std::thread::hardware_concurrency() - 1; // Leave one for producer
+    std::vector<std::thread> consumers;
+    
+    for (size_t i = 0; i < num_consumers; ++i) {
+        consumers.emplace_back([&]() {
+            std::string line;
+            while (!done_reading || !line_queue.empty()) {
+                if (line_queue.try_pop(line)) {
+                    auto fields = fast_split(line, '\t');
+                    
+                    if (fields.size() > key_column_index) {
+                        std::string key = fields[key_column_index];
+                        std::unordered_map<std::string, std::string> row_data;
+                        
+                        // Synchronize string pool access
+                        {
+                            std::lock_guard<std::mutex> lock(pool_mutex);
+                            auto& pool = get_metadata_pool();
+                            for (size_t i = 0; i < column_indices.size(); ++i) {
+                                if (column_indices[i] < fields.size()) {
+                                    const auto& col_key = pool.intern(column_names[i]);
+                                    const auto& value = pool.intern(fields[column_indices[i]]);
+                                    row_data[col_key] = value;
+                                }
+                            }
+                        }
+                        
+                        // Synchronize metadata map access
+                        {
+                            std::lock_guard<std::mutex> lock(metadata_mutex);
+                            metadata[key] = std::move(row_data);
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Wait for all threads
+    producer.join();
+    for (auto& consumer : consumers) {
+        consumer.join();
+    }
+#else
+    // Sequential fallback
     std::string line;
     while (std::getline(*input, line)) {
-        std::vector<std::string> fields;
-        std::stringstream line_ss(line);
-        std::string field;
-        
-        while (std::getline(line_ss, field, '\t')) {
-            fields.push_back(field);
-        }
+        auto fields = fast_split(line, '\t');
         
         if (fields.size() > key_column_index) {
             std::string key = fields[key_column_index];
@@ -130,6 +207,7 @@ void MetadataReader::load(const std::string& filename,
             metadata[key] = std::move(row_data);
         }
     }
+#endif
     
     std::cout << "Loaded metadata for " << metadata.size() << " samples" << std::endl;
     std::cout << "String pool size: " << get_metadata_pool().size() << " unique strings" << std::endl;
