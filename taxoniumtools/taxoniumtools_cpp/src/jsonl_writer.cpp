@@ -65,13 +65,46 @@ void JSONLWriter::write_tree(Tree* tree, std::function<void(size_t)> progress_ca
         node_to_index[nodes[i]] = i;
     }
     
-    // Write each node (serial version to avoid race conditions)
+    // Write each node
+#ifdef USE_TBB
+    // Parallel JSON generation with chunked processing
+    const size_t chunk_size = 50000;  // Smaller chunks
+    
+    for (size_t start = 0; start < nodes.size(); start += chunk_size) {
+        size_t end = std::min(start + chunk_size, nodes.size());
+        size_t chunk_len = end - start;
+        
+        // Pre-allocate storage for this chunk
+        std::vector<std::string> json_strings(chunk_len);
+        
+        // Generate JSON strings in parallel
+        tbb::parallel_for(size_t(0), chunk_len,
+            [&](size_t local_idx) {
+                size_t global_idx = start + local_idx;
+                std::ostringstream oss;
+                write_node_to_stream(nodes[global_idx], global_idx, node_to_index, oss);
+                json_strings[local_idx] = oss.str();
+            });
+        
+        // Write chunk to file sequentially
+        for (const auto& json_str : json_strings) {
+            *output_stream << json_str;
+        }
+        
+        // Report progress for this chunk
+        if (progress_callback) {
+            progress_callback(end);
+        }
+    }
+#else
+    // Sequential fallback
     for (size_t i = 0; i < nodes.size(); ++i) {
         write_node(nodes[i], i, node_to_index);
         if (progress_callback) {
             progress_callback(i + 1);
         }
     }
+#endif
     
     output_stream->flush();
 }
