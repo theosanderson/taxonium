@@ -172,6 +172,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named taxoniumtools_lib
+
+# Build rule for target.
+taxoniumtools_lib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 taxoniumtools_lib
+.PHONY : taxoniumtools_lib
+
+# fast build rule for target.
+taxoniumtools_lib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/build
+.PHONY : taxoniumtools_lib/fast
+
+#=============================================================================
 # Target rules for targets named taxoniumtools_cpp
 
 # Build rule for target.
@@ -185,24 +198,24 @@ taxoniumtools_cpp/fast:
 .PHONY : taxoniumtools_cpp/fast
 
 #=============================================================================
-# Target rules for targets named test_basic
+# Target rules for targets named test_taxonium
 
 # Build rule for target.
-test_basic: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_basic
-.PHONY : test_basic
+test_taxonium: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_taxonium
+.PHONY : test_taxonium
 
 # fast build rule for target.
-test_basic/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/build
-.PHONY : test_basic/fast
+test_taxonium/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/build
+.PHONY : test_taxonium/fast
 
 parsimony.pb.o: parsimony.pb.cc.o
 .PHONY : parsimony.pb.o
 
 # target to build an object file
 parsimony.pb.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/parsimony.pb.cc.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/parsimony.pb.cc.o
 .PHONY : parsimony.pb.cc.o
 
 parsimony.pb.i: parsimony.pb.cc.i
@@ -210,7 +223,7 @@ parsimony.pb.i: parsimony.pb.cc.i
 
 # target to preprocess a source file
 parsimony.pb.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/parsimony.pb.cc.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/parsimony.pb.cc.i
 .PHONY : parsimony.pb.cc.i
 
 parsimony.pb.s: parsimony.pb.cc.s
@@ -218,15 +231,39 @@ parsimony.pb.s: parsimony.pb.cc.s
 
 # target to generate assembly for a file
 parsimony.pb.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/parsimony.pb.cc.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/parsimony.pb.cc.s
 .PHONY : parsimony.pb.cc.s
+
+src/codon_table.o: src/codon_table.cpp.o
+.PHONY : src/codon_table.o
+
+# target to build an object file
+src/codon_table.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/codon_table.cpp.o
+.PHONY : src/codon_table.cpp.o
+
+src/codon_table.i: src/codon_table.cpp.i
+.PHONY : src/codon_table.i
+
+# target to preprocess a source file
+src/codon_table.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/codon_table.cpp.i
+.PHONY : src/codon_table.cpp.i
+
+src/codon_table.s: src/codon_table.cpp.s
+.PHONY : src/codon_table.s
+
+# target to generate assembly for a file
+src/codon_table.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/codon_table.cpp.s
+.PHONY : src/codon_table.cpp.s
 
 src/genbank_parser.o: src/genbank_parser.cpp.o
 .PHONY : src/genbank_parser.o
 
 # target to build an object file
 src/genbank_parser.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/genbank_parser.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/genbank_parser.cpp.o
 .PHONY : src/genbank_parser.cpp.o
 
 src/genbank_parser.i: src/genbank_parser.cpp.i
@@ -234,7 +271,7 @@ src/genbank_parser.i: src/genbank_parser.cpp.i
 
 # target to preprocess a source file
 src/genbank_parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/genbank_parser.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/genbank_parser.cpp.i
 .PHONY : src/genbank_parser.cpp.i
 
 src/genbank_parser.s: src/genbank_parser.cpp.s
@@ -242,7 +279,7 @@ src/genbank_parser.s: src/genbank_parser.cpp.s
 
 # target to generate assembly for a file
 src/genbank_parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/genbank_parser.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/genbank_parser.cpp.s
 .PHONY : src/genbank_parser.cpp.s
 
 src/jsonl_writer.o: src/jsonl_writer.cpp.o
@@ -250,7 +287,7 @@ src/jsonl_writer.o: src/jsonl_writer.cpp.o
 
 # target to build an object file
 src/jsonl_writer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/jsonl_writer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/jsonl_writer.cpp.o
 .PHONY : src/jsonl_writer.cpp.o
 
 src/jsonl_writer.i: src/jsonl_writer.cpp.i
@@ -258,7 +295,7 @@ src/jsonl_writer.i: src/jsonl_writer.cpp.i
 
 # target to preprocess a source file
 src/jsonl_writer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/jsonl_writer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/jsonl_writer.cpp.i
 .PHONY : src/jsonl_writer.cpp.i
 
 src/jsonl_writer.s: src/jsonl_writer.cpp.s
@@ -266,7 +303,7 @@ src/jsonl_writer.s: src/jsonl_writer.cpp.s
 
 # target to generate assembly for a file
 src/jsonl_writer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/jsonl_writer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/jsonl_writer.cpp.s
 .PHONY : src/jsonl_writer.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -298,7 +335,7 @@ src/metadata_reader.o: src/metadata_reader.cpp.o
 
 # target to build an object file
 src/metadata_reader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/metadata_reader.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/metadata_reader.cpp.o
 .PHONY : src/metadata_reader.cpp.o
 
 src/metadata_reader.i: src/metadata_reader.cpp.i
@@ -306,7 +343,7 @@ src/metadata_reader.i: src/metadata_reader.cpp.i
 
 # target to preprocess a source file
 src/metadata_reader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/metadata_reader.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/metadata_reader.cpp.i
 .PHONY : src/metadata_reader.cpp.i
 
 src/metadata_reader.s: src/metadata_reader.cpp.s
@@ -314,7 +351,7 @@ src/metadata_reader.s: src/metadata_reader.cpp.s
 
 # target to generate assembly for a file
 src/metadata_reader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/metadata_reader.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/metadata_reader.cpp.s
 .PHONY : src/metadata_reader.cpp.s
 
 src/mutation.o: src/mutation.cpp.o
@@ -322,7 +359,7 @@ src/mutation.o: src/mutation.cpp.o
 
 # target to build an object file
 src/mutation.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/mutation.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/mutation.cpp.o
 .PHONY : src/mutation.cpp.o
 
 src/mutation.i: src/mutation.cpp.i
@@ -330,7 +367,7 @@ src/mutation.i: src/mutation.cpp.i
 
 # target to preprocess a source file
 src/mutation.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/mutation.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/mutation.cpp.i
 .PHONY : src/mutation.cpp.i
 
 src/mutation.s: src/mutation.cpp.s
@@ -338,7 +375,7 @@ src/mutation.s: src/mutation.cpp.s
 
 # target to generate assembly for a file
 src/mutation.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/mutation.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/mutation.cpp.s
 .PHONY : src/mutation.cpp.s
 
 src/node.o: src/node.cpp.o
@@ -346,7 +383,7 @@ src/node.o: src/node.cpp.o
 
 # target to build an object file
 src/node.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/node.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/node.cpp.o
 .PHONY : src/node.cpp.o
 
 src/node.i: src/node.cpp.i
@@ -354,7 +391,7 @@ src/node.i: src/node.cpp.i
 
 # target to preprocess a source file
 src/node.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/node.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/node.cpp.i
 .PHONY : src/node.cpp.i
 
 src/node.s: src/node.cpp.s
@@ -362,7 +399,7 @@ src/node.s: src/node.cpp.s
 
 # target to generate assembly for a file
 src/node.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/node.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/node.cpp.s
 .PHONY : src/node.cpp.s
 
 src/protobuf_parser.o: src/protobuf_parser.cpp.o
@@ -370,7 +407,7 @@ src/protobuf_parser.o: src/protobuf_parser.cpp.o
 
 # target to build an object file
 src/protobuf_parser.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/protobuf_parser.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/protobuf_parser.cpp.o
 .PHONY : src/protobuf_parser.cpp.o
 
 src/protobuf_parser.i: src/protobuf_parser.cpp.i
@@ -378,7 +415,7 @@ src/protobuf_parser.i: src/protobuf_parser.cpp.i
 
 # target to preprocess a source file
 src/protobuf_parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/protobuf_parser.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/protobuf_parser.cpp.i
 .PHONY : src/protobuf_parser.cpp.i
 
 src/protobuf_parser.s: src/protobuf_parser.cpp.s
@@ -386,7 +423,7 @@ src/protobuf_parser.s: src/protobuf_parser.cpp.s
 
 # target to generate assembly for a file
 src/protobuf_parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/protobuf_parser.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/protobuf_parser.cpp.s
 .PHONY : src/protobuf_parser.cpp.s
 
 src/tree.o: src/tree.cpp.o
@@ -394,7 +431,7 @@ src/tree.o: src/tree.cpp.o
 
 # target to build an object file
 src/tree.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/tree.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/tree.cpp.o
 .PHONY : src/tree.cpp.o
 
 src/tree.i: src/tree.cpp.i
@@ -402,7 +439,7 @@ src/tree.i: src/tree.cpp.i
 
 # target to preprocess a source file
 src/tree.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/tree.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/tree.cpp.i
 .PHONY : src/tree.cpp.i
 
 src/tree.s: src/tree.cpp.s
@@ -410,7 +447,7 @@ src/tree.s: src/tree.cpp.s
 
 # target to generate assembly for a file
 src/tree.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/tree.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/tree.cpp.s
 .PHONY : src/tree.cpp.s
 
 src/utils.o: src/utils.cpp.o
@@ -418,7 +455,7 @@ src/utils.o: src/utils.cpp.o
 
 # target to build an object file
 src/utils.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/utils.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/utils.cpp.o
 .PHONY : src/utils.cpp.o
 
 src/utils.i: src/utils.cpp.i
@@ -426,7 +463,7 @@ src/utils.i: src/utils.cpp.i
 
 # target to preprocess a source file
 src/utils.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/utils.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/utils.cpp.i
 .PHONY : src/utils.cpp.i
 
 src/utils.s: src/utils.cpp.s
@@ -434,7 +471,7 @@ src/utils.s: src/utils.cpp.s
 
 # target to generate assembly for a file
 src/utils.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/src/utils.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/src/utils.cpp.s
 .PHONY : src/utils.cpp.s
 
 # Help Target
@@ -451,10 +488,14 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... taxoniumtools_cpp"
-	@echo "... test_basic"
+	@echo "... taxoniumtools_lib"
+	@echo "... test_taxonium"
 	@echo "... parsimony.pb.o"
 	@echo "... parsimony.pb.i"
 	@echo "... parsimony.pb.s"
+	@echo "... src/codon_table.o"
+	@echo "... src/codon_table.i"
+	@echo "... src/codon_table.s"
 	@echo "... src/genbank_parser.o"
 	@echo "... src/genbank_parser.i"
 	@echo "... src/genbank_parser.s"

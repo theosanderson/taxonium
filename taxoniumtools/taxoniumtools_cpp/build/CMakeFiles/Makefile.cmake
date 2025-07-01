@@ -150,6 +150,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/taxoniumtools_lib.dir/DependInfo.cmake"
   "CMakeFiles/taxoniumtools_cpp.dir/DependInfo.cmake"
-  "test/CMakeFiles/test_basic.dir/DependInfo.cmake"
+  "test/CMakeFiles/test_taxonium.dir/DependInfo.cmake"
   )

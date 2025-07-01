@@ -1,3 +1,4 @@
+/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles/taxoniumtools_lib.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles/taxoniumtools_cpp.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles/test.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles/edit_cache.dir
@@ -6,7 +7,7 @@
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles/install.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles/install/local.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles/install/strip.dir
-/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test/CMakeFiles/test_basic.dir
+/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test/CMakeFiles/test_taxonium.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test/CMakeFiles/test.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test/CMakeFiles/edit_cache.dir
 /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test/CMakeFiles/rebuild_cache.dir

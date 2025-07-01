@@ -919,21 +919,4 @@ CMakeFiles/taxoniumtools_cpp.dir/src/main.cpp.o: \
   /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/include/taxonium/protobuf_parser.hpp \
   /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/include/taxonium/jsonl_writer.hpp \
   /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/include/taxonium/metadata_reader.hpp \
-  /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/include/taxonium/genbank_parser.hpp \
-  /opt/homebrew/include/tbb/global_control.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/global_control.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_config.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_export.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_assert.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_attach.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_exception.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_namespace_injection.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_template_helpers.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_utils.h \
-  /opt/homebrew/include/tbb/../oneapi/tbb/detail/_machine.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/thread \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/formatter.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/this_thread.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/thread.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/fenv.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/fenv.h
+  /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/include/taxonium/genbank_parser.hpp

@@ -63,11 +63,13 @@ CMAKE_BINARY_DIR = /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/taxoniumtools_lib.dir/all
 all: CMakeFiles/taxoniumtools_cpp.dir/all
 all: test/all
 .PHONY : all
 
 # The main recursive "codegen" target.
+codegen: CMakeFiles/taxoniumtools_lib.dir/codegen
 codegen: CMakeFiles/taxoniumtools_cpp.dir/codegen
 codegen: test/codegen
 .PHONY : codegen
@@ -77,6 +79,7 @@ preinstall: test/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/taxoniumtools_lib.dir/clean
 clean: CMakeFiles/taxoniumtools_cpp.dir/clean
 clean: test/clean
 .PHONY : clean
@@ -85,11 +88,11 @@ clean: test/clean
 # Directory level rules for directory test
 
 # Recursive "all" directory target.
-test/all: test/CMakeFiles/test_basic.dir/all
+test/all: test/CMakeFiles/test_taxonium.dir/all
 .PHONY : test/all
 
 # Recursive "codegen" directory target.
-test/codegen: test/CMakeFiles/test_basic.dir/codegen
+test/codegen: test/CMakeFiles/test_taxonium.dir/codegen
 .PHONY : test/codegen
 
 # Recursive "preinstall" directory target.
@@ -97,22 +100,54 @@ test/preinstall:
 .PHONY : test/preinstall
 
 # Recursive "clean" directory target.
-test/clean: test/CMakeFiles/test_basic.dir/clean
+test/clean: test/CMakeFiles/test_taxonium.dir/clean
 .PHONY : test/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/taxoniumtools_lib.dir
+
+# All Build rule for target.
+CMakeFiles/taxoniumtools_lib.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14 "Built target taxoniumtools_lib"
+.PHONY : CMakeFiles/taxoniumtools_lib.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/taxoniumtools_lib.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 12
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/taxoniumtools_lib.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 0
+.PHONY : CMakeFiles/taxoniumtools_lib.dir/rule
+
+# Convenience name for target.
+taxoniumtools_lib: CMakeFiles/taxoniumtools_lib.dir/rule
+.PHONY : taxoniumtools_lib
+
+# codegen rule for target.
+CMakeFiles/taxoniumtools_lib.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14 "Finished codegen for target taxoniumtools_lib"
+.PHONY : CMakeFiles/taxoniumtools_lib.dir/codegen
+
+# clean rule for target.
+CMakeFiles/taxoniumtools_lib.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_lib.dir/build.make CMakeFiles/taxoniumtools_lib.dir/clean
+.PHONY : CMakeFiles/taxoniumtools_lib.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/taxoniumtools_cpp.dir
 
 # All Build rule for target.
-CMakeFiles/taxoniumtools_cpp.dir/all:
+CMakeFiles/taxoniumtools_cpp.dir/all: CMakeFiles/taxoniumtools_lib.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12 "Built target taxoniumtools_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=1,2 "Built target taxoniumtools_cpp"
 .PHONY : CMakeFiles/taxoniumtools_cpp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/taxoniumtools_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 12
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/taxoniumtools_cpp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 0
 .PHONY : CMakeFiles/taxoniumtools_cpp.dir/rule
@@ -124,7 +159,7 @@ taxoniumtools_cpp: CMakeFiles/taxoniumtools_cpp.dir/rule
 # codegen rule for target.
 CMakeFiles/taxoniumtools_cpp.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/taxoniumtools_cpp.dir/build.make CMakeFiles/taxoniumtools_cpp.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12 "Finished codegen for target taxoniumtools_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=1,2 "Finished codegen for target taxoniumtools_cpp"
 .PHONY : CMakeFiles/taxoniumtools_cpp.dir/codegen
 
 # clean rule for target.
@@ -133,36 +168,36 @@ CMakeFiles/taxoniumtools_cpp.dir/clean:
 .PHONY : CMakeFiles/taxoniumtools_cpp.dir/clean
 
 #=============================================================================
-# Target rules for target test/CMakeFiles/test_basic.dir
+# Target rules for target test/CMakeFiles/test_taxonium.dir
 
 # All Build rule for target.
-test/CMakeFiles/test_basic.dir/all:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/depend
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=13,14 "Built target test_basic"
-.PHONY : test/CMakeFiles/test_basic.dir/all
+test/CMakeFiles/test_taxonium.dir/all: CMakeFiles/taxoniumtools_lib.dir/all
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/depend
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=15,16 "Built target test_taxonium"
+.PHONY : test/CMakeFiles/test_taxonium.dir/all
 
 # Build rule for subdir invocation for target.
-test/CMakeFiles/test_basic.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_basic.dir/all
+test/CMakeFiles/test_taxonium.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 14
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_taxonium.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles 0
-.PHONY : test/CMakeFiles/test_basic.dir/rule
+.PHONY : test/CMakeFiles/test_taxonium.dir/rule
 
 # Convenience name for target.
-test_basic: test/CMakeFiles/test_basic.dir/rule
-.PHONY : test_basic
+test_taxonium: test/CMakeFiles/test_taxonium.dir/rule
+.PHONY : test_taxonium
 
 # codegen rule for target.
-test/CMakeFiles/test_basic.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=13,14 "Finished codegen for target test_basic"
-.PHONY : test/CMakeFiles/test_basic.dir/codegen
+test/CMakeFiles/test_taxonium.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/CMakeFiles --progress-num=15,16 "Finished codegen for target test_taxonium"
+.PHONY : test/CMakeFiles/test_taxonium.dir/codegen
 
 # clean rule for target.
-test/CMakeFiles/test_basic.dir/clean:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/clean
-.PHONY : test/CMakeFiles/test_basic.dir/clean
+test/CMakeFiles/test_taxonium.dir/clean:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/clean
+.PHONY : test/CMakeFiles/test_taxonium.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

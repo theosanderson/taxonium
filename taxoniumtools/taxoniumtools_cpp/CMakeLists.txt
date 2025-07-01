@@ -43,9 +43,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}) # For generated protobuf header
 # Generate protobuf sources
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS proto/parsimony.proto)
 
-# Source files
-set(SOURCES
-    src/main.cpp
+# Source files (excluding main for library)
+set(LIB_SOURCES
     src/tree.cpp
     src/mutation.cpp
     src/node.cpp
@@ -54,28 +53,33 @@ set(SOURCES
     src/metadata_reader.cpp
     src/genbank_parser.cpp
     src/utils.cpp
+    src/codon_table.cpp
     ${PROTO_SRCS}
 )
 
-# Create executable
-add_executable(taxoniumtools_cpp ${SOURCES})
-
-# Link libraries
-target_link_libraries(taxoniumtools_cpp
+# Create static library for tests
+add_library(taxoniumtools_lib STATIC ${LIB_SOURCES})
+target_link_libraries(taxoniumtools_lib
     ${Protobuf_LIBRARIES}
     Threads::Threads
     ZLIB::ZLIB
 )
 
 if(USE_TBB)
-    target_link_libraries(taxoniumtools_cpp TBB::tbb)
-    target_compile_definitions(taxoniumtools_cpp PRIVATE USE_TBB=1)
+    target_link_libraries(taxoniumtools_lib TBB::tbb)
+    target_compile_definitions(taxoniumtools_lib PRIVATE USE_TBB=1)
 endif()
 
 if(Boost_FOUND)
-    target_link_libraries(taxoniumtools_cpp Boost::iostreams)
-    target_compile_definitions(taxoniumtools_cpp PRIVATE USE_BOOST=1)
+    target_link_libraries(taxoniumtools_lib Boost::iostreams)
+    target_compile_definitions(taxoniumtools_lib PRIVATE USE_BOOST=1)
 endif()
+
+# Create executable
+add_executable(taxoniumtools_cpp src/main.cpp)
+
+# Link libraries
+target_link_libraries(taxoniumtools_cpp taxoniumtools_lib)
 
 # Install target
 install(TARGETS taxoniumtools_cpp DESTINATION bin)

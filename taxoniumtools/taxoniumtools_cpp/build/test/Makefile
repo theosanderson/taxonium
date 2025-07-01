@@ -172,25 +172,25 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-test/CMakeFiles/test_basic.dir/rule:
-	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_basic.dir/rule
-.PHONY : test/CMakeFiles/test_basic.dir/rule
+test/CMakeFiles/test_taxonium.dir/rule:
+	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_taxonium.dir/rule
+.PHONY : test/CMakeFiles/test_taxonium.dir/rule
 
 # Convenience name for target.
-test_basic: test/CMakeFiles/test_basic.dir/rule
-.PHONY : test_basic
+test_taxonium: test/CMakeFiles/test_taxonium.dir/rule
+.PHONY : test_taxonium
 
 # fast build rule for target.
-test_basic/fast:
-	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/build
-.PHONY : test_basic/fast
+test_taxonium/fast:
+	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/build
+.PHONY : test_taxonium/fast
 
 test_basic.o: test_basic.cpp.o
 .PHONY : test_basic.o
 
 # target to build an object file
 test_basic.cpp.o:
-	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/test_basic.cpp.o
+	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/test_basic.cpp.o
 .PHONY : test_basic.cpp.o
 
 test_basic.i: test_basic.cpp.i
@@ -198,7 +198,7 @@ test_basic.i: test_basic.cpp.i
 
 # target to preprocess a source file
 test_basic.cpp.i:
-	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/test_basic.cpp.i
+	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/test_basic.cpp.i
 .PHONY : test_basic.cpp.i
 
 test_basic.s: test_basic.cpp.s
@@ -206,7 +206,7 @@ test_basic.s: test_basic.cpp.s
 
 # target to generate assembly for a file
 test_basic.cpp.s:
-	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_basic.dir/build.make test/CMakeFiles/test_basic.dir/test_basic.cpp.s
+	cd /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_taxonium.dir/build.make test/CMakeFiles/test_taxonium.dir/test_basic.cpp.s
 .PHONY : test_basic.cpp.s
 
 # Help Target
@@ -222,7 +222,7 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... test_basic"
+	@echo "... test_taxonium"
 	@echo "... test_basic.o"
 	@echo "... test_basic.i"
 	@echo "... test_basic.s"

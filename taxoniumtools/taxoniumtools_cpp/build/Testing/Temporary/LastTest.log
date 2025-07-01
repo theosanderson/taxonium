@@ -1,0 +1,35 @@
+Start testing: Jul 01 14:20 BST
+----------------------------------------------------------
+1/1 Testing: BasicTests
+1/1 Test: BasicTests
+Command: "/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test/test_taxonium"
+Directory: /Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test
+"BasicTests" start time: Jul 01 14:20 BST
+Output:
+----------------------------------------------------------
+Running Taxoniumtools C++ tests...
+===================================
+Testing mutations...
+  ✓ Nucleotide encoding tests passed
+  ✓ Mutation creation tests passed
+Testing string pool...
+  ✓ String pool tests passed
+Testing node...
+  ✓ Node tests passed
+Testing utilities...
+  ✓ Utility tests passed
+Testing codon table...
+  ✓ Codon table tests passed
+Testing precision formatting...
+  ✓ Precision formatting tests passed
+
+All tests passed! ✓
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"BasicTests" end time: Jul 01 14:20 BST
+"BasicTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jul 01 14:20 BST
