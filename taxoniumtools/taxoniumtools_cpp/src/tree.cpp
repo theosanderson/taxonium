@@ -305,62 +305,143 @@ size_t Tree::get_num_tips() const {
 void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::string& reference_sequence) {
     if (!root || genes.empty() || reference_sequence.empty()) return;
     
-    // Helper function to get sequence at a node by applying mutations
-    auto get_sequence_at_node = [&](Node* node, const std::string& parent_seq) -> std::string {
-        std::string seq = parent_seq;
-        for (const auto& mut : node->mutations) {
-            if (mut.position > 0 && mut.position <= static_cast<int32_t>(seq.length())) {
-                seq[mut.position - 1] = nuc_to_char(mut.mut_nuc);  // Convert to 0-indexed
-            }
-        }
-        return seq;
-    };
+    // Create a nucleotide-to-codon mapping like Python's nuc_to_codon
+    std::unordered_map<int32_t, std::vector<std::pair<int32_t, int32_t>>> nuc_to_codon; // position -> [(gene_idx, codon_pos), ...]
     
-    // Recursive function to annotate AA mutations
-    std::function<void(Node*, const std::string&)> annotate_node = [&](Node* node, const std::string& parent_seq) {
-        // Get this node's sequence
-        std::string node_seq = get_sequence_at_node(node, parent_seq);
+    for (size_t gene_idx = 0; gene_idx < genes.size(); ++gene_idx) {
+        const auto& gene = genes[gene_idx];
+        
+        int32_t nucleotide_counter = 0;
+        for (int32_t genome_pos = gene.start; genome_pos < gene.end; ++genome_pos) {
+            int32_t codon_number = nucleotide_counter / 3;
+            int32_t pos_in_codon = nucleotide_counter % 3;
+            
+            // Map this genomic position to this gene's codon
+            nuc_to_codon[genome_pos].push_back({static_cast<int32_t>(gene_idx), codon_number});
+            nucleotide_counter++;
+        }
+    }
+    
+    // Recursive function to annotate AA mutations (following Python's recursive_mutation_analysis)
+    std::function<void(Node*, std::unordered_map<int32_t, char>&)> annotate_node = 
+        [&](Node* node, std::unordered_map<int32_t, char>& past_nuc_muts_dict) {
         
         // Clear existing AA mutations
         node->aa_mutations.clear();
         
-        // For each gene, check for AA changes
-        for (const auto& gene : genes) {
-            if (gene.strand == '-') continue;  // Skip reverse strand genes for now
-            
-            // Extract gene sequences
-            if (gene.end <= static_cast<int32_t>(parent_seq.length()) && 
-                gene.end <= static_cast<int32_t>(node_seq.length())) {
-                
-                std::string parent_gene_seq = parent_seq.substr(gene.start, gene.length());
-                std::string node_gene_seq = node_seq.substr(gene.start, gene.length());
-                
-                // Translate to amino acids
-                std::string parent_aa = CodonTable::translate_sequence(parent_gene_seq);
-                std::string node_aa = CodonTable::translate_sequence(node_gene_seq);
-                
-                // Find AA differences
-                for (size_t i = 0; i < std::min(parent_aa.length(), node_aa.length()); ++i) {
-                    if (parent_aa[i] != node_aa[i]) {
-                        AAMutation aa_mut;
-                        aa_mut.gene = gene.name;
-                        aa_mut.codon_position = static_cast<int32_t>(i + 1);  // 1-indexed
-                        aa_mut.ref_aa = std::string(1, parent_aa[i]);
-                        aa_mut.alt_aa = std::string(1, node_aa[i]);
-                        node->aa_mutations.push_back(aa_mut);
-                    }
+        // Group mutations by codon (like Python's by_codon)
+        std::unordered_map<std::string, std::vector<Mutation>> by_codon; // "gene_idx:codon_num" -> mutations
+        
+        for (const auto& mutation : node->mutations) {
+            int32_t zero_indexed_pos = mutation.position - 1;
+            if (nuc_to_codon.find(zero_indexed_pos) != nuc_to_codon.end()) {
+                for (const auto& codon_info : nuc_to_codon[zero_indexed_pos]) {
+                    std::string key = std::to_string(codon_info.first) + ":" + std::to_string(codon_info.second);
+                    by_codon[key].push_back(mutation);
                 }
             }
         }
         
+        // Process each affected codon
+        for (const auto& [key, mutations] : by_codon) {
+            // Parse gene_idx:codon_num
+            size_t colon_pos = key.find(':');
+            int32_t gene_idx = std::stoi(key.substr(0, colon_pos));
+            int32_t codon_number = std::stoi(key.substr(colon_pos + 1));
+            
+            const auto& gene = genes[gene_idx];
+            
+            // Calculate codon positions
+            int32_t codon_start = gene.start + codon_number * 3;
+            
+            // Build initial codon from reference sequence
+            std::string initial_codon = "";
+            std::string final_codon = "";
+            
+            for (int32_t i = 0; i < 3; ++i) {
+                int32_t pos = codon_start + i;
+                if (pos < static_cast<int32_t>(reference_sequence.length())) {
+                    char nucleotide = reference_sequence[pos];
+                    
+                    // Apply past mutations
+                    if (past_nuc_muts_dict.find(pos) != past_nuc_muts_dict.end()) {
+                        nucleotide = past_nuc_muts_dict[pos];
+                    }
+                    
+                    initial_codon += nucleotide;
+                    final_codon += nucleotide;
+                }
+            }
+            
+            // Apply current mutations to final codon
+            for (const auto& mutation : mutations) {
+                int32_t pos_in_codon = (mutation.position - 1) - codon_start;
+                if (pos_in_codon >= 0 && pos_in_codon < 3) {
+                    final_codon[pos_in_codon] = nuc_to_char(mutation.mut_nuc);
+                }
+            }
+            
+            // Handle reverse strand genes
+            if (gene.strand == '-') {
+                // Reverse complement both codons
+                auto complement_seq = [](const std::string& seq) {
+                    std::string comp;
+                    for (char c : seq) {
+                        switch(c) {
+                            case 'A': comp += 'T'; break;
+                            case 'T': comp += 'A'; break;
+                            case 'C': comp += 'G'; break;
+                            case 'G': comp += 'C'; break;
+                            default: comp += c; break;
+                        }
+                    }
+                    return comp;
+                };
+                initial_codon = complement_seq(initial_codon);
+                final_codon = complement_seq(final_codon);
+            }
+            
+            // Translate to amino acids
+            char initial_aa = CodonTable::translate(initial_codon);
+            char final_aa = CodonTable::translate(final_codon);
+            
+            // Add AA mutation if there's a difference
+            if (initial_aa != final_aa) {
+                AAMutation aa_mut;
+                aa_mut.gene = gene.name;
+                aa_mut.codon_position = codon_number + 1;  // 1-indexed
+                aa_mut.ref_aa = std::string(1, initial_aa);
+                aa_mut.alt_aa = std::string(1, final_aa);
+                // Set nuc_for_codon to the middle nucleotide position of the codon (1-indexed)
+                aa_mut.nuc_for_codon = codon_start + 1 + 1;  // +1 for middle position, +1 for 1-indexed
+                node->aa_mutations.push_back(aa_mut);
+            }
+        }
+        
+        // Update past mutations dict with current mutations
+        std::unordered_map<int32_t, char> new_past_nuc_muts_dict = past_nuc_muts_dict;
+        for (const auto& mutation : node->mutations) {
+            new_past_nuc_muts_dict[mutation.position - 1] = nuc_to_char(mutation.mut_nuc);
+        }
+        
         // Recursively process children
         for (auto& child : node->children) {
-            annotate_node(child.get(), node_seq);
+            annotate_node(child.get(), new_past_nuc_muts_dict);
         }
     };
     
-    // Start annotation from root
-    annotate_node(root.get(), reference_sequence);
+    // Start annotation from root with empty past mutations
+    std::unordered_map<int32_t, char> empty_past_muts;
+    annotate_node(root.get(), empty_past_muts);
+}
+
+void Tree::set_gene_details(const std::vector<Gene>& genes) {
+    // This method sets gene details for the configuration output
+    // In the Python implementation, this adds gene information to the tree's metadata
+    // For now, we'll store the genes in the tree for later use by the JSON writer
+    
+    // TODO: Store genes somewhere accessible by JSONLWriter
+    // This might require adding a member variable to Tree or passing genes to the writer
 }
 
 } // namespace taxonium

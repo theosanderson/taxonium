@@ -34,6 +34,7 @@ public:
     void ladderize(bool ascending = false);
     void calculate_coordinates();
     void annotate_aa_mutations(const std::vector<Gene>& genes, const std::string& reference_sequence);
+    void set_gene_details(const std::vector<Gene>& genes);
     
     // Traversal methods
     std::vector<Node*> get_nodes_breadth_first();

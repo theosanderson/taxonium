@@ -102,11 +102,16 @@ void JSONLWriter::write_header(Tree* tree) {
     // Version
     ss << "\"version\":\"2.1.2\",";
     
-    // Collect all unique mutations from all nodes
+    // Collect all unique nucleotide mutations from all nodes
     std::map<std::tuple<std::string, int32_t, Nucleotide, Nucleotide>, size_t> unique_mutations;
     std::vector<Mutation> all_mutations_vec;
     
+    // Collect all unique amino acid mutations from all nodes
+    std::map<std::tuple<std::string, int32_t, std::string, std::string>, size_t> unique_aa_mutations;
+    std::vector<AAMutation> all_aa_mutations_vec;
+    
     tree->traverse_preorder([&](Node* node) {
+        // Process nucleotide mutations
         for (auto& mut : node->mutations) {
             auto key = std::make_tuple(mut.chromosome, mut.position, mut.par_nuc, mut.mut_nuc);
             if (unique_mutations.find(key) == unique_mutations.end()) {
@@ -116,14 +121,38 @@ void JSONLWriter::write_header(Tree* tree) {
             }
             mutation_to_index[&mut] = unique_mutations[key];
         }
+        
+        // Process amino acid mutations
+        for (auto& aa_mut : node->aa_mutations) {
+            auto key = std::make_tuple(aa_mut.gene, aa_mut.codon_position, aa_mut.ref_aa, aa_mut.alt_aa);
+            if (unique_aa_mutations.find(key) == unique_aa_mutations.end()) {
+                size_t index = all_mutations_vec.size() + all_aa_mutations_vec.size();
+                unique_aa_mutations[key] = index;
+                all_aa_mutations_vec.push_back(aa_mut);
+            }
+            aa_mutation_to_index[&aa_mut] = unique_aa_mutations[key];
+        }
     });
     
-    // Write mutations array
+    // Write mutations array (both nucleotide and amino acid)
     ss << "\"mutations\":[";
+    size_t total_mutations = all_mutations_vec.size() + all_aa_mutations_vec.size();
+    size_t mut_index = 0;
+    
+    // Write nucleotide mutations
     for (size_t i = 0; i < all_mutations_vec.size(); ++i) {
-        if (i > 0) ss << ",";
-        ss << mutation_to_json(all_mutations_vec[i], i);
+        if (mut_index > 0) ss << ",";
+        ss << mutation_to_json(all_mutations_vec[i], mut_index);
+        mut_index++;
     }
+    
+    // Write amino acid mutations
+    for (size_t i = 0; i < all_aa_mutations_vec.size(); ++i) {
+        if (mut_index > 0) ss << ",";
+        ss << aa_mutation_to_json(all_aa_mutations_vec[i], mut_index);
+        mut_index++;
+    }
+    
     ss << "],";
     
     // Total nodes - count from sorted list
@@ -174,6 +203,8 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     // Mutations (as indices) - always include even if empty
     ss << "\"mutations\":[";
     bool first = true;
+    
+    // Add nucleotide mutations
     for (const auto& mut : node->mutations) {
         auto it = mutation_to_index.find(const_cast<Mutation*>(&mut));
         if (it != mutation_to_index.end()) {
@@ -182,6 +213,17 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
             first = false;
         }
     }
+    
+    // Add amino acid mutations
+    for (const auto& aa_mut : node->aa_mutations) {
+        auto it = aa_mutation_to_index.find(const_cast<AAMutation*>(&aa_mut));
+        if (it != aa_mutation_to_index.end()) {
+            if (!first) ss << ",";
+            ss << it->second;
+            first = false;
+        }
+    }
+    
     ss << "],";
     
     // Is tip
@@ -244,6 +286,22 @@ std::string JSONLWriter::mutation_to_json(const Mutation& mut, size_t index) {
     ss << "\"new_residue\":\"" << nuc_to_char(mut.mut_nuc) << "\",";
     ss << "\"mutation_id\":" << index << ",";
     ss << "\"type\":\"nt\"";
+    
+    ss << "}";
+    return ss.str();
+}
+
+std::string JSONLWriter::aa_mutation_to_json(const AAMutation& aa_mut, size_t index) {
+    std::stringstream ss;
+    ss << "{";
+    
+    ss << "\"gene\":\"" << escape_json(aa_mut.gene) << "\",";
+    ss << "\"previous_residue\":\"" << escape_json(aa_mut.ref_aa) << "\",";
+    ss << "\"residue_pos\":" << aa_mut.codon_position << ",";
+    ss << "\"new_residue\":\"" << escape_json(aa_mut.alt_aa) << "\",";
+    ss << "\"mutation_id\":" << index << ",";
+    ss << "\"nuc_for_codon\":" << aa_mut.nuc_for_codon << ",";
+    ss << "\"type\":\"aa\"";
     
     ss << "}";
     return ss.str();

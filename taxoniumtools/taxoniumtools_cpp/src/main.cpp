@@ -124,7 +124,14 @@ int main(int argc, char* argv[]) {
             std::cout << "Loading genbank file: " << opts.genbank_file << std::endl;
             GenbankParser genbank_parser;
             genbank_parser.parse(opts.genbank_file);
-            // TODO: Apply gene annotations to mutations
+            auto genes = genbank_parser.get_genes();
+            std::cout << "Loaded " << genes.size() << " genes from genbank file" << std::endl;
+            
+            // Apply gene annotations and generate AA mutations
+            std::string reference_sequence = genbank_parser.get_reference_sequence();
+            std::cout << "Reference sequence length: " << reference_sequence.length() << std::endl;
+            tree->annotate_aa_mutations(genes, reference_sequence);
+            tree->set_gene_details(genes);
         }
         
         // Process tree

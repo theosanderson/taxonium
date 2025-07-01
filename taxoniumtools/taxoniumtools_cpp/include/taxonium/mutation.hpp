@@ -81,6 +81,9 @@ struct AAMutation {
     int32_t codon_position;  // 1-indexed
     std::string ref_aa;
     std::string alt_aa;
+    int32_t nuc_for_codon;   // Nucleotide position for the codon (middle position)
+    
+    AAMutation() : codon_position(0), nuc_for_codon(0) {}
     
     std::string to_string() const;
 };

@@ -27,6 +27,7 @@ struct Gene {
 class GenbankParser {
 private:
     std::vector<Gene> genes;
+    std::string reference_sequence;
     
 public:
     GenbankParser() = default;
@@ -39,6 +40,9 @@ public:
     
     // Get parsed genes
     std::vector<Gene> get_genes() const;
+    
+    // Get reference sequence
+    std::string get_reference_sequence() const;
 };
 
 } // namespace taxonium

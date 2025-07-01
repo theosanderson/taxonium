@@ -28,6 +28,24 @@ void GenbankParser::parse(const std::string& filename) {
         
         // Check for sequence start (end of features)
         if (line.find("ORIGIN") == 0) {
+            // Parse the DNA sequence
+            while (std::getline(file, line)) {
+                if (line.find("//") == 0) break;  // End of file
+                
+                // Extract sequence from lines like: "        1 gatttttaag ctt..."
+                std::stringstream ss(line);
+                std::string token;
+                ss >> token;  // Skip line number
+                
+                while (ss >> token) {
+                    // Remove any digits and whitespace, keep only letters
+                    for (char c : token) {
+                        if (std::isalpha(c)) {
+                            reference_sequence += std::toupper(c);
+                        }
+                    }
+                }
+            }
             break;
         }
         
@@ -61,8 +79,9 @@ void GenbankParser::parse(const std::string& filename) {
                 
                 size_t dots = location.find("..");
                 if (dots != std::string::npos) {
-                    current_gene.start = std::stoi(location.substr(0, dots));
-                    current_gene.end = std::stoi(location.substr(dots + 2));
+                    // GenBank uses 1-indexed coordinates, convert to 0-indexed
+                    current_gene.start = std::stoi(location.substr(0, dots)) - 1;
+                    current_gene.end = std::stoi(location.substr(dots + 2));  // End is exclusive, so keep as-is
                     current_gene.strand = complement ? '-' : '+';
                 }
             }
@@ -118,6 +137,10 @@ void GenbankParser::annotate_mutations(Tree* tree) {
 
 std::vector<Gene> GenbankParser::get_genes() const {
     return genes;
+}
+
+std::string GenbankParser::get_reference_sequence() const {
+    return reference_sequence;
 }
 
 } // namespace taxonium
