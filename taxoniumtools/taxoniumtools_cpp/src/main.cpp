@@ -10,6 +10,7 @@
 #include "taxonium/jsonl_writer.hpp"
 #include "taxonium/metadata_reader.hpp"
 #include "taxonium/genbank_parser.hpp"
+#include "taxonium/progress_bar.hpp"
 
 #ifdef USE_TBB
 #include <tbb/global_control.h>
@@ -26,6 +27,7 @@ struct Options {
     int num_threads = 0;  // 0 = use all available
     bool only_variable_sites = false;
     bool name_internal_nodes = false;
+    bool show_progress = true;
     std::string key_column = "strain";
 };
 
@@ -43,6 +45,7 @@ Options parse_arguments(int argc, char* argv[]) {
         ("t,threads", "Number of threads (0 = all available)", "0")
         ("only-variable-sites", "Only output variable sites")
         ("name-internal-nodes", "Generate names for internal nodes")
+        ("no-progress", "Disable progress bars for maximum performance")
         ("key-column", "Key column in metadata", "strain")
         ("h,help", "Show help");
     
@@ -69,6 +72,7 @@ Options parse_arguments(int argc, char* argv[]) {
         opts.num_threads = std::stoi(options["threads"]);
         opts.only_variable_sites = options.count("only-variable-sites") > 0;
         opts.name_internal_nodes = options.count("name-internal-nodes") > 0;
+        opts.show_progress = options.count("no-progress") == 0;
         
     } catch (const std::exception& e) {
         std::cerr << "Error parsing arguments: " << e.what() << "\n";
@@ -96,9 +100,17 @@ int main(int argc, char* argv[]) {
         
         std::cout << "Loading protobuf file: " << opts.input_file << std::endl;
         
-        // Parse protobuf file
+        // Parse protobuf file  
         ProtobufParser parser;
-        auto tree = parser.parse_file(opts.input_file, opts.name_internal_nodes);
+        std::unique_ptr<Tree> tree;
+        
+        if (opts.show_progress) {
+            ProgressBar parse_progress(1, "Parsing protobuf");
+            tree = parser.parse_file(opts.input_file, opts.name_internal_nodes);
+            parse_progress.complete();
+        } else {
+            tree = parser.parse_file(opts.input_file, opts.name_internal_nodes);
+        }
         
         // Calculate detailed statistics
         size_t leaf_count = 0;
@@ -115,41 +127,95 @@ int main(int argc, char* argv[]) {
         MetadataReader metadata_reader;
         if (!opts.metadata_file.empty()) {
             std::cout << "Loading metadata: " << opts.metadata_file << std::endl;
-            metadata_reader.load(opts.metadata_file, opts.columns, opts.key_column);
-            metadata_reader.apply_to_tree(tree.get());
+            
+            if (opts.show_progress) {
+                ProgressBar load_progress(1, "Loading metadata file");
+                metadata_reader.load(opts.metadata_file, opts.columns, opts.key_column);
+                load_progress.complete();
+            } else {
+                metadata_reader.load(opts.metadata_file, opts.columns, opts.key_column);
+            }
+            
+            if (opts.show_progress) {
+                ProgressBar metadata_progress(tree->get_num_nodes(), "Applying metadata");
+                metadata_reader.apply_to_tree(tree.get(), [&](size_t current) {
+                    metadata_progress.update(current);
+                });
+                metadata_progress.complete();
+            } else {
+                metadata_reader.apply_to_tree(tree.get());
+            }
         }
         
         // Parse genbank file if provided
         if (!opts.genbank_file.empty()) {
             std::cout << "Loading genbank file: " << opts.genbank_file << std::endl;
             GenbankParser genbank_parser;
-            genbank_parser.parse(opts.genbank_file);
+            
+            if (opts.show_progress) {
+                ProgressBar genbank_progress(1, "Parsing genbank file");
+                genbank_parser.parse(opts.genbank_file);
+                genbank_progress.complete();
+            } else {
+                genbank_parser.parse(opts.genbank_file);
+            }
+            
             auto genes = genbank_parser.get_genes();
             std::cout << "Loaded " << genes.size() << " genes from genbank file" << std::endl;
             
             // Apply gene annotations and generate AA mutations
             std::string reference_sequence = genbank_parser.get_reference_sequence();
             std::cout << "Reference sequence length: " << reference_sequence.length() << std::endl;
-            tree->annotate_aa_mutations(genes, reference_sequence);
-            tree->set_gene_details(genes);
+            
+            if (opts.show_progress) {
+                ProgressBar aa_progress(tree->get_num_nodes(), "Annotating amino acid mutations");
+                tree->annotate_aa_mutations(genes, reference_sequence, [&](size_t current) {
+                    aa_progress.update(current);
+                });
+                tree->set_gene_details(genes);
+                aa_progress.complete();
+            } else {
+                tree->annotate_aa_mutations(genes, reference_sequence);
+                tree->set_gene_details(genes);
+            }
         }
         
         // Process tree
         std::cout << "Processing tree..." << std::endl;
         
-        // First calculate number of tips for ladderizing
-        tree->get_root()->calculate_num_tips();
-        
-        // Set edge lengths based on mutation count (needed for ladderizing)
-        tree->traverse_preorder([](Node* node) {
-            node->edge_length = static_cast<double>(node->mutations.size());
-        });
-        
-        // Ladderize tree
-        tree->ladderize(false);  // descending order
-        
-        // Calculate coordinates
-        tree->calculate_coordinates();
+        if (opts.show_progress) {
+            ProgressBar process_progress(1, "Processing tree structure");
+            
+            // First calculate number of tips for ladderizing
+            tree->get_root()->calculate_num_tips();
+            
+            // Set edge lengths based on mutation count (needed for ladderizing)
+            tree->traverse_preorder([](Node* node) {
+                node->edge_length = static_cast<double>(node->mutations.size());
+            });
+            
+            // Ladderize tree
+            tree->ladderize(false);  // descending order
+            
+            // Calculate coordinates
+            tree->calculate_coordinates();
+            
+            process_progress.complete();
+        } else {
+            // First calculate number of tips for ladderizing
+            tree->get_root()->calculate_num_tips();
+            
+            // Set edge lengths based on mutation count (needed for ladderizing)
+            tree->traverse_preorder([](Node* node) {
+                node->edge_length = static_cast<double>(node->mutations.size());
+            });
+            
+            // Ladderize tree
+            tree->ladderize(false);  // descending order
+            
+            // Calculate coordinates
+            tree->calculate_coordinates();
+        }
         
         // Filter mutations if requested
         if (opts.only_variable_sites) {
@@ -159,7 +225,16 @@ int main(int argc, char* argv[]) {
         // Write output
         std::cout << "Writing output to: " << opts.output_file << std::endl;
         JSONLWriter writer(opts.output_file);
-        writer.write_tree(tree.get());
+        
+        if (opts.show_progress) {
+            ProgressBar write_progress(tree->get_num_nodes(), "Writing JSONL");  
+            writer.write_tree(tree.get(), [&](size_t current) {
+                write_progress.update(current);
+            });
+            write_progress.complete();
+        } else {
+            writer.write_tree(tree.get());
+        }
         
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);

@@ -302,7 +302,7 @@ size_t Tree::get_num_tips() const {
     return root ? root->num_tips : 0;
 }
 
-void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::string& reference_sequence) {
+void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::string& reference_sequence, std::function<void(size_t)> progress_callback) {
     if (!root || genes.empty() || reference_sequence.empty()) return;
     
     // Create a nucleotide-to-codon mapping like Python's nuc_to_codon
@@ -321,6 +321,9 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
             nucleotide_counter++;
         }
     }
+    
+    // Progress tracking
+    size_t processed_nodes = 0;
     
     // Recursive function to annotate AA mutations (following Python's recursive_mutation_analysis)
     std::function<void(Node*, std::unordered_map<int32_t, char>&)> annotate_node = 
@@ -422,6 +425,12 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
         std::unordered_map<int32_t, char> new_past_nuc_muts_dict = past_nuc_muts_dict;
         for (const auto& mutation : node->mutations) {
             new_past_nuc_muts_dict[mutation.position - 1] = nuc_to_char(mutation.mut_nuc);
+        }
+        
+        // Report progress
+        processed_nodes++;
+        if (progress_callback) {
+            progress_callback(processed_nodes);
         }
         
         // Recursively process children

@@ -129,8 +129,9 @@ void MetadataReader::load(const std::string& filename,
     std::cout << "String pool size: " << get_metadata_pool().size() << " unique strings" << std::endl;
 }
 
-void MetadataReader::apply_to_tree(Tree* tree) {
+void MetadataReader::apply_to_tree(Tree* tree, std::function<void(size_t)> progress_callback) {
     size_t matched = 0;
+    size_t processed = 0;
     
     tree->traverse_preorder([&](Node* node) {
         if (!node->name.empty()) {
@@ -140,6 +141,10 @@ void MetadataReader::apply_to_tree(Tree* tree) {
                 node->metadata = it->second;
                 matched++;
             }
+        }
+        processed++;
+        if (progress_callback) {
+            progress_callback(processed);
         }
     });
     

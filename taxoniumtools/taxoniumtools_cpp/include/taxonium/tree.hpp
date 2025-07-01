@@ -33,7 +33,7 @@ public:
     // Tree operations
     void ladderize(bool ascending = false);
     void calculate_coordinates();
-    void annotate_aa_mutations(const std::vector<Gene>& genes, const std::string& reference_sequence);
+    void annotate_aa_mutations(const std::vector<Gene>& genes, const std::string& reference_sequence, std::function<void(size_t)> progress_callback = nullptr);
     void set_gene_details(const std::vector<Gene>& genes);
     
     // Traversal methods

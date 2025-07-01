@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <functional>
 
 namespace taxonium {
 
@@ -21,7 +22,7 @@ public:
               const std::string& key_column = "strain");
     
     // Apply metadata to tree nodes
-    void apply_to_tree(Tree* tree);
+    void apply_to_tree(Tree* tree, std::function<void(size_t)> progress_callback = nullptr);
     
     // Get metadata for a specific sample
     const std::unordered_map<std::string, std::string>* get_metadata(const std::string& sample) const {

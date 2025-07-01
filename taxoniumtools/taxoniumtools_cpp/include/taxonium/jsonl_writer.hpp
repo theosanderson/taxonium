@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <memory>
+#include <functional>
 
 namespace taxonium {
 
@@ -19,7 +20,7 @@ public:
     ~JSONLWriter();
     
     // Write the entire tree in JSONL format
-    void write_tree(Tree* tree);
+    void write_tree(Tree* tree, std::function<void(size_t)> progress_callback = nullptr);
     
 private:
     // Write the header line with mutations and config

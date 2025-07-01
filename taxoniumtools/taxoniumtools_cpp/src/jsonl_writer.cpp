@@ -48,7 +48,7 @@ JSONLWriter::~JSONLWriter() {
     // Destructor will handle cleanup
 }
 
-void JSONLWriter::write_tree(Tree* tree) {
+void JSONLWriter::write_tree(Tree* tree, std::function<void(size_t)> progress_callback) {
     // Calculate all necessary properties
     tree->calculate_coordinates();
     
@@ -85,11 +85,19 @@ void JSONLWriter::write_tree(Tree* tree) {
         for (const auto& node_str : node_strings) {
             *output_stream << node_str;
         }
+        
+        // Report progress after each chunk
+        if (progress_callback) {
+            progress_callback(end);
+        }
     }
     #else
     // Serial version
     for (size_t i = 0; i < nodes.size(); ++i) {
         write_node(nodes[i], i, node_to_index);
+        if (progress_callback) {
+            progress_callback(i + 1);
+        }
     }
     #endif
     
