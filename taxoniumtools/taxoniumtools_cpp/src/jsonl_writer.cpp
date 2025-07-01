@@ -290,12 +290,13 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
         yyjson_mut_obj_add_val(doc, root, "child_nodes", children);
     }
     
-    // Metadata - use yyjson's string duplication to handle temporary strings
+    // Metadata - manually create string values to ensure proper lifetime
     for (const auto& [key, value] : node->metadata) {
         if (!key.empty() && !value.empty()) {
             std::string meta_key = "meta_" + key;
-            yyjson_mut_val* key_val = yyjson_mut_str(doc, meta_key.c_str());
-            yyjson_mut_val* val_val = yyjson_mut_str(doc, value.c_str());
+            // Create yyjson string values that copy the data
+            yyjson_mut_val* key_val = yyjson_mut_strcpy(doc, meta_key.c_str());
+            yyjson_mut_val* val_val = yyjson_mut_strcpy(doc, value.c_str());
             yyjson_mut_obj_add(root, key_val, val_val);
         }
     }
