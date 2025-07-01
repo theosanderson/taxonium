@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -march=native -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/test_basic.dir/test_basic.cpp.o -o test_basic  /opt/homebrew/lib/libprotobuf.dylib /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib/libz.tbd

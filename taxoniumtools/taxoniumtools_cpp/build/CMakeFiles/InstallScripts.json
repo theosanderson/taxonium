@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/cmake_install.cmake",
+		"/Users/theosanderson/taxonium-11/taxoniumtools/taxoniumtools_cpp/build/test/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
