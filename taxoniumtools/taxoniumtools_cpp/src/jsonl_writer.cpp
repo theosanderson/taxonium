@@ -65,42 +65,13 @@ void JSONLWriter::write_tree(Tree* tree, std::function<void(size_t)> progress_ca
         node_to_index[nodes[i]] = i;
     }
     
-    // Write each node
-    #ifdef USE_TBB
-    // Process in chunks to reduce memory usage
-    const size_t chunk_size = 10000;  // Process 10k nodes at a time
-    for (size_t start = 0; start < nodes.size(); start += chunk_size) {
-        size_t end = std::min(start + chunk_size, nodes.size());
-        std::vector<std::string> node_strings(end - start);
-        
-        tbb::parallel_for(tbb::blocked_range<size_t>(start, end),
-            [&](const tbb::blocked_range<size_t>& range) {
-                for (size_t i = range.begin(); i != range.end(); ++i) {
-                    std::stringstream local_ss;
-                    write_node_to_stream(nodes[i], i, node_to_index, local_ss);
-                    node_strings[i - start] = local_ss.str();
-                }
-            });
-        
-        // Write this chunk
-        for (const auto& node_str : node_strings) {
-            *output_stream << node_str;
-        }
-        
-        // Report progress after each chunk
-        if (progress_callback) {
-            progress_callback(end);
-        }
-    }
-    #else
-    // Serial version
+    // Write each node (serial version to avoid race conditions)
     for (size_t i = 0; i < nodes.size(); ++i) {
         write_node(nodes[i], i, node_to_index);
         if (progress_callback) {
             progress_callback(i + 1);
         }
     }
-    #endif
     
     output_stream->flush();
 }
@@ -218,7 +189,8 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     yyjson_mut_doc_set_root(doc, root);
     
     // Name (always include)
-    yyjson_mut_obj_add_str(doc, root, "name", node->name.c_str());
+    const char* name_str = node->name.empty() ? "" : node->name.c_str();
+    yyjson_mut_obj_add_str(doc, root, "name", name_str);
     
     // Coordinates (use same precision as Python)
     yyjson_mut_obj_add_real(doc, root, "x_dist", node->x_coord);
@@ -287,11 +259,12 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     
     // Metadata - use yyjson's string duplication to handle temporary strings
     for (const auto& [key, value] : node->metadata) {
-        std::string meta_key = "meta_" + key;
-        // Use the _copy versions to ensure strings are copied into the document
-        yyjson_mut_val* key_val = yyjson_mut_str(doc, meta_key.c_str());
-        yyjson_mut_val* val_val = yyjson_mut_str(doc, value.c_str());
-        yyjson_mut_obj_add(root, key_val, val_val);
+        if (!key.empty() && !value.empty()) {
+            std::string meta_key = "meta_" + key;
+            yyjson_mut_val* key_val = yyjson_mut_str(doc, meta_key.c_str());
+            yyjson_mut_val* val_val = yyjson_mut_str(doc, value.c_str());
+            yyjson_mut_obj_add(root, key_val, val_val);
+        }
     }
     
     // Write to stream

@@ -4,6 +4,12 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <atomic>
+
+#ifdef USE_TBB
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+#endif
 
 #ifdef USE_BOOST
 #include <boost/iostreams/filtering_stream.hpp>
@@ -130,6 +136,44 @@ void MetadataReader::load(const std::string& filename,
 }
 
 void MetadataReader::apply_to_tree(Tree* tree, std::function<void(size_t)> progress_callback) {
+#ifdef USE_TBB
+    // Parallel version using TBB
+    
+    // First, collect all nodes into a vector
+    std::vector<Node*> all_nodes;
+    tree->traverse_preorder([&](Node* node) {
+        all_nodes.push_back(node);
+    });
+    
+    std::atomic<size_t> matched{0};
+    std::atomic<size_t> processed{0};
+    
+    // Process nodes in parallel
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, all_nodes.size()),
+        [&](const tbb::blocked_range<size_t>& range) {
+            for (size_t i = range.begin(); i != range.end(); ++i) {
+                Node* node = all_nodes[i];
+                if (!node->name.empty()) {
+                    auto it = metadata.find(node->name);
+                    if (it != metadata.end()) {
+                        // Reference the already-interned strings from metadata storage
+                        node->metadata = it->second;
+                        matched.fetch_add(1);
+                    }
+                }
+                
+                // Update progress periodically (every 100 nodes to reduce contention)
+                size_t current_processed = processed.fetch_add(1) + 1;
+                if (progress_callback && (current_processed % 100 == 0 || current_processed == all_nodes.size())) {
+                    progress_callback(current_processed);
+                }
+            }
+        });
+    
+    std::cout << "Matched metadata for " << matched.load() << " nodes" << std::endl;
+    
+#else
+    // Sequential fallback version
     size_t matched = 0;
     size_t processed = 0;
     
@@ -149,6 +193,7 @@ void MetadataReader::apply_to_tree(Tree* tree, std::function<void(size_t)> progr
     });
     
     std::cout << "Matched metadata for " << matched << " nodes" << std::endl;
+#endif
 }
 
 } // namespace taxonium
