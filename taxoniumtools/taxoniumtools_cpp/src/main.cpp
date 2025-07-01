@@ -11,12 +11,96 @@
 #include "taxonium/metadata_reader.hpp"
 #include "taxonium/genbank_parser.hpp"
 #include "taxonium/progress_bar.hpp"
+#include "taxonium/codon_table.hpp"
 
 #ifdef USE_TBB
 #include <tbb/global_control.h>
 #endif
 
 using namespace taxonium;
+
+// Add root mutations representing the complete reference sequence from genbank
+void add_root_mutations_from_reference(Tree* tree, const std::string& reference_sequence) {
+    Node* root = tree->get_root();
+    if (!root || reference_sequence.empty()) return;
+    
+    // Clear existing root mutations
+    root->mutations.clear();
+    
+    // Create a "mutation" for every position in the reference sequence
+    for (size_t i = 0; i < reference_sequence.length(); ++i) {
+        Mutation root_mut;
+        root_mut.position = i + 1; // 1-indexed positions
+        root_mut.mut_nuc = char_to_nuc(reference_sequence[i]);  // What the reference has
+        root_mut.par_nuc = Nucleotide::N;  // Root has no parent
+        root_mut.ref_nuc = char_to_nuc(reference_sequence[i]);  // Same as mut_nuc for root
+        root_mut.chromosome = "NC_045512v2"; // Default, should be configurable
+        
+        root->mutations.push_back(root_mut);
+    }
+    
+    std::cout << "Added " << root->mutations.size() << " root mutations from reference sequence" << std::endl;
+}
+
+// Add root AA mutations representing the complete amino acid sequence from genbank
+void add_root_aa_mutations_from_reference(Tree* tree, const std::vector<Gene>& genes, const std::string& reference_sequence) {
+    Node* root = tree->get_root();
+    if (!root || genes.empty() || reference_sequence.empty()) return;
+    
+    // Clear existing root AA mutations and reserve space
+    root->aa_mutations.clear();
+    root->aa_mutations.reserve(10000); // Pre-allocate for better performance
+    
+    // Process each gene and create AA mutations for all codons
+    for (size_t gene_idx = 0; gene_idx < genes.size(); ++gene_idx) {
+        const auto& gene = genes[gene_idx];
+        
+        int32_t num_codons = (gene.end - gene.start) / 3;
+        for (int32_t codon_number = 0; codon_number < num_codons; ++codon_number) {
+            int32_t codon_start = gene.start + codon_number * 3;
+            
+            // Build codon from reference sequence (optimized)
+            char codon[4] = {0}; // Fixed-size buffer
+            bool valid_codon = true;
+            for (int32_t i = 0; i < 3; ++i) {
+                int32_t pos = codon_start + i;
+                if (pos < static_cast<int32_t>(reference_sequence.length())) {
+                    codon[i] = reference_sequence[pos];
+                } else {
+                    valid_codon = false;
+                    break;
+                }
+            }
+            
+            if (valid_codon) {
+                // Handle reverse strand
+                if (gene.strand == '-') {
+                    // Reverse complement in-place
+                    for (int i = 0; i < 3; ++i) {
+                        switch(codon[i]) {
+                            case 'A': codon[i] = 'T'; break;
+                            case 'T': codon[i] = 'A'; break;
+                            case 'C': codon[i] = 'G'; break;
+                            case 'G': codon[i] = 'C'; break;
+                        }
+                    }
+                }
+                
+                char aa = CodonTable::translate(std::string(codon, 3));
+                // For root, always add (like Python's disable_check_for_differences=True)
+                root->aa_mutations.emplace_back(); // Use emplace_back for efficiency
+                AAMutation& aa_mut = root->aa_mutations.back();
+                aa_mut.gene = gene.name;
+                aa_mut.codon_position = codon_number + 1;
+                aa_mut.ref_aa = std::string(1, aa);  // Same for root
+                aa_mut.alt_aa = std::string(1, aa);  // Same for root
+                aa_mut.nuc_for_codon = codon_start + 1 + 1;  // Middle nucleotide (1-indexed)
+            }
+        }
+    }
+    
+    std::cout << "Added " << root->aa_mutations.size() << " root AA mutations from reference sequence" << std::endl;
+}
 
 struct Options {
     std::string input_file;
@@ -195,6 +279,17 @@ int main(int argc, char* argv[]) {
             auto aa_end = std::chrono::high_resolution_clock::now();
             auto aa_duration = std::chrono::duration_cast<std::chrono::milliseconds>(aa_end - aa_start);
             std::cout << "⏱️  Amino acid annotation: " << aa_duration.count() / 1000.0 << "s" << std::endl;
+            
+            // Add root mutations representing underlying genotype vs reference (AFTER aa annotation)
+            auto root_mut_start = std::chrono::high_resolution_clock::now();
+            add_root_mutations_from_reference(tree.get(), reference_sequence);
+            
+            // Now add root AA mutations to represent the complete amino acid sequence
+            add_root_aa_mutations_from_reference(tree.get(), genes, reference_sequence);
+            
+            auto root_mut_end = std::chrono::high_resolution_clock::now();
+            auto root_mut_duration = std::chrono::duration_cast<std::chrono::milliseconds>(root_mut_end - root_mut_start);
+            std::cout << "⏱️  Root mutations and AAs: " << root_mut_duration.count() / 1000.0 << "s" << std::endl;
         }
         
         // Process tree
