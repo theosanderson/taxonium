@@ -1,15 +1,14 @@
 const ProcessRunner = require('../utils/process_runner');
 const fs = require('fs').promises;
-const path = require('path');
 
 class VcfConversionService {
   constructor() {
-    this.requiredTools = ['samtools', 'bcftools'];
+    this.requiredTools = ['msa2vcf'];
   }
 
-  async convertSamToVcf(samFile, referenceFile, outputVcf, progressCallback = null) {
+  async convertMsaToVcf(msaFile, referenceFile, outputVcf, progressCallback = null) {
     if (progressCallback) {
-      progressCallback({ step: 'vcf_conversion', progress: 0, message: 'Starting VCF conversion' });
+      progressCallback({ step: 'vcf_conversion', progress: 0, message: 'Starting msa2vcf conversion' });
     }
 
     try {
@@ -17,34 +16,37 @@ class VcfConversionService {
       await this.checkRequiredTools();
 
       if (progressCallback) {
-        progressCallback({ step: 'vcf_conversion', progress: 10, message: 'Converting SAM to BAM' });
+        progressCallback({ step: 'vcf_conversion', progress: 20, message: 'Converting MSA to VCF with msa2vcf' });
       }
 
-      // Step 1: Convert SAM to BAM
-      const bamFile = samFile.replace('.sam', '.bam');
-      await this.samToBam(samFile, bamFile);
+      // Use msa2vcf to convert MSA to VCF
+      // msa2vcf takes: msa2vcf msa.fasta ref_name
+      // We need to determine the reference name from the reference file
+      const refContent = await fs.readFile(referenceFile, 'utf8');
+      const refName = refContent.split('\n')[0].replace('>', '').trim() || 'reference';
+      
+      const args = [
+        msaFile,    // Input MSA file
+        refName     // Reference sequence name
+      ];
 
-      if (progressCallback) {
-        progressCallback({ step: 'vcf_conversion', progress: 30, message: 'Sorting BAM file' });
-      }
+      let progressCount = 0;
+      const result = await ProcessRunner.runCommand('msa2vcf', args, {
+        onProgress: () => {
+          progressCount++;
+          if (progressCallback && progressCount % 3 === 0) {
+            const progress = Math.min(20 + (progressCount * 2), 90);
+            progressCallback({ 
+              step: 'vcf_conversion', 
+              progress, 
+              message: 'Converting alignment to VCF format...' 
+            });
+          }
+        }
+      });
 
-      // Step 2: Sort BAM
-      const sortedBam = bamFile.replace('.bam', '_sorted.bam');
-      await this.sortBam(bamFile, sortedBam);
-
-      if (progressCallback) {
-        progressCallback({ step: 'vcf_conversion', progress: 50, message: 'Indexing BAM file' });
-      }
-
-      // Step 3: Index BAM
-      await this.indexBam(sortedBam);
-
-      if (progressCallback) {
-        progressCallback({ step: 'vcf_conversion', progress: 70, message: 'Calling variants' });
-      }
-
-      // Step 4: Call variants with bcftools
-      await this.callVariants(sortedBam, referenceFile, outputVcf);
+      // msa2vcf outputs to stdout, so we need to write it to the output file
+      await fs.writeFile(outputVcf, result.stdout);
 
       if (progressCallback) {
         progressCallback({ step: 'vcf_conversion', progress: 100, message: 'VCF conversion completed' });
@@ -55,8 +57,10 @@ class VcfConversionService {
       return {
         success: true,
         outputFile: outputVcf,
-        intermediateFiles: [bamFile, sortedBam, `${sortedBam}.bai`],
-        stats
+        stats,
+        command: `msa2vcf ${args.join(' ')}`,
+        stdout: result.stdout,
+        stderr: result.stderr
       };
 
     } catch (error) {
@@ -71,6 +75,11 @@ class VcfConversionService {
     }
   }
 
+  // Keep the old method name for compatibility, but redirect to new method
+  async convertSamToVcf(inputFile, referenceFile, outputVcf, progressCallback = null) {
+    return this.convertMsaToVcf(inputFile, referenceFile, outputVcf, progressCallback);
+  }
+
   async checkRequiredTools() {
     for (const tool of this.requiredTools) {
       const available = await ProcessRunner.checkCommand(tool);
@@ -80,57 +89,6 @@ class VcfConversionService {
     }
   }
 
-  async samToBam(samFile, bamFile) {
-    const args = ['view', '-bS', samFile, '-o', bamFile];
-    await ProcessRunner.runCommand('samtools', args);
-  }
-
-  async sortBam(bamFile, sortedBam) {
-    const args = ['sort', bamFile, '-o', sortedBam];
-    await ProcessRunner.runCommand('samtools', args);
-  }
-
-  async indexBam(bamFile) {
-    const args = ['index', bamFile];
-    await ProcessRunner.runCommand('samtools', args);
-  }
-
-  async callVariants(bamFile, referenceFile, outputVcf) {
-    // Use bcftools mpileup and call to generate VCF
-    const mpileupArgs = [
-      'mpileup',
-      '-f', referenceFile,
-      '-B',  // Disable probabilistic realignment
-      '-Q', '20',  // Minimum base quality
-      '-q', '20',  // Minimum mapping quality
-      bamFile
-    ];
-
-    const callArgs = [
-      'call',
-      '-mv',  // Multiallelic caller, variants only
-      '-O', 'v',  // Output format VCF
-      '-o', outputVcf
-    ];
-
-    // Run mpileup | call pipeline
-    const mpileupResult = await ProcessRunner.runCommand('bcftools', mpileupArgs);
-    
-    // Write mpileup output to temporary file
-    const tempBcf = outputVcf.replace('.vcf', '_temp.bcf');
-    await fs.writeFile(tempBcf, mpileupResult.stdout);
-
-    // Call variants
-    const finalCallArgs = ['call', '-mv', '-O', 'v', '-o', outputVcf, tempBcf];
-    await ProcessRunner.runCommand('bcftools', finalCallArgs);
-
-    // Clean up temp file
-    try {
-      await fs.unlink(tempBcf);
-    } catch (error) {
-      console.warn('Failed to clean up temp BCF file:', error.message);
-    }
-  }
 
   async getVcfStats(vcfFile) {
     try {

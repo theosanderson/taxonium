@@ -23,29 +23,29 @@ class PipelineOrchestrator {
     };
 
     try {
-      // Stage 1: Alignment
+      // Stage 1: ViralMSA Alignment
       if (progressCallback) {
-        progressCallback({ step: 'alignment', progress: 0, message: 'Starting alignment with minimap2' });
+        progressCallback({ step: 'alignment', progress: 0, message: 'Starting ViralMSA alignment' });
       }
 
-      const samFile = await this.fileManager.createTempFile(jobId, 'aligned.sam');
+      const msaFile = await this.fileManager.createTempFile(jobId, 'aligned.msa');
       const alignmentResult = await this.alignmentService.alignSequences(
         inputFasta, 
-        samFile, 
+        msaFile, 
         progressCallback
       );
       
       results.stages.alignment = alignmentResult;
-      console.log(`Job ${jobId}: Alignment completed - ${alignmentResult.alignedSequences} sequences aligned`);
+      console.log(`Job ${jobId}: ViralMSA alignment completed - ${alignmentResult.alignedSequences} sequences aligned`);
 
-      // Stage 2: VCF Conversion
+      // Stage 2: VCF Conversion with faToVcf
       if (progressCallback) {
-        progressCallback({ step: 'vcf_conversion', progress: 0, message: 'Converting to VCF format' });
+        progressCallback({ step: 'vcf_conversion', progress: 0, message: 'Converting MSA to VCF format' });
       }
 
       const vcfFile = await this.fileManager.createTempFile(jobId, 'variants.vcf');
-      const vcfResult = await this.vcfService.convertSamToVcf(
-        samFile, 
+      const vcfResult = await this.vcfService.convertMsaToVcf(
+        msaFile, 
         this.alignmentService.referenceFile, 
         vcfFile, 
         progressCallback
@@ -161,9 +161,8 @@ class PipelineOrchestrator {
     const tools = {};
     
     const requiredTools = [
-      'minimap2',
-      'samtools', 
-      'bcftools',
+      'ViralMSA.py',
+      'msa2vcf',
       'usher',
       'taxoniumtools'
     ];

@@ -7,9 +7,9 @@ class AlignmentService {
     this.referenceFile = referenceFile;
   }
 
-  async alignSequences(inputFasta, outputSam, progressCallback = null) {
+  async alignSequences(inputFasta, outputMsa, progressCallback = null) {
     if (progressCallback) {
-      progressCallback({ step: 'alignment', progress: 0, message: 'Starting alignment' });
+      progressCallback({ step: 'alignment', progress: 0, message: 'Starting ViralMSA alignment' });
     }
 
     try {
@@ -19,50 +19,88 @@ class AlignmentService {
         throw new Error(`Reference file not found: ${this.referenceFile}`);
       }
 
-      // Check if minimap2 is available
-      const minimap2Available = await ProcessRunner.checkCommand('minimap2');
-      if (!minimap2Available) {
-        throw new Error('minimap2 not found. Please install minimap2.');
+      // Check if ViralMSA is available
+      const viralMsaAvailable = await ProcessRunner.checkCommand('ViralMSA.py');
+      if (!viralMsaAvailable) {
+        throw new Error('ViralMSA.py not found. Please install ViralMSA.');
       }
 
       if (progressCallback) {
-        progressCallback({ step: 'alignment', progress: 10, message: 'Running minimap2' });
+        progressCallback({ step: 'alignment', progress: 10, message: 'Running ViralMSA with minimap2' });
       }
 
-      // Run minimap2 alignment
+      // Create unique output directory for ViralMSA
+      const outputDir = path.dirname(outputMsa);
+      const jobId = path.basename(outputMsa).split('_')[0]; // Extract job ID from filename
+      const viralMsaDir = path.join(outputDir, `viralmsa_${jobId}`);
+      
+      // Clean up any existing output directory
+      try {
+        await fs.rmdir(viralMsaDir, { recursive: true });
+      } catch (error) {
+        // Directory doesn't exist, which is fine
+      }
+      
+      // Run ViralMSA alignment
       const args = [
-        '-ax', 'asm20',  // Assembly to reference alignment
-        this.referenceFile,
-        inputFasta
+        '-s', inputFasta,           // Input sequences
+        '-r', this.referenceFile,   // Reference genome
+        '-o', viralMsaDir,          // Output directory
+        '-a', 'minimap2',           // Use minimap2 as aligner
+        '--omit_ref'                // Don't include reference in output alignment
       ];
 
       let progressCount = 0;
-      const result = await ProcessRunner.runCommand('minimap2', args, {
+      const result = await ProcessRunner.runCommand('ViralMSA.py', args, {
         onProgress: (data) => {
           progressCount++;
-          if (progressCallback && progressCount % 10 === 0) {
-            const progress = Math.min(10 + (progressCount * 2), 90);
+          if (progressCallback && progressCount % 5 === 0) {
+            const progress = Math.min(10 + (progressCount * 3), 90);
             progressCallback({ 
               step: 'alignment', 
               progress, 
-              message: 'Aligning sequences...' 
+              message: 'ViralMSA aligning sequences...' 
             });
           }
         }
       });
 
-      // Save SAM output
-      await fs.writeFile(outputSam, result.stdout);
+      // ViralMSA creates output files in the specified directory
+      // The output file is named after the input file with .aln extension
+      const inputBasename = path.basename(inputFasta);
+      const expectedOutput = `${inputBasename}.aln`;
+      const msaOutputFile = path.join(viralMsaDir, expectedOutput);
+      
+      // Check if the file exists
+      try {
+        await fs.access(msaOutputFile);
+      } catch (error) {
+        // If expected file doesn't exist, list all files for debugging
+        try {
+          const files = await fs.readdir(viralMsaDir);
+          throw new Error(`ViralMSA output file not found. Expected: ${expectedOutput}, Available files: ${files.join(', ')}`);
+        } catch (listError) {
+          throw new Error(`ViralMSA output directory not found or empty: ${viralMsaDir}`);
+        }
+      }
+      
+      // Copy the MSA output to our expected location
+      try {
+        await fs.copyFile(msaOutputFile, outputMsa);
+      } catch (copyError) {
+        throw new Error(`Failed to copy ViralMSA output: ${copyError.message}`);
+      }
 
       if (progressCallback) {
-        progressCallback({ step: 'alignment', progress: 100, message: 'Alignment completed' });
+        progressCallback({ step: 'alignment', progress: 100, message: 'ViralMSA alignment completed' });
       }
 
       return {
         success: true,
-        outputFile: outputSam,
-        alignedSequences: this.countAlignedSequences(result.stdout),
-        stats: this.parseAlignmentStats(result.stderr)
+        outputFile: outputMsa,
+        alignedSequences: await this.countAlignedSequences(outputMsa),
+        stats: this.parseViralMsaStats(result.stderr),
+        viralMsaDir: viralMsaDir
       };
 
     } catch (error) {
@@ -86,32 +124,42 @@ class AlignmentService {
     }
   }
 
-  countAlignedSequences(samContent) {
-    const lines = samContent.split('\n');
-    let count = 0;
-    for (const line of lines) {
-      if (line && !line.startsWith('@')) {
-        count++;
+  async countAlignedSequences(msaFile) {
+    try {
+      const content = await fs.readFile(msaFile, 'utf8');
+      const lines = content.split('\n');
+      let count = 0;
+      
+      for (const line of lines) {
+        if (line.startsWith('>')) {
+          count++;
+        }
       }
+      
+      return count;
+    } catch (error) {
+      console.warn('Failed to count aligned sequences:', error.message);
+      return 0;
     }
-    return count;
   }
 
-  parseAlignmentStats(stderr) {
-    // Parse minimap2 statistics from stderr
+  parseViralMsaStats(stderr) {
+    // Parse ViralMSA statistics from stderr
     const stats = {
-      totalReads: 0,
-      mappedReads: 0,
-      mappingRate: 0
+      totalSequences: 0,
+      alignedSequences: 0,
+      alignmentRate: 0,
+      tool: 'ViralMSA'
     };
 
     const lines = stderr.split('\n');
     for (const line of lines) {
-      if (line.includes('mapped')) {
-        // Extract mapping statistics if available
-        const match = line.match(/(\d+)\s+mapped/);
-        if (match) {
-          stats.mappedReads = parseInt(match[1]);
+      // Look for ViralMSA progress messages
+      if (line.includes('sequences') || line.includes('aligned')) {
+        // Try to extract sequence counts
+        const numbers = line.match(/\d+/g);
+        if (numbers && numbers.length > 0) {
+          stats.alignedSequences = parseInt(numbers[0]);
         }
       }
     }
@@ -119,24 +167,32 @@ class AlignmentService {
     return stats;
   }
 
-  async validateSamFile(samFile) {
+  async validateMsaFile(msaFile) {
     try {
-      const content = await fs.readFile(samFile, 'utf8');
+      const content = await fs.readFile(msaFile, 'utf8');
       const lines = content.split('\n');
       
-      let hasHeader = false;
-      let hasAlignments = false;
+      let hasSequences = false;
+      let sequenceCount = 0;
+      let hasValidFormat = true;
       
       for (const line of lines) {
-        if (line.startsWith('@')) {
-          hasHeader = true;
-        } else if (line.trim() && !line.startsWith('@')) {
-          hasAlignments = true;
-          break;
+        if (line.startsWith('>')) {
+          hasSequences = true;
+          sequenceCount++;
+        } else if (line.trim() && !line.startsWith('>')) {
+          // Check if sequence line contains valid nucleotides
+          if (!/^[ATCGN-]+$/i.test(line.trim())) {
+            hasValidFormat = false;
+          }
         }
       }
       
-      return { valid: hasHeader && hasAlignments, hasHeader, hasAlignments };
+      return { 
+        valid: hasSequences && hasValidFormat && sequenceCount > 0, 
+        sequenceCount, 
+        hasValidFormat 
+      };
     } catch (error) {
       return { valid: false, error: error.message };
     }
