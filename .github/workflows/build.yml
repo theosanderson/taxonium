@@ -76,6 +76,10 @@ jobs:
           chmod +x binaries/node18_arm64mac
         fi
 
+    - name: Install Snapcraft
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo snap install snapcraft --classic
+
     - name: Build React app
       run: npm run build
 
