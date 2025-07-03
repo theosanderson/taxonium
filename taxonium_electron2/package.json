@@ -63,5 +63,9 @@
       "**/taxonium_data_handling/**/*"
     ],
     "npmRebuild": false
+    ,
+    "linux": {
+      "target": ["deb", "rpm", "AppImage"]
+    }
   }
 }
