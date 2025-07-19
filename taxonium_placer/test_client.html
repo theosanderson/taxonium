@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Taxonium Placer Test Client</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .progress-bar { width: 100%; height: 20px; background: #f0f0f0; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #4CAF50; transition: width 0.3s ease; }
+        .log { background: #f8f8f8; padding: 10px; margin: 10px 0; border-radius: 3px; max-height: 300px; overflow-y: auto; }
+        .error { color: red; }
+        .success { color: green; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input[type="file"] { margin: 10px 0; }
+        .status { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .status.queued { background: #fff3cd; }
+        .status.processing { background: #d4edda; }
+        .status.completed { background: #d1ecf1; }
+        .status.failed { background: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h1>Taxonium Placer Test Client</h1>
+    
+    <div class="section">
+        <h2>Server Status</h2>
+        <button onclick="checkStatus()">Check Server Status</button>
+        <button onclick="checkTools()">Check Tools</button>
+        <div id="serverStatus" class="log"></div>
+    </div>
+
+    <div class="section">
+        <h2>File Upload</h2>
+        <input type="file" id="fastaFile" accept=".fasta,.fa,.txt">
+        <button onclick="uploadFile()">Upload & Process</button>
+        <div id="uploadStatus" class="log"></div>
+    </div>
+
+    <div class="section">
+        <h2>Job Progress</h2>
+        <div id="jobStatus" class="status"></div>
+        <div class="progress-bar">
+            <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div id="progressText">No active job</div>
+        <div id="progressLog" class="log"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        let currentJobId = null;
+        let eventSource = null;
+
+        async function checkStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                const data = await response.json();
+                document.getElementById('serverStatus').innerHTML = `
+                    <div class="success">✓ Server: ${data.server} v${data.version}</div>
+                    <div>Active jobs: ${data.activeJobs}/${data.maxJobs}</div>
+                    <div>Total jobs: ${data.totalJobs}</div>
+                `;
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = `<div class="error">✗ Server connection failed: ${error.message}</div>`;
+            }
+        }
+
+        async function checkTools() {
+            try {
+                const response = await fetch(`${API_BASE}/tools`);
+                const data = await response.json();
+                let html = `<div>System ready: ${data.ready ? '✓' : '✗'}</div>`;
+                
+                if (data.issues.length > 0) {
+                    html += '<div class="error">Issues:</div><ul>';
+                    data.issues.forEach(issue => html += `<li>${issue}</li>`);
+                    html += '</ul>';
+                }
+                
+                html += '<div>Tools:</div><ul>';
+                Object.entries(data.tools).forEach(([tool, info]) => {
+                    const status = info.available ? '✓' : '✗';
+                    const version = info.version ? ` (${info.version})` : '';
+                    html += `<li>${status} ${tool}${version}</li>`;
+                });
+                html += '</ul>';
+                
+                document.getElementById('serverStatus').innerHTML = html;
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = `<div class="error">✗ Tools check failed: ${error.message}</div>`;
+            }
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fastaFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a FASTA file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('fasta', file);
+
+            try {
+                document.getElementById('uploadStatus').innerHTML = 'Uploading...';
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentJobId = data.jobId;
+                    document.getElementById('uploadStatus').innerHTML = `
+                        <div class="success">✓ File uploaded successfully</div>
+                        <div>Job ID: ${data.jobId}</div>
+                        <div>Status: ${data.status}</div>
+                    `;
+                    startProgressTracking(data.jobId);
+                } else {
+                    document.getElementById('uploadStatus').innerHTML = `<div class="error">✗ Upload failed: ${data.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('uploadStatus').innerHTML = `<div class="error">✗ Upload failed: ${error.message}</div>`;
+            }
+        }
+
+        function startProgressTracking(jobId) {
+            // Close any existing event source
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            document.getElementById('progressLog').innerHTML = '';
+            document.getElementById('progressText').textContent = 'Connecting to progress stream...';
+
+            eventSource = new EventSource(`${API_BASE}/job/${jobId}/progress`);
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'keepalive') {
+                        return; // Ignore keepalive messages
+                    }
+                    
+                    updateProgress(data);
+                } catch (error) {
+                    console.error('Failed to parse progress data:', error);
+                }
+            };
+
+            eventSource.onerror = function(error) {
+                console.error('SSE connection error:', error);
+                document.getElementById('progressText').textContent = 'Connection error - retrying...';
+            };
+        }
+
+        function updateProgress(data) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const progressLog = document.getElementById('progressLog');
+            const jobStatus = document.getElementById('jobStatus');
+
+            // Update progress bar
+            if (data.progress !== undefined) {
+                progressFill.style.width = `${data.progress}%`;
+            }
+
+            // Update status
+            jobStatus.className = `status ${data.status || 'processing'}`;
+            jobStatus.innerHTML = `
+                <strong>Job ${data.jobId}</strong><br>
+                Status: ${data.status || 'processing'}<br>
+                Step: ${data.step || 'unknown'}<br>
+                Progress: ${data.progress || 0}%
+            `;
+
+            // Update progress text
+            const message = data.message || data.error || 'Processing...';
+            progressText.textContent = `${data.step || 'processing'}: ${message}`;
+
+            // Add to log
+            const timestamp = new Date().toLocaleTimeString();
+            const logClass = data.error ? 'error' : data.status === 'completed' ? 'success' : '';
+            progressLog.innerHTML += `<div class="${logClass}">[${timestamp}] ${data.step || 'update'}: ${message}</div>`;
+            progressLog.scrollTop = progressLog.scrollHeight;
+
+            // Close event source when job is done
+            if (data.status === 'completed' || data.status === 'failed') {
+                if (eventSource) {
+                    eventSource.close();
+                    eventSource = null;
+                }
+                
+                if (data.status === 'completed') {
+                    progressText.textContent = '✓ Pipeline completed successfully!';
+                } else {
+                    progressText.textContent = '✗ Pipeline failed';
+                }
+            }
+        }
+
+        // Initialize
+        checkStatus();
+    </script>
+</body>
+</html>
