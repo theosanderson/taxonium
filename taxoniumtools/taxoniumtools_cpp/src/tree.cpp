@@ -312,7 +312,7 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
     // Pre-calculate total positions for reserve
     size_t total_positions = 0;
     for (const auto& gene : genes) {
-        total_positions += (gene.end - gene.start);
+        total_positions += gene.length();
     }
     nuc_to_codon.reserve(total_positions);
     
@@ -320,13 +320,44 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
         const auto& gene = genes[gene_idx];
         
         int32_t nucleotide_counter = 0;
-        for (int32_t genome_pos = gene.start; genome_pos < gene.end; ++genome_pos) {
-            int32_t codon_number = nucleotide_counter / 3;
-            int32_t pos_in_codon = nucleotide_counter % 3;
-            
-            // Map this genomic position to this gene's codon
-            nuc_to_codon[genome_pos].push_back({static_cast<int32_t>(gene_idx), codon_number});
-            nucleotide_counter++;
+        
+        // Handle multi-part genes
+        if (!gene.parts.empty()) {
+            // Process parts in order for forward strand, reverse for reverse strand
+            if (gene.strand == '+') {
+                for (const auto& part : gene.parts) {
+                    for (int32_t genome_pos = part.start; genome_pos < part.end; ++genome_pos) {
+                        int32_t codon_number = nucleotide_counter / 3;
+                        int32_t pos_in_codon = nucleotide_counter % 3;
+                        
+                        // Map this genomic position to this gene's codon
+                        nuc_to_codon[genome_pos].push_back({static_cast<int32_t>(gene_idx), codon_number});
+                        nucleotide_counter++;
+                    }
+                }
+            } else {
+                // For reverse strand genes, process parts in reverse order
+                for (auto it = gene.parts.rbegin(); it != gene.parts.rend(); ++it) {
+                    for (int32_t genome_pos = it->start; genome_pos < it->end; ++genome_pos) {
+                        int32_t codon_number = nucleotide_counter / 3;
+                        int32_t pos_in_codon = nucleotide_counter % 3;
+                        
+                        // Map this genomic position to this gene's codon
+                        nuc_to_codon[genome_pos].push_back({static_cast<int32_t>(gene_idx), codon_number});
+                        nucleotide_counter++;
+                    }
+                }
+            }
+        } else {
+            // Fallback for genes without parts (backward compatibility)
+            for (int32_t genome_pos = gene.start; genome_pos < gene.end; ++genome_pos) {
+                int32_t codon_number = nucleotide_counter / 3;
+                int32_t pos_in_codon = nucleotide_counter % 3;
+                
+                // Map this genomic position to this gene's codon
+                nuc_to_codon[genome_pos].push_back({static_cast<int32_t>(gene_idx), codon_number});
+                nucleotide_counter++;
+            }
         }
     }
     
@@ -368,15 +399,53 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
             
             const auto& gene = genes[gene_idx];
             
-            // Calculate codon positions
-            int32_t codon_start = gene.start + codon_number * 3;
-            
             // Build initial codon from reference sequence
             std::string initial_codon = "";
             std::string final_codon = "";
             
-            for (int32_t i = 0; i < 3; ++i) {
-                int32_t pos = codon_start + i;
+            // For multi-part genes, we need to find the actual genomic positions of the codon
+            std::vector<int32_t> codon_positions;
+            
+            if (!gene.parts.empty()) {
+                // Find the three nucleotide positions that make up this codon
+                int32_t nucleotide_counter = 0;
+                int32_t target_start = codon_number * 3;
+                int32_t target_end = target_start + 3;
+                
+                if (gene.strand == '+') {
+                    for (const auto& part : gene.parts) {
+                        for (int32_t genome_pos = part.start; genome_pos < part.end; ++genome_pos) {
+                            if (nucleotide_counter >= target_start && nucleotide_counter < target_end) {
+                                codon_positions.push_back(genome_pos);
+                            }
+                            nucleotide_counter++;
+                            if (nucleotide_counter >= target_end) break;
+                        }
+                        if (nucleotide_counter >= target_end) break;
+                    }
+                } else {
+                    // For reverse strand, process parts in reverse order
+                    for (auto it = gene.parts.rbegin(); it != gene.parts.rend(); ++it) {
+                        for (int32_t genome_pos = it->start; genome_pos < it->end; ++genome_pos) {
+                            if (nucleotide_counter >= target_start && nucleotide_counter < target_end) {
+                                codon_positions.push_back(genome_pos);
+                            }
+                            nucleotide_counter++;
+                            if (nucleotide_counter >= target_end) break;
+                        }
+                        if (nucleotide_counter >= target_end) break;
+                    }
+                }
+            } else {
+                // Fallback for genes without parts
+                int32_t codon_start = gene.start + codon_number * 3;
+                for (int32_t i = 0; i < 3; ++i) {
+                    codon_positions.push_back(codon_start + i);
+                }
+            }
+            
+            // Build codons from the positions
+            for (int32_t pos : codon_positions) {
                 if (pos < static_cast<int32_t>(reference_sequence.length())) {
                     char nucleotide = reference_sequence[pos];
                     
@@ -392,9 +461,14 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
             
             // Apply current mutations to final codon
             for (const auto& mutation : mutations) {
-                int32_t pos_in_codon = (mutation.position - 1) - codon_start;
-                if (pos_in_codon >= 0 && pos_in_codon < 3) {
-                    final_codon[pos_in_codon] = nuc_to_char(mutation.mut_nuc);
+                int32_t mut_pos = mutation.position - 1; // Convert to 0-indexed
+                
+                // Find which position in the codon this mutation affects
+                for (size_t i = 0; i < codon_positions.size(); ++i) {
+                    if (codon_positions[i] == mut_pos && i < final_codon.length()) {
+                        final_codon[i] = nuc_to_char(mutation.mut_nuc);
+                        break;
+                    }
                 }
             }
             
@@ -437,7 +511,13 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
                 aa_mut.ref_aa = std::string(1, initial_aa);
                 aa_mut.alt_aa = std::string(1, final_aa);
                 // Set nuc_for_codon to the middle nucleotide position of the codon (1-indexed)
-                aa_mut.nuc_for_codon = codon_start + 1 + 1;  // +1 for middle position, +1 for 1-indexed
+                if (codon_positions.size() >= 2) {
+                    aa_mut.nuc_for_codon = codon_positions[1] + 1;  // Middle position, 1-indexed
+                } else if (!codon_positions.empty()) {
+                    aa_mut.nuc_for_codon = codon_positions[0] + 1;  // Fallback to first position
+                } else {
+                    aa_mut.nuc_for_codon = gene.start + codon_number * 3 + 1 + 1;  // Fallback
+                }
                 node->aa_mutations.push_back(aa_mut);
             }
         }
