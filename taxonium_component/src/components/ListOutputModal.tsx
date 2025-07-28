@@ -57,6 +57,11 @@ const ListOutputModal = ({
           transform: "translate(-50%, -50%)",
           //width: '50%',
           backgroundColor: "#fafafa",
+          zIndex: 10000,
+        },
+        overlay: {
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 9999,
         },
       }}
       onRequestClose={() => setListOutputModalOpen(false)}
