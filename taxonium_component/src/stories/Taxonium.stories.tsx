@@ -165,3 +165,29 @@ export const Colors = {
     layout: "padded",
   },
 };
+
+export const WithNodeSelectionAlerts = {
+  args: {
+    sourceData: {
+      status: "loaded",
+      filename: "test.nwk",
+      data: testTree,
+      filetype: "nwk",
+    },
+    onNodeSelect: (nodeId: string | number | null) => {
+      if (nodeId !== null) {
+        alert(`Node selected: ${nodeId}`);
+      } else {
+        alert("Node deselected");
+      }
+    },
+    onNodeDetailsLoaded: (nodeId: string | number | null, nodeDetails: any) => {
+      if (nodeDetails) {
+        alert(`Node details loaded for ${nodeId}:\n${JSON.stringify(nodeDetails, null, 2).substring(0, 200)}...`);
+      }
+    },
+  },
+  parameters: {
+    layout: "padded",
+  },
+};
