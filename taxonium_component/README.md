@@ -22,6 +22,63 @@ function App() {
 export default App;
 ```
 
+### Event Handlers
+
+The Taxonium component now supports event handlers for node interactions:
+
+```jsx
+import Taxonium from "taxonium-component";
+
+function App() {
+  const handleNodeSelect = (nodeId) => {
+    console.log("Node selected:", nodeId);
+  };
+
+  const handleNodeDetailsLoaded = (nodeId, nodeDetails) => {
+    console.log("Node details loaded:", nodeId, nodeDetails);
+  };
+
+  return (
+    <Taxonium 
+      backendUrl="https://api.cov2tree.org"
+      onNodeSelect={handleNodeSelect}
+      onNodeDetailsLoaded={handleNodeDetailsLoaded}
+    />
+  );
+}
+
+export default App;
+```
+
+#### Available Events
+
+- **`onNodeSelect`**: Fired when a node is clicked in the tree
+  - Parameters: `nodeId` (string | number | null) - The ID of the selected node, or null if selection is cleared
+  
+- **`onNodeDetailsLoaded`**: Fired when details for a selected node have been loaded from the backend
+  - Parameters: 
+    - `nodeId` (string | number | null) - The ID of the node
+    - `nodeDetails` (NodeDetails | null) - The complete node details object containing metadata, mutations, and other information
+
+## Component Props
+
+The Taxonium component accepts the following props:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `sourceData` | `SourceData` | Local tree data object with status, filename, filetype, and data |
+| `backendUrl` | `string` | URL of the Taxonium backend server |
+| `configDict` | `Record<string, unknown>` | Configuration object for customizing the tree |
+| `configUrl` | `string` | URL to fetch configuration from |
+| `query` | `Query` | Current query/state object |
+| `updateQuery` | `(q: Partial<Query>) => void` | Function to update the query state |
+| `overlayContent` | `React.ReactNode` | Custom content to overlay on the tree |
+| `setAboutEnabled` | `(val: boolean) => void` | Control the about panel visibility |
+| `setOverlayContent` | `(content: React.ReactNode) => void` | Dynamically set overlay content |
+| `setTitle` | `(title: string) => void` | Set the tree title |
+| `onNodeSelect` | `(nodeId: string \| number \| null) => void` | Handle node selection events |
+| `onNodeDetailsLoaded` | `(nodeId: string \| number \| null, nodeDetails: NodeDetails \| null) => void` | Handle node details loaded events |
+
 ## Using script tags
 
 ```html
