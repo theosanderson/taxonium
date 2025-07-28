@@ -163,7 +163,6 @@ function SearchPanel({
           <span className="ml-1">
             <a
               data-tooltip-id="menu_descendants"
-              data-tooltip-content="8"
               className="cursor-pointer"
             >
               {" "}
@@ -171,9 +170,17 @@ function SearchPanel({
             </a>
               <ReactTooltipAny
                 id="menu_descendants"
-                getContent={(dataTip: string | undefined) => (
+                clickable={true}
+                style={{
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid #ccc",
+                  maxWidth: "300px",
+                  zIndex: 9999
+                }}
+              >
                 <div>
-                  <h2>For this clade:</h2>
+                  <h2 className="font-bold mb-2">For this clade:</h2>
                   <div className="mb-3">
                     <Button
                       className=""
@@ -246,15 +253,7 @@ function SearchPanel({
                     </div>
                   )}
                 </div>
-              )}
-              effect="solid"
-              delayHide={500}
-              delayShow={0}
-              delayUpdate={500}
-              place={"right"}
-              border={"1px solid" as React.CSSProperties['border']}
-              type={"light"}
-            />
+              </ReactTooltipAny>
           </span>
         )}
       </div>
