@@ -1,5 +1,5 @@
 /// app.js
-import React, { useState, useCallback, useRef, Suspense } from "react";
+import React, { useState, useCallback, useRef, Suspense, useEffect } from "react";
 import DeckGL, { type DeckGLRef } from "@deck.gl/react";
 import { View } from "@deck.gl/core";
 const DeckView = View as unknown as React.ComponentType<Record<string, unknown>>;
@@ -24,7 +24,7 @@ import type { Settings } from "./types/settings";
 import type { View as ViewType } from "./hooks/useView";
 import type { SearchState } from "./types/search";
 import type { TreenomeState } from "./types/treenome";
-import type { HoverDetailsState, SelectedDetails } from "./types/ui";
+import type { HoverDetailsState, SelectedDetails, NodeSelectHandler, NodeDetailsLoadedHandler } from "./types/ui";
 import TreenomeModal from "./components/TreenomeModal";
 import FirefoxWarning from "./components/FirefoxWarning";
 import { JBrowseErrorBoundary } from "./components/JBrowseErrorBoundary";
@@ -61,6 +61,8 @@ export interface DeckProps {
   >;
   mouseDownIsMinimap: boolean;
   setMouseDownIsMinimap: (val: boolean) => void;
+  onNodeSelect?: NodeSelectHandler;
+  onNodeDetailsLoaded?: NodeDetailsLoadedHandler;
 }
 
 function Deck({
@@ -84,6 +86,8 @@ function Deck({
   setAdditionalColorMapping,
   mouseDownIsMinimap,
   setMouseDownIsMinimap,
+  onNodeSelect,
+  onNodeDetailsLoaded,
 }: DeckProps) {
 
   const zoomReset = view.zoomReset;
@@ -118,6 +122,16 @@ function Deck({
   >(null);
 
   const mouseDownPos = useRef<[number, number] | null>(null);
+
+  // Call onNodeDetailsLoaded when node details change
+  useEffect(() => {
+    if (onNodeDetailsLoaded) {
+      onNodeDetailsLoaded(
+        selectedDetails.nodeDetails?.node_id ?? null,
+        selectedDetails.nodeDetails
+      );
+    }
+  }, [selectedDetails.nodeDetails, onNodeDetailsLoaded]);
 
   const onClickOrMouseMove = useCallback(
     (event: React.MouseEvent) => {
@@ -167,10 +181,16 @@ function Deck({
         reactEvent._reactName === "onClick"
       ) {
         selectedDetails.getNodeDetails(pickInfo.object.node_id);
+        if (onNodeSelect) {
+          onNodeSelect(pickInfo.object.node_id);
+        }
       }
 
       if (!pickInfo && reactEvent._reactName === "onClick") {
         selectedDetails.clearNodeDetails();
+        if (onNodeSelect) {
+          onNodeSelect(null);
+        }
       }
 
       if (
@@ -188,7 +208,7 @@ function Deck({
         });
       }
     },
-    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, deckRef]
+    [selectedDetails, mouseDownIsMinimap, viewState, onViewStateChange, deckRef, onNodeSelect]
   );
 
   const [hoverInfo, setHoverInfoRaw] = useState<

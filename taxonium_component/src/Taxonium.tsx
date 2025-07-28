@@ -22,6 +22,7 @@ import type { TreenomeState } from "./types/treenome";
 import { useCallback } from "react";
 import getDefaultQuery from "./utils/getDefaultQuery";
 import type { Query } from "./types/query";
+import type { NodeSelectHandler, NodeDetailsLoadedHandler } from "./types/ui";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import { Toaster } from "react-hot-toast";
@@ -47,6 +48,8 @@ interface TaxoniumProps {
   setAboutEnabled?: (val: boolean) => void;
   setOverlayContent?: (content: React.ReactNode) => void;
   setTitle?: (title: string) => void;
+  onNodeSelect?: NodeSelectHandler;
+  onNodeDetailsLoaded?: NodeDetailsLoadedHandler;
 }
 
 
@@ -66,6 +69,8 @@ function Taxonium({
   setAboutEnabled,
   setOverlayContent,
   setTitle,
+  onNodeSelect,
+  onNodeDetailsLoaded,
 }: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
@@ -250,6 +255,8 @@ function Taxonium({
             setMouseDownIsMinimap={setMouseDownIsMinimap}
             jbrowseRef={jbrowseRef}
             setAdditionalColorMapping={setAdditionalColorMapping}
+            onNodeSelect={onNodeSelect}
+            onNodeDetailsLoaded={onNodeDetailsLoaded}
           />
         </div>
 
