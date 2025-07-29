@@ -79,6 +79,13 @@ function App() {
   const [overlayContent, setOverlayContent] = useState(null);
   const [selectedTree, setSelectedTree] = useState("");
 
+  // Update document title when title changes
+  useEffect(() => {
+    if (title) {
+      document.title = title;
+    }
+  }, [title]);
+
   const dragTimeout = useRef(null);
 
   const inputHelper = useInputHelper({
@@ -286,7 +293,7 @@ function App() {
                 query={query}
                 updateQuery={updateQuery}
                 setOverlayContent={setOverlayContent}
-                setTitle={setTitle}
+                onSetTitle={setTitle}
                 overlayContent={overlayContent}
                 setAboutEnabled={setAboutEnabled}
               />
