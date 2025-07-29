@@ -50,6 +50,7 @@ interface TaxoniumProps {
   onSetTitle?: (title: string) => void;
   onNodeSelect?: NodeSelectHandler;
   onNodeDetailsLoaded?: NodeDetailsLoadedHandler;
+  sidePanelHiddenByDefault?: boolean;
 }
 
 
@@ -71,6 +72,7 @@ function Taxonium({
   onSetTitle,
   onNodeSelect,
   onNodeDetailsLoaded,
+  sidePanelHiddenByDefault,
 }: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
@@ -202,7 +204,7 @@ function Taxonium({
     settings,
   });
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(!sidePanelHiddenByDefault);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
     setTimeout(() => {
