@@ -47,7 +47,7 @@ interface TaxoniumProps {
   overlayContent?: React.ReactNode;
   setAboutEnabled?: (val: boolean) => void;
   setOverlayContent?: (content: React.ReactNode) => void;
-  setTitle?: (title: string) => void;
+  onSetTitle?: (title: string) => void;
   onNodeSelect?: NodeSelectHandler;
   onNodeDetailsLoaded?: NodeDetailsLoadedHandler;
 }
@@ -68,7 +68,7 @@ function Taxonium({
   overlayContent,
   setAboutEnabled,
   setOverlayContent,
-  setTitle,
+  onSetTitle,
   onNodeSelect,
   onNodeDetailsLoaded,
 }: TaxoniumProps) {
@@ -84,9 +84,9 @@ function Taxonium({
     updateQuery = backupUpdateQuery;
   }
 
-  // if no setTitle, set it to a noop
-  if (!setTitle) {
-    setTitle = () => {};
+  // if no onSetTitle, set it to a noop
+  if (!onSetTitle) {
+    onSetTitle = () => {};
   }
   // if no setOverlayContent, set it to a noop
   if (!setOverlayContent) {
@@ -136,7 +136,7 @@ function Taxonium({
     backend,
     view,
     setOverlayContent,
-    setTitle,
+    onSetTitle,
     query,
     configDict,
     configUrl

@@ -7,7 +7,7 @@ const useConfig = (
   backend: Backend,
   view: View,
   setOverlayContent: (content: ReactNode) => void,
-  setTitle: (title: string) => void,
+  onSetTitle: ((title: string) => void) | undefined,
   query: Query,
   configDict: any,
   configUrl: string | undefined
@@ -47,11 +47,9 @@ const useConfig = (
           Object.assign(results, unpacked);
         }
         Object.assign(results, fromFile);
-        if (results.title) {
-          setTitle(results.title);
-          // set the title with window
-          window.document.title = results.title;
-          console.log("setting title to ", config.title);
+        if (results.title && onSetTitle) {
+          onSetTitle(results.title);
+          console.log("setting title to ", results.title);
         }
 
         Object.assign(results, configDict);
