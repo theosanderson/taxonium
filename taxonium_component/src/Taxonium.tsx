@@ -84,9 +84,9 @@ function Taxonium({
     updateQuery = backupUpdateQuery;
   }
 
-  // if no setTitle, set it to a noop
-  if (!setTitle) {
-    setTitle = () => {};
+  // if no onSetTitle, set it to a noop
+  if (!onSetTitle) {
+    onSetTitle = () => {};
   }
   // if no setOverlayContent, set it to a noop
   if (!setOverlayContent) {
