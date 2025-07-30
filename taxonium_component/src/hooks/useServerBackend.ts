@@ -131,6 +131,7 @@ function useServerBackend(
           if (error.name === "CanceledError") {
             return;
           }
+          console.log(error);
           window.alert(error);
           setResult({ type: "", data: [], total_count: 0, key: "" } as SearchResult);
         });
