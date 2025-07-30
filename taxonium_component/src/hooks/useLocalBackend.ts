@@ -20,7 +20,6 @@ import type {
 import type { Node, Mutation } from "../types/node";
 
 // test
-console.log("new worker");
 //const workerPath = "../webworkers/localBackendWorker.js";
 
 import workerSpec from "../webworkers/localBackendWorker.js?worker&inline";
@@ -32,7 +31,7 @@ const worker = new workerSpec();
 
 let onQueryReceipt: (receivedData: NodesResponse) => void = () => {};
 let onStatusReceipt: (receivedData: StatusData) => void = (receivedData) => {
-  console.log("STATUS:", receivedData.data);
+  /* STATUS update */
 };
 
 let onConfigReceipt: (receivedData: Config) => void = () => {};
@@ -41,7 +40,6 @@ let onListReceipt: (receivedData: ListData["data"]) => void = () => {};
 let onNextStrainReceipt: (receivedData: NextStrainData["data"]) => void = (
   receivedData
 ) => {
-  console.log("NEXT STRAIN:", receivedData);
   // create a blob with this data and trigger download
   const blob = new Blob([JSON.stringify(receivedData)], {
     type: "application/json",
@@ -60,7 +58,6 @@ let onNextStrainReceipt: (receivedData: NextStrainData["data"]) => void = (
 let searchSetters: Record<string, (data: SearchResult) => void> = {};
 
 worker.onmessage = (event: MessageEvent<LocalBackendMessage>) => {
-  console.log("got message from worker");
   const data = event.data;
   switch (data.type) {
     case "status":
@@ -99,7 +96,6 @@ function useLocalBackend(
     | null
   >({ message: null });
   onStatusReceipt = (receivedData) => {
-    console.log("STATUS:", receivedData.data);
     if (receivedData.data.error) {
       window.alert(receivedData.data.error);
       console.log("ERROR33:", receivedData.data.error);
@@ -115,7 +111,6 @@ function useLocalBackend(
     setStatusMessage(receivedData.data);
   };
   useEffect(() => {
-    console.log("Sending data to worker");
     worker.postMessage({
       type: "upload",
       data: uploaded_data,
@@ -129,16 +124,12 @@ function useLocalBackend(
       setTriggerRefresh: (v: Record<string, unknown>) => void,
       config: Config
     ) => {
-      console.log("queryNodes", boundsForQueries);
+      
       worker.postMessage({
         type: "query",
         bounds: boundsForQueries,
       });
       onQueryReceipt = (receivedData) => {
-        //  console.log("CONFIG IS", config);
-        console.log(
-          "got query result" //, receivedData
-        );
         receivedData.nodes.forEach((node: Node) => {
           if (!config.mutations) return;
           if (node.node_id === config.rootId) {
@@ -166,7 +157,6 @@ function useLocalBackend(
       setResult: (res: SearchResult) => void
     ) => {
       const key = JSON.parse(singleSearch).key;
-      console.log("singleSearch", singleSearch, "key", key);
       worker.postMessage({
         type: "search",
         search: singleSearch,
@@ -174,18 +164,11 @@ function useLocalBackend(
       });
 
       searchSetters[key] = (receivedData) => {
-        console.log(
-          "got search result from ",
-          key,
-          //   singleSearch,
-          "result"
-          //   receivedData
-        );
         setResult(receivedData);
       };
       return {
         abortController: {
-          abort: () => console.log("no controller for local"),
+          abort: () => {},
         },
       };
     },
@@ -194,13 +177,11 @@ function useLocalBackend(
 
   const getDetails = useCallback(
     (node_id: string | number, setResult: (res: NodeDetails) => void) => {
-      console.log("getDetails", node_id);
       worker.postMessage({
         type: "details",
         node_id: node_id,
       });
       onDetailsReceipt = (receivedData) => {
-        console.log("got details result", receivedData);
         setResult(receivedData);
       };
     },
@@ -208,13 +189,11 @@ function useLocalBackend(
   );
 
   const getConfig = useCallback((setResult: (res: Config) => void) => {
-    console.log("getConfig");
     worker.postMessage({
       type: "config",
     });
 
     onConfigReceipt = (receivedData) => {
-      console.log("got config result", receivedData);
       setResult(receivedData);
     };
   }, []);
@@ -225,7 +204,6 @@ function useLocalBackend(
       selectedKey: string,
       callback: (err: unknown, data: unknown) => void
     ) => {
-    console.log("getTipAtts", nodeId, selectedKey);
     worker.postMessage({
       type: "list",
       node_id: nodeId,
@@ -233,13 +211,11 @@ function useLocalBackend(
     });
 
     onListReceipt = (receivedData) => {
-      console.log("got list result", receivedData);
       callback(null, receivedData);
     };
   }, []);
 
   const getNextstrainJson = useCallback((nodeId: string | number, config: Config) => {
-    console.log("getNextstrainJson", nodeId);
     worker.postMessage({
       type: "nextstrain",
       node_id: nodeId,

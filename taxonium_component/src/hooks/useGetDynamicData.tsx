@@ -19,7 +19,6 @@ function addNodeLookup(data: NodeLookupData): NodeLookupData {
     ...data,
     nodeLookup: Object.fromEntries(data.nodes.map((n) => [n.node_id, n])),
   };
-  console.log("cc");
   return output;
 }
 
@@ -58,14 +57,8 @@ function useGetDynamicData(
           Math.abs(vs.zoom[1] - boundsForQueries!.zoom![1]) > 0.5))
     ) {
       if ((window as Window & { log?: boolean }).log) {
-        console.log([
-          vs.min_x,
-          boundsForQueries ? boundsForQueries.min_x : null,
-        ]);
+        ;
       }
-      console.log("VIEWSTATE", vs);
-
-      console.log("updating parameters to query");
 
       const newBoundForQuery: QueryBounds = {
         min_x: vs.min_x - vs.real_width,
@@ -77,7 +70,6 @@ function useGetDynamicData(
       };
 
       setBoundsForQueries(newBoundForQuery);
-      console.log("updating bounds", newBoundForQuery);
     }
   }, [viewState, boundsForQueries, triggerRefresh, xType, deckSize]);
 
@@ -105,7 +97,6 @@ function useGetDynamicData(
           if (!boundsForQueries) return;
 
           if (dynamicData.status === "loading") {
-            console.log("not trying to get as we are still loading");
             if (timeoutRef) {
               clearTimeout(timeoutRef);
             }
@@ -116,7 +107,6 @@ function useGetDynamicData(
             );
             return;
           }
-          console.log("attempting get");
           // Make call to backend to get data
 
           setDynamicData({ ...dynamicData, status: "loading" });
@@ -125,11 +115,7 @@ function useGetDynamicData(
             boundsForQueries,
             (result: NodesResponse) => {
               const nodeResult = result as NodeLookupData;
-              console.log(
-                "got result, bounds were",
-                boundsForQueries,
-                " result is "
-              );
+
 
               setDynamicData((prevData) => {
                 const new_result: DynamicData = {
@@ -142,7 +128,6 @@ function useGetDynamicData(
                     new_result.base_data = addNodeLookup(nodeResult);
                 } else {
                   if (!prevData.base_data || prevData.base_data_is_invalid) {
-                    console.log("query for minimap");
                       queryNodes(
                         null,
                         (base_result: NodesResponse) => {

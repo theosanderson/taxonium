@@ -10,7 +10,6 @@ const nodeMutationsFromNextStrainToTaxonium = (
   unique_mutations,
   mutation_lookup
 ) => {
-  //console.log("mutations", mutations);
   const keys = Object.keys(mutations);
   const nuc_muts = mutations["nuc"] ? mutations["nuc"] : [];
 
@@ -33,7 +32,6 @@ const nodeMutationsFromNextStrainToTaxonium = (
       residue_pos: parseInt(position[0]),
     };
     const jsonned = JSON.stringify(tax_format);
-    //console.log("jsonned", jsonned);
     if (mutation_lookup[jsonned]) {
       taxonium_muts.push(mutation_lookup[jsonned]);
     } else {
@@ -66,7 +64,6 @@ const nodeMutationsFromNextStrainToTaxonium = (
         residue_pos: parseInt(position[0]),
       };
       const jsonned = JSON.stringify(tax_format);
-      //console.log("jsonned", jsonned);
       if (mutation_lookup[jsonned]) {
         taxonium_muts.push(mutation_lookup[jsonned]);
       } else {
@@ -324,7 +321,6 @@ function json_preorder(root) {
     if (nodeJson.node_attrs.num_date) {
       time = nodeJson.node_attrs.num_date.value;
     }
-    //console.log(nodeJson);
     // this is the node format for downstream processing
     const parsedNode = {
       name: nodeJson.name,
@@ -414,9 +410,7 @@ async function json_to_tree(json) {
 
   const config = {};
 
-  console.log("META", json.meta);
   config.title = json.meta.title;
-  console.log("META PROV", json.meta.data_provenance);
   config.source = "";
   if (json.meta && json.meta.data_provenance) {
     config.source =

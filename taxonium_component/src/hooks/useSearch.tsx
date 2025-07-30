@@ -52,7 +52,6 @@ const useSearch = ({
   const searchSpec = useMemo(() => {
     if (!query.srch) {
       //updateQuery({ srch: default_query.srch });
-      //console.log("setting default search", default_query.srch);
       return JSON.parse(default_query.srch as string);
     }
     return JSON.parse(query.srch as string);
@@ -66,7 +65,6 @@ const useSearch = ({
     : JSON.parse(default_query.enabled as string);
 
   const setEnabled = (key: string, enabled: boolean) => {
-    console.log("setEnabled", key, enabled);
     const newSearchesEnabled = { ...searchesEnabled, [key]: enabled };
     updateQuery({ enabled: JSON.stringify(newSearchesEnabled) });
   };
@@ -104,7 +102,6 @@ const useSearch = ({
       if (searchControllers[key]) {
         searchControllers[key].forEach((controller: SearchControllerEntry) => {
           if (controller && boundsForQueries == controller.bounds) {
-            console.log("cancelling for ", key);
             controller.con.abort();
           }
         });
@@ -158,13 +155,6 @@ const useSearch = ({
         !(searchResults[key].result.type === "complete") &&
         searchResults[key].boundingBox !== boundsForQueries
       ) {
-        console.log(
-          "result_changed",
-          key,
-          searchResults[key].boundingBox,
-          boundsForQueries
-        );
-
         return true;
       }
 
@@ -183,10 +173,7 @@ const useSearch = ({
     // if there are changed json strings, update the search results
     if (all_changed.length > 0) {
       all_changed.forEach((key: string) => {
-        console.log("searching for " + key, JSON.parse(spec_json[key]));
-
         const this_json = spec_json[key];
-        console.log("performing search");
 
         const do_search = () => {
           setIndividualSearchLoadingStatus(key, "loading");
@@ -236,7 +223,6 @@ const useSearch = ({
                 [key]: new_result,
               };
             });
-            //console.log(searchResults);
             setIndividualSearchLoadingStatus(key, "loaded");
           });
         };
@@ -244,7 +230,6 @@ const useSearch = ({
         // debounce the search
         if (timeouts.current[key]) {
           clearTimeout(timeouts.current[key]);
-          console.log("clearing timeout");
         }
         timeouts.current[key] = setTimeout(do_search, 500);
       });
@@ -259,7 +244,6 @@ const useSearch = ({
   ]);
 
   const addNewTopLevelSearch = () => {
-    console.log("addNewTopLevelSearch");
     // get a random string key
     const newSearch = getDefaultSearch(config as any);
 
@@ -290,13 +274,10 @@ const useSearch = ({
       const { index } = zoomToSearch;
       const relevant = searchResults[searchSpec[index].key];
       if (!relevant) {
-        console.log("no search results for index", index);
-        console.log(searchResults);
         return;
       }
       const { overview } = relevant;
       if (!overview || overview.length === 0) {
-        console.log("no overview for index", index);
         return;
       }
         const min_y = reduceMaxOrMin(overview, (d: any) => d.y, "min");
@@ -306,7 +287,6 @@ const useSearch = ({
       // eslint-disable-next-line no-unused-vars
         const max_x = reduceMaxOrMin(overview, (d: any) => d[xType], "max");
 
-      console.log("Doing zoom", min_y, max_y, min_x, max_x);
 
       const oldViewState = { ...view.viewState };
       const newZoom =
@@ -322,13 +302,11 @@ const useSearch = ({
         ...view.viewState,
         real_target: undefined,
         target: new_target,
-        zoom: [view.viewState.zoom[0], newZoom],
+        zoom: [
+          (view.viewState.zoom as [number, number])[0],
+          newZoom,
+        ],
       };
-      console.log(
-        "zoom to search new VS",
-        viewState.target[0],
-        viewState.target[1]
-      );
 
       view.onViewStateChange({
         viewState: viewState,

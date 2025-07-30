@@ -4,7 +4,6 @@ import type { Mutation, Node } from "../types/node";
 
 function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
   const getNodeGenotype = (node_id: number) => {
-    console.log("data", data);
 
     let data_to_use;
     if (data.data.nodeLookup[node_id]) {
