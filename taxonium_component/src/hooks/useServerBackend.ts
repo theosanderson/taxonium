@@ -72,6 +72,7 @@ function useServerBackend(
           setResult(response.data);
         })
         .catch(function (error) {
+          console.log(error);
           window.alert(error);
           setResult({ nodes: [] } as NodesResponse);
           setTriggerRefresh({});
