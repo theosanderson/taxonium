@@ -31,11 +31,9 @@ import Taxonium from "taxonium-component";
 
 function App() {
   const handleNodeSelect = (nodeId) => {
-    console.log("Node selected:", nodeId);
   };
 
   const handleNodeDetailsLoaded = (nodeId, nodeDetails) => {
-    console.log("Node details loaded:", nodeId, nodeDetails);
   };
 
   return (

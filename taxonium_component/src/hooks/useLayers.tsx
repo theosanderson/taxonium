@@ -651,7 +651,6 @@ const useLayers = ({
         if (layer.layerType === "SolidPolygonLayer") {
           return new SolidPolygonLayer(layer as any);
         }
-      console.log("could not map layer spec for ", layer);
     });
 
   const { triggerSVGdownload } = getSVGfunction(

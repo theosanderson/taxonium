@@ -52,7 +52,6 @@ function useServerBackend(
       axios
         .get(url)
         .then(function (response) {
-          console.log("got data - yay", response.data);
           response.data.nodes.forEach((node: Node) => {
             if (node.node_id === config.rootId) {
               if (config.useHydratedMutations) {
@@ -73,7 +72,6 @@ function useServerBackend(
           setResult(response.data);
         })
         .catch(function (error) {
-          console.log(error);
           window.alert(error);
           setResult({ nodes: [] } as NodesResponse);
           setTriggerRefresh({});
@@ -125,7 +123,6 @@ function useServerBackend(
       axios
         .get(url, { signal: abortController.signal })
         .then(function (response) {
-          console.log("got data", response.data);
           setResult(response.data);
         })
         .catch(function (error) {
@@ -133,7 +130,6 @@ function useServerBackend(
           if (error.name === "CanceledError") {
             return;
           }
-          console.log(error);
           window.alert(error);
           setResult({ type: "", data: [], total_count: 0, key: "" } as SearchResult);
         });
@@ -159,7 +155,6 @@ function useServerBackend(
       axios
         .get(url)
         .then((response) => {
-          console.log("got config", response.data);
           if (response.data.error) {
             window.alert(response.data.error + "Error.");
             return;
@@ -175,7 +170,6 @@ function useServerBackend(
 
             eventSource.onmessage = (event) => {
               if (event.data === "END") {
-                console.log("Finished receiving mutations");
                 eventSource.close();
                 setResult(config);
                 return;
@@ -185,10 +179,6 @@ function useServerBackend(
                 const mutationsChunk = JSON.parse(event.data);
                 if (Array.isArray(mutationsChunk)) {
                   config.mutations.push(...mutationsChunk);
-
-                  console.log(
-                    `Received chunk of ${mutationsChunk.length} mutations`
-                  );
                 } else {
                   console.error("Received non-array chunk:", mutationsChunk);
                 }

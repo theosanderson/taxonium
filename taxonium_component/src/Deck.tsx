@@ -98,7 +98,6 @@ function Deck({
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const [treenomeSettingsOpen, setTreenomeSettingsOpen] = useState(false);
 
-  //console.log("DATA is ", data);
   const no_data = !data.data || !data.data.nodes || !data.data.nodes.length;
 
   const {
@@ -160,7 +159,6 @@ function Deck({
         return false;
       }
 
-      //console.log("onClickOrMouseMove", event);
 
       const pickInfo = deckRef.current?.pickObject({
         x: event.nativeEvent.offsetX,
@@ -252,7 +250,6 @@ function Deck({
     setTreenomeReferenceInfo,
     hoveredKey,
   });
-  // console.log("deck refresh");
 
   return (
     <div
@@ -395,7 +392,6 @@ function Deck({
           window.setTimeout(() => {
             (treenomeState as any).handleResize();
           }, 50);
-          console.log("resize", size);
         }}
         onAfterRender={(event) => {
           if (isNaN(deckSize.width)) {
@@ -440,8 +436,6 @@ function Deck({
           <TreenomeButtons
             loading={data.status === "loading"}
             requestOpenSettings={() => {
-              console.log("opening");
-              console.log(treenomeSettingsOpen);
 
               setTreenomeSettingsOpen(true);
             }}

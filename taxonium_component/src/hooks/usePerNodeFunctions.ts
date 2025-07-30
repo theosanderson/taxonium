@@ -4,7 +4,6 @@ import type { Mutation, Node } from "../types/node";
 
 function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
   const getNodeGenotype = (node_id: number) => {
-    console.log("data", data);
 
     let data_to_use;
     if (data.data.nodeLookup[node_id]) {
@@ -12,12 +11,6 @@ function usePerNodeFunctions(data: DynamicDataWithLookup, config: Config) {
     } else if (data.base_data.nodeLookup[node_id]) {
       data_to_use = data.base_data;
     } else {
-      console.log(
-        "UNEXPECTED ERROR: node not found",
-        node_id,
-        data.data,
-        data.base_data
-      );
       return null;
     }
     let cur_node: Node = data_to_use.nodeLookup[node_id];
