@@ -98,6 +98,7 @@ function useLocalBackend(
   onStatusReceipt = (receivedData) => {
     if (receivedData.data.error) {
       window.alert(receivedData.data.error);
+      console.log("ERROR33:", receivedData.data.error);
     }
     const total_nodes = receivedData.data.total as number | undefined;
     if (total_nodes && total_nodes > 6000000) {
