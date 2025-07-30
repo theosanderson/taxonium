@@ -34,6 +34,7 @@ const ListOutputModal = ({
       setLoading(true);
       backend.getTipAtts(nodeId, selectedKey, (err, res) => {
         if (err) {
+          console.log(err);
         } else {
           setListOutput(res as string[]);
         }
