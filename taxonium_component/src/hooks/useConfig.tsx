@@ -76,6 +76,7 @@ const useConfig = (
             afterPossibleGet();
           })
           .catch((error) => {
+            console.log("ERROR", error);
             afterPossibleGet();
           });
       } else {
