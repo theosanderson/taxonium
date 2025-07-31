@@ -1,3 +1,4 @@
+import React, { useMemo, useState, useRef } from "react";
 import "./App.css";
 import Deck from "./Deck";
 import SearchPanel from "./components/SearchPanel";
@@ -9,7 +10,6 @@ import useSearch from "./hooks/useSearch";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
-import { useMemo, useState, useRef } from "react";
 import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
@@ -308,4 +308,4 @@ function Taxonium({
   );
 }
 
-export default Taxonium;
+export default React.memo(Taxonium);
