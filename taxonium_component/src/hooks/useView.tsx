@@ -23,7 +23,7 @@ const defaultViewState: ViewState = {
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
   pitch: 0,
   bearing: 0,
-  minimap: { zoom: -3, target: [250, 1000] }
+  minimap: { zoom: -4, target: [250, 1000] }
 };
 
 type ViewStateType = ViewState;
@@ -109,7 +109,20 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
         return false;
       }
 
-      newViewState.minimap = { zoom: -3, target: [250, 1000] };
+      // Calculate minimap zoom dynamically based on deck size
+      // The minimap height is 35% of the deck height
+      const minimapHeight = deckSize ? deckSize.height * 0.32 : 400;
+      // Assuming tree height is approximately 2000 units (this covers most cases)
+      // We want to fit the entire tree in the minimap viewport
+      const treeHeight = 2000; // This is a reasonable default for most trees
+      // Calculate zoom level: higher zoom values mean more zoomed out
+      // The formula: zoom = log2(viewportHeight / contentHeight)
+      const dynamicZoom = Math.log2(minimapHeight / treeHeight);
+      
+      newViewState.minimap = { 
+        zoom: Math.min(dynamicZoom, -2), // Use at least -2 to prevent over-zooming
+        target: [250, 1000] 
+      };
       newViewState["browser-main"] = {
         zoom: [
           -3,
@@ -123,7 +136,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
 
       return newViewState;
     },
-    [mouseDownIsMinimap]
+    [mouseDownIsMinimap, deckSize]
   );
 
   const zoomIncrement = useCallback(
