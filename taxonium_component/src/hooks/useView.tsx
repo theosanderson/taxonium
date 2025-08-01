@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
 import type { OrthographicViewProps } from "@deck.gl/core";
 import type { Settings } from "../types/settings";
@@ -18,12 +18,21 @@ interface StyledViewProps extends OrthographicViewProps {
 
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
+const MINIMAP_HEIGHT_UNITS = 10000;
+
+const getMinimapZoom = (deckHeight?: number | null) => {
+  const h = deckHeight ?? window.innerHeight;
+  const minimapHeight = h * 0.35;
+  const zoom = Math.log2(minimapHeight / MINIMAP_HEIGHT_UNITS);
+  return Math.min(zoom, -3);
+};
+
 const defaultViewState: ViewState = {
   zoom: [0, -2],
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
   pitch: 0,
   bearing: 0,
-  minimap: { zoom: -3, target: [250, 1000] }
+  minimap: { zoom: getMinimapZoom(), target: [250, 1000] }
 };
 
 type ViewStateType = ViewState;
@@ -109,7 +118,10 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
         return false;
       }
 
-      newViewState.minimap = { zoom: -3, target: [250, 1000] };
+      newViewState.minimap = {
+        zoom: getMinimapZoom(deckSize?.height),
+        target: [250, 1000],
+      };
       newViewState["browser-main"] = {
         zoom: [
           -3,
@@ -147,6 +159,17 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   const zoomReset = useCallback(() => {
     setViewState(defaultViewState);
   }, []);
+
+  useEffect(() => {
+    if (!deckSize) return;
+    setViewState(
+      (vs: ViewStateType) =>
+        ({
+          ...vs,
+          minimap: { ...vs.minimap, zoom: getMinimapZoom(deckSize.height) },
+        } as ViewStateType)
+    );
+  }, [deckSize]);
 
   return {
     viewState,
