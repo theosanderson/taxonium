@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
 import type { OrthographicViewProps } from "@deck.gl/core";
 import type { Settings } from "../types/settings";
@@ -18,13 +18,27 @@ interface StyledViewProps extends OrthographicViewProps {
 
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-const defaultViewState: ViewState = {
+// Helper function to calculate dynamic minimap zoom
+const calculateMinimapZoom = (deckSize: DeckSize | null): number => {
+  if (!deckSize) return -4; // Fallback for when deck size isn't available yet
+  
+  const minimapHeight = deckSize.height * 0.32;
+  const treeHeight = 2000; // Reasonable default for most trees
+  const dynamicZoom = Math.log2(minimapHeight / treeHeight);
+  
+  // Ensure we have valid zoom values (between -6 and -2 is reasonable for minimap)
+  const clampedZoom = Math.max(-6, Math.min(dynamicZoom, -2));
+  
+  return isFinite(clampedZoom) ? clampedZoom : -4;
+};
+
+const getDefaultViewState = (deckSize: DeckSize | null): ViewState => ({
   zoom: [0, -2],
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
   pitch: 0,
   bearing: 0,
-  minimap: { zoom: -4, target: [250, 1000] }
-};
+  minimap: { zoom: calculateMinimapZoom(deckSize), target: [250, 1000] }
+});
 
 type ViewStateType = ViewState;
 
@@ -35,9 +49,22 @@ interface UseViewProps {
 }
 
 const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
-  const [viewState, setViewState] = useState<ViewStateType>(defaultViewState);
+  const [viewState, setViewState] = useState<ViewStateType>(() => getDefaultViewState(deckSize));
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
+
+  // Update minimap zoom when deckSize changes (e.g., window resize)
+  useEffect(() => {
+    if (deckSize && settings.minimapEnabled) {
+      setViewState(prev => ({
+        ...prev,
+        minimap: {
+          ...prev.minimap,
+          zoom: calculateMinimapZoom(deckSize),
+        }
+      }));
+    }
+  }, [deckSize, settings.minimapEnabled]);
 
   const baseViewState = useMemo(() => ({ ...viewState }), [viewState]);
 
@@ -62,7 +89,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
           height: "35%",
           borderWidth: "1px",
           controller: controllerProps,
-          initialViewState: viewState.minimap || defaultViewState.minimap,
+          initialViewState: viewState.minimap || getDefaultViewState(deckSize).minimap,
         } as StyledViewProps)
       );
     }
@@ -110,21 +137,9 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
         return false;
       }
 
-      // Calculate minimap zoom dynamically based on deck size
-      // The minimap height is 35% of the deck height
-      const minimapHeight = deckSize ? deckSize.height * 0.32 : 400;
-      // Assuming tree height is approximately 2000 units (this covers most cases)
-      // We want to fit the entire tree in the minimap viewport
-      const treeHeight = 2000; // This is a reasonable default for most trees
-      // Calculate zoom level: higher zoom values mean more zoomed out
-      // The formula: zoom = log2(viewportHeight / contentHeight)
-      const dynamicZoom = Math.log2(minimapHeight / treeHeight);
-      
-      // Ensure we have valid zoom values (between -6 and -2 is reasonable for minimap)
-      const clampedZoom = Math.max(-6, Math.min(dynamicZoom, -2));
-      
+      // Update minimap zoom using the centralized calculation
       newViewState.minimap = { 
-        zoom: isFinite(clampedZoom) ? clampedZoom : -4, // Fallback to -4 if calculation fails
+        zoom: calculateMinimapZoom(deckSize),
         target: [250, 1000] 
       };
       newViewState["browser-main"] = {
@@ -162,8 +177,8 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   );
 
   const zoomReset = useCallback(() => {
-    setViewState(defaultViewState);
-  }, []);
+    setViewState(getDefaultViewState(deckSize));
+  }, [deckSize]);
 
   return {
     viewState,
