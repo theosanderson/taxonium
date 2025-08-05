@@ -49,22 +49,24 @@ interface UseViewProps {
 }
 
 const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
-  const [viewState, setViewState] = useState<ViewStateType>(() => getDefaultViewState(deckSize));
+  const [viewState, setViewState] = useState<ViewStateType>(() => getDefaultViewState(null));
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
 
-  // Update minimap zoom when deckSize changes (e.g., window resize)
+  // Update minimap zoom when deckSize becomes available or changes
   useEffect(() => {
-    if (deckSize && settings.minimapEnabled) {
+    if (deckSize && !isNaN(deckSize.width) && !isNaN(deckSize.height) && settings.minimapEnabled) {
+      const newZoom = calculateMinimapZoom(deckSize);
       setViewState(prev => ({
         ...prev,
         minimap: {
           ...prev.minimap,
-          zoom: calculateMinimapZoom(deckSize),
+          zoom: newZoom,
+          target: [250, 1000]
         }
       }));
     }
-  }, [deckSize, settings.minimapEnabled]);
+  }, [deckSize?.width, deckSize?.height, settings.minimapEnabled]);
 
   const baseViewState = useMemo(() => ({ ...viewState }), [viewState]);
 
