@@ -62,6 +62,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
           height: "35%",
           borderWidth: "1px",
           controller: controllerProps,
+          initialViewState: viewState.minimap || defaultViewState.minimap,
         } as StyledViewProps)
       );
     }
@@ -119,8 +120,11 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
       // The formula: zoom = log2(viewportHeight / contentHeight)
       const dynamicZoom = Math.log2(minimapHeight / treeHeight);
       
+      // Ensure we have valid zoom values (between -6 and -2 is reasonable for minimap)
+      const clampedZoom = Math.max(-6, Math.min(dynamicZoom, -2));
+      
       newViewState.minimap = { 
-        zoom: Math.min(dynamicZoom, -2), // Use at least -2 to prevent over-zooming
+        zoom: isFinite(clampedZoom) ? clampedZoom : -4, // Fallback to -4 if calculation fails
         target: [250, 1000] 
       };
       newViewState["browser-main"] = {
