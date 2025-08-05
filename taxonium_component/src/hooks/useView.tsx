@@ -20,7 +20,10 @@ const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 // Helper function to calculate dynamic minimap zoom
 const calculateMinimapZoom = (deckSize: DeckSize | null): number => {
-  if (!deckSize) return -4; // Fallback for when deck size isn't available yet
+  if (!deckSize) {
+    console.log('MINIMAP_ZOOM: No deck size available, using fallback -4');
+    return -4; // Fallback for when deck size isn't available yet
+  }
   
   const minimapHeight = deckSize.height * 0.32;
   const treeHeight = 2000; // Reasonable default for most trees
@@ -29,16 +32,30 @@ const calculateMinimapZoom = (deckSize: DeckSize | null): number => {
   // Ensure we have valid zoom values (between -6 and -2 is reasonable for minimap)
   const clampedZoom = Math.max(-6, Math.min(dynamicZoom, -2));
   
+  console.log('MINIMAP_ZOOM: Calculation', {
+    deckSize,
+    minimapHeight,
+    treeHeight,
+    dynamicZoom,
+    clampedZoom,
+    finalZoom: isFinite(clampedZoom) ? clampedZoom : -4
+  });
+  
   return isFinite(clampedZoom) ? clampedZoom : -4;
 };
 
-const getDefaultViewState = (deckSize: DeckSize | null): ViewState => ({
-  zoom: [0, -2],
-  target: [window.screen.width < 600 ? 500 : 1400, 1000],
-  pitch: 0,
-  bearing: 0,
-  minimap: { zoom: calculateMinimapZoom(deckSize), target: [250, 1000] }
-});
+const getDefaultViewState = (deckSize: DeckSize | null): ViewState => {
+  const minimapZoom = calculateMinimapZoom(deckSize);
+  console.log('MINIMAP_ZOOM: getDefaultViewState with zoom', minimapZoom);
+  
+  return {
+    zoom: [0, -2],
+    target: [window.screen.width < 600 ? 500 : 1400, 1000],
+    pitch: 0,
+    bearing: 0,
+    minimap: { zoom: minimapZoom, target: [250, 1000] }
+  };
+};
 
 type ViewStateType = ViewState;
 
@@ -53,20 +70,31 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
 
-  // Update minimap zoom when deckSize becomes available or changes
+  // Initial minimap zoom setup when deckSize becomes available
   useEffect(() => {
-    if (deckSize && !isNaN(deckSize.width) && !isNaN(deckSize.height) && settings.minimapEnabled) {
+    console.log('MINIMAP_ZOOM: useEffect triggered', {
+      hasDeckSize: !!deckSize,
+      deckSizeValid: deckSize && !isNaN(deckSize.width) && !isNaN(deckSize.height),
+      minimapEnabled: settings.minimapEnabled,
+      hasMinimapState: !!viewState.minimap,
+      currentMinimapZoom: viewState.minimap?.zoom,
+      deckSize
+    });
+    
+    // Only set initial minimap zoom if we don't have one yet and deckSize is valid
+    if (deckSize && !isNaN(deckSize.width) && !isNaN(deckSize.height) && 
+        settings.minimapEnabled && !viewState.minimap) {
       const newZoom = calculateMinimapZoom(deckSize);
+      console.log('MINIMAP_ZOOM: Setting initial zoom in useEffect', newZoom);
       setViewState(prev => ({
         ...prev,
         minimap: {
-          ...prev.minimap,
           zoom: newZoom,
           target: [250, 1000]
         }
       }));
     }
-  }, [deckSize?.width, deckSize?.height, settings.minimapEnabled]);
+  }, [deckSize?.width, deckSize?.height, settings.minimapEnabled, viewState.minimap]);
 
   const baseViewState = useMemo(() => ({ ...viewState }), [viewState]);
 
@@ -82,6 +110,15 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   const views = useMemo(() => {
     const vs = [];
     if (settings.minimapEnabled && !settings.treenomeEnabled) {
+      // Calculate the minimap zoom based on current deckSize
+      const minimapZoom = calculateMinimapZoom(deckSize);
+      const minimapViewState = {
+        zoom: minimapZoom,
+        target: [250, 1000]
+      };
+      
+      console.log('MINIMAP_ZOOM: Creating minimap view with zoom', minimapZoom, 'deckSize:', deckSize);
+      
       vs.push(
         new OrthographicView({
           id: "minimap",
@@ -91,7 +128,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
           height: "35%",
           borderWidth: "1px",
           controller: controllerProps,
-          initialViewState: viewState.minimap || getDefaultViewState(deckSize).minimap,
+          initialViewState: minimapViewState,
         } as StyledViewProps)
       );
     }
@@ -131,19 +168,31 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
       );
     }
     return vs;
-  }, [controllerProps, viewState, settings]);
+  }, [controllerProps, viewState, settings, deckSize]);
 
   const onViewStateChange = useCallback(
     ({ viewState: newViewState, viewId, requestIsFromMinimapPan }: ViewStateChangeParameters<ViewStateType> & { requestIsFromMinimapPan?: boolean }) => {
+      console.log('MINIMAP_ZOOM: onViewStateChange called', {
+        viewId,
+        mouseDownIsMinimap,
+        requestIsFromMinimapPan,
+        currentMinimapZoom: viewState.minimap?.zoom,
+        deckSize
+      });
+      
       if (mouseDownIsMinimap && !requestIsFromMinimapPan) {
         return false;
       }
 
-      // Update minimap zoom using the centralized calculation
+      // Always ensure minimap has consistent zoom based on deck size
+      // This handles the case where clicking updates the view state
+      const minimapZoom = calculateMinimapZoom(deckSize);
       newViewState.minimap = { 
-        zoom: calculateMinimapZoom(deckSize),
-        target: [250, 1000] 
+        zoom: minimapZoom,
+        target: viewState.minimap?.target || [250, 1000]
       };
+      
+      console.log('MINIMAP_ZOOM: Updated in onViewStateChange to', minimapZoom);
       newViewState["browser-main"] = {
         zoom: [
           -3,
@@ -157,7 +206,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
 
       return newViewState;
     },
-    [mouseDownIsMinimap, deckSize]
+    [mouseDownIsMinimap, deckSize, viewState.minimap?.zoom]
   );
 
   const zoomIncrement = useCallback(
