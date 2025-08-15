@@ -20,17 +20,6 @@ This should bring up a development server showing Taxonium.
 
 Note: The taxonium_data_handling package needs to be installed first as it's a local dependency.
 
-### Linking taxonium_data_handling
-
-A small amount of front-end code comes from the `taxonium_data_handling` repo. If you need to work on this code then you can "link" the `taxonium_data_handling` to the web client repo.
-
-```
-cd taxonium_data_handling
-yarn install
-yarn link
-cd ../taxonium_component
-yarn link taxonium_data_handling
-```
 
 ## For back-end development
 
