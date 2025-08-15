@@ -12,29 +12,31 @@ pre-commit install
 
 ```
 cd taxonium_component
-yarn install
-yarn storybook
+npm install
+npm run storybook
 ```
 
 This should bring up a development server showing Taxonium.
 
-### Linking taxonium_data_handling
+### Working on taxonium_data_handling
 
-A small amount of front-end code comes from the `taxonium_data_handling` repo. If you need to work on this code then you can "link" the `taxonium_data_handling` to the web client repo.
+A small amount of front-end code comes from the `taxonium_data_handling` repo. The Storybook configuration watches this package directly, so edits there are reflected immediately.
 
 ```
 cd taxonium_data_handling
-yarn install
-yarn link
+npm install
 cd ../taxonium_component
-yarn link taxonium_data_handling
+npm install
+npm run storybook
 ```
+
+Changes made in `taxonium_data_handling` will now appear in the Storybook without reinstalling.
 
 ## For back-end development
 
 ```
 cd taxonium_backend
-yarn install
+npm install
 node server.js --data-file tfci.jsonl.gz
 ```
 
@@ -42,14 +44,14 @@ This will launch the backend server on port 8000, from a small tree file. (Thoug
 
 ### Linking taxonium_data_handling
 
-A small amount of backend code comes from the `taxonium_data_handling` repo. If you need to work on this code then you can "link" the `taxonium_data_handling` to the backend repo.
+A small amount of backend code comes from the `taxonium_data_handling` repo. If you need to work on this code then you can link the `taxonium_data_handling` to the backend repo.
 
 ```
 cd taxonium_data_handling
-yarn install
-yarn link
+npm install
+npm link
 cd ../taxonium_backend
-yarn link taxonium_data_handling
+npm link taxonium_data_handling
 ```
 
 ## Codespaces
