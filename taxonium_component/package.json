@@ -23,7 +23,6 @@
     "directory": "taxonium-component"
   },
   "scripts": {
-    "preinstall": "cd ../taxonium_data_handling && npm install",
     "dev": "vite",
     "build": " vite build",
     "lint": "eslint .",
