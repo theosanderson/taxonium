@@ -12,11 +12,13 @@ pre-commit install
 
 ```
 cd taxonium_component
-yarn install
-yarn storybook
+npm --prefix ../taxonium_data_handling install && npm install
+npm run storybook
 ```
 
 This should bring up a development server showing Taxonium.
+
+Note: The taxonium_data_handling package needs to be installed first as it's a local dependency.
 
 ### Linking taxonium_data_handling
 
