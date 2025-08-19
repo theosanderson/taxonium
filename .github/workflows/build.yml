@@ -50,7 +50,7 @@ jobs:
     - name: Build taxonium_component
       run: |
         cd ../taxonium_component
-        npm ci --legacy-peer-deps
+        npm --prefix ../taxonium_data_handling install && npm ci --legacy-peer-deps
         npm run build
       env:
         NODE_OPTIONS: --max-old-space-size=8192
