@@ -1959,6 +1959,9 @@ tar@^7.4.3:
 "taxonium-component@file:../taxonium_component":
   version "0.0.0"
   resolved "file:../taxonium_component"
+  dependencies:
+    "@jbrowse/react-linear-genome-view" "^3.1.0"
+    zod "^3.25.16"
 
 text-table@^0.2.0:
   version "0.2.0"
