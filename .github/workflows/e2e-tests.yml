@@ -31,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: 'npm'
           cache-dependency-path: taxonium_website/package-lock.json
 
@@ -39,9 +39,7 @@ jobs:
         run: |
           cd ../taxonium_component
           npm --prefix ../taxonium_data_handling install && npm ci --legacy-peer-deps
-          npm run build
-        env:
-          NODE_OPTIONS: --max-old-space-size=8192
+          NODE_OPTIONS='--max-old-space-size=6144' npm run build
         working-directory: ./taxonium_website
 
       - name: Install website dependencies
@@ -53,7 +51,7 @@ jobs:
         working-directory: ./taxonium_website
 
       - name: Build the application
-        run: NODE_OPTIONS='--max-old-space-size=8192' npm run build
+        run: NODE_OPTIONS='--max-old-space-size=6144' npm run build
         working-directory: ./taxonium_website
 
       - name: Run E2E tests
