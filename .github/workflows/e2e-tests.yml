@@ -35,8 +35,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: taxonium_website/package-lock.json
 
-      - name: Install dependencies with increased memory
-        run: NODE_OPTIONS='--max-old-space-size=8192' npm ci --force
+      - name: Build taxonium_component
+        run: |
+          cd ../taxonium_component
+          npm --prefix ../taxonium_data_handling install && npm ci --legacy-peer-deps
+          npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192
+        working-directory: ./taxonium_website
+
+      - name: Install website dependencies
+        run: npm ci --legacy-peer-deps
         working-directory: ./taxonium_website
 
       - name: Install Playwright browsers
