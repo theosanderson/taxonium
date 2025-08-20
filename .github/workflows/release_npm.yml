@@ -19,11 +19,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install jq
 
-      - name: Install taxonium_data_handling
-        run: |
-          cd taxonium_data_handling
-          npm install
-
       - name: Update package version and release
         run: |
           cd taxonium_component
