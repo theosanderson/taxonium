@@ -11,8 +11,5 @@
   "license": "ISC",
   "dependencies": {
     "readable-web-to-node-stream": "^3.0.2"
-  },
-  "devDependencies": {
-    "vite-plugin-node-polyfills": "^0.24.0"
   }
 }

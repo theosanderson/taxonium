@@ -49,10 +49,7 @@
       "main.js",
       "preload.js",
       "dist/**/*",
-      "node_modules/**/*",
-      "!node_modules/taxonium_backend/node_modules/taxonium_data_handling/node_modules",
-      "!node_modules/taxonium-component/node_modules/taxonium_data_handling/node_modules",
-      "!**/node_modules/**/node_modules/taxonium_data_handling/node_modules"
+      "node_modules/**/*"
     ],
     "extraResources": [
       {
