@@ -9,6 +9,7 @@ import { processNextstrain } from "../utils/processNextstrain.js";
 import { ReadableWebToNodeStream } from "readable-web-to-node-stream";
 import { parser } from "stream-json";
 import { streamValues } from "stream-json/streamers/StreamValues";
+import { Buffer } from "buffer";
 
 postMessage({ data: "Worker starting" });
 
@@ -196,7 +197,8 @@ onmessage = async (event) => {
       sendStatusMessage,
       ReadableWebToNodeStream,
       parser,
-      streamValues
+      streamValues,
+      Buffer
     );
 
   } else if (

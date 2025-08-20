@@ -1,6 +1,5 @@
 import zlib from "zlib";
 import stream from "stream";
-import buffer from "buffer";
 
 class ChunkCounterStream extends stream.PassThrough {
   constructor(sendStatusMessage, options = {}) {
@@ -94,7 +93,7 @@ export const formatNumber = (num) => {
   return num !== null && typeof num === "number" ? num.toLocaleString() : "";
 };
 
-export const modules = { zlib, stream, buffer };
+export const modules = { zlib, stream };
 
 function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   if (maxOrMin === "max") {
@@ -202,7 +201,8 @@ export const processJsonl = async (
   sendStatusMessage,
   ReadableWebToNodeStream,
   parser,
-  streamValues
+  streamValues,
+  Buffer
 ) => {
   console.log(
     "Worker processJsonl" //, jsonl
@@ -226,7 +226,7 @@ export const processJsonl = async (
     let chunkSize = 5 * 1024 * 1024;
     for (let i = 0; i < dataAsArrayBuffer.byteLength; i += chunkSize) {
       const chunk = dataAsArrayBuffer.slice(i, i + chunkSize);
-      const chunkAsBuffer = buffer.Buffer.from(chunk);
+      const chunkAsBuffer = Buffer.from(chunk);
       // Pipe the chunkStream to the stream
       the_stream.write(chunkAsBuffer);
     }
