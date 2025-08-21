@@ -8,28 +8,33 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: tfci-taxonium-config
           path: ./data/
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: NODE_OPTIONS='--max-old-space-size=4096' yarn install
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: taxonium_website/package-lock.json
+      - name: Build taxonium_component
+        run: |
+          cd ../taxonium_component
+          npm --prefix ../taxonium_data_handling install && npm ci --legacy-peer-deps
+          NODE_OPTIONS='--max-old-space-size=6144' npm run build
+        working-directory: ./taxonium_website
+      - name: Install website dependencies
+        run: npm ci --legacy-peer-deps
         working-directory: ./taxonium_website
       - name: Install Playwright Browsers
-        run: yarn playwright install --with-deps
+        run: npx playwright install --with-deps
         working-directory: ./taxonium_website
-      - name: Build
-        run: yarn build
+      - name: Build the application
+        run: NODE_OPTIONS='--max-old-space-size=6144' npm run build
         working-directory: ./taxonium_website
       - name: Run Playwright tests
-        run: pwd
-          yarn playwright test
+        run: npx playwright test
         working-directory: ./taxonium_website
       - uses: actions/upload-artifact@v4
         if: always()

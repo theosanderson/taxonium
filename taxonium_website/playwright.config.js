@@ -68,5 +68,6 @@ export default defineConfig({
   webServer: {
     command: "yarn preview",
     port: 4173,
+    reuseExistingServer: true,
   },
 });
