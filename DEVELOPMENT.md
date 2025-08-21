@@ -12,11 +12,11 @@ pre-commit install
 
 ```
 cd taxonium_component
-yarn install
-yarn storybook
+npm install
+npm run storybook
 ```
 
-This should bring up a development server showing Taxonium.
+This should bring up a storybook server showing Taxonium.
 
 ### Linking taxonium_data_handling
 
@@ -24,17 +24,17 @@ A small amount of front-end code comes from the `taxonium_data_handling` repo. I
 
 ```
 cd taxonium_data_handling
-yarn install
-yarn link
+npm install
+npm link
 cd ../taxonium_component
-yarn link taxonium_data_handling
+npm link taxonium_data_handling
 ```
 
 ## For back-end development
 
 ```
 cd taxonium_backend
-yarn install
+npm install
 node server.js --data-file tfci.jsonl.gz
 ```
 
@@ -46,10 +46,10 @@ A small amount of backend code comes from the `taxonium_data_handling` repo. If 
 
 ```
 cd taxonium_data_handling
-yarn install
-yarn link
+npm install
+npm link
 cd ../taxonium_backend
-yarn link taxonium_data_handling
+npm link taxonium_data_handling
 ```
 
 ## Codespaces
