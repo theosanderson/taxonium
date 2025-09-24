@@ -1,4 +1,4 @@
-import Modal from "react-modal";
+import TaxoniumModal from "./TaxoniumModal";
 import { useState } from "react";
 const settingsModalStyle = {
   content: {
@@ -33,7 +33,7 @@ const TreenomeModal = ({
     settings.chromosomeName
   );
   return (
-    <Modal
+    <TaxoniumModal
       isOpen={treenomeSettingsOpen}
       style={settingsModalStyle}
       onRequestClose={() => {
@@ -65,7 +65,7 @@ const TreenomeModal = ({
           </em>
         </span>
       </div>
-    </Modal>
+    </TaxoniumModal>
   );
 };
 export default TreenomeModal;

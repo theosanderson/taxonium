@@ -1,4 +1,4 @@
-import Modal from "react-modal";
+import TaxoniumModal from "./TaxoniumModal";
 import { useState, useEffect } from "react";
 import type { Backend } from "../types/backend";
 
@@ -44,7 +44,7 @@ const ListOutputModal = ({
   }, [selectedKey, nodeId, listOutputModalOpen, backend]);
 
   return (
-    <Modal
+    <TaxoniumModal
       ariaHideApp={false}
       isOpen={listOutputModalOpen}
       style={{
@@ -110,7 +110,7 @@ const ListOutputModal = ({
           />
         )}
       </div>
-    </Modal>
+    </TaxoniumModal>
   );
 };
 

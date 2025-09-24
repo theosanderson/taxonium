@@ -1,5 +1,5 @@
 import React from "react";
-import Modal from "react-modal";
+import TaxoniumModal from "./TaxoniumModal";
 import ColorPicker from "./ColorPicker";
 
 interface ColorSettingModalProps {
@@ -35,7 +35,7 @@ const ColorSettingModal = ({
   title,
 }: ColorSettingModalProps) => {
   return (
-    <Modal
+    <TaxoniumModal
       isOpen={isOpen}
       style={modalStyle}
       onRequestClose={() => setIsOpen(false)}
@@ -51,7 +51,7 @@ const ColorSettingModal = ({
           </label>
         </div>
       </div>
-    </Modal>
+    </TaxoniumModal>
   );
 };
 
