@@ -59,9 +59,3 @@ body {
   color: #2563eb;
   text-decoration: underline;
 }
-
-/* Required for Taxonium component to fill container */
-.taxonium {
-  width: 100%;
-  height: 100%;
-}
