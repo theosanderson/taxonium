@@ -11,16 +11,19 @@ interface Props {
     overlay?: React.CSSProperties;
   };
   ariaHideApp?: boolean;
+  parentSelector?: () => HTMLElement;
   contentLabel?: string;
+  [key: string]: any;
 }
 
 export default function TaxoniumModal({
   children,
-  className,
+  parentSelector = () =>
+    document.getElementById("taxonium-root") as HTMLElement,
   ...props
 }: Props) {
   return (
-    <Modal className={`taxonium ${className}`} {...props}>
+    <Modal parentSelector={parentSelector} {...props}>
       {children}
     </Modal>
   );
