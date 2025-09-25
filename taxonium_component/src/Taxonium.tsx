@@ -215,77 +215,32 @@ function Taxonium({
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
-    <GlobalErrorBoundary>
-      <div className="taxonium w-full h-full flex">
-        <div id="taxonium-root" />
-        <Toaster />
-      <ReactTooltipAny
-        id="global-tooltip"
-        delayHide={400}
-        className="infoTooltip"
-        place="top"
-        backgroundColor="#e5e7eb"
-        textColor="#000"
-        effect="solid"
-      />
-      <div className="grow overflow-hidden flex flex-col md:flex-row">
-        <div
-          className={
-            sidebarOpen
-              ? "h-1/2 md:h-full w-full 2xl:w-3/4 md:grow" +
-                (settings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
-              : "md:col-span-12 h-5/6 md:h-full w-full"
-          }
-        >
-          <Deck
-            statusMessage={backend.statusMessage}
-            data={data}
-            search={search}
-            view={view}
-            colorHook={colorHook}
-            colorBy={colorBy}
-            config={config}
-            hoverDetails={hoverDetails}
-            selectedDetails={selectedDetails}
-            xType={xType}
-            settings={settings}
-            setDeckSize={setDeckSize}
-            deckSize={deckSize}
-            isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
-            treenomeState={treenomeState as unknown as TreenomeState}
-            deckRef={deckRef}
-            mouseDownIsMinimap={mouseDownIsMinimap}
-            setMouseDownIsMinimap={setMouseDownIsMinimap}
-            jbrowseRef={jbrowseRef}
-            setAdditionalColorMapping={setAdditionalColorMapping}
-            onNodeSelect={onNodeSelect}
-            onNodeDetailsLoaded={onNodeDetailsLoaded}
-          />
-        </div>
-
-        <div
-          className={
-            sidebarOpen
-              ? "grow min-h-0 h-1/2 md:h-full 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden" +
-                (settings.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
-              : "bg-white shadow-xl"
-          }
-        >
-          {!sidebarOpen && (
-            <button onClick={toggleSidebar}>
-              <br />
-              {window.innerWidth > 768 ? (
-                <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
-              ) : (
-                <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
-              )}
-            </button>
-          )}
-
-          {sidebarOpen && (
-            <SearchPanel
-              className="grow min-h-0 h-full bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
-              backend={backend}
+    <div className="taxonium">
+      <GlobalErrorBoundary>
+        <div className="w-full h-full flex">
+          <div id="taxonium-root" />
+          <Toaster />
+        <ReactTooltipAny
+          id="global-tooltip"
+          delayHide={400}
+          className="infoTooltip"
+          place="top"
+          backgroundColor="#e5e7eb"
+          textColor="#000"
+          effect="solid"
+        />
+        <div className="grow overflow-hidden flex flex-col md:flex-row">
+          <div
+            className={
+              sidebarOpen
+                ? "h-1/2 md:h-full w-full 2xl:w-3/4 md:grow" +
+                  (settings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
+                : "md:col-span-12 h-5/6 md:h-full w-full"
+            }
+          >
+            <Deck
+              statusMessage={backend.statusMessage}
+              data={data}
               search={search}
               view={view}
               colorHook={colorHook}
