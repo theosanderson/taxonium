@@ -53,7 +53,6 @@ interface TaxoniumProps {
   sidePanelHiddenByDefault?: boolean;
 }
 
-
 const default_query = getDefaultQuery();
 
 function Taxonium({
@@ -146,7 +145,9 @@ function Taxonium({
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
-    const initial = (config as any).colorMapping ? (config as any).colorMapping : {};
+    const initial = (config as any).colorMapping
+      ? (config as any).colorMapping
+      : {};
     return { ...initial, ...additionalColorMapping };
   }, [(config as any).colorMapping, additionalColorMapping]);
   const colorHook = useColor(config, colorMapping, colorBy.colorByField);
@@ -215,11 +216,13 @@ function Taxonium({
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
-    <div className="taxonium">
-      <GlobalErrorBoundary>
-        <div className="w-full h-full flex">
-          <div id="taxonium-root" />
-          <Toaster />
+    <GlobalErrorBoundary>
+      <div
+        className="w-full h-full flex taxonium"
+        style={{ width: "100%", height: "100%" }}
+      >
+        <div id="taxonium-root" />
+        <Toaster />
         <ReactTooltipAny
           id="global-tooltip"
           delayHide={400}
@@ -306,8 +309,7 @@ function Taxonium({
           </div>
         </div>
       </div>
-      </GlobalErrorBoundary>
-    </div>
+    </GlobalErrorBoundary>
   );
 }
 
