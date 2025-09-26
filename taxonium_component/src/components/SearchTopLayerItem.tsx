@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { Button } from "../components/Basic";
 import { formatNumber } from "../utils/formatNumber";
 import { ClipLoader } from "react-spinners";
-import Modal from "react-modal";
+import TaxoniumModal from "./TaxoniumModal";
 
 import type { SearchSpec, SearchState } from "../types/search";
 import type { Config } from "../types/backend";
@@ -58,7 +58,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }: SearchT
 
   return (
     <>
-      <Modal
+      <TaxoniumModal
         isOpen={permaLinkModalOpen}
         onRequestClose={() => setPermaLinkModalOpen(false)}
       >
@@ -74,7 +74,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }: SearchT
           className="border p-2 m-4 text-xs w-full bg-neutral-100"
           readOnly={true}
         ></textarea>
-      </Modal>
+      </TaxoniumModal>
       <div className="border-gray-100 border-b pb-2">
         <input
           name="isGoing"
