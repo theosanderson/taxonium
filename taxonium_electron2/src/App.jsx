@@ -3,7 +3,6 @@ import Taxonium from 'taxonium-component';
 import './App.css';
 
 function App() {
-  const [query, setQuery] = useState({});
   const [backendUrl, setBackendUrl] = useState(null);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
@@ -102,8 +101,6 @@ function App() {
         <div className="taxonium-container">
           <Taxonium
             configDict={configDict}
-            query={query}
-            updateQuery={setQuery}
             backendUrl={backendUrl}
           />
         </div>

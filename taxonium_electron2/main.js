@@ -7,6 +7,31 @@ let mainWindow;
 let backendProcess;
 let backendPort;
 
+// Create a small window showing the backend URL
+function showBackendUrlWindow(url) {
+  const infoWindow = new BrowserWindow({
+    width: 500,
+    height: 150,
+    title: 'Backend URL',
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  });
+
+  const encoded = encodeURIComponent(url);
+  const html = `<!DOCTYPE html>
+    <html>
+      <body style="font-family: sans-serif; padding: 20px;">
+        <p>Backend server running at:</p>
+        <p><a href="${url}">${url}</a></p>
+        <p><a href="https://taxonium.org?backend=${encoded}">taxonium.org?backend=${encoded}</a></p>
+      </body>
+    </html>`;
+
+  infoWindow.loadURL('data:text/html,' + encodeURIComponent(html));
+}
+
 
 // Calculate max memory for backend (3/4 of system memory)
 const totalMemory = os.totalmem();
@@ -99,6 +124,7 @@ function spawnBackend(filePath) {
       const backendUrl = `http://localhost:${backendPort}`;
       console.log('Backend loaded, sending URL:', backendUrl);
       mainWindow.webContents.send('backend-url', backendUrl);
+      showBackendUrlWindow(backendUrl);
     }
   });
 

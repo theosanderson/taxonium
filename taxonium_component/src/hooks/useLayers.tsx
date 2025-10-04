@@ -473,7 +473,7 @@ const useLayers = ({
     radiusUnits: "pixels",
     onHover: (info: HoverInfo<Node>) => setHoverInfo(info),
     updateTriggers: {
-      getFillColor: [base_data, getNodeColorField],
+      getFillColor: [base_data, getNodeColorField, colorHook],
       getPosition: [minimap_scatter_data, xType],
     },
   };

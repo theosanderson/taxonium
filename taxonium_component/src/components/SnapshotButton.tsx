@@ -37,7 +37,7 @@ const SnapshotButton = ({ svgFunction, pixelFunction, deckSize }: SnapshotButton
         <Dialog
           as="div"
           static
-          className="fixed inset-0 z-10 overflow-y-auto"
+          className="fixed inset-0 z-10 overflow-y-auto taxonium"
           open={isOpen}
           onClose={setIsOpen}
         >

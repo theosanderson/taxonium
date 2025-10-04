@@ -18,7 +18,8 @@
     "preview": "vite preview"
   },
   "keywords": [],
-  "author": "",
+  "author": "Theo Sanderson <theo@theo.io>",
+  "homepage": "https://taxonium.org",
   "license": "ISC",
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
@@ -63,5 +64,10 @@
       "**/taxonium_data_handling/**/*"
     ],
     "npmRebuild": false
+    ,
+    "linux": {
+      "target": ["deb", "rpm", "AppImage"],
+      "maintainer": "Theo Sanderson <theo@theo.io>"
+    }
   }
 }

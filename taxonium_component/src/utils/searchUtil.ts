@@ -8,7 +8,6 @@ export interface SearchUtilConfig {
 export function getDefaultSearch(config: SearchUtilConfig | null, key?: string): SearchSpec {
   if (!key) {
     key = Math.random().toString(36).substring(2, 15);
-    console.log("generated key", key);
   }
   if (config && config.defaultSearch) {
     return config.defaultSearch;

@@ -1,6 +1,6 @@
 import React from "react";
 import type { Settings } from "../types/settings";
-import Modal from "react-modal";
+import TaxoniumModal from "./TaxoniumModal";
 import ColorPicker from "./ColorPicker";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
@@ -47,7 +47,7 @@ const DeckSettingsModal = ({
   setNoneColor,
 }: DeckSettingsModalProps) => {
   return (
-    <Modal
+    <TaxoniumModal
       isOpen={deckSettingsOpen}
       style={settingsModalStyle}
       onRequestClose={() => setDeckSettingsOpen(false)}
@@ -341,7 +341,7 @@ const DeckSettingsModal = ({
           </div>
         </TabPanel>
       </Tabs>
-    </Modal>
+    </TaxoniumModal>
   );
 };
 

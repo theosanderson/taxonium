@@ -457,7 +457,8 @@ const loadData = async () => {
     logStatusMessage,
     ReadableWebToNodeStream.ReadableWebToNodeStream,
     parser,
-    streamValues
+    streamValues,
+    Buffer
   );
 
   logStatusMessage({

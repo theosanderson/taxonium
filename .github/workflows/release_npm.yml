@@ -25,7 +25,7 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "Current tag is $TAG_NAME"
           jq ".version = \"$TAG_NAME\"" package.json > package.json.tmp && mv package.json.tmp package.json
-          npm install --force
+          npm install
           NODE_OPTIONS='--max-old-space-size=5096' npm run build
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
           npm publish

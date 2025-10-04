@@ -45,12 +45,12 @@ jobs:
     - name: Backend deps
       run: |
         cd ../taxonium_backend
-        npm install --legacy-peer-deps
+        npm install
     
     - name: Build taxonium_component
       run: |
         cd ../taxonium_component
-        npm ci --legacy-peer-deps
+        npm ci
         npm run build
       env:
         NODE_OPTIONS: --max-old-space-size=8192

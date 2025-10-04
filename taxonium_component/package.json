@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": " vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
@@ -33,8 +33,8 @@
   },
   "peerDependencies": {
     "prop-types": "^15.8.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.6",
@@ -67,6 +67,7 @@
     "jbrowse": "^0.0.1-security",
     "jsdom": "^26.1.0",
     "playwright": "^1.52.0",
+    "postcss-prefixwrap": "^1.57.0",
     "react-circular-progressbar": "^2.2.0",
     "react-color": "^2.19.3",
     "react-hot-toast": "^2.5.2",
@@ -84,7 +85,7 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-css-injected-by-js": "^3.5.2",
-    "vite-plugin-node-polyfills": "^0.17.0",
+    "vite-plugin-node-polyfills": "^0.24.0",
     "vitest": "^3.1.3",
     "web-streams-polyfill": "^4.1.0"
   },
@@ -96,6 +97,8 @@
   "packageManager": "npm@11.4.0",
   "dependencies": {
     "@jbrowse/react-linear-genome-view": "^3.1.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "postcss": "^8.5.6",
     "zod": "^3.25.16"
   }
 }

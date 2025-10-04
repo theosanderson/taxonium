@@ -77,7 +77,6 @@ function useColorBy(
 
       if (colorByField === "genotype") {
         if (colorCacheRef.current[node.node_id]) {
-          //console.log("using cache");
           return colorCacheRef.current[node.node_id];
         }
         let result: string | number;

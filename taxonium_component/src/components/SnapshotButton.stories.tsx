@@ -24,12 +24,10 @@ export const Default = {
 export const WithFunctionalHandlers = {
   args: {
     svgFunction: (deckSize: DeckSize) => {
-      console.log("SVG snapshot triggered with deck size:", deckSize);
       // In a real environment, this would trigger SVG download
       alert("SVG download would start now (simulated in Storybook)");
     },
     pixelFunction: () => {
-      console.log("PNG snapshot triggered");
       // In a real environment, this would trigger PNG download
       alert("PNG download would start now (simulated in Storybook)");
     },

@@ -152,7 +152,6 @@ export async function processNewick(
 
   the_data = await fetch_or_extract(data, sendStatusMessage, "tree");
 
-  console.log("data.filetype", data.filetype);
   if (data.filetype == "nexus") {
     const result = nexusToNewick(the_data);
     the_data = result.newick;
@@ -173,7 +172,6 @@ export async function processNewick(
   the_data = the_data.replaceAll("\r", "");
 
   const tree: any = kn_parse(the_data);
-  console.log("tree", tree);
 
   function assignNumTips(node: any): number {
     if (node.child.length === 0) {
@@ -222,7 +220,6 @@ export async function processNewick(
   });
 
   cleanup(tree);
-  console.log("tree", tree);
 
   const overallMaxX = reduceMaxOrMin(tree.node, (x: any) => x.x_dist, "max");
   const overallMinX = reduceMaxOrMin(tree.node, (x: any) => x.x_dist, "min");
@@ -252,7 +249,6 @@ export async function processMetadataFile(
   sendStatusMessage: (msg: StatusMessage) => void
 ): Promise<[Map<string, Record<string, string>>, string[]]> {
   const logStatusToConsole = (message: StatusMessage) => {
-    console.log(message.message);
   };
   let the_data: string;
 
@@ -285,7 +281,6 @@ export async function processMetadataFile(
         percentage: (i / lines.length) * 100,
       });
 
-      console.log(i);
     }
     if (i === 0) {
       headers = splitFunction(line);
@@ -348,14 +343,12 @@ export async function processNewickAndMetadata(
       all_keys.add(key);
     });
   });
-  console.log("all_keys", all_keys);
   // update the blanks object to include all the keys
   all_keys.forEach((key: string) => {
     if (!blanks[key]) {
       blanks[key] = "";
     }
   });
-  console.log("blanks", blanks);
 
   const blanksList: [string, string][] = Object.entries(blanks);
 

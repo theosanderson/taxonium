@@ -34,7 +34,6 @@ const computeFilteredVariationData = (variation_data, ntBounds, data) => {
   if (data.data.nodes.length < 10000 || ntBounds[1] - ntBounds[0] < 1000) {
     return variation_data;
   } else {
-    console.log("FILTERING");
     return variation_data.filter((d) => d.y[1] - d.y[0] > 0.002);
   }
 };
