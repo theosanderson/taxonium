@@ -123,7 +123,7 @@ void JSONLWriter::write_header(Tree* tree) {
     std::vector<Mutation> all_nt_mutations;
     std::vector<AAMutation> all_aa_mutations;
     std::set<std::string> seen_mutations;
-    
+
     // First pass: collect all unique mutations (like Python's get_all_aa_muts and get_all_nuc_muts)
     tree->traverse_preorder([&](Node* node) {
         // Collect nucleotide mutations
@@ -134,7 +134,7 @@ void JSONLWriter::write_header(Tree* tree) {
                 all_nt_mutations.push_back(mut);
             }
         }
-        
+
         // Collect amino acid mutations
         for (const auto& aa_mut : node->aa_mutations) {
             std::string key = aa_mutation_to_key(aa_mut);
@@ -144,6 +144,25 @@ void JSONLWriter::write_header(Tree* tree) {
             }
         }
     });
+
+    // Sort for deterministic output (matching Python's sorted approach)
+    // AA mutations: sort by gene, position, ref_aa, alt_aa
+    std::sort(all_aa_mutations.begin(), all_aa_mutations.end(),
+              [](const AAMutation& a, const AAMutation& b) {
+                  if (a.gene != b.gene) return a.gene < b.gene;
+                  if (a.codon_position != b.codon_position) return a.codon_position < b.codon_position;
+                  if (a.ref_aa != b.ref_aa) return a.ref_aa < b.ref_aa;
+                  return a.alt_aa < b.alt_aa;
+              });
+
+    // NT mutations: sort by chromosome, position, par_nuc, mut_nuc
+    std::sort(all_nt_mutations.begin(), all_nt_mutations.end(),
+              [](const Mutation& a, const Mutation& b) {
+                  if (a.chromosome != b.chromosome) return a.chromosome < b.chromosome;
+                  if (a.position != b.position) return a.position < b.position;
+                  if (a.par_nuc != b.par_nuc) return a.par_nuc < b.par_nuc;
+                  return a.mut_nuc < b.mut_nuc;
+              });
     
     // Second pass: create sequential index mapping (like Python's enumerate(all_mut_inputs))
     size_t index = 0;
@@ -279,19 +298,7 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     
     // Number of tips
     yyjson_mut_obj_add_uint(doc, root, "num_tips", node->num_tips);
-    
-    // Children (only for internal nodes that have children)
-    if (!node->is_leaf()) {
-        yyjson_mut_val* children = yyjson_mut_arr(doc);
-        for (const auto& child : node->children) {
-            auto it = node_to_index.find(child.get());
-            if (it != node_to_index.end()) {
-                yyjson_mut_arr_add_uint(doc, children, it->second);
-            }
-        }
-        yyjson_mut_obj_add_val(doc, root, "child_nodes", children);
-    }
-    
+
     // Metadata - manually create string values to ensure proper lifetime
     for (const auto& [key, value] : node->metadata) {
         if (!key.empty() && !value.empty()) {

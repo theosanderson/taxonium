@@ -95,7 +95,7 @@ void add_root_aa_mutations_from_reference(Tree* tree, const std::vector<Gene>& g
                 aa_mut.codon_position = codon_number + 1;
                 aa_mut.ref_aa = std::string(1, aa);  // Same for root
                 aa_mut.alt_aa = std::string(1, aa);  // Same for root
-                aa_mut.nuc_for_codon = codon_start + 1 + 1;  // Middle nucleotide (1-indexed)
+                aa_mut.nuc_for_codon = codon_start + 1;  // Middle nucleotide (0-indexed, matching Python)
             }
         }
     }

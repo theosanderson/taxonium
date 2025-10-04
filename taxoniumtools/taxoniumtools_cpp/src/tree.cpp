@@ -59,52 +59,75 @@ void Tree::ladderize(bool ascending) {
 
 void Tree::ladderize_helper(Node* node, bool ascending) {
     if (node->is_leaf()) return;
-    
+
     // First, recursively ladderize all children
     for (auto& child : node->children) {
         ladderize_helper(child.get(), ascending);
     }
-    
-    // Sort children exactly like Python but keep the REVERSED direction that was working
-    std::sort(node->children.begin(), node->children.end(),
+
+    // Sort children to match Python's tuple-based sort_key exactly
+    // Use stable_sort to preserve order when elements are equal (matching Python's behavior)
+    std::stable_sort(node->children.begin(), node->children.end(),
         [ascending](const std::unique_ptr<Node>& a, const std::unique_ptr<Node>& b) {
-            // 1. Primary: number of descendants (tips) - REVERSED
-            if (a->num_tips != b->num_tips) {
-                if (ascending) {
-                    return a->num_tips > b->num_tips;  // Reversed
-                } else {
-                    return a->num_tips < b->num_tips;  // Reversed
-                }
-            }
-            
-            // 2. Secondary: edge_length is not None (both always have it in C++)
-            // Skip this check since both always have edge_length
-            
-            // 3. Tertiary: edge length value - REVERSED  
-            if (a->edge_length != b->edge_length) {
-                if (ascending) {
-                    return a->edge_length > b->edge_length;  // Reversed
-                } else {
-                    return a->edge_length < b->edge_length;  // Reversed
-                }
-            }
-            
-            // 4. Quaternary: label is not None (name empty vs non-empty)
-            bool a_has_name = !a->name.empty();
-            bool b_has_name = !b->name.empty();
-            if (a_has_name != b_has_name) {
-                if (ascending) {
-                    return !a_has_name > !b_has_name;  // Reversed
-                } else {
-                    return !a_has_name < !b_has_name;  // Reversed
-                }
-            }
-            
-            // 5. Quinary: label (name) value - REVERSED
+            // Match Python's sort_key function:
+            // if ascending:
+            //     return (-num_tips, -edge_len, -has_name, name[::-1])
+            // else:
+            //     return (num_tips, edge_len, has_name, name)
+
             if (ascending) {
-                return a->name > b->name;  // Reversed
+                // Ascending mode: (-num_tips, -edge_len, -has_name, name[::-1])
+
+                // 1. Compare -num_tips (so larger num_tips comes first)
+                if (a->num_tips != b->num_tips) {
+                    return a->num_tips > b->num_tips;
+                }
+
+                // 2. Compare -edge_length (so larger edge_length comes first)
+                if (a->edge_length != b->edge_length) {
+                    return a->edge_length > b->edge_length;
+                }
+
+                // 3. Compare -has_name (so nodes WITH names (1) come before nodes WITHOUT names (0))
+                // In Python: has_name = 1 if label else 0
+                // -has_name means: -1 if label else 0
+                // So -1 < 0, meaning nodes with names come first
+                bool a_has_name = !a->name.empty();
+                bool b_has_name = !b->name.empty();
+                if (a_has_name != b_has_name) {
+                    return a_has_name > b_has_name;  // true > false, so names come first
+                }
+
+                // 4. Compare name[::-1] (reversed string comparison)
+                // We need to compare strings in reverse order
+                std::string a_rev(a->name.rbegin(), a->name.rend());
+                std::string b_rev(b->name.rbegin(), b->name.rend());
+                return a_rev < b_rev;  // Standard string comparison on reversed strings
+
             } else {
-                return a->name < b->name;  // Reversed
+                // Descending mode: (num_tips, edge_len, has_name, name)
+
+                // 1. Compare num_tips (smaller comes first)
+                if (a->num_tips != b->num_tips) {
+                    return a->num_tips < b->num_tips;
+                }
+
+                // 2. Compare edge_length (smaller comes first)
+                if (a->edge_length != b->edge_length) {
+                    return a->edge_length < b->edge_length;
+                }
+
+                // 3. Compare has_name
+                // In Python: has_name = 1 if label else 0
+                // So 0 < 1, meaning nodes without names come first
+                bool a_has_name = !a->name.empty();
+                bool b_has_name = !b->name.empty();
+                if (a_has_name != b_has_name) {
+                    return a_has_name < b_has_name;  // false < true, so non-names come first
+                }
+
+                // 4. Compare name (standard string comparison)
+                return a->name < b->name;
             }
         });
 }
@@ -290,10 +313,19 @@ std::vector<Node*> Tree::get_nodes_sorted_by_y() {
         collect_preorder(root.get());
     }
     
-    // Sort by y-coordinate using stable_sort to preserve preorder when y values are equal
-    std::stable_sort(nodes.begin(), nodes.end(),
+    // Sort by y-coordinate with tiebreakers for determinism
+    // Primary: y coordinate
+    // Secondary: x coordinate (for determinism when y is equal)
+    // Tertiary: node name (for determinism when both y and x are equal)
+    std::sort(nodes.begin(), nodes.end(),
         [](const Node* a, const Node* b) {
-            return a->y_coord < b->y_coord;
+            if (a->y_coord != b->y_coord) {
+                return a->y_coord < b->y_coord;
+            }
+            if (a->x_coord != b->x_coord) {
+                return a->x_coord < b->x_coord;
+            }
+            return a->name < b->name;
         });
     
     return nodes;
@@ -510,13 +542,13 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
                 aa_mut.codon_position = codon_number + 1;  // 1-indexed
                 aa_mut.ref_aa = std::string(1, initial_aa);
                 aa_mut.alt_aa = std::string(1, final_aa);
-                // Set nuc_for_codon to the middle nucleotide position of the codon (1-indexed)
+                // Set nuc_for_codon to the middle nucleotide position of the codon (0-indexed, matching Python)
                 if (codon_positions.size() >= 2) {
-                    aa_mut.nuc_for_codon = codon_positions[1] + 1;  // Middle position, 1-indexed
+                    aa_mut.nuc_for_codon = codon_positions[1];  // Middle position, 0-indexed
                 } else if (!codon_positions.empty()) {
-                    aa_mut.nuc_for_codon = codon_positions[0] + 1;  // Fallback to first position
+                    aa_mut.nuc_for_codon = codon_positions[0];  // Fallback to first position
                 } else {
-                    aa_mut.nuc_for_codon = gene.start + codon_number * 3 + 1 + 1;  // Fallback
+                    aa_mut.nuc_for_codon = gene.start + codon_number * 3 + 1;  // Fallback
                 }
                 node->aa_mutations.push_back(aa_mut);
             }
