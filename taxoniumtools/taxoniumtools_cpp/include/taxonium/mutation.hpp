@@ -36,7 +36,7 @@ inline char nuc_to_char(Nucleotide nuc) {
         case Nucleotide::C: return 'C';
         case Nucleotide::G: return 'G';
         case Nucleotide::T: return 'T';
-        case Nucleotide::N: return 'N';
+        case Nucleotide::N: return 'X';  // Python uses 'X' for unknown/root parent
         case Nucleotide::GAP: return '-';
         default: return 'X';
     }

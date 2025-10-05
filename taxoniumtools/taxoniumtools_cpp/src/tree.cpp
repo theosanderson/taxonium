@@ -577,13 +577,9 @@ void Tree::annotate_aa_mutations(const std::vector<Gene>& genes, const std::stri
     annotate_node(root.get(), empty_past_muts);
 }
 
-void Tree::set_gene_details(const std::vector<Gene>& genes) {
-    // This method sets gene details for the configuration output
-    // In the Python implementation, this adds gene information to the tree's metadata
-    // For now, we'll store the genes in the tree for later use by the JSON writer
-    
-    // TODO: Store genes somewhere accessible by JSONLWriter
-    // This might require adding a member variable to Tree or passing genes to the writer
+void Tree::set_gene_details(const std::vector<Gene>& input_genes) {
+    // Store genes for later use by JSONLWriter in config output
+    this->genes = input_genes;
 }
 
 } // namespace taxonium

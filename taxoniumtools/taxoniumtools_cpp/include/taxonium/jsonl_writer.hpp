@@ -15,11 +15,18 @@ private:
     bool is_gzipped;
     // Content-based mutation indexing (like Python's input_to_index)
     std::unordered_map<std::string, size_t> mutation_content_to_index;
-    
+    // Metadata column names (for ensuring all columns are present in output)
+    std::vector<std::string> metadata_columns;
+
 public:
     explicit JSONLWriter(const std::string& filename);
     ~JSONLWriter();
-    
+
+    // Set metadata column names
+    void set_metadata_columns(const std::vector<std::string>& columns) {
+        metadata_columns = columns;
+    }
+
     // Write the entire tree in JSONL format
     void write_tree(Tree* tree, std::function<void(size_t)> progress_callback = nullptr);
     

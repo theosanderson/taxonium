@@ -116,8 +116,8 @@ void JSONLWriter::write_header(Tree* tree) {
     yyjson_mut_val* root = yyjson_mut_obj(doc);
     yyjson_mut_doc_set_root(doc, root);
     
-    // Version
-    yyjson_mut_obj_add_str(doc, root, "version", "2.1.2");
+    // Version (matching Python's "dev" for equivalence testing)
+    yyjson_mut_obj_add_str(doc, root, "version", "dev");
     
     // Collect all mutations following Python's approach
     std::vector<Mutation> all_nt_mutations;
@@ -205,8 +205,26 @@ void JSONLWriter::write_header(Tree* tree) {
     
     // Config object
     yyjson_mut_val* config = yyjson_mut_obj(doc);
+
+    // Gene details (if available) - must come first to match Python's dict ordering
+    const auto& genes = tree->get_genes();
+    if (!genes.empty()) {
+        yyjson_mut_val* gene_details = yyjson_mut_obj(doc);
+        for (const auto& gene : genes) {
+            yyjson_mut_val* gene_obj = yyjson_mut_obj(doc);
+            yyjson_mut_obj_add_str(doc, gene_obj, "name", gene.name.c_str());
+            yyjson_mut_obj_add_int(doc, gene_obj, "strand", gene.strand == '+' ? 1 : -1);
+            yyjson_mut_obj_add_int(doc, gene_obj, "start", gene.start);
+            yyjson_mut_obj_add_int(doc, gene_obj, "end", gene.end);
+
+            yyjson_mut_val* gene_name_val = yyjson_mut_str(doc, gene.name.c_str());
+            yyjson_mut_obj_add_val(gene_details, gene_name_val, gene_obj);
+        }
+        yyjson_mut_obj_add_val(doc, config, "gene_details", gene_details);
+    }
+
     yyjson_mut_obj_add_uint(doc, config, "num_tips", tree->get_num_tips());
-    
+
     // Date created
     auto now = std::chrono::system_clock::now();
     auto time_t = std::chrono::system_clock::to_time_t(now);
@@ -216,7 +234,7 @@ void JSONLWriter::write_header(Tree* tree) {
     std::string date_str = date_ss.str();
     yyjson_mut_val* date_val = yyjson_mut_str(doc, date_str.c_str());
     yyjson_mut_obj_add_val(doc, config, "date_created", date_val);
-    
+
     yyjson_mut_obj_add_val(doc, root, "config", config);
     
     // Write to stream
@@ -299,15 +317,22 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     // Number of tips
     yyjson_mut_obj_add_uint(doc, root, "num_tips", node->num_tips);
 
-    // Metadata - manually create string values to ensure proper lifetime
-    for (const auto& [key, value] : node->metadata) {
-        if (!key.empty() && !value.empty()) {
-            std::string meta_key = "meta_" + key;
-            // Create yyjson string values that copy the data
-            yyjson_mut_val* key_val = yyjson_mut_strcpy(doc, meta_key.c_str());
-            yyjson_mut_val* val_val = yyjson_mut_strcpy(doc, value.c_str());
-            yyjson_mut_obj_add(root, key_val, val_val);
+    // Metadata - output all columns (matching Python behavior)
+    // Python outputs empty strings for missing/empty metadata values
+    for (const auto& col : metadata_columns) {
+        std::string meta_key = "meta_" + col;
+        std::string value = "";
+
+        // Check if node has this metadata field
+        auto it = node->metadata.find(col);
+        if (it != node->metadata.end()) {
+            value = it->second;
         }
+
+        // Always output the field (even if empty) to match Python
+        yyjson_mut_val* key_val = yyjson_mut_strcpy(doc, meta_key.c_str());
+        yyjson_mut_val* val_val = yyjson_mut_strcpy(doc, value.c_str());
+        yyjson_mut_obj_add(root, key_val, val_val);
     }
     
     // Write to stream

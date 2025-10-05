@@ -15,7 +15,8 @@ class Tree {
 private:
     std::unique_ptr<Node> root;
     std::unordered_map<std::string, Node*> node_map;
-    
+    std::vector<Gene> genes;  // Gene details for config output
+
 public:
     Tree() = default;
     
@@ -51,7 +52,10 @@ public:
     // Statistics
     size_t get_num_nodes() const { return node_map.size(); }
     size_t get_num_tips() const;
-    
+
+    // Gene details
+    const std::vector<Gene>& get_genes() const { return genes; }
+
     // Rebuild node map (public for use after tree modifications)
     void build_node_map();
     

@@ -342,7 +342,12 @@ int main(int argc, char* argv[]) {
         // Write output
         std::cout << "Writing output to: " << opts.output_file << std::endl;
         JSONLWriter writer(opts.output_file);
-        
+
+        // Set metadata columns if metadata was loaded
+        if (!opts.metadata_file.empty()) {
+            writer.set_metadata_columns(metadata_reader.get_column_names());
+        }
+
         auto write_start = std::chrono::high_resolution_clock::now();
         if (opts.show_progress) {
             ProgressBar write_progress(actual_node_count, "Writing JSONL");  

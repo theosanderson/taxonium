@@ -33,10 +33,22 @@ def load_jsonl(filepath: Path) -> Tuple[Dict, List[Dict]]:
 
 
 def compare_headers(py_header: Dict, cpp_header: Dict) -> bool:
-    """Compare headers from both outputs"""
+    """Compare headers from both outputs for perfect equivalence"""
     print("  Comparing headers...")
 
     all_match = True
+
+    # Check all header keys
+    py_keys = set(py_header.keys())
+    cpp_keys = set(cpp_header.keys())
+
+    if py_keys != cpp_keys:
+        print(f"    {Colors.RED}✗{Colors.NC} Header keys differ:")
+        print(f"      Python only: {py_keys - cpp_keys}")
+        print(f"      C++ only: {cpp_keys - py_keys}")
+        all_match = False
+    else:
+        print(f"    {Colors.GREEN}✓{Colors.NC} Header keys match")
 
     # Check number of mutations
     py_mut_count = len(py_header.get('mutations', []))
@@ -48,38 +60,44 @@ def compare_headers(py_header: Dict, cpp_header: Dict) -> bool:
         print(f"    {Colors.RED}✗{Colors.NC} Mutation count mismatch: Python={py_mut_count}, C++={cpp_mut_count}")
         all_match = False
 
-    # Check mutations list
+    # Check ALL mutations for perfect equivalence
     if py_mut_count == cpp_mut_count and py_mut_count > 0:
-        mismatches = []
-        for i in range(min(10, py_mut_count)):  # Check first 10
-            py_mut = py_header['mutations'][i]
-            cpp_mut = cpp_header['mutations'][i]
-            if py_mut != cpp_mut:
-                mismatches.append((i, py_mut, cpp_mut))
+        if py_header['mutations'] == cpp_header['mutations']:
+            print(f"    {Colors.GREEN}✓{Colors.NC} All {py_mut_count} mutations match perfectly")
+        else:
+            # Find all mismatches
+            mismatches = []
+            for i in range(py_mut_count):
+                py_mut = py_header['mutations'][i]
+                cpp_mut = cpp_header['mutations'][i]
+                if py_mut != cpp_mut:
+                    mismatches.append((i, py_mut, cpp_mut))
 
-        if mismatches:
-            print(f"    {Colors.RED}✗{Colors.NC} First few mutations differ:")
-            for i, py_mut, cpp_mut in mismatches[:3]:
+            print(f"    {Colors.RED}✗{Colors.NC} {len(mismatches)} mutations differ:")
+            for i, py_mut, cpp_mut in mismatches[:5]:
                 print(f"      [{i}] Python: {py_mut}")
                 print(f"      [{i}] C++:    {cpp_mut}")
+            if len(mismatches) > 5:
+                print(f"      ... and {len(mismatches) - 5} more")
             all_match = False
-        else:
-            print(f"    {Colors.GREEN}✓{Colors.NC} First 10 mutations match")
 
-    # Check other header fields
-    for key in ['reference', 'title', 'name']:
-        if key in py_header or key in cpp_header:
-            if py_header.get(key) == cpp_header.get(key):
+    # Check all other header fields for perfect equivalence
+    for key in py_keys | cpp_keys:
+        if key == 'mutations':
+            continue  # Already checked above
+
+        if py_header.get(key) == cpp_header.get(key):
+            if key in ['reference', 'title', 'name']:
                 print(f"    {Colors.GREEN}✓{Colors.NC} {key} matches")
-            else:
-                print(f"    {Colors.RED}✗{Colors.NC} {key} mismatch: Python={py_header.get(key)}, C++={cpp_header.get(key)}")
-                all_match = False
+        else:
+            print(f"    {Colors.RED}✗{Colors.NC} {key} mismatch: Python={py_header.get(key)}, C++={cpp_header.get(key)}")
+            all_match = False
 
     return all_match
 
 
-def compare_nodes(py_nodes: List[Dict], cpp_nodes: List[Dict], num_samples: int = 20) -> bool:
-    """Compare nodes from both outputs"""
+def compare_nodes(py_nodes: List[Dict], cpp_nodes: List[Dict]) -> bool:
+    """Compare ALL nodes from both outputs for perfect equivalence"""
     print(f"  Comparing nodes...")
 
     if len(py_nodes) != len(cpp_nodes):
@@ -88,53 +106,79 @@ def compare_nodes(py_nodes: List[Dict], cpp_nodes: List[Dict], num_samples: int 
 
     print(f"    {Colors.GREEN}✓{Colors.NC} Node count matches: {len(py_nodes)}")
 
+    # Check if all nodes are perfectly equal
+    if py_nodes == cpp_nodes:
+        print(f"    {Colors.GREEN}✓{Colors.NC} All {len(py_nodes)} nodes match perfectly")
+        return True
+
+    # If not, find and report differences
+    print(f"    {Colors.YELLOW}Finding differences...{Colors.NC}")
+
     all_match = True
-
-    # Find nodes with mutations
-    nodes_with_mutations = [i for i, node in enumerate(py_nodes) if node.get('mutations')]
-    print(f"    Found {len(nodes_with_mutations)} nodes with mutations")
-
-    # Sample some nodes
-    import random
-    if len(nodes_with_mutations) > num_samples:
-        sample_indices = random.sample(nodes_with_mutations, num_samples)
-    else:
-        sample_indices = nodes_with_mutations[:num_samples]
-
     mismatches = []
-    for idx in sample_indices:
+    field_mismatches = {}
+
+    for idx in range(len(py_nodes)):
         py_node = py_nodes[idx]
         cpp_node = cpp_nodes[idx]
 
-        # Check names
-        if py_node.get('name') != cpp_node.get('name'):
-            mismatches.append(f"Node {idx}: name mismatch")
+        if py_node == cpp_node:
             continue
 
-        # Check mutations
-        py_muts = set(py_node.get('mutations', []))
-        cpp_muts = set(cpp_node.get('mutations', []))
+        # Track which fields differ
+        node_issues = []
 
-        if py_muts != cpp_muts:
-            mismatches.append(f"Node {idx} ({py_node.get('name')}): mutations differ")
+        # Check all keys
+        py_keys = set(py_node.keys())
+        cpp_keys = set(cpp_node.keys())
+
+        if py_keys != cpp_keys:
+            node_issues.append(f"keys differ (Py only: {py_keys - cpp_keys}, C++ only: {cpp_keys - py_keys})")
+            field_mismatches['keys'] = field_mismatches.get('keys', 0) + 1
+
+        # Check each field
+        for key in py_keys | cpp_keys:
+            py_val = py_node.get(key)
+            cpp_val = cpp_node.get(key)
+
+            if py_val != cpp_val:
+                node_issues.append(f"{key} differs")
+                field_mismatches[key] = field_mismatches.get(key, 0) + 1
+
+                # Show details for first few mismatches
+                if len(mismatches) < 5:
+                    if key == 'mutations':
+                        py_muts = set(py_val) if py_val else set()
+                        cpp_muts = set(cpp_val) if cpp_val else set()
+                        node_issues.append(f"  Py mutations: {sorted(py_muts)}")
+                        node_issues.append(f"  C++ mutations: {sorted(cpp_muts)}")
+                    elif key == 'meta':
+                        node_issues.append(f"  Py meta: {py_val}")
+                        node_issues.append(f"  C++ meta: {cpp_val}")
+                    else:
+                        node_issues.append(f"  Py: {py_val}, C++: {cpp_val}")
+
+        if node_issues:
+            mismatches.append((idx, py_node.get('name', 'unknown'), node_issues))
             all_match = False
 
-        # Check metadata
-        py_meta = py_node.get('meta', {})
-        cpp_meta = cpp_node.get('meta', {})
+    # Report summary
+    print(f"    {Colors.RED}✗{Colors.NC} {len(mismatches)} nodes differ:")
 
-        if set(py_meta.keys()) != set(cpp_meta.keys()):
-            mismatches.append(f"Node {idx}: metadata keys differ")
-            all_match = False
+    # Show field mismatch counts
+    print(f"    Field mismatch counts:")
+    for field, count in sorted(field_mismatches.items(), key=lambda x: -x[1]):
+        print(f"      {field}: {count} nodes")
 
-    if mismatches:
-        print(f"    {Colors.RED}✗{Colors.NC} Found {len(mismatches)} mismatches in sampled nodes:")
-        for mm in mismatches[:5]:
-            print(f"      - {mm}")
-        if len(mismatches) > 5:
-            print(f"      ... and {len(mismatches) - 5} more")
-    else:
-        print(f"    {Colors.GREEN}✓{Colors.NC} All sampled nodes match")
+    # Show first few node details
+    print(f"    First mismatching nodes:")
+    for idx, name, issues in mismatches[:5]:
+        print(f"      Node {idx} ({name}):")
+        for issue in issues[:10]:  # Limit issues per node
+            print(f"        - {issue}")
+
+    if len(mismatches) > 5:
+        print(f"      ... and {len(mismatches) - 5} more nodes with differences")
 
     return all_match
 
