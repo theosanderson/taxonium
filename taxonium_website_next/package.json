@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "preinstall": "NODE_OPTIONS='--max-old-space-size=5096' cd ../taxonium_component && npm install -f  && npm run build",
     "start": "next start",
     "lint": "eslint"
   },
