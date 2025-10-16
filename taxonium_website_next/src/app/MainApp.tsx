@@ -12,7 +12,6 @@ import useQueryAsState from "../hooks/useQueryAsState";
 import classNames from "classnames";
 import { useInputHelper } from "../hooks/useInputHelper";
 import InputSupplier from "../components/InputSupplier";
-import treeConfig from "../lib/trees.json";
 import { Select } from "../components/Basic";
 
 // Import TaxoniumBit with client-side only rendering to avoid SSR issues
@@ -32,17 +31,20 @@ const SHOWCASE_PATHS = [
   "flu/H5N1-Outbreak-D1-1",
 ];
 
-function getConfigFromPath(pathname: string) {
+function getConfigFromPath(pathname: string, treeConfig: Record<string, any>) {
   // Remove leading slash and get full path
   const path = pathname.substring(1);
   const decodedPath = decodeURIComponent(path);
 
   // Return the configuration for this path, if it exists
-  return (treeConfig as any)[decodedPath] || null;
+  return treeConfig[decodedPath] || null;
 }
 
 function MainApp({ pathname }: { pathname: string }) {
-  const pathConfig = getConfigFromPath(pathname);
+  const [treeConfig, setTreeConfig] = useState<Record<string, any>>({});
+  const [isLoadingTrees, setIsLoadingTrees] = useState(true);
+
+  const pathConfig = getConfigFromPath(pathname, treeConfig);
   const default_query = pathConfig || {};
 
   const [uploadedData, setUploadedData] = useState(null);
@@ -52,6 +54,22 @@ function MainApp({ pathname }: { pathname: string }) {
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [overlayContent, setOverlayContent] = useState(null);
   const [selectedTree, setSelectedTree] = useState("");
+
+  // Fetch tree configurations from API
+  useEffect(() => {
+    async function fetchTrees() {
+      try {
+        const response = await fetch('/api/trees');
+        const data = await response.json();
+        setTreeConfig(data);
+      } catch (error) {
+        console.error('Error fetching trees:', error);
+      } finally {
+        setIsLoadingTrees(false);
+      }
+    }
+    fetchTrees();
+  }, []);
 
   // Update document title when title changes
   useEffect(() => {
@@ -112,9 +130,8 @@ function MainApp({ pathname }: { pathname: string }) {
 
   // Generate showcase items from hardcoded list
   const showCase = SHOWCASE_PATHS.map((path) => {
-    const config = (treeConfig as any)[path];
+    const config = treeConfig[path];
     if (!config) {
-      console.warn(`No configuration found for showcase path: ${path}`);
       return null;
     }
     return {
@@ -225,13 +242,16 @@ function MainApp({ pathname }: { pathname: string }) {
                 value={pathname.substring(1)}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedTree(e.target.value)}
                 className={"mr-4 !bg-gray-50 ml-4"}
+                title="Select a tree to view"
               >
-                <option value="">Select a tree</option>
-                {Object.entries(treeConfig).map(([path, config]: [string, any]) => (
-                  <option key={path} value={path}>
-                    {path}
-                  </option>
-                ))}
+                <option value="">{isLoadingTrees ? "Loading trees..." : "Select a tree"}</option>
+                {Object.entries(treeConfig)
+                  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
+                  .map(([path]: [string, any]) => (
+                    <option key={path} value={path}>
+                      {path}
+                    </option>
+                  ))}
               </Select>
             </div>
             <button
