@@ -89,7 +89,7 @@ def do_processing(input_file,
             metadata_cols=metadata_cols)
 
     print("Ladderizing tree..")
-    mat.tree.ladderize(ascending=False)
+    utils.deterministic_ladderize(mat.tree.root, ascending=False)
     print("Ladderizing done")
     total_tips = mat.tree.root.num_tips
     utils.set_x_coords(mat.tree.root,
