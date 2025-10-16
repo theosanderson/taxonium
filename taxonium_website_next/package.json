@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@tailwindcss/forms": "^0.5.10",
     "classnames": "^2.5.1",
     "next": "15.5.5",

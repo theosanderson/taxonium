@@ -94,6 +94,8 @@ async function fetchViralUsherTrees() {
   }
 }
 
+export const revalidate = 300; // Cache for 5 minutes
+
 export async function GET() {
   try {
     // Fetch viral usher trees

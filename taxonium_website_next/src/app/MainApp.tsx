@@ -12,7 +12,7 @@ import useQueryAsState from "../hooks/useQueryAsState";
 import classNames from "classnames";
 import { useInputHelper } from "../hooks/useInputHelper";
 import InputSupplier from "../components/InputSupplier";
-import { Select } from "../components/Basic";
+import { Combobox } from '@headlessui/react';
 
 // Import TaxoniumBit with client-side only rendering to avoid SSR issues
 const TaxoniumBit = dynamic(() => import("../components/TaxoniumBit"), {
@@ -54,13 +54,39 @@ function MainApp({ pathname }: { pathname: string }) {
   const [aboutEnabled, setAboutEnabled] = useState(false);
   const [overlayContent, setOverlayContent] = useState(null);
   const [selectedTree, setSelectedTree] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch tree configurations from API
+  // Fetch tree configurations from API with localStorage caching
   useEffect(() => {
     async function fetchTrees() {
       try {
+        const CACHE_KEY = 'taxonium_trees_cache';
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+        // Check localStorage for cached data
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          const age = Date.now() - timestamp;
+
+          // Use cached data if less than 5 minutes old
+          if (age < CACHE_DURATION) {
+            setTreeConfig(data);
+            setIsLoadingTrees(false);
+            return;
+          }
+        }
+
+        // Fetch fresh data from API
         const response = await fetch('/api/trees');
         const data = await response.json();
+
+        // Cache the data with timestamp
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data,
+          timestamp: Date.now()
+        }));
+
         setTreeConfig(data);
       } catch (error) {
         console.error('Error fetching trees:', error);
@@ -77,6 +103,16 @@ function MainApp({ pathname }: { pathname: string }) {
       document.title = title;
     }
   }, [title]);
+
+  // Sync selectedTree with current pathname
+  useEffect(() => {
+    if (!pathname) return;
+    const path = pathname.substring(1);
+    const decodedPath = decodeURIComponent(path);
+    if (decodedPath && treeConfig[decodedPath]) {
+      setSelectedTree(decodedPath);
+    }
+  }, [pathname, treeConfig]);
 
   const dragTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -143,12 +179,26 @@ function MainApp({ pathname }: { pathname: string }) {
     };
   }).filter(Boolean); // Remove any null entries from missing configs
 
+  // Filter trees based on search query
+  const filteredTrees = Object.keys(treeConfig)
+    .filter(path =>
+      searchQuery === '' ||
+      path.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort()
+    .slice(0, 1500); // Limit to 500 results for performance
+
   useEffect(() => {
     if (selectedTree) {
-      const newPath = `/${selectedTree}${window.location.search}`;
-      window.location.href = newPath; // Trigger a page refresh on selection change
+      const currentPath = pathname.substring(1);
+      const decodedPath = decodeURIComponent(currentPath);
+      // Only navigate if the selected tree is different from current path
+      if (selectedTree !== decodedPath) {
+        const newPath = `/${selectedTree}${window.location.search}`;
+        window.location.href = newPath; // Trigger a page refresh on selection change
+      }
     }
-  }, [selectedTree]);
+  }, [selectedTree, pathname]);
 
   return (
     <>
@@ -237,22 +287,42 @@ function MainApp({ pathname }: { pathname: string }) {
           </h1>
           <div className="flex items-center">
             {/* Hide the menu on mobile using CSS */}
-            <div className="hidden sm:block">
-              <Select
-                value={pathname.substring(1)}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedTree(e.target.value)}
-                className={"mr-4 !bg-gray-50 ml-4"}
-                title="Select a tree to view"
-              >
-                <option value="">{isLoadingTrees ? "Loading trees..." : "Select a tree"}</option>
-                {Object.entries(treeConfig)
-                  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
-                  .map(([path]: [string, any]) => (
-                    <option key={path} value={path}>
-                      {path}
-                    </option>
-                  ))}
-              </Select>
+            <div className="hidden sm:block relative">
+              <Combobox value={selectedTree} onChange={setSelectedTree}>
+                <div className="relative mr-4 ml-4" style={{ maxWidth: '300px' }}>
+                  <Combobox.Input
+                    className="w-full border bg-gray-50 text-gray-900 text-sm hover:text-gray-700 py-1 pl-2 pr-8 rounded"
+                    placeholder={isLoadingTrees ? "Loading trees..." : "Search trees..."}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    displayValue={(path: string) => path}
+                  />
+                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                    <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Combobox.Button>
+                  <Combobox.Options className="absolute right-0 z-10 mt-1 max-h-60 min-w-full w-96 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg border border-gray-200">
+                    {filteredTrees.length === 0 && searchQuery !== '' ? (
+                      <div className="px-2 py-2 text-gray-500">No trees found</div>
+                    ) : (
+                      filteredTrees.map((path) => (
+                        <Combobox.Option
+                          key={path}
+                          value={path}
+                          className={({ active }) =>
+                            classNames(
+                              'cursor-pointer select-none px-2 py-1',
+                              active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                            )
+                          }
+                        >
+                          {path}
+                        </Combobox.Option>
+                      ))
+                    )}
+                  </Combobox.Options>
+                </div>
+              </Combobox>
             </div>
             <button
               onClick={() => setAboutEnabled(true)}
