@@ -1,7 +1,7 @@
 # Taxonium
 
 [![Published in eLife](https://img.shields.io/badge/Published%20in-eLife-blue.svg)](https://elifesciences.org/articles/82392) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Taxonium is a tool for exploring trees, including those with millions of nodes.
@@ -99,6 +99,7 @@ We are very grateful to our contributors:
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/emily-fields"><img src="https://avatars.githubusercontent.com/u/80897288?v=4?s=100" width="100px;" alt="Emily Fields"/><br /><sub><b>Emily Fields</b></sub></a><br /><a href="#ideas-emily-fields" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/theosanderson/taxonium/commits?author=emily-fields" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/JosephThorpe"><img src="https://avatars.githubusercontent.com/u/100434056?v=4?s=100" width="100px;" alt="Joe Thorpe"/><br /><sub><b>Joe Thorpe</b></sub></a><br /><a href="https://github.com/theosanderson/taxonium/commits?author=josephthorpe" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
