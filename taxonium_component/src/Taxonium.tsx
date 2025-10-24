@@ -28,12 +28,13 @@ const ReactTooltipAny: any = ReactTooltip;
 import { Toaster } from "react-hot-toast";
 import type { DeckSize } from "./types/common";
 import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
+import { normalizeSourceData } from "./utils/normalizeInputFile";
 
 interface SourceData {
-  status: string;
-  filename: string;
+  status?: string;
+  filename?: string;
   filetype: string;
-  data?: string;
+  data?: string | ArrayBuffer;
   [key: string]: unknown;
 }
 
@@ -114,10 +115,21 @@ function Taxonium({
     mouseDownIsMinimap,
   });
 
+  // Normalize sourceData to add smart defaults for status and filename
+  const normalizedSourceData = useMemo(() => {
+    if (!sourceData) return null;
+    try {
+      return normalizeSourceData(sourceData);
+    } catch (error) {
+      console.error("Error normalizing source data:", error);
+      return sourceData; // Fall back to original if normalization fails
+    }
+  }, [sourceData]);
+
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
     query.sid,
-    sourceData ?? null
+    normalizedSourceData
   );
   if (!backend) {
     return (

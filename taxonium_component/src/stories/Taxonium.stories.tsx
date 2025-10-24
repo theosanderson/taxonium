@@ -74,6 +74,19 @@ export const LocalData = {
   },
 };
 
+// Simplified version - no need to specify status or filename!
+export const LocalDataSimplified = {
+  args: {
+    sourceData: {
+      data: testTree,
+      filetype: "nwk",
+    },
+  },
+  parameters: {
+    layout: "padded",
+  },
+};
+
 export const ConfigTree = {
   args: {
     configUrl:
@@ -124,10 +137,40 @@ export const LocalDataWithMetadataNew = {
   },
 };
 
+// Simplified version - no need to specify status or filename for tree or metadata!
+export const LocalDataWithMetadataSimplified = {
+  args: {
+    sourceData: {
+      data: nwk,
+      filetype: "nwk",
+      metadata: {
+        data: metadata_text,
+        filetype: "meta_csv",
+      },
+    },
+  },
+  parameters: {
+    layout: "padded",
+  },
+};
+
 export const NexusTree = {
   args: {
     sourceData: {
       status: "url_supplied",
+      filename: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/nexus.tree",
+      filetype: "nexus",
+    },
+  },
+  parameters: {
+    layout: "padded",
+  },
+};
+
+// Simplified version - status is automatically inferred from URL!
+export const NexusTreeSimplified = {
+  args: {
+    sourceData: {
       filename: "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/nexus.tree",
       filetype: "nexus",
     },

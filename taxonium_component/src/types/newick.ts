@@ -1,6 +1,6 @@
 export interface InputFile {
-  status: "url_supplied" | "loaded";
-  filename: string;
+  status?: "url_supplied" | "loaded";
+  filename?: string;
   data?: ArrayBuffer | string;
 }
 

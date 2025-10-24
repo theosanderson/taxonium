@@ -62,9 +62,12 @@ async function fetch_or_extract(
   whatIsBeingDownloaded: string
 ): Promise<string> {
   if (file_obj.status === "url_supplied") {
+    if (!file_obj.filename) {
+      throw new Error("filename is required for url_supplied status");
+    }
     return do_fetch(file_obj.filename, sendStatusMessage, whatIsBeingDownloaded);
   } else if (file_obj.status === "loaded") {
-    if (file_obj.filename.includes(".gz")) {
+    if (file_obj.filename && file_obj.filename.includes(".gz")) {
       const compressed_data = file_obj.data as ArrayBuffer;
       sendStatusMessage({
         message: "Decompressing compressed " + whatIsBeingDownloaded,
