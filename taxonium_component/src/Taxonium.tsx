@@ -29,32 +29,219 @@ import { Toaster } from "react-hot-toast";
 import type { DeckSize } from "./types/common";
 import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
 
+/**
+ * Data structure for loading phylogenetic trees from various sources
+ */
 interface SourceData {
+  /** Loading status: "loaded" for inline data, "url_supplied" for remote files */
   status: string;
+  /** Filename of the tree file */
   filename: string;
+  /** File format: "nwk", "jsonl", "json", or "nexus" */
   filetype: string;
+  /** Actual tree data (required when status is "loaded") */
   data?: string;
+  /** Additional properties for metadata, etc. */
   [key: string]: unknown;
 }
 
+/**
+ * Props for the Taxonium component
+ *
+ * @example
+ * // Basic backend usage
+ * <Taxonium backendUrl="https://api.cov2tree.org" />
+ *
+ * @example
+ * // Local tree with metadata
+ * <Taxonium
+ *   sourceData={{
+ *     status: "loaded",
+ *     filename: "tree.nwk",
+ *     data: "((A:0.1,B:0.2):0.3,C:0.4);",
+ *     filetype: "nwk",
+ *     metadata: {
+ *       filename: "meta.csv",
+ *       data: "Node,Species\nA,Cow\nB,Fish",
+ *       status: "loaded",
+ *       filetype: "meta_csv"
+ *     }
+ *   }}
+ * />
+ *
+ * @example
+ * // With event handlers
+ * <Taxonium
+ *   backendUrl="https://api.cov2tree.org"
+ *   onNodeSelect={(nodeId) => console.log('Selected:', nodeId)}
+ *   onNodeDetailsLoaded={(nodeId, details) => console.log('Details:', details)}
+ * />
+ */
 interface TaxoniumProps {
+  /**
+   * Local tree data to load. Can include inline data or URLs to remote files.
+   * Must provide either sourceData or backendUrl.
+   */
   sourceData?: SourceData;
+
+  /**
+   * URL of a Taxonium backend server to connect to.
+   * Backend mode enables streaming large trees (millions of nodes).
+   */
   backendUrl?: string;
+
+  /**
+   * Configuration object for customizing tree appearance and behavior.
+   * Supports color mapping, initial viewport, search types, and more.
+   *
+   * @example
+   * configDict={{
+   *   title: "My Tree",
+   *   colorMapping: { "USA": [255, 0, 0], "UK": [0, 0, 255] },
+   *   initial_zoom: 2
+   * }}
+   */
   configDict?: Record<string, unknown>;
+
+  /**
+   * URL to fetch remote configuration JSON from.
+   * Can be combined with configDict (configDict takes precedence).
+   */
   configUrl?: string;
+
+  /**
+   * Current query/state object for external state management.
+   * Contains viewport position, search filters, color settings, etc.
+   * If not provided, state is managed internally.
+   */
   query?: Query;
+
+  /**
+   * Callback to update query state when using external state management.
+   * Called when user interacts with the tree (pan, zoom, search, etc.).
+   *
+   * @param q - Partial query object with updated fields
+   */
   updateQuery?: (q: Partial<Query>) => void;
+
+  /**
+   * Custom React content to overlay on the tree visualization.
+   * Useful for adding legends, annotations, or custom UI elements.
+   */
   overlayContent?: React.ReactNode;
+
+  /**
+   * Callback to control the about panel visibility.
+   *
+   * @param val - true to show, false to hide
+   */
   setAboutEnabled?: (val: boolean) => void;
+
+  /**
+   * Callback to dynamically update overlay content.
+   *
+   * @param content - React node to display as overlay
+   */
   setOverlayContent?: (content: React.ReactNode) => void;
+
+  /**
+   * Callback invoked when the tree title changes.
+   * Useful for updating page title or header.
+   *
+   * @param title - New tree title
+   */
   onSetTitle?: (title: string) => void;
+
+  /**
+   * Event handler fired when a node is selected or deselected.
+   *
+   * @param nodeId - ID of the selected node, or null if deselected
+   *
+   * @example
+   * onNodeSelect={(nodeId) => {
+   *   if (nodeId !== null) {
+   *     console.log('Node selected:', nodeId);
+   *   } else {
+   *     console.log('Selection cleared');
+   *   }
+   * }}
+   */
   onNodeSelect?: NodeSelectHandler;
+
+  /**
+   * Event handler fired when node details have been loaded from the backend.
+   * Provides complete node information including metadata, mutations, etc.
+   *
+   * @param nodeId - ID of the node
+   * @param nodeDetails - Complete node details object, or null if cleared
+   *
+   * @example
+   * onNodeDetailsLoaded={(nodeId, details) => {
+   *   if (details) {
+   *     console.log('Location:', details.meta?.location);
+   *     console.log('Mutations:', details.mutations?.length);
+   *   }
+   * }}
+   */
   onNodeDetailsLoaded?: NodeDetailsLoadedHandler;
+
+  /**
+   * If true, the search/info sidebar starts collapsed.
+   * Useful for mobile layouts or when maximizing tree space.
+   *
+   * @default false
+   */
   sidePanelHiddenByDefault?: boolean;
 }
 
 const default_query = getDefaultQuery();
 
+/**
+ * Taxonium - Interactive phylogenetic tree visualization component
+ *
+ * A powerful React component for visualizing and exploring phylogenetic trees
+ * with millions of nodes. Supports multiple file formats, rich metadata,
+ * mutation tracking, and interactive exploration.
+ *
+ * @component
+ *
+ * @example
+ * // Simple backend usage
+ * <Taxonium backendUrl="https://api.cov2tree.org" />
+ *
+ * @example
+ * // Local tree with metadata
+ * const sourceData = {
+ *   status: "loaded",
+ *   filename: "tree.nwk",
+ *   data: "((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);",
+ *   filetype: "nwk",
+ *   metadata: {
+ *     filename: "metadata.csv",
+ *     data: "Node,Species\nA,Cow\nB,Cow\nC,Fish\nD,Fish",
+ *     status: "loaded",
+ *     filetype: "meta_csv",
+ *   },
+ * };
+ * <Taxonium sourceData={sourceData} />
+ *
+ * @example
+ * // With event handlers and configuration
+ * <Taxonium
+ *   backendUrl="https://api.cov2tree.org"
+ *   configDict={{
+ *     title: "SARS-CoV-2 Phylogeny",
+ *     colorMapping: { "Alpha": [255, 0, 0], "Delta": [0, 0, 255] }
+ *   }}
+ *   onNodeSelect={(nodeId) => console.log('Selected:', nodeId)}
+ *   onNodeDetailsLoaded={(nodeId, details) => {
+ *     console.log('Location:', details?.meta?.location);
+ *   }}
+ * />
+ *
+ * @param {TaxoniumProps} props - Component props
+ * @returns {JSX.Element} Rendered tree visualization
+ */
 function Taxonium({
   sourceData,
 
