@@ -153,7 +153,7 @@ By default Storybook runs at [http://localhost:6006](http://localhost:6006).
 
 ## In an Angular project
 
-Taxonium can be integrated into Angular applications using a React wrapper directive. This approach allows you to embed the React-based Taxonium component seamlessly within your Angular templates.
+Taxonium can be integrated into Angular applications using a React wrapper directive. 
 
 ### Install Dependencies
 
