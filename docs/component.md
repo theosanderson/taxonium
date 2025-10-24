@@ -149,3 +149,143 @@ npm run storybook
 
 By default Storybook runs at [http://localhost:6006](http://localhost:6006).
 
+## Using Taxonium in Angular
+
+Since Taxonium is a React component, you can integrate it into Angular applications using a React-to-Angular directive wrapper.
+
+### Install Required Packages
+
+```bash
+npm install taxonium-component react react-dom @types/react @types/react-dom
+```
+
+### Create a React Directive
+
+You'll need to create a directive that renders React components within Angular. Create a directive file (e.g., `taxonium-react.directive.ts`):
+
+```typescript
+import { Directive, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import Taxonium from 'taxonium-component';
+
+@Directive({
+  selector: '[appTaxoniumReact]'
+})
+export class TaxoniumReactDirective implements OnInit, OnDestroy {
+  @Input() sourceData: any;
+  @Input() metadata: any;
+  @Input() configDict: any;
+
+  private root: any;
+
+  constructor(private el: ElementRef) {}
+
+  ngOnInit() {
+    this.root = ReactDOM.createRoot(this.el.nativeElement);
+    this.renderComponent();
+  }
+
+  ngOnChanges() {
+    if (this.root) {
+      this.renderComponent();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.root) {
+      this.root.unmount();
+    }
+  }
+
+  private renderComponent() {
+    const props: any = {};
+
+    if (this.sourceData) {
+      props.sourceData = this.sourceData;
+    }
+
+    if (this.configDict) {
+      props.configDict = this.configDict;
+    }
+
+    this.root.render(React.createElement(Taxonium, props));
+  }
+}
+```
+
+### Use in Angular Template
+
+Once you have the directive set up, you can use Taxonium in your Angular templates:
+
+```html
+<ng-container *ngIf="isBrowser && taxoniumDataLoaded">
+  <div
+    appTaxoniumReact
+    [sourceData]="{
+      status: 'loaded',
+      filename: 'test.nwk',
+      data: treeData,
+      filetype: 'nwk',
+      metadata: metadata
+    }"
+    [metadata]="{
+      status: 'loaded',
+      filename: 'test.csv',
+      metadata: metadataText,
+      filetype: 'meta_csv'
+    }"
+    class="taxonium-container"
+  ></div>
+</ng-container>
+```
+
+### Angular Component Example
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-taxonium-viewer',
+  templateUrl: './taxonium-viewer.component.html',
+  styleUrls: ['./taxonium-viewer.component.css']
+})
+export class TaxoniumViewerComponent {
+  isBrowser = true;
+  taxoniumDataLoaded = true;
+
+  treeData = `((A:0.1,B:0.2):0.3,(C:0.4,D:0.5):0.6);`;
+
+  metadataText = `Node,Name,Species
+A,Bob,Cow
+B,Jim,Cow
+C,Joe,Fish
+D,John,Fish`;
+
+  metadata = {
+    filename: "test.csv",
+    data: this.metadataText,
+    status: "loaded",
+    filetype: "meta_csv"
+  };
+}
+```
+
+### Module Registration
+
+Don't forget to register the directive in your Angular module:
+
+```typescript
+import { NgModule } from '@angular/core';
+import { TaxoniumReactDirective } from './taxonium-react.directive';
+
+@NgModule({
+  declarations: [
+    TaxoniumReactDirective,
+    // ... other components
+  ],
+  // ... other module configuration
+})
+export class AppModule { }
+```
+
