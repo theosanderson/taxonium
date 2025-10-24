@@ -297,16 +297,5 @@ You can also connect to a Taxonium backend instead of loading data locally:
 </ng-container>
 ```
 
-### Component Styling
-
-Add styles to your component's SCSS file to ensure proper display:
-
-```scss
-.map-content {
-  width: 100%;
-  height: 100vh;
-  min-height: 600px;
-}
-```
 
 
