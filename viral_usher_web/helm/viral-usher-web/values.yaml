@@ -1,0 +1,144 @@
+# Default values for viral-usher-web
+replicaCount: 1
+
+image:
+  repository: ghcr.io/theosanderson/project23/viral-usher-web
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: viral-usher-test.api.taxonium.org
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: viral-usher-tls
+      hosts:
+        - viral-usher-test.api.taxonium.org
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Storage configuration
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  mountPath: /data
+
+# S3 Configuration
+s3:
+  # Create a secret for S3 credentials
+  createSecret: true
+  # If createSecret is false, specify an existing secret name
+  existingSecret: ""
+  # Use bundled MinIO instead of external S3
+  # When minio.enabled=true, these S3 settings are auto-configured
+  useMinio: true
+  bucket: "viral-usher"
+  endpoint: ""
+  region: "us-east-1"
+  accessKeyId: ""
+  secretAccessKey: ""
+
+# Kubernetes job configuration
+job:
+  image:
+    repository: angiehinrichs/viral_usher
+    tag: "sha256:1996504fb2a0e8b12befe4160556d62c3ba3e117dcca41fb882d1727cd58fe23"
+    pullPolicy: Always
+  # Upload sidecar image (for S3 uploads)
+  uploadImage:
+    repository: python
+    tag: "3.12-slim"
+    pullPolicy: IfNotPresent
+  # Service account for jobs (needs permissions to create jobs)
+  serviceAccount:
+    create: true
+    name: ""
+
+# Application configuration
+app:
+  namespace: viral-usher
+  # CORS origins for development
+  corsOrigins:
+    - http://localhost:3000
+    - http://localhost:5173
+
+# RBAC for creating Kubernetes jobs
+rbac:
+  create: true
+
+# MinIO configuration (optional S3-compatible object storage)
+minio:
+  enabled: true
+  mode: standalone
+  rootUser: admin
+  rootPassword: minio123
+  persistence:
+    enabled: true
+    size: 20Gi
+  resources:
+    requests:
+      memory: 512Mi
+  buckets:
+    - name: viral-usher
+      policy: download
+      purge: false
+  service:
+    type: ClusterIP
+    port: 9000

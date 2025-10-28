@@ -20,6 +20,30 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Environment Variables
+
+The project requires environment variables for certain features. Create a `.env.local` file in the root directory based on `.env.local.example`:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Then edit `.env.local` and set the required values:
+
+- `NEXT_PUBLIC_VIRAL_USHER_API` - Base URL for the Viral UShER tree building service (required for the `/build` page)
+
+## Build Page
+
+The `/build` page provides a user interface for building viral phylogenetic trees using UShER. Users can:
+
+- Search GenBank for reference genomes or provide their own reference files
+- Upload FASTA sequences to place on the tree
+- Configure tree building parameters
+- Monitor job progress in real-time
+- Download results directly or view them in Taxonium
+
+To use the build page, make sure to configure the `NEXT_PUBLIC_VIRAL_USHER_API` environment variable with your backend API URL.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

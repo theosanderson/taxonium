@@ -3,7 +3,7 @@ import { RiAddCircleLine, RiArrowLeftUpLine } from "react-icons/ri";
 import { BiPalette } from "react-icons/bi";
 import { Button } from "../components/Basic";
 import { BsBoxArrowInUpRight, BsQuestionCircle } from "react-icons/bs";
-import { MdArrowForward, MdArrowDownward } from "react-icons/md";
+import { MdArrowForward, MdArrowDownward, MdAddCircleOutline } from "react-icons/md";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import prettifyName from "../utils/prettifyName";
@@ -64,6 +64,7 @@ interface SearchPanelProps {
   view: View;
   perNodeFunctions: any;
   toggleSidebar: () => void;
+  placeSequencesUrl?: string;
 }
 
 function SearchPanel({
@@ -83,6 +84,7 @@ function SearchPanel({
   view,
   perNodeFunctions,
   toggleSidebar,
+  placeSequencesUrl,
 }: SearchPanelProps) {
   const cfg = config as Record<string, any>;
   const selectedNodeDetails =
@@ -267,14 +269,27 @@ function SearchPanel({
         className
       )}
     >
-      <button onClick={toggleSidebar} className="border-gray-200">
-        <br />
-        {window.innerWidth > 768 ? (
-          <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle border-gray-200" />
-        ) : (
-          <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle border-gray-200" />
+      <div className="flex items-center justify-between border-gray-200">
+        <button onClick={toggleSidebar} className="border-gray-200">
+          <br />
+          {window.innerWidth > 768 ? (
+            <MdArrowForward className="mx-auto w-5 h-5 sidebar-toggle border-gray-200" />
+          ) : (
+            <MdArrowDownward className="mx-auto w-5 h-5 sidebar-toggle border-gray-200" />
+          )}
+        </button>
+        {placeSequencesUrl && (
+          <a
+            href={placeSequencesUrl}
+            className="px-3 py-1.5 text-xs bg-white text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition flex items-center gap-1.5 no-underline my-2"
+            data-tooltip-id="global-tooltip"
+            data-tooltip-content="Place your own sequences on this tree using viral_usher"
+          >
+            <MdAddCircleOutline className="w-4 h-4" />
+            <span>Place sequences</span>
+          </a>
         )}
-      </button>
+      </div>
       <div className="space-y-2 py-3 border-gray-200">
         {cfg.num_tips && (
           <>
