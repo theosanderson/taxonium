@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "viral-usher-web.fullname" . }}
+  labels:
+    {{- include "viral-usher-web.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "viral-usher-web.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "viral-usher-web.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "viral-usher-web.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.targetPort }}
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "{{ .Values.service.targetPort }}"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: K8S_NAMESPACE
+          value: {{ .Values.app.namespace | quote }}
+        - name: K8S_JOB_IMAGE
+          value: "{{ .Values.job.image.repository }}@{{ .Values.job.image.tag }}"
+        - name: K8S_JOB_IMAGE_PULL_POLICY
+          value: {{ .Values.job.image.pullPolicy | quote }}
+        - name: K8S_UPLOAD_IMAGE
+          value: "{{ .Values.job.uploadImage.repository }}:{{ .Values.job.uploadImage.tag }}"
+        - name: K8S_UPLOAD_IMAGE_PULL_POLICY
+          value: {{ .Values.job.uploadImage.pullPolicy | quote }}
+        - name: S3_BUCKET
+          value: {{ .Values.s3.bucket | quote }}
+        - name: S3_REGION
+          value: {{ .Values.s3.region | quote }}
+        {{- if and .Values.minio.enabled .Values.s3.useMinio }}
+        - name: S3_ENDPOINT_URL
+          value: "http://{{ .Release.Name }}-minio:{{ .Values.minio.service.port }}"
+        {{- else if .Values.s3.endpoint }}
+        - name: S3_ENDPOINT_URL
+          value: {{ .Values.s3.endpoint | quote }}
+        {{- end }}
+        {{- if or .Values.s3.createSecret .Values.s3.existingSecret }}
+        - name: K8S_S3_SECRET_NAME
+          value: {{ include "viral-usher-web.s3SecretName" . }}
+        envFrom:
+        - secretRef:
+            name: {{ include "viral-usher-web.s3SecretName" . }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.persistence.enabled }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .Values.persistence.mountPath }}
+        {{- end }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "viral-usher-web.fullname" . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
