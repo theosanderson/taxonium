@@ -86,7 +86,7 @@ class ConfigRequest(BaseModel):
     ref_fasta: Optional[str] = ""
     ref_gbff: Optional[str] = ""
     species: str = ""
-    taxonomy_id: str = ""
+    taxonomy_id: str = "123456789"
     nextclade_dataset: Optional[str] = ""
     nextclade_clade_columns: Optional[str] = ""
     min_length_proportion: str = config.DEFAULT_MIN_LENGTH_PROPORTION
@@ -628,7 +628,7 @@ async def generate_config(
     ref_fasta: str = Form(""),
     ref_gbff: str = Form(""),
     species: str = Form(""),
-    taxonomy_id: str = Form(""),
+    taxonomy_id: str = Form("123456789"),
     nextclade_dataset: str = Form(""),
     nextclade_clade_columns: str = Form(""),
     min_length_proportion: str = Form(...),
