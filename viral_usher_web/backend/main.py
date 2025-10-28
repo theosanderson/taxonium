@@ -537,8 +537,9 @@ async def get_job_logs(job_name: str, request: Request):
                     bucket = file_info["bucket"]
                     prefix = file_info["prefix"]
 
-                    # Construct URL using current request's base URL
+                    # Construct URL using current request's base URL (force https)
                     base_url = str(request.base_url).rstrip('/')
+                    base_url = base_url.replace('http://', 'https://')
                     url = f"{base_url}/api/s3-proxy/{bucket}/{file_info['s3_key']}"
 
                     file_entry = {
@@ -581,8 +582,9 @@ async def get_job_logs(job_name: str, request: Request):
                         # Create download URLs for each file
                         file_urls = []
                         base_url = str(request.base_url).rstrip('/')
+                        base_url = base_url.replace('http://', 'https://')
                         for file_key in s3_data["uploaded_files"]:
-                            # Construct URL using current request's base URL
+                            # Construct URL using current request's base URL (force https)
                             url = f"{base_url}/api/s3-proxy/{bucket}/{file_key}"
                             filename = file_key.replace(f"{prefix}/", "")
                             file_entry = {
