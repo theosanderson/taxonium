@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   typescript: {
@@ -6,6 +7,10 @@ const nextConfig: NextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  experimental: {
+    // Include files from the monorepo base (parent directory)
+    outputFileTracingRoot: path.join(__dirname, '../'),
   },
 };
 
