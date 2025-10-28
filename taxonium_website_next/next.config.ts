@@ -8,10 +8,8 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    // Include files from the monorepo base (parent directory)
-    outputFileTracingRoot: path.join(__dirname, '../'),
-  },
+  // Include files from the monorepo base (parent directory)
+  outputFileTracingRoot: path.join(__dirname, '../'),
 };
 
 export default nextConfig;
