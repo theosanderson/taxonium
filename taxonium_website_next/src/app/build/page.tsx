@@ -78,7 +78,7 @@ export default function BuildPage() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`${API_BASE}/search-species`, {
+      const response = await fetch(`${API_BASE}/api/search-species`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ term: speciesSearch })
@@ -106,7 +106,7 @@ export default function BuildPage() {
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE}/refseqs/${taxonomy.tax_id}`);
+      const response = await fetch(`${API_BASE}/api/refseqs/${taxonomy.tax_id}`);
       if (!response.ok) throw new Error('Failed to fetch RefSeqs');
 
       const data = await response.json();
@@ -129,7 +129,7 @@ export default function BuildPage() {
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE}/assembly/${refseq.accession}`);
+      const response = await fetch(`${API_BASE}/api/assembly/${refseq.accession}`);
       if (!response.ok) throw new Error('Failed to fetch assembly ID');
 
       const data = await response.json();
@@ -151,7 +151,7 @@ export default function BuildPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_BASE}/nextclade-datasets?species=${encodeURIComponent(speciesName)}`
+        `${API_BASE}/api/nextclade-datasets?species=${encodeURIComponent(speciesName)}`
       );
       if (!response.ok) throw new Error('Failed to fetch Nextclade datasets');
 
@@ -280,7 +280,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
         formData.append('starting_tree_url', startingTreeUrl);
       }
 
-      const response = await fetch(`${API_BASE}/generate-config`, {
+      const response = await fetch(`${API_BASE}/api/generate-config`, {
         method: 'POST',
         body: formData
       });
@@ -303,7 +303,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
   // Fetch job logs
   const fetchJobLogs = async (jobName: string) => {
     try {
-      const response = await fetch(`${API_BASE}/job-logs/${jobName}`);
+      const response = await fetch(`${API_BASE}/api/job-logs/${jobName}`);
       if (!response.ok) return;
 
       const data = await response.json();
