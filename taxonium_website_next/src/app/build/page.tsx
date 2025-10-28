@@ -8,6 +8,9 @@ export default function BuildPage() {
   // Mode selection: 'genbank' or 'no_genbank'
   const [mode, setMode] = useState<string | null>(null);
 
+  // Advanced mode for no_genbank (when disabled, only show FASTA sequences)
+  const [advancedMode, setAdvancedMode] = useState(false);
+
   // Search and selection state (GenBank mode)
   const [speciesSearch, setSpeciesSearch] = useState('');
   const [taxonomyResults, setTaxonomyResults] = useState<any[]>([]);
@@ -621,19 +624,43 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {/* No GenBank Mode Workflow */}
               {mode === 'no_genbank' && (
                 <div className="mb-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">1. Provide Reference Files</h2>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={loadExampleData}
-                        className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition"
-                      >
-                        Load Example Data
-                      </button>
-                      <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">Change Mode</button>
+                  <div className="mb-6 flex items-start justify-between">
+                    <div>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={advancedMode}
+                          onChange={(e) => setAdvancedMode(e.target.checked)}
+                          className="w-4 h-4 text-gray-600 border-gray-300 rounded focus:ring-gray-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700">Advanced mode</span>
+                      </label>
+                      <p className="text-xs text-gray-500 mt-1 ml-6">
+                        Enable to configure reference files, taxonomy, and additional options. When disabled, only FASTA sequences are required.
+                      </p>
                     </div>
+                    {!advancedMode && (
+                      <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">
+                        Change Mode
+                      </button>
+                    )}
                   </div>
-                  <div className="space-y-4">
+
+                  {advancedMode && (
+                    <>
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">1. Provide Reference Files</h2>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={loadExampleData}
+                            className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition"
+                          >
+                            Load Example Data
+                          </button>
+                          <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">Change Mode</button>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Taxonomy ID *
@@ -770,11 +797,13 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       </div>
                     )}
                   </div>
+                    </>
+                  )}
                 </div>
               )}
 
               {/* Nextclade Dataset Selection (both modes) */}
-              {mode && (
+              {mode && (mode === 'genbank' || advancedMode) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
                     {mode === 'genbank' ? '3' : '2'}. Nextclade Dataset (Optional)
@@ -811,7 +840,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               )}
 
               {/* Starting Tree Upload (both modes, optional) */}
-              {mode && (
+              {mode && (mode === 'genbank' || advancedMode) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
                     Starting Tree - Update Mode (Optional)
@@ -884,7 +913,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '4' : '3'}. FASTA Sequences {mode === 'no_genbank' ? '(Required)' : '(Optional)'}
+                    {mode === 'genbank' ? '4' : (advancedMode ? '3' : '1')}. FASTA Sequences {mode === 'no_genbank' ? '(Required)' : '(Optional)'}
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     {mode === 'no_genbank'
@@ -953,7 +982,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               )}
 
               {/* Custom Metadata Upload (both modes) */}
-              {mode && (
+              {mode && (mode === 'genbank' || advancedMode) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
                     {mode === 'genbank' ? '5' : '4'}. Custom Metadata (Optional)
@@ -999,7 +1028,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               )}
 
               {/* Tree Building Parameters (both modes) */}
-              {mode && (
+              {mode && (mode === 'genbank' || advancedMode) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
                     {mode === 'genbank' ? '6' : '5'}. Tree Building & Filtering Parameters
