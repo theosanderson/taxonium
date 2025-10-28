@@ -72,6 +72,7 @@ async function fetchViralUsherTrees() {
         usherProtobuf: `${VIRAL_USHER_BASE_URL}/${treeName}/optimized.pb.gz`,
         referenceGBFF: `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${accession}&rettype=gb&retmode=text`,
         referenceFasta: `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${accession}&rettype=fasta&retmode=text`,
+        metadataUrl: `${VIRAL_USHER_BASE_URL}/${treeName}/metadata.tsv.gz`,
         title: displayTitle,
         description: `${organism} - ${tipCount} sequences`,
         icon: "/assets/usher.png",

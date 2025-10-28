@@ -54,6 +54,7 @@ interface TaxoniumProps {
   usherProtobuf?: string;
   referenceGBFF?: string;
   referenceFasta?: string;
+  metadataUrl?: string;
 }
 
 const default_query = getDefaultQuery();
@@ -78,6 +79,7 @@ function Taxonium({
   usherProtobuf,
   referenceGBFF,
   referenceFasta,
+  metadataUrl,
 }: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
@@ -231,6 +233,9 @@ function Taxonium({
     }
     if (referenceFasta) {
       params.append('refFastaUrl', referenceFasta);
+    }
+    if (metadataUrl) {
+      params.append('metadataUrl', metadataUrl);
     }
 
     return `/build?${params.toString()}`;

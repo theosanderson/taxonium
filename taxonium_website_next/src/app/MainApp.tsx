@@ -357,6 +357,7 @@ function MainApp({ pathname }: { pathname: string }) {
                 usherProtobuf={pathConfig?.usherProtobuf}
                 referenceGBFF={pathConfig?.referenceGBFF}
                 referenceFasta={pathConfig?.referenceFasta}
+                metadataUrl={pathConfig?.metadataUrl}
               />
             </div>
           ) : (

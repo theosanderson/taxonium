@@ -417,6 +417,17 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
 
     const dateColumn = params.get('metadataDateColumn');
     if (dateColumn) setMetadataDateColumn(dateColumn);
+
+    const metadataUrl = params.get('metadataUrl');
+    if (metadataUrl) {
+      fetch(metadataUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], 'metadata.tsv.gz', { type: 'application/gzip' });
+          setMetadataFile(file);
+        })
+        .catch(err => console.error('Failed to fetch metadata file:', err));
+    }
   }, []);
 
   return (
