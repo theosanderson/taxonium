@@ -621,23 +621,20 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                 </>
               )}
 
-              {/* No GenBank Mode Workflow */}
-              {mode === 'no_genbank' && (
-                <div className="mb-8">
-                  <div className="mb-6 flex items-start justify-between">
-                    <div>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={advancedMode}
-                          onChange={(e) => setAdvancedMode(e.target.checked)}
-                          className="w-4 h-4 text-gray-600 border-gray-300 rounded focus:ring-gray-500"
-                        />
-                        <span className="text-sm font-medium text-gray-700">Advanced mode</span>
-                      </label>
-                      <p className="text-xs text-gray-500 mt-1 ml-6">
-                        Enable to configure reference files, taxonomy, and additional options. When disabled, only FASTA sequences are required.
-                      </p>
+              {/* Advanced mode toggle - only show if tree is provided */}
+              {mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && (
+                <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="text-sm font-medium text-gray-900 mb-2">Configured Settings</h3>
+                      <div className="space-y-1 text-sm text-gray-700">
+                        <div>
+                          <span className="font-medium">Starting tree:</span>{' '}
+                          <span className="text-gray-600">
+                            {startingTreeFile ? startingTreeFile.name : startingTreeUrl}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                     {!advancedMode && (
                       <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">
@@ -645,22 +642,47 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       </button>
                     )}
                   </div>
-
+                  {!advancedMode && (
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <button
+                        onClick={() => setAdvancedMode(true)}
+                        className="text-xs text-gray-600 hover:text-gray-900 underline"
+                      >
+                        ...or if you want to customise reference files, taxonomy, and other options, click here
+                      </button>
+                    </div>
+                  )}
                   {advancedMode && (
-                    <>
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">1. Provide Reference Files</h2>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={loadExampleData}
-                            className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition"
-                          >
-                            Load Example Data
-                          </button>
-                          <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">Change Mode</button>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <button
+                        onClick={() => setAdvancedMode(false)}
+                        className="text-xs text-gray-600 hover:text-gray-900 underline"
+                      >
+                        Hide advanced options
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* No GenBank Mode Workflow - Reference Files */}
+              {mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode) && (
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">
+                      1. Provide Reference Files
+                    </h2>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={loadExampleData}
+                        className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition"
+                      >
+                        Load Example Data
+                      </button>
+                      <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">Change Mode</button>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Taxonomy ID *
@@ -797,13 +819,11 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       </div>
                     )}
                   </div>
-                    </>
-                  )}
                 </div>
               )}
 
               {/* Nextclade Dataset Selection (both modes) */}
-              {mode && (mode === 'genbank' || advancedMode) && (
+              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
                     {mode === 'genbank' ? '3' : '2'}. Nextclade Dataset (Optional)
@@ -840,10 +860,10 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               )}
 
               {/* Starting Tree Upload (both modes, optional) */}
-              {mode && (mode === 'genbank' || advancedMode) && (
+              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    Starting Tree - Update Mode (Optional)
+                    {mode === 'genbank' ? '' : '3. '}Starting Tree - Update Mode (Optional)
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     Provide an existing UShER protobuf tree (.pb.gz) to update with new sequences instead of building from scratch.
@@ -913,7 +933,8 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '4' : (advancedMode ? '3' : '1')}. FASTA Sequences {mode === 'no_genbank' ? '(Required)' : '(Optional)'}
+                    {mode === 'genbank' ? '4' :
+                     (mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && !advancedMode ? '1' : '4')}. FASTA Sequences {mode === 'no_genbank' ? '(Required)' : '(Optional)'}
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     {mode === 'no_genbank'
@@ -982,10 +1003,10 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               )}
 
               {/* Custom Metadata Upload (both modes) */}
-              {mode && (mode === 'genbank' || advancedMode) && (
+              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '5' : '4'}. Custom Metadata (Optional)
+                    {mode === 'genbank' ? '5' : '5'}. Custom Metadata (Optional)
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     Upload a TSV file with custom metadata for your sequences. First column should be sequence names matching your FASTA.
@@ -1028,10 +1049,10 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               )}
 
               {/* Tree Building Parameters (both modes) */}
-              {mode && (mode === 'genbank' || advancedMode) && (
+              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '6' : '5'}. Tree Building & Filtering Parameters
+                    {mode === 'genbank' ? '6' : '6'}. Tree Building & Filtering Parameters
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
