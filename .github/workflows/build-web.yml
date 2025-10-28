@@ -1,4 +1,4 @@
-name: Build and Push Web Image
+name: Build and Push Viral Usher Web Image
 
 on:
   push:
