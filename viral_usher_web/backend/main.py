@@ -2,8 +2,7 @@
 
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import Response
 from pydantic import BaseModel
 from typing import List, Optional
 import os
@@ -104,6 +103,31 @@ class ConfigResponse(BaseModel):
 
 
 # API Endpoints
+
+@app.get("/")
+async def root():
+    """Root endpoint with API information"""
+    return {
+        "name": "Viral Usher Web API",
+        "version": "1.0",
+        "status": "running",
+        "docs": "/docs",
+        "endpoints": {
+            "health": "/health",
+            "search_species": "/api/search-species",
+            "refseqs": "/api/refseqs/{taxid}",
+            "assembly": "/api/assembly/{refseq_acc}",
+            "nextclade_datasets": "/api/nextclade-datasets",
+            "generate_config": "/api/generate-config",
+            "job_logs": "/api/job-logs/{job_name}"
+        }
+    }
+
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for liveness and readiness probes"""
+    return {"status": "healthy"}
 
 
 @app.post("/api/search-species", response_model=List[TaxonomyEntry])
@@ -807,25 +831,6 @@ async def s3_proxy(bucket: str, s3_key: str):
             raise HTTPException(status_code=500, detail=f"S3 error: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-# Serve static frontend files in production
-frontend_dist = os.path.join(os.path.dirname(__file__), "../frontend/dist")
-if os.path.exists(frontend_dist):
-    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")
-
-    @app.get("/{full_path:path}")
-    async def serve_frontend(full_path: str):
-        """Serve the React frontend for all non-API routes"""
-        if full_path.startswith("api/"):
-            raise HTTPException(status_code=404, detail="Not found")
-
-        file_path = os.path.join(frontend_dist, full_path)
-        if os.path.isfile(file_path):
-            return FileResponse(file_path)
-
-        # Serve index.html for client-side routing
-        return FileResponse(os.path.join(frontend_dist, "index.html"))
 
 
 if __name__ == "__main__":
