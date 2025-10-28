@@ -53,9 +53,13 @@ def upload_directory_to_s3(local_directory, bucket, s3_prefix):
     print("__S3_UPLOAD_START__")
     sys.stdout.flush()
 
-    for file_path in local_path.rglob('*'):
+    # Collect all files first, then sort to upload tree.jsonl.gz first
+    all_files = [f for f in local_path.rglob('*') if f.is_file() and f.name != ".job_complete"]
+    all_files.sort(key=lambda f: (not f.name.endswith('tree.jsonl.gz'), f.name))
+
+    for file_path in all_files:
         if file_path.is_file():
-            # Skip the completion marker file
+            # Skip the completion marker file (already filtered above, but keep for safety)
             if file_path.name == ".job_complete":
                 continue
 

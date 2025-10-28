@@ -1198,13 +1198,18 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     </h4>
                     <p className="text-xs text-gray-600 mb-4">
                       {jobLogs.s3_results.upload_complete ? (
-                        <>All {jobLogs.s3_results.total_files} output files have been uploaded to S3 and are ready to download:</>
+                        <>All {jobLogs.s3_results.total_files} output files are ready to download:</>
                       ) : (
                         <>{jobLogs.s3_results.total_files} file{jobLogs.s3_results.total_files !== 1 ? 's' : ''} uploaded so far (upload in progress)...</>
                       )}
                     </p>
                     <div className="bg-white rounded border border-gray-200 max-h-96 overflow-y-auto">
-                      {jobLogs.s3_results.files.map((file: any, idx: number) => (
+                      {[...jobLogs.s3_results.files].sort((a: any, b: any) => {
+                        // Put tree.jsonl.gz first
+                        if (a.filename.endsWith('tree.jsonl.gz')) return -1;
+                        if (b.filename.endsWith('tree.jsonl.gz')) return 1;
+                        return 0;
+                      }).map((file: any, idx: number) => (
                         <div key={idx} className="px-4 py-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition flex items-center justify-between gap-4">
                           <div className="flex-1 min-w-0">
                             <p className="font-mono text-xs text-gray-800 truncate" title={file.filename}>
@@ -1244,11 +1249,6 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           </div>
                         </div>
                       ))}
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-green-200">
-                      <p className="text-xs text-gray-600">
-                        <strong>S3 Location:</strong> <code className="bg-white px-2 py-0.5 rounded text-xs">s3://{jobLogs.s3_results.bucket}/{jobLogs.s3_results.prefix}/</code>
-                      </p>
                     </div>
                   </div>
                 )}
