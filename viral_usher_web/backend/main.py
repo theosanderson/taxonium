@@ -85,8 +85,8 @@ class ConfigRequest(BaseModel):
     refseq_assembly: Optional[str] = ""
     ref_fasta: Optional[str] = ""
     ref_gbff: Optional[str] = ""
-    species: str
-    taxonomy_id: str
+    species: str = ""
+    taxonomy_id: str = ""
     nextclade_dataset: Optional[str] = ""
     nextclade_clade_columns: Optional[str] = ""
     min_length_proportion: str = config.DEFAULT_MIN_LENGTH_PROPORTION
@@ -537,8 +537,9 @@ async def get_job_logs(job_name: str, request: Request):
                     bucket = file_info["bucket"]
                     prefix = file_info["prefix"]
 
-                    # Use hardcoded GitHub Codespaces URL for now
-                    url = f"https://bookish-space-happiness-x56rxw7x77q2p5rq-8081.app.github.dev/api/s3-proxy/{bucket}/{file_info['s3_key']}"
+                    # Construct URL using current request's base URL
+                    base_url = str(request.base_url).rstrip('/')
+                    url = f"{base_url}/api/s3-proxy/{bucket}/{file_info['s3_key']}"
 
                     file_entry = {
                         "filename": file_info["filename"],
@@ -579,9 +580,10 @@ async def get_job_logs(job_name: str, request: Request):
 
                         # Create download URLs for each file
                         file_urls = []
+                        base_url = str(request.base_url).rstrip('/')
                         for file_key in s3_data["uploaded_files"]:
-                            # Use hardcoded GitHub Codespaces URL for now
-                            url = f"https://bookish-space-happiness-x56rxw7x77q2p5rq-8081.app.github.dev/api/s3-proxy/{bucket}/{file_key}"
+                            # Construct URL using current request's base URL
+                            url = f"{base_url}/api/s3-proxy/{bucket}/{file_key}"
                             filename = file_key.replace(f"{prefix}/", "")
                             file_entry = {
                                 "filename": filename,
@@ -625,8 +627,8 @@ async def generate_config(
     refseq_assembly: str = Form(""),
     ref_fasta: str = Form(""),
     ref_gbff: str = Form(""),
-    species: str = Form(...),
-    taxonomy_id: str = Form(...),
+    species: str = Form(""),
+    taxonomy_id: str = Form(""),
     nextclade_dataset: str = Form(""),
     nextclade_clade_columns: str = Form(""),
     min_length_proportion: str = Form(...),
