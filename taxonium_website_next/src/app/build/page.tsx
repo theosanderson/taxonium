@@ -60,8 +60,8 @@ export default function BuildPage() {
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [formCollapsed, setFormCollapsed] = useState(false);
 
-  // API base URL from environment variable
-  const API_BASE = process.env.NEXT_PUBLIC_VIRAL_USHER_API || '';
+  // API base URL from environment variable, fallback to production
+  const API_BASE = process.env.NEXT_PUBLIC_VIRAL_USHER_API || 'https://viral-usher-test.api.taxonium.org';
 
   // Search for species (GenBank mode)
   const searchSpecies = async () => {

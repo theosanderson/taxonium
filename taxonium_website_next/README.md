@@ -30,7 +30,7 @@ cp .env.local.example .env.local
 
 Then edit `.env.local` and set the required values:
 
-- `NEXT_PUBLIC_VIRAL_USHER_API` - Base URL for the Viral UShER tree building service (required for the `/build` page)
+- `NEXT_PUBLIC_VIRAL_USHER_API` - Base URL for the Viral UShER tree building service (optional - defaults to `https://viral-usher-test.api.taxonium.org`, override for local development)
 
 ## Build Page
 
@@ -42,7 +42,7 @@ The `/build` page provides a user interface for building viral phylogenetic tree
 - Monitor job progress in real-time
 - Download results directly or view them in Taxonium
 
-To use the build page, make sure to configure the `NEXT_PUBLIC_VIRAL_USHER_API` environment variable with your backend API URL.
+The build page uses the production viral_usher backend by default (`https://viral-usher-test.api.taxonium.org`). For local development, you can override this by setting the `NEXT_PUBLIC_VIRAL_USHER_API` environment variable.
 
 ## Learn More
 
