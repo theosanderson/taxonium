@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/theosanderson/project23/viral-usher-web
+  repository: ghcr.io/theosanderson/taxonium/viral-usher-web
   pullPolicy: Always
   tag: "latest"
 
