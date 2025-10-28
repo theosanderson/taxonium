@@ -295,6 +295,7 @@ function MainApp({ pathname }: { pathname: string }) {
                     placeholder={isLoadingTrees ? "Loading trees..." : "Search trees..."}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     displayValue={(path: string) => path}
+                    autoComplete="off"
                   />
                   <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                     <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
