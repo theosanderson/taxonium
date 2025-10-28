@@ -16,7 +16,7 @@ import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
-import { MdArrowBack, MdArrowUpward, MdAddCircleOutline } from "react-icons/md";
+import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
 import { useCallback } from "react";
@@ -301,27 +301,14 @@ function Taxonium({
             }
           >
             {!sidebarOpen && (
-              <div className="flex flex-col items-center gap-2">
-                <button onClick={toggleSidebar}>
-                  <br />
-                  {window.innerWidth > 768 ? (
-                    <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
-                  ) : (
-                    <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
-                  )}
-                </button>
-                {showPlaceSequencesButton && (
-                  <a
-                    href={buildPlaceSequencesUrl()}
-                    className="px-2 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition flex items-center gap-1 no-underline"
-                    data-tooltip-id="global-tooltip"
-                    data-tooltip-content="Place your own sequences on this tree"
-                  >
-                    <MdAddCircleOutline className="w-4 h-4" />
-                    <span className="hidden md:inline">Place sequences</span>
-                  </a>
+              <button onClick={toggleSidebar}>
+                <br />
+                {window.innerWidth > 768 ? (
+                  <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
+                ) : (
+                  <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
                 )}
-              </div>
+              </button>
             )}
 
             {sidebarOpen && (
@@ -342,6 +329,7 @@ function Taxonium({
                 setAboutEnabled={setAboutEnabled}
                 perNodeFunctions={perNodeFunctions}
                 toggleSidebar={toggleSidebar}
+                placeSequencesUrl={showPlaceSequencesButton ? buildPlaceSequencesUrl() : undefined}
               />
             )}
           </div>
