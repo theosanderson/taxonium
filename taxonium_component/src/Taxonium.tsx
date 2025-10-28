@@ -16,7 +16,7 @@ import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
-import { MdArrowBack, MdArrowUpward } from "react-icons/md";
+import { MdArrowBack, MdArrowUpward, MdAddCircleOutline } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
 import { useCallback } from "react";
@@ -51,6 +51,9 @@ interface TaxoniumProps {
   onNodeSelect?: NodeSelectHandler;
   onNodeDetailsLoaded?: NodeDetailsLoadedHandler;
   sidePanelHiddenByDefault?: boolean;
+  usherProtobuf?: string;
+  referenceGBFF?: string;
+  referenceFasta?: string;
 }
 
 const default_query = getDefaultQuery();
@@ -72,6 +75,9 @@ function Taxonium({
   onNodeSelect,
   onNodeDetailsLoaded,
   sidePanelHiddenByDefault,
+  usherProtobuf,
+  referenceGBFF,
+  referenceFasta,
 }: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
@@ -213,6 +219,25 @@ function Taxonium({
     }, 100);
   };
 
+  const buildPlaceSequencesUrl = () => {
+    const params = new URLSearchParams();
+    params.append('mode', 'no_genbank');
+
+    if (usherProtobuf) {
+      params.append('startingTreeUrl', usherProtobuf);
+    }
+    if (referenceGBFF) {
+      params.append('refGbffUrl', referenceGBFF);
+    }
+    if (referenceFasta) {
+      params.append('refFastaUrl', referenceFasta);
+    }
+
+    return `/build?${params.toString()}`;
+  };
+
+  const showPlaceSequencesButton = usherProtobuf && referenceGBFF && referenceFasta;
+
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
@@ -276,14 +301,27 @@ function Taxonium({
             }
           >
             {!sidebarOpen && (
-              <button onClick={toggleSidebar}>
-                <br />
-                {window.innerWidth > 768 ? (
-                  <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
-                ) : (
-                  <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
+              <div className="flex flex-col items-center gap-2">
+                <button onClick={toggleSidebar}>
+                  <br />
+                  {window.innerWidth > 768 ? (
+                    <MdArrowBack className="mx-auto w-5 h-5 sidebar-toggle" />
+                  ) : (
+                    <MdArrowUpward className="mx-auto w-5 h-5 sidebar-toggle" />
+                  )}
+                </button>
+                {showPlaceSequencesButton && (
+                  <a
+                    href={buildPlaceSequencesUrl()}
+                    className="px-2 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition flex items-center gap-1 no-underline"
+                    data-tooltip-id="global-tooltip"
+                    data-tooltip-content="Place your own sequences on this tree"
+                  >
+                    <MdAddCircleOutline className="w-4 h-4" />
+                    <span className="hidden md:inline">Place sequences</span>
+                  </a>
                 )}
-              </button>
+              </div>
             )}
 
             {sidebarOpen && (

@@ -354,6 +354,9 @@ function MainApp({ pathname }: { pathname: string }) {
                 onSetTitle={setTitle}
                 overlayContent={overlayContent}
                 setAboutEnabled={setAboutEnabled}
+                usherProtobuf={pathConfig?.usherProtobuf}
+                referenceGBFF={pathConfig?.referenceGBFF}
+                referenceFasta={pathConfig?.referenceFasta}
               />
             </div>
           ) : (

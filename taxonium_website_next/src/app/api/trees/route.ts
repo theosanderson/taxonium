@@ -69,6 +69,9 @@ async function fetchViralUsherTrees() {
       // Generate the tree configuration
       trees[pathKey] = {
         protoUrl: `${VIRAL_USHER_BASE_URL}/${treeName}/tree.jsonl.gz`,
+        usherProtobuf: `${VIRAL_USHER_BASE_URL}/${treeName}/optimized.pb.gz`,
+        referenceGBFF: `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${accession}&rettype=gb&retmode=text`,
+        referenceFasta: `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=${accession}&rettype=fasta&retmode=text`,
         title: displayTitle,
         description: `${organism} - ${tipCount} sequences`,
         icon: "/assets/usher.png",
