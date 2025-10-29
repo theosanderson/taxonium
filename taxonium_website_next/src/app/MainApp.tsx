@@ -216,7 +216,14 @@ function MainApp({ pathname }: { pathname: string }) {
       />
 
       <div
-        className="h-screen w-screen flex flex-col overflow-hidden"
+        className={`h-screen w-screen flex flex-col ${
+          (query as any).backend ||
+          (uploadedData &&
+            ((uploadedData as any).status === "loaded" ||
+              (uploadedData as any).status === "url_supplied"))
+            ? "overflow-hidden"
+            : "overflow-auto"
+        }`}
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
