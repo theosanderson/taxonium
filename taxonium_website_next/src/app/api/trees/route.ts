@@ -76,7 +76,7 @@ async function fetchViralUsherTrees() {
         title: displayTitle,
         description: `${organism} - ${tipCount} sequences`,
         icon: "/assets/usher.png",
-        maintainerMessage: "Maintained by the UShER viral trees repository",
+        maintainerMessage: "Maintained by Angie Hinrichs at UCSC",
         maintainerUrl: "https://github.com/AngieHinrichs/viral_usher_trees",
         metadata: {
           accession,

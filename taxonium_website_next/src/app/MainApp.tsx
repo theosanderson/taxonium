@@ -394,6 +394,14 @@ function MainApp({ pathname }: { pathname: string }) {
                   </div>
                   <div className="flex-1 border-t border-gray-300"></div>
                 </div>
+                <div className="flex justify-end">
+                  <a
+                    href="/browse"
+                    className="text-sm text-gray-600 hover:text-gray-800 hover:underline"
+                  >
+                    Browse all trees →
+                  </a>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {showCase.map((item: any, i: number) => (
                     <div key={i} className="border border-gray-300 rounded p-3">
