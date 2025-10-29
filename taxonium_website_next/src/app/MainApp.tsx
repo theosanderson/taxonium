@@ -6,7 +6,7 @@ import AboutOverlay from "../components/AboutOverlay";
 import dynamic from "next/dynamic";
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaArrowRight } from "react-icons/fa";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import useQueryAsState from "../hooks/useQueryAsState";
 import classNames from "classnames";
@@ -366,7 +366,26 @@ function MainApp({ pathname }: { pathname: string }) {
               <p className="text-lg text-gray-700 mb-5 font-bold">
                 Welcome to Taxonium, a tool for exploring large trees
               </p>
-              <InputSupplier inputHelper={inputHelper} />
+              <div className={`grid ${inputHelper.inputs.length === 0 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'} gap-4 mb-6`}>
+                <div className="border border-gray-200 rounded-lg p-6">
+                  <h3 className="text-base font-medium text-gray-900 mb-3">Explore your tree</h3>
+                  <InputSupplier inputHelper={inputHelper} />
+                </div>
+                {inputHelper.inputs.length === 0 && (
+                  <div className="border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-base font-medium text-gray-900 mb-3">...or build a new tree</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Create a phylogenetic tree from viral sequence data using UShER
+                    </p>
+                    <a
+                      href="/build"
+                      className="inline-block border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700"
+                    >
+                      Go to tree builder <FaArrowRight className="inline-block ml-1" />
+                    </a>
+                  </div>
+                )}
+              </div>
               <div className="flex flex-col space-y-3 pt-6">
                 <div className="flex flex-row items-center">
                   <div className="flex-1 border-t border-gray-300"></div>
