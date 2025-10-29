@@ -99,7 +99,7 @@ s3:
 job:
   image:
     repository: angiehinrichs/viral_usher
-    tag: "sha256:1996504fb2a0e8b12befe4160556d62c3ba3e117dcca41fb882d1727cd58fe23"
+    tag: "sha256:f15b752f37e6f055b84279eb2a6f3a1d5ccbae98237211369620645603fca236"
     pullPolicy: Always
   # Upload sidecar image (for S3 uploads)
   uploadImage:
