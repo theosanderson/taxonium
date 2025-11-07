@@ -1,15 +1,21 @@
 import { useState, useEffect, type ReactNode } from "react";
 import type { Backend, Config } from "../types/backend";
 import type { Query } from "../types/query";
-import type { View } from "./useView";
+import type { SettingsConfig } from "../types/settings";
+
+const mergeSettingsLayers = (layers: SettingsConfig[]): SettingsConfig | undefined => {
+  if (!layers.length) {
+    return undefined;
+  }
+  return layers.reduce<SettingsConfig>((acc, layer) => ({ ...acc, ...layer }), {});
+};
 
 const useConfig = (
-  backend: Backend,
-  view: View,
+  backend: Backend | null,
   setOverlayContent: (content: ReactNode) => void,
   onSetTitle: ((title: string) => void) | undefined,
   query: Query,
-  configDict: any,
+  configDict: Record<string, unknown> | undefined,
   configUrl: string | undefined
 ) => {
   const [config, setConfig] = useState<Config>({
@@ -21,48 +27,66 @@ const useConfig = (
   });
 
   useEffect(() => {
+    if (!backend) {
+      return;
+    }
     backend.getConfig((results) => {
-      const viewState = {
-        ...view.viewState,
-        target: [
-          results.initial_x !== undefined ? results.initial_x : 2000,
-          results.initial_y,
-        ],
-        //zoom: [0, -2]
-        
+      const settingsLayers: SettingsConfig[] = [];
+      if (results.settings) {
+        settingsLayers.push(results.settings);
+      }
 
+      const applyOverrides = (
+        override: Record<string, unknown> | undefined,
+        { stripValidateSid }: { stripValidateSid?: boolean } = {}
+      ) => {
+        if (!override) {
+          return;
+        }
+        const copy = { ...override } as Record<string, unknown> & {
+          settings?: SettingsConfig;
+        };
+        if (stripValidateSid) {
+          delete (copy as { validate_SID?: unknown }).validate_SID;
+        }
+        if (copy.settings) {
+          settingsLayers.push(copy.settings);
+          delete copy.settings;
+        }
+        Object.assign(results, copy);
       };
 
-      const oldViewState = { ...viewState };
+      let fromFile: Record<string, unknown> = {};
 
-      let fromFile = {};
-
-      function afterPossibleGet() {
+      const finalizeConfig = () => {
         if (query.config) {
-          const unpacked = JSON.parse(query.config);
-          delete unpacked.validate_SID;
-          Object.assign(results, unpacked);
+          try {
+            applyOverrides(JSON.parse(query.config), { stripValidateSid: true });
+          } catch (error) {
+            console.error("Failed to parse query.config", error);
+          }
         }
-        Object.assign(results, fromFile);
+        applyOverrides(fromFile);
+        applyOverrides(configDict);
+
+        const mergedSettings = mergeSettingsLayers(settingsLayers);
+        if (mergedSettings) {
+          results.settings = mergedSettings;
+        } else {
+          delete (results as Partial<Config>).settings;
+        }
+
         if (results.title && onSetTitle) {
           onSetTitle(results.title);
         }
 
-        Object.assign(results, configDict);
-
-        setConfig(results);
+        setConfig({ ...results });
         backend.setStatusMessage({ message: "Connecting" });
-        // THE BELOW IS NOT WORKING ATM
-        view.onViewStateChange({
-          viewState,
-          oldViewState,
-          interactionState: "isZooming",
-        });
 
         if (results.overlay) {
           setOverlayContent(results.overlay);
         }
-      }
+      };
 
       if (configUrl && !query.configUrl) {
         query.configUrl = configUrl;
@@ -73,18 +97,18 @@ const useConfig = (
           .then((response) => response.json())
           .then((data) => {
             fromFile = data;
-            afterPossibleGet();
+            finalizeConfig();
           })
           .catch((error) => {
             console.log("ERROR", error);
-            afterPossibleGet();
+            finalizeConfig();
           });
       } else {
-        afterPossibleGet();
+        finalizeConfig();
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [backend.getConfig]);
+  }, [backend]);
 
   return config;
 };

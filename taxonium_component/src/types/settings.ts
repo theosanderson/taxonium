@@ -6,6 +6,25 @@ export interface PrettyStroke {
   width: number;
 }
 
+export interface SettingsConfig {
+  minimapEnabled?: boolean;
+  treenomeEnabled?: boolean;
+  displayTextForInternalNodes?: boolean;
+  displayPointsForInternalNodes?: boolean;
+  thresholdForDisplayingText?: number;
+  maxCladeTexts?: number;
+  chromosomeName?: string;
+  displaySearchesAsPoints?: boolean;
+  searchPointSize?: number;
+  terminalNodeLabelColor?: number[];
+  lineColor?: number[];
+  cladeLabelColor?: number[];
+  nodeSize?: number;
+  prettyStroke?: PrettyStroke;
+  opacity?: number;
+  mutationTypesEnabled?: Record<string, boolean>;
+}
+
 export interface Settings {
   minimapEnabled: boolean;
   treenomeEnabled: boolean;
@@ -43,4 +62,3 @@ export interface Settings {
   opacity: number;
   setOpacity: (value: number) => void;
 }
-

@@ -115,18 +115,72 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
-  const view = useView({
-    settings,
-    deckSize,
-    mouseDownIsMinimap,
-  });
-
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
     query.sid,
     sourceData ?? null
   );
+  const config = useConfig(
+    backend,
+    setOverlayContent,
+    onSetTitle,
+    query,
+    configDict,
+    configUrl
+  );
+  const settings = useSettings({ query, updateQuery, config });
+  const view = useView({
+    settings,
+    deckSize,
+    mouseDownIsMinimap,
+  });
+  const initialViewAppliedSignature = useRef<string | null>(null);
+  const setViewState = view.setViewState;
+
+  useEffect(() => {
+    if (
+      config.initial_x === undefined &&
+      config.initial_y === undefined &&
+      config.initial_zoom === undefined
+    ) {
+      return;
+    }
+    const signature = `${config.initial_x ?? ""}:${config.initial_y ?? ""}:${
+      config.initial_zoom ?? ""
+    }`;
+    if (initialViewAppliedSignature.current === signature) {
+      return;
+    }
+    setViewState((prevViewState) => {
+      const prevTargetArray = (prevViewState.target ?? [2000, 1000]) as
+        | [number, number]
+        | [number, number, number];
+      const nextTarget: [number, number] = [
+        config.initial_x ?? prevTargetArray[0],
+        config.initial_y ?? prevTargetArray[1],
+      ];
+      const prevZoomValue: number | [number, number] =
+        prevViewState.zoom !== undefined
+          ? prevViewState.zoom
+          : ([0, -2] as [number, number]);
+      const nextZoom: number | [number, number] =
+        config.initial_zoom !== undefined
+          ? Array.isArray(prevZoomValue)
+            ? [
+                (prevZoomValue as [number, number])[0],
+                config.initial_zoom,
+              ]
+            : [prevZoomValue, config.initial_zoom]
+          : prevZoomValue;
+      return {
+        ...prevViewState,
+        target: nextTarget,
+        zoom: nextZoom,
+      };
+    });
+    initialViewAppliedSignature.current = signature;
+  }, [config.initial_x, config.initial_y, config.initial_zoom, setViewState]);
+
   if (!backend) {
     return (
       <div className="p-4 bg-red-50 text-red-800">
@@ -140,16 +194,6 @@ function Taxonium({
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
-
-  const config = useConfig(
-    backend,
-    view,
-    setOverlayContent,
-    onSetTitle,
-    query,
-    configDict,
-    configUrl
-  );
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {

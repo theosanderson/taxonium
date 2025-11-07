@@ -1,62 +1,162 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { toast } from "react-hot-toast";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import type { Settings, PrettyStroke } from "../types/settings";
 import type { Query } from "../types/query";
+import type { Config } from "../types/backend";
+
 const default_query = getDefaultQuery();
+const DEFAULT_PRETTY_STROKE: PrettyStroke = {
+  enabled: false,
+  color: [76, 87, 106],
+  width: 1,
+};
 
 interface UseSettingsProps {
   query: Query;
   updateQuery: (q: Partial<Query>) => void;
+  config?: Config;
 }
 
-export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings => {
-  const [minimapEnabled, setMinimapEnabled] = useState(true);
+const identity = <T,>(value: T) => value;
+const cloneNumberArray = (value: number[]) => [...value];
+const clonePrettyStrokeValue = (value: PrettyStroke) => ({
+  ...value,
+  color: [...value.color],
+});
+
+const useConfigurableState = <T,>(
+  configValue: T | undefined,
+  fallback: T,
+  cloneValue: (value: T) => T = identity
+): [T, Dispatch<SetStateAction<T>>] => {
+  const [state, setState] = useState<T>(() =>
+    configValue !== undefined ? cloneValue(configValue) : fallback
+  );
+
+  useEffect(() => {
+    if (configValue !== undefined) {
+      setState(cloneValue(configValue));
+    }
+  }, [configValue, cloneValue]);
+
+  return [state, setState];
+};
+
+export const useSettings = ({
+  query,
+  updateQuery,
+  config,
+}: UseSettingsProps): Settings => {
+  const configSettings = config?.settings;
+
+  const [minimapEnabled, setMinimapEnabled] = useConfigurableState(
+    configSettings?.minimapEnabled,
+    true
+  );
+  const toggleMinimapEnabled = useCallback(() => {
+    setMinimapEnabled((current) => !current);
+  }, [setMinimapEnabled]);
+
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
-    useState(false);
-
-  const [thresholdForDisplayingText, setThresholdForDisplayingText] =
-    useState(2.9);
-
-  const [displaySearchesAsPoints, setDisplaySearchesAsPoints] = useState(false);
-
-  const [searchPointSize, setSearchPointSize] = useState(3);
-
-  const [opacity, setOpacity] = useState(0.6);
-
-  const [prettyStroke, setPrettyStroke] = useState<PrettyStroke>({
-    enabled: false,
-    color: [76, 87, 106],
-    width: 1,
-  });
-
-  const [terminalNodeLabelColor, setTerminalNodeLabelColor] = useState([
-    180, 180, 180,
-  ]);
-
-  const [lineColor, setLineColor] = useState([150, 150, 150]);
-  const [nodeSize, setNodeSize] = useState(3);
-  const [cladeLabelColor, setCladeLabelColor] = useState([100, 100, 100]);
+    useConfigurableState(configSettings?.displayTextForInternalNodes, false);
 
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
-    useState(false);
-  const toggleMinimapEnabled = () => {
-    setMinimapEnabled(!minimapEnabled);
-  };
+    useConfigurableState(configSettings?.displayPointsForInternalNodes, false);
+
+  const [thresholdForDisplayingText, setThresholdForDisplayingText] =
+    useConfigurableState(configSettings?.thresholdForDisplayingText, 2.9);
+
+  const [maxCladeTexts, setMaxCladeTexts] = useConfigurableState(
+    configSettings?.maxCladeTexts,
+    10
+  );
+
+  const [displaySearchesAsPoints, setDisplaySearchesAsPoints] =
+    useConfigurableState(configSettings?.displaySearchesAsPoints, false);
+
+  const [searchPointSize, setSearchPointSize] = useConfigurableState(
+    configSettings?.searchPointSize,
+    3
+  );
+
+  const [opacity, setOpacity] = useConfigurableState(
+    configSettings?.opacity,
+    0.6
+  );
+
+  const [prettyStroke, setPrettyStroke] = useConfigurableState(
+    configSettings?.prettyStroke,
+    DEFAULT_PRETTY_STROKE,
+    clonePrettyStrokeValue
+  );
+
+  const [terminalNodeLabelColor, setTerminalNodeLabelColor] =
+    useConfigurableState(
+      configSettings?.terminalNodeLabelColor,
+      [180, 180, 180],
+      cloneNumberArray
+    );
+
+  const [lineColor, setLineColor] = useConfigurableState(
+    configSettings?.lineColor,
+    [150, 150, 150],
+    cloneNumberArray
+  );
+
+  const [nodeSize, setNodeSize] = useConfigurableState(
+    configSettings?.nodeSize,
+    3
+  );
+
+  const [cladeLabelColor, setCladeLabelColor] = useConfigurableState(
+    configSettings?.cladeLabelColor,
+    [100, 100, 100],
+    cloneNumberArray
+  );
+
+  const [chromosomeName, setChromosomeName] = useConfigurableState(
+    configSettings?.chromosomeName,
+    "chromosome"
+  );
+
+  const fallbackMutationTypes = useMemo(() => {
+    if (configSettings?.mutationTypesEnabled) {
+      return configSettings.mutationTypesEnabled;
+    }
+    return JSON.parse(default_query.mutationTypesEnabled as string);
+  }, [configSettings?.mutationTypesEnabled]);
 
   const mutationTypesEnabled = useMemo(() => {
     if (!query.mutationTypesEnabled) {
-      return JSON.parse(default_query.mutationTypesEnabled as string);
+      return fallbackMutationTypes;
     }
-    return JSON.parse(query.mutationTypesEnabled as string);
-  }, [query.mutationTypesEnabled]);
+    try {
+      return JSON.parse(query.mutationTypesEnabled as string);
+    } catch (error) {
+      return fallbackMutationTypes;
+    }
+  }, [query.mutationTypesEnabled, fallbackMutationTypes]);
 
   const treenomeEnabled = useMemo(() => {
-    if (!query.treenomeEnabled) {
-      return false;
+    if (typeof query.treenomeEnabled === "string") {
+      try {
+        return JSON.parse(query.treenomeEnabled);
+      } catch (error) {
+        return typeof configSettings?.treenomeEnabled === "boolean"
+          ? configSettings.treenomeEnabled
+          : false;
+      }
     }
-    return JSON.parse(query.treenomeEnabled as string);
-  }, [query.treenomeEnabled]);
+    if (typeof query.treenomeEnabled === "boolean") {
+      return query.treenomeEnabled;
+    }
+    if (typeof configSettings?.treenomeEnabled === "boolean") {
+      return configSettings.treenomeEnabled;
+    }
+    return false;
+  }, [query.treenomeEnabled, configSettings?.treenomeEnabled]);
 
   const setTreenomeEnabled = useCallback(
     (value: boolean) => {
@@ -77,15 +177,16 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
     [mutationTypesEnabled]
   );
 
-  const setMutationTypeEnabled = (key: string, enabled: boolean) => {
-    const newMutationTypesEnabled = { ...mutationTypesEnabled };
-    newMutationTypesEnabled[key] = enabled;
-    updateQuery({
-      mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
-    });
-  };
-
-  const [maxCladeTexts, setMaxCladeTexts] = useState(10);
+  const setMutationTypeEnabled = useCallback(
+    (key: string, enabled: boolean) => {
+      const newMutationTypesEnabled = { ...mutationTypesEnabled };
+      newMutationTypesEnabled[key] = enabled;
+      updateQuery({
+        mutationTypesEnabled: JSON.stringify(newMutationTypesEnabled),
+      });
+    },
+    [mutationTypesEnabled, updateQuery]
+  );
 
   const miniMutationsMenu = () => {
     return (
@@ -100,7 +201,6 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
                 onChange={() => {
                   const newValue = !mutationTypesEnabled[key];
                   setMutationTypeEnabled(key, newValue);
-                  // toast at bottom center
                   toast(
                     `Display of ${key.toUpperCase()} mutations is now ${
                       newValue ? "enabled" : "disabled"
@@ -119,7 +219,6 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
     );
   };
 
-  const [chromosomeName, setChromosomeName] = useState("chromosome");
   const [isCov2Tree, setIsCov2Tree] = useState(false);
   useEffect(() => {
     if (
@@ -127,9 +226,11 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
       window.location.href.includes("big-tree.ucsc.edu")
     ) {
       setIsCov2Tree(true);
-      setChromosomeName("NC_045512v2");
+      if (configSettings?.chromosomeName === undefined) {
+        setChromosomeName("NC_045512v2");
+      }
     }
-  }, []);
+  }, [configSettings?.chromosomeName, setChromosomeName]);
 
   return {
     minimapEnabled,

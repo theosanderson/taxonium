@@ -1,6 +1,7 @@
 import type { Node, Mutation } from "./node";
 import type React from "react";
 import type { ColorRamps } from "./common";
+import type { SettingsConfig } from "./settings";
 
 export interface SearchType {
   name: string;
@@ -49,6 +50,7 @@ export interface Config {
   };
   search_types?: SearchType[];
   overlay?: React.ReactNode;
+  settings?: SettingsConfig;
   [key: string]: unknown;
 }
 
