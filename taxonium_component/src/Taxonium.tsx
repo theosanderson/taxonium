@@ -14,8 +14,7 @@ import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
-import useConfig from "./hooks/useConfig";
-import { useSettings } from "./hooks/useSettings";
+import { useUnifiedSettings } from "./hooks/useUnifiedSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
@@ -115,12 +114,6 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
-  const view = useView({
-    settings,
-    deckSize,
-    mouseDownIsMinimap,
-  });
 
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
@@ -134,6 +127,41 @@ function Taxonium({
       </div>
     );
   }
+
+  // Unified settings that merges the old useSettings and useConfig
+  const settings = useUnifiedSettings({
+    backend,
+    setOverlayContent,
+    onSetTitle,
+    query,
+    configDict: configDict || {},
+    configUrl,
+    updateQuery,
+  });
+
+  // Create view with settings
+  const view = useView({
+    settings,
+    deckSize,
+    mouseDownIsMinimap,
+  });
+
+  // Apply initial viewport when config loads
+  useEffect(() => {
+    if (settings.initialViewport && view) {
+      const viewState = {
+        ...view.viewState,
+        target: settings.initialViewport.target,
+      };
+      const oldViewState = { ...view.viewState };
+      view.onViewStateChange({
+        viewState,
+        oldViewState,
+        interactionState: { isZooming: true },
+      });
+    }
+  }, [settings.initialViewport, view]);
+
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
@@ -141,15 +169,9 @@ function Taxonium({
   }
   const selectedDetails = useNodeDetails("selected", backend);
 
-  const config = useConfig(
-    backend,
-    view,
-    setOverlayContent,
-    onSetTitle,
-    query,
-    configDict,
-    configUrl
-  );
+  // For backward compatibility, create a config reference to the same settings object
+  // This allows components that reference "config" to continue working
+  const config = settings;
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
