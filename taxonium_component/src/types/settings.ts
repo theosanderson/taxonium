@@ -1,4 +1,5 @@
 import type React from "react";
+import type { Config } from "./backend";
 
 export interface PrettyStroke {
   enabled: boolean;
@@ -6,7 +7,8 @@ export interface PrettyStroke {
   width: number;
 }
 
-export interface Settings {
+// Settings now includes all Config properties plus settings-specific properties
+export interface Settings extends Partial<Config> {
   minimapEnabled: boolean;
   treenomeEnabled: boolean;
   setTreenomeEnabled: (value: boolean) => void;
