@@ -14,8 +14,7 @@ import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
-import useConfig from "./hooks/useConfig";
-import { useSettings } from "./hooks/useSettings";
+import { useConfiguredSettings } from "./hooks/useConfiguredSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
@@ -115,12 +114,6 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
-  const view = useView({
-    settings,
-    deckSize,
-    mouseDownIsMinimap,
-  });
 
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
@@ -134,22 +127,56 @@ function Taxonium({
       </div>
     );
   }
+
+  // Unified config and settings hook (loads config first, then provides settings)
+  const configuredSettings = useConfiguredSettings({
+    backend,
+    query,
+    updateQuery,
+    configDict: configDict ?? {},
+    configUrl,
+    setOverlayContent,
+    onSetTitle,
+  });
+
+  // Use the unified object as both config and settings
+  const config = configuredSettings;
+  const settings = configuredSettings;
+
+  // Create view using the settings from configuredSettings
+  const view = useView({
+    settings,
+    deckSize,
+    mouseDownIsMinimap,
+  });
+
+  // Handle initial view state from config
+  useEffect(() => {
+    if (config.initial_x !== undefined || config.initial_y !== undefined) {
+      const viewState = {
+        ...view.viewState,
+        target: [
+          config.initial_x !== undefined ? config.initial_x : 2000,
+          config.initial_y !== undefined ? config.initial_y : 1000,
+        ] as [number, number],
+      };
+      const oldViewState = { ...view.viewState };
+      view.onViewStateChange({
+        viewId: "main",
+        viewState,
+        oldViewState,
+        interactionState: { isZooming: true },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.initial_x, config.initial_y]);
+
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
-
-  const config = useConfig(
-    backend,
-    view,
-    setOverlayContent,
-    onSetTitle,
-    query,
-    configDict,
-    configUrl
-  );
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
