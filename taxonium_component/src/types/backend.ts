@@ -26,7 +26,18 @@ export interface NodesResponse {
   [key: string]: unknown;
 }
 
-export interface Config {
+import type { ConfigSettings } from "./configSettings";
+
+/**
+ * @deprecated Use ConfigSettings instead. Config has been merged with Settings.
+ */
+export type Config = ConfigSettings;
+
+/**
+ * Legacy Config interface definition - kept for reference only.
+ * All new code should use ConfigSettings from ./configSettings.
+ */
+export interface LegacyConfig {
   title?: string;
   source?: string;
   num_nodes: number;
@@ -108,6 +119,8 @@ export interface StatusMessage {
 
 import type { Dispatch, SetStateAction } from "react";
 
+import type { ConfigSettingsData } from "./configSettings";
+
 export interface BaseBackend {
   queryNodes(
     boundsForQueries: QueryBounds | null,
@@ -121,7 +134,7 @@ export interface BaseBackend {
     setResult: (res: SearchResult) => void
   ): { abortController: { abort: () => void } };
   getDetails(node_id: string | number, setResult: (res: NodeDetails) => void): void;
-  getConfig(setResult: (res: Config) => void): void;
+  getConfig(setResult: (res: ConfigSettingsData) => void): void;
   setStatusMessage: Dispatch<SetStateAction<StatusMessage | null>>;
   statusMessage: StatusMessage | null;
   getTipAtts(

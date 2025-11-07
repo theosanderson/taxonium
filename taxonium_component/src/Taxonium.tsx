@@ -14,8 +14,7 @@ import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
-import useConfig from "./hooks/useConfig";
-import { useSettings } from "./hooks/useSettings";
+import { useConfigSettings } from "./hooks/useConfigSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
@@ -115,12 +114,6 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
-  const view = useView({
-    settings,
-    deckSize,
-    mouseDownIsMinimap,
-  });
 
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
@@ -134,6 +127,24 @@ function Taxonium({
       </div>
     );
   }
+
+  // Unified config and settings hook
+  const configSettings = useConfigSettings({
+    backend,
+    setOverlayContent,
+    onSetTitle,
+    query,
+    updateQuery,
+    configDict: configDict ?? {},
+    configUrl,
+  });
+
+  const view = useView({
+    settings: configSettings,
+    deckSize,
+    mouseDownIsMinimap,
+  });
+
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
@@ -141,27 +152,18 @@ function Taxonium({
   }
   const selectedDetails = useNodeDetails("selected", backend);
 
-  const config = useConfig(
-    backend,
-    view,
-    setOverlayContent,
-    onSetTitle,
-    query,
-    configDict,
-    configUrl
-  );
-  const colorBy = useColorBy(config, query, updateQuery);
+  const colorBy = useColorBy(configSettings, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
-    const initial = (config as any).colorMapping
-      ? (config as any).colorMapping
+    const initial = (configSettings as any).colorMapping
+      ? (configSettings as any).colorMapping
       : {};
     return { ...initial, ...additionalColorMapping };
-  }, [(config as any).colorMapping, additionalColorMapping]);
-  const colorHook = useColor(config, colorMapping, colorBy.colorByField);
+  }, [(configSettings as any).colorMapping, additionalColorMapping]);
+  const colorHook = useColor(configSettings, colorMapping, colorBy.colorByField);
 
   //TODO: this is always true for now
-  (config as any).enable_ns_download = true;
+  (configSettings as any).enable_ns_download = true;
 
   const xType = query.xType ? query.xType : "x_dist";
 
@@ -177,14 +179,14 @@ function Taxonium({
       backend,
       colorBy,
       view.viewState,
-      config,
+      configSettings,
       xType,
       deckSize
     );
 
   const perNodeFunctions = usePerNodeFunctions(
     data as unknown as DynamicDataWithLookup,
-    config
+    configSettings
   );
 
   useEffect(() => {
@@ -202,7 +204,7 @@ function Taxonium({
 
   const search = useSearch({
     data,
-    config,
+    config: configSettings,
     boundsForQueries,
     view,
     backend,
@@ -210,7 +212,7 @@ function Taxonium({
     updateQuery,
     deckSize,
     xType,
-    settings,
+    settings: configSettings,
   });
 
   const [sidebarOpen, setSidebarOpen] = useState(!sidePanelHiddenByDefault);
@@ -244,7 +246,7 @@ function Taxonium({
 
   const showPlaceSequencesButton = usherProtobuf && referenceGBFF && referenceFasta;
 
-  const treenomeState = useTreenomeState(data, deckRef, view, settings);
+  const treenomeState = useTreenomeState(data, deckRef, view, configSettings);
 
   return (
     <GlobalErrorBoundary>
@@ -268,7 +270,7 @@ function Taxonium({
             className={
               sidebarOpen
                 ? "h-1/2 md:h-full w-full 2xl:w-3/4 md:grow" +
-                  (settings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
+                  (configSettings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
                 : "md:col-span-12 h-5/6 md:h-full w-full"
             }
           >
@@ -279,11 +281,11 @@ function Taxonium({
               view={view}
               colorHook={colorHook}
               colorBy={colorBy}
-              config={config}
+              config={configSettings}
               hoverDetails={hoverDetails}
               selectedDetails={selectedDetails}
               xType={xType}
-              settings={settings}
+              settings={configSettings}
               setDeckSize={setDeckSize}
               deckSize={deckSize}
               isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
@@ -302,7 +304,7 @@ function Taxonium({
             className={
               sidebarOpen
                 ? "grow min-h-0 h-1/2 md:h-full 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden" +
-                  (settings.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
+                  (configSettings.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
                 : "bg-white shadow-xl"
             }
           >
@@ -324,11 +326,11 @@ function Taxonium({
                 search={search}
                 colorBy={colorBy}
                 colorHook={colorHook}
-                config={config}
+                config={configSettings}
                 selectedDetails={selectedDetails}
                 xType={xType}
                 setxType={setxType}
-                settings={settings}
+                settings={configSettings}
                 treenomeState={treenomeState as unknown as TreenomeState}
                 view={view}
                 overlayContent={overlayContent}

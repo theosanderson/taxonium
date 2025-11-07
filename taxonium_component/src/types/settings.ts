@@ -1,46 +1,14 @@
-import type React from "react";
+/**
+ * @deprecated This file is deprecated. Use ConfigSettings from ./configSettings instead.
+ * Settings and Config have been merged into a single unified type.
+ */
 
-export interface PrettyStroke {
-  enabled: boolean;
-  color: number[];
-  width: number;
-}
+import type { ConfigSettings, PrettyStroke as PS } from "./configSettings";
 
-export interface Settings {
-  minimapEnabled: boolean;
-  treenomeEnabled: boolean;
-  setTreenomeEnabled: (value: boolean) => void;
-  toggleMinimapEnabled: () => void;
-  mutationTypesEnabled: Record<string, boolean>;
-  filterMutations: (mutations: any[]) => any[];
-  setMutationTypeEnabled: (key: string, enabled: boolean) => void;
-  displayTextForInternalNodes: boolean;
-  setDisplayTextForInternalNodes: (v: boolean) => void;
-  displayPointsForInternalNodes: boolean;
-  setDisplayPointsForInternalNodes: (v: boolean) => void;
-  thresholdForDisplayingText: number;
-  setThresholdForDisplayingText: (v: number) => void;
-  maxCladeTexts: number;
-  setMaxCladeTexts: (v: number) => void;
-  miniMutationsMenu: () => React.ReactNode;
-  isCov2Tree: boolean;
-  chromosomeName: string;
-  setChromosomeName: (name: string) => void;
-  displaySearchesAsPoints: boolean;
-  setDisplaySearchesAsPoints: (v: boolean) => void;
-  searchPointSize: number;
-  setSearchPointSize: (v: number) => void;
-  terminalNodeLabelColor: number[];
-  setTerminalNodeLabelColor: (color: number[]) => void;
-  lineColor: number[];
-  setLineColor: (color: number[]) => void;
-  cladeLabelColor: number[];
-  setCladeLabelColor: (color: number[]) => void;
-  nodeSize: number;
-  setNodeSize: (size: number) => void;
-  prettyStroke: PrettyStroke;
-  setPrettyStroke: (stroke: PrettyStroke) => void;
-  opacity: number;
-  setOpacity: (value: number) => void;
-}
+export type { PS as PrettyStroke };
+
+/**
+ * @deprecated Use ConfigSettings instead. Settings have been merged with Config.
+ */
+export type Settings = ConfigSettings;
 
