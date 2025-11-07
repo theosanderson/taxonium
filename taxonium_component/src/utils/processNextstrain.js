@@ -418,6 +418,10 @@ async function json_to_tree(json) {
       json.meta.data_provenance.map((source) => source.name).join(" & ");
   }
 
+  if (config.source.includes("GISAID")) {
+    config.enabled_by_gisaid = true;
+  }
+
   function markdownToHTML(md) {
     // Regular expression to match Markdown links
     var markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
