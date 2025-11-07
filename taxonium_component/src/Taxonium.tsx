@@ -14,8 +14,7 @@ import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
-import useConfig from "./hooks/useConfig";
-import { useSettings } from "./hooks/useSettings";
+import { useConfigSettings } from "./hooks/useConfigSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
@@ -115,12 +114,6 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
-  const view = useView({
-    settings,
-    deckSize,
-    mouseDownIsMinimap,
-  });
 
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
@@ -134,22 +127,49 @@ function Taxonium({
       </div>
     );
   }
+
+  // Use unified config and settings hook
+  const { config, settings } = useConfigSettings({
+    backend,
+    setOverlayContent,
+    onSetTitle,
+    query,
+    updateQuery,
+    configDict,
+    configUrl,
+  });
+
+  const view = useView({
+    settings,
+    deckSize,
+    mouseDownIsMinimap,
+  });
+
+  // Handle initial viewport positioning from config
+  useEffect(() => {
+    if (config.initial_x !== undefined || config.initial_y !== undefined) {
+      const viewState = {
+        ...view.viewState,
+        target: [
+          config.initial_x !== undefined ? config.initial_x : 2000,
+          config.initial_y !== undefined ? config.initial_y : 0,
+        ] as [number, number],
+      };
+      const oldViewState = { ...view.viewState };
+      view.onViewStateChange({
+        viewState,
+        oldViewState,
+        interactionState: {} as any,
+      } as any);
+    }
+  }, [config.initial_x, config.initial_y]);
+
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
-
-  const config = useConfig(
-    backend,
-    view,
-    setOverlayContent,
-    onSetTitle,
-    query,
-    configDict,
-    configUrl
-  );
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
