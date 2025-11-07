@@ -69,9 +69,18 @@ All settings properties that can be configured:
 - `src/Taxonium.tsx` - Updated to use new hook instead of separate useSettings/useConfig
 - Added useEffect to handle initial viewport positioning from config
 
-### Unchanged (but deprecated)
-- `src/hooks/useSettings.tsx` - Still exists but no longer used
-- `src/hooks/useConfig.tsx` - Still exists but no longer used
+### Removed Files
+- `src/hooks/useSettings.tsx` - Deprecated, replaced by useConfigSettings
+- `src/hooks/useConfig.tsx` - Deprecated, replaced by useConfigSettings
+
+### GISAID-Specific Code Removed
+- Removed GISAID hover details handling from Taxonium.tsx
+- Removed `enabled_by_gisaid` flag and branding from SearchPanel
+- Removed automatic `enabled_by_gisaid` setting in processNextstrain.js
+- Updated stories to use generic example data
+
+### Demo Story
+- Added `WithConfigDrivenSettings` story in `Taxonium.stories.tsx` demonstrating config-driven settings
 
 ## Breaking Changes
 None - the API surface remains identical. Both `config` and `settings` objects have the same structure as before.

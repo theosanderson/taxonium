@@ -202,3 +202,37 @@ export const WithNodeSelectionAlerts = {
     layout: "padded",
   },
 };
+
+export const WithConfigDrivenSettings = {
+  args: {
+    sourceData: {
+      status: "loaded",
+      filename: "test.nwk",
+      data: testTree,
+      filetype: "nwk",
+    },
+    configDict: {
+      title: "Custom Display Settings Demo",
+      // Settings can now be configured via config!
+      displayTextForInternalNodes: true,
+      thresholdForDisplayingText: 2.0,
+      nodeSize: 5,
+      opacity: 0.8,
+      lineColor: [100, 150, 200],
+      minimapEnabled: false,
+      prettyStroke: {
+        enabled: true,
+        color: [76, 87, 106],
+        width: 2,
+      },
+    },
+  },
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        story: 'This story demonstrates the new unified config/settings system. Config can now provide default values for visual settings like `displayTextForInternalNodes`, `nodeSize`, `opacity`, `lineColor`, etc. These defaults are applied on load but remain fully adjustable through the UI.',
+      },
+    },
+  },
+};
