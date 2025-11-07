@@ -8,7 +8,7 @@ import getDefaultQuery from "../utils/getDefaultQuery";
 
 const default_query = getDefaultQuery();
 
-interface UseConfiguredSettingsProps {
+interface UseConfigProps {
   backend: Backend;
   query: Query;
   updateQuery: (q: Partial<Query>) => void;
@@ -20,7 +20,7 @@ interface UseConfiguredSettingsProps {
 }
 
 /**
- * Unified hook that merges Config and Settings.
+ * Unified hook that merges Config (dataset metadata) and Settings (user preferences).
  *
  * This hook:
  * 1. Loads config from backend/file/configDict (dataset metadata)
@@ -28,14 +28,14 @@ interface UseConfiguredSettingsProps {
  * 3. Allows query parameters to override defaults
  * 4. Allows UI to update settings via setters
  *
- * Priority order for settings values (lowest to highest):
+ * Priority order for values (lowest to highest):
  * 1. Hardcoded defaults (DEFAULT_SETTINGS)
  * 2. Config from backend
  * 3. Config from external file
  * 4. Config from configDict
  * 5. Query string parameters
  */
-export const useConfiguredSettings = ({
+const useConfig = ({
   backend,
   query,
   updateQuery,
@@ -44,7 +44,7 @@ export const useConfiguredSettings = ({
   setOverlayContent,
   onSetTitle,
   onConfigLoaded,
-}: UseConfiguredSettingsProps): ConfiguredSettings => {
+}: UseConfigProps): ConfiguredSettings => {
   // ===== Load Config (Dataset Metadata) =====
   const [baseConfig, setBaseConfig] = useState<Config>({
     title: "loading",
@@ -358,3 +358,5 @@ export const useConfiguredSettings = ({
     setOpacity,
   };
 };
+
+export default useConfig;
