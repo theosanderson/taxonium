@@ -8,9 +8,10 @@ const default_query = getDefaultQuery();
 interface UseSettingsProps {
   query: Query;
   updateQuery: (q: Partial<Query>) => void;
+  configDict?: Record<string, unknown>;
 }
 
-export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings => {
+export const useSettings = ({ query, updateQuery, configDict }: UseSettingsProps): Settings => {
   const [minimapEnabled, setMinimapEnabled] = useState(true);
   const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
     useState(false);
@@ -39,7 +40,16 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
   const [cladeLabelColor, setCladeLabelColor] = useState([100, 100, 100]);
 
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
-    useState(false);
+    useState(
+      configDict?.displayPointsForInternalNodes === true ? true : false
+    );
+
+  // Update displayPointsForInternalNodes when configDict changes (handles lazy loading)
+  useEffect(() => {
+    if (configDict?.displayPointsForInternalNodes !== undefined) {
+      setDisplayPointsForInternalNodes(configDict.displayPointsForInternalNodes === true);
+    }
+  }, [configDict?.displayPointsForInternalNodes]);
   const toggleMinimapEnabled = () => {
     setMinimapEnabled(!minimapEnabled);
   };

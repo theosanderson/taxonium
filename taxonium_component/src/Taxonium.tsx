@@ -115,7 +115,7 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
+  const settings = useSettings({ query, updateQuery, configDict });
   const view = useView({
     settings,
     deckSize,
