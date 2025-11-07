@@ -16,8 +16,7 @@ const mockConfig = {
   name_accessor: "name",
   keys_to_display: ["country", "date", "lineage", "clade"],
   num_tips: 10000,
-  source: "GISAID",
-  enabled_by_gisaid: true,
+  source: "Example Data Source",
   x_accessors: ["x_dist", "x_time"],
   genes: [
     "S",

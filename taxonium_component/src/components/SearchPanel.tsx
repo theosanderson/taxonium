@@ -318,24 +318,6 @@ function SearchPanel({
                 </>
               )}
             </p>
-            {cfg.enabled_by_gisaid && (
-              <span className="text-gray-500 mt-1">
-                Enabled by data from{" "}
-                <a
-                  rel="noopener noreferrer"
-                  href="https://www.gisaid.org"
-                  target="_blank"
-                >
-                  <img
-                    src="https://www.gisaid.org/fileadmin/gisaid/img/schild.png"
-                    alt="gisaid-logo"
-                    width="65"
-                    className="inline-block"
-                  />
-                </a>
-                .
-              </span>
-            )}
           </>
         )}
         {cfg.x_accessors && cfg.x_accessors.length > 1 && (
