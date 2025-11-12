@@ -58,7 +58,7 @@ const useSearch = ({
   }, [query.srch]);
 
   const [zoomToSearch, setZoomToSearch] = useState<{ index: number } | null>(
-    query.zoomToSearch != null ? { index: query.zoomToSearch } : null
+    query.zoomToSearch !== null && query.zoomToSearch !== undefined ? { index: query.zoomToSearch } : null
   );
   const searchesEnabled = query.enabled
     ? JSON.parse(query.enabled as string)
