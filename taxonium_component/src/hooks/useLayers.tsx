@@ -16,6 +16,7 @@ import type { DeckSize, HoverInfo } from "../types/common";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
 import type { SearchState } from "../types/search";
+import type { FilterState } from "../types/filter";
 import type { TreenomeState } from "../types/treenome";
 import type { HoverDetailsState, SelectedDetails } from "../types/ui";
 import type { ViewState } from "../types/view";
@@ -51,6 +52,7 @@ const getKeyStuff = (
 interface UseLayersProps {
   data: DynamicData;
   search: SearchState;
+  filter: FilterState;
   viewState: ViewState;
   deckSize: DeckSize | null;
   colorHook: ColorHook;
@@ -74,6 +76,7 @@ interface UseLayersProps {
 const useLayers = ({
   data,
   search,
+  filter,
   viewState,
   deckSize,
   colorHook,
@@ -163,25 +166,81 @@ const useLayers = ({
     return { nodes: [], nodeLookup: {} };
   }, [data.base_data, getX]);
 
+  // Create a set of visible node IDs based on filter
+  const visibleNodeIds = useMemo(() => {
+    if (!filter.filterEnabled) {
+      console.log("[Filter Debug] Filter not enabled");
+      return null;
+    }
+
+    const visibleIds = new Set<string | number>();
+
+    console.log("[Filter Debug] Filter enabled, checking results:", {
+      filterResults: filter.filterResults,
+      filtersEnabled: filter.filtersEnabled,
+    });
+
+    // Collect all nodes from enabled filter results
+    Object.keys(filter.filterResults).forEach((key) => {
+      if (filter.filtersEnabled[key]) {
+        const filterResult = filter.filterResults[key];
+        if (filterResult && filterResult.result && filterResult.result.data) {
+          console.log(`[Filter Debug] Adding ${filterResult.result.data.length} nodes from filter ${key}`);
+          filterResult.result.data.forEach((node: Node) => {
+            visibleIds.add(node.node_id);
+          });
+        }
+        // Also add overview nodes if available
+        if (filterResult && filterResult.overview) {
+          console.log(`[Filter Debug] Adding ${filterResult.overview.length} overview nodes from filter ${key}`);
+          filterResult.overview.forEach((node: Node) => {
+            visibleIds.add(node.node_id);
+          });
+        }
+      }
+    });
+
+    console.log(`[Filter Debug] Total visible nodes: ${visibleIds.size}`);
+    return visibleIds.size > 0 ? visibleIds : null;
+  }, [filter.filterEnabled, filter.filterResults, filter.filtersEnabled]);
+
   const detailed_scatter_data = useMemo(() => {
-    return detailed_data.nodes.filter(
+    const baseScatterData = detailed_data.nodes.filter(
       (node: Node) =>
         node.is_tip ||
         (node.is_tip === undefined && node.num_tips === 1) ||
         settings.displayPointsForInternalNodes,
     );
-  }, [detailed_data, settings.displayPointsForInternalNodes]);
+
+    // Apply filter if enabled
+    if (visibleNodeIds) {
+      return baseScatterData.filter((node: Node) =>
+        visibleNodeIds.has(node.node_id)
+      );
+    }
+
+    return baseScatterData;
+  }, [detailed_data, settings.displayPointsForInternalNodes, visibleNodeIds]);
 
   const minimap_scatter_data = useMemo(() => {
-    return base_data
+    const baseMinimapData = base_data
       ? base_data.nodes.filter(
-          (node: Node) =>
-            node.is_tip ||
-            (node.is_tip === undefined && node.num_tips === 1) ||
-            settings.displayPointsForInternalNodes,
-        )
+        (node: Node) =>
+          node.is_tip ||
+          (node.is_tip === undefined && node.num_tips === 1) ||
+          settings.displayPointsForInternalNodes,
+      )
       : [];
-  }, [base_data, settings.displayPointsForInternalNodes]);
+
+    // Apply filter if enabled
+    if (visibleNodeIds) {
+      return baseMinimapData.filter((node: Node) =>
+        visibleNodeIds.has(node.node_id)
+      );
+    }
+
+    return baseMinimapData;
+  }, [base_data, settings.displayPointsForInternalNodes, visibleNodeIds]);
 
   const computedViewState = useMemo(
     () => computeBounds({ ...viewState }, deckSize),
@@ -254,7 +313,7 @@ const useLayers = ({
       d === (hoverInfo && hoverInfo.object)
         ? 3
         : selectedDetails.nodeDetails &&
-            selectedDetails.nodeDetails.node_id === d.node_id
+          selectedDetails.nodeDetails.node_id === d.node_id
           ? 3.5
           : 1,
 
@@ -278,7 +337,7 @@ const useLayers = ({
       d === (hoverInfo && hoverInfo.object)
         ? 2
         : selectedDetails.nodeDetails &&
-            selectedDetails.nodeDetails.node_id === d.node_id
+          selectedDetails.nodeDetails.node_id === d.node_id
           ? 2.5
           : 1,
     modelMatrix: modelMatrix,
@@ -299,11 +358,11 @@ const useLayers = ({
 
     const pretty_stroke_background_layer = settings.prettyStroke.enabled
       ? {
-          ...main_scatter_layer,
-          getFillColor: settings.prettyStroke.color,
-          getLineWidth: 0,
-          getRadius: main_scatter_layer.getRadius + settings.prettyStroke.width,
-        }
+        ...main_scatter_layer,
+        getFillColor: settings.prettyStroke.color,
+        getLineWidth: 0,
+        getRadius: main_scatter_layer.getRadius + settings.prettyStroke.width,
+      }
       : null;
 
     const fillin_scatter_layer = {
@@ -429,7 +488,7 @@ const useLayers = ({
   if (
     data.data.nodes &&
     proportionalToNodesOnScreen <
-      0.8 * 10 ** settings.thresholdForDisplayingText
+    0.8 * 10 ** settings.thresholdForDisplayingText
   ) {
     const node_label_layer = {
       layerType: "TextLayer",
@@ -636,21 +695,21 @@ const useLayers = ({
   const processedLayers = layers
     .filter((x) => x !== null)
     .map((layer) => {
-        if (layer.layerType === "ScatterplotLayer") {
-          return new ScatterplotLayer(layer as any);
-        }
-        if (layer.layerType === "LineLayer") {
-          return new LineLayer(layer as any);
-        }
-        if (layer.layerType === "PolygonLayer") {
-          return new PolygonLayer(layer as any);
-        }
-        if (layer.layerType === "TextLayer") {
-          return new TextLayer(layer as any);
-        }
-        if (layer.layerType === "SolidPolygonLayer") {
-          return new SolidPolygonLayer(layer as any);
-        }
+      if (layer.layerType === "ScatterplotLayer") {
+        return new ScatterplotLayer(layer as any);
+      }
+      if (layer.layerType === "LineLayer") {
+        return new LineLayer(layer as any);
+      }
+      if (layer.layerType === "PolygonLayer") {
+        return new PolygonLayer(layer as any);
+      }
+      if (layer.layerType === "TextLayer") {
+        return new TextLayer(layer as any);
+      }
+      if (layer.layerType === "SolidPolygonLayer") {
+        return new SolidPolygonLayer(layer as any);
+      }
       console.log("could not map layer spec for ", layer);
     });
 
