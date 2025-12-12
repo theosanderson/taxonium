@@ -6,29 +6,6 @@ export interface PrettyStroke {
   width: number;
 }
 
-/**
- * Initial values that can be provided to useSettings from config/configDict.
- * All properties are optional - if not provided, defaults will be used.
- * These can be set in a config file loaded from URL or passed via configDict prop.
- */
-export interface InitialSettingsValues {
-  minimapEnabled?: boolean;
-  displayTextForInternalNodes?: boolean;
-  thresholdForDisplayingText?: number;
-  displaySearchesAsPoints?: boolean;
-  searchPointSize?: number;
-  opacity?: number;
-  prettyStroke?: PrettyStroke;
-  terminalNodeLabelColor?: number[];
-  lineColor?: number[];
-  nodeSize?: number;
-  cladeLabelColor?: number[];
-  displayPointsForInternalNodes?: boolean;
-  chromosomeName?: string;
-  maxCladeTexts?: number;
-  isCov2Tree?: boolean;
-}
-
 export interface Settings {
   minimapEnabled: boolean;
   treenomeEnabled: boolean;
@@ -66,4 +43,3 @@ export interface Settings {
   opacity: number;
   setOpacity: (value: number) => void;
 }
-

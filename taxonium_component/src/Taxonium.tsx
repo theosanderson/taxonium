@@ -16,7 +16,6 @@ import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
 import useConfigLoader from "./hooks/useConfigLoader";
 import { useSettings } from "./hooks/useSettings";
-import type { InitialSettingsValues } from "./types/settings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
@@ -133,41 +132,22 @@ function Taxonium({
     onSetTitle
   );
 
-  // 3. Extract initial settings values from config
-  const initialSettingsValues: InitialSettingsValues | undefined = useMemo(() => {
-    if (configIsLoading) return undefined;
-    // Extract settings-related values from config
-    // These can be set in configDict or config file
-    return {
-      minimapEnabled: (config as any).minimapEnabled,
-      displayTextForInternalNodes: (config as any).displayTextForInternalNodes,
-      thresholdForDisplayingText: (config as any).thresholdForDisplayingText,
-      displaySearchesAsPoints: (config as any).displaySearchesAsPoints,
-      searchPointSize: (config as any).searchPointSize,
-      opacity: (config as any).opacity,
-      prettyStroke: (config as any).prettyStroke,
-      terminalNodeLabelColor: (config as any).terminalNodeLabelColor,
-      lineColor: (config as any).lineColor,
-      nodeSize: (config as any).nodeSize,
-      cladeLabelColor: (config as any).cladeLabelColor,
-      displayPointsForInternalNodes: (config as any).displayPointsForInternalNodes,
-      chromosomeName: (config as any).chromosomeName,
-      maxCladeTexts: (config as any).maxCladeTexts,
-      isCov2Tree: (config as any).isCov2Tree,
-    };
-  }, [config, configIsLoading]);
+  // 3. Initialize settings (uses config values as defaults when ready)
+  const settings = useSettings({
+    query,
+    updateQuery,
+    config,
+    configIsLoading,
+  });
 
-  // 4. Initialize settings (uses config values as initial defaults)
-  const settings = useSettings({ query, updateQuery, initialValues: initialSettingsValues });
-
-  // 5. Initialize view (depends on settings)
+  // 4. Initialize view (depends on settings)
   const view = useView({
     settings,
     deckSize,
     mouseDownIsMinimap,
   });
 
-  // 6. Set initial view position from config when it loads
+  // 5. Set initial view position from config when it loads
   const viewInitializedRef = useRef(false);
   useEffect(() => {
     if (configIsLoading || viewInitializedRef.current) return;
@@ -188,7 +168,7 @@ function Taxonium({
     }
   }, [config, configIsLoading]);
 
-  // 7. Handle overlay content from config
+  // 6. Handle overlay content from config
   useEffect(() => {
     if (configIsLoading) return;
     if ((config as any).overlay && setOverlayContent) {
