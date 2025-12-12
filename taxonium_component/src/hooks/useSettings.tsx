@@ -80,6 +80,20 @@ export const useSettings = ({ query, updateQuery, initialValues }: UseSettingsPr
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] = useState(
     initialValues?.displayPointsForInternalNodes ?? DEFAULTS.displayPointsForInternalNodes
   );
+
+  // Update settings when initialValues changes (e.g., when config loads with URL params)
+  useEffect(() => {
+    if (initialValues?.lineColor) setLineColor(initialValues.lineColor);
+    if (initialValues?.nodeSize) setNodeSize(initialValues.nodeSize);
+    if (initialValues?.cladeLabelColor) setCladeLabelColor(initialValues.cladeLabelColor);
+    if (initialValues?.terminalNodeLabelColor) setTerminalNodeLabelColor(initialValues.terminalNodeLabelColor);
+    if (initialValues?.opacity !== undefined) setOpacity(initialValues.opacity);
+    if (initialValues?.prettyStroke) setPrettyStroke(initialValues.prettyStroke);
+    if (initialValues?.searchPointSize) setSearchPointSize(initialValues.searchPointSize);
+    if (initialValues?.thresholdForDisplayingText) setThresholdForDisplayingText(initialValues.thresholdForDisplayingText);
+    if (initialValues?.maxCladeTexts) setMaxCladeTexts(initialValues.maxCladeTexts);
+  }, [initialValues]);
+
   const toggleMinimapEnabled = () => {
     setMinimapEnabled(!minimapEnabled);
   };
