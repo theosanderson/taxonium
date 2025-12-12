@@ -3,43 +3,211 @@ import { toast } from "react-hot-toast";
 import getDefaultQuery from "../utils/getDefaultQuery";
 import type { Settings, PrettyStroke } from "../types/settings";
 import type { Query } from "../types/query";
+import type { Config } from "../types/backend";
 const default_query = getDefaultQuery();
 
 interface UseSettingsProps {
   query: Query;
   updateQuery: (q: Partial<Query>) => void;
+  config?: Config | null;
+  configIsLoading?: boolean;
 }
 
-export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings => {
-  const [minimapEnabled, setMinimapEnabled] = useState(true);
-  const [displayTextForInternalNodes, setDisplayTextForInternalNodes] =
-    useState(false);
-
-  const [thresholdForDisplayingText, setThresholdForDisplayingText] =
-    useState(2.9);
-
-  const [displaySearchesAsPoints, setDisplaySearchesAsPoints] = useState(false);
-
-  const [searchPointSize, setSearchPointSize] = useState(3);
-
-  const [opacity, setOpacity] = useState(0.6);
-
-  const [prettyStroke, setPrettyStroke] = useState<PrettyStroke>({
+// Default values for settings
+const DEFAULTS = {
+  minimapEnabled: true,
+  displayTextForInternalNodes: false,
+  thresholdForDisplayingText: 2.9,
+  displaySearchesAsPoints: false,
+  searchPointSize: 3,
+  opacity: 0.6,
+  prettyStroke: {
     enabled: false,
     color: [76, 87, 106],
     width: 1,
+  } as PrettyStroke,
+  terminalNodeLabelColor: [180, 180, 180],
+  lineColor: [150, 150, 150],
+  nodeSize: 3,
+  cladeLabelColor: [100, 100, 100],
+  displayPointsForInternalNodes: false,
+  chromosomeName: "chromosome",
+  maxCladeTexts: 10,
+  isCov2Tree: false,
+};
+
+type ConfigDrivenSettingKeys =
+  | "minimapEnabled"
+  | "displayTextForInternalNodes"
+  | "thresholdForDisplayingText"
+  | "displaySearchesAsPoints"
+  | "searchPointSize"
+  | "opacity"
+  | "prettyStroke"
+  | "terminalNodeLabelColor"
+  | "lineColor"
+  | "nodeSize"
+  | "cladeLabelColor"
+  | "displayPointsForInternalNodes"
+  | "chromosomeName"
+  | "maxCladeTexts"
+  | "isCov2Tree";
+
+type ConfigDrivenSettings = Partial<Pick<Settings, ConfigDrivenSettingKeys>>;
+
+const CONFIG_KEYS: ConfigDrivenSettingKeys[] = [
+  "minimapEnabled",
+  "displayTextForInternalNodes",
+  "thresholdForDisplayingText",
+  "displaySearchesAsPoints",
+  "searchPointSize",
+  "opacity",
+  "prettyStroke",
+  "terminalNodeLabelColor",
+  "lineColor",
+  "nodeSize",
+  "cladeLabelColor",
+  "displayPointsForInternalNodes",
+  "chromosomeName",
+  "maxCladeTexts",
+  "isCov2Tree",
+];
+
+const extractSettingsFromConfig = (config?: Config | null): ConfigDrivenSettings => {
+  if (!config) {
+    return {};
+  }
+  const configValues: ConfigDrivenSettings = {};
+  const raw = config as Record<string, unknown>;
+
+  CONFIG_KEYS.forEach((key) => {
+    const value = raw[key as string];
+    if (value !== undefined) {
+      configValues[key] = value as ConfigDrivenSettings[typeof key];
+    }
   });
 
-  const [terminalNodeLabelColor, setTerminalNodeLabelColor] = useState([
-    180, 180, 180,
-  ]);
+  return configValues;
+};
 
-  const [lineColor, setLineColor] = useState([150, 150, 150]);
-  const [nodeSize, setNodeSize] = useState(3);
-  const [cladeLabelColor, setCladeLabelColor] = useState([100, 100, 100]);
+export const useSettings = ({
+  query,
+  updateQuery,
+  config,
+  configIsLoading,
+}: UseSettingsProps): Settings => {
+  const [minimapEnabled, setMinimapEnabled] = useState(
+    DEFAULTS.minimapEnabled
+  );
+  const [displayTextForInternalNodes, setDisplayTextForInternalNodes] = useState(
+    DEFAULTS.displayTextForInternalNodes
+  );
+
+  const [thresholdForDisplayingText, setThresholdForDisplayingText] = useState(
+    DEFAULTS.thresholdForDisplayingText
+  );
+
+  const [displaySearchesAsPoints, setDisplaySearchesAsPoints] = useState(
+    DEFAULTS.displaySearchesAsPoints
+  );
+
+  const [searchPointSize, setSearchPointSize] = useState(
+    DEFAULTS.searchPointSize
+  );
+
+  const [opacity, setOpacity] = useState(DEFAULTS.opacity);
+
+  const [prettyStroke, setPrettyStroke] = useState<PrettyStroke>(
+    DEFAULTS.prettyStroke
+  );
+
+  const [terminalNodeLabelColor, setTerminalNodeLabelColor] = useState(
+    DEFAULTS.terminalNodeLabelColor
+  );
+
+  const [lineColor, setLineColor] = useState(DEFAULTS.lineColor);
+  const [nodeSize, setNodeSize] = useState(DEFAULTS.nodeSize);
+  const [cladeLabelColor, setCladeLabelColor] = useState(
+    DEFAULTS.cladeLabelColor
+  );
 
   const [displayPointsForInternalNodes, setDisplayPointsForInternalNodes] =
-    useState(false);
+    useState(DEFAULTS.displayPointsForInternalNodes);
+
+  const [maxCladeTexts, setMaxCladeTexts] = useState(DEFAULTS.maxCladeTexts);
+
+  const [chromosomeName, setChromosomeName] = useState(
+    DEFAULTS.chromosomeName
+  );
+  const [isCov2Tree, setIsCov2Tree] = useState(DEFAULTS.isCov2Tree);
+
+  const configDrivenSettings = useMemo(
+    () => extractSettingsFromConfig(config),
+    [config]
+  );
+
+  useEffect(() => {
+    if (!config || configIsLoading) {
+      return;
+    }
+
+    if (configDrivenSettings.minimapEnabled !== undefined) {
+      setMinimapEnabled(configDrivenSettings.minimapEnabled);
+    }
+    if (configDrivenSettings.displayTextForInternalNodes !== undefined) {
+      setDisplayTextForInternalNodes(
+        configDrivenSettings.displayTextForInternalNodes
+      );
+    }
+    if (configDrivenSettings.thresholdForDisplayingText !== undefined) {
+      setThresholdForDisplayingText(
+        configDrivenSettings.thresholdForDisplayingText
+      );
+    }
+    if (configDrivenSettings.displaySearchesAsPoints !== undefined) {
+      setDisplaySearchesAsPoints(
+        configDrivenSettings.displaySearchesAsPoints
+      );
+    }
+    if (configDrivenSettings.searchPointSize !== undefined) {
+      setSearchPointSize(configDrivenSettings.searchPointSize);
+    }
+    if (configDrivenSettings.opacity !== undefined) {
+      setOpacity(configDrivenSettings.opacity);
+    }
+    if (configDrivenSettings.prettyStroke !== undefined) {
+      setPrettyStroke(configDrivenSettings.prettyStroke);
+    }
+    if (configDrivenSettings.terminalNodeLabelColor !== undefined) {
+      setTerminalNodeLabelColor(
+        configDrivenSettings.terminalNodeLabelColor
+      );
+    }
+    if (configDrivenSettings.lineColor !== undefined) {
+      setLineColor(configDrivenSettings.lineColor);
+    }
+    if (configDrivenSettings.nodeSize !== undefined) {
+      setNodeSize(configDrivenSettings.nodeSize);
+    }
+    if (configDrivenSettings.cladeLabelColor !== undefined) {
+      setCladeLabelColor(configDrivenSettings.cladeLabelColor);
+    }
+    if (configDrivenSettings.displayPointsForInternalNodes !== undefined) {
+      setDisplayPointsForInternalNodes(
+        configDrivenSettings.displayPointsForInternalNodes
+      );
+    }
+    if (configDrivenSettings.maxCladeTexts !== undefined) {
+      setMaxCladeTexts(configDrivenSettings.maxCladeTexts);
+    }
+    if (configDrivenSettings.chromosomeName !== undefined) {
+      setChromosomeName(configDrivenSettings.chromosomeName);
+    }
+    if (configDrivenSettings.isCov2Tree !== undefined) {
+      setIsCov2Tree(configDrivenSettings.isCov2Tree);
+    }
+  }, [config, configIsLoading, configDrivenSettings]);
+
   const toggleMinimapEnabled = () => {
     setMinimapEnabled(!minimapEnabled);
   };
@@ -85,8 +253,6 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
     });
   };
 
-  const [maxCladeTexts, setMaxCladeTexts] = useState(10);
-
   const miniMutationsMenu = () => {
     return (
       <div className="block font-normal pt-1 mr-3">
@@ -119,9 +285,16 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
     );
   };
 
-  const [chromosomeName, setChromosomeName] = useState("chromosome");
-  const [isCov2Tree, setIsCov2Tree] = useState(false);
+  const configOverridesChromosomeName =
+    configDrivenSettings.chromosomeName !== undefined;
+  const configOverridesIsCov2Tree =
+    configDrivenSettings.isCov2Tree !== undefined;
+
+  // Auto-detect cov2tree settings from URL if not explicitly set in config
   useEffect(() => {
+    if (configOverridesIsCov2Tree || configOverridesChromosomeName) {
+      return;
+    }
     if (
       window.location.href.includes("cov2tree.org") ||
       window.location.href.includes("big-tree.ucsc.edu")
@@ -129,7 +302,7 @@ export const useSettings = ({ query, updateQuery }: UseSettingsProps): Settings 
       setIsCov2Tree(true);
       setChromosomeName("NC_045512v2");
     }
-  }, []);
+  }, [configOverridesIsCov2Tree, configOverridesChromosomeName]);
 
   return {
     minimapEnabled,

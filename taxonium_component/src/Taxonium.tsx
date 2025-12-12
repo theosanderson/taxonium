@@ -14,7 +14,7 @@ import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
-import useConfig from "./hooks/useConfig";
+import useConfigLoader from "./hooks/useConfigLoader";
 import { useSettings } from "./hooks/useSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
@@ -115,18 +115,68 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
+
+  // 1. Initialize backend first
+  const backend = useBackend(
+    backendUrl ? backendUrl : query.backend,
+    query.sid,
+    sourceData ?? null
+  );
+
+  // 2. Load config from backend + configUrl + configDict (no view dependency)
+  const { config, isLoading: configIsLoading } = useConfigLoader(
+    backend,
+    query,
+    configDict,
+    configUrl,
+    onSetTitle
+  );
+
+  // 3. Initialize settings (uses config values as defaults when ready)
+  const settings = useSettings({
+    query,
+    updateQuery,
+    config,
+    configIsLoading,
+  });
+
+  // 4. Initialize view (depends on settings)
   const view = useView({
     settings,
     deckSize,
     mouseDownIsMinimap,
   });
 
-  const backend = useBackend(
-    backendUrl ? backendUrl : query.backend,
-    query.sid,
-    sourceData ?? null
-  );
+  // 5. Set initial view position from config when it loads
+  const viewInitializedRef = useRef(false);
+  useEffect(() => {
+    if (configIsLoading || viewInitializedRef.current) return;
+    if (config.initial_x !== undefined || config.initial_y !== undefined) {
+      viewInitializedRef.current = true;
+      const newViewState = {
+        ...view.viewState,
+        target: [
+          config.initial_x !== undefined ? config.initial_x : view.viewState.target[0],
+          config.initial_y !== undefined ? config.initial_y : view.viewState.target[1],
+        ],
+      };
+      view.onViewStateChange({
+        viewState: newViewState,
+        oldViewState: view.viewState,
+        interactionState: "isZooming",
+      });
+    }
+  }, [config, configIsLoading]);
+
+  // 6. Handle overlay content from config
+  useEffect(() => {
+    if (configIsLoading) return;
+    if ((config as any).overlay && setOverlayContent) {
+      setOverlayContent((config as any).overlay);
+    }
+  }, [config, configIsLoading, setOverlayContent]);
+
+  // Early return if backend failed
   if (!backend) {
     return (
       <div className="p-4 bg-red-50 text-red-800">
@@ -134,22 +184,13 @@ function Taxonium({
       </div>
     );
   }
+
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
-
-  const config = useConfig(
-    backend,
-    view,
-    setOverlayContent,
-    onSetTitle,
-    query,
-    configDict,
-    configUrl
-  );
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {

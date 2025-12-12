@@ -43,4 +43,3 @@ export interface Settings {
   opacity: number;
   setOpacity: (value: number) => void;
 }
-
