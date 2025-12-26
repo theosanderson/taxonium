@@ -29,7 +29,8 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test:minimap": "npx playwright test tests/minimap-zoom.spec.ts --headed"
   },
   "peerDependencies": {
     "prop-types": "^15.8.1",

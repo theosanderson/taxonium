@@ -66,7 +66,7 @@ export const DeckButtons = ({
         )}
         <div
           className="text-gray-800  mr-4 mt-auto mb-1 bg-white
-      opacity-50 px-1 hover:opacity-100 rounded hidden sm:inline-block
+      opacity-50 px-1 hover:opacity-100 rounded hidden min-[475px]:inline-block
       "
           style={{
             fontSize: ".7em",
