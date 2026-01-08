@@ -15,7 +15,6 @@ import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
 import type { DynamicDataWithLookup } from "./types/backend";
 import useConfig from "./hooks/useConfig";
-import { useSettings } from "./hooks/useSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
 import { useEffect } from "react";
 import type { TreenomeState } from "./types/treenome";
@@ -115,12 +114,6 @@ function Taxonium({
     width: NaN,
     height: NaN,
   });
-  const settings = useSettings({ query, updateQuery });
-  const view = useView({
-    settings,
-    deckSize,
-    mouseDownIsMinimap,
-  });
 
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
@@ -134,22 +127,52 @@ function Taxonium({
       </div>
     );
   }
+
+  // Unified config hook (loads config + settings merged into one)
+  const config = useConfig({
+    backend,
+    query,
+    updateQuery,
+    configDict: configDict ?? {},
+    configUrl,
+    setOverlayContent,
+    onSetTitle,
+  });
+
+  // Create view using config (which includes all settings properties)
+  const view = useView({
+    settings: config,
+    deckSize,
+    mouseDownIsMinimap,
+  });
+
+  // Handle initial view state from config
+  useEffect(() => {
+    if (config.initial_x !== undefined || config.initial_y !== undefined) {
+      const viewState = {
+        ...view.viewState,
+        target: [
+          config.initial_x !== undefined ? config.initial_x : 2000,
+          config.initial_y !== undefined ? config.initial_y : 1000,
+        ] as [number, number],
+      };
+      const oldViewState = { ...view.viewState };
+      view.onViewStateChange({
+        viewId: "main",
+        viewState,
+        oldViewState,
+        interactionState: { isZooming: true },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.initial_x, config.initial_y]);
+
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
     hoverDetails = gisaidHoverDetails;
   }
   const selectedDetails = useNodeDetails("selected", backend);
-
-  const config = useConfig(
-    backend,
-    view,
-    setOverlayContent,
-    onSetTitle,
-    query,
-    configDict,
-    configUrl
-  );
   const colorBy = useColorBy(config, query, updateQuery);
   const [additionalColorMapping, setAdditionalColorMapping] = useState({});
   const colorMapping = useMemo(() => {
@@ -210,7 +233,7 @@ function Taxonium({
     updateQuery,
     deckSize,
     xType,
-    settings,
+    settings: config,
   });
 
   const [sidebarOpen, setSidebarOpen] = useState(!sidePanelHiddenByDefault);
@@ -244,7 +267,7 @@ function Taxonium({
 
   const showPlaceSequencesButton = usherProtobuf && referenceGBFF && referenceFasta;
 
-  const treenomeState = useTreenomeState(data, deckRef, view, settings);
+  const treenomeState = useTreenomeState(data, deckRef, view, config);
 
   return (
     <GlobalErrorBoundary>
@@ -268,7 +291,7 @@ function Taxonium({
             className={
               sidebarOpen
                 ? "h-1/2 md:h-full w-full 2xl:w-3/4 md:grow" +
-                  (settings.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
+                  (config.treenomeEnabled ? " md:w-3/4" : " md:w-2/3")
                 : "md:col-span-12 h-5/6 md:h-full w-full"
             }
           >
@@ -283,7 +306,7 @@ function Taxonium({
               hoverDetails={hoverDetails}
               selectedDetails={selectedDetails}
               xType={xType}
-              settings={settings}
+              settings={config}
               setDeckSize={setDeckSize}
               deckSize={deckSize}
               isCurrentlyOutsideBounds={isCurrentlyOutsideBounds}
@@ -302,7 +325,7 @@ function Taxonium({
             className={
               sidebarOpen
                 ? "grow min-h-0 h-1/2 md:h-full 2xl:w-1/4 bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden" +
-                  (settings.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
+                  (config.treenomeEnabled ? " md:w-1/4" : " md:w-1/3")
                 : "bg-white shadow-xl"
             }
           >
@@ -328,7 +351,7 @@ function Taxonium({
                 selectedDetails={selectedDetails}
                 xType={xType}
                 setxType={setxType}
-                settings={settings}
+                settings={config}
                 treenomeState={treenomeState as unknown as TreenomeState}
                 view={view}
                 overlayContent={overlayContent}
