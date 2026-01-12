@@ -6,7 +6,7 @@ import AboutOverlay from "../components/AboutOverlay";
 import dynamic from "next/dynamic";
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
-import { FaGithub, FaArrowRight } from "react-icons/fa";
+import { FaGithub, FaArrowRight, FaSearch } from "react-icons/fa";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import useQueryAsState from "../hooks/useQueryAsState";
 import classNames from "classnames";
@@ -55,6 +55,7 @@ function MainApp({ pathname }: { pathname: string }) {
   const [overlayContent, setOverlayContent] = useState(null);
   const [selectedTree, setSelectedTree] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [viralUsherSearch, setViralUsherSearch] = useState("");
 
   // Fetch tree configurations from API with localStorage caching
   useEffect(() => {
@@ -178,6 +179,30 @@ function MainApp({ pathname }: { pathname: string }) {
       maintainerMessage: config.maintainerMessage,
     };
   }).filter(Boolean); // Remove any null entries from missing configs
+
+  // Get viral_usher trees and filter by search
+  const viralUsherTrees = Object.entries(treeConfig)
+    .filter(([path]) => path.startsWith('viral-usher/'))
+    .map(([path, config]) => ({
+      path,
+      title: config.title,
+      description: config.description,
+      organism: config.metadata?.organism || '',
+      tipCount: config.metadata?.tipCount || '',
+      icon: config.icon,
+    }))
+    .sort((a, b) => {
+      // Sort by tip count descending (largest trees first)
+      const countA = parseInt(a.tipCount) || 0;
+      const countB = parseInt(b.tipCount) || 0;
+      return countB - countA;
+    });
+
+  const filteredViralUsherTrees = viralUsherTrees.filter(tree =>
+    viralUsherSearch === '' ||
+    tree.title.toLowerCase().includes(viralUsherSearch.toLowerCase()) ||
+    tree.organism.toLowerCase().includes(viralUsherSearch.toLowerCase())
+  );
 
   // Filter trees based on search query
   const filteredTrees = Object.keys(treeConfig)
@@ -428,6 +453,64 @@ function MainApp({ pathname }: { pathname: string }) {
                     </div>
                   ))}
                 </div>
+
+                {/* Viral Usher Trees Section */}
+                {viralUsherTrees.length > 0 && (
+                  <div className="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex items-center gap-2 mb-3">
+                      <img
+                        src="/assets/usher.png"
+                        alt="UShER"
+                        className="w-6 h-6 rounded"
+                      />
+                      <h3 className="text-base font-medium text-gray-900">
+                        Viral UShER Trees
+                      </h3>
+                      <span className="text-xs text-gray-500">
+                        ({viralUsherTrees.length} organisms)
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Pre-built trees for various viral pathogens, maintained at UCSC
+                    </p>
+                    <div className="relative mb-3">
+                      <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        value={viralUsherSearch}
+                        onChange={(e) => setViralUsherSearch(e.target.value)}
+                        placeholder="Search organisms (e.g., Zika, Ebola, Dengue...)"
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none"
+                      />
+                    </div>
+                    <div className="max-h-48 overflow-y-auto space-y-1">
+                      {(viralUsherSearch ? filteredViralUsherTrees : filteredViralUsherTrees.slice(0, 8)).map((tree) => (
+                        <a
+                          key={tree.path}
+                          href={`/${tree.path}`}
+                          className="flex items-center justify-between p-2 hover:bg-white rounded transition text-sm group"
+                        >
+                          <span className="text-gray-800 group-hover:text-gray-900 truncate flex-1">
+                            {tree.organism}
+                          </span>
+                          <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
+                            {parseInt(tree.tipCount).toLocaleString()} seqs
+                          </span>
+                        </a>
+                      ))}
+                      {viralUsherSearch && filteredViralUsherTrees.length === 0 && (
+                        <p className="text-sm text-gray-500 p-2 italic">No matching organisms found</p>
+                      )}
+                    </div>
+                    {!viralUsherSearch && viralUsherTrees.length > 8 && (
+                      <div className="mt-2 pt-2 border-t border-gray-200 text-center">
+                        <span className="text-xs text-gray-500">
+                          Search above to see all {viralUsherTrees.length} organisms
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="flex justify-center pt-5">
                 <a
