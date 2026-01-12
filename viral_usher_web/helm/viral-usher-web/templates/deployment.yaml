@@ -45,7 +45,7 @@ spec:
         - name: K8S_NAMESPACE
           value: {{ .Values.app.namespace | quote }}
         - name: K8S_JOB_IMAGE
-          value: "{{ .Values.job.image.repository }}@{{ .Values.job.image.tag }}"
+          value: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag }}"
         - name: K8S_JOB_IMAGE_PULL_POLICY
           value: {{ .Values.job.image.pullPolicy | quote }}
         - name: K8S_UPLOAD_IMAGE

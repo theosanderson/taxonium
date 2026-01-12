@@ -28,6 +28,8 @@ export default function BuildPage() {
   const [refGbffFile, setRefGbffFile] = useState<File | null>(null);
   const [refFastaText, setRefFastaText] = useState('');
   const [refGbffText, setRefGbffText] = useState('');
+  const [refFastaUrl, setRefFastaUrl] = useState('');
+  const [refGbffUrl, setRefGbffUrl] = useState('');
   const [refFastaInputMethod, setRefFastaInputMethod] = useState('file');
   const [refGbffInputMethod, setRefGbffInputMethod] = useState('file');
   const [manualTaxonomyId, setManualTaxonomyId] = useState('');
@@ -36,10 +38,12 @@ export default function BuildPage() {
   // FASTA upload state (sequences to place)
   const [fastaText, setFastaText] = useState('');
   const [fastaFile, setFastaFile] = useState<File | null>(null);
+  const [fastaUrl, setFastaUrl] = useState('');
   const [fastaInputMethod, setFastaInputMethod] = useState('text');
 
   // Metadata upload state
   const [metadataFile, setMetadataFile] = useState<File | null>(null);
+  const [metadataUrl, setMetadataUrl] = useState('');
   const [metadataDateColumn, setMetadataDateColumn] = useState('');
 
   // Starting tree (protobuf) upload state
@@ -247,12 +251,16 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
           formData.append('ref_fasta_file', refFastaFile);
         } else if (refFastaInputMethod === 'text' && refFastaText) {
           formData.append('ref_fasta_text', refFastaText);
+        } else if (refFastaInputMethod === 'url' && refFastaUrl) {
+          formData.append('ref_fasta_url', refFastaUrl);
         }
 
         if (refGbffInputMethod === 'file' && refGbffFile) {
           formData.append('ref_gbff_file', refGbffFile);
         } else if (refGbffInputMethod === 'text' && refGbffText) {
           formData.append('ref_gbff_text', refGbffText);
+        } else if (refGbffInputMethod === 'url' && refGbffUrl) {
+          formData.append('ref_gbff_url', refGbffUrl);
         }
       }
 
@@ -268,10 +276,15 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
         formData.append('fasta_file', fastaFile);
       } else if (fastaInputMethod === 'text' && fastaText) {
         formData.append('fasta_text', fastaText);
+      } else if (fastaInputMethod === 'url' && fastaUrl) {
+        formData.append('fasta_url', fastaUrl);
       }
 
       if (metadataFile) {
         formData.append('metadata_file', metadataFile);
+      }
+      if (metadataUrl) {
+        formData.append('metadata_url', metadataUrl);
       }
       if (metadataDateColumn) {
         formData.append('metadata_date_column', metadataDateColumn);
@@ -288,9 +301,12 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
         body: formData
       });
 
-      if (!response.ok) throw new Error('Failed to launch analysis');
-
       const data = await response.json();
+
+      if (!response.ok) {
+        const errorDetail = data.detail || 'Failed to launch analysis';
+        throw new Error(errorDetail);
+      }
 
       if (data.job_info && data.job_info.success && data.job_info.job_name) {
         startJobLogPolling(data.job_info.job_name);
@@ -370,37 +386,22 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
       setManualSpeciesName(speciesName);
     }
 
-    const refFastaUrl = params.get('refFastaUrl');
-    if (refFastaUrl) {
-      fetch(refFastaUrl)
-        .then(res => res.text())
-        .then(text => {
-          setRefFastaText(text);
-          setRefFastaInputMethod('text');
-        })
-        .catch(err => console.error('Failed to fetch reference FASTA:', err));
+    const refFastaUrlParam = params.get('refFastaUrl');
+    if (refFastaUrlParam) {
+      setRefFastaUrl(refFastaUrlParam);
+      setRefFastaInputMethod('url');
     }
 
-    const refGbffUrl = params.get('refGbffUrl');
-    if (refGbffUrl) {
-      fetch(refGbffUrl)
-        .then(res => res.text())
-        .then(text => {
-          setRefGbffText(text);
-          setRefGbffInputMethod('text');
-        })
-        .catch(err => console.error('Failed to fetch reference GenBank:', err));
+    const refGbffUrlParam = params.get('refGbffUrl');
+    if (refGbffUrlParam) {
+      setRefGbffUrl(refGbffUrlParam);
+      setRefGbffInputMethod('url');
     }
 
-    const fastaUrl = params.get('fastaUrl');
-    if (fastaUrl) {
-      fetch(fastaUrl)
-        .then(res => res.text())
-        .then(text => {
-          setFastaText(text);
-          setFastaInputMethod('text');
-        })
-        .catch(err => console.error('Failed to fetch FASTA sequences:', err));
+    const fastaUrlParam = params.get('fastaUrl');
+    if (fastaUrlParam) {
+      setFastaUrl(fastaUrlParam);
+      setFastaInputMethod('url');
     }
 
     const minLength = params.get('minLengthProportion');
@@ -418,15 +419,9 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
     const dateColumn = params.get('metadataDateColumn');
     if (dateColumn) setMetadataDateColumn(dateColumn);
 
-    const metadataUrl = params.get('metadataUrl');
-    if (metadataUrl) {
-      fetch(metadataUrl)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], 'metadata.tsv.gz', { type: 'application/gzip' });
-          setMetadataFile(file);
-        })
-        .catch(err => console.error('Failed to fetch metadata file:', err));
+    const metadataUrlParam = params.get('metadataUrl');
+    if (metadataUrlParam) {
+      setMetadataUrl(metadataUrlParam);
     }
   }, []);
 
@@ -747,7 +742,18 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           Paste Text
                         </button>
                       </div>
-                      {refFastaInputMethod === 'file' ? (
+                      {refFastaInputMethod === 'url' ? (
+                        <div className="bg-green-50 border border-green-300 rounded p-4">
+                          <label className="block text-sm font-medium text-green-800 mb-2">URL provided:</label>
+                          <div className="text-xs text-gray-700 font-mono break-all">{refFastaUrl}</div>
+                          <button
+                            onClick={() => { setRefFastaInputMethod('file'); setRefFastaUrl(''); }}
+                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                          >
+                            Clear and enter manually
+                          </button>
+                        </div>
+                      ) : refFastaInputMethod === 'file' ? (
                         <>
                           <input
                             type="file"
@@ -798,7 +804,18 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           Paste Text
                         </button>
                       </div>
-                      {refGbffInputMethod === 'file' ? (
+                      {refGbffInputMethod === 'url' ? (
+                        <div className="bg-green-50 border border-green-300 rounded p-4">
+                          <label className="block text-sm font-medium text-green-800 mb-2">URL provided:</label>
+                          <div className="text-xs text-gray-700 font-mono break-all">{refGbffUrl}</div>
+                          <button
+                            onClick={() => { setRefGbffInputMethod('file'); setRefGbffUrl(''); }}
+                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                          >
+                            Clear and enter manually
+                          </button>
+                        </div>
+                      ) : refGbffInputMethod === 'file' ? (
                         <>
                           <input
                             type="file"
@@ -823,8 +840,8 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       )}
                     </div>
                     {manualTaxonomyId && manualSpeciesName &&
-                     ((refFastaInputMethod === 'file' && refFastaFile) || (refFastaInputMethod === 'text' && refFastaText)) &&
-                     ((refGbffInputMethod === 'file' && refGbffFile) || (refGbffInputMethod === 'text' && refGbffText)) && (
+                     ((refFastaInputMethod === 'file' && refFastaFile) || (refFastaInputMethod === 'text' && refFastaText) || (refFastaInputMethod === 'url' && refFastaUrl)) &&
+                     ((refGbffInputMethod === 'file' && refGbffFile) || (refGbffInputMethod === 'text' && refGbffText) || (refGbffInputMethod === 'url' && refGbffUrl)) && (
                       <div className="bg-green-50 border border-green-300 rounded p-4 mt-4">
                         <span className="font-medium text-green-800 text-sm">Ready to proceed!</span> <span className="text-sm text-gray-700">All required files provided. Scroll down to configure additional options and launch the analysis.</span>
                       </div>
@@ -976,7 +993,20 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       </button>
                     </div>
 
-                    {fastaInputMethod === 'text' ? (
+                    {fastaInputMethod === 'url' ? (
+                      <div className="bg-green-50 border border-green-300 rounded p-4">
+                        <label className="block text-sm font-medium text-green-800 mb-2">
+                          URL provided:
+                        </label>
+                        <div className="text-xs text-gray-700 font-mono break-all">{fastaUrl}</div>
+                        <button
+                          onClick={() => { setFastaInputMethod('text'); setFastaUrl(''); }}
+                          className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                        >
+                          Clear and enter manually
+                        </button>
+                      </div>
+                    ) : fastaInputMethod === 'text' ? (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Paste FASTA sequences
@@ -1028,19 +1058,34 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         Metadata TSV File
                         <div className="text-xs text-gray-500 font-normal mt-1">Tab-separated values file</div>
                       </label>
-                      <input
-                        type="file"
-                        accept=".tsv,.txt"
-                        onChange={(e) => setMetadataFile(e.target.files?.[0] || null)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition text-sm"
-                      />
-                      {metadataFile && (
-                        <div className="mt-2 text-xs text-gray-600">
-                          Selected: {metadataFile.name}
+                      {metadataUrl ? (
+                        <div className="bg-green-50 border border-green-300 rounded p-4">
+                          <label className="block text-sm font-medium text-green-800 mb-2">URL provided:</label>
+                          <div className="text-xs text-gray-700 font-mono break-all">{metadataUrl}</div>
+                          <button
+                            onClick={() => setMetadataUrl('')}
+                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                          >
+                            Clear and upload file instead
+                          </button>
                         </div>
+                      ) : (
+                        <>
+                          <input
+                            type="file"
+                            accept=".tsv,.txt"
+                            onChange={(e) => setMetadataFile(e.target.files?.[0] || null)}
+                            className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition text-sm"
+                          />
+                          {metadataFile && (
+                            <div className="mt-2 text-xs text-gray-600">
+                              Selected: {metadataFile.name}
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
-                    {metadataFile && (
+                    {(metadataFile || metadataUrl) && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Date Column Name (Optional)
@@ -1133,7 +1178,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (
                 <button
                   onClick={generateConfig}
-                  disabled={loading || (mode === 'no_genbank' && (!fastaFile && !fastaText))}
+                  disabled={loading || (mode === 'no_genbank' && (!fastaFile && !fastaText && !fastaUrl))}
                   className="w-full px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition font-medium"
                 >
                   {loading ? 'Launching...' : 'Launch Analysis'}

@@ -640,11 +640,15 @@ async def generate_config(
     workdir: str = Form(...),
     fasta_text: str = Form(""),
     fasta_file: Optional[UploadFile] = File(None),
+    fasta_url: str = Form(""),
     ref_fasta_file: Optional[UploadFile] = File(None),
     ref_gbff_file: Optional[UploadFile] = File(None),
     ref_fasta_text: str = Form(""),
     ref_gbff_text: str = Form(""),
+    ref_fasta_url: str = Form(""),
+    ref_gbff_url: str = Form(""),
     metadata_file: Optional[UploadFile] = File(None),
+    metadata_url: str = Form(""),
     metadata_date_column: str = Form(""),
     starting_tree_file: Optional[UploadFile] = File(None),
     starting_tree_url: str = Form("")
@@ -658,36 +662,52 @@ async def generate_config(
         # Parse no_genbank flag
         no_genbank_mode = no_genbank.lower() == 'true'
 
-        # Handle reference file uploads or text (for no_genbank mode)
+        # Handle reference file uploads, text, or URLs (for no_genbank mode)
         ref_fasta_s3_key = None
+        ref_fasta_direct_url = None
         ref_gbff_s3_key = None
+        ref_gbff_direct_url = None
         if no_genbank_mode:
-            if ref_fasta_file:
+            if ref_fasta_url:
+                # Pass URL directly to viral_usher (it supports URLs in config)
+                ref_fasta_direct_url = ref_fasta_url
+            elif ref_fasta_file:
                 ref_fasta_content = await ref_fasta_file.read()
                 ref_fasta_s3_key = upload_to_s3(ref_fasta_content, ref_fasta_file.filename or "ref.fasta", "text/plain")
             elif ref_fasta_text:
                 ref_fasta_content = ref_fasta_text.encode('utf-8')
                 ref_fasta_s3_key = upload_to_s3(ref_fasta_content, "ref.fasta", "text/plain")
 
-            if ref_gbff_file:
+            if ref_gbff_url:
+                # Pass URL directly to viral_usher (it supports URLs in config)
+                ref_gbff_direct_url = ref_gbff_url
+            elif ref_gbff_file:
                 ref_gbff_content = await ref_gbff_file.read()
                 ref_gbff_s3_key = upload_to_s3(ref_gbff_content, ref_gbff_file.filename or "ref.gbff", "text/plain")
             elif ref_gbff_text:
                 ref_gbff_content = ref_gbff_text.encode('utf-8')
                 ref_gbff_s3_key = upload_to_s3(ref_gbff_content, "ref.gbff", "text/plain")
 
-        # Handle FASTA upload to S3 (sequences to place)
+        # Handle FASTA upload to S3 or URL (sequences to place)
         fasta_s3_key = None
-        if fasta_file:
+        fasta_direct_url = None
+        if fasta_url:
+            # Pass URL directly to viral_usher
+            fasta_direct_url = fasta_url
+        elif fasta_file:
             fasta_content = await fasta_file.read()
             fasta_s3_key = upload_to_s3(fasta_content, fasta_file.filename or "sequences.fasta", "text/plain")
         elif fasta_text:
             fasta_content = fasta_text.encode('utf-8')
             fasta_s3_key = upload_to_s3(fasta_content, "sequences.fasta", "text/plain")
 
-        # Handle metadata file upload
+        # Handle metadata file upload or URL
         metadata_s3_key = None
-        if metadata_file:
+        metadata_direct_url = None
+        if metadata_url:
+            # Pass URL directly to viral_usher
+            metadata_direct_url = metadata_url
+        elif metadata_file:
             metadata_content = await metadata_file.read()
             metadata_s3_key = upload_to_s3(metadata_content, metadata_file.filename or "metadata.tsv", "text/tab-separated-values")
 
@@ -704,7 +724,6 @@ async def generate_config(
         config_contents = {
             "viral_usher_version": viral_usher_version,
             "species": species,
-            "taxonomy_id": taxonomy_id,
             "nextclade_dataset": nextclade_dataset or "",
             "nextclade_clade_columns": nextclade_clade_columns or "",
             "min_length_proportion": min_length_proportion,
@@ -714,15 +733,23 @@ async def generate_config(
             "workdir": os.path.abspath(workdir),
         }
 
+        # taxonomy_id is required for GenBank mode, optional for no_genbank mode
+        if not no_genbank_mode or (taxonomy_id and taxonomy_id != "123456789"):
+            config_contents["taxonomy_id"] = taxonomy_id
+
         if no_genbank_mode:
-            # No GenBank mode: use uploaded reference files
-            if ref_fasta_s3_key:
+            # No GenBank mode: use uploaded reference files or direct URLs
+            if ref_fasta_direct_url:
+                config_contents["ref_fasta"] = ref_fasta_direct_url
+            elif ref_fasta_s3_key:
                 # Convert S3 key to URL for config
                 if S3_ENDPOINT_URL:
                     config_contents["ref_fasta"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{ref_fasta_s3_key}"
                 else:
                     config_contents["ref_fasta"] = f"https://s3.{S3_REGION}.amazonaws.com/{S3_BUCKET}/{ref_fasta_s3_key}"
-            if ref_gbff_s3_key:
+            if ref_gbff_direct_url:
+                config_contents["ref_gbff"] = ref_gbff_direct_url
+            elif ref_gbff_s3_key:
                 if S3_ENDPOINT_URL:
                     config_contents["ref_gbff"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{ref_gbff_s3_key}"
                 else:
@@ -737,7 +764,9 @@ async def generate_config(
             config_contents["ref_gbff"] = ref_gbff
 
         # Add extra fasta (sequences to place)
-        if fasta_s3_key:
+        if fasta_direct_url:
+            config_contents["extra_fasta"] = fasta_direct_url
+        elif fasta_s3_key:
             if S3_ENDPOINT_URL:
                 config_contents["extra_fasta"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{fasta_s3_key}"
             else:
@@ -746,7 +775,11 @@ async def generate_config(
             config_contents["extra_fasta"] = ""
 
         # Add metadata if provided
-        if metadata_s3_key:
+        if metadata_direct_url:
+            config_contents["extra_metadata"] = metadata_direct_url
+            if metadata_date_column:
+                config_contents["extra_metadata_date_column"] = metadata_date_column
+        elif metadata_s3_key:
             if S3_ENDPOINT_URL:
                 config_contents["extra_metadata"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{metadata_s3_key}"
             else:
@@ -772,8 +805,8 @@ async def generate_config(
         config_filename = f"viral_usher_config{refseq_part}_{taxonomy_id}.toml"
         config_path = f"{workdir}/{config_filename}"
 
-        # Write config locally
-        config.write_config(config_contents, config_path)
+        # Write config locally (check_paths=False since we use URLs)
+        config.write_config(config_contents, config_path, check_paths=False)
 
         # Upload config to S3
         config_s3_key = None
