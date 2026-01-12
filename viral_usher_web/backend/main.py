@@ -733,9 +733,8 @@ async def generate_config(
             "workdir": os.path.abspath(workdir),
         }
 
-        # taxonomy_id is required for GenBank mode, optional for no_genbank mode
-        if not no_genbank_mode or (taxonomy_id and taxonomy_id != "123456789"):
-            config_contents["taxonomy_id"] = taxonomy_id
+        # taxonomy_id is always required in config, use placeholder for no_genbank mode if not provided
+        config_contents["taxonomy_id"] = taxonomy_id if taxonomy_id else "0"
 
         if no_genbank_mode:
             # No GenBank mode: use uploaded reference files or direct URLs
