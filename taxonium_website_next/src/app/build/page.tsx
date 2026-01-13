@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
+import InputToggleButton from '../../components/InputToggleButton';
+import FileOrTextInput from '../../components/FileOrTextInput';
 
 export default function BuildPage() {
   // Mode selection: 'genbank' or 'no_genbank'
@@ -720,28 +722,6 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         Reference FASTA *
                         <div className="text-xs text-gray-500 font-normal mt-1">Reference genome in FASTA format</div>
                       </label>
-                      <div className="flex gap-4 mb-2">
-                        <button
-                          onClick={() => setRefFastaInputMethod('file')}
-                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                            refFastaInputMethod === 'file'
-                              ? 'bg-gray-600 text-white'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          }`}
-                        >
-                          Upload File
-                        </button>
-                        <button
-                          onClick={() => setRefFastaInputMethod('text')}
-                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                            refFastaInputMethod === 'text'
-                              ? 'bg-gray-600 text-white'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          }`}
-                        >
-                          Paste Text
-                        </button>
-                      </div>
                       {refFastaInputMethod === 'url' ? (
                         <div className="bg-green-50 border border-green-300 rounded p-4">
                           <label className="block text-sm font-medium text-green-800 mb-2">URL provided:</label>
@@ -753,27 +733,17 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                             Clear and enter manually
                           </button>
                         </div>
-                      ) : refFastaInputMethod === 'file' ? (
-                        <>
-                          <input
-                            type="file"
-                            accept=".fasta,.fa,.fna"
-                            onChange={(e) => setRefFastaFile(e.target.files?.[0] || null)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition text-sm"
-                          />
-                          {refFastaFile && (
-                            <div className="mt-2 text-xs text-gray-600">
-                              Selected: {refFastaFile.name}
-                            </div>
-                          )}
-                        </>
                       ) : (
-                        <textarea
-                          value={refFastaText}
-                          onChange={(e) => setRefFastaText(e.target.value)}
-                          rows={6}
-                          placeholder=">reference&#10;ATCGATCG..."
-                          className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition font-mono text-xs"
+                        <FileOrTextInput
+                          file={refFastaFile}
+                          onFileChange={setRefFastaFile}
+                          fileAccept=".fasta,.fa,.fna"
+                          text={refFastaText}
+                          onTextChange={setRefFastaText}
+                          textPlaceholder=">reference&#10;ATCGATCG..."
+                          textRows={6}
+                          mode={refFastaInputMethod as 'file' | 'text'}
+                          onModeChange={(m) => setRefFastaInputMethod(m)}
                         />
                       )}
                     </div>
@@ -782,28 +752,6 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         Reference GenBank (gbff) *
                         <div className="text-xs text-gray-500 font-normal mt-1">Reference genome annotations in GenBank format</div>
                       </label>
-                      <div className="flex gap-4 mb-2">
-                        <button
-                          onClick={() => setRefGbffInputMethod('file')}
-                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                            refGbffInputMethod === 'file'
-                              ? 'bg-gray-600 text-white'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          }`}
-                        >
-                          Upload File
-                        </button>
-                        <button
-                          onClick={() => setRefGbffInputMethod('text')}
-                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                            refGbffInputMethod === 'text'
-                              ? 'bg-gray-600 text-white'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          }`}
-                        >
-                          Paste Text
-                        </button>
-                      </div>
                       {refGbffInputMethod === 'url' ? (
                         <div className="bg-green-50 border border-green-300 rounded p-4">
                           <label className="block text-sm font-medium text-green-800 mb-2">URL provided:</label>
@@ -815,27 +763,17 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                             Clear and enter manually
                           </button>
                         </div>
-                      ) : refGbffInputMethod === 'file' ? (
-                        <>
-                          <input
-                            type="file"
-                            accept=".gbff,.gbk,.gb"
-                            onChange={(e) => setRefGbffFile(e.target.files?.[0] || null)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition text-sm"
-                          />
-                          {refGbffFile && (
-                            <div className="mt-2 text-xs text-gray-600">
-                              Selected: {refGbffFile.name}
-                            </div>
-                          )}
-                        </>
                       ) : (
-                        <textarea
-                          value={refGbffText}
-                          onChange={(e) => setRefGbffText(e.target.value)}
-                          rows={8}
-                          placeholder="LOCUS..."
-                          className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition font-mono text-xs"
+                        <FileOrTextInput
+                          file={refGbffFile}
+                          onFileChange={setRefGbffFile}
+                          fileAccept=".gbff,.gbk,.gb"
+                          text={refGbffText}
+                          onTextChange={setRefGbffText}
+                          textPlaceholder="LOCUS..."
+                          textRows={8}
+                          mode={refGbffInputMethod as 'file' | 'text'}
+                          onModeChange={(m) => setRefGbffInputMethod(m)}
                         />
                       )}
                     </div>
@@ -897,48 +835,25 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     Provide an existing UShER protobuf tree (.pb.gz) to update with new sequences instead of building from scratch.
                   </p>
                   <div className="space-y-4">
-                    <div className="flex gap-4 mb-4">
-                      <button
+                    <div className="flex items-center gap-3">
+                      <InputToggleButton
                         onClick={() => setStartingTreeInputMethod('file')}
-                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                          startingTreeInputMethod === 'file'
-                            ? 'bg-gray-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
+                        fileInput={{
+                          accept: ".pb.gz,.pb",
+                          onChange: setStartingTreeFile
+                        }}
                       >
                         Upload File
-                      </button>
-                      <button
-                        onClick={() => setStartingTreeInputMethod('url')}
-                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                          startingTreeInputMethod === 'url'
-                            ? 'bg-gray-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
-                      >
+                      </InputToggleButton>
+                      <InputToggleButton onClick={() => setStartingTreeInputMethod('url')}>
                         Provide URL
-                      </button>
+                      </InputToggleButton>
+                      {startingTreeFile && startingTreeInputMethod === 'file' && (
+                        <span className="text-sm text-gray-600 truncate max-w-xs">{startingTreeFile.name}</span>
+                      )}
                     </div>
 
-                    {startingTreeInputMethod === 'file' ? (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Upload Protobuf File
-                          <div className="text-xs text-gray-500 font-normal mt-1">UShER protobuf tree file (optimized.pb.gz or similar)</div>
-                        </label>
-                        <input
-                          type="file"
-                          accept=".pb.gz,.pb"
-                          onChange={(e) => setStartingTreeFile(e.target.files?.[0] || null)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition text-sm"
-                        />
-                        {startingTreeFile && (
-                          <div className="mt-2 text-xs text-gray-600">
-                            Selected: {startingTreeFile.name}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
+                    {startingTreeInputMethod === 'url' && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Protobuf URL
@@ -969,77 +884,32 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       ? 'Provide the sequences you want to place on the tree.'
                       : 'Optionally provide additional sequences to place on the tree.'}
                   </p>
-                  <div className="space-y-4">
-                    <div className="flex gap-4 mb-4">
+                  {fastaInputMethod === 'url' ? (
+                    <div className="bg-green-50 border border-green-300 rounded p-4">
+                      <label className="block text-sm font-medium text-green-800 mb-2">
+                        URL provided:
+                      </label>
+                      <div className="text-xs text-gray-700 font-mono break-all">{fastaUrl}</div>
                       <button
-                        onClick={() => setFastaInputMethod('text')}
-                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                          fastaInputMethod === 'text'
-                            ? 'bg-gray-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
+                        onClick={() => { setFastaInputMethod('text'); setFastaUrl(''); }}
+                        className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline cursor-pointer"
                       >
-                        Paste Text
-                      </button>
-                      <button
-                        onClick={() => setFastaInputMethod('file')}
-                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
-                          fastaInputMethod === 'file'
-                            ? 'bg-gray-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
-                      >
-                        Upload File
+                        Clear and enter manually
                       </button>
                     </div>
-
-                    {fastaInputMethod === 'url' ? (
-                      <div className="bg-green-50 border border-green-300 rounded p-4">
-                        <label className="block text-sm font-medium text-green-800 mb-2">
-                          URL provided:
-                        </label>
-                        <div className="text-xs text-gray-700 font-mono break-all">{fastaUrl}</div>
-                        <button
-                          onClick={() => { setFastaInputMethod('text'); setFastaUrl(''); }}
-                          className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline cursor-pointer"
-                        >
-                          Clear and enter manually
-                        </button>
-                      </div>
-                    ) : fastaInputMethod === 'text' ? (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Paste FASTA sequences
-                          <div className="text-xs text-gray-500 font-normal mt-1">Paste your FASTA formatted sequences here</div>
-                        </label>
-                        <textarea
-                          value={fastaText}
-                          onChange={(e) => setFastaText(e.target.value)}
-                          rows={8}
-                          placeholder=">sequence1&#10;ATCGATCG..."
-                          className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition font-mono text-xs"
-                        />
-                      </div>
-                    ) : (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Upload FASTA file
-                          <div className="text-xs text-gray-500 font-normal mt-1">Select a FASTA file from your computer</div>
-                        </label>
-                        <input
-                          type="file"
-                          accept=".fasta,.fa,.fna,.txt"
-                          onChange={(e) => setFastaFile(e.target.files?.[0] || null)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition text-sm"
-                        />
-                        {fastaFile && (
-                          <div className="mt-2 text-xs text-gray-600">
-                            Selected: {fastaFile.name}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  ) : (
+                    <FileOrTextInput
+                      file={fastaFile}
+                      onFileChange={setFastaFile}
+                      fileAccept=".fasta,.fa,.fna,.txt"
+                      text={fastaText}
+                      onTextChange={setFastaText}
+                      textPlaceholder=">sequence1&#10;ATCGATCG..."
+                      textRows={8}
+                      mode={fastaInputMethod as 'file' | 'text'}
+                      onModeChange={(m) => setFastaInputMethod(m)}
+                    />
+                  )}
                 </div>
               )}
 
@@ -1070,19 +940,19 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           </button>
                         </div>
                       ) : (
-                        <>
-                          <input
-                            type="file"
-                            accept=".tsv,.txt"
-                            onChange={(e) => setMetadataFile(e.target.files?.[0] || null)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition text-sm"
-                          />
-                          {metadataFile && (
-                            <div className="mt-2 text-xs text-gray-600">
-                              Selected: {metadataFile.name}
-                            </div>
-                          )}
-                        </>
+                        <div className="flex items-center gap-3">
+                          <InputToggleButton
+                            fileInput={{
+                              accept: ".tsv,.txt",
+                              onChange: setMetadataFile
+                            }}
+                          >
+                            Choose file...
+                          </InputToggleButton>
+                          <span className="text-sm text-gray-500">
+                            {metadataFile ? metadataFile.name : 'No file selected'}
+                          </span>
+                        </div>
                       )}
                     </div>
                     {(metadataFile || metadataUrl) && (
