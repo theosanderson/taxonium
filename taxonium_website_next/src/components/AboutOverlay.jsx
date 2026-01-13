@@ -66,6 +66,26 @@ function AboutOverlay({ enabled, setEnabled, overlayContent }) {
             <br />
             https://doi.org/10.7554/eLife.82392
           </p>
+
+          <p className="mb-1 mt-6 text-gray-700">
+            <h3 className="font-bold">Tree Building</h3>
+            Tree building features are powered by{" "}
+            <a
+              className="text-blue underline"
+              href="https://github.com/AngieHinrichs/viral_usher"
+            >
+              viral_usher
+            </a> by Angie Hinrichs.
+            <br />
+            <br />
+            If you use tree building features, please cite:
+            <br />
+            Turakhia Y, Thornlow B, Hinrichs A, De Maio N, Gozashti L, Lanfear R, Haussler D, and Corbett-Detig R. (2021){" "}
+            <span className="font-semibold">
+              Ultrafast Sample placement on Existing tRees (UShER) enables real-time phylogenetics for the SARS-CoV-2 pandemic
+            </span>{" "}
+            <i>Nature Genetics</i>. 1-8.
+          </p>
         </div>
       )}
     </Modal>
