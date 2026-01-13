@@ -359,7 +359,7 @@ function MainApp({ pathname }: { pathname: string }) {
             </div>
             <button
               onClick={() => setAboutEnabled(true)}
-              className="text-white font-bold hover:underline flex items-center"
+              className="text-white font-bold hover:underline flex items-center cursor-pointer"
               title="Info"
             >
               <BsInfoSquare className="w-6 h-6 opacity-80 mr-4" />
@@ -409,7 +409,7 @@ function MainApp({ pathname }: { pathname: string }) {
                     <div className="space-y-3">
                       <a
                         href="/build"
-                        className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50 transition group"
+                        className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50 transition group cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                       >
                         <div>
                           <div className="text-sm font-medium text-gray-800">Build a new tree</div>
@@ -419,7 +419,7 @@ function MainApp({ pathname }: { pathname: string }) {
                       </a>
                       <a
                         href="/place"
-                        className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50 transition group"
+                        className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50 transition group cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                       >
                         <div>
                           <div className="text-sm font-medium text-gray-800">Place on existing tree</div>
@@ -442,17 +442,17 @@ function MainApp({ pathname }: { pathname: string }) {
                 <div className="flex justify-end">
                   <a
                     href="/browse"
-                    className="text-sm text-gray-600 hover:text-gray-800 hover:underline"
+                    className="text-sm text-gray-600 hover:text-gray-800 hover:underline cursor-pointer"
                   >
                     Browse all trees →
                   </a>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {showCase.map((item: any, i: number) => (
-                    <div key={i} className="border border-gray-300 rounded p-3">
+                    <div key={i} className="border border-gray-300 rounded p-3 hover:bg-gray-50 transition">
                       <a
                         href={item.url}
-                        className="text-gray-800 hover:underline"
+                        className="text-gray-800 hover:underline cursor-pointer"
                       >
                         <img
                           src={item.icon}
@@ -501,7 +501,7 @@ function MainApp({ pathname }: { pathname: string }) {
                         <a
                           key={tree.path}
                           href={`/${tree.path}`}
-                          className="flex items-center justify-between p-2 hover:bg-white rounded transition text-sm group"
+                          className="flex items-center justify-between p-2 hover:bg-white rounded transition text-sm group cursor-pointer"
                         >
                           <span className="text-gray-800 group-hover:text-gray-900 truncate flex-1">
                             {tree.organism}

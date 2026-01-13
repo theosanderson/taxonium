@@ -195,12 +195,13 @@ export default function PlacePage() {
           <div className="mt-6 flex justify-end">
             <a
               href={buildPlaceUrl()}
-              className={`px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition ${
+              className={`px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 ${
                 selectedTree
-                  ? 'bg-gray-600 text-white hover:bg-gray-700'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  ? 'bg-gray-600 text-white hover:bg-gray-700 cursor-pointer'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
               }`}
               onClick={(e) => !selectedTree && e.preventDefault()}
+              aria-disabled={!selectedTree}
             >
               Next: Add Your Sequences
               <FaArrowRight className="w-4 h-4" />

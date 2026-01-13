@@ -150,7 +150,7 @@ export default function BrowsePage() {
               <Link
                 key={path}
                 href={`/${path}`}
-                className="block border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition"
+                className="block border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               >
                 <div className="flex items-start gap-3">
                   {config.icon && (

@@ -463,7 +463,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
             <div className="mb-6">
               <button
                 onClick={() => setFormCollapsed(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition text-sm"
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition text-sm cursor-pointer"
               >
                 Edit Parameters
               </button>
@@ -481,14 +481,14 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
                       onClick={() => setMode('genbank')}
-                      className="p-6 border-2 border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition text-left"
+                      className="p-6 border-2 border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                     >
                       <h3 className="text-base font-medium text-gray-900 mb-2">Search GenBank</h3>
                       <p className="text-sm text-gray-600">Search for a species in NCBI Taxonomy and select a RefSeq reference genome. All GenBank sequences will be downloaded automatically.</p>
                     </button>
                     <button
                       onClick={() => setMode('no_genbank')}
-                      className="p-6 border-2 border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition text-left"
+                      className="p-6 border-2 border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                     >
                       <h3 className="text-base font-medium text-gray-900 mb-2">Provide Reference Files</h3>
                       <p className="text-sm text-gray-600">Upload your own reference FASTA and GenBank files. Only your provided sequences will be placed on the tree (no GenBank download).</p>
@@ -504,7 +504,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                   <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">1. Select Virus Species</h2>
-                      <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">Change Mode</button>
+                      <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800 cursor-pointer">Change Mode</button>
                     </div>
                     <div className="space-y-4">
                       <div>
@@ -520,7 +520,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         <button
                           onClick={searchSpecies}
                           disabled={loading || !speciesSearch.trim()}
-                          className="mt-3 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition text-sm"
+                          className="mt-3 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                         >
                           {loading ? 'Searching...' : 'Search'}
                         </button>
@@ -561,7 +561,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                               setNextcladeDatasets([]);
                               setSelectedNextclade(null);
                             }}
-                            className="px-3 py-1 text-sm bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
+                            className="px-3 py-1 text-sm bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition cursor-pointer"
                           >
                             Change
                           </button>
@@ -616,7 +616,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                               setNextcladeDatasets([]);
                               setSelectedNextclade(null);
                             }}
-                            className="px-3 py-1 text-sm bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
+                            className="px-3 py-1 text-sm bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition cursor-pointer"
                           >
                             Change
                           </button>
@@ -652,7 +652,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     <div className="mt-3 pt-3 border-t border-gray-200">
                       <button
                         onClick={() => setAdvancedMode(true)}
-                        className="text-xs text-gray-600 hover:text-gray-900 underline"
+                        className="text-xs text-gray-600 hover:text-gray-900 underline cursor-pointer"
                       >
                         ...or if you want to customise reference files, taxonomy, and other options, click here
                       </button>
@@ -662,7 +662,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     <div className="mt-3 pt-3 border-t border-gray-200">
                       <button
                         onClick={() => setAdvancedMode(false)}
-                        className="text-xs text-gray-600 hover:text-gray-900 underline"
+                        className="text-xs text-gray-600 hover:text-gray-900 underline cursor-pointer"
                       >
                         Hide advanced options
                       </button>
@@ -681,11 +681,11 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     <div className="flex gap-2">
                       <button
                         onClick={loadExampleData}
-                        className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition"
+                        className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition cursor-pointer"
                       >
                         Load Example Data
                       </button>
-                      <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800">Change Mode</button>
+                      <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800 cursor-pointer">Change Mode</button>
                     </div>
                   </div>
                   <div className="space-y-4">
@@ -723,7 +723,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       <div className="flex gap-4 mb-2">
                         <button
                           onClick={() => setRefFastaInputMethod('file')}
-                          className={`px-3 py-1.5 rounded transition text-sm ${
+                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                             refFastaInputMethod === 'file'
                               ? 'bg-gray-600 text-white'
                               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -733,7 +733,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         </button>
                         <button
                           onClick={() => setRefFastaInputMethod('text')}
-                          className={`px-3 py-1.5 rounded transition text-sm ${
+                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                             refFastaInputMethod === 'text'
                               ? 'bg-gray-600 text-white'
                               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -748,7 +748,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           <div className="text-xs text-gray-700 font-mono break-all">{refFastaUrl}</div>
                           <button
                             onClick={() => { setRefFastaInputMethod('file'); setRefFastaUrl(''); }}
-                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline cursor-pointer"
                           >
                             Clear and enter manually
                           </button>
@@ -785,7 +785,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       <div className="flex gap-4 mb-2">
                         <button
                           onClick={() => setRefGbffInputMethod('file')}
-                          className={`px-3 py-1.5 rounded transition text-sm ${
+                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                             refGbffInputMethod === 'file'
                               ? 'bg-gray-600 text-white'
                               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -795,7 +795,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         </button>
                         <button
                           onClick={() => setRefGbffInputMethod('text')}
-                          className={`px-3 py-1.5 rounded transition text-sm ${
+                          className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                             refGbffInputMethod === 'text'
                               ? 'bg-gray-600 text-white'
                               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -810,7 +810,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           <div className="text-xs text-gray-700 font-mono break-all">{refGbffUrl}</div>
                           <button
                             onClick={() => { setRefGbffInputMethod('file'); setRefGbffUrl(''); }}
-                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline cursor-pointer"
                           >
                             Clear and enter manually
                           </button>
@@ -900,7 +900,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     <div className="flex gap-4 mb-4">
                       <button
                         onClick={() => setStartingTreeInputMethod('file')}
-                        className={`px-3 py-1.5 rounded transition text-sm ${
+                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                           startingTreeInputMethod === 'file'
                             ? 'bg-gray-600 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -910,7 +910,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       </button>
                       <button
                         onClick={() => setStartingTreeInputMethod('url')}
-                        className={`px-3 py-1.5 rounded transition text-sm ${
+                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                           startingTreeInputMethod === 'url'
                             ? 'bg-gray-600 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -973,7 +973,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     <div className="flex gap-4 mb-4">
                       <button
                         onClick={() => setFastaInputMethod('text')}
-                        className={`px-3 py-1.5 rounded transition text-sm ${
+                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                           fastaInputMethod === 'text'
                             ? 'bg-gray-600 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -983,7 +983,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       </button>
                       <button
                         onClick={() => setFastaInputMethod('file')}
-                        className={`px-3 py-1.5 rounded transition text-sm ${
+                        className={`px-3 py-1.5 rounded transition text-sm cursor-pointer ${
                           fastaInputMethod === 'file'
                             ? 'bg-gray-600 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -1001,7 +1001,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         <div className="text-xs text-gray-700 font-mono break-all">{fastaUrl}</div>
                         <button
                           onClick={() => { setFastaInputMethod('text'); setFastaUrl(''); }}
-                          className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                          className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline cursor-pointer"
                         >
                           Clear and enter manually
                         </button>
@@ -1064,7 +1064,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           <div className="text-xs text-gray-700 font-mono break-all">{metadataUrl}</div>
                           <button
                             onClick={() => setMetadataUrl('')}
-                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline"
+                            className="mt-2 text-xs text-gray-600 hover:text-gray-800 underline cursor-pointer"
                           >
                             Clear and upload file instead
                           </button>
@@ -1179,7 +1179,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                 <button
                   onClick={generateConfig}
                   disabled={loading || (mode === 'no_genbank' && (!fastaFile && !fastaText && !fastaUrl))}
-                  className="w-full px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition font-medium"
+                  className="w-full px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                 >
                   {loading ? 'Launching...' : 'Launch Analysis'}
                 </button>
@@ -1210,7 +1210,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     href={taxoniumUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-6 py-3 bg-white text-green-700 rounded-lg hover:bg-green-50 transition font-bold text-lg flex items-center gap-2 shadow-md"
+                    className="px-6 py-3 bg-white text-green-700 rounded-lg hover:bg-green-50 transition font-bold text-lg flex items-center gap-2 shadow-md cursor-pointer"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1300,7 +1300,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                                   href={taxoniumUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex-shrink-0 px-3 py-1.5 bg-gray-700 text-white rounded hover:bg-gray-800 transition text-xs font-medium flex items-center gap-1.5"
+                                  className="flex-shrink-0 px-3 py-1.5 bg-gray-700 text-white rounded hover:bg-gray-800 transition text-xs font-medium flex items-center gap-1.5 cursor-pointer"
                                 >
                                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1314,7 +1314,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                               href={file.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex-shrink-0 px-3 py-1.5 bg-gray-600 text-white rounded hover:bg-gray-700 transition text-xs font-medium flex items-center gap-1.5"
+                              className="flex-shrink-0 px-3 py-1.5 bg-gray-600 text-white rounded hover:bg-gray-700 transition text-xs font-medium flex items-center gap-1.5 cursor-pointer"
                             >
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
