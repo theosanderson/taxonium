@@ -405,16 +405,29 @@ function MainApp({ pathname }: { pathname: string }) {
                 </div>
                 {inputHelper.inputs.length === 0 && (
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h3 className="text-base font-medium text-gray-900 mb-3">...or build a new tree</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Create a phylogenetic tree from viral sequence data using UShER
-                    </p>
-                    <a
-                      href="/build"
-                      className="inline-block border border-gray-400 shadow-sm rounded py-1 px-2 bg-gray-100 hover:bg-gray-200 text-sm text-gray-700"
-                    >
-                      Go to tree builder <FaArrowRight className="inline-block ml-1" />
-                    </a>
+                    <h3 className="text-base font-medium text-gray-900 mb-4">...or create a tree using UShER</h3>
+                    <div className="space-y-3">
+                      <a
+                        href="/build"
+                        className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50 transition group"
+                      >
+                        <div>
+                          <div className="text-sm font-medium text-gray-800">Build a new tree</div>
+                          <div className="text-xs text-gray-500">From your sequences</div>
+                        </div>
+                        <FaArrowRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                      </a>
+                      <a
+                        href="/place"
+                        className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50 transition group"
+                      >
+                        <div>
+                          <div className="text-sm font-medium text-gray-800">Place on existing tree</div>
+                          <div className="text-xs text-gray-500">Add your sequences to an existing tree</div>
+                        </div>
+                        <FaArrowRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                      </a>
+                    </div>
                   </div>
                 )}
               </div>
