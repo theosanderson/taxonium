@@ -94,25 +94,23 @@ jobs:
     runs-on: windows-2022
     name: Build windows-x86_64
 
+    env:
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitCommitId: '2024.09.30'
-
-      - name: Install dependencies
+      - name: Install dependencies via vcpkg
         run: |
-          vcpkg install protobuf:x64-windows zlib:x64-windows boost-iostreams:x64-windows tbb:x64-windows
+          vcpkg install protobuf zlib boost-iostreams tbb
 
       - name: Configure CMake
         working-directory: taxoniumtools/taxoniumtools_cpp
         run: |
           mkdir build
           cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DPORTABLE_BUILD=ON "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DPORTABLE_BUILD=ON "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
       - name: Build
         working-directory: taxoniumtools/taxoniumtools_cpp/build
