@@ -301,7 +301,7 @@ function App() {
           ) : (
             <div className="m-10 space-y-3">
               <p className="text-lg text-gray-700 mb-5 font-bold">
-                Welcome to Taxonium, a tool for exploring large trees
+                Welcome to Taxonium, a plaform for exploring and building large phylogenetic trees
               </p>
               <InputSupplier inputHelper={inputHelper} />
               <div className="flex flex-col space-y-3 pt-6">
