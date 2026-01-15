@@ -138,8 +138,8 @@ def get_mutations(past_nuc_muts_dict,
             initial_codon = complement(initial_codon)
             final_codon = complement(final_codon)
 
-        initial_codon_trans = codon_table[initial_codon]
-        final_codon_trans = codon_table[final_codon]
+        initial_codon_trans = codon_table.get(initial_codon, 'X')
+        final_codon_trans = codon_table.get(final_codon, 'X')
         if initial_codon_trans != final_codon_trans or disable_check_for_differences:
             #(gene, codon_number + 1, initial_codon_trans, final_codon_trans)
 
