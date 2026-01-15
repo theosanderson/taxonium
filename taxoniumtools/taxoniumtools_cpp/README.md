@@ -1,11 +1,8 @@
 # Taxonium Tools C++
 
+> ⚠️ **EXPERIMENTAL**: This is an experimental C++ port. Use the Python version for production workflows.
 
-EXPERIMENTALL!!!!!!
-
-A high-performance C++ implementation of taxoniumtools for converting Usher protobuf files to Taxonium JSONL format. 
-
-NOT FINISHED - WRITTEN BY AN LLM, AS IS REST OF THE README
+A high-performance C++ implementation of taxoniumtools for converting UShER protobuf files to Taxonium JSONL format.
 
 ## Performance Benefits
 
@@ -220,6 +217,22 @@ This implementation follows the same algorithms as the Python version but with o
 2. Preserve biological accuracy of mutations
 3. Add appropriate tests for new features
 4. Follow C++17 best practices
+
+## Limitations vs Python Version
+
+The C++ implementation focuses on high-performance protobuf conversion. The following Python features are **not yet implemented**:
+
+| Feature | Description |
+|---------|-------------|
+| Newick input | Only UShER protobuf files supported (no `.nwk`/`.newick`) |
+| `--title` | Custom title for tree display |
+| `--shear` | Tree shearing to remove small error branches |
+| `--clade_types` | Clade annotations (Nextstrain, Pango, etc.) |
+| `--remove_after_pipe` | Clean node names by removing content after "\|" |
+| Chronumental | Time tree integration |
+| view_taxonium | Docker-based local visualization |
+
+For these features, use the Python version: `pip install taxoniumtools`
 
 ## License
 
