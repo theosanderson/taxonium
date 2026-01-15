@@ -136,7 +136,7 @@ void Tree::ladderize_helper(Node* node, bool ascending) {
                 return a_rev < b_rev;  // Standard string comparison on reversed strings
 
             } else {
-                // Descending mode: (num_tips, edge_len, has_name, name)
+                // Standard order: (num_tips, edge_len, has_name, name)
 
                 // 1. Compare num_tips (smaller comes first)
                 if (a->num_tips != b->num_tips) {

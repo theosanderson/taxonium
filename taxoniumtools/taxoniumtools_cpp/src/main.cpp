@@ -310,7 +310,7 @@ int main(int argc, char* argv[]) {
             });
             
             // Ladderize tree
-            tree->ladderize(false);  // descending order
+            tree->ladderize(false);  // standard order
             
             // Calculate coordinates
             tree->calculate_coordinates();
@@ -326,7 +326,7 @@ int main(int argc, char* argv[]) {
             });
             
             // Ladderize tree
-            tree->ladderize(false);  // descending order
+            tree->ladderize(false);  // standard order
             
             // Calculate coordinates
             tree->calculate_coordinates();
