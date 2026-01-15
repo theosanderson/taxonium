@@ -12,8 +12,21 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Compiler flags
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wpedantic")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+option(PORTABLE_BUILD "Build portable binaries without -march=native" OFF)
+
+if(MSVC)
+    # MSVC compiler flags
+    set(CMAKE_CXX_FLAGS_DEBUG "/Od /Zi /W4")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
+else()
+    # GCC/Clang compiler flags
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wpedantic")
+    if(PORTABLE_BUILD)
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+    else()
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+    endif()
+endif()
 
 # Find required packages
 find_package(Protobuf REQUIRED)

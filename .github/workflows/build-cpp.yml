@@ -1,0 +1,165 @@
+name: Build C++ Binaries
+
+on:
+  push:
+    branches: [master, cpp]
+    paths:
+      - 'taxoniumtools/taxoniumtools_cpp/**'
+      - '.github/workflows/build-cpp.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'taxoniumtools/taxoniumtools_cpp/**'
+      - '.github/workflows/build-cpp.yml'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-unix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            name: linux-x86_64
+          - os: macos-13
+            name: macos-x86_64
+          - os: macos-14
+            name: macos-arm64
+
+    runs-on: ${{ matrix.os }}
+    name: Build ${{ matrix.name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            libprotobuf-dev \
+            protobuf-compiler \
+            zlib1g-dev \
+            libtbb-dev \
+            libboost-iostreams-dev
+
+      - name: Install dependencies (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          brew install \
+            cmake \
+            protobuf \
+            zlib \
+            tbb \
+            boost
+
+      - name: Configure CMake
+        working-directory: taxoniumtools/taxoniumtools_cpp
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPORTABLE_BUILD=ON
+
+      - name: Build
+        working-directory: taxoniumtools/taxoniumtools_cpp/build
+        run: make -j$(nproc 2>/dev/null || sysctl -n hw.ncpu)
+
+      - name: Run tests
+        working-directory: taxoniumtools/taxoniumtools_cpp/build
+        run: ctest --output-on-failure
+
+      - name: Prepare artifact
+        working-directory: taxoniumtools/taxoniumtools_cpp
+        run: |
+          mkdir -p dist
+          cp build/taxoniumtools_cpp dist/
+          cp README.md dist/ || true
+          cd dist
+          tar -czvf ../taxoniumtools_cpp-${{ matrix.name }}.tar.gz *
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: taxoniumtools_cpp-${{ matrix.name }}
+          path: taxoniumtools/taxoniumtools_cpp/taxoniumtools_cpp-${{ matrix.name }}.tar.gz
+
+  build-windows:
+    runs-on: windows-2022
+    name: Build windows-x86_64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: '2024.09.30'
+
+      - name: Install dependencies
+        run: |
+          vcpkg install protobuf:x64-windows zlib:x64-windows boost-iostreams:x64-windows tbb:x64-windows
+
+      - name: Configure CMake
+        working-directory: taxoniumtools/taxoniumtools_cpp
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DPORTABLE_BUILD=ON "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+
+      - name: Build
+        working-directory: taxoniumtools/taxoniumtools_cpp/build
+        run: cmake --build . --config Release --parallel
+
+      - name: Run tests
+        working-directory: taxoniumtools/taxoniumtools_cpp/build
+        run: ctest -C Release --output-on-failure
+
+      - name: Prepare artifact
+        working-directory: taxoniumtools/taxoniumtools_cpp
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist
+          Copy-Item build/Release/taxoniumtools_cpp.exe dist/
+          if (Test-Path README.md) { Copy-Item README.md dist/ }
+          Compress-Archive -Path dist/* -DestinationPath taxoniumtools_cpp-windows-x86_64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: taxoniumtools_cpp-windows-x86_64
+          path: taxoniumtools/taxoniumtools_cpp/taxoniumtools_cpp-windows-x86_64.zip
+
+  release:
+    needs: [build-unix, build-windows]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/taxoniumtools_cpp-linux-x86_64/taxoniumtools_cpp-linux-x86_64.tar.gz
+            artifacts/taxoniumtools_cpp-macos-x86_64/taxoniumtools_cpp-macos-x86_64.tar.gz
+            artifacts/taxoniumtools_cpp-macos-arm64/taxoniumtools_cpp-macos-arm64.tar.gz
+            artifacts/taxoniumtools_cpp-windows-x86_64/taxoniumtools_cpp-windows-x86_64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

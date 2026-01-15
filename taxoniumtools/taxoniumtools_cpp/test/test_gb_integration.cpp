@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <memory>
 #include "taxonium/genbank_parser.hpp"
 #include "taxonium/tree.hpp"
 #include "taxonium/node.hpp"
@@ -60,9 +61,11 @@ int main() {
     
     // Test mutation annotation with a simple tree
     Tree tree;
-    Node* root = tree.get_root();
-    root->name = "root";
-    
+    auto root_node = std::make_unique<Node>();
+    root_node->name = "root";
+    Node* root = root_node.get();
+    tree.set_root(std::move(root_node));
+
     Node* child = root->add_child("child1");
     
     // Add a mutation in the split gene
