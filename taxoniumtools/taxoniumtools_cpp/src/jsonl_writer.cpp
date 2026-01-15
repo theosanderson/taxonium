@@ -47,7 +47,14 @@ JSONLWriter::JSONLWriter(const std::string& filename) {
 }
 
 JSONLWriter::~JSONLWriter() {
-    // Destructor will handle cleanup
+    close();
+}
+
+void JSONLWriter::close() {
+    if (output_stream) {
+        output_stream->flush();
+        output_stream.reset();  // This triggers destructor which finalizes gzip
+    }
 }
 
 void JSONLWriter::write_tree(Tree* tree, std::function<void(size_t)> progress_callback) {

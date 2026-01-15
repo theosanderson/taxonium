@@ -17,7 +17,8 @@ private:
 
 public:
     Tree() = default;
-    
+    ~Tree();  // Custom destructor for efficient cleanup
+
     // Get root node
     Node* get_root() { return root.get(); }
     const Node* get_root() const { return root.get(); }

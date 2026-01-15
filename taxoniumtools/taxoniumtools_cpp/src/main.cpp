@@ -3,6 +3,7 @@
 #include <memory>
 #include <fstream>
 #include <chrono>
+#include <cstdlib>
 
 #include "cxxopts.hpp"
 #include "taxonium/tree.hpp"
@@ -364,29 +365,20 @@ int main(int argc, char* argv[]) {
         
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-        
+
         std::cout << "Done! Processing took " << duration.count() / 1000.0 << " seconds" << std::endl;
-        
-        // Explicit cleanup to avoid slow destructor cleanup
-        auto cleanup_start = std::chrono::high_resolution_clock::now();
-        tree.reset(); // Explicitly destroy the tree
-        
-        // Clear string pool which might be holding lots of strings
-        get_metadata_pool().clear();
-        
-        // Explicitly destroy TBB control to avoid slow shutdown
-        #ifdef USE_TBB
-        tbb_control.reset();
-        #endif
-        
-        auto cleanup_end = std::chrono::high_resolution_clock::now();
-        auto cleanup_duration = std::chrono::duration_cast<std::chrono::milliseconds>(cleanup_end - cleanup_start);
-        std::cout << "⏱️  Cleanup: " << cleanup_duration.count() / 1000.0 << "s" << std::endl;
-        
+
+        // Close the output file properly (important for gzip to write trailer)
+        writer.close();
+
+        // Skip cleanup - let the OS reclaim memory on exit (much faster than destructors)
+        std::cout.flush();
+        _Exit(0);
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

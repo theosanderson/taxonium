@@ -22,6 +22,9 @@ public:
     explicit JSONLWriter(const std::string& filename);
     ~JSONLWriter();
 
+    // Close the output stream (important for gzip to write trailer)
+    void close();
+
     // Set metadata column names
     void set_metadata_columns(const std::vector<std::string>& columns) {
         metadata_columns = columns;

@@ -16,6 +16,37 @@
 
 namespace taxonium {
 
+Tree::~Tree() {
+    // Iterative destruction to avoid deep recursion and improve cache locality
+    // With millions of nodes, recursive destruction is very slow
+    if (!root) return;
+
+    // Collect all nodes into a flat vector
+    std::vector<std::unique_ptr<Node>> all_nodes;
+    all_nodes.reserve(node_map.size() > 0 ? node_map.size() : 1000000);
+
+    // Use a stack for iterative traversal
+    std::vector<Node*> stack;
+    stack.push_back(root.get());
+
+    while (!stack.empty()) {
+        Node* node = stack.back();
+        stack.pop_back();
+
+        // Add children to stack and transfer ownership to all_nodes
+        for (auto& child : node->children) {
+            stack.push_back(child.get());
+            all_nodes.push_back(std::move(child));
+        }
+        node->children.clear();
+    }
+
+    // Now root and all_nodes will be destroyed when they go out of scope
+    // but without deep recursion since children vectors are empty
+    root.reset();
+    // all_nodes destroyed here - flat iteration, no recursion
+}
+
 void Tree::set_root(std::unique_ptr<Node> new_root) {
     root = std::move(new_root);
     build_node_map();
