@@ -173,26 +173,51 @@ export async function processNewick(
 
   const tree: any = kn_parse(the_data);
 
-  function assignNumTips(node: any): number {
-    if (node.child.length === 0) {
-      node.num_tips = 1;
-    } else {
-      node.num_tips = 0;
-      node.child.forEach((child: any) => {
-        node.num_tips += assignNumTips(child);
-      });
+  // Iterative post-order traversal to assign num_tips (avoids stack overflow)
+  function assignNumTips(root: any): number {
+    // Build list of nodes in post-order (children before parents)
+    const postOrder: any[] = [];
+    const stack: any[] = [root];
+
+    while (stack.length > 0) {
+      const node = stack.pop();
+      postOrder.push(node);
+      // Push children to stack (they'll be processed and added to postOrder)
+      for (const child of node.child) {
+        stack.push(child);
+      }
     }
 
-    return node.num_tips;
+    // Process in reverse order (post-order: children before parents)
+    for (let i = postOrder.length - 1; i >= 0; i--) {
+      const node = postOrder[i];
+      if (node.child.length === 0) {
+        node.num_tips = 1;
+      } else {
+        node.num_tips = 0;
+        for (const child of node.child) {
+          node.num_tips += child.num_tips;
+        }
+      }
+    }
+
+    return root.num_tips;
   }
 
-  function sortWithNumTips(node: any): void {
-    node.child.sort((a: any, b: any) => {
-      return a.num_tips - b.num_tips;
-    });
-    node.child.forEach((child: any) => {
-      sortWithNumTips(child);
-    });
+  // Iterative tree traversal to sort children by num_tips (avoids stack overflow)
+  function sortWithNumTips(root: any): void {
+    const stack: any[] = [root];
+
+    while (stack.length > 0) {
+      const node = stack.pop();
+      node.child.sort((a: any, b: any) => {
+        return a.num_tips - b.num_tips;
+      });
+      // Push children to stack for processing
+      for (const child of node.child) {
+        stack.push(child);
+      }
+    }
   }
   assignNumTips(tree.root);
   const total_tips = tree.root.num_tips;

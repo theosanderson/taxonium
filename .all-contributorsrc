@@ -81,6 +81,15 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "josephthorpe",
+      "name": "Joe Thorpe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/100434056?v=4",
+      "profile": "https://github.com/JosephThorpe",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -1,0 +1,36 @@
+{
+  "name": "taxonium_website_next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "preinstall": "NODE_OPTIONS='--max-old-space-size=8096' cd ../taxonium_component && npm install -f  && npm run build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.9",
+    "@tailwindcss/forms": "^0.5.10",
+    "classnames": "^2.5.1",
+    "next": "15.5.9",
+    "react": "19.1.0",
+    "react-color": "^2.19.3",
+    "react-dom": "19.1.0",
+    "react-icons": "^5.5.0",
+    "react-modal": "^3.16.3",
+    "react-tooltip": "^5.30.0",
+    "taxonium-component": "file:../taxonium_component"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

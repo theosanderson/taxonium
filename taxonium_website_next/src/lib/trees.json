@@ -1,0 +1,419 @@
+{
+  "sars-cov-2/public": {
+    "backend": "https://api.cov2tree.org",
+    "title": "SARS-CoV-2",
+    "description": "All seven million public sequences of SARS-CoV-2 from the INSDC databases",
+    "legacyHostnames": ["cov2tree.org"],
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team, with very minor post-processing by the Taxonium team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "sars-cov-2/viridian": {
+    "backend": "https://viridian-api.cov2tree.org",
+    "title": "SARS-CoV-2 Viridian",
+    "description": "SARS-CoV-2 sequences processed through Viridian pipeline",
+    "legacyHostnames": ["viridian.taxonium.org"],
+    "icon": "/assets/people.png",
+    "maintainerMessage": "Built by the Viridian authors",
+    "maintainerUrl": null
+  },
+  "mpox/clade-I": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/857/045/GCF_000857045.1/UShER_MPXV_cladeI/mpxv.cladeI.latest.masked.taxonium.jsonl.gz",
+    "title": "Mpox Clade I",
+    "description": "Mpox Clade I",
+    "legacyHostnames": ["mpx.taxonium.org"],
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "mpox/clade-IIb": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/014/621/545/GCF_014621545.1/UShER_hMPXV/mpxv.latest.masked.taxonium.jsonl.gz",
+    "title": "Mpox Clade IIb",
+    "description": "Clade IIb / 2017 outbreak",
+    "legacyHostnames": ["mpx.taxonium.org"],
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "tuberculosis/SRA": {
+    "backend": "https://mtb.api.taxonium.org",
+    "title": "M. tuberculosis",
+    "description": "M. tuberculosis genomes assembled from data deposited in SRA",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "taxonomy/full": {
+    "treeUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/tree.nwk.gz",
+    "metaUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/metadata.tsv.gz",
+    "configUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/ncbi/config.json",
+    "ladderizeTree": true,
+    "title": "NCBI Taxonomy (full)",
+    "description": "Full 2.2M NCBI Taxonomy of species",
+    "legacyHostnames": ["taxonomy.taxonium.org"],
+    "icon": "/assets/apple-touch-icon.png",
+    "maintainerMessage": "Built by the Taxonium team from the NCBI phylogeny",
+    "maintainerUrl": null
+  },
+  "taxonomy/visual": {
+    "protoUrl": "https://cov2tree.nyc3.digitaloceanspaces.com/wikidata/out.jsonl.gz",
+    "title": "Wikidata visual tree of life",
+    "description": "The tree of life, showing species from Wikidata with images. Links to Wikipedia.",
+    "legacyHostnames": ["visualtreeoflife.taxonium.org"],
+    "icon": "/assets/apple-touch-icon.png",
+    "maintainerMessage": "Built by the Taxonium team from the Wikidata phylogeny",
+    "maintainerUrl": null
+  },
+  "flu/H5N1-Outbreak": {
+    "backend": "https://h5n1outbreak.api.taxonium.org",
+    "title": "H5N1 outbreak tree (B3.13)",
+    "description": "Outbreak tree of H5N1 B3.13 (cattle etc.) outbreak",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/H5N1-Outbreak-D1-1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_h5n1_D1.1_2024/h5n1_D1.1_2024.latest.jsonl.gz",
+    "title": "H5N1 outbreak tree (D1.1)",
+    "description": "Outbreak tree of H5N1 D1.1 (poultry etc.) outbreak",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/PB2": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007357.1/fluA.GCF_000864105.1.NC_007357.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/PB1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007358.1/fluA.GCF_000864105.1.NC_007358.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/PA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007359.1/fluA.GCF_000864105.1.NC_007359.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/HA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007362.1/fluA.GCF_000864105.1.NC_007362.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/NP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007360.1/fluA.GCF_000864105.1.NC_007360.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/NA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007361.1/fluA.GCF_000864105.1.NC_007361.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/MP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007363.1/fluA.GCF_000864105.1.NC_007363.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/goose/Guangdong/1/1996(H5N1)/NS": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/864/105/GCF_000864105.1/UShER_NC_007364.1/fluA.GCF_000864105.1.NC_007364.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/PB2": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007373.1/fluA.GCF_000865085.1.NC_007373.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/PB1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007372.1/fluA.GCF_000865085.1.NC_007372.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/PA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007371.1/fluA.GCF_000865085.1.NC_007371.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/HA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007366.1/fluA.GCF_000865085.1.NC_007366.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/NP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007369.1/fluA.GCF_000865085.1.NC_007369.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/NA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007368.1/fluA.GCF_000865085.1.NC_007368.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/MP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007367.1/fluA.GCF_000865085.1.NC_007367.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/New York/392/2004(H3N2)/NS": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/085/GCF_000865085.1/UShER_NC_007370.1/fluA.GCF_000865085.1.NC_007370.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/PB2": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026438.1/fluA.GCF_001343785.1.NC_026438.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/PB1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026435.1/fluA.GCF_001343785.1.NC_026435.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/PA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026437.1/fluA.GCF_001343785.1.NC_026437.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/HA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026433.1/fluA.GCF_001343785.1.NC_026433.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/NP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026436.1/fluA.GCF_001343785.1.NC_026436.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/NA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026434.1/fluA.GCF_001343785.1.NC_026434.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/MP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026431.1/fluA.GCF_001343785.1.NC_026431.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/California/07/2009(H1N1)/NS": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/001/343/785/GCF_001343785.1/UShER_NC_026432.1/fluA.GCF_001343785.1.NC_026432.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/PB2": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002023.1/fluA.GCF_000865725.1.NC_002023.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/PB1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002021.1/fluA.GCF_000865725.1.NC_002021.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/PA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002022.1/fluA.GCF_000865725.1.NC_002022.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/HA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002017.1/fluA.GCF_000865725.1.NC_002017.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/NP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002019.1/fluA.GCF_000865725.1.NC_002019.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/NA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002018.1/fluA.GCF_000865725.1.NC_002018.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/MP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002016.1/fluA.GCF_000865725.1.NC_002016.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Puerto Rico/8/1934(H1N1)/NS": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/865/725/GCF_000865725.1/UShER_NC_002020.1/fluA.GCF_000865725.1.NC_002020.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/PB2": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026422.1/fluA.GCF_000928555.1.NC_026422.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/PB1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026423.1/fluA.GCF_000928555.1.NC_026423.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/PA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026424.1/fluA.GCF_000928555.1.NC_026424.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/HA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026425.1/fluA.GCF_000928555.1.NC_026425.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/NP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026426.1/fluA.GCF_000928555.1.NC_026426.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/NA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026429.1/fluA.GCF_000928555.1.NC_026429.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/MP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026427.1/fluA.GCF_000928555.1.NC_026427.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Shanghai/02/2013(H7N9)/NS": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/928/555/GCF_000928555.1/UShER_NC_026428.1/fluA.GCF_000928555.1.NC_026428.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/PB2": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007378.1/fluA.GCF_000866645.1.NC_007378.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/PB1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007375.1/fluA.GCF_000866645.1.NC_007375.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/PA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007376.1/fluA.GCF_000866645.1.NC_007376.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/HA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007374.1/fluA.GCF_000866645.1.NC_007374.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/NP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007381.1/fluA.GCF_000866645.1.NC_007381.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/NA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007382.1/fluA.GCF_000866645.1.NC_007382.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/MP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007377.1/fluA.GCF_000866645.1.NC_007377.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Korea/426/1968(H2N2)/NS": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/866/645/GCF_000866645.1/UShER_NC_007380.1/fluA.GCF_000866645.1.NC_007380.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/PB2": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004910.1/fluA.GCF_000851145.1.NC_004910.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/PB1": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004911.1/fluA.GCF_000851145.1.NC_004911.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/PA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004912.1/fluA.GCF_000851145.1.NC_004912.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/HA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004908.1/fluA.GCF_000851145.1.NC_004908.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/NP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004905.2/fluA.GCF_000851145.1.NC_004905.2.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/NA": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004909.1/fluA.GCF_000851145.1.NC_004909.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/MP": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004907.1/fluA.GCF_000851145.1.NC_004907.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  },
+  "flu/A/Hong Kong/1073/99(H9N2)/NS": {
+    "protoUrl": "https://hgdownload.gi.ucsc.edu/hubs/GCF/000/851/145/GCF_000851145.1/UShER_NC_004906.1/fluA.GCF_000851145.1.NC_004906.1.latest.taxonium.jsonl.gz",
+    "icon": "/assets/usher.png",
+    "maintainerMessage": "Maintained by the UShER team",
+    "maintainerUrl": "https://genome.ucsc.edu/cgi-bin/hgPhyloPlace"
+  }
+}

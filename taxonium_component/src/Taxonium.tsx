@@ -51,6 +51,10 @@ interface TaxoniumProps {
   onNodeSelect?: NodeSelectHandler;
   onNodeDetailsLoaded?: NodeDetailsLoadedHandler;
   sidePanelHiddenByDefault?: boolean;
+  usherProtobuf?: string;
+  referenceGBFF?: string;
+  referenceFasta?: string;
+  metadataUrl?: string;
 }
 
 const default_query = getDefaultQuery();
@@ -72,6 +76,10 @@ function Taxonium({
   onNodeSelect,
   onNodeDetailsLoaded,
   sidePanelHiddenByDefault,
+  usherProtobuf,
+  referenceGBFF,
+  referenceFasta,
+  metadataUrl,
 }: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
@@ -213,6 +221,29 @@ function Taxonium({
     }, 100);
   };
 
+  const buildPlaceSequencesUrl = () => {
+    const params = new URLSearchParams();
+    params.append('mode', 'no_genbank');
+
+    if (usherProtobuf) {
+      params.append('startingTreeUrl', usherProtobuf);
+    }
+    if (referenceGBFF) {
+      params.append('refGbffUrl', referenceGBFF);
+    }
+    if (referenceFasta) {
+      params.append('refFastaUrl', referenceFasta);
+    }
+    
+    if (metadataUrl) {
+      params.append('metadataUrl', metadataUrl);
+    }
+
+    return `/build?${params.toString()}`;
+  };
+
+  const showPlaceSequencesButton = usherProtobuf && referenceGBFF && referenceFasta;
+
   const treenomeState = useTreenomeState(data, deckRef, view, settings);
 
   return (
@@ -304,6 +335,7 @@ function Taxonium({
                 setAboutEnabled={setAboutEnabled}
                 perNodeFunctions={perNodeFunctions}
                 toggleSidebar={toggleSidebar}
+                placeSequencesUrl={showPlaceSequencesButton ? buildPlaceSequencesUrl() : undefined}
               />
             )}
           </div>

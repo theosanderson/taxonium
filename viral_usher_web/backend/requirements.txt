@@ -1,0 +1,7 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+viral-usher==0.10.0
+boto3==1.34.0
+python-multipart==0.0.6
+kubernetes==28.1.0
