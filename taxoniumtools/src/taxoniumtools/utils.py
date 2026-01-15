@@ -272,6 +272,8 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
         object['mutations'] += [
             input_to_index[my_input] for my_input in node.nuc_mutations
         ]
+    # Sort mutations by their index for deterministic output
+    object['mutations'].sort()
     if node.is_leaf():
         object['is_tip'] = True
     else:

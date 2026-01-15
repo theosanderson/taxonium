@@ -82,9 +82,11 @@ def compare_headers(py_header: Dict, cpp_header: Dict) -> bool:
             all_match = False
 
     # Check all other header fields for perfect equivalence
+    # Skip 'version' field as it's expected to differ between implementations
+    skip_fields = {'mutations', 'version'}
     for key in py_keys | cpp_keys:
-        if key == 'mutations':
-            continue  # Already checked above
+        if key in skip_fields:
+            continue  # Already checked or expected to differ
 
         if py_header.get(key) == cpp_header.get(key):
             if key in ['reference', 'title', 'name']:

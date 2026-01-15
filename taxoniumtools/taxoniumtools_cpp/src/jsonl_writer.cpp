@@ -217,8 +217,7 @@ void JSONLWriter::write_header(Tree* tree) {
             yyjson_mut_obj_add_int(doc, gene_obj, "start", gene.start);
             yyjson_mut_obj_add_int(doc, gene_obj, "end", gene.end);
 
-            yyjson_mut_val* gene_name_val = yyjson_mut_str(doc, gene.name.c_str());
-            yyjson_mut_obj_add_val(gene_details, gene_name_val, gene_obj);
+            yyjson_mut_obj_add_val(doc, gene_details, gene.name.c_str(), gene_obj);
         }
         yyjson_mut_obj_add_val(doc, config, "gene_details", gene_details);
     }
@@ -276,25 +275,37 @@ void JSONLWriter::write_node_to_stream(Node* node, size_t node_index,
     
     // Mutations (as indices) - always include even if empty
     yyjson_mut_val* mutations = yyjson_mut_arr(doc);
-    
-    // Add amino acid mutations first (to match Python order)
+
+    // Collect all mutation indices first
+    std::vector<size_t> mutation_indices;
+    mutation_indices.reserve(node->aa_mutations.size() + node->mutations.size());
+
+    // Collect amino acid mutation indices
     for (const auto& aa_mut : node->aa_mutations) {
         std::string key = aa_mutation_to_key(aa_mut);
         auto it = mutation_content_to_index.find(key);
         if (it != mutation_content_to_index.end()) {
-            yyjson_mut_arr_add_uint(doc, mutations, it->second);
+            mutation_indices.push_back(it->second);
         }
     }
-    
-    // Add nucleotide mutations second
+
+    // Collect nucleotide mutation indices
     for (const auto& mut : node->mutations) {
         std::string key = mutation_to_key(mut);
         auto it = mutation_content_to_index.find(key);
         if (it != mutation_content_to_index.end()) {
-            yyjson_mut_arr_add_uint(doc, mutations, it->second);
+            mutation_indices.push_back(it->second);
         }
     }
-    
+
+    // Sort by index to ensure deterministic output matching the global sorted mutation order
+    std::sort(mutation_indices.begin(), mutation_indices.end());
+
+    // Write sorted indices
+    for (size_t idx : mutation_indices) {
+        yyjson_mut_arr_add_uint(doc, mutations, idx);
+    }
+
     yyjson_mut_obj_add_val(doc, root, "mutations", mutations);
     
     // Is tip

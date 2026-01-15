@@ -1,15 +1,13 @@
 #pragma once
 
 #include "node.hpp"
+#include "gene.hpp"
 #include <memory>
 #include <unordered_map>
 #include <vector>
 #include <functional>
 
 namespace taxonium {
-
-// Forward declarations
-struct Gene;
 
 class Tree {
 private:
