@@ -33,5 +33,4 @@ jobs:
           NODE_OPTIONS='--max-old-space-size=5096' npm run build
           npm publish --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=4096
