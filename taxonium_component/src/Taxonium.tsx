@@ -250,7 +250,7 @@ function Taxonium({
     <GlobalErrorBoundary>
       <div
         className="w-full h-full flex taxonium"
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", display: "flex" }}
       >
         <div id="taxonium-root" />
         <Toaster />

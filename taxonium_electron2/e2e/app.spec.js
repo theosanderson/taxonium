@@ -40,27 +40,10 @@ test.describe('Taxonium Electron App', () => {
   });
 
   test('loads tfci.jsonl and displays Taxonium', async () => {
-    // Listen for console messages from the renderer
-    window.on('console', msg => console.log('RENDERER:', msg.text()));
-
-    // Set up listeners for backend events before opening file
-    await window.evaluate(() => {
-      window.electronAPI.onBackendStatus((data) => {
-        console.log('Backend status:', JSON.stringify(data));
-      });
-      window.electronAPI.onBackendUrl((url) => {
-        console.log('Backend URL received:', url);
-      });
-    });
-
-    // Use ipcRenderer to invoke the open-file handler (same as drag-drop)
-    const result = await window.evaluate(async (testFile) => {
-      console.log('Opening file:', testFile);
-      const res = await window.electronAPI.openFile(testFile);
-      console.log('openFile result:', res);
-      return res;
+    // Use ipcRenderer to invoke the open-file handler
+    await window.evaluate(async (testFile) => {
+      await window.electronAPI.openFile(testFile);
     }, TEST_FILE);
-    console.log('File open result:', result);
 
     // Wait for Taxonium to load (check for the taxonium container)
     const taxoniumContainer = window.locator('.taxonium-container');
@@ -68,12 +51,12 @@ test.describe('Taxonium Electron App', () => {
 
     // Check that the Taxonium component rendered
     const taxoniumElement = window.locator('.taxonium');
-    await expect(taxoniumElement).toBeVisible({ timeout: 30000 });
+    await expect(taxoniumElement).toBeVisible();
   });
 
   test('Taxonium component shows tree visualization', async () => {
-    // Wait for the deck.gl canvas to be present (this means the tree is rendering)
-    const canvas = window.locator('canvas');
-    await expect(canvas.first()).toBeVisible({ timeout: 30000 });
+    // Wait for the deck.gl canvas to be visible
+    const canvas = window.locator('canvas#deckgl-overlay');
+    await expect(canvas).toBeVisible();
   });
 });
