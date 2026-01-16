@@ -3,7 +3,7 @@ name: Build and Push Viral Usher Web Image
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'viral_usher_web/**'
       - '.github/workflows/build-viral-usher-web.yml'
