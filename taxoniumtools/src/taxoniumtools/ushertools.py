@@ -73,22 +73,29 @@ def get_codon_table():
 codon_table = get_codon_table()
 
 
-def get_gene_name(cds):
+def get_gene_name(cds, gene_records):
     """Returns gene if available, otherwise locus tag"""
     if "gene" in cds.qualifiers:
         return cds.qualifiers["gene"][0]
     elif "locus_tag" in cds.qualifiers:
         return cds.qualifiers["locus_tag"][0]
     else:
+        for gene in gene_records:
+            if gene.location == cds.location:
+                if "gene" in gene.qualifiers:
+                    return gene.qualifiers["gene"][0]
+        if "product" in cds.qualifiers:
+            return cds.qualifiers["product"][0].replace(" ", "_")
         raise ValueError(f"No gene name or locus tag for {cds}")
 
 
-def get_genes_dict(cdses):
+def get_genes_dict(cdses, gene_records):
     genes = {}
     for cds in cdses:
 
-        genes[get_gene_name(cds)] = Gene(get_gene_name(cds), cds.strand,
-                                         cds.location.start, cds.location.end)
+        gene_name = get_gene_name(cds, gene_records)
+        genes[gene_name] = Gene(gene_name, cds.strand, cds.location.start,
+                                cds.location.end)
     return genes
 
 
@@ -333,17 +340,18 @@ class UsherMutationAnnotatedTree:
     def load_genbank_file(self, genbank_file):
         self.genbank = SeqIO.read(genbank_file, "genbank")
         self.cdses = [x for x in self.genbank.features if x.type == "CDS"]
+        gene_records = [x for x in self.genbank.features if x.type == "gene"]
         # Assert that there are no compound locations and that all strands are positive,
         # and that all CDS features are a multiple of 3
 
-        self.genes = get_genes_dict(self.cdses)
+        self.genes = get_genes_dict(self.cdses, gene_records)
 
         by_everything = defaultdict(lambda: defaultdict(dict))
         total_lengths = {}
 
         for feature in self.cdses:
 
-            gene_name = get_gene_name(feature)
+            gene_name = get_gene_name(feature, gene_records)
 
             nucleotide_counter = 0
             for part in feature.location.parts:
@@ -370,9 +378,11 @@ class UsherMutationAnnotatedTree:
                 codon_obj = Codon(feat_name, codon_index, codon_dict,
                                   self.genes[feat_name].strand)
 
-                assert len(codon_dict) % 3 == 0
-                for k, v in codon_dict.items():
-                    nuc_to_codon[v].append(codon_obj)
+                if len(codon_dict) % 3 == 0:
+                    for k, v in codon_dict.items():
+                        nuc_to_codon[v].append(codon_obj)
+                else:
+                    print(f"Skipping partial codon for feature {feat_name}")
 
         self.nuc_to_codon = nuc_to_codon
 
