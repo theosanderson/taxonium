@@ -396,7 +396,7 @@ function MainApp({ pathname }: { pathname: string }) {
           ) : (
             <div className="m-10 space-y-3">
               <p className="text-lg text-gray-700 mb-5 font-bold">
-                Welcome to Taxonium, a tool for exploring large trees
+                Welcome to Taxonium, a platform for exploring large phylogenetic trees
               </p>
               <div className={`grid ${inputHelper.inputs.length === 0 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'} gap-4 mb-6`}>
                 <div className="border border-gray-200 rounded-lg p-6">
