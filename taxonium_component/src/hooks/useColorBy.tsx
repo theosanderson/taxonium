@@ -22,11 +22,21 @@ function useColorBy(
     return query.color ? JSON.parse(query.color) : {};
   }, [query.color]);
 
-  const colorByField = colorByConfig.field
+  const colorByOptions = config.colorBy?.colorByOptions ?? [];
+
+  // Calculate initial colorByField from query or config defaults
+  let colorByField = colorByConfig.field
     ? colorByConfig.field
     : config.defaultColorByField
     ? config.defaultColorByField
     : "meta_pangolin_lineage";
+
+  // Validate colorByField is in options (if options are loaded)
+  // This prevents the UI showing one value while rendering uses another
+  if (colorByOptions.length > 0 && !colorByOptions.includes(colorByField)) {
+    colorByField = colorByOptions[0];
+  }
+
   const colorByGene = colorByConfig.gene
     ? colorByConfig.gene
     : config.genes && config.genes.includes("S")
@@ -34,8 +44,6 @@ function useColorBy(
     : "nt";
   const colorByPosition =
     colorByConfig.pos !== undefined ? colorByConfig.pos : 484;
-
-  const colorByOptions = config.colorBy?.colorByOptions ?? [];
 
   (window as WindowWithCc).cc = colorCacheRef.current;
 
