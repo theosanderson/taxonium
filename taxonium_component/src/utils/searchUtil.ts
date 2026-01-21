@@ -21,5 +21,8 @@ export function getDefaultSearch(config: SearchUtilConfig | null, key?: string):
     position: 484,
     new_residue: "any",
     min_tips: 0,
+    spectra: ["", ""],
+    spectra_threshold: 2.0,
+    min_mutations: 1,
   };
 }

@@ -11,6 +11,7 @@ export enum SearchMethod {
   NUMBER = "number",
   BOOLEAN = "boolean",
   NAME = "name",
+  SPECTRA = "spectra",
 }
 
 export enum BooleanMethod {
@@ -41,6 +42,9 @@ export interface SearchSpec {
   subspecs?: SearchSpec[];
   number_method?: NumberMethod;
   number?: number;
+  spectra?: string[];        // Array of spectrum texts
+  spectra_threshold?: number;
+  min_mutations?: number;
 }
 
 export interface SearchBackendResult {

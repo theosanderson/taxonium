@@ -303,6 +303,39 @@ export const processJsonl = async (
   const overwrite_config = new_data.header.config ? new_data.header.config : {};
   overwrite_config.num_tips = root.num_tips;
 
+  // Build reference sequence from rootMutations
+  // rootMutations are mutation IDs; look them up in the mutations array
+  // For nt mutations with previous_residue === "X", new_residue is the nucleotide at that position
+  const mutations = new_data.header.mutations
+    ? new_data.header.mutations
+    : new_data.header.aa_mutations;
+
+  let referenceSequence = null;
+  if (rootMutations && rootMutations.length > 0 && mutations) {
+    // Find the maximum position to determine sequence length
+    let maxPos = 0;
+    const ntPositions = {};
+
+    for (const mutId of rootMutations) {
+      const mut = mutations[mutId];
+      if (mut && mut.gene === "nt" && mut.previous_residue === "X") {
+        const pos = mut.residue_pos;
+        ntPositions[pos] = mut.new_residue;
+        if (pos > maxPos) maxPos = pos;
+      }
+    }
+
+    // Build the sequence if we found nucleotide mutations
+    if (maxPos > 0) {
+      const seqArray = new Array(maxPos).fill("N");
+      for (const pos in ntPositions) {
+        seqArray[parseInt(pos) - 1] = ntPositions[pos]; // positions are 1-indexed
+      }
+      referenceSequence = seqArray.join("");
+      console.log(`Built reference sequence of length ${referenceSequence.length}`);
+    }
+  }
+
   const output = {
     nodes: new_data.nodes,
     overallMaxX,
@@ -310,13 +343,12 @@ export const processJsonl = async (
     overallMinX,
     overallMinY,
     y_positions,
-    mutations: new_data.header.mutations
-      ? new_data.header.mutations
-      : new_data.header.aa_mutations,
+    mutations: mutations,
     node_to_mut: new_data.node_to_mut,
     rootMutations: rootMutations,
     rootId: root.node_id,
     overwrite_config,
+    referenceSequence: referenceSequence,
   };
 
   return output;
@@ -386,6 +418,9 @@ export const generateConfig = (config, processedUploadedData) => {
     if (x === "mutation") {
       return "Mutation";
     }
+    if (x === "spectra") {
+      return "Mutation Spectra";
+    }
 
     const capitalised_first_letter = x.charAt(0).toUpperCase() + x.slice(1);
     return capitalised_first_letter;
@@ -411,6 +446,7 @@ export const generateConfig = (config, processedUploadedData) => {
       return "text_exact";
     }
     if (x === "boolean") return "boolean";
+    if (x === "spectra") return "spectra";
 
     return "text_match";
   };
@@ -423,6 +459,11 @@ export const generateConfig = (config, processedUploadedData) => {
 
   if (processedUploadedData.rootMutations.length > 0) {
     initial_search_types.push("revertant");
+  }
+
+  // Add spectra search type if reference sequence is available
+  if (processedUploadedData.referenceSequence) {
+    initial_search_types.push("spectra");
   }
 
   initial_search_types.push("num_tips");

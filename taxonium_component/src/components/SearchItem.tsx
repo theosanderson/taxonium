@@ -8,7 +8,7 @@ import {
   NumberMethod,
   BooleanMethod,
 } from "../types/search";
-import type { Config, SearchType } from "../types/backend";
+import type { Config, SearchType, Backend } from "../types/backend";
 const number_methods = [
   NumberMethod.GT,
   NumberMethod.LT,
@@ -33,9 +33,10 @@ interface SearchItemProps {
   singleSearchSpec: SearchSpec;
   setThisSearchSpec: (spec: SearchSpec) => void;
   config: Config;
+  backend?: Backend;
 }
 
-const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemProps) => {
+const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config, backend }: SearchItemProps) => {
   const types = (config.search_types as SearchType[]) ?? [];
 
   const all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
@@ -417,6 +418,121 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             }
             className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
           />
+        </div>
+      )}
+      {singleSearchSpec.method === SearchMethod.SPECTRA && (
+        <div className="pl-2 pt-2">
+          <div className="text-sm text-gray-600 mb-2">
+            Compare mutation spectra. Enter tab-separated context/count pairs (e.g., A[C&gt;T]G	10).
+          </div>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {(singleSearchSpec.spectra ?? ["", ""]).map((spectrum, index) => (
+              <div key={index} className="flex-1 min-w-48">
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-sm font-medium text-gray-700">
+                    {index === 0 ? "Target Spectrum:" : `Background ${index}:`}
+                  </label>
+                  {index > 1 && (
+                    <button
+                      className="text-red-500 text-xs hover:text-red-700"
+                      onClick={() => {
+                        const newSpectra = [...(singleSearchSpec.spectra ?? [])];
+                        newSpectra.splice(index, 1);
+                        setThisSearchSpec({
+                          ...singleSearchSpec,
+                          spectra: newSpectra,
+                        });
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                <DebounceInput
+                  element="textarea"
+                  className="w-full h-32 border py-1 px-1 text-grey-darkest text-sm font-mono"
+                  placeholder={"A[C>T]G\t10\nA[C>T]A\t5\n..."}
+                  value={spectrum}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                    const newSpectra = [...(singleSearchSpec.spectra ?? ["", ""])];
+                    newSpectra[index] = e.target.value;
+                    setThisSearchSpec({
+                      ...singleSearchSpec,
+                      spectra: newSpectra,
+                    });
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2 mb-2">
+            <button
+              className="text-blue-600 text-sm hover:text-blue-800"
+              onClick={() => {
+                setThisSearchSpec({
+                  ...singleSearchSpec,
+                  spectra: [...(singleSearchSpec.spectra ?? ["", ""]), ""],
+                });
+              }}
+            >
+              + Add background spectrum
+            </button>
+            {backend?.getOverallSpectrum && (
+              <button
+                className="text-green-600 text-sm hover:text-green-800"
+                onClick={() => {
+                  backend.getOverallSpectrum((spectrum: string | null) => {
+                    if (spectrum) {
+                      const newSpectra = [...(singleSearchSpec.spectra ?? ["", ""])];
+                      // Set the last background spectrum (index 1 or higher)
+                      const targetIndex = newSpectra.length > 1 ? newSpectra.length - 1 : 1;
+                      newSpectra[targetIndex] = spectrum;
+                      setThisSearchSpec({
+                        ...singleSearchSpec,
+                        spectra: newSpectra,
+                      });
+                    }
+                  });
+                }}
+              >
+                Auto-infer background from tree
+              </button>
+            )}
+          </div>
+          <div className="flex gap-4 items-center">
+            <div>
+              <label className="text-sm mr-2">Min mutations:</label>
+              <DebounceInput
+                type="number"
+                value={singleSearchSpec.min_mutations ?? 1}
+                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    min_mutations: Number(e.target.value),
+                  })
+                }
+                className="inline-block w-16 border py-1 px-1 text-grey-darkest text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-sm mr-2">Delta LL threshold:</label>
+              <DebounceInput
+                type="number"
+                step="0.1"
+                value={singleSearchSpec.spectra_threshold ?? 2.0}
+                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                  setThisSearchSpec({
+                    ...singleSearchSpec,
+                    spectra_threshold: Number(e.target.value),
+                  })
+                }
+                className="inline-block w-20 border py-1 px-1 text-grey-darkest text-sm"
+              />
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 mt-2">
+            Returns nodes where log(L_target) - max(log(L_background)) &gt;= threshold.
+          </div>
         </div>
       )}
     </>
