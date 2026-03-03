@@ -7,7 +7,11 @@ from pydantic import BaseModel
 from typing import List, Optional
 import os
 import sys
+import re
+import time
+import asyncio
 import boto3
+import httpx
 from botocore.exceptions import ClientError
 import uuid
 from datetime import datetime
@@ -867,6 +871,93 @@ async def s3_proxy(bucket: str, s3_key: str):
             raise HTTPException(status_code=500, detail=f"S3 error: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Viral UShER trees metadata endpoint ───────────────────────────────────────
+
+_VUT_BASE = "https://angiehinrichs.github.io/viral_usher_trees"
+_VUT_TSV  = f"{_VUT_BASE}/tree_metadata.tsv"
+_EUTILS   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
+
+_trees_cache: dict = {"data": None, "ts": 0.0}
+_CACHE_TTL = 3600  # seconds
+
+
+def _parse_toml_field(text: str, key: str) -> Optional[str]:
+    m = re.search(rf"^{re.escape(key)}\s*=\s*'([^']+)'", text, re.MULTILINE)
+    return m.group(1) if m else None
+
+
+def _toml_path_to_url(path: str) -> str:
+    return f"{_VUT_BASE}/{path.lstrip('./')}"
+
+
+async def _fetch_config(client: httpx.AsyncClient, tree_name: str) -> dict:
+    try:
+        r = await client.get(f"{_VUT_BASE}/trees/{tree_name}/config.toml")
+        if r.status_code != 200:
+            return {}
+        ref_fasta = _parse_toml_field(r.text, "ref_fasta")
+        ref_gbff  = _parse_toml_field(r.text, "ref_gbff")
+        return {
+            "ref_fasta_url": _toml_path_to_url(ref_fasta) if ref_fasta else None,
+            "ref_gbff_url":  _toml_path_to_url(ref_gbff)  if ref_gbff  else None,
+        }
+    except Exception:
+        return {}
+
+
+async def _build_trees() -> list:
+    async with httpx.AsyncClient(timeout=30.0) as c:
+        r = await c.get(_VUT_TSV)
+        r.raise_for_status()
+        lines = r.text.strip().split("\n")
+        headers = lines[0].split("\t")
+        rows = [
+            dict(zip(headers, line.split("\t")))
+            for line in lines[1:]
+            if len(line.split("\t")) >= len(headers)
+        ]
+
+        configs = await asyncio.gather(*[_fetch_config(c, row["tree_name"]) for row in rows])
+
+        trees = []
+        for row, cfg in zip(rows, configs):
+            acc = row["accession"]
+            trees.append({
+                "tree_name":   row["tree_name"],
+                "accession":   acc,
+                "organism":    row["organism"],
+                "isolate":     row.get("isolate", ""),
+                "strain":      row.get("strain", ""),
+                "serotype":    row.get("serotype", ""),
+                "segment":     row.get("segment", ""),
+                "taxonomy_id": row.get("Taxonomy_ID") or row.get("taxonomy_id", ""),
+                "tip_count":   row.get("tip_count", ""),
+                "ref_fasta_url": cfg.get("ref_fasta_url") or
+                    f"{_EUTILS}?db=nuccore&id={acc}&rettype=fasta&retmode=text",
+                "ref_gbff_url":  cfg.get("ref_gbff_url") or
+                    f"{_EUTILS}?db=nuccore&id={acc}&rettype=gb&retmode=text",
+            })
+        return trees
+
+
+@app.get("/api/viral-usher-trees")
+async def get_viral_usher_trees():
+    """Return viral_usher_trees metadata with resolved rerooted reference URLs.
+    Results are cached for one hour."""
+    global _trees_cache
+    now = time.time()
+    if _trees_cache["data"] is not None and (now - _trees_cache["ts"]) < _CACHE_TTL:
+        return _trees_cache["data"]
+    try:
+        data = await _build_trees()
+        _trees_cache = {"data": data, "ts": now}
+        return data
+    except Exception as e:
+        if _trees_cache["data"] is not None:
+            return _trees_cache["data"]  # serve stale cache on error
+        raise HTTPException(status_code=500, detail=f"Failed to fetch viral usher trees: {e}")
 
 
 if __name__ == "__main__":

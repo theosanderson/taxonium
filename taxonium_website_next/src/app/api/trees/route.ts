@@ -3,6 +3,7 @@ import staticTrees from '../../../lib/trees.json';
 
 const VIRAL_USHER_TSV_URL = 'https://angiehinrichs.github.io/viral_usher_trees/tree_metadata.tsv';
 const VIRAL_USHER_BASE_URL = 'https://angiehinrichs.github.io/viral_usher_trees/trees';
+const VIRAL_USHER_API = process.env.VIRAL_USHER_API || process.env.NEXT_PUBLIC_VIRAL_USHER_API;
 const VIRAL_USHER_ROOT_URL = 'https://angiehinrichs.github.io/viral_usher_trees';
 
 function parseRefFromToml(toml: string, key: string): string | null {
@@ -123,11 +124,56 @@ async function fetchViralUsherTrees() {
   }
 }
 
+function formatTreesFromBackend(rows: any[]): Record<string, any> {
+  const trees: Record<string, any> = {};
+  for (const row of rows) {
+    const { tree_name, accession, organism, isolate, strain, serotype, segment, tip_count, ref_fasta_url, ref_gbff_url } = row;
+    const organismPath = organism.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_').toLowerCase();
+    const pathKey = `viral-usher/${organismPath}/${accession}`;
+    let displayTitle = organism;
+    if (segment) displayTitle += ` (segment ${segment})`;
+    if (serotype) displayTitle += ` [${serotype}]`;
+    displayTitle += ` - ${accession}`;
+    trees[pathKey] = {
+      protoUrl: `${VIRAL_USHER_BASE_URL}/${tree_name}/tree.jsonl.gz`,
+      usherProtobuf: `${VIRAL_USHER_BASE_URL}/${tree_name}/optimized.pb.gz`,
+      referenceGBFF: ref_gbff_url,
+      referenceFasta: ref_fasta_url,
+      metadataUrl: `${VIRAL_USHER_BASE_URL}/${tree_name}/metadata.tsv.gz`,
+      title: displayTitle,
+      description: `${organism} - ${tip_count} sequences`,
+      icon: "/assets/usher.png",
+      maintainerMessage: "Maintained by Angie Hinrichs at UCSC",
+      maintainerUrl: "https://github.com/AngieHinrichs/viral_usher_trees",
+      metadata: { accession, treeName: tree_name, organism, isolate, strain, serotype, segment, tipCount: tip_count }
+    };
+  }
+  return trees;
+}
+
+async function fetchViralUsherTreesFromBackend(): Promise<Record<string, any> | null> {
+  if (!VIRAL_USHER_API) return null;
+  try {
+    const response = await fetch(`${VIRAL_USHER_API}/api/viral-usher-trees`, {
+      next: { revalidate: 3600 }
+    });
+    if (!response.ok) return null;
+    const rows = await response.json();
+    return formatTreesFromBackend(rows);
+  } catch {
+    return null;
+  }
+}
+
 export const revalidate = 300; // Cache for 5 minutes
 
 export async function GET() {
   try {
-    const viralUsherTrees = await fetchViralUsherTrees();
+    // Prefer the backend (which caches and resolves rerooted refs); fall back to direct fetching
+    const viralUsherTrees =
+      await fetchViralUsherTreesFromBackend() ??
+      await fetchViralUsherTrees();
+
     const allTrees = {
       ...viralUsherTrees,
       ...staticTrees
