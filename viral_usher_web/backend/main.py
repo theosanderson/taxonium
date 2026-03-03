@@ -885,7 +885,7 @@ _TREE_CONFIG_TTL = 86400  # 24 hours
 
 
 def _parse_toml_field(text: str, key: str) -> Optional[str]:
-    m = re.search(rf"^{re.escape(key)}\s*=\s*'([^']+)'", text, re.MULTILINE)
+    m = re.search(rf'^{re.escape(key)}\s*=\s*["\']([^"\']+)["\']', text, re.MULTILINE)
     return m.group(1) if m else None
 
 
@@ -936,7 +936,9 @@ async def _get_tree_config(tree_name: str) -> dict:
                 }
     except Exception:
         pass
-    _tree_config_cache[tree_name] = {"data": data, "ts": now}
+    # Cache failures with a short TTL so we retry soon
+    ttl_ts = now if data else now - _TREE_CONFIG_TTL + 60  # retry in 60s on failure
+    _tree_config_cache[tree_name] = {"data": data, "ts": ttl_ts}
     return data
 
 

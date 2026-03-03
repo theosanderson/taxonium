@@ -4,14 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FaArrowLeft, FaSearch } from 'react-icons/fa';
 import { CgListTree } from 'react-icons/cg';
+import { getViralUsherPath } from '../../lib/viralUsherPath';
 
 const VIRAL_USHER_API = process.env.NEXT_PUBLIC_VIRAL_USHER_API || '';
 const VIRAL_USHER_BASE_URL = 'https://angiehinrichs.github.io/viral_usher_trees/trees';
-
-function getViralUsherPath(organism: string, accession: string): string {
-  const organismPath = organism.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_').toLowerCase();
-  return `viral-usher/${organismPath}/${accession}`;
-}
 
 export default function BrowsePage() {
   const [treeConfig, setTreeConfig] = useState<Record<string, any>>({});
