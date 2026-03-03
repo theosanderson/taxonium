@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { CgListTree } from "react-icons/cg";
 import { BsInfoSquare } from "react-icons/bs";
 import { FaGithub, FaArrowRight, FaSearch } from "react-icons/fa";
+import { ArrowLongLeftIcon } from "@heroicons/react/20/solid";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import useQueryAsState from "../hooks/useQueryAsState";
 import classNames from "classnames";
@@ -263,6 +264,18 @@ function MainApp({ pathname }: { pathname: string }) {
             "h-16"
           )}
         >
+          <div className="flex flex-col justify-center space-y-0.5 -mt-2">
+          {title && (
+            <a
+              href="/"
+              className="group flex items-center text-white/50 hover:text-white/90 text-[10px] leading-none"
+            >
+              <ArrowLongLeftIcon className="w-3 h-3 flex-shrink-0" />
+              <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-200 whitespace-nowrap ml-0.5">
+                Go to Taxonium homepage
+              </span>
+            </a>
+          )}
           <h1 className="text-xl text-white flex items-center space-x-2">
             {title ? (
               <>
@@ -317,6 +330,7 @@ function MainApp({ pathname }: { pathname: string }) {
               </a>
             )}
           </h1>
+          </div>
           <div className="flex items-center">
             {/* Hide the menu on mobile using CSS */}
             <div className="hidden sm:block relative">
