@@ -20,6 +20,9 @@ const TaxoniumBit = dynamic(() => import("../components/TaxoniumBit"), {
   ssr: false,
 });
 
+const VIRAL_USHER_API = process.env.NEXT_PUBLIC_VIRAL_USHER_API || '';
+const VIRAL_USHER_BASE_URL = 'https://angiehinrichs.github.io/viral_usher_trees/trees';
+
 // Hardcoded list of paths to show in the showcase
 const SHOWCASE_PATHS = [
   "sars-cov-2/public",
@@ -32,6 +35,11 @@ const SHOWCASE_PATHS = [
   "flu/H5N1-Outbreak-D1-1",
 ];
 
+function getViralUsherPath(organism: string, accession: string): string {
+  const organismPath = organism.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_').toLowerCase();
+  return `viral-usher/${organismPath}/${accession}`;
+}
+
 function getConfigFromPath(pathname: string, treeConfig: Record<string, any>) {
   // Remove leading slash and get full path
   const path = pathname.substring(1);
@@ -41,12 +49,34 @@ function getConfigFromPath(pathname: string, treeConfig: Record<string, any>) {
   return treeConfig[decodedPath] || null;
 }
 
-function MainApp({ pathname }: { pathname: string }) {
-  const [treeConfig, setTreeConfig] = useState<Record<string, any>>({});
-  const [isLoadingTrees, setIsLoadingTrees] = useState(true);
+function MainApp({
+  pathname,
+  initialTreeConfig = {},
+  initialViralUsherItems = [],
+  initialViralUsherTotal = 0,
+  initialViralUsherPathConfig = null,
+}: {
+  pathname: string;
+  initialTreeConfig?: Record<string, any>;
+  initialViralUsherItems?: any[];
+  initialViralUsherTotal?: number;
+  initialViralUsherPathConfig?: any;
+}) {
+  const [treeConfig, setTreeConfig] = useState<Record<string, any>>(initialTreeConfig);
+  const [isLoadingTrees, setIsLoadingTrees] = useState(Object.keys(initialTreeConfig).length === 0);
 
+  // Viral-usher state: homepage list + per-path config
+  const [viralUsherItems, setViralUsherItems] = useState<any[]>(initialViralUsherItems);
+  const [viralUsherTotal, setViralUsherTotal] = useState(initialViralUsherTotal);
+  const [viralUsherPathConfig, setViralUsherPathConfig] = useState<any>(initialViralUsherPathConfig);
+  // Skip the initial client-side fetch when server already provided the data
+  const skipInitialListFetch = useRef(initialViralUsherItems.length > 0);
+  const skipInitialPathFetch = useRef(initialViralUsherPathConfig !== null);
+
+  const isViralUsherPath = pathname.startsWith('/viral-usher/');
   const pathConfig = getConfigFromPath(pathname, treeConfig);
-  const default_query = pathConfig || {};
+  const effectivePathConfig = (isViralUsherPath && viralUsherPathConfig) ? viralUsherPathConfig : pathConfig;
+  const default_query = effectivePathConfig || {};
 
   const [uploadedData, setUploadedData] = useState(null);
   const [query, updateQuery] = useQueryAsState(default_query);
@@ -57,38 +87,16 @@ function MainApp({ pathname }: { pathname: string }) {
   const [selectedTree, setSelectedTree] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [viralUsherSearch, setViralUsherSearch] = useState("");
+  const viralUsherDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Fetch tree configurations from API with localStorage caching
+  // Fetch tree configurations from API — skipped when server already provided initialTreeConfig
   useEffect(() => {
+    if (Object.keys(initialTreeConfig).length > 0) return;
+
     async function fetchTrees() {
       try {
-        const CACHE_KEY = 'taxonium_trees_cache';
-        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
-
-        // Check localStorage for cached data
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const { data, timestamp } = JSON.parse(cached);
-          const age = Date.now() - timestamp;
-
-          // Use cached data if less than 5 minutes old
-          if (age < CACHE_DURATION) {
-            setTreeConfig(data);
-            setIsLoadingTrees(false);
-            return;
-          }
-        }
-
-        // Fetch fresh data from API
         const response = await fetch('/api/trees');
         const data = await response.json();
-
-        // Cache the data with timestamp
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-          data,
-          timestamp: Date.now()
-        }));
-
         setTreeConfig(data);
       } catch (error) {
         console.error('Error fetching trees:', error);
@@ -98,6 +106,100 @@ function MainApp({ pathname }: { pathname: string }) {
     }
     fetchTrees();
   }, []);
+
+  // Fetch viral-usher trees for homepage section (debounced on search, immediate on clear)
+  useEffect(() => {
+    if (!VIRAL_USHER_API) return;
+
+    // Skip the very first run if the server already pre-fetched the default list
+    if (!viralUsherSearch && skipInitialListFetch.current) {
+      skipInitialListFetch.current = false;
+      return;
+    }
+    skipInitialListFetch.current = false;
+
+    const doFetch = async () => {
+      try {
+        const url = viralUsherSearch
+          ? `${VIRAL_USHER_API}/api/viral-usher-trees?q=${encodeURIComponent(viralUsherSearch)}&limit=20`
+          : `${VIRAL_USHER_API}/api/viral-usher-trees?limit=8`;
+        const res = await fetch(url);
+        const data = await res.json();
+        setViralUsherItems(data.trees || []);
+        setViralUsherTotal(data.total || 0);
+      } catch (e) {
+        console.error('Error fetching viral usher trees:', e);
+      }
+    };
+
+    if (viralUsherDebounceRef.current) clearTimeout(viralUsherDebounceRef.current);
+
+    if (viralUsherSearch) {
+      viralUsherDebounceRef.current = setTimeout(doFetch, 300);
+    } else {
+      doFetch();
+    }
+
+    return () => {
+      if (viralUsherDebounceRef.current) clearTimeout(viralUsherDebounceRef.current);
+    };
+  }, [viralUsherSearch]);
+
+  // Fetch per-tree config when navigating to a viral-usher path
+  useEffect(() => {
+    // Skip first run if server pre-fetched config for this path
+    if (skipInitialPathFetch.current) {
+      skipInitialPathFetch.current = false;
+      return;
+    }
+
+    setViralUsherPathConfig(null);
+    if (!VIRAL_USHER_API || !pathname.startsWith('/viral-usher/')) return;
+
+    const accession = pathname.split('/').pop();
+    if (!accession) return;
+
+    const fetchPathConfig = async () => {
+      try {
+        // Find tree_name by querying list endpoint with accession
+        const listRes = await fetch(
+          `${VIRAL_USHER_API}/api/viral-usher-trees?q=${encodeURIComponent(accession)}&limit=5`
+        );
+        const listData = await listRes.json();
+        const treeRow = listData.trees?.find((t: any) => t.accession === accession);
+        if (!treeRow) return;
+
+        const { tree_name, organism, tip_count, segment, serotype } = treeRow;
+
+        // Fetch per-tree config for resolved ref URLs
+        const treeRes = await fetch(`${VIRAL_USHER_API}/api/viral-usher-trees/${tree_name}`);
+        const treeData = await treeRes.json();
+
+        // Construct display title
+        let displayTitle = organism;
+        if (segment) displayTitle += ` (segment ${segment})`;
+        if (serotype) displayTitle += ` [${serotype}]`;
+        displayTitle += ` - ${accession}`;
+
+        setViralUsherPathConfig({
+          protoUrl: `${VIRAL_USHER_BASE_URL}/${tree_name}/tree.jsonl.gz`,
+          usherProtobuf: `${VIRAL_USHER_BASE_URL}/${tree_name}/optimized.pb.gz`,
+          referenceGBFF: treeData.ref_gbff_url,
+          referenceFasta: treeData.ref_fasta_url,
+          metadataUrl: `${VIRAL_USHER_BASE_URL}/${tree_name}/metadata.tsv.gz`,
+          title: displayTitle,
+          description: `${organism} - ${tip_count} sequences`,
+          icon: '/assets/usher.png',
+          maintainerMessage: 'Maintained by Angie Hinrichs at UCSC',
+          maintainerUrl: 'https://github.com/AngieHinrichs/viral_usher_trees',
+        });
+      } catch (e) {
+        console.error('Error fetching viral usher path config:', e);
+      }
+    };
+
+    fetchPathConfig();
+  }, [pathname]);
 
   // Update document title when title changes
   useEffect(() => {
@@ -145,7 +247,7 @@ function MainApp({ pathname }: { pathname: string }) {
   function onDragOver(ev: React.DragEvent) {
     if (
       uploadedData &&
-      ((uploadedData as any).status === "loaded" || (uploadedData as any).status === "loading")
+      ((uploadedData as any).status === "loaded" || (uploadedData as any).status === "url_supplied")
     ) {
       ev.preventDefault();
       return;
@@ -180,30 +282,6 @@ function MainApp({ pathname }: { pathname: string }) {
       maintainerMessage: config.maintainerMessage,
     };
   }).filter(Boolean); // Remove any null entries from missing configs
-
-  // Get viral_usher trees and filter by search
-  const viralUsherTrees = Object.entries(treeConfig)
-    .filter(([path]) => path.startsWith('viral-usher/'))
-    .map(([path, config]) => ({
-      path,
-      title: config.title,
-      description: config.description,
-      organism: config.metadata?.organism || '',
-      tipCount: config.metadata?.tipCount || '',
-      icon: config.icon,
-    }))
-    .sort((a, b) => {
-      // Sort by tip count descending (largest trees first)
-      const countA = parseInt(a.tipCount) || 0;
-      const countB = parseInt(b.tipCount) || 0;
-      return countB - countA;
-    });
-
-  const filteredViralUsherTrees = viralUsherTrees.filter(tree =>
-    viralUsherSearch === '' ||
-    tree.title.toLowerCase().includes(viralUsherSearch.toLowerCase()) ||
-    tree.organism.toLowerCase().includes(viralUsherSearch.toLowerCase())
-  );
 
   // Filter trees based on search query
   const filteredTrees = Object.keys(treeConfig)
@@ -244,6 +322,7 @@ function MainApp({ pathname }: { pathname: string }) {
       <div
         className={`h-screen w-screen flex flex-col ${
           (query as any).backend ||
+          (query as any).protoUrl ||
           (uploadedData &&
             ((uploadedData as any).status === "loaded" ||
               (uploadedData as any).status === "url_supplied"))
@@ -294,14 +373,14 @@ function MainApp({ pathname }: { pathname: string }) {
 
                 {/* Desktop view - hidden on mobile */}
                 <div className="hidden sm:flex items-center space-x-2">
-                  {pathConfig &&
-                    pathConfig.maintainerMessage &&
-                    pathConfig.icon && (
+                  {effectivePathConfig &&
+                    effectivePathConfig.maintainerMessage &&
+                    effectivePathConfig.icon && (
                       <img
-                        src={pathConfig.icon}
+                        src={effectivePathConfig.icon}
                         className="w-6 h-6 rounded border-gray-400 border inline-block"
-                        title={pathConfig.maintainerMessage}
-                        alt={pathConfig.title}
+                        title={effectivePathConfig.maintainerMessage}
+                        alt={effectivePathConfig.title}
                       />
                     )}
                   <span
@@ -389,6 +468,7 @@ function MainApp({ pathname }: { pathname: string }) {
         </div>
         <Suspense fallback={<div></div>}>
           {(query as any).backend ||
+          (query as any).protoUrl ||
           (uploadedData &&
             ((uploadedData as any).status === "loaded" ||
               (uploadedData as any).status === "url_supplied")) ? (
@@ -401,10 +481,10 @@ function MainApp({ pathname }: { pathname: string }) {
                 onSetTitle={setTitle}
                 overlayContent={overlayContent}
                 setAboutEnabled={setAboutEnabled}
-                usherProtobuf={pathConfig?.usherProtobuf}
-                referenceGBFF={pathConfig?.referenceGBFF}
-                referenceFasta={pathConfig?.referenceFasta}
-                metadataUrl={pathConfig?.metadataUrl}
+                usherProtobuf={effectivePathConfig?.usherProtobuf}
+                referenceGBFF={effectivePathConfig?.referenceGBFF}
+                referenceFasta={effectivePathConfig?.referenceFasta}
+                metadataUrl={effectivePathConfig?.metadataUrl}
               />
             </div>
           ) : (
@@ -482,7 +562,7 @@ function MainApp({ pathname }: { pathname: string }) {
                 </div>
 
                 {/* Viral Usher Trees Section */}
-                {viralUsherTrees.length > 0 && (
+                {VIRAL_USHER_API && (
                   <div className="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50">
                     <div className="flex items-center gap-2 mb-3">
                       <img
@@ -493,9 +573,11 @@ function MainApp({ pathname }: { pathname: string }) {
                       <h3 className="text-base font-medium text-gray-900">
                         Viral UShER Trees
                       </h3>
-                      <span className="text-xs text-gray-500">
-                        ({viralUsherTrees.length} organisms)
-                      </span>
+                      {viralUsherTotal > 0 && (
+                        <span className="text-xs text-gray-500">
+                          ({viralUsherTotal} organisms)
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm text-gray-600 mb-3">
                       Pre-built trees for various viral pathogens, maintained at UCSC
@@ -511,28 +593,28 @@ function MainApp({ pathname }: { pathname: string }) {
                       />
                     </div>
                     <div className="max-h-48 overflow-y-auto space-y-1">
-                      {(viralUsherSearch ? filteredViralUsherTrees : filteredViralUsherTrees.slice(0, 8)).map((tree) => (
+                      {viralUsherItems.map((tree: any) => (
                         <a
-                          key={tree.path}
-                          href={`/${tree.path}`}
+                          key={tree.tree_name}
+                          href={`/${getViralUsherPath(tree.organism, tree.accession)}`}
                           className="flex items-center justify-between p-2 hover:bg-white rounded transition text-sm group cursor-pointer"
                         >
                           <span className="text-gray-800 group-hover:text-gray-900 truncate flex-1">
                             {tree.organism}
                           </span>
                           <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
-                            {parseInt(tree.tipCount).toLocaleString()} seqs
+                            {parseInt(tree.tip_count).toLocaleString()} seqs
                           </span>
                         </a>
                       ))}
-                      {viralUsherSearch && filteredViralUsherTrees.length === 0 && (
+                      {viralUsherSearch && viralUsherItems.length === 0 && (
                         <p className="text-sm text-gray-500 p-2 italic">No matching organisms found</p>
                       )}
                     </div>
-                    {!viralUsherSearch && viralUsherTrees.length > 8 && (
+                    {!viralUsherSearch && viralUsherTotal > 8 && (
                       <div className="mt-2 pt-2 border-t border-gray-200 text-center">
                         <span className="text-xs text-gray-500">
-                          Search above to see all {viralUsherTrees.length} organisms
+                          Search above to see all {viralUsherTotal} organisms
                         </span>
                       </div>
                     )}

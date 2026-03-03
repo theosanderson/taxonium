@@ -1,15 +1,30 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FaArrowLeft, FaSearch } from 'react-icons/fa';
 import { CgListTree } from 'react-icons/cg';
+
+const VIRAL_USHER_API = process.env.NEXT_PUBLIC_VIRAL_USHER_API || '';
+const VIRAL_USHER_BASE_URL = 'https://angiehinrichs.github.io/viral_usher_trees/trees';
+
+function getViralUsherPath(organism: string, accession: string): string {
+  const organismPath = organism.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_').toLowerCase();
+  return `viral-usher/${organismPath}/${accession}`;
+}
 
 export default function BrowsePage() {
   const [treeConfig, setTreeConfig] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+
+  // Viral-usher section state
+  const [viralUsherItems, setViralUsherItems] = useState<any[]>([]);
+  const [viralUsherTotal, setViralUsherTotal] = useState(0);
+  const [viralUsherOffset, setViralUsherOffset] = useState(0);
+  const [isLoadingVU, setIsLoadingVU] = useState(false);
+  const vuDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch tree configurations from API
   useEffect(() => {
@@ -51,18 +66,61 @@ export default function BrowsePage() {
     fetchTrees();
   }, []);
 
-  // Extract categories from tree paths
+  // Fetch viral-usher trees from backend API (debounced on search, immediate on clear/load-more)
+  const fetchViralUsher = async (query: string, offset: number, append: boolean) => {
+    if (!VIRAL_USHER_API) return;
+    setIsLoadingVU(true);
+    try {
+      const url = query
+        ? `${VIRAL_USHER_API}/api/viral-usher-trees?q=${encodeURIComponent(query)}&limit=50&offset=${offset}`
+        : `${VIRAL_USHER_API}/api/viral-usher-trees?limit=50&offset=${offset}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      setViralUsherItems(prev => append ? [...prev, ...(data.trees || [])] : (data.trees || []));
+      setViralUsherTotal(data.total || 0);
+      setViralUsherOffset(offset + (data.trees?.length || 0));
+    } catch (e) {
+      console.error('Error fetching viral usher trees:', e);
+    } finally {
+      setIsLoadingVU(false);
+    }
+  };
+
+  // Initial load + search-driven fetch for viral-usher
+  useEffect(() => {
+    if (!VIRAL_USHER_API) return;
+
+    if (vuDebounceRef.current) clearTimeout(vuDebounceRef.current);
+
+    const doFetch = () => {
+      setViralUsherOffset(0);
+      fetchViralUsher(searchQuery, 0, false);
+    };
+
+    if (searchQuery) {
+      vuDebounceRef.current = setTimeout(doFetch, 300);
+    } else {
+      doFetch();
+    }
+
+    return () => {
+      if (vuDebounceRef.current) clearTimeout(vuDebounceRef.current);
+    };
+  }, [searchQuery]);
+
+  // Extract categories from static tree paths
   const getCategory = (path: string) => {
     const parts = path.split('/');
     return parts[0] || 'other';
   };
 
-  // Get unique categories
-  const categories = ['all', ...Array.from(new Set(
+  // Get unique categories from static trees
+  const staticCategories = Array.from(new Set(
     Object.keys(treeConfig).map(getCategory)
-  )).sort()];
+  )).sort();
+  const categories = ['all', ...staticCategories, ...(VIRAL_USHER_API ? ['viral-usher'] : [])];
 
-  // Filter trees based on search and category
+  // Filter static trees based on search and category
   const filteredTrees = Object.entries(treeConfig)
     .filter(([path, config]) => {
       const matchesSearch = searchQuery === '' ||
@@ -76,6 +134,9 @@ export default function BrowsePage() {
       return matchesSearch && matchesCategory;
     })
     .sort(([pathA], [pathB]) => pathA.localeCompare(pathB));
+
+  const showStaticTrees = categoryFilter !== 'viral-usher';
+  const showViralUsher = VIRAL_USHER_API && (categoryFilter === 'all' || categoryFilter === 'viral-usher');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -130,57 +191,139 @@ export default function BrowsePage() {
             {isLoading ? (
               'Loading trees...'
             ) : (
-              `Showing ${filteredTrees.length} of ${Object.keys(treeConfig).length} trees`
+              <>
+                {showStaticTrees && `${filteredTrees.length} static trees`}
+                {showStaticTrees && showViralUsher && ' · '}
+                {showViralUsher && `${viralUsherTotal} viral UShER trees`}
+              </>
             )}
           </div>
         </div>
 
-        {/* Tree Grid */}
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
-          </div>
-        ) : filteredTrees.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No trees found matching your criteria.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredTrees.map(([path, config]) => (
-              <Link
-                key={path}
-                href={`/${path}`}
-                className="block border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-              >
-                <div className="flex items-start gap-3">
-                  {config.icon && (
-                    <img
-                      src={config.icon}
-                      className="w-10 h-10 rounded border border-gray-300 flex-shrink-0"
-                      alt={config.title || path}
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-gray-900 text-sm mb-1 truncate">
-                      {config.title || path}
-                    </h3>
-                    <p className="text-xs text-gray-500 mb-2 font-mono truncate">
-                      {path}
-                    </p>
-                    {config.description && (
-                      <p className="text-xs text-gray-600 line-clamp-2">
-                        {config.description}
-                      </p>
+        {/* Static Tree Grid */}
+        {showStaticTrees && (
+          isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
+            </div>
+          ) : filteredTrees.length === 0 ? (
+            categoryFilter !== 'viral-usher' && (
+              <div className="text-center py-12 text-gray-500">
+                No static trees found matching your criteria.
+              </div>
+            )
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              {filteredTrees.map(([path, config]) => (
+                <Link
+                  key={path}
+                  href={`/${path}`}
+                  className="block border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                >
+                  <div className="flex items-start gap-3">
+                    {config.icon && (
+                      <img
+                        src={config.icon}
+                        className="w-10 h-10 rounded border border-gray-300 flex-shrink-0"
+                        alt={config.title || path}
+                      />
                     )}
-                    {config.maintainerMessage && (
-                      <p className="text-xs text-gray-500 italic mt-1 line-clamp-1">
-                        {config.maintainerMessage}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-gray-900 text-sm mb-1 truncate">
+                        {config.title || path}
+                      </h3>
+                      <p className="text-xs text-gray-500 mb-2 font-mono truncate">
+                        {path}
                       </p>
-                    )}
+                      {config.description && (
+                        <p className="text-xs text-gray-600 line-clamp-2">
+                          {config.description}
+                        </p>
+                      )}
+                      {config.maintainerMessage && (
+                        <p className="text-xs text-gray-500 italic mt-1 line-clamp-1">
+                          {config.maintainerMessage}
+                        </p>
+                      )}
+                    </div>
                   </div>
+                </Link>
+              ))}
+            </div>
+          )
+        )}
+
+        {/* Viral UShER Trees Section */}
+        {showViralUsher && (
+          <div className={showStaticTrees && filteredTrees.length > 0 ? "mt-4" : ""}>
+            <div className="flex items-center gap-2 mb-4">
+              <img src="/assets/usher.png" alt="UShER" className="w-6 h-6 rounded" />
+              <h2 className="text-lg font-medium text-gray-900">Viral UShER Trees</h2>
+              {viralUsherTotal > 0 && (
+                <span className="text-sm text-gray-500">({viralUsherTotal} organisms)</span>
+              )}
+            </div>
+
+            {isLoadingVU && viralUsherItems.length === 0 ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
+              </div>
+            ) : viralUsherItems.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No viral UShER trees found matching your search.
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {viralUsherItems.map((tree: any) => {
+                    const path = getViralUsherPath(tree.organism, tree.accession);
+                    let displayTitle = tree.organism;
+                    if (tree.segment) displayTitle += ` (segment ${tree.segment})`;
+                    if (tree.serotype) displayTitle += ` [${tree.serotype}]`;
+                    displayTitle += ` - ${tree.accession}`;
+                    return (
+                      <Link
+                        key={tree.tree_name}
+                        href={`/${path}`}
+                        className="block border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                      >
+                        <div className="flex items-start gap-3">
+                          <img
+                            src="/assets/usher.png"
+                            className="w-10 h-10 rounded border border-gray-300 flex-shrink-0"
+                            alt={displayTitle}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-gray-900 text-sm mb-1 truncate">
+                              {displayTitle}
+                            </h3>
+                            <p className="text-xs text-gray-500 mb-2 font-mono truncate">
+                              {path}
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              {parseInt(tree.tip_count).toLocaleString()} sequences
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
-              </Link>
-            ))}
+
+                {/* Load More */}
+                {viralUsherOffset < viralUsherTotal && (
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      onClick={() => fetchViralUsher(searchQuery, viralUsherOffset, true)}
+                      disabled={isLoadingVU}
+                      className="px-6 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                      {isLoadingVU ? 'Loading...' : `Load more (${viralUsherTotal - viralUsherOffset} remaining)`}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
       </div>

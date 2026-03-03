@@ -9,7 +9,6 @@ import os
 import sys
 import re
 import time
-import asyncio
 import boto3
 import httpx
 from botocore.exceptions import ClientError
@@ -879,8 +878,10 @@ _VUT_BASE = "https://angiehinrichs.github.io/viral_usher_trees"
 _VUT_TSV  = f"{_VUT_BASE}/tree_metadata.tsv"
 _EUTILS   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 
-_trees_cache: dict = {"data": None, "ts": 0.0}
-_CACHE_TTL = 3600  # seconds
+_tsv_cache: dict = {"rows": None, "ts": 0.0}
+_tree_config_cache: dict = {}  # keyed by tree_name
+_TSV_TTL = 3600          # 1 hour
+_TREE_CONFIG_TTL = 86400  # 24 hours
 
 
 def _parse_toml_field(text: str, key: str) -> Optional[str]:
@@ -892,72 +893,132 @@ def _toml_path_to_url(path: str) -> str:
     return f"{_VUT_BASE}/{path.lstrip('./')}"
 
 
-async def _fetch_config(client: httpx.AsyncClient, tree_name: str) -> dict:
+async def _get_tsv_rows() -> list:
+    global _tsv_cache
+    now = time.time()
+    if _tsv_cache["rows"] is not None and (now - _tsv_cache["ts"]) < _TSV_TTL:
+        return _tsv_cache["rows"]
     try:
-        r = await client.get(f"{_VUT_BASE}/trees/{tree_name}/config.toml")
-        if r.status_code != 200:
-            return {}
-        ref_fasta = _parse_toml_field(r.text, "ref_fasta")
-        ref_gbff  = _parse_toml_field(r.text, "ref_gbff")
-        return {
-            "ref_fasta_url": _toml_path_to_url(ref_fasta) if ref_fasta else None,
-            "ref_gbff_url":  _toml_path_to_url(ref_gbff)  if ref_gbff  else None,
-        }
+        async with httpx.AsyncClient(timeout=30.0) as c:
+            r = await c.get(_VUT_TSV)
+            r.raise_for_status()
+            lines = r.text.strip().split("\n")
+            headers = lines[0].split("\t")
+            rows = [
+                dict(zip(headers, line.split("\t")))
+                for line in lines[1:]
+                if len(line.split("\t")) >= len(headers)
+            ]
+        _tsv_cache = {"rows": rows, "ts": now}
+        return rows
     except Exception:
-        return {}
+        if _tsv_cache["rows"] is not None:
+            return _tsv_cache["rows"]  # serve stale cache on error
+        raise
 
 
-async def _build_trees() -> list:
-    async with httpx.AsyncClient(timeout=30.0) as c:
-        r = await c.get(_VUT_TSV)
-        r.raise_for_status()
-        lines = r.text.strip().split("\n")
-        headers = lines[0].split("\t")
-        rows = [
-            dict(zip(headers, line.split("\t")))
-            for line in lines[1:]
-            if len(line.split("\t")) >= len(headers)
-        ]
-
-        configs = await asyncio.gather(*[_fetch_config(c, row["tree_name"]) for row in rows])
-
-        trees = []
-        for row, cfg in zip(rows, configs):
-            acc = row["accession"]
-            trees.append({
-                "tree_name":   row["tree_name"],
-                "accession":   acc,
-                "organism":    row["organism"],
-                "isolate":     row.get("isolate", ""),
-                "strain":      row.get("strain", ""),
-                "serotype":    row.get("serotype", ""),
-                "segment":     row.get("segment", ""),
-                "taxonomy_id": row.get("Taxonomy_ID") or row.get("taxonomy_id", ""),
-                "tip_count":   row.get("tip_count", ""),
-                "ref_fasta_url": cfg.get("ref_fasta_url") or
-                    f"{_EUTILS}?db=nuccore&id={acc}&rettype=fasta&retmode=text",
-                "ref_gbff_url":  cfg.get("ref_gbff_url") or
-                    f"{_EUTILS}?db=nuccore&id={acc}&rettype=gb&retmode=text",
-            })
-        return trees
+async def _get_tree_config(tree_name: str) -> dict:
+    global _tree_config_cache
+    now = time.time()
+    cached = _tree_config_cache.get(tree_name)
+    if cached and (now - cached["ts"]) < _TREE_CONFIG_TTL:
+        return cached["data"]
+    data = {}
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as c:
+            r = await c.get(f"{_VUT_BASE}/trees/{tree_name}/config.toml")
+            if r.status_code == 200:
+                ref_fasta = _parse_toml_field(r.text, "ref_fasta")
+                ref_gbff  = _parse_toml_field(r.text, "ref_gbff")
+                data = {
+                    "ref_fasta_url": _toml_path_to_url(ref_fasta) if ref_fasta else None,
+                    "ref_gbff_url":  _toml_path_to_url(ref_gbff)  if ref_gbff  else None,
+                }
+    except Exception:
+        pass
+    _tree_config_cache[tree_name] = {"data": data, "ts": now}
+    return data
 
 
 @app.get("/api/viral-usher-trees")
-async def get_viral_usher_trees():
-    """Return viral_usher_trees metadata with resolved rerooted reference URLs.
-    Results are cached for one hour."""
-    global _trees_cache
-    now = time.time()
-    if _trees_cache["data"] is not None and (now - _trees_cache["ts"]) < _CACHE_TTL:
-        return _trees_cache["data"]
+async def get_viral_usher_trees(
+    q: Optional[str] = None,
+    limit: int = 50,
+    offset: int = 0,
+):
+    """Return viral_usher_trees metadata (TSV only, no config.toml fetching).
+    Supports case-insensitive substring search via q, and pagination via limit/offset."""
+    limit = min(limit, 500)
     try:
-        data = await _build_trees()
-        _trees_cache = {"data": data, "ts": now}
-        return data
+        rows = await _get_tsv_rows()
     except Exception as e:
-        if _trees_cache["data"] is not None:
-            return _trees_cache["data"]  # serve stale cache on error
         raise HTTPException(status_code=500, detail=f"Failed to fetch viral usher trees: {e}")
+
+    items = [
+        {
+            "tree_name":   row["tree_name"],
+            "accession":   row["accession"],
+            "organism":    row["organism"],
+            "isolate":     row.get("isolate", ""),
+            "strain":      row.get("strain", ""),
+            "serotype":    row.get("serotype", ""),
+            "segment":     row.get("segment", ""),
+            "taxonomy_id": row.get("Taxonomy_ID") or row.get("taxonomy_id", ""),
+            "tip_count":   row.get("tip_count", ""),
+        }
+        for row in rows
+    ]
+
+    if q:
+        q_lower = q.lower()
+        items = [
+            item for item in items
+            if q_lower in item["organism"].lower()
+            or q_lower in item["strain"].lower()
+            or q_lower in item["serotype"].lower()
+            or q_lower in item["isolate"].lower()
+            or q_lower in item["accession"].lower()
+        ]
+
+    total = len(items)
+    return {
+        "trees": items[offset:offset + limit],
+        "total": total,
+        "offset": offset,
+        "limit": limit,
+    }
+
+
+@app.get("/api/viral-usher-trees/{tree_name}")
+async def get_viral_usher_tree(tree_name: str):
+    """Return full metadata + resolved rerooted ref URLs for a single tree.
+    Config is cached per-tree for 24 hours."""
+    try:
+        rows = await _get_tsv_rows()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch tree list: {e}")
+
+    row = next((r for r in rows if r["tree_name"] == tree_name), None)
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"Tree '{tree_name}' not found")
+
+    acc = row["accession"]
+    cfg = await _get_tree_config(tree_name)
+    return {
+        "tree_name":   row["tree_name"],
+        "accession":   acc,
+        "organism":    row["organism"],
+        "isolate":     row.get("isolate", ""),
+        "strain":      row.get("strain", ""),
+        "serotype":    row.get("serotype", ""),
+        "segment":     row.get("segment", ""),
+        "taxonomy_id": row.get("Taxonomy_ID") or row.get("taxonomy_id", ""),
+        "tip_count":   row.get("tip_count", ""),
+        "ref_fasta_url": cfg.get("ref_fasta_url") or
+            f"{_EUTILS}?db=nuccore&id={acc}&rettype=fasta&retmode=text",
+        "ref_gbff_url":  cfg.get("ref_gbff_url") or
+            f"{_EUTILS}?db=nuccore&id={acc}&rettype=gb&retmode=text",
+    }
 
 
 if __name__ == "__main__":
