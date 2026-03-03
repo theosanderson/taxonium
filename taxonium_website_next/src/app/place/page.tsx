@@ -36,12 +36,7 @@ export default function PlacePage() {
     }
   };
 
-  // Initial load
-  useEffect(() => {
-    fetchTrees('');
-  }, []);
-
-  // Debounced search
+  // Initial load + debounced search
   useEffect(() => {
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     searchDebounceRef.current = setTimeout(() => {

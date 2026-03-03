@@ -14,6 +14,7 @@ import classNames from "classnames";
 import { useInputHelper } from "../hooks/useInputHelper";
 import InputSupplier from "../components/InputSupplier";
 import { Combobox } from '@headlessui/react';
+import { getViralUsherPath } from "../lib/viralUsherPath";
 
 // Import TaxoniumBit with client-side only rendering to avoid SSR issues
 const TaxoniumBit = dynamic(() => import("../components/TaxoniumBit"), {
@@ -34,11 +35,6 @@ const SHOWCASE_PATHS = [
   "flu/H5N1-Outbreak",
   "flu/H5N1-Outbreak-D1-1",
 ];
-
-function getViralUsherPath(organism: string, accession: string): string {
-  const organismPath = organism.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_').toLowerCase();
-  return `viral-usher/${organismPath}/${accession}`;
-}
 
 function getConfigFromPath(pathname: string, treeConfig: Record<string, any>) {
   // Remove leading slash and get full path
@@ -290,7 +286,7 @@ function MainApp({
       path.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort()
-    .slice(0, 1500); // Limit to 500 results for performance
+    .slice(0, 1500); // Limit for performance
 
   useEffect(() => {
     if (selectedTree) {
