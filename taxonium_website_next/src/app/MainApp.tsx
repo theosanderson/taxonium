@@ -45,7 +45,6 @@ function MainApp({ pathname }: { pathname: string }) {
   const [treeConfig, setTreeConfig] = useState<Record<string, any>>({});
   const [isLoadingTrees, setIsLoadingTrees] = useState(true);
 
-  const isViralUsherPage = pathname.startsWith('/viral-usher/');
   const pathConfig = getConfigFromPath(pathname, treeConfig);
   const default_query = pathConfig || {};
 
@@ -266,7 +265,7 @@ function MainApp({ pathname }: { pathname: string }) {
           )}
         >
           <div className="flex flex-col justify-center space-y-0.5 -mt-2">
-          {isViralUsherPage && title && (
+          {title && (
             <a
               href="/"
               className="group flex items-center text-white/50 hover:text-white/90 text-[10px] leading-none"
