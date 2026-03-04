@@ -281,6 +281,8 @@ function SearchPanel({
         {placeSequencesUrl && (
           <a
             href={placeSequencesUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-3 py-1.5 text-xs bg-white text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition flex items-center gap-1.5 no-underline my-2"
             data-tooltip-id="global-tooltip"
             data-tooltip-content="Place your own sequences on this tree using viral_usher"
