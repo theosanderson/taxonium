@@ -655,7 +655,8 @@ async def generate_config(
     metadata_url: str = Form(""),
     metadata_date_column: str = Form(""),
     starting_tree_file: Optional[UploadFile] = File(None),
-    starting_tree_url: str = Form("")
+    starting_tree_url: str = Form(""),
+    original_metadata_url: str = Form("")
 ):
     """Generate and save a viral_usher config file, optionally with FASTA upload to S3"""
     try:
@@ -799,6 +800,10 @@ async def generate_config(
                 config_contents["update_tree_input"] = f"https://s3.{S3_REGION}.amazonaws.com/{S3_BUCKET}/{starting_tree_s3_key}"
         elif starting_tree_source_url:
             config_contents["update_tree_input"] = starting_tree_source_url
+
+        # Add original metadata URL if provided (for preserving existing tree metadata)
+        if original_metadata_url:
+            config_contents["original_metadata"] = original_metadata_url
 
         # Create workdir if it doesn't exist
         os.makedirs(workdir, exist_ok=True)

@@ -49,6 +49,9 @@ export default function BuildPage() {
   const [metadataInputMethod, setMetadataInputMethod] = useState<'file' | 'text' | 'url'>('file');
   const [metadataDateColumn, setMetadataDateColumn] = useState('');
 
+  // Original metadata URL (for existing tree metadata when placing sequences)
+  const [originalMetadataUrl, setOriginalMetadataUrl] = useState('');
+
   // Starting tree (protobuf) upload state
   const [startingTreeFile, setStartingTreeFile] = useState<File | null>(null);
   const [startingTreeUrl, setStartingTreeUrl] = useState('');
@@ -300,6 +303,10 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
         formData.append('starting_tree_url', startingTreeUrl);
       }
 
+      if (originalMetadataUrl) {
+        formData.append('original_metadata_url', originalMetadataUrl);
+      }
+
       const response = await fetch(`${API_BASE}/api/generate-config`, {
         method: 'POST',
         body: formData
@@ -427,6 +434,11 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
     if (metadataUrlParam) {
       setMetadataUrl(metadataUrlParam);
       setMetadataInputMethod('url');
+    }
+
+    const originalMetadataUrlParam = params.get('originalMetadataUrl');
+    if (originalMetadataUrlParam) {
+      setOriginalMetadataUrl(originalMetadataUrlParam);
     }
   }, []);
 

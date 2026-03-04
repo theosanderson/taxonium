@@ -234,7 +234,10 @@ function Taxonium({
     if (referenceFasta) {
       params.append('refFastaUrl', referenceFasta);
     }
-    
+    if (metadataUrl) {
+      params.append('originalMetadataUrl', metadataUrl);
+    }
+
     return `/build?${params.toString()}`;
   };
 
