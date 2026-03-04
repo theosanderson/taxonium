@@ -224,7 +224,8 @@ def upload_to_s3(file_content: bytes, filename: str, content_type: str = 'text/p
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     unique_id = str(uuid.uuid4())[:8]
-    s3_key = f"uploads/{timestamp}_{unique_id}_{filename}"
+    safe_filename = re.sub(r'[^\w.\-]', '_', filename)
+    s3_key = f"uploads/{timestamp}_{unique_id}_{safe_filename}"
 
     try:
         s3_client.put_object(
