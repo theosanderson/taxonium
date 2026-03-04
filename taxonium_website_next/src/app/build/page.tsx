@@ -426,6 +426,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
     const metadataUrlParam = params.get('metadataUrl');
     if (metadataUrlParam) {
       setMetadataUrl(metadataUrlParam);
+      setMetadataInputMethod('url');
     }
   }, []);
 
