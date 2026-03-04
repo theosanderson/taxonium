@@ -235,10 +235,6 @@ function Taxonium({
       params.append('refFastaUrl', referenceFasta);
     }
     
-    if (metadataUrl) {
-      params.append('metadataUrl', metadataUrl);
-    }
-
     return `/build?${params.toString()}`;
   };
 
