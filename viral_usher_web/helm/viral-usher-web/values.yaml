@@ -99,7 +99,7 @@ s3:
 job:
   image:
     repository: angiehinrichs/viral_usher
-    tag: "v0.10.0"
+    tag: "v0.10.2"
     pullPolicy: Always
   # Upload sidecar image (for S3 uploads)
   uploadImage:
