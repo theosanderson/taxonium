@@ -814,7 +814,7 @@ async def generate_config(
         config_path = f"{workdir}/{config_filename}"
 
         # Write config locally (check_paths=False since we use URLs)
-        config.write_config(config_contents, config_path, check_paths=False)
+        config.write_config(config_contents, config_path, check_paths=False, no_genbank=no_genbank_mode)
 
         # Upload config to S3
         config_s3_key = None
