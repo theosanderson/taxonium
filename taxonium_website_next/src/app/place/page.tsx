@@ -82,6 +82,10 @@ export default function PlacePage() {
     if (ref_fasta_url) params.append('refFastaUrl', ref_fasta_url);
     params.append('metadataUrl', `${VIRAL_USHER_BASE_URL}/${tree_name}/metadata.tsv.gz`);
 
+    if (selectedTreeData?.organism) {
+      params.append('organism', selectedTreeData.organism);
+    }
+
     return `/build?${params.toString()}`;
   };
 

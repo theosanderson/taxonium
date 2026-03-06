@@ -124,6 +124,7 @@ const useColor = (
         ION_TORRENT: [24, 160, 32],
         "Democratic Republic of the Congo": [17, 58, 99],
         Avian: [214, 58, 15],
+        "user-provided": [255, 50, 80],
       };
 
       if (typeof value === "string" && value in specialCases) {
