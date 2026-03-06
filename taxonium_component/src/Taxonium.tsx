@@ -237,7 +237,6 @@ function Taxonium({
     if (metadataUrl) {
       params.append('originalMetadataUrl', metadataUrl);
     }
-
     return `/build?${params.toString()}`;
   };
 

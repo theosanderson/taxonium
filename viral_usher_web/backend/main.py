@@ -89,7 +89,7 @@ class ConfigRequest(BaseModel):
     ref_fasta: Optional[str] = ""
     ref_gbff: Optional[str] = ""
     species: str = ""
-    taxonomy_id: str = "123456789"
+    taxonomy_id: str = ""
     nextclade_dataset: Optional[str] = ""
     nextclade_clade_columns: Optional[str] = ""
     min_length_proportion: str = config.DEFAULT_MIN_LENGTH_PROPORTION
@@ -634,7 +634,7 @@ async def generate_config(
     ref_fasta: str = Form(""),
     ref_gbff: str = Form(""),
     species: str = Form(""),
-    taxonomy_id: str = Form("123456789"),
+    taxonomy_id: str = Form(""),
     nextclade_dataset: str = Form(""),
     nextclade_clade_columns: str = Form(""),
     min_length_proportion: str = Form(...),
@@ -738,8 +738,8 @@ async def generate_config(
             "workdir": os.path.abspath(workdir),
         }
 
-        # taxonomy_id is always required in config, use placeholder for no_genbank mode if not provided
-        config_contents["taxonomy_id"] = taxonomy_id if taxonomy_id else "0"
+        if taxonomy_id:
+            config_contents["taxonomy_id"] = taxonomy_id
 
         if no_genbank_mode:
             # No GenBank mode: use uploaded reference files or direct URLs
@@ -810,7 +810,8 @@ async def generate_config(
 
         # Generate config filename
         refseq_part = f"_{refseq_acc}" if refseq_acc else ""
-        config_filename = f"viral_usher_config{refseq_part}_{taxonomy_id}.toml"
+        taxid_part = f"_{taxonomy_id}" if taxonomy_id else ""
+        config_filename = f"viral_usher_config{refseq_part}{taxid_part}.toml"
         config_path = f"{workdir}/{config_filename}"
 
         # Write config locally (check_paths=False since we use URLs)
@@ -824,7 +825,8 @@ async def generate_config(
                 config_s3_key = upload_to_s3(f.read(), config_filename, "application/toml")
 
             # Start Kubernetes job to process the config
-            job_name = f"viral-usher-{taxonomy_id}-{uuid.uuid4().hex[:8]}"
+            job_id = taxonomy_id if taxonomy_id else uuid.uuid4().hex[:8]
+            job_name = f"viral-usher-{job_id}-{uuid.uuid4().hex[:8]}"
             # Use update mode if a starting tree was provided
             use_update_mode = bool(starting_tree_s3_key or starting_tree_source_url)
             try:
