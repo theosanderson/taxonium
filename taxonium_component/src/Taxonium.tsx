@@ -55,6 +55,7 @@ interface TaxoniumProps {
   referenceGBFF?: string;
   referenceFasta?: string;
   metadataUrl?: string;
+  organism?: string;
 }
 
 const default_query = getDefaultQuery();
@@ -80,6 +81,7 @@ function Taxonium({
   referenceGBFF,
   referenceFasta,
   metadataUrl,
+  organism,
 }: TaxoniumProps) {
   const [backupQuery, setBackupQuery] = useState(default_query);
   const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
@@ -236,6 +238,9 @@ function Taxonium({
     }
     if (metadataUrl) {
       params.append('originalMetadataUrl', metadataUrl);
+    }
+    if (organism) {
+      params.append('organism', organism);
     }
     return `/build?${params.toString()}`;
   };

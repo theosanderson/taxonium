@@ -183,6 +183,7 @@ function MainApp({
           referenceGBFF: treeData.ref_gbff_url,
           referenceFasta: treeData.ref_fasta_url,
           metadataUrl: `${VIRAL_USHER_BASE_URL}/${tree_name}/metadata.tsv.gz`,
+          organism: organism,
           title: displayTitle,
           description: `${organism} - ${tip_count} sequences`,
           icon: '/assets/usher.png',
@@ -481,6 +482,7 @@ function MainApp({
                 referenceGBFF={effectivePathConfig?.referenceGBFF}
                 referenceFasta={effectivePathConfig?.referenceFasta}
                 metadataUrl={effectivePathConfig?.metadataUrl}
+                organism={effectivePathConfig?.organism}
               />
             </div>
           ) : (
