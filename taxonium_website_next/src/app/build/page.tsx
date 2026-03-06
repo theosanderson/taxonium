@@ -52,6 +52,9 @@ export default function BuildPage() {
   // Original metadata URL (for existing tree metadata when placing sequences)
   const [originalMetadataUrl, setOriginalMetadataUrl] = useState('');
 
+  // Title for the tree (shown in Taxonium)
+  const [treeTitle, setTreeTitle] = useState('');
+
   // Starting tree (protobuf) upload state
   const [startingTreeFile, setStartingTreeFile] = useState<File | null>(null);
   const [startingTreeUrl, setStartingTreeUrl] = useState('');
@@ -307,6 +310,10 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
         formData.append('original_metadata_url', originalMetadataUrl);
       }
 
+      if (treeTitle) {
+        formData.append('title', treeTitle);
+      }
+
       const response = await fetch(`${API_BASE}/api/generate-config`, {
         method: 'POST',
         body: formData
@@ -439,6 +446,11 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
     const originalMetadataUrlParam = params.get('originalMetadataUrl');
     if (originalMetadataUrlParam) {
       setOriginalMetadataUrl(originalMetadataUrlParam);
+    }
+
+    const organismParam = params.get('organism');
+    if (organismParam) {
+      setTreeTitle(`${organismParam} tree with user-placed samples`);
     }
   }, []);
 
@@ -921,6 +933,20 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
                     {mode === 'genbank' ? '6' : '6'}. Tree Building & Filtering Parameters
                   </h2>
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tree Title
+                      <div className="text-xs text-gray-500 font-normal mt-1">Displayed in the Taxonium viewer</div>
+                    </label>
+                    <input
+                      type="text"
+                      value={treeTitle}
+                      onChange={(e) => setTreeTitle(e.target.value)}
+                      placeholder="e.g. Zaire ebolavirus tree with user-placed samples"
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
