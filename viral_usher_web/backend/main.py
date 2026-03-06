@@ -803,7 +803,7 @@ async def generate_config(
 
         # Add original metadata URL if provided (for preserving existing tree metadata)
         if original_metadata_url:
-            config_contents["original_metadata"] = original_metadata_url
+            config_contents["update_metadata_input"] = original_metadata_url
 
         # Create workdir if it doesn't exist
         os.makedirs(workdir, exist_ok=True)
