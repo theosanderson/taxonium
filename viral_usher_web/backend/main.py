@@ -738,8 +738,7 @@ async def generate_config(
             "workdir": os.path.abspath(workdir),
         }
 
-        if taxonomy_id:
-            config_contents["taxonomy_id"] = taxonomy_id
+        config_contents["taxonomy_id"] = taxonomy_id
 
         if no_genbank_mode:
             # No GenBank mode: use uploaded reference files or direct URLs
