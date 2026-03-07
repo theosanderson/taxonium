@@ -85,6 +85,7 @@ function MainApp({
   const [viralUsherSearch, setViralUsherSearch] = useState("");
   const viralUsherDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [comboboxViralUsherResults, setComboboxViralUsherResults] = useState<any[]>([]);
+  const [comboboxViralUsherLoading, setComboboxViralUsherLoading] = useState(false);
   const comboboxDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch tree configurations from API — skipped when server already provided initialTreeConfig
@@ -286,8 +287,10 @@ function MainApp({
   useEffect(() => {
     if (!VIRAL_USHER_API || !searchQuery) {
       setComboboxViralUsherResults([]);
+      setComboboxViralUsherLoading(false);
       return;
     }
+    setComboboxViralUsherLoading(true);
     if (comboboxDebounceRef.current) clearTimeout(comboboxDebounceRef.current);
     comboboxDebounceRef.current = setTimeout(async () => {
       try {
@@ -298,6 +301,8 @@ function MainApp({
         setComboboxViralUsherResults(data.trees || []);
       } catch {
         setComboboxViralUsherResults([]);
+      } finally {
+        setComboboxViralUsherLoading(false);
       }
     }, 300);
     return () => {
@@ -451,7 +456,7 @@ function MainApp({
                   </Combobox.Button>
                   <Combobox.Options className="absolute right-0 z-10 mt-1 max-h-60 min-w-full w-96 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg border border-gray-200">
                     {filteredTrees.length === 0 && comboboxViralUsherResults.length === 0 && searchQuery !== '' ? (
-                      <div className="px-2 py-2 text-gray-500">No trees found</div>
+                      <div className="px-2 py-2 text-gray-500">{comboboxViralUsherLoading ? 'Searching...' : 'No trees found'}</div>
                     ) : (
                       <>
                         {filteredTrees.map((path) => (
