@@ -894,11 +894,11 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                 </div>
               )}
 
-              {/* Custom Metadata Upload (both modes) */}
-              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
+              {/* Custom Metadata Upload (both modes, always visible) */}
+              {mode && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '5' : '5'}. Custom Metadata (Optional)
+                    {mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && !advancedMode ? '2' : '5'}. Custom Metadata (Optional)
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     Provide a TSV file with custom metadata for your sequences. First column should be sequence names matching your FASTA.
