@@ -656,6 +656,8 @@ async def generate_config(
     metadata_date_column: str = Form(""),
     starting_tree_file: Optional[UploadFile] = File(None),
     starting_tree_url: str = Form(""),
+    original_metadata_file: Optional[UploadFile] = File(None),
+    original_metadata_text: str = Form(""),
     original_metadata_url: str = Form(""),
     title: str = Form("")
 ):
@@ -801,9 +803,21 @@ async def generate_config(
         elif starting_tree_source_url:
             config_contents["update_tree_input"] = starting_tree_source_url
 
-        # Add original metadata URL if provided (for preserving existing tree metadata)
-        if original_metadata_url:
+        # Add original metadata if provided (for preserving existing tree metadata)
+        original_metadata_s3_key = None
+        if original_metadata_file and original_metadata_file.filename:
+            content = await original_metadata_file.read()
+            original_metadata_s3_key = upload_to_s3(content, original_metadata_file.filename or "original_metadata.tsv", "text/tab-separated-values")
+        elif original_metadata_text:
+            content = original_metadata_text.encode('utf-8')
+            original_metadata_s3_key = upload_to_s3(content, "original_metadata.tsv", "text/tab-separated-values")
+        elif original_metadata_url:
             config_contents["update_metadata_input"] = original_metadata_url
+        if original_metadata_s3_key:
+            if S3_ENDPOINT_URL:
+                config_contents["update_metadata_input"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{original_metadata_s3_key}"
+            else:
+                config_contents["update_metadata_input"] = f"https://s3.{S3_REGION}.amazonaws.com/{S3_BUCKET}/{original_metadata_s3_key}"
 
         if title:
             config_contents["title"] = title

@@ -49,8 +49,11 @@ export default function BuildPage() {
   const [metadataInputMethod, setMetadataInputMethod] = useState<'file' | 'text' | 'url'>('file');
   const [metadataDateColumn, setMetadataDateColumn] = useState('');
 
-  // Original metadata URL (for existing tree metadata when placing sequences)
+  // Original metadata (for existing tree metadata when placing sequences)
   const [originalMetadataUrl, setOriginalMetadataUrl] = useState('');
+  const [originalMetadataFile, setOriginalMetadataFile] = useState<File | null>(null);
+  const [originalMetadataText, setOriginalMetadataText] = useState('');
+  const [originalMetadataInputMethod, setOriginalMetadataInputMethod] = useState<'file' | 'text' | 'url'>('file');
 
   // Title for the tree (shown in Taxonium)
   const [treeTitle, setTreeTitle] = useState('');
@@ -306,7 +309,11 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
         formData.append('starting_tree_url', startingTreeUrl);
       }
 
-      if (originalMetadataUrl) {
+      if (originalMetadataInputMethod === 'file' && originalMetadataFile) {
+        formData.append('original_metadata_file', originalMetadataFile);
+      } else if (originalMetadataInputMethod === 'text' && originalMetadataText) {
+        formData.append('original_metadata_text', originalMetadataText);
+      } else if (originalMetadataInputMethod === 'url' && originalMetadataUrl) {
         formData.append('original_metadata_url', originalMetadataUrl);
       }
 
@@ -446,6 +453,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
     const originalMetadataUrlParam = params.get('originalMetadataUrl');
     if (originalMetadataUrlParam) {
       setOriginalMetadataUrl(originalMetadataUrlParam);
+      setOriginalMetadataInputMethod('url');
     }
 
     const organismParam = params.get('organism');
@@ -924,6 +932,32 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       />
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Existing Tree Metadata (advanced, no_genbank mode with starting tree) */}
+              {mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && advancedMode && (
+                <div className="mb-8">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
+                    Existing Tree Metadata (Optional)
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Metadata for sequences already in the starting tree. Preserves metadata (country, date, etc.) in the output.
+                  </p>
+                  <FileOrTextInput
+                    file={originalMetadataFile}
+                    onFileChange={setOriginalMetadataFile}
+                    fileAccept=".tsv,.tsv.gz,.txt"
+                    text={originalMetadataText}
+                    onTextChange={setOriginalMetadataText}
+                    textPlaceholder="strain&#9;accession&#9;country&#9;date&#10;seq1&#9;ABC123&#9;USA&#9;2024-01-01"
+                    textRows={6}
+                    url={originalMetadataUrl}
+                    onUrlChange={setOriginalMetadataUrl}
+                    urlPlaceholder="https://example.com/metadata.tsv.gz"
+                    mode={originalMetadataInputMethod}
+                    onModeChange={setOriginalMetadataInputMethod}
+                  />
                 </div>
               )}
 

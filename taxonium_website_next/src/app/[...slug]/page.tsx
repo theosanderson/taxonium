@@ -41,6 +41,7 @@ export default async function TreePage({ params }: { params: Promise<{ slug: str
               referenceGBFF: treeData.ref_gbff_url,
               referenceFasta: treeData.ref_fasta_url,
               metadataUrl: `${VIRAL_USHER_BASE_URL}/${tree_name}/metadata.tsv.gz`,
+              organism: organism,
               title: displayTitle,
               description: `${organism} - ${tip_count} sequences`,
               icon: '/assets/usher.png',
