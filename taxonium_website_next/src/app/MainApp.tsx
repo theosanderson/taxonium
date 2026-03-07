@@ -84,6 +84,8 @@ function MainApp({
   const [searchQuery, setSearchQuery] = useState("");
   const [viralUsherSearch, setViralUsherSearch] = useState("");
   const viralUsherDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [comboboxViralUsherResults, setComboboxViralUsherResults] = useState<any[]>([]);
+  const comboboxDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch tree configurations from API — skipped when server already provided initialTreeConfig
   useEffect(() => {
@@ -280,6 +282,29 @@ function MainApp({
     };
   }).filter(Boolean); // Remove any null entries from missing configs
 
+  // Fetch viral usher trees for combobox search (debounced)
+  useEffect(() => {
+    if (!VIRAL_USHER_API || !searchQuery) {
+      setComboboxViralUsherResults([]);
+      return;
+    }
+    if (comboboxDebounceRef.current) clearTimeout(comboboxDebounceRef.current);
+    comboboxDebounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `${VIRAL_USHER_API}/api/viral-usher-trees?q=${encodeURIComponent(searchQuery)}&limit=10`
+        );
+        const data = await res.json();
+        setComboboxViralUsherResults(data.trees || []);
+      } catch {
+        setComboboxViralUsherResults([]);
+      }
+    }, 300);
+    return () => {
+      if (comboboxDebounceRef.current) clearTimeout(comboboxDebounceRef.current);
+    };
+  }, [searchQuery]);
+
   // Filter trees based on search query
   const filteredTrees = Object.keys(treeConfig)
     .filter(path =>
@@ -425,23 +450,51 @@ function MainApp({
                     </svg>
                   </Combobox.Button>
                   <Combobox.Options className="absolute right-0 z-10 mt-1 max-h-60 min-w-full w-96 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg border border-gray-200">
-                    {filteredTrees.length === 0 && searchQuery !== '' ? (
+                    {filteredTrees.length === 0 && comboboxViralUsherResults.length === 0 && searchQuery !== '' ? (
                       <div className="px-2 py-2 text-gray-500">No trees found</div>
                     ) : (
-                      filteredTrees.map((path) => (
-                        <Combobox.Option
-                          key={path}
-                          value={path}
-                          className={({ active }) =>
-                            classNames(
-                              'cursor-pointer select-none px-2 py-1',
-                              active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                            )
-                          }
-                        >
-                          {path}
-                        </Combobox.Option>
-                      ))
+                      <>
+                        {filteredTrees.map((path) => (
+                          <Combobox.Option
+                            key={path}
+                            value={path}
+                            className={({ active }) =>
+                              classNames(
+                                'cursor-pointer select-none px-2 py-1',
+                                active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                              )
+                            }
+                          >
+                            {path}
+                          </Combobox.Option>
+                        ))}
+                        {comboboxViralUsherResults.length > 0 && (
+                          <>
+                            {filteredTrees.length > 0 && (
+                              <div className="px-2 py-1 text-xs text-gray-400 border-t border-gray-100 mt-1 pt-1">
+                                Viral UShER Trees
+                              </div>
+                            )}
+                            {comboboxViralUsherResults.map((tree: any) => (
+                              <Combobox.Option
+                                key={`vu-${tree.tree_name}`}
+                                value={getViralUsherPath(tree.organism, tree.accession)}
+                                className={({ active }) =>
+                                  classNames(
+                                    'cursor-pointer select-none px-2 py-1',
+                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                  )
+                                }
+                              >
+                                <span>{tree.organism}</span>
+                                <span className="ml-2 text-xs opacity-60">
+                                  {parseInt(tree.tip_count).toLocaleString()} seqs
+                                </span>
+                              </Combobox.Option>
+                            ))}
+                          </>
+                        )}
+                      </>
                     )}
                   </Combobox.Options>
                 </div>

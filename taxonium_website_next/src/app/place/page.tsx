@@ -63,24 +63,18 @@ export default function PlacePage() {
       .finally(() => setIsLoadingDetails(false));
   }, [selectedTree]);
 
-  // Build the URL for the selected tree
+  // Build the URL for the selected tree — matches the "Place sequences" button on tree pages
   const buildPlaceUrl = () => {
     if (!selectedTree || !selectedTreeDetails) return '#';
 
-    const { tree_name, taxonomy_id, ref_gbff_url, ref_fasta_url } = selectedTreeDetails;
+    const { tree_name, ref_gbff_url, ref_fasta_url } = selectedTreeDetails;
     const params = new URLSearchParams();
 
-    if (taxonomy_id) {
-      params.append('mode', 'genbank');
-      params.append('taxonomyId', taxonomy_id);
-    } else {
-      params.append('mode', 'no_genbank');
-    }
-
+    params.append('mode', 'no_genbank');
     params.append('startingTreeUrl', `${VIRAL_USHER_BASE_URL}/${tree_name}/optimized.pb.gz`);
     if (ref_gbff_url) params.append('refGbffUrl', ref_gbff_url);
     if (ref_fasta_url) params.append('refFastaUrl', ref_fasta_url);
-    params.append('metadataUrl', `${VIRAL_USHER_BASE_URL}/${tree_name}/metadata.tsv.gz`);
+    params.append('originalMetadataUrl', `${VIRAL_USHER_BASE_URL}/${tree_name}/metadata.tsv.gz`);
 
     if (selectedTreeData?.organism) {
       params.append('organism', selectedTreeData.organism);
