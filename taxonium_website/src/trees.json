@@ -1,6 +1,6 @@
 {
   "atb": {
-    "backend": "https://atb.api.taxonium.org",
+    "protoUrl": "https://cov2tree.nyc3.cdn.digitaloceanspaces.com/atb/ATB_tree2.jsonl.gz",
     "title": "AllTheBacteria",
     "description": "A tree of 2,399,238 bacterial genomes from the AllTheBacteria project",
     "icon": "/assets/people.png",
