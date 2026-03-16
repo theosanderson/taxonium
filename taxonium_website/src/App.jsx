@@ -16,6 +16,7 @@ import { Select } from "./components/Basic";
 // Hardcoded list of paths to show in the showcase
 const SHOWCASE_PATHS = [
   "sars-cov-2/public",
+  "atb",
   "taxonomy/visual",
   "taxonomy/full",
   "tuberculosis/SRA",

@@ -1,4 +1,12 @@
 {
+  "atb": {
+    "backend": "https://atb.api.taxonium.org",
+    "title": "AllTheBacteria",
+    "description": "A tree of 2,399,238 bacterial genomes from the AllTheBacteria project",
+    "icon": "/assets/people.png",
+    "maintainerMessage": "Built by the AllTheBacteria team",
+    "maintainerUrl": "https://allthebacteria.org"
+  },
   "sars-cov-2/public": {
     "backend": "https://api.cov2tree.org",
     "title": "SARS-CoV-2",
