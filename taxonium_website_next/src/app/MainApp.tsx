@@ -636,7 +636,7 @@ function MainApp({
                       )}
                     </div>
                     <p className="text-sm text-gray-600 mb-3">
-                      Pre-built trees for various viral pathogens, maintained at UCSC
+                      Monthly-updated trees built from GenBank for hundreds of viral species, maintained at UCSC
                     </p>
                     <div className="relative mb-3">
                       <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
