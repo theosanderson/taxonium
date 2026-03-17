@@ -1005,10 +1005,10 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               )}
 
               {/* Overlay HTML (shown in Taxonium info/about box) */}
-              {mode && (
+              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && !advancedMode ? '3' : '6'}. About/Overlay HTML (Optional)
+                    About/Overlay HTML (Optional)
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     HTML content shown in the Taxonium info box. Describes the tree, data sources, and citations.
