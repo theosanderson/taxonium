@@ -1003,32 +1003,6 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                 </div>
               )}
 
-              {/* Overlay HTML (shown in Taxonium info/about box) */}
-              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
-                <div className="mb-8">
-                  <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    About/Overlay HTML (Optional)
-                  </h2>
-                  <p className="text-sm text-gray-600 mb-4">
-                    HTML content shown in the Taxonium info box. Describes the tree, data sources, and citations.
-                  </p>
-                  <FileOrTextInput
-                    file={overlayHtmlFile}
-                    onFileChange={setOverlayHtmlFile}
-                    fileAccept=".html,.htm"
-                    text={overlayHtmlText}
-                    onTextChange={setOverlayHtmlText}
-                    textPlaceholder='<h2 class="font-bold">About this tree</h2>&#10;<p>Description...</p>'
-                    textRows={10}
-                    url={overlayHtmlUrl}
-                    onUrlChange={setOverlayHtmlUrl}
-                    urlPlaceholder="https://example.com/overlay.html"
-                    mode={overlayHtmlInputMethod}
-                    onModeChange={setOverlayHtmlInputMethod}
-                  />
-                </div>
-              )}
-
               {/* Existing Tree Metadata (advanced, no_genbank mode with starting tree) */}
               {mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && advancedMode && (
                 <div className="mb-8">
@@ -1061,20 +1035,6 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
                     Tree Building & Filtering Parameters
                   </h2>
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tree Title
-                      <div className="text-xs text-gray-500 font-normal mt-1">Displayed in the Taxonium viewer</div>
-                    </label>
-                    <input
-                      type="text"
-                      value={treeTitle}
-                      onChange={(e) => setTreeTitle(e.target.value)}
-                      placeholder="e.g. Zaire ebolavirus tree with user-placed samples"
-                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
-                    />
-                  </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1133,6 +1093,50 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                         value={maxBranchLength}
                         onChange={(e) => setMaxBranchLength(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tree Display Settings (title + overlay HTML) */}
+              {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
+                <div className="mb-8">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
+                    Tree Display (Optional)
+                  </h2>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Tree Title
+                        <div className="text-xs text-gray-500 font-normal mt-1">Displayed in the Taxonium viewer</div>
+                      </label>
+                      <input
+                        type="text"
+                        value={treeTitle}
+                        onChange={(e) => setTreeTitle(e.target.value)}
+                        placeholder="e.g. Zaire ebolavirus tree with user-placed samples"
+                        className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        About/Overlay HTML
+                        <div className="text-xs text-gray-500 font-normal mt-1">Shown in the Taxonium info box — tree description, data sources, citations</div>
+                      </label>
+                      <FileOrTextInput
+                        file={overlayHtmlFile}
+                        onFileChange={setOverlayHtmlFile}
+                        fileAccept=".html,.htm"
+                        text={overlayHtmlText}
+                        onTextChange={setOverlayHtmlText}
+                        textPlaceholder='<h2 class="font-bold">About this tree</h2>&#10;<p>Description...</p>'
+                        textRows={10}
+                        url={overlayHtmlUrl}
+                        onUrlChange={setOverlayHtmlUrl}
+                        urlPlaceholder="https://example.com/overlay.html"
+                        mode={overlayHtmlInputMethod}
+                        onModeChange={setOverlayHtmlInputMethod}
                       />
                     </div>
                   </div>
