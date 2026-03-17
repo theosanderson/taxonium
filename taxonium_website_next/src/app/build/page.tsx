@@ -609,7 +609,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                   {/* Step 1: Species Search */}
                   <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">1. Select Virus Species</h2>
+                      <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">Select Virus Species</h2>
                       <button onClick={() => setMode(null)} className="text-sm text-gray-600 hover:text-gray-800 cursor-pointer">Change Mode</button>
                     </div>
                     <div className="space-y-4">
@@ -679,7 +679,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                   {/* Step 2: RefSeq Selection */}
                   {selectedTaxonomy && (
                     <div className="mb-8">
-                      <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">2. Select Reference Sequence</h2>
+                      <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">Select Reference Sequence</h2>
                       {refseqResults.length > 0 && !selectedRefseq && !loadingRefSeqs && (
                         <div className="border border-gray-200 rounded max-h-64 overflow-y-auto">
                           {refseqResults.map((refseq, idx) => (
@@ -782,7 +782,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                 <div className="mb-8">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-medium text-gray-800 pb-2 border-b border-gray-300">
-                      1. Provide Reference Files
+                      Provide Reference Files
                     </h2>
                     <div className="flex gap-2">
                       <button
@@ -876,7 +876,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '3' : '2'}. Nextclade Dataset (Optional)
+                    Nextclade Dataset (Optional)
                   </h2>
                   {nextcladeDatasets.length > 0 ? (
                     <>
@@ -913,7 +913,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '' : '3. '}Starting Tree - Update Mode (Optional)
+                    Starting Tree - Update Mode (Optional)
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     Provide an existing UShER protobuf tree (.pb.gz) to update with new sequences instead of building from scratch.
@@ -938,8 +938,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '4' :
-                     (mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && !advancedMode ? '1' : '4')}. FASTA Sequences {mode === 'no_genbank' ? '(Required)' : '(Optional)'}
+                    FASTA Sequences {mode === 'no_genbank' ? '(Required)' : '(Optional)'}
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     {mode === 'no_genbank'
@@ -967,7 +966,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && !advancedMode ? '2' : '5'}. Custom Metadata (Optional)
+                    Custom Metadata (Optional)
                   </h2>
                   <p className="text-sm text-gray-600 mb-4">
                     Provide a TSV file with custom metadata for your sequences. First column should be sequence names matching your FASTA.
@@ -1034,7 +1033,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
               {mode && (mode === 'genbank' || (mode === 'no_genbank' && ((!startingTreeFile && !startingTreeUrl) || advancedMode))) && (
                 <div className="mb-8">
                   <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
-                    {mode === 'genbank' ? '6' : '6'}. Tree Building & Filtering Parameters
+                    Tree Building & Filtering Parameters
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
