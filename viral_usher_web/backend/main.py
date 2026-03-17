@@ -659,7 +659,10 @@ async def generate_config(
     original_metadata_file: Optional[UploadFile] = File(None),
     original_metadata_text: str = Form(""),
     original_metadata_url: str = Form(""),
-    title: str = Form("")
+    title: str = Form(""),
+    overlay_html_file: Optional[UploadFile] = File(None),
+    overlay_html_text: str = Form(""),
+    overlay_html_url: str = Form("")
 ):
     """Generate and save a viral_usher config file, optionally with FASTA upload to S3"""
     try:
@@ -821,6 +824,22 @@ async def generate_config(
 
         if title:
             config_contents["title"] = title
+
+        # Add overlay HTML if provided
+        overlay_html_s3_key = None
+        if overlay_html_file and overlay_html_file.filename:
+            content = await overlay_html_file.read()
+            overlay_html_s3_key = upload_to_s3(content, overlay_html_file.filename or "taxonium_overlay.html", "text/html")
+        elif overlay_html_text:
+            content = overlay_html_text.encode('utf-8')
+            overlay_html_s3_key = upload_to_s3(content, "taxonium_overlay.html", "text/html")
+        elif overlay_html_url:
+            config_contents["taxonium_overlay_html"] = overlay_html_url
+        if overlay_html_s3_key:
+            if S3_ENDPOINT_URL:
+                config_contents["taxonium_overlay_html"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{overlay_html_s3_key}"
+            else:
+                config_contents["taxonium_overlay_html"] = f"https://s3.{S3_REGION}.amazonaws.com/{S3_BUCKET}/{overlay_html_s3_key}"
 
         # Create workdir if it doesn't exist
         os.makedirs(workdir, exist_ok=True)
