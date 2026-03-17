@@ -58,6 +58,12 @@ export default function BuildPage() {
   // Title for the tree (shown in Taxonium)
   const [treeTitle, setTreeTitle] = useState('');
 
+  // Overlay HTML (shown in Taxonium info/about box)
+  const [overlayHtmlFile, setOverlayHtmlFile] = useState<File | null>(null);
+  const [overlayHtmlText, setOverlayHtmlText] = useState('');
+  const [overlayHtmlUrl, setOverlayHtmlUrl] = useState('');
+  const [overlayHtmlInputMethod, setOverlayHtmlInputMethod] = useState<'file' | 'text' | 'url'>('text');
+
   // Starting tree (protobuf) upload state
   const [startingTreeFile, setStartingTreeFile] = useState<File | null>(null);
   const [startingTreeUrl, setStartingTreeUrl] = useState('');
@@ -321,6 +327,14 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
         formData.append('title', treeTitle);
       }
 
+      if (overlayHtmlInputMethod === 'file' && overlayHtmlFile) {
+        formData.append('overlay_html_file', overlayHtmlFile);
+      } else if (overlayHtmlInputMethod === 'text' && overlayHtmlText) {
+        formData.append('overlay_html_text', overlayHtmlText);
+      } else if (overlayHtmlInputMethod === 'url' && overlayHtmlUrl) {
+        formData.append('overlay_html_url', overlayHtmlUrl);
+      }
+
       const response = await fetch(`${API_BASE}/api/generate-config`, {
         method: 'POST',
         body: formData
@@ -456,9 +470,64 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
       setOriginalMetadataInputMethod('url');
     }
 
+    const overlayHtmlUrlParam = params.get('overlayHtmlUrl');
+    if (overlayHtmlUrlParam) {
+      setOverlayHtmlUrl(overlayHtmlUrlParam);
+      setOverlayHtmlInputMethod('url');
+    }
+
     const organismParam = params.get('organism');
     if (organismParam) {
       setTreeTitle(`${organismParam} tree with user-placed samples`);
+      // Set default overlay HTML for the place-on-existing-tree workflow
+      if (!overlayHtmlUrlParam) {
+        setOverlayHtmlText(`<h2 class="font-bold">About Taxonium</h2>
+<p>
+  Taxonium is a web application for exploring phylogenetic trees. Find out more at the
+  Github repository (https://github.com/theosanderson/taxonium)
+  or
+  read the documentation (https://docs.taxonium.org).
+</p>
+
+<h2 class="font-bold">About the tree</h2>
+<p>
+  This tree was constructed by the
+  <a href="https://github.com/AngieHinrichs/viral_usher" target=_blank>viral_usher</a>
+  tool developed by the
+  <a href="https://pathogengenomics.ucsc.edu/" target=_blank>Pathogen Genomics Group</a>
+  at the University of California Santa Cruz (UCSC) Genomics Institute.
+  User-provided sequences were added to a starting tree from the
+  <a href="https://github.com/AngieHinrichs/viral_usher_trees" target=_blank>viral_usher_trees</a>
+  repository (https://github.com/AngieHinrichs/viral_usher_trees).
+  viral_usher first aligned the user-provided sequences to viral_usher_trees' reference sequence
+  using <a href="https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextclade-cli/index.html" target=_blank>nextclade</a>,
+  then placed the aligned sequences on the starting tree using
+  <a href="https://usher-wiki.readthedocs.io/en/latest/" target=_blank>UShER</a>
+  and further optimized initial placements using
+  <a href="https://usher-wiki.readthedocs.io/en/latest/matOptimize.html" target=_blank>matOptimize</a>.
+</p>
+
+<h2 class="font-bold">Citations</h2>
+<p>
+  If you use Taxonium in your research, please cite:
+  <br>
+  Theo Sanderson (2022)
+  <span class="font-semibold">Taxonium, a web-based tool for exploring large phylogenetic trees</span>
+  <i>eLife</i> 11:e82392.
+  <br>
+  <a href="https://doi.org/10.7554/eLife.82392" target=_blank>https://doi.org/10.7554/eLife.82392</a>
+</p>
+<p>
+  If you use the tree in your research, please cite:
+  <br>
+  Jakob McBroome et al. (2021)
+  <span class="font-semibold">A Daily-Updated Database and Tools for Comprehensive SARS-CoV-2 Mutation-Annotated Trees</span>
+  <i>Mol Biol Evol</i> 38(12):5819-5824.
+  <br>
+  <a href="https://doi.org/10.1093/molbev/msab264" target=_blank>https://doi.org/10.1093/molbev/msab264</a>
+</p>`);
+        setOverlayHtmlInputMethod('text');
+      }
     }
   }, []);
 
@@ -932,6 +1001,32 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       />
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Overlay HTML (shown in Taxonium info/about box) */}
+              {mode && (
+                <div className="mb-8">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4 pb-2 border-b border-gray-300">
+                    {mode === 'no_genbank' && (startingTreeFile || startingTreeUrl) && !advancedMode ? '3' : '6'}. About/Overlay HTML (Optional)
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    HTML content shown in the Taxonium info box. Describes the tree, data sources, and citations.
+                  </p>
+                  <FileOrTextInput
+                    file={overlayHtmlFile}
+                    onFileChange={setOverlayHtmlFile}
+                    fileAccept=".html,.htm"
+                    text={overlayHtmlText}
+                    onTextChange={setOverlayHtmlText}
+                    textPlaceholder='<h2 class="font-bold">About this tree</h2>&#10;<p>Description...</p>'
+                    textRows={10}
+                    url={overlayHtmlUrl}
+                    onUrlChange={setOverlayHtmlUrl}
+                    urlPlaceholder="https://example.com/overlay.html"
+                    mode={overlayHtmlInputMethod}
+                    onModeChange={setOverlayHtmlInputMethod}
+                  />
                 </div>
               )}
 
