@@ -122,24 +122,26 @@ const NodeHoverTip = ({
       )}
 
       {keysToDisplay.map(
-        (key: string) =>
-          hoveredNode[key] &&
-          !(metadataTypes && metadataTypes[key] === "sequence") &&
-          !(
-            typeof hoveredNode[key] === "string" &&
-            hoveredNode[key].match(/\[.*\]\(.*\)/)
-          ) && (
+        (key: string) => {
+          const val = hoveredNode[key];
+          if (!val) return null;
+          if (metadataTypes && metadataTypes[key] === "sequence") return null;
+          if (typeof val === "string" && val.match(/\[.*\]\(.*\)/)) return null;
+          const display = typeof val === "string" && val.length > 100
+            ? val.slice(0, 100) + "…"
+            : val;
+          return (
             <div key={key}>
-              {/*<span className="text-gray-800">{prettify_key[key]}</span>:{" "}*/}
               {colorBy.colorByField === key ? (
-                <span style={{ color: colorHook.toRGBCSS(hoveredNode[key]) }}>
-                  {hoveredNode[key]}
+                <span style={{ color: colorHook.toRGBCSS(val) }}>
+                  {display}
                 </span>
               ) : (
-                hoveredNode[key]
+                display
               )}
             </div>
-          )
+          );
+        }
       )}
 
       {((config.mutations && config.mutations.length) ||
