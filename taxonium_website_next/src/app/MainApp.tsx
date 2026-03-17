@@ -119,13 +119,44 @@ function MainApp({
 
     const doFetch = async () => {
       try {
-        const url = viralUsherSearch
-          ? `${VIRAL_USHER_API}/api/viral-usher-trees?q=${encodeURIComponent(viralUsherSearch)}&limit=20`
-          : `${VIRAL_USHER_API}/api/viral-usher-trees?limit=8`;
-        const res = await fetch(url);
-        const data = await res.json();
-        setViralUsherItems(data.trees || []);
-        setViralUsherTotal(data.total || 0);
+        if (viralUsherSearch) {
+          const res = await fetch(
+            `${VIRAL_USHER_API}/api/viral-usher-trees?q=${encodeURIComponent(viralUsherSearch)}&limit=20`
+          );
+          const data = await res.json();
+          setViralUsherItems(data.trees || []);
+          setViralUsherTotal(data.total || 0);
+        } else {
+          // Fetch a curated set of diverse organisms for the default view
+          const showcaseAccessions = [
+            'NC_001802.1',  // HIV-1
+            'NC_007362.1',  // Influenza A H5N1
+            'NC_063383.1',  // Monkeypox
+            'NC_001477.1',  // Dengue 1
+            'NC_012532.1',  // Zika
+            'NC_006232.1',  // Porcine circovirus 2
+            'NC_003415.1',  // SARS-CoV-2 (if available) — fallback handled below
+            'NC_002549.1',  // Ebola
+            'NC_001781.1',  // RSV
+            'NC_003977.2',  // Hepatitis B
+            'NC_006213.1',  // Human coronavirus OC43
+            'NC_001498.1',  // Measles
+          ];
+          const results = await Promise.all(
+            showcaseAccessions.map(acc =>
+              fetch(`${VIRAL_USHER_API}/api/viral-usher-trees?q=${encodeURIComponent(acc)}&limit=1`)
+                .then(r => r.json())
+                .then(d => d.trees?.find((t: any) => t.accession === acc) || null)
+                .catch(() => null)
+            )
+          );
+          const items = results.filter(Boolean);
+          // Also get total count
+          const totalRes = await fetch(`${VIRAL_USHER_API}/api/viral-usher-trees?limit=1`);
+          const totalData = await totalRes.json();
+          setViralUsherItems(items);
+          setViralUsherTotal(totalData.total || 0);
+        }
       } catch (e) {
         console.error('Error fetching viral usher trees:', e);
       }
@@ -667,10 +698,10 @@ function MainApp({
                         <p className="text-sm text-gray-500 p-2 italic">No matching organisms found</p>
                       )}
                     </div>
-                    {!viralUsherSearch && viralUsherTotal > 8 && (
+                    {!viralUsherSearch && viralUsherTotal > 0 && (
                       <div className="mt-2 pt-2 border-t border-gray-200 text-center">
                         <span className="text-xs text-gray-500">
-                          Search above to see all {viralUsherTotal} organisms
+                          Search above to explore all {viralUsherTotal} organisms
                         </span>
                       </div>
                     )}
