@@ -843,8 +843,8 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Reference GenBank (gbff)
-                        <div className="text-xs text-gray-500 font-normal mt-1">Optional reference genome annotations in GenBank format (provides gene annotations in Taxonium)</div>
+                        Reference GenBank (gbff) *
+                        <div className="text-xs text-gray-500 font-normal mt-1">Reference genome annotations in GenBank format</div>
                       </label>
                       <FileOrTextInput
                         file={refGbffFile}
@@ -862,7 +862,8 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                       />
                     </div>
                     {manualTaxonomyId && manualSpeciesName &&
-                     ((refFastaInputMethod === 'file' && refFastaFile) || (refFastaInputMethod === 'text' && refFastaText) || (refFastaInputMethod === 'url' && refFastaUrl)) && (
+                     ((refFastaInputMethod === 'file' && refFastaFile) || (refFastaInputMethod === 'text' && refFastaText) || (refFastaInputMethod === 'url' && refFastaUrl)) &&
+                     ((refGbffInputMethod === 'file' && refGbffFile) || (refGbffInputMethod === 'text' && refGbffText) || (refGbffInputMethod === 'url' && refGbffUrl)) && (
                       <div className="bg-green-50 border border-green-300 rounded p-4 mt-4">
                         <span className="font-medium text-green-800 text-sm">Ready to proceed!</span> <span className="text-sm text-gray-700">All required files provided. Scroll down to configure additional options and launch the analysis.</span>
                       </div>
