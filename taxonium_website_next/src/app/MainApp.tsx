@@ -30,7 +30,7 @@ const SHOWCASE_PATHS = [
   "taxonomy/visual",
   "taxonomy/full",
   "tuberculosis/SRA",
-  "mpox/clade-I",
+  "atb",
   "mpox/clade-IIb",
   "flu/H5N1-Outbreak",
   "flu/H5N1-Outbreak-D1-1",
