@@ -129,13 +129,6 @@ function Taxonium({
     query.sid,
     sourceData ?? null
   );
-  if (!backend) {
-    return (
-      <div className="p-4 bg-red-50 text-red-800">
-        Failed to initialise backend.
-      </div>
-    );
-  }
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
