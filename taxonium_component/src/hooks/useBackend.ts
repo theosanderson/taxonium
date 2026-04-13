@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import useServerBackend from "./useServerBackend";
 import useLocalBackend from "./useLocalBackend";
 import type { Backend } from "../types/backend";
@@ -14,26 +15,30 @@ function useBackend(
 ): Backend | null {
   const serverBackend = useServerBackend(backend_url ?? null, sid ?? null);
   const localBackend = useLocalBackend(uploaded_data);
-  if (backend_url) {
-    const w = window as WindowWithAnalytics;
-    if (!w.done_ev) {
-      w.done_ev = true;
-      if (w.gtag) {
-        w.gtag("event", "backend", {
-          event_category: "backend",
-          event_label: backend_url,
-        });
+
+  // Fire analytics as a side-effect (not during render) so we don't
+  // violate the Rules of Hooks and so we only fire once per backend URL.
+  useEffect(() => {
+    if (backend_url) {
+      const w = window as WindowWithAnalytics;
+      if (!w.done_ev) {
+        w.done_ev = true;
+        if (w.gtag) {
+          w.gtag("event", "backend", {
+            event_category: "backend",
+            event_label: backend_url,
+          });
+        }
       }
     }
+  }, [backend_url]);
+
+  if (backend_url) {
     return serverBackend;
   }
   if (uploaded_data) {
     return localBackend;
-  } else {
-    window.alert(
-      "Taxonium did not receive the information it needed to launch."
-    );
-    return null;
   }
+  return null;
 }
 export default useBackend;
