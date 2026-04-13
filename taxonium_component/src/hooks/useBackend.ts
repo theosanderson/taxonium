@@ -12,7 +12,7 @@ function useBackend(
   backend_url: string | null | undefined,
   sid: string | null | undefined,
   uploaded_data: Record<string, unknown> | null
-): Backend {
+): Backend | null {
   const serverBackend = useServerBackend(backend_url ?? null, sid ?? null);
   const localBackend = useLocalBackend(uploaded_data);
 
@@ -33,19 +33,12 @@ function useBackend(
     }
   }, [backend_url]);
 
-  // Always return a valid backend object. Returning null here would cause
-  // the caller to early-return before calling other hooks, violating the
-  // Rules of Hooks (React error #310) when the backend later becomes
-  // available. If no source is provided we fall back to serverBackend;
-  // this is a transient state (e.g. while protoUrl is being converted
-  // into uploaded_data) and the downstream hooks tolerate a backend
-  // that hasn't yet been pointed at a real URL.
   if (backend_url) {
     return serverBackend;
   }
   if (uploaded_data) {
     return localBackend;
   }
-  return serverBackend;
+  return null;
 }
 export default useBackend;

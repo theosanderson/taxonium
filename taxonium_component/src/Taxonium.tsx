@@ -60,7 +60,21 @@ interface TaxoniumProps {
 
 const default_query = getDefaultQuery();
 
-function Taxonium({
+// TaxoniumInner owns all the data-loading hooks. It is only mounted by the
+// outer <Taxonium> wrapper once a backend source is actually available, so
+// its hook order is guaranteed to stay stable across renders. This avoids
+// the React error #310 ("Rendered more hooks than during the previous
+// render") that used to occur when Taxonium was mounted with no source
+// (e.g. query.protoUrl set but uploadedData not yet populated) and then
+// a source appeared on a subsequent render: the previous implementation
+// early-returned before calling most hooks, so when the backend later
+// became available React saw a different number of hook calls.
+type TaxoniumInnerProps = TaxoniumProps & {
+  query: Query;
+  updateQuery: (q: Partial<Query>) => void;
+};
+
+function TaxoniumInner({
   sourceData,
 
   backendUrl,
@@ -82,19 +96,7 @@ function Taxonium({
   referenceFasta,
   metadataUrl,
   organism,
-}: TaxoniumProps) {
-  const [backupQuery, setBackupQuery] = useState(default_query);
-  const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
-    setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
-  }, []);
-  // if query and updateQuery are not provided, use the backupQuery
-  if (!query) {
-    query = backupQuery;
-  }
-  if (!updateQuery) {
-    updateQuery = backupUpdateQuery;
-  }
-
+}: TaxoniumInnerProps) {
   // if no onSetTitle, set it to a noop
   if (!onSetTitle) {
     onSetTitle = () => {};
@@ -124,11 +126,14 @@ function Taxonium({
     mouseDownIsMinimap,
   });
 
+  // The outer <Taxonium> wrapper guarantees that at least one of
+  // backendUrl / query.backend / sourceData is set when TaxoniumInner is
+  // mounted, so useBackend will never return null here.
   const backend = useBackend(
     backendUrl ? backendUrl : query.backend,
     query.sid,
     sourceData ?? null
-  );
+  )!;
   let hoverDetails = useHoverDetails();
   const gisaidHoverDetails = useNodeDetails("gisaid-hovered", backend);
   if (window.location.toString().includes("epicov.org")) {
@@ -339,6 +344,34 @@ function Taxonium({
       </div>
     </GlobalErrorBoundary>
   );
+}
+
+// Outer Taxonium: resolves query/updateQuery defaults and checks whether
+// we have enough information to render the full tree viewer. If not, we
+// render nothing (e.g. transient state where query.protoUrl is set but
+// sourceData has not yet been populated by the caller). Once a source
+// becomes available, TaxoniumInner is mounted fresh, so all of its hooks
+// are called in a consistent order from first render onwards.
+function Taxonium(props: TaxoniumProps) {
+  const [backupQuery, setBackupQuery] = useState(default_query);
+  const backupUpdateQuery = useCallback((newQuery: Partial<Query>) => {
+    setBackupQuery((oldQuery) => ({ ...oldQuery, ...newQuery }));
+  }, []);
+
+  const query = props.query ?? backupQuery;
+  const updateQuery = props.updateQuery ?? backupUpdateQuery;
+
+  const hasSource = !!(
+    props.backendUrl ||
+    query.backend ||
+    props.sourceData
+  );
+
+  if (!hasSource) {
+    return null;
+  }
+
+  return <TaxoniumInner {...props} query={query} updateQuery={updateQuery} />;
 }
 
 export default React.memo(Taxonium);
