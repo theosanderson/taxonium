@@ -25,7 +25,55 @@ You can configure many things. We only discuss some here. For more information h
 
 ##### Colors
 
-The way that Taxonium handles colurs by default is that they are computed as a hash of the text they represent. That has advantages, because it means that they are consistent over time. But sometimes values of interest can have very similar strings, or may have ugly colours that you wish to change. These can be overwritten using a `colorMapping` object, which maps the string values you want to colors as RGB values. The object looks something like this:
+###### Default coloring behaviour
+
+By default, Taxonium chooses a color for each value as follows:
+
+- **String values** are hashed and the hash is converted to an RGB color. This has the advantage that colors stay consistent over time without needing to be stored anywhere.
+- **Numeric values** are mapped onto the [plasma](https://bids.github.io/colormap/) perceptual colormap using a log10-scaled, 0–1 clamped value.
+- **Amino acid single-letter codes** (A, R, N, D, C, Q, E, G, H, I, L, K, M, F, P, T, W, Y, V, X, O, Z) are mapped to a fixed, readable palette. This is used when coloring by genotype.
+- A number of **specific strings** have hard-coded colors (e.g. `USA`, `England`, `France`, `OXFORD_NANOPORE`, `user-provided`, …). These give recognisable defaults for common SARS-CoV-2 metadata values.
+- Missing / placeholder values (`undefined`, `""`, `unknown`, `None`, `N/A`, `NA`) are shown in gray.
+
+All of the options below let you override or extend these defaults.
+
+###### Choosing which field to color by (`defaultColorByField` and `colorBy.colorByOptions`)
+
+The field that Taxonium colors by when the tree first loads can be set with the `defaultColorByField` config key. The dropdown of available "Color by" fields is controlled by `colorBy.colorByOptions` — an array of field names that will be offered to the user:
+
+```json
+{
+  "defaultColorByField": "meta_pango_lineage_usher",
+  "colorBy": {
+    "colorByOptions": [
+      "meta_pango_lineage_usher",
+      "meta_country",
+      "genotype",
+      "None"
+    ]
+  }
+}
+```
+
+The special value `"genotype"` enables coloring by the amino acid (or nucleotide) at a specific position, and `"None"` disables coloring.
+
+###### The `color` URL parameter
+
+The current coloring is stored in the URL as a JSON-encoded `color` parameter so that it can be shared via permalinks. It accepts three keys:
+
+- `field` — the metadata field to color by (matching one of the `colorByOptions`, or `"genotype"`).
+- `gene` — when `field` is `"genotype"`, the gene to use (e.g. `"S"`, or `"nt"` for nucleotide).
+- `pos` — when `field` is `"genotype"`, the residue (or nucleotide) position.
+
+For example, to color by the amino acid at spike position 484:
+
+```
+https://taxonium.org/?backend=https://api.cov2tree.org&color={"field":"genotype","gene":"S","pos":484}
+```
+
+###### Categorical overrides (`colorMapping`)
+
+Hash-based colors are consistent, but sometimes values of interest have very similar strings, or may have ugly colours that you wish to change. These can be overwritten using a `colorMapping` object, which maps the string values you want to colors as RGB values. The object looks something like this:
 
 ```
 {
@@ -58,9 +106,32 @@ or make a JSON file containing
 }
 ```
 
+You can also adjust individual colors interactively by clicking a swatch in the color legend and picking a new color from the color picker.
+
 :::{note}
 Guilhem Sempéré has created a tool called [TaxoniumColors](https://webtools.southgreen.fr/TaxoniumColors/) to help with generating these palettes.
 :::
+
+###### Continuous color scales (`colorRamps`)
+
+For numeric fields you can specify a continuous gradient scale using `colorRamps`. Each entry is keyed by the field name and contains a `scale` — a list of `[value, color]` stops that are linearly interpolated between. Values outside the domain are clamped, and non-numeric values fall back to gray.
+
+```json
+{
+  "colorRamps": {
+    "meta_mouse_escape": {
+      "scale": [
+        [0,   "#000000"],
+        [1,   "#cccccc"],
+        [1.5, "#ffee00"],
+        [2,   "#ff0000"]
+      ]
+    }
+  }
+}
+```
+
+When a field with a `colorRamp` is selected, the color legend renders a gradient key rather than a list of discrete values. `colorRamps` takes precedence over the default numeric plasma scale and over any `colorMapping` entries for that field.
 
 ##### Title
 
