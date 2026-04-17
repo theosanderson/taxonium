@@ -41,17 +41,26 @@ const useQueryAsState = (defaultValues: Record<string, any> = {}) => {
     pathnameRef.current = pathname;
   }, [pathname]);
 
+  // Fallback for environments where window is unavailable (SSR). Kept in a
+  // ref so updateQuery's identity doesn't change on every URL update — that
+  // would cascade through downstream useCallback/useEffect deps (e.g.
+  // setxType in Taxonium.tsx) and cause redundant effect re-runs.
+  const decodedSearchRef = useRef(decodedSearch);
+  useEffect(() => {
+    decodedSearchRef.current = decodedSearch;
+  }, [decodedSearch]);
+
   const updateQuery = useCallback(
     (updatedParams: Record<string, any>, method = "push") => {
-      // Read from window.location rather than a ref synced via useEffect.
-      // Routers may defer the React state update (e.g. startTransition), so
-      // a ref that's updated in useEffect can lag behind when updateQuery
-      // is called twice in quick succession. history.pushState is
-      // synchronous, so window.location always reflects the latest URL.
+      // Read from window.location rather than the decodedSearch ref. Routers
+      // may defer the React state update (e.g. startTransition), so a ref
+      // synced via useEffect can lag behind when updateQuery is called twice
+      // in quick succession. history.pushState is synchronous, so
+      // window.location always reflects the latest URL.
       const currentSearch =
         typeof window !== "undefined"
           ? queryParamsToObject(window.location.search)
-          : decodedSearch;
+          : decodedSearchRef.current;
       const newParams = { ...currentSearch, ...updatedParams };
 
       // Remove null values from the query parameters
@@ -70,7 +79,7 @@ const useQueryAsState = (defaultValues: Record<string, any> = {}) => {
         router.push(newUrl);
       }
     },
-    [router, decodedSearch]
+    [router]
   );
 
   const queryWithDefault = useMemo(
