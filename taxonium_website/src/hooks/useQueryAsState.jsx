@@ -32,15 +32,22 @@ const useQueryAsState = (defaultValues = {}) => {
 
   const decodedSearch = useMemo(() => queryParamsToObject(search), [search]);
 
-  const updateRef = useRef({ decodedSearch, pathname });
+  const pathnameRef = useRef(pathname);
   useEffect(() => {
-    updateRef.current = { decodedSearch, pathname };
-  }, [decodedSearch, pathname]);
+    pathnameRef.current = pathname;
+  }, [pathname]);
 
   const updateQuery = useCallback(
     (updatedParams, method = "push") => {
-      const { pathname, decodedSearch } = updateRef.current;
-      const newParams = { ...decodedSearch, ...updatedParams };
+      // Read from window.location rather than a ref synced via useEffect.
+      // React Router v7 wraps navigate's state update in startTransition, so
+      // the useEffect that would update the ref may not have run by the time
+      // a second updateQuery call happens (e.g. two calls in rapid
+      // succession). history.pushState is synchronous, so window.location
+      // always reflects the latest committed URL and prevents the second
+      // call from clobbering the first.
+      const currentSearch = queryParamsToObject(window.location.search);
+      const newParams = { ...currentSearch, ...updatedParams };
 
       // Remove null values from the query parameters
       Object.keys(updatedParams).forEach((key) => {
@@ -51,7 +58,7 @@ const useQueryAsState = (defaultValues = {}) => {
 
       navigate(
         {
-          pathname,
+          pathname: pathnameRef.current,
           search: objectToQueryParams(newParams),
         },
         { replace: method === "replace" }

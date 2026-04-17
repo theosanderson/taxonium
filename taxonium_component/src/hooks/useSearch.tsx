@@ -247,10 +247,18 @@ const useSearch = ({
     // get a random string key
     const newSearch = getDefaultSearch(config as any);
 
-    setSearchSpec([...searchSpec, newSearch]);
-    setTimeout(() => {
-      setEnabled(newSearch.key, true);
-    }, 50);
+    // Update both srch and enabled in a single updateQuery call to avoid a
+    // race: if the caller's updateQuery implementation defers React state
+    // updates (e.g. React Router v7 uses startTransition), a second call
+    // issued via setTimeout could read stale query params and overwrite the
+    // first one.
+    updateQuery({
+      srch: JSON.stringify([...searchSpec, newSearch]),
+      enabled: JSON.stringify({
+        ...searchesEnabled,
+        [newSearch.key]: true,
+      }),
+    });
   };
 
     const deleteTopLevelSearch = (key: string) => {
