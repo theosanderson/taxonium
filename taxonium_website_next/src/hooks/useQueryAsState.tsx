@@ -36,15 +36,23 @@ const useQueryAsState = (defaultValues: Record<string, any> = {}) => {
   const search = searchParams?.toString() ? `?${searchParams.toString()}` : "";
   const decodedSearch = useMemo(() => queryParamsToObject(search), [search]);
 
-  const updateRef = useRef({ decodedSearch, pathname });
+  const pathnameRef = useRef(pathname);
   useEffect(() => {
-    updateRef.current = { decodedSearch, pathname };
-  }, [decodedSearch, pathname]);
+    pathnameRef.current = pathname;
+  }, [pathname]);
 
   const updateQuery = useCallback(
     (updatedParams: Record<string, any>, method = "push") => {
-      const { pathname, decodedSearch } = updateRef.current;
-      const newParams = { ...decodedSearch, ...updatedParams };
+      // Read from window.location rather than a ref synced via useEffect.
+      // Routers may defer the React state update (e.g. startTransition), so
+      // a ref that's updated in useEffect can lag behind when updateQuery
+      // is called twice in quick succession. history.pushState is
+      // synchronous, so window.location always reflects the latest URL.
+      const currentSearch =
+        typeof window !== "undefined"
+          ? queryParamsToObject(window.location.search)
+          : decodedSearch;
+      const newParams = { ...currentSearch, ...updatedParams };
 
       // Remove null values from the query parameters
       Object.keys(updatedParams).forEach((key) => {
@@ -54,7 +62,7 @@ const useQueryAsState = (defaultValues: Record<string, any> = {}) => {
       });
 
       const newSearch = objectToQueryParams(newParams);
-      const newUrl = `${pathname}${newSearch}`;
+      const newUrl = `${pathnameRef.current}${newSearch}`;
 
       if (method === "replace") {
         router.replace(newUrl);
@@ -62,7 +70,7 @@ const useQueryAsState = (defaultValues: Record<string, any> = {}) => {
         router.push(newUrl);
       }
     },
-    [router, pathname]
+    [router, decodedSearch]
   );
 
   const queryWithDefault = useMemo(
