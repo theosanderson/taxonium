@@ -119,6 +119,7 @@ const search = async (search, bounds) => {
     y_positions,
     node_to_mut,
     mutations,
+    referenceSequence,
   } = processedUploadedData;
   const spec = JSON.parse(search);
 
@@ -140,6 +141,7 @@ const search = async (search, bounds) => {
     node_to_mut,
     xType: xType,
     cache_helper,
+    referenceSequence,
   });
 
   result.key = spec.key;
@@ -256,6 +258,15 @@ onmessage = async (event) => {
         processedUploadedData.mutations
       );
       postMessage({ type: "nextstrain", data: result });
+    }
+    if (data.type === "overall_spectrum") {
+      await waitForProcessedData();
+      const spectrum = filtering.computeOverallSpectrum(
+        processedUploadedData.mutations,
+        processedUploadedData.node_to_mut,
+        processedUploadedData.referenceSequence
+      );
+      postMessage({ type: "overall_spectrum", data: { spectrum } });
     }
   }
 };

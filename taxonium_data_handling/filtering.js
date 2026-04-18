@@ -3,6 +3,144 @@ import crypto from "crypto";
 let revertant_mutations_set = null;
 let cachedChildrenArray = null;
 
+// Helper functions for spectra filtering
+
+/**
+ * Get the trinucleotide context for a mutation
+ * Returns a string like "A[C>T]G" meaning the mutation is C>T with A before and G after
+ */
+const getTrinucContext = (position, refNuc, altNuc, referenceSequence) => {
+  // position is 1-based
+  const pos0 = position - 1; // convert to 0-based
+
+  // Get flanking nucleotides, use "N" if at boundary
+  const before = pos0 > 0 ? referenceSequence[pos0 - 1] : "N";
+  const after = pos0 < referenceSequence.length - 1 ? referenceSequence[pos0 + 1] : "N";
+
+  return `${before}[${refNuc}>${altNuc}]${after}`;
+};
+
+/**
+ * Parse a tab-separated spectrum text into a probability object
+ * Input format: "A[A>C]A\t10\nA[A>C]C\t5\n..."
+ * Returns: { "A[A>C]A": 0.xxx, "A[A>C]C": 0.yyy, ... }
+ */
+const parseSpectrum = (text) => {
+  const lines = text.trim().split("\n");
+  const counts = {};
+  let total = 0;
+
+  for (const line of lines) {
+    const parts = line.trim().split("\t");
+    if (parts.length >= 2) {
+      const context = parts[0].trim();
+      const count = parseFloat(parts[1].trim());
+      if (!isNaN(count) && context) {
+        counts[context] = (counts[context] || 0) + count;
+        total += count;
+      }
+    }
+  }
+
+  // Convert counts to probabilities with pseudocounts to avoid log(0)
+  // p_i = (count_i + 0.5) / (total + 192 * 0.5)
+  const numContexts = 192; // All 192 trinucleotide contexts
+  const pseudocount = 0.5;
+  const probs = {};
+
+  // Get all observed contexts
+  for (const context in counts) {
+    probs[context] = (counts[context] + pseudocount) / (total + numContexts * pseudocount);
+  }
+
+  // Store the default probability for unobserved contexts
+  probs._default = pseudocount / (total + numContexts * pseudocount);
+
+  return probs;
+};
+
+/**
+ * Compute multinomial log-likelihood: sum(k_i * log(p_i))
+ */
+const computeLogLikelihood = (contextCounts, probs) => {
+  let logLik = 0;
+  for (const context in contextCounts) {
+    const count = contextCounts[context];
+    const prob = probs[context] || probs._default || 1e-10;
+    logLik += count * Math.log(prob);
+  }
+  return logLik;
+};
+
+/**
+ * Filter nodes by spectra comparison
+ * Compares first spectrum against the max of all others
+ * Returns nodes where L1 - max(L2, L3, ...) >= threshold
+ */
+const filterBySpectra = (data, spec, mutations, node_to_mut, referenceSequence) => {
+  // Parse all spectra
+  const spectraTexts = spec.spectra || [];
+  if (spectraTexts.length < 2) {
+    return []; // Need at least 2 spectra to compare
+  }
+
+  const allProbs = spectraTexts.map(text => parseSpectrum(text || ""));
+  const probs1 = allProbs[0];
+  const otherProbs = allProbs.slice(1);
+
+  const threshold = spec.spectra_threshold || 0;
+  const minMutations = spec.min_mutations || 1;
+
+  // Pre-filter to find nucleotide mutations (gene === "nt")
+  const ntMutationsMap = {};
+  mutations.forEach((mut, idx) => {
+    if (mut && mut.gene === "nt") {
+      ntMutationsMap[mut.mutation_id] = mut;
+    }
+  });
+
+  const filtered = data.filter((node) => {
+    const nodeMutIds = node_to_mut[node.node_id] || [];
+
+    // Count trinucleotide contexts for this node's nucleotide mutations
+    const contextCounts = {};
+    let ntMutCount = 0;
+
+    for (const mutId of nodeMutIds) {
+      const mut = ntMutationsMap[mutId];
+      if (mut && referenceSequence) {
+        const context = getTrinucContext(
+          mut.residue_pos,
+          mut.previous_residue,
+          mut.new_residue,
+          referenceSequence
+        );
+        contextCounts[context] = (contextCounts[context] || 0) + 1;
+        ntMutCount++;
+      }
+    }
+
+    // Skip nodes with fewer than minimum mutations
+    if (ntMutCount < minMutations) {
+      return false;
+    }
+
+    // Compute log-likelihood under first spectrum
+    const logL1 = computeLogLikelihood(contextCounts, probs1);
+
+    // Compute max log-likelihood under all other spectra
+    const maxLogLOther = Math.max(...otherProbs.map(p => computeLogLikelihood(contextCounts, p)));
+
+    // Delta = L1 - max(others)
+    const delta = logL1 - maxLogLOther;
+
+    // Include if delta >= threshold
+    return delta >= threshold;
+  });
+
+  return filtered;
+};
+
 const getNumericFilterFunction = (number_method, number_value) => {
   if (number_method === "==") {
     return (x) => x === number_value;
@@ -184,6 +322,7 @@ function searchFiltering({
   node_to_mut,
   all_data,
   cache_helper,
+  referenceSequence,
 }) {
   const spec_copy = { ...spec };
   spec_copy.key = "cache";
@@ -206,6 +345,7 @@ function searchFiltering({
     node_to_mut,
     all_data,
     cache_helper,
+    referenceSequence,
   });
 
   if (cache_helper && cache_helper.store_in_cache) {
@@ -224,6 +364,7 @@ function searchFilteringIfUncached({
   node_to_mut,
   all_data,
   cache_helper,
+  referenceSequence,
 }) {
   if (spec.type == "boolean") {
     if (spec.boolean_method == "and") {
@@ -240,6 +381,7 @@ function searchFilteringIfUncached({
             node_to_mut: node_to_mut,
             all_data: all_data,
             cache_helper: cache_helper,
+            referenceSequence: referenceSequence,
           })
         );
         workingData = workingData.filter((n) => new_results.has(n));
@@ -256,6 +398,7 @@ function searchFilteringIfUncached({
           data: all_data,
           spec: subspec,
           mutations: mutations,
+          referenceSequence: referenceSequence,
           node_to_mut: node_to_mut,
           all_data: all_data,
           cache_helper: cache_helper,
@@ -274,6 +417,7 @@ function searchFilteringIfUncached({
           node_to_mut: node_to_mut,
           all_data: all_data,
           cache_helper: cache_helper,
+          referenceSequence: referenceSequence,
         });
         negatives_set = new Set([...negatives_set, ...results]);
       });
@@ -393,6 +537,11 @@ function searchFilteringIfUncached({
 
     filtered = data.filter((node) => filterFunc(node[spec.type]));
     return filtered;
+  } else if (spec.method === "spectra") {
+    if (!spec.spectra || spec.spectra.length < 2) {
+      return [];
+    }
+    return filterBySpectra(data, spec, mutations, node_to_mut, referenceSequence);
   }
 
   return [];
@@ -410,6 +559,7 @@ function singleSearch({
   min_x,
   max_x,
   cache_helper,
+  referenceSequence,
 }) {
   const text_spec = JSON.stringify(spec);
   const max_to_return = 10000;
@@ -427,6 +577,7 @@ function singleSearch({
       node_to_mut,
       all_data: data,
       cache_helper,
+      referenceSequence,
     });
     count_per_hash[hash_spec] = filtered.length;
   }
@@ -440,6 +591,7 @@ function singleSearch({
       node_to_mut,
       all_data: data,
       cache_helper,
+      referenceSequence,
     });
 
     // TODO if we ensured all searches maintained order we could use binary search here
@@ -472,6 +624,7 @@ function singleSearch({
         node_to_mut,
         all_data: data,
         cache_helper,
+        referenceSequence,
       });
     }
     result = {
@@ -603,6 +756,43 @@ const filterByGenotype = (data, genotype, mutations, node_to_mut, all_data) => {
   return output;
 };
 
+/**
+ * Compute overall mutation spectrum from all nodes
+ * Returns tab-separated format: "A[C>T]G\t150\nA[C>T]A\t120\n..."
+ */
+const computeOverallSpectrum = (mutations, node_to_mut, referenceSequence) => {
+  if (!referenceSequence || !mutations) {
+    return null;
+  }
+
+  const contextCounts = {};
+
+  // Iterate over all nodes and their mutations
+  for (const nodeId in node_to_mut) {
+    const mutIds = node_to_mut[nodeId];
+    for (const mutId of mutIds) {
+      const mut = mutations[mutId];
+      // Only count nucleotide mutations (not root sequence markers)
+      if (mut && mut.gene === "nt" && mut.previous_residue !== "X") {
+        const context = getTrinucContext(
+          mut.residue_pos,
+          mut.previous_residue,
+          mut.new_residue,
+          referenceSequence
+        );
+        contextCounts[context] = (contextCounts[context] || 0) + 1;
+      }
+    }
+  }
+
+  // Convert to tab-separated format, sorted by count descending
+  const lines = Object.entries(contextCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([context, count]) => `${context}\t${count}`);
+
+  return lines.join("\n");
+};
+
 export default {
   reduceOverPlotting,
   filter,
@@ -612,4 +802,5 @@ export default {
   singleSearch,
   addMutations,
   getTipAtts,
+  computeOverallSpectrum,
 };
