@@ -1161,33 +1161,100 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
             </div>
           )}
 
-          {/* Prominent View in Taxonium button when available */}
-          {jobLogs && jobLogs.s3_results && jobLogs.s3_results.files && (() => {
-            const taxoniumFile = jobLogs.s3_results.files.find((f: any) => f.is_taxonium);
-            if (!taxoniumFile) return null;
-            const encodedUrl = encodeURIComponent(taxoniumFile.url);
-            const taxoniumUrl = `https://taxonium.org/?protoUrl=${encodedUrl}&xType=x_dist`;
+          {/* Sequence warnings and Taxonium link */}
+          {(() => {
+            // Parse warnings from pipeline logs
+            const logs = (jobLogs?.logs?.main as string) || '';
+            const warnings: { message: string; isError: boolean }[] = [];
+
+            // Parse "Wrote N new sequences" to get total extra sequence count
+            const wroteMatch = logs.match(/Wrote (\d+) new sequences/);
+            const totalExtraSeqs = wroteMatch ? parseInt(wroteMatch[1]) : null;
+
+            // Parse filter warning: "Filtered out N sequences from FILE that were shorter than..."
+            const filterMatch = logs.match(/Filtered out (\d+) sequences? from .+ that were shorter than (\d+) or had more than ([\d.]+%) Ns/);
+            if (filterMatch) {
+              const count = parseInt(filterMatch[1]);
+              warnings.push({
+                message: `${count} sequence${count !== 1 ? 's' : ''} filtered out (shorter than ${filterMatch[2]}bp or more than ${filterMatch[3]} Ns).`,
+                isError: totalExtraSeqs !== null && count >= totalExtraSeqs,
+              });
+            }
+
+            // Parse alignment warning: "Warning: N sequences of M from FILE passed filters but failed to align..."
+            const alignMatch = logs.match(/Warning: (\d+) sequences? of (\d+) from .+ passed filters but failed to align to reference (\S+?)(\s*\(segment \S+\))? with nextclade/);
+            if (alignMatch) {
+              const failed = parseInt(alignMatch[1]);
+              const total = parseInt(alignMatch[2]);
+              const ref = alignMatch[3];
+              const segment = alignMatch[4] ? alignMatch[4].trim() : '';
+              const allFailed = failed >= total;
+              warnings.push({
+                message: `${failed} of ${total} sequence${total !== 1 ? 's' : ''} failed to align to reference ${ref}${segment ? ' ' + segment : ''} and will not be included in the tree.${allFailed ? ' Your sequences may not match this reference.' : ''}`,
+                isError: allFailed,
+              });
+            }
+
+            const hasWarnings = warnings.length > 0;
+            const hasError = warnings.some(w => w.isError);
+
+            // Find the Taxonium file for the "View in Taxonium" button
+            const taxoniumFile = jobLogs?.s3_results?.files?.find((f: any) => f.is_taxonium);
+            const taxoniumUrl = taxoniumFile
+              ? `https://taxonium.org/?protoUrl=${encodeURIComponent(taxoniumFile.url)}&xType=x_dist`
+              : null;
+
             return (
-              <div className="mt-6 bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-lg p-6">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="text-white">
-                    <h3 className="text-xl font-bold">Your tree is ready!</h3>
-                    <p className="text-green-100 text-sm mt-1">View and explore your phylogenetic tree in Taxonium</p>
+              <>
+                {/* Warning banner */}
+                {hasWarnings && (
+                  <div className={`mt-6 border rounded-lg p-4 ${
+                    hasError
+                      ? 'bg-red-50 border-red-300'
+                      : 'bg-yellow-50 border-yellow-300'
+                  }`}>
+                    <div className="flex items-start gap-3">
+                      <svg className={`w-5 h-5 flex-shrink-0 mt-0.5 ${hasError ? 'text-red-600' : 'text-yellow-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                      </svg>
+                      <div>
+                        <h4 className={`font-medium text-sm ${hasError ? 'text-red-800' : 'text-yellow-800'}`}>
+                          {hasError ? 'Sequence placement failed' : 'Some sequences could not be placed'}
+                        </h4>
+                        <ul className={`mt-1 text-sm space-y-1 ${hasError ? 'text-red-700' : 'text-yellow-700'}`}>
+                          {warnings.map((w, i) => (
+                            <li key={i}>{w.message}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                  <a
-                    href={taxoniumUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 bg-white text-green-700 rounded-lg hover:bg-green-50 transition font-bold text-lg flex items-center gap-2 shadow-md cursor-pointer"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    View in Taxonium
-                  </a>
-                </div>
-              </div>
+                )}
+
+                {/* Prominent View in Taxonium button — hidden when all sequences failed */}
+                {taxoniumUrl && !hasError && (
+                  <div className="mt-6 bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-lg p-6">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div className="text-white">
+                        <h3 className="text-xl font-bold">Your tree is ready!</h3>
+                        <p className="text-green-100 text-sm mt-1">View and explore your phylogenetic tree in Taxonium</p>
+                      </div>
+                      <a
+                        href={taxoniumUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-3 bg-white text-green-700 rounded-lg hover:bg-green-50 transition font-bold text-lg flex items-center gap-2 shadow-md cursor-pointer"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        View in Taxonium
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </>
             );
           })()}
 
