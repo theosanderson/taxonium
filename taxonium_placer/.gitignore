@@ -1,0 +1,7 @@
+node_modules/
+npm-debug.log
+temp/
+test_*.js
+test_*.fasta
+.DS_Store
+taxoniumtools_cpp/
