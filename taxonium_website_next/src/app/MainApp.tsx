@@ -522,7 +522,10 @@ function MainApp({
                                   )
                                 }
                               >
-                                <span>{tree.organism}</span>
+                                <span>
+                                  {tree.organism}
+                                  {tree.segment && <span className="opacity-60"> (seg. {tree.segment})</span>}
+                                </span>
                                 <span className="ml-2 text-xs opacity-60">
                                   {parseInt(tree.tip_count).toLocaleString()} seqs
                                 </span>
@@ -688,6 +691,7 @@ function MainApp({
                         >
                           <span className="text-gray-800 group-hover:text-gray-900 truncate flex-1">
                             {tree.organism}
+                            {tree.segment && <span className="text-gray-500"> (seg. {tree.segment})</span>}
                           </span>
                           <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
                             {parseInt(tree.tip_count).toLocaleString()} seqs
