@@ -1161,6 +1161,67 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
             </div>
           )}
 
+          {/* Sequence warnings parsed from pipeline logs */}
+          {jobLogs && jobLogs.logs && jobLogs.logs.main && (() => {
+            const logs = jobLogs.logs.main as string;
+            const warnings: { message: string; isError: boolean }[] = [];
+
+            // Parse "Wrote N new sequences" to get total extra sequence count
+            const wroteMatch = logs.match(/Wrote (\d+) new sequences/);
+            const totalExtraSeqs = wroteMatch ? parseInt(wroteMatch[1]) : null;
+
+            // Parse filter warning: "Filtered out N sequences from FILE that were shorter than..."
+            const filterMatch = logs.match(/Filtered out (\d+) sequences? from .+ that were shorter than (\d+) or had more than ([\d.]+%) Ns/);
+            if (filterMatch) {
+              const count = parseInt(filterMatch[1]);
+              warnings.push({
+                message: `${count} sequence${count !== 1 ? 's' : ''} filtered out (shorter than ${filterMatch[2]}bp or more than ${filterMatch[3]} Ns).`,
+                isError: totalExtraSeqs !== null && count >= totalExtraSeqs,
+              });
+            }
+
+            // Parse alignment warning: "Warning: N sequences of M from FILE passed filters but failed to align..."
+            const alignMatch = logs.match(/Warning: (\d+) sequences? of (\d+) from .+ passed filters but failed to align to reference (\S+?)(\s*\(segment \S+\))? with nextclade/);
+            if (alignMatch) {
+              const failed = parseInt(alignMatch[1]);
+              const total = parseInt(alignMatch[2]);
+              const ref = alignMatch[3];
+              const segment = alignMatch[4] ? alignMatch[4].trim() : '';
+              const allFailed = failed >= total;
+              warnings.push({
+                message: `${failed} of ${total} sequence${total !== 1 ? 's' : ''} failed to align to reference ${ref}${segment ? ' ' + segment : ''} and will not be included in the tree.${allFailed ? ' Your sequences may not match this reference.' : ''}`,
+                isError: allFailed,
+              });
+            }
+
+            if (warnings.length === 0) return null;
+            const hasError = warnings.some(w => w.isError);
+
+            return (
+              <div className={`mt-6 border rounded-lg p-4 ${
+                hasError
+                  ? 'bg-red-50 border-red-300'
+                  : 'bg-yellow-50 border-yellow-300'
+              }`}>
+                <div className="flex items-start gap-3">
+                  <svg className={`w-5 h-5 flex-shrink-0 mt-0.5 ${hasError ? 'text-red-600' : 'text-yellow-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <div>
+                    <h4 className={`font-medium text-sm ${hasError ? 'text-red-800' : 'text-yellow-800'}`}>
+                      {hasError ? 'Sequence placement failed' : 'Some sequences could not be placed'}
+                    </h4>
+                    <ul className={`mt-1 text-sm space-y-1 ${hasError ? 'text-red-700' : 'text-yellow-700'}`}>
+                      {warnings.map((w, i) => (
+                        <li key={i}>{w.message}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Prominent View in Taxonium button when available */}
           {jobLogs && jobLogs.s3_results && jobLogs.s3_results.files && (() => {
             const taxoniumFile = jobLogs.s3_results.files.find((f: any) => f.is_taxonium);
