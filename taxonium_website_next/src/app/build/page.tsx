@@ -400,6 +400,27 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
     }
   }, [mode, manualSpeciesName]);
 
+  // Build the "View in Taxonium" URL. When the user provided sequences, add a
+  // default search filtering to source=user-provided so their placed samples
+  // are highlighted on first load (viral_usher tags placed sequences with
+  // source=user-provided in metadata.tsv).
+  const buildTaxoniumUrl = (fileUrl: string) => {
+    const hasUserSequences = !!(fastaFile || fastaText.trim() || fastaUrl);
+    let url = `https://taxonium.org/?protoUrl=${encodeURIComponent(fileUrl)}&xType=x_dist`;
+    if (hasUserSequences) {
+      const search = [{
+        key: 'placed',
+        type: 'meta_source',
+        method: 'text_exact',
+        text: 'user-provided',
+      }];
+      url += `&srch=${encodeURIComponent(JSON.stringify(search))}`;
+      url += `&enabled=${encodeURIComponent(JSON.stringify({ placed: true }))}`;
+      url += `&zoomToSearch=0`;
+    }
+    return url;
+  };
+
   // Parse URL query parameters on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -1200,9 +1221,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
 
             // Find the Taxonium file for the "View in Taxonium" button
             const taxoniumFile = jobLogs?.s3_results?.files?.find((f: any) => f.is_taxonium);
-            const taxoniumUrl = taxoniumFile
-              ? `https://taxonium.org/?protoUrl=${encodeURIComponent(taxoniumFile.url)}&xType=x_dist`
-              : null;
+            const taxoniumUrl = taxoniumFile ? buildTaxoniumUrl(taxoniumFile.url) : null;
 
             return (
               <>
@@ -1328,8 +1347,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
                           </div>
                           <div className="flex gap-2">
                             {file.is_taxonium && (() => {
-                              const encodedUrl = encodeURIComponent(file.url);
-                              const taxoniumUrl = `https://taxonium.org/?protoUrl=${encodedUrl}&xType=x_dist`;
+                              const taxoniumUrl = buildTaxoniumUrl(file.url);
                               return (
                                 <a
                                   href={taxoniumUrl}
