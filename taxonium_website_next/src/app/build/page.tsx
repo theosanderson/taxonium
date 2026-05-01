@@ -416,6 +416,7 @@ GGGCGGCTTCCGGAATAGCGTACGCGCCTTTGGGTCCACTCGACAGCTTGAGGCATAGGG`);
       }];
       url += `&srch=${encodeURIComponent(JSON.stringify(search))}`;
       url += `&enabled=${encodeURIComponent(JSON.stringify({ placed: true }))}`;
+      url += `&zoomToSearch=0`;
     }
     return url;
   };
