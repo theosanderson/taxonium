@@ -70,19 +70,13 @@ export const queryNodes = async (boundsForQueries) => {
     y_positions,
   } = processedUploadedData;
 
-  let min_y = isNaN(boundsForQueries.min_y)
-    ? overallMinY
-    : boundsForQueries.min_y;
-  let max_y = isNaN(boundsForQueries.max_y)
-    ? overallMaxY
-    : boundsForQueries.max_y;
+  const bounds = boundsForQueries || {};
 
-  let min_x = isNaN(boundsForQueries.min_x)
-    ? overallMinX
-    : boundsForQueries.min_x;
-  let max_x = isNaN(boundsForQueries.max_x)
-    ? overallMaxX
-    : boundsForQueries.max_x;
+  let min_y = isNaN(bounds.min_y) ? overallMinY : bounds.min_y;
+  let max_y = isNaN(bounds.max_y) ? overallMaxY : bounds.max_y;
+
+  let min_x = isNaN(bounds.min_x) ? overallMinX : bounds.min_x;
+  let max_x = isNaN(bounds.max_x) ? overallMaxX : bounds.max_x;
   if (min_y < overallMinY) {
     min_y = overallMinY;
   }
@@ -99,7 +93,7 @@ export const queryNodes = async (boundsForQueries) => {
       max_y,
       min_x,
       max_x,
-      boundsForQueries.xType
+      bounds.xType
     ),
   };
 
