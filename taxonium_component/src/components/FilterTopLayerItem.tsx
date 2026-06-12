@@ -19,7 +19,7 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
   const filterConfig: Config = {
     ...config,
     search_types: ((config.search_types as SearchType[]) ?? []).filter(
-      (type) => type.name !== "num_tips",
+      (type) => type.name !== "num_tips" && type.name !== "boolean",
     ),
   };
 
