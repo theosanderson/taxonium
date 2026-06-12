@@ -166,34 +166,60 @@ const useLayers = ({
     return { nodes: [], nodeLookup: {} };
   }, [data.base_data, getX]);
 
-  // Create a set of visible node IDs based on filter
+  // Filters combine as OR within the same column, then AND across columns.
   const visibleNodeIds = useMemo(() => {
     if (!filter.filterEnabled) {
       return null;
     }
 
-    const visibleIds = new Set<string | number>();
+    const visibleIdsByColumn = new Map<string, Set<string | number>>();
 
-    // Collect all nodes from enabled filter results
-    Object.keys(filter.filterResults).forEach((key) => {
-      if (filter.filtersEnabled[key]) {
-        const filterResult = filter.filterResults[key];
-        if (filterResult && filterResult.result && filterResult.result.data) {
-          filterResult.result.data.forEach((node: Node) => {
-            visibleIds.add(node.node_id);
-          });
-        }
-        // Also add overview nodes if available
-        if (filterResult && filterResult.overview) {
-          filterResult.overview.forEach((node: Node) => {
-            visibleIds.add(node.node_id);
-          });
-        }
+    const addNodes = (columnIds: Set<string | number>, nodes?: Node[]) => {
+      nodes?.forEach((node: Node) => {
+        columnIds.add(node.node_id);
+      });
+    };
+
+    filter.filterSpec.forEach((spec) => {
+      if (!filter.filtersEnabled[spec.key]) {
+        return;
+      }
+
+      const filterResult = filter.filterResults[spec.key];
+      if (!filterResult) {
+        return;
+      }
+
+      const column = spec.type;
+      const columnIds = visibleIdsByColumn.get(column) ?? new Set<string | number>();
+      addNodes(columnIds, filterResult.result?.data);
+      addNodes(columnIds, filterResult.overview);
+
+      if (columnIds.size > 0) {
+        visibleIdsByColumn.set(column, columnIds);
       }
     });
 
-    return visibleIds.size > 0 ? visibleIds : null;
-  }, [filter.filterEnabled, filter.filterResults, filter.filtersEnabled]);
+    const columnResults = Array.from(visibleIdsByColumn.values());
+    if (columnResults.length === 0) {
+      return null;
+    }
+
+    return columnResults
+      .slice(1)
+      .reduce(
+        (visibleIds, columnIds) =>
+          new Set(
+            Array.from(visibleIds).filter((nodeId) => columnIds.has(nodeId)),
+          ),
+        new Set(columnResults[0]),
+      );
+  }, [
+    filter.filterEnabled,
+    filter.filterResults,
+    filter.filterSpec,
+    filter.filtersEnabled,
+  ]);
 
   const detailed_scatter_data = useMemo(() => {
     const baseScatterData = detailed_data.nodes.filter(
