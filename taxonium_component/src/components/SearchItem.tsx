@@ -186,7 +186,7 @@ const SearchItem = ({
         <>
           <label
             title="Exact match"
-            className="inline-block text-xs text-gray-400 pl-2 pr-3"
+            className="inline-flex items-center gap-1 text-xs text-gray-500 pl-2 pr-3"
           >
             <input
               type="checkbox"
@@ -205,8 +205,8 @@ const SearchItem = ({
                   });
                 }
               }}
-            />{" "}
-            x{" "}
+            />
+            exact
           </label>
           {allowMultiLine && (
             <label
