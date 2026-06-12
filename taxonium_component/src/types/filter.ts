@@ -48,6 +48,4 @@ export interface FilterState {
   setEnabled: (key: string, enabled: boolean) => void;
   filterLoadingStatus: Record<string, string>;
   filterResults: FilterResults;
-  filterEnabled: boolean;
-  setFilterEnabled: (enabled: boolean) => void;
 }

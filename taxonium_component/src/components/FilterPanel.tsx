@@ -15,20 +15,11 @@ function FilterPanel({ filter, config, className }: FilterPanelProps) {
   return (
     <div className={className}>
       <div className="py-3 flex flex-col md:min-h-0 border-gray-200">
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center mb-2">
           <h2 className="font-bold text-gray-700 flex items-center">
             <FaFilter className="ml-1 mr-1.5 text-gray-500 h-4 w-4" />
             Filter
           </h2>
-          <label className="flex items-center text-sm">
-            <input
-              type="checkbox"
-              checked={filter.filterEnabled}
-              onChange={(e) => filter.setFilterEnabled(e.target.checked)}
-              className="mr-2"
-            />
-            <span className="text-gray-600">Enable</span>
-          </label>
         </div>
         <div className="space-y-2 md:overflow-y-auto -mr-4 pr-4">
           {filter.filterSpec.map((item) => (

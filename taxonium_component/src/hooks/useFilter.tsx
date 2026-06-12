@@ -47,15 +47,6 @@ const useFilter = ({
     ? JSON.parse(query.filterEnabled as string)
     : JSON.parse(default_query.filterEnabled as string);
 
-  const filterEnabled =
-    query.filterOn === undefined
-      ? default_query.filterOn === "true" || default_query.filterOn === true
-      : query.filterOn === "true" || query.filterOn === true;
-
-  const setFilterEnabled = (enabled: boolean) => {
-    updateQuery({ filterOn: enabled ? "true" : "false" });
-  };
-
   const setEnabled = (key: string, enabled: boolean) => {
     const newFiltersEnabled = { ...filtersEnabled, [key]: enabled };
     updateQuery({ filterEnabled: JSON.stringify(newFiltersEnabled) });
@@ -120,10 +111,6 @@ const useFilter = ({
   );
 
   useEffect(() => {
-    if (!filterEnabled) {
-      return;
-    }
-
     const spec_keys = filterSpec.map((spec: FilterSpec) => spec.key);
     const result_keys = Object.keys(filterResults);
     const keys_to_remove = result_keys.filter(
@@ -228,7 +215,6 @@ const useFilter = ({
     singleSearch,
     singleFilterWrapper,
     boundsForQueries,
-    filterEnabled,
   ]);
 
   const addNewTopLevelFilter = () => {
@@ -253,8 +239,6 @@ const useFilter = ({
     filtersEnabled,
     setEnabled,
     filterLoadingStatus,
-    filterEnabled,
-    setFilterEnabled,
   };
 };
 

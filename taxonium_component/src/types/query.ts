@@ -7,8 +7,6 @@ export interface Query {
   fltr?: string;
   /** JSON string mapping filter keys to enabled flag */
   filterEnabled?: string;
-  /** Whether the filter feature is enabled (boolean encoded as string) */
-  filterOn?: string | boolean;
   /** Backend URL to use */
   backend?: string;
   /** Session identifier */

@@ -168,10 +168,6 @@ const useLayers = ({
 
   // Filters combine as OR within the same column, then AND across columns.
   const visibleNodeIds = useMemo(() => {
-    if (!filter.filterEnabled) {
-      return null;
-    }
-
     const visibleIdsByColumn = new Map<string, Set<string | number>>();
 
     const addNodes = (columnIds: Set<string | number>, nodes?: Node[]) => {
@@ -215,7 +211,6 @@ const useLayers = ({
         new Set(columnResults[0]),
       );
   }, [
-    filter.filterEnabled,
     filter.filterResults,
     filter.filterSpec,
     filter.filtersEnabled,

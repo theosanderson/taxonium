@@ -11,7 +11,6 @@ const default_query: Query = {
   enabled: JSON.stringify({ [first_search.key]: true }),
   fltr: JSON.stringify([first_filter]),
   filterEnabled: JSON.stringify({ [first_filter.key]: false }),
-  filterOn: "true",
   backend: "",
   xType: "x_dist",
   mutationTypesEnabled: JSON.stringify({ aa: true, nt: false }),
