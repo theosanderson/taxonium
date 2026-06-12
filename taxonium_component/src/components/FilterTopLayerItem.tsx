@@ -57,61 +57,63 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
   return (
     <>
       <div className="border-gray-100 border-b pb-2">
-        <input
-          name="isGoing"
-          type="checkbox"
-          style={{
-            outline:
-              enabled && typeof num_results === "number" && num_results > 0
-                ? "2px solid rgb(139, 69, 19)"
-                : "0px",
-            outlineOffset: "2px",
-          }}
-          className="m-3 inline-block"
-          checked={enabled}
-          onChange={(event) => filter.setEnabled(myKey, event.target.checked)}
-        />
-        <SearchItem
-          config={filterConfig}
-          singleSearchSpec={singleFilterSpec}
-          setThisSearchSpec={setThisFilterSpec}
-          allowMultiLine={false}
-        />
-        <label className="inline-flex items-center text-xs text-gray-500 ml-3">
-          <input
-            type="checkbox"
-            checked={singleFilterSpec.negated ?? false}
-            onChange={(event) =>
-              setThisFilterSpec({
-                ...singleFilterSpec,
-                negated: event.target.checked,
-              })
-            }
-            className="mr-1"
-          />
-          not
-        </label>
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-7 items-center justify-center shrink-0">
+            <input
+              name="isGoing"
+              type="checkbox"
+              style={{
+                outline:
+                  enabled && typeof num_results === "number" && num_results > 0
+                    ? "2px solid rgb(139, 69, 19)"
+                    : "0px",
+                outlineOffset: "2px",
+              }}
+              checked={enabled}
+              onChange={(event) => filter.setEnabled(myKey, event.target.checked)}
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-1 min-w-0 flex-1">
+            <SearchItem
+              config={filterConfig}
+              singleSearchSpec={singleFilterSpec}
+              setThisSearchSpec={setThisFilterSpec}
+              allowMultiLine={false}
+            />
+          </div>
+          <label className="flex h-8 items-center gap-1 text-xs text-gray-500 shrink-0">
+            <input
+              type="checkbox"
+              checked={singleFilterSpec.negated ?? false}
+              onChange={(event) =>
+                setThisFilterSpec({
+                  ...singleFilterSpec,
+                  negated: event.target.checked,
+                })
+              }
+            />
+            not
+          </label>
+          <Button
+            title="Delete this filter"
+            onClick={() => filter.deleteTopLevelFilter(myKey)}
+            className="shrink-0"
+          >
+            <FaTrash className="text-gray-600" />
+          </Button>
+        </div>
 
-        <div className="flex justify-between items-center mt-2">
+        <div className="flex items-center mt-2 pl-9">
           <div className="text-black pr-2 text-sm">
-            {" "}
             {num_results !== "Loading" && (
               <>
                 {formatNumber(num_results)} result
                 {typeof num_results === "number" && num_results === 1 ? "" : "s"}
               </>
-            )}{" "}
-            {myLoadingStatus === "loading" && (
-              <ClipLoader size={12} color="#444444" className="mr-3" />
             )}
-          </div>
-          <div>
-            <Button
-              title="Delete this filter"
-              onClick={() => filter.deleteTopLevelFilter(myKey)}
-            >
-              <FaTrash className="text-gray-600" />
-            </Button>
+            {myLoadingStatus === "loading" && (
+              <ClipLoader size={12} color="#444444" className="ml-2" />
+            )}
           </div>
         </div>
       </div>
