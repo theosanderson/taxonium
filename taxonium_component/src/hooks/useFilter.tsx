@@ -13,6 +13,20 @@ import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 const default_query = getDefaultQuery();
 
+const getBackendFilterSpec = (spec: FilterSpec) => {
+  if (!spec.negated) {
+    return spec;
+  }
+
+  const { negated, ...subspec } = spec;
+  return {
+    key: spec.key,
+    type: "boolean",
+    boolean_method: "not",
+    subspecs: [subspec],
+  };
+};
+
 interface UseFilterParams {
   config: Config;
   boundsForQueries: QueryBounds | null;
@@ -122,7 +136,7 @@ const useFilter = ({
 
     const spec_json: Record<string, string> = {};
     filterSpec.forEach((spec: FilterSpec) => {
-      spec_json[spec.key] = JSON.stringify(spec);
+      spec_json[spec.key] = JSON.stringify(getBackendFilterSpec(spec));
     });
 
     const json_changed = Object.keys(spec_json).filter(

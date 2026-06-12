@@ -18,6 +18,7 @@ export interface FilterSpec {
   subspecs?: FilterSpec[];
   number_method?: NumberMethod;
   number?: number;
+  negated?: boolean;
 }
 
 export interface FilterBackendResult {

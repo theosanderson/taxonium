@@ -77,6 +77,20 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
           setThisSearchSpec={setThisFilterSpec}
           allowMultiLine={false}
         />
+        <label className="inline-flex items-center text-xs text-gray-500 ml-3">
+          <input
+            type="checkbox"
+            checked={singleFilterSpec.negated ?? false}
+            onChange={(event) =>
+              setThisFilterSpec({
+                ...singleFilterSpec,
+                negated: event.target.checked,
+              })
+            }
+            className="mr-1"
+          />
+          not
+        </label>
 
         <div className="flex justify-between items-center mt-2">
           <div className="text-black pr-2 text-sm">
