@@ -47,7 +47,10 @@ const useFilter = ({
     ? JSON.parse(query.filterEnabled as string)
     : JSON.parse(default_query.filterEnabled as string);
 
-  const filterEnabled = query.filterOn === "true" || query.filterOn === true;
+  const filterEnabled =
+    query.filterOn === undefined
+      ? default_query.filterOn === "true" || default_query.filterOn === true
+      : query.filterOn === "true" || query.filterOn === true;
 
   const setFilterEnabled = (enabled: boolean) => {
     updateQuery({ filterOn: enabled ? "true" : "false" });
