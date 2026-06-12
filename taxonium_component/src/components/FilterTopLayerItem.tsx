@@ -75,6 +75,7 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
           config={filterConfig}
           singleSearchSpec={singleFilterSpec}
           setThisSearchSpec={setThisFilterSpec}
+          allowMultiLine={false}
         />
 
         <div className="flex justify-between items-center mt-2">

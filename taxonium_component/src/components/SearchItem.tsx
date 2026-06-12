@@ -33,9 +33,15 @@ interface SearchItemProps {
   singleSearchSpec: SearchSpec;
   setThisSearchSpec: (spec: SearchSpec) => void;
   config: Config;
+  allowMultiLine?: boolean;
 }
 
-const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemProps) => {
+const SearchItem = ({
+  singleSearchSpec,
+  setThisSearchSpec,
+  config,
+  allowMultiLine = true,
+}: SearchItemProps) => {
   const types = (config.search_types as SearchType[]) ?? [];
 
   const all_amino_acids = "ACDEFGHIKLMNPQRSTVWY".split("");
@@ -92,6 +98,15 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
     singleSearchSpec.number_method,
   ]);
 
+  useEffect(() => {
+    if (!allowMultiLine && singleSearchSpec.method === SearchMethod.TEXT_PER_LINE) {
+      setThisSearchSpec({
+        ...singleSearchSpec,
+        method: SearchMethod.TEXT_MATCH,
+      });
+    }
+  }, [allowMultiLine, singleSearchSpec.method]);
+
   const text_types = [SearchMethod.TEXT_EXACT, SearchMethod.TEXT_MATCH];
 
   const specific_configurations = Object.fromEntries(
@@ -115,11 +130,13 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
     });
   };
 
-  const is_text = text_types.includes(
-    (singleSearchSpec.method ?? "") as SearchMethod
-  );
+  const method = (singleSearchSpec.method ?? "") as SearchMethod;
 
-  const is_multi_text = singleSearchSpec.method === SearchMethod.TEXT_PER_LINE;
+  const is_multi_text =
+    allowMultiLine && singleSearchSpec.method === SearchMethod.TEXT_PER_LINE;
+  const is_text =
+    text_types.includes(method) ||
+    (!allowMultiLine && singleSearchSpec.method === SearchMethod.TEXT_PER_LINE);
 
   // Ensure boolean searches always have subspecs and a boolean method
   const subspecs = singleSearchSpec.subspecs ?? [];
@@ -174,9 +191,7 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             <input
               type="checkbox"
               title="Exact match"
-              checked={
-                singleSearchSpec.method === SearchMethod.TEXT_EXACT || is_multi_text
-              }
+              checked={singleSearchSpec.method === SearchMethod.TEXT_EXACT}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 if (e.target.checked) {
                   setThisSearchSpec({
@@ -193,30 +208,32 @@ const SearchItem = ({ singleSearchSpec, setThisSearchSpec, config }: SearchItemP
             />{" "}
             x{" "}
           </label>
-          <label
-            title="Multi-line"
-            className="inline-block text-xs text-gray-400"
-          >
-            <input
-              type="checkbox"
+          {allowMultiLine && (
+            <label
               title="Multi-line"
-              checked={is_multi_text}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                if (e.target.checked) {
-                  setThisSearchSpec({
-                    ...singleSearchSpec,
-                    method: SearchMethod.TEXT_PER_LINE,
-                  });
-                } else {
-                  setThisSearchSpec({
-                    ...singleSearchSpec,
-                    method: SearchMethod.TEXT_MATCH,
-                  });
-                }
-              }}
-            />{" "}
-            m{" "}
-          </label>
+              className="inline-block text-xs text-gray-400"
+            >
+              <input
+                type="checkbox"
+                title="Multi-line"
+                checked={is_multi_text}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (e.target.checked) {
+                    setThisSearchSpec({
+                      ...singleSearchSpec,
+                      method: SearchMethod.TEXT_PER_LINE,
+                    });
+                  } else {
+                    setThisSearchSpec({
+                      ...singleSearchSpec,
+                      method: SearchMethod.TEXT_MATCH,
+                    });
+                  }
+                }}
+              />{" "}
+              m{" "}
+            </label>
+          )}
         </>
       )}
 
