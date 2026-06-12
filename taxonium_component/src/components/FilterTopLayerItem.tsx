@@ -6,7 +6,7 @@ import { formatNumber } from "../utils/formatNumber";
 import { ClipLoader } from "react-spinners";
 
 import type { FilterSpec, FilterState } from "../types/filter";
-import type { Config } from "../types/backend";
+import type { Config, SearchType } from "../types/backend";
 
 interface FilterTopLayerItemProps {
   singleFilterSpec: FilterSpec;
@@ -16,6 +16,13 @@ interface FilterTopLayerItemProps {
 }
 
 function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterTopLayerItemProps) {
+  const filterConfig: Config = {
+    ...config,
+    search_types: ((config.search_types as SearchType[]) ?? []).filter(
+      (type) => type.name !== "num_tips",
+    ),
+  };
+
   const myLoadingStatus = filter.filterLoadingStatus[myKey];
 
   const this_result = filter.filterResults[myKey];
@@ -65,7 +72,7 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
           onChange={(event) => filter.setEnabled(myKey, event.target.checked)}
         />
         <SearchItem
-          config={config}
+          config={filterConfig}
           singleSearchSpec={singleFilterSpec}
           setThisSearchSpec={setThisFilterSpec}
         />
