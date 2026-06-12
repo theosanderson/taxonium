@@ -73,7 +73,7 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
               onChange={(event) => filter.setEnabled(myKey, event.target.checked)}
             />
           </div>
-          <div className="flex flex-wrap items-center gap-1 min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-1 min-w-0">
             <SearchItem
               config={filterConfig}
               singleSearchSpec={singleFilterSpec}
@@ -94,6 +94,7 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
             />
             not
           </label>
+          <div className="flex-1" />
           <Button
             title="Delete this filter"
             onClick={() => filter.deleteTopLevelFilter(myKey)}
