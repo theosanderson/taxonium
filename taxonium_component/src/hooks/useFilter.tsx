@@ -7,14 +7,13 @@ import type {
   FilterResultItem,
   FilterControllerEntry,
 } from "../types/filter";
-import type { QueryBounds, DynamicData, Config, Backend } from "../types/backend";
+import type { QueryBounds, Config, Backend } from "../types/backend";
 import type { Query } from "../types/query";
 import { getDefaultSearch } from "../utils/searchUtil";
 import getDefaultQuery from "../utils/getDefaultQuery";
 const default_query = getDefaultQuery();
 
 interface UseFilterParams {
-  data: DynamicData;
   config: Config;
   boundsForQueries: QueryBounds | null;
   backend: Backend;
@@ -23,7 +22,6 @@ interface UseFilterParams {
 }
 
 const useFilter = ({
-  data,
   config,
   boundsForQueries,
   backend,
@@ -40,14 +38,14 @@ const useFilter = ({
 
   const filterSpec = useMemo(() => {
     if (!query.fltr) {
-      return JSON.parse(default_query.srch as string);
+      return JSON.parse(default_query.fltr as string);
     }
     return JSON.parse(query.fltr as string);
   }, [query.fltr]);
 
   const filtersEnabled = query.filterEnabled
     ? JSON.parse(query.filterEnabled as string)
-    : JSON.parse(default_query.enabled as string);
+    : JSON.parse(default_query.filterEnabled as string);
 
   const filterEnabled = query.filterOn === "true" || query.filterOn === true;
 

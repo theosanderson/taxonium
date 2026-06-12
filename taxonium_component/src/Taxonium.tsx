@@ -215,7 +215,6 @@ function TaxoniumInner({
   });
 
   const filter = useFilter({
-    data,
     config,
     boundsForQueries,
     backend,
