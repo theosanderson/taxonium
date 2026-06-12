@@ -98,4 +98,3 @@ function FilterTopLayerItem({ singleFilterSpec, myKey, filter, config }: FilterT
 }
 
 export default FilterTopLayerItem;
-

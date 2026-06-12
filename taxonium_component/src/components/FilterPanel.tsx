@@ -12,8 +12,6 @@ interface FilterPanelProps {
 }
 
 function FilterPanel({ filter, config, className }: FilterPanelProps) {
-  console.log("[Filter Debug] FilterPanel render, filterEnabled:", filter.filterEnabled);
-  
   return (
     <div className={className}>
       <div className="py-3 flex flex-col md:min-h-0 border-gray-200">
@@ -26,10 +24,7 @@ function FilterPanel({ filter, config, className }: FilterPanelProps) {
             <input
               type="checkbox"
               checked={filter.filterEnabled}
-              onChange={(e) => {
-                console.log("[Filter Debug] Checkbox clicked, new value:", e.target.checked);
-                filter.setFilterEnabled(e.target.checked);
-              }}
+              onChange={(e) => filter.setFilterEnabled(e.target.checked)}
               className="mr-2"
             />
             <span className="text-gray-600">Enable</span>
@@ -59,4 +54,3 @@ function FilterPanel({ filter, config, className }: FilterPanelProps) {
 }
 
 export default FilterPanel;
-

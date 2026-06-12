@@ -50,12 +50,8 @@ const useFilter = ({
     : JSON.parse(default_query.enabled as string);
 
   const filterEnabled = query.filterOn === "true" || query.filterOn === true;
-  
-  console.log("[Filter Debug] useFilter: query.filterOn =", query.filterOn, "filterEnabled =", filterEnabled);
 
   const setFilterEnabled = (enabled: boolean) => {
-    console.log("[Filter Debug] setFilterEnabled called with:", enabled);
-    console.log("[Filter Debug] Will call updateQuery with filterOn:", enabled ? "true" : "false");
     updateQuery({ filterOn: enabled ? "true" : "false" });
   };
 
@@ -124,11 +120,8 @@ const useFilter = ({
 
   useEffect(() => {
     if (!filterEnabled) {
-      console.log("[Filter Debug] useEffect: Filter not enabled, skipping");
       return;
     }
-
-    console.log("[Filter Debug] useEffect: Filter enabled, processing specs:", filterSpec);
 
     const spec_keys = filterSpec.map((spec: FilterSpec) => spec.key);
     const result_keys = Object.keys(filterResults);
@@ -265,4 +258,3 @@ const useFilter = ({
 };
 
 export default useFilter;
-

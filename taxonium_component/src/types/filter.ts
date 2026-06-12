@@ -51,4 +51,3 @@ export interface FilterState {
   filterEnabled: boolean;
   setFilterEnabled: (enabled: boolean) => void;
 }
-
