@@ -104,6 +104,12 @@ const useTreenomeLayers = (
       setTreenomeReferenceInfo(computedReference);
     }
   }, [computedReference, treenomeReferenceInfo, setTreenomeReferenceInfo]);
+  // The Deck-level treenomeReferenceInfo prop lags one render behind the
+  // worker output: the worker delivers the reference and the variation data
+  // together, so the layer data is populated before setTreenomeReferenceInfo
+  // has propagated. Fall back to the locally computed reference (which is ready
+  // at the same time as the data) so getColor never dereferences null.
+  const effectiveReferenceInfo = treenomeReferenceInfo || computedReference;
   const ntToX = useCallback(
     (nt: number) => {
       return (
@@ -136,14 +142,14 @@ const useTreenomeLayers = (
     onHover: (info: unknown) => setHoverInfo(info),
     pickable: true,
     getColor: (d: MutationVariationDatum) => {
+      const aaRef = effectiveReferenceInfo?.["aa"];
+      const refResidue = aaRef?.[`${d.m.gene!}:${d.m.residue_pos!}`];
       if (cov2Genes !== null) {
-        return d.m.new_residue !==
-          treenomeReferenceInfo["aa"][`${d.m.gene!}:${d.m.residue_pos!}`]
+        return d.m.new_residue !== refResidue
           ? colorHook.toRGB(d.m.new_residue!)
           : cov2Genes[d.m.gene!][2].map((c: number) => 245 - 0.2 * (245 - c));
       } else {
-        return d.m.new_residue !==
-          treenomeReferenceInfo["aa"][`${d.m.gene!}:${d.m.residue_pos!}`]
+        return d.m.new_residue !== refResidue
           ? colorHook.toRGB(d.m.new_residue!)
           : [245, 245, 245];
       }
@@ -200,7 +206,7 @@ const useTreenomeLayers = (
         aaWidth,
       ],
       getWidth: [aaWidth],
-      getColor: [treenomeReferenceInfo, colorHook, cov2Genes],
+      getColor: [effectiveReferenceInfo, colorHook, cov2Genes],
     },
     getPolygonOffset: myGetPolygonOffset,
   };
@@ -240,7 +246,8 @@ const useTreenomeLayers = (
           break;
       }
       if (cov2Genes !== null) {
-        if (d.m.new_residue === treenomeReferenceInfo["nt"][d.m.residue_pos!]) {
+        const ntRef = effectiveReferenceInfo?.["nt"];
+        if (ntRef && d.m.new_residue === ntRef[d.m.residue_pos!]) {
           const gene = ntToCov2Gene(d.m.residue_pos!);
           if (gene !== null) {
             return cov2Genes[gene][2].map((c: number) => 245 - 0.2 * (245 - c));
@@ -301,7 +308,7 @@ const useTreenomeLayers = (
         ntWidth,
       ],
       getWidth: [ntWidth],
-      getColor: [treenomeReferenceInfo, colorHook, cov2Genes],
+      getColor: [effectiveReferenceInfo, colorHook, cov2Genes],
     },
     getPolygonOffset: myGetPolygonOffset,
   };
