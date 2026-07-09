@@ -6,6 +6,7 @@ export default async function Home() {
   return (
     <Suspense fallback={<div></div>}>
       <MainApp
+        key="/"
         pathname="/"
         initialTreeConfig={staticTrees}
       />
