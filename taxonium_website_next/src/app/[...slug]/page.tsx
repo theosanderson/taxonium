@@ -59,7 +59,6 @@ export default async function TreePage({ params }: { params: Promise<{ slug: str
   return (
     <Suspense fallback={<div></div>}>
       <MainApp
-        key={pathname}
         pathname={pathname}
         initialTreeConfig={staticTrees}
         initialViralUsherPathConfig={initialViralUsherPathConfig}

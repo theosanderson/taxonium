@@ -186,6 +186,15 @@ const getList = async (node_id, att) => {
 onmessage = async (event) => {
   //Process uploaded data:
   const { data } = event;
+  // A new upload invalidates the previously-loaded tree. Reset synchronously
+  // (before the awaits below) so that any query/config/details/search
+  // messages that arrive while the new tree is still being fetched block in
+  // waitForProcessedData() instead of being served stale data from the old
+  // tree. Without this, navigating between two local (protoUrl) trees shows
+  // the previous tree because its data is returned before the new one loads.
+  if (data.type === "upload" && data.data && data.data.filename) {
+    processedUploadedData = undefined;
+  }
   if (
     data.type === "upload" &&
     data.data &&
