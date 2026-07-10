@@ -37,6 +37,7 @@ let onStatusReceipt: (receivedData: StatusData) => void = (receivedData) => {
 let onConfigReceipt: (receivedData: Config) => void = () => {};
 let onDetailsReceipt: (receivedData: NodeDetails) => void = () => {};
 let onListReceipt: (receivedData: ListData["data"]) => void = () => {};
+let onOverallSpectrumReceipt: (receivedData: { spectrum: string | null }) => void = () => {};
 let onNextStrainReceipt: (receivedData: NextStrainData["data"]) => void = (
   receivedData
 ) => {
@@ -82,6 +83,9 @@ worker.onmessage = (event: MessageEvent<LocalBackendMessage>) => {
       break;
     case "nextstrain":
       onNextStrainReceipt(data.data);
+      break;
+    case "overall_spectrum":
+      onOverallSpectrumReceipt(data.data);
       break;
     default:
       break;
@@ -223,6 +227,15 @@ function useLocalBackend(
     });
   }, []);
 
+  const getOverallSpectrum = useCallback((callback: (spectrum: string | null) => void) => {
+    worker.postMessage({
+      type: "overall_spectrum",
+    });
+    onOverallSpectrumReceipt = (receivedData) => {
+      callback(receivedData.spectrum);
+    };
+  }, []);
+
   return useMemo(() => {
     return {
       queryNodes,
@@ -233,6 +246,7 @@ function useLocalBackend(
       setStatusMessage,
       getTipAtts,
       getNextstrainJson,
+      getOverallSpectrum,
       type: "local",
     };
   }, [
@@ -244,6 +258,7 @@ function useLocalBackend(
     setStatusMessage,
     getTipAtts,
     getNextstrainJson,
+    getOverallSpectrum,
   ]);
 }
 

@@ -150,6 +150,7 @@ app.get("/search", function (req, res) {
     node_to_mut: processedData.node_to_mut,
     xType: req.query.xType,
     cache_helper: cache_helper,
+    referenceSequence: processedData.referenceSequence,
   };
 
   const result = filtering.singleSearch(forSingleSearch);
@@ -414,6 +415,19 @@ app.get("/tip_atts", async (req, res) => {
   res.send(atts);
   console.log(
     "Request took " + (Date.now() - start_time) + "ms, and output " + atts
+  );
+});
+
+app.get("/overall_spectrum", async (req, res) => {
+  const start_time = Date.now();
+  const spectrum = filtering.computeOverallSpectrum(
+    processedData.mutations,
+    processedData.node_to_mut,
+    processedData.referenceSequence
+  );
+  res.send({ spectrum: spectrum });
+  console.log(
+    "Request took " + (Date.now() - start_time) + "ms to compute overall spectrum"
   );
 });
 
