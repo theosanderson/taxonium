@@ -20,3 +20,4 @@ taxonium_component/storybook-static/**
 .aider*
 **/node_modules/**
 *.vscode/*
+generated_test_data/

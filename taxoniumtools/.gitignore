@@ -1,0 +1,32 @@
+# Test compatibility artifacts
+test_compatibility/
+
+# Build directories
+build/
+**/build/
+
+# Test outputs
+*.jsonl
+*.log
+
+# Debug/temporary files
+debug_*
+simple_test*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
