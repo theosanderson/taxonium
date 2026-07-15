@@ -8,6 +8,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 const ReactTooltipAny: any = ReactTooltip;
 import prettifyName from "../utils/prettifyName";
 import { SearchState } from "../types/search";
+import { FilterState } from "../types/filter";
 import type { Config, Backend } from "../types/backend";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
@@ -19,6 +20,7 @@ import { FaSearch, FaShare } from "react-icons/fa";
 
 import { Select } from "./Basic";
 import ListOutputModal from "./ListOutputModal";
+import FilterPanel from "./FilterPanel";
 
 import { useState, useMemo, useEffect, ChangeEvent } from "react";
 
@@ -49,6 +51,7 @@ const fixAuthors = (authors: string) => {
 
 interface SearchPanelProps {
   search: SearchState;
+  filter: FilterState;
   colorBy: ColorBy;
   config: Config;
   selectedDetails: SelectedDetails;
@@ -69,6 +72,7 @@ interface SearchPanelProps {
 
 function SearchPanel({
   search,
+  filter,
   colorBy,
   config,
   selectedDetails,
@@ -474,6 +478,7 @@ function SearchPanel({
           </Button>
         </div>
       </div>
+      <FilterPanel filter={filter} config={config} />
       {selectedNodeDetails && (
         <div className="py-3 px-4 md:px-0 mb-0 fixed bottom-0 left-0 right-0 bg-white md:static shadow-2xl md:shadow-none overflow-auto border-gray-200">
           <ListOutputModal

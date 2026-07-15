@@ -16,6 +16,7 @@ import type { DeckSize, HoverInfo } from "../types/common";
 import type { ColorHook, ColorBy } from "../types/color";
 import type { Settings } from "../types/settings";
 import type { SearchState } from "../types/search";
+import type { FilterState } from "../types/filter";
 import type { TreenomeState } from "../types/treenome";
 import type { HoverDetailsState, SelectedDetails } from "../types/ui";
 import type { ViewState } from "../types/view";
@@ -51,6 +52,7 @@ const getKeyStuff = (
 interface UseLayersProps {
   data: DynamicData;
   search: SearchState;
+  filter: FilterState;
   viewState: ViewState;
   deckSize: DeckSize | null;
   colorHook: ColorHook;
@@ -74,6 +76,7 @@ interface UseLayersProps {
 const useLayers = ({
   data,
   search,
+  filter,
   viewState,
   deckSize,
   colorHook,
@@ -163,17 +166,76 @@ const useLayers = ({
     return { nodes: [], nodeLookup: {} };
   }, [data.base_data, getX]);
 
+  // Filters combine as OR within the same column, then AND across columns.
+  const visibleNodeIds = useMemo(() => {
+    const visibleIdsByColumn = new Map<string, Set<string | number>>();
+
+    const addNodes = (columnIds: Set<string | number>, nodes?: Node[]) => {
+      nodes?.forEach((node: Node) => {
+        columnIds.add(node.node_id);
+      });
+    };
+
+    filter.filterSpec.forEach((spec) => {
+      if (!filter.filtersEnabled[spec.key]) {
+        return;
+      }
+
+      const filterResult = filter.filterResults[spec.key];
+      if (!filterResult) {
+        return;
+      }
+
+      const column = spec.type;
+      const columnIds = visibleIdsByColumn.get(column) ?? new Set<string | number>();
+      addNodes(columnIds, filterResult.result?.data);
+      addNodes(columnIds, filterResult.overview);
+
+      if (columnIds.size > 0) {
+        visibleIdsByColumn.set(column, columnIds);
+      }
+    });
+
+    const columnResults = Array.from(visibleIdsByColumn.values());
+    if (columnResults.length === 0) {
+      return null;
+    }
+
+    return columnResults
+      .slice(1)
+      .reduce(
+        (visibleIds, columnIds) =>
+          new Set(
+            Array.from(visibleIds).filter((nodeId) => columnIds.has(nodeId)),
+          ),
+        new Set(columnResults[0]),
+      );
+  }, [
+    filter.filterResults,
+    filter.filterSpec,
+    filter.filtersEnabled,
+  ]);
+
   const detailed_scatter_data = useMemo(() => {
-    return detailed_data.nodes.filter(
+    const baseScatterData = detailed_data.nodes.filter(
       (node: Node) =>
         node.is_tip ||
         (node.is_tip === undefined && node.num_tips === 1) ||
         settings.displayPointsForInternalNodes,
     );
-  }, [detailed_data, settings.displayPointsForInternalNodes]);
+
+    // Apply filter if enabled
+    if (visibleNodeIds) {
+      return baseScatterData.filter((node: Node) =>
+        visibleNodeIds.has(node.node_id),
+      );
+    }
+
+    return baseScatterData;
+  }, [detailed_data, settings.displayPointsForInternalNodes, visibleNodeIds]);
 
   const minimap_scatter_data = useMemo(() => {
-    return base_data
+    const baseMinimapData = base_data
       ? base_data.nodes.filter(
           (node: Node) =>
             node.is_tip ||
@@ -181,7 +243,16 @@ const useLayers = ({
             settings.displayPointsForInternalNodes,
         )
       : [];
-  }, [base_data, settings.displayPointsForInternalNodes]);
+
+    // Apply filter if enabled
+    if (visibleNodeIds) {
+      return baseMinimapData.filter((node: Node) =>
+        visibleNodeIds.has(node.node_id),
+      );
+    }
+
+    return baseMinimapData;
+  }, [base_data, settings.displayPointsForInternalNodes, visibleNodeIds]);
 
   const computedViewState = useMemo(
     () => computeBounds({ ...viewState }, deckSize),
