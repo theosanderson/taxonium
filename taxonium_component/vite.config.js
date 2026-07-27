@@ -34,10 +34,19 @@ export default defineConfig({
 
     rollupOptions: {
       // Make sure to externalize deps that shouldn't be bundled
+      // Subpaths must be listed too: a bare "react-dom" entry only matches
+      // that exact specifier, so deps importing "react-dom/client" (e.g.
+      // JBrowse) would otherwise get a second copy of React DOM bundled in,
+      // which throws "Incompatible React versions" when the host app is on a
+      // different React build.
       external: [
         "react",
         "react-dom",
+        "react-dom/client",
+        "react-dom/server",
+        "react-dom/server.browser",
         "react/jsx-runtime", // Important addition!
+        "react/jsx-dev-runtime",
         "prop-types",
       ],
 
@@ -46,7 +55,11 @@ export default defineConfig({
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react-dom/client": "ReactDOM",
+          "react-dom/server": "ReactDOMServer",
+          "react-dom/server.browser": "ReactDOMServer",
           "react/jsx-runtime": "jsxRuntime",
+          "react/jsx-dev-runtime": "jsxRuntime",
           "prop-types": "PropTypes",
         },
         // Ensure chunking is handled properly
