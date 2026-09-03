@@ -24,17 +24,20 @@ const MINIMAP_WIDTH_FRACTION = 0.2;
 const MINIMAP_HEIGHT_FRACTION = 0.35;
 const MAIN_WIDTH_FRACTION_WITH_TREENOME = 0.4;
 
-// Proportion of the fitted range left as blank space at each edge.
-const FIT_MARGIN = 0.02;
+// Proportion of each axis that the fitted tree fills, the rest being blank
+// space split between the two edges. x is deliberately roomier than y.
+const X_FILL_FRACTION = 0.8;
+const Y_FILL_FRACTION = 0.96;
 
 const defaultMinimapViewState: SubViewState = {
   zoom: -3,
   target: [250, 1000],
 };
 
-// Zoom level at which a range of `span` world units fills `pixels` pixels.
-const zoomToFit = (pixels: number, span: number) =>
-  Math.log2(pixels / (span * (1 + 2 * FIT_MARGIN)));
+// Zoom level at which a range of `span` world units covers the given
+// proportion of `pixels` pixels.
+const zoomToFit = (pixels: number, span: number, fill: number) =>
+  Math.log2((pixels * fill) / span);
 
 const defaultViewState: ViewState = {
   zoom: [0, -2],
@@ -206,7 +209,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
       const mainWidth = settings.treenomeEnabled
         ? deckSize.width * MAIN_WIDTH_FRACTION_WITH_TREENOME
         : deckSize.width;
-      const xZoom = zoomToFit(mainWidth, xSpan);
+      const xZoom = zoomToFit(mainWidth, xSpan, X_FILL_FRACTION);
 
       // The y extent is optional: a backend may report the x extent alone.
       const yFit =
@@ -214,15 +217,27 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
           ? {
               span: yRange.max - yRange.min,
               centre: (yRange.min + yRange.max) / 2,
-              zoom: zoomToFit(deckSize.height, yRange.max - yRange.min),
+              zoom: zoomToFit(
+                deckSize.height,
+                yRange.max - yRange.min,
+                Y_FILL_FRACTION
+              ),
             }
           : null;
 
       const minimap: SubViewState = yFit
         ? {
             zoom: [
-              zoomToFit(deckSize.width * MINIMAP_WIDTH_FRACTION, xSpan),
-              zoomToFit(deckSize.height * MINIMAP_HEIGHT_FRACTION, yFit.span),
+              zoomToFit(
+                deckSize.width * MINIMAP_WIDTH_FRACTION,
+                xSpan,
+                X_FILL_FRACTION
+              ),
+              zoomToFit(
+                deckSize.height * MINIMAP_HEIGHT_FRACTION,
+                yFit.span,
+                Y_FILL_FRACTION
+              ),
             ] as [number, number],
             target: [xCentre, yFit.centre] as [number, number],
           }
