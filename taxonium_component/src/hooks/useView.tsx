@@ -4,6 +4,7 @@ import type { OrthographicViewProps } from "@deck.gl/core";
 import type { Settings } from "../types/settings";
 import type { DeckSize } from "../types/common";
 import type { SubViewState, ViewState } from "../types/view";
+import type { XRange, YRange } from "../types/backend";
 
 interface ViewStateChangeParameters<ViewStateT> {
   viewId: string;
@@ -18,11 +19,10 @@ interface StyledViewProps extends OrthographicViewProps {
 
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-// Fractions of the deck that each view occupies. These must match the
-// OrthographicView definitions below.
-const MINIMAP_WIDTH_FRACTION = 0.2;
-const MINIMAP_HEIGHT_FRACTION = 0.35;
-const MAIN_WIDTH_FRACTION_WITH_TREENOME = 0.4;
+// Percentages of the deck that each view occupies.
+const MINIMAP_WIDTH = 20;
+const MINIMAP_HEIGHT = 35;
+const MAIN_WIDTH_WITH_TREENOME = 40;
 
 // Proportion of each axis that the fitted tree fills, the rest being blank
 // space split between the two edges. x is deliberately roomier than y.
@@ -73,10 +73,8 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   // What the tree was last fitted to, so that resetting the zoom goes back to
   // the whole tree rather than to a hardcoded guess.
   const fittedView = useRef<{
-    xZoom: number;
-    xTarget: number;
-    yZoom: number | null;
-    yTarget: number | null;
+    zoom: [number, number];
+    target: [number, number];
   } | null>(null);
 
   const baseViewState = useMemo(() => ({ ...viewState }), [viewState]);
@@ -96,10 +94,10 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
       vs.push(
         new OrthographicView({
           id: "minimap",
-          x: "79%",
+          x: `${99 - MINIMAP_WIDTH}%`,
           y: "1%",
-          width: "20%",
-          height: "35%",
+          width: `${MINIMAP_WIDTH}%`,
+          height: `${MINIMAP_HEIGHT}%`,
           borderWidth: "1px",
           controller: controllerProps,
         } as StyledViewProps)
@@ -110,15 +108,15 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
         new OrthographicView({
           id: "browser-axis",
           controller: false,
-          x: "40%",
+          x: `${MAIN_WIDTH_WITH_TREENOME}%`,
           y: "0%",
-          width: "60%",
+          width: `${100 - MAIN_WIDTH_WITH_TREENOME}%`,
         } as StyledViewProps),
         new OrthographicView({
           id: "browser-main",
           controller: controllerProps,
-          x: "40%",
-          width: "60%",
+          x: `${MAIN_WIDTH_WITH_TREENOME}%`,
+          width: `${100 - MAIN_WIDTH_WITH_TREENOME}%`,
         } as StyledViewProps)
       );
     }
@@ -126,7 +124,9 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
       new OrthographicView({
         id: "main",
         controller: controllerProps,
-        width: settings.treenomeEnabled ? "40%" : "100%",
+        width: settings.treenomeEnabled
+          ? `${MAIN_WIDTH_WITH_TREENOME}%`
+          : "100%",
         initialViewState: viewState,
       } as StyledViewProps)
     );
@@ -184,86 +184,67 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
     [zoomAxis]
   );
 
-  // Fit the view (main and minimap) to the extent of the tree. Neither axis
-  // has a fixed scale -- x is branch length in whatever units the tree was
-  // built with, and y is spread over a range that depends on how many nodes
-  // there are -- so the only way to know how far to zoom out is to be told
-  // the range the data covers.
-  //
-  // With onlyIfUnmoved the fit is abandoned if the view is no longer where
-  // the last fit left it, i.e. if the user has panned or zoomed themselves.
+  // Fit the main view and the minimap to the extent of the tree. With
+  // onlyIfUnmoved the fit is skipped if the user has panned or zoomed since
+  // the last fit.
   const fitToRanges = useCallback(
     (
-      xRange: { min: number; robust_max: number },
-      yRange?: { min: number; max: number },
+      xRange: XRange,
+      yRange: YRange,
       { onlyIfUnmoved = false }: { onlyIfUnmoved?: boolean } = {}
     ) => {
       if (!deckSize || !deckSize.width || isNaN(deckSize.width)) {
         return;
       }
       const xSpan = xRange.robust_max - xRange.min;
-      if (!(xSpan > 0)) {
+      const ySpan = yRange.max - yRange.min;
+      if (!(xSpan > 0) || !(ySpan > 0)) {
         return;
       }
-      const xCentre = (xRange.min + xRange.robust_max) / 2;
-      const mainWidth = settings.treenomeEnabled
-        ? deckSize.width * MAIN_WIDTH_FRACTION_WITH_TREENOME
-        : deckSize.width;
-      const xZoom = zoomToFit(mainWidth, xSpan, X_FILL_FRACTION);
 
-      // The y extent is optional: a backend may report the x extent alone.
-      const yFit =
-        yRange && yRange.max > yRange.min
-          ? {
-              span: yRange.max - yRange.min,
-              centre: (yRange.min + yRange.max) / 2,
-              zoom: zoomToFit(
-                deckSize.height,
-                yRange.max - yRange.min,
-                Y_FILL_FRACTION
-              ),
-            }
-          : null;
-
-      const minimap: SubViewState = yFit
-        ? {
-            zoom: [
-              zoomToFit(
-                deckSize.width * MINIMAP_WIDTH_FRACTION,
-                xSpan,
-                X_FILL_FRACTION
-              ),
-              zoomToFit(
-                deckSize.height * MINIMAP_HEIGHT_FRACTION,
-                yFit.span,
-                Y_FILL_FRACTION
-              ),
-            ] as [number, number],
-            target: [xCentre, yFit.centre] as [number, number],
-          }
-        : minimapViewState.current;
-
-      const previous = fittedView.current;
       const current = viewStateRef.current;
+      const previous = fittedView.current;
       if (onlyIfUnmoved && previous) {
-        const currentZoom = current.zoom as [number, number];
+        const zoom = current.zoom as [number, number];
         const moved =
-          currentZoom[0] !== previous.xZoom ||
-          current.target[0] !== previous.xTarget ||
-          (previous.yZoom !== null && currentZoom[1] !== previous.yZoom) ||
-          (previous.yTarget !== null && current.target[1] !== previous.yTarget);
+          zoom[0] !== previous.zoom[0] ||
+          zoom[1] !== previous.zoom[1] ||
+          current.target[0] !== previous.target[0] ||
+          current.target[1] !== previous.target[1];
         if (moved) {
           return;
         }
       }
 
+      const mainWidth = settings.treenomeEnabled
+        ? (deckSize.width * MAIN_WIDTH_WITH_TREENOME) / 100
+        : deckSize.width;
+      const target: [number, number] = [
+        (xRange.min + xRange.robust_max) / 2,
+        (yRange.min + yRange.max) / 2,
+      ];
       fittedView.current = {
-        xZoom,
-        xTarget: xCentre,
-        yZoom: yFit ? yFit.zoom : null,
-        yTarget: yFit ? yFit.centre : null,
+        zoom: [
+          zoomToFit(mainWidth, xSpan, X_FILL_FRACTION),
+          zoomToFit(deckSize.height, ySpan, Y_FILL_FRACTION),
+        ],
+        target,
       };
-      minimapViewState.current = minimap;
+      minimapViewState.current = {
+        zoom: [
+          zoomToFit(
+            (deckSize.width * MINIMAP_WIDTH) / 100,
+            xSpan,
+            X_FILL_FRACTION
+          ),
+          zoomToFit(
+            (deckSize.height * MINIMAP_HEIGHT) / 100,
+            ySpan,
+            Y_FILL_FRACTION
+          ),
+        ],
+        target,
+      };
 
       // Routed through onViewStateChange so that the views that follow the
       // main one (the minimap, and the treenome browser's rows) are brought
@@ -271,40 +252,18 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
       onViewStateChange({
         viewId: "main",
         interactionState: {},
-        oldViewState: current,
-        viewState: {
-          ...current,
-          zoom: [
-            xZoom,
-            yFit ? yFit.zoom : (current.zoom as [number, number])[1],
-          ] as [number, number],
-          target: [xCentre, yFit ? yFit.centre : current.target[1]] as [
-            number,
-            number
-          ],
-        },
+        viewState: { ...current, ...fittedView.current },
       });
     },
     [deckSize, settings.treenomeEnabled, onViewStateChange]
   );
 
   const zoomReset = useCallback(() => {
-    const reset: ViewStateType = {
+    setViewState({
       ...defaultViewState,
+      ...fittedView.current,
       minimap: minimapViewState.current,
-    };
-    if (fittedView.current) {
-      reset.zoom = [
-        fittedView.current.xZoom,
-        fittedView.current.yZoom ??
-          (defaultViewState.zoom as [number, number])[1],
-      ];
-      reset.target = [
-        fittedView.current.xTarget,
-        fittedView.current.yTarget ?? defaultViewState.target[1],
-      ] as [number, number];
-    }
-    setViewState(reset);
+    });
   }, []);
 
   return {
@@ -337,8 +296,8 @@ export interface View {
   modelMatrix: number[];
   zoomIncrement: (increment: number, axis?: string) => void;
   fitToRanges: (
-    xRange: { min: number; robust_max: number },
-    yRange?: { min: number; max: number },
+    xRange: XRange,
+    yRange: YRange,
     options?: { onlyIfUnmoved?: boolean }
   ) => void;
   xzoom: number;

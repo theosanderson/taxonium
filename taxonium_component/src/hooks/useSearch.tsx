@@ -27,10 +27,7 @@ interface UseSearchParams {
   deckSize: { width: number; height: number } | null;
   xType: string;
   settings: Settings;
-  /**
-   * False until the view has been fitted to the tree. Zooming to a search
-   * waits for that, since the fit would otherwise overwrite it.
-   */
+  /** Zooming to a search waits for the initial fit, which would otherwise overwrite it. */
   initialViewReady: boolean;
 }
 

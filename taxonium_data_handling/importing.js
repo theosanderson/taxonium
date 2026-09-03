@@ -126,31 +126,21 @@ const X_ROBUST_MIN_FRACTION = 0.15;
 const QUANTILE_BINS = 4096;
 
 // Histogram-based quantile so that we never have to sort (or copy) a list of
-// x positions that can have tens of millions of entries. The value returned is
-// the top of the bin the quantile falls in, so it is a slight over-estimate.
+// x positions that can have tens of millions of entries. Assumes max > min
+// and at least one finite value. The value returned is the top of the bin the
+// quantile falls in, so it is a slight over-estimate.
 const approximateQuantile = (nodes, accessor, min, max, quantile) => {
-  if (!(max > min)) {
-    return max;
-  }
   const counts = new Int32Array(QUANTILE_BINS);
   const scale = QUANTILE_BINS / (max - min);
   let total = 0;
   for (const node of nodes) {
     const value = node[accessor];
-    if (typeof value !== "number" || !isFinite(value)) {
+    if (!Number.isFinite(value)) {
       continue;
     }
-    let bin = Math.floor((value - min) * scale);
-    if (bin < 0) {
-      bin = 0;
-    } else if (bin >= QUANTILE_BINS) {
-      bin = QUANTILE_BINS - 1;
-    }
+    const bin = Math.min(Math.floor((value - min) * scale), QUANTILE_BINS - 1);
     counts[bin]++;
     total++;
-  }
-  if (total === 0) {
-    return max;
   }
   const target = quantile * total;
   let cumulative = 0;
@@ -163,8 +153,7 @@ const approximateQuantile = (nodes, accessor, min, max, quantile) => {
   return max;
 };
 
-// Which x accessors the nodes actually carry.
-export const getXAccessors = (nodes) => {
+const getXAccessors = (nodes) => {
   const firstNode = nodes && nodes.length ? nodes[0] : null;
   const accessors = [];
   if (firstNode && firstNode.x_dist !== undefined) {
@@ -178,18 +167,12 @@ export const getXAccessors = (nodes) => {
   return accessors.length ? accessors : ["x_time"];
 };
 
-// { min, max, robust_max } for one x accessor, or null if the nodes don't
-// have usable values for it.
-export const getXRange = (nodes, accessor) => {
-  if (!nodes || !nodes.length) {
-    return null;
-  }
+const getXRange = (nodes, accessor) => {
   let min = Infinity;
   let max = -Infinity;
-  let count = 0;
   for (const node of nodes) {
     const value = node[accessor];
-    if (typeof value !== "number" || !isFinite(value)) {
+    if (!Number.isFinite(value)) {
       continue;
     }
     if (value < min) {
@@ -198,10 +181,12 @@ export const getXRange = (nodes, accessor) => {
     if (value > max) {
       max = value;
     }
-    count++;
   }
-  if (count === 0) {
+  if (min === Infinity) {
     return null;
+  }
+  if (min === max) {
+    return { min, max, robust_max: max };
   }
   const quantile = approximateQuantile(
     nodes,
@@ -210,37 +195,29 @@ export const getXRange = (nodes, accessor) => {
     max,
     X_ROBUST_QUANTILE
   );
-  let robustMax = min + (quantile - min) * X_ROBUST_HEADROOM;
-  if (robustMax < min + (max - min) * X_ROBUST_MIN_FRACTION) {
-    robustMax = max;
-  }
-  if (robustMax > max) {
-    robustMax = max;
-  }
-  return { min, max, robust_max: robustMax };
+  const robustMax = min + (quantile - min) * X_ROBUST_HEADROOM;
+  const tooNarrow = robustMax < min + (max - min) * X_ROBUST_MIN_FRACTION;
+  return {
+    min,
+    max,
+    robust_max: tooNarrow || robustMax > max ? max : robustMax,
+  };
 };
 
-export const getXRanges = (nodes, accessors) => {
-  const ranges = {};
-  for (const accessor of accessors ? accessors : getXAccessors(nodes)) {
-    const range = getXRange(nodes, accessor);
-    if (range) {
-      ranges[accessor] = range;
-    }
-  }
-  return ranges;
-};
-
-// Everything the client needs in order to pick a sensible starting view.
 // initial_x / initial_y stay for backwards compatibility with clients that
 // only know about a centre point; x_ranges and y_range let a newer client
 // also work out how far to zoom out.
 export const getInitialViewConfig = (nodes, { minY, maxY }) => {
   const x_accessors = getXAccessors(nodes);
-  const x_ranges = getXRanges(nodes, x_accessors);
+  const x_ranges = {};
+  for (const accessor of x_accessors) {
+    const range = getXRange(nodes, accessor);
+    if (range) {
+      x_ranges[accessor] = range;
+    }
+  }
   const primaryRange = x_ranges[x_accessors[0]];
   const initialView = {
-    x_accessors,
     x_ranges,
     y_range: { min: minY, max: maxY },
     initial_y: (minY + maxY) / 2,
@@ -599,11 +576,4 @@ export const generateConfig = (config, processedUploadedData) => {
     : colorByOptions[0];
 };
 
-export default {
-  processJsonl,
-  generateConfig,
-  getXAccessors,
-  getXRange,
-  getXRanges,
-  getInitialViewConfig,
-};
+export default { processJsonl, generateConfig, getInitialViewConfig };

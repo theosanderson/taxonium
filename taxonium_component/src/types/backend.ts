@@ -36,6 +36,11 @@ export interface XRange {
   robust_max: number;
 }
 
+export interface YRange {
+  min: number;
+  max: number;
+}
+
 export interface Config {
   title?: string;
   source?: string;
@@ -45,7 +50,7 @@ export interface Config {
   initial_zoom?: number;
   /** x extents keyed by accessor ("x_dist", "x_time"). */
   x_ranges?: Record<string, XRange>;
-  y_range?: { min: number; max: number };
+  y_range?: YRange;
   x_accessors?: string[];
   /**
    * When {@link useHydratedMutations} is false this array contains indices into

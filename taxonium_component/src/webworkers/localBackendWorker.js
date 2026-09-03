@@ -58,12 +58,10 @@ const waitForProcessedData = async () => {
   }
 };
 
-// Bounds may be absent or only partly filled in, which means "the whole
-// tree": that is how the overview data behind the minimap is requested.
-export const queryNodes = async (suppliedBounds) => {
+// Bounds that are only partly filled in mean "the whole tree": that is how
+// the overview data behind the minimap is requested.
+export const queryNodes = async (boundsForQueries = {}) => {
   await waitForProcessedData();
-
-  const boundsForQueries = suppliedBounds ? suppliedBounds : {};
 
   const {
     nodes,

@@ -200,13 +200,11 @@ function TaxoniumInner({
     }
   }, [data.base_data, setxType]);
 
-  // Fit the view to the tree once we know both how big the tree is (from the
-  // config) and how big the viewport is. Refit when the x axis switches
-  // between divergence and time, since the two have unrelated scales, and
-  // when the treenome browser opens or closes, which changes how much of the
-  // window the tree gets. A resize refits too, but only while the view is
-  // still where the last fit left it, so that it never undoes the user's own
-  // panning and zooming.
+  // Fit the view to the tree once its extent (from the config) and the
+  // viewport size are both known. A change of tree, x axis or treenome layout
+  // refits outright; a resize refits only while the view is still where the
+  // last fit left it. `view` is a new object every render, so the ref rather
+  // than the dependency array decides whether there is anything new to do.
   const [initialViewReady, setInitialViewReady] = useState(false);
   const lastFitted = useRef<{
     config: unknown;
@@ -219,9 +217,9 @@ function TaxoniumInner({
       return;
     }
     const xRange = config.x_ranges ? config.x_ranges[xType] : undefined;
-    if (!xRange) {
-      // A backend that doesn't report the extent of the tree: nothing to fit
-      // to, so leave the view at its default.
+    if (!xRange || !config.y_range) {
+      // A backend that doesn't report the extent of the tree: nothing to
+      // fit to.
       setInitialViewReady(true);
       return;
     }

@@ -218,8 +218,6 @@ if (command_options.config_override) {
 
 app.get("/config", function (req, res) {
   config.num_nodes = processedData.nodes.length;
-  // initial_view is worked out once, when the tree is loaded, because it
-  // involves a pass over every node.
   Object.assign(config, processedData.initial_view);
   config.initial_zoom = -2;
   config.genes = processedData.genes;
