@@ -26,6 +26,16 @@ export interface NodesResponse {
   [key: string]: unknown;
 }
 
+/**
+ * The extent of one x accessor over the whole tree. `robust_max` excludes
+ * extreme long-branch outliers and is what the initial view is fitted to.
+ */
+export interface XRange {
+  min: number;
+  max: number;
+  robust_max: number;
+}
+
 export interface Config {
   title?: string;
   source?: string;
@@ -33,6 +43,10 @@ export interface Config {
   initial_x?: number;
   initial_y?: number;
   initial_zoom?: number;
+  /** x extents keyed by accessor ("x_dist", "x_time"). */
+  x_ranges?: Record<string, XRange>;
+  y_range?: { min: number; max: number };
+  x_accessors?: string[];
   /**
    * When {@link useHydratedMutations} is false this array contains indices into
    * the {@link mutations} array. When true it contains {@link Mutation}

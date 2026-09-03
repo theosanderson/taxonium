@@ -218,10 +218,9 @@ if (command_options.config_override) {
 
 app.get("/config", function (req, res) {
   config.num_nodes = processedData.nodes.length;
-  config.initial_x =
-    (processedData.overallMinX + processedData.overallMaxX) / 2;
-  config.initial_y =
-    (processedData.overallMinY + processedData.overallMaxY) / 2;
+  // initial_view is worked out once, when the tree is loaded, because it
+  // involves a pass over every node.
+  Object.assign(config, processedData.initial_view);
   config.initial_zoom = -2;
   config.genes = processedData.genes;
   config = { ...config, ...processedData.overwrite_config };
@@ -468,6 +467,11 @@ const loadData = async () => {
   if (config.no_file) {
     importing.generateConfig(config, processedData);
   }
+
+  processedData.initial_view = importing.getInitialViewConfig(
+    processedData.nodes,
+    { minY: processedData.overallMinY, maxY: processedData.overallMaxY }
+  );
 
   processedData.genes = new Set(
     processedData.mutations.map((mutation) => mutation.gene)

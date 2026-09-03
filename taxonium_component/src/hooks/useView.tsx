@@ -1,9 +1,9 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { OrthographicView, OrthographicController } from "@deck.gl/core";
 import type { OrthographicViewProps } from "@deck.gl/core";
 import type { Settings } from "../types/settings";
 import type { DeckSize } from "../types/common";
-import type { ViewState } from "../types/view";
+import type { SubViewState, ViewState } from "../types/view";
 
 interface ViewStateChangeParameters<ViewStateT> {
   viewId: string;
@@ -18,12 +18,30 @@ interface StyledViewProps extends OrthographicViewProps {
 
 const identityMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
+// Fractions of the deck that each view occupies. These must match the
+// OrthographicView definitions below.
+const MINIMAP_WIDTH_FRACTION = 0.2;
+const MINIMAP_HEIGHT_FRACTION = 0.35;
+const MAIN_WIDTH_FRACTION_WITH_TREENOME = 0.4;
+
+// Proportion of the fitted range left as blank space at each edge.
+const FIT_MARGIN = 0.02;
+
+const defaultMinimapViewState: SubViewState = {
+  zoom: -3,
+  target: [250, 1000],
+};
+
+// Zoom level at which a range of `span` world units fills `pixels` pixels.
+const zoomToFit = (pixels: number, span: number) =>
+  Math.log2(pixels / (span * (1 + 2 * FIT_MARGIN)));
+
 const defaultViewState: ViewState = {
   zoom: [0, -2],
   target: [window.screen.width < 600 ? 500 : 1400, 1000],
   pitch: 0,
   bearing: 0,
-  minimap: { zoom: -3, target: [250, 1000] }
+  minimap: defaultMinimapViewState,
 };
 
 type ViewStateType = ViewState;
@@ -38,6 +56,24 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
   const [viewState, setViewState] = useState<ViewStateType>(defaultViewState);
   const [mouseXY, setMouseXY] = useState([0, 0]);
   const [zoomAxis, setZoomAxis] = useState("Y");
+
+  // The minimap always shows the whole tree, so its view state is not the
+  // user's to change. It is kept in a ref because onViewStateChange has to
+  // reapply it on every interaction without being re-created each time.
+  const minimapViewState = useRef<SubViewState>(defaultMinimapViewState);
+
+  // The current view state, readable from callbacks that must not depend on
+  // it (a dependency on it would re-create them on every pan and zoom).
+  const viewStateRef = useRef<ViewStateType>(viewState);
+  viewStateRef.current = viewState;
+
+  // What the tree was last fitted to, so that resetting the zoom goes back to
+  // the whole tree rather than to a hardcoded guess.
+  const fittedView = useRef<{
+    xZoom: number;
+    xTarget: number;
+    yTarget: number | null;
+  } | null>(null);
 
   const baseViewState = useMemo(() => ({ ...viewState }), [viewState]);
 
@@ -109,7 +145,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
         return false;
       }
 
-      newViewState.minimap = { zoom: -3, target: [250, 1000] };
+      newViewState.minimap = minimapViewState.current;
       newViewState["browser-main"] = {
         zoom: [
           -3,
@@ -144,8 +180,90 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
     [zoomAxis]
   );
 
+  // Fit the x axis (and the minimap, which shows both axes) to the extent of
+  // the tree. x coordinates have no fixed scale -- they are branch lengths in
+  // whatever units the tree was built with -- so the only way to know how far
+  // to zoom out is to be told the range the data covers.
+  //
+  // With onlyIfUnmoved the fit is abandoned if the x axis is no longer where
+  // the last fit left it, i.e. if the user has panned or zoomed it themselves.
+  const fitToRanges = useCallback(
+    (
+      xRange: { min: number; robust_max: number },
+      yRange?: { min: number; max: number },
+      { onlyIfUnmoved = false }: { onlyIfUnmoved?: boolean } = {}
+    ) => {
+      if (!deckSize || !deckSize.width || isNaN(deckSize.width)) {
+        return;
+      }
+      const xSpan = xRange.robust_max - xRange.min;
+      if (!(xSpan > 0)) {
+        return;
+      }
+      const xCentre = (xRange.min + xRange.robust_max) / 2;
+      const mainWidth = settings.treenomeEnabled
+        ? deckSize.width * MAIN_WIDTH_FRACTION_WITH_TREENOME
+        : deckSize.width;
+      const xZoom = zoomToFit(mainWidth, xSpan);
+
+      const ySpan = yRange ? yRange.max - yRange.min : 0;
+      const yCentre = yRange ? (yRange.min + yRange.max) / 2 : null;
+      const minimap: SubViewState =
+        ySpan > 0 && yCentre !== null
+          ? {
+              zoom: [
+                zoomToFit(deckSize.width * MINIMAP_WIDTH_FRACTION, xSpan),
+                zoomToFit(deckSize.height * MINIMAP_HEIGHT_FRACTION, ySpan),
+              ] as [number, number],
+              target: [xCentre, yCentre] as [number, number],
+            }
+          : minimapViewState.current;
+
+      // Deliberately checked before setViewState rather than inside its
+      // updater: the updater has to stay pure, and it can be run twice.
+      const previous = fittedView.current;
+      const current = viewStateRef.current;
+      if (
+        onlyIfUnmoved &&
+        previous &&
+        ((current.zoom as [number, number])[0] !== previous.xZoom ||
+          current.target[0] !== previous.xTarget)
+      ) {
+        return;
+      }
+
+      fittedView.current = { xZoom, xTarget: xCentre, yTarget: yCentre };
+      minimapViewState.current = minimap;
+
+      setViewState(
+        (vs: ViewStateType) =>
+          ({
+            ...vs,
+            zoom: [xZoom, (vs.zoom as [number, number])[1]] as [number, number],
+            target: [xCentre, vs.target[1]] as [number, number],
+            minimap,
+          }) as ViewStateType
+      );
+    },
+    [deckSize, settings.treenomeEnabled]
+  );
+
   const zoomReset = useCallback(() => {
-    setViewState(defaultViewState);
+    const reset: ViewStateType = {
+      ...defaultViewState,
+      minimap: minimapViewState.current,
+    };
+    if (fittedView.current) {
+      reset.zoom = [
+        fittedView.current.xZoom,
+        (defaultViewState.zoom as [number, number])[1],
+      ];
+      reset.target = [
+        fittedView.current.xTarget,
+        fittedView.current.yTarget ?? defaultViewState.target[1],
+      ] as [number, number];
+    }
+    setViewState(reset);
   }, []);
 
   return {
@@ -157,6 +275,7 @@ const useView = ({ settings, deckSize, mouseDownIsMinimap }: UseViewProps) => {
     setZoomAxis,
     modelMatrix: identityMatrix,
     zoomIncrement,
+    fitToRanges,
     xzoom: 0,
     mouseXY,
     setMouseXY,
@@ -176,6 +295,11 @@ export interface View {
   setZoomAxis: React.Dispatch<React.SetStateAction<string>>;
   modelMatrix: number[];
   zoomIncrement: (increment: number, axis?: string) => void;
+  fitToRanges: (
+    xRange: { min: number; robust_max: number },
+    yRange?: { min: number; max: number },
+    options?: { onlyIfUnmoved?: boolean }
+  ) => void;
   xzoom: number;
   mouseXY: number[];
   setMouseXY: React.Dispatch<React.SetStateAction<number[]>>;

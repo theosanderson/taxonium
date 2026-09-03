@@ -111,6 +111,146 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
+// A handful of very divergent sequences (e.g. ones with many spurious
+// mutations) can make the x extent of a tree several times wider than the
+// part of it that anyone wants to look at. The initial view is therefore
+// fitted to a "robust" x range: the X_ROBUST_QUANTILE quantile of node x
+// positions, with some headroom, capped at the true maximum. For a tree
+// without such outliers this is just the true maximum.
+const X_ROBUST_QUANTILE = 0.99;
+const X_ROBUST_HEADROOM = 1.3;
+// If the robust range would be narrower than this fraction of the full range
+// there is no bulk worth zooming in on (e.g. nearly every node sits at the
+// same x), so the full range is used instead.
+const X_ROBUST_MIN_FRACTION = 0.15;
+const QUANTILE_BINS = 4096;
+
+// Histogram-based quantile so that we never have to sort (or copy) a list of
+// x positions that can have tens of millions of entries. The value returned is
+// the top of the bin the quantile falls in, so it is a slight over-estimate.
+const approximateQuantile = (nodes, accessor, min, max, quantile) => {
+  if (!(max > min)) {
+    return max;
+  }
+  const counts = new Int32Array(QUANTILE_BINS);
+  const scale = QUANTILE_BINS / (max - min);
+  let total = 0;
+  for (const node of nodes) {
+    const value = node[accessor];
+    if (typeof value !== "number" || !isFinite(value)) {
+      continue;
+    }
+    let bin = Math.floor((value - min) * scale);
+    if (bin < 0) {
+      bin = 0;
+    } else if (bin >= QUANTILE_BINS) {
+      bin = QUANTILE_BINS - 1;
+    }
+    counts[bin]++;
+    total++;
+  }
+  if (total === 0) {
+    return max;
+  }
+  const target = quantile * total;
+  let cumulative = 0;
+  for (let bin = 0; bin < QUANTILE_BINS; bin++) {
+    cumulative += counts[bin];
+    if (cumulative >= target) {
+      return min + ((bin + 1) / QUANTILE_BINS) * (max - min);
+    }
+  }
+  return max;
+};
+
+// Which x accessors the nodes actually carry.
+export const getXAccessors = (nodes) => {
+  const firstNode = nodes && nodes.length ? nodes[0] : null;
+  const accessors = [];
+  if (firstNode && firstNode.x_dist !== undefined) {
+    accessors.push("x_dist");
+  }
+  if (firstNode && firstNode.x_time !== undefined) {
+    accessors.push("x_time");
+  }
+  // A tree with neither is treated as a time tree, which is what the client
+  // falls back to when there are no distances.
+  return accessors.length ? accessors : ["x_time"];
+};
+
+// { min, max, robust_max } for one x accessor, or null if the nodes don't
+// have usable values for it.
+export const getXRange = (nodes, accessor) => {
+  if (!nodes || !nodes.length) {
+    return null;
+  }
+  let min = Infinity;
+  let max = -Infinity;
+  let count = 0;
+  for (const node of nodes) {
+    const value = node[accessor];
+    if (typeof value !== "number" || !isFinite(value)) {
+      continue;
+    }
+    if (value < min) {
+      min = value;
+    }
+    if (value > max) {
+      max = value;
+    }
+    count++;
+  }
+  if (count === 0) {
+    return null;
+  }
+  const quantile = approximateQuantile(
+    nodes,
+    accessor,
+    min,
+    max,
+    X_ROBUST_QUANTILE
+  );
+  let robustMax = min + (quantile - min) * X_ROBUST_HEADROOM;
+  if (robustMax < min + (max - min) * X_ROBUST_MIN_FRACTION) {
+    robustMax = max;
+  }
+  if (robustMax > max) {
+    robustMax = max;
+  }
+  return { min, max, robust_max: robustMax };
+};
+
+export const getXRanges = (nodes, accessors) => {
+  const ranges = {};
+  for (const accessor of accessors ? accessors : getXAccessors(nodes)) {
+    const range = getXRange(nodes, accessor);
+    if (range) {
+      ranges[accessor] = range;
+    }
+  }
+  return ranges;
+};
+
+// Everything the client needs in order to pick a sensible starting view.
+// initial_x / initial_y stay for backwards compatibility with clients that
+// only know about a centre point; x_ranges and y_range let a newer client
+// also work out how far to zoom out.
+export const getInitialViewConfig = (nodes, { minY, maxY }) => {
+  const x_accessors = getXAccessors(nodes);
+  const x_ranges = getXRanges(nodes, x_accessors);
+  const primaryRange = x_ranges[x_accessors[0]];
+  const initialView = {
+    x_accessors,
+    x_ranges,
+    y_range: { min: minY, max: maxY },
+    initial_y: (minY + maxY) / 2,
+  };
+  if (primaryRange) {
+    initialView.initial_x = (primaryRange.min + primaryRange.robust_max) / 2;
+  }
+  return initialView;
+};
+
 export const setUpStream = (
   the_stream,
   data,
@@ -324,10 +464,13 @@ export const processJsonl = async (
 
 export const generateConfig = (config, processedUploadedData) => {
   config.num_nodes = processedUploadedData.nodes.length;
-  config.initial_x =
-    (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
-  config.initial_y =
-    (processedUploadedData.overallMaxY + processedUploadedData.overallMinY) / 2;
+  Object.assign(
+    config,
+    getInitialViewConfig(processedUploadedData.nodes, {
+      minY: processedUploadedData.overallMinY,
+      maxY: processedUploadedData.overallMaxY,
+    })
+  );
   config.initial_zoom = config.initial_zoom ? config.initial_zoom : -2;
   config.genes = [
     ...new Set(processedUploadedData.mutations.map((x) => (x ? x.gene : null))),
@@ -354,14 +497,7 @@ export const generateConfig = (config, processedUploadedData) => {
     "is_tip",
   ];
 
-  const firstNode = processedUploadedData.nodes[0];
-
-  config.x_accessors =
-    firstNode.x_dist !== undefined && firstNode.x_time !== undefined
-      ? ["x_dist", "x_time"]
-      : firstNode.x_dist
-      ? ["x_dist"]
-      : ["x_time"];
+  config.x_accessors = getXAccessors(processedUploadedData.nodes);
 
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
@@ -463,4 +599,11 @@ export const generateConfig = (config, processedUploadedData) => {
     : colorByOptions[0];
 };
 
-export default { processJsonl, generateConfig };
+export default {
+  processJsonl,
+  generateConfig,
+  getXAccessors,
+  getXRange,
+  getXRanges,
+  getInitialViewConfig,
+};
