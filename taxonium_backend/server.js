@@ -462,14 +462,14 @@ const loadData = async () => {
     status: "finalising",
   });
 
-  if (config.no_file) {
-    importing.generateConfig(config, processedData);
-  }
-
   processedData.initial_view = importing.getInitialViewConfig(
     processedData.nodes,
     { minY: processedData.overallMinY, maxY: processedData.overallMaxY }
   );
+
+  if (config.no_file) {
+    importing.generateConfig(config, processedData);
+  }
 
   processedData.genes = new Set(
     processedData.mutations.map((mutation) => mutation.gene)

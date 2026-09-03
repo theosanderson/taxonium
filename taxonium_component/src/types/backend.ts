@@ -48,7 +48,6 @@ export interface Config {
   initial_x?: number;
   initial_y?: number;
   initial_zoom?: number;
-  /** x extents keyed by accessor ("x_dist", "x_time"). */
   x_ranges?: Record<string, XRange>;
   y_range?: YRange;
   x_accessors?: string[];

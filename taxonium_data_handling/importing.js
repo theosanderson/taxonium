@@ -111,24 +111,14 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
-// A handful of very divergent sequences (e.g. ones with many spurious
-// mutations) can make the x extent of a tree several times wider than the
-// part of it that anyone wants to look at. The initial view is therefore
-// fitted to a "robust" x range: the X_ROBUST_QUANTILE quantile of node x
-// positions, with some headroom, capped at the true maximum. For a tree
-// without such outliers this is just the true maximum.
+// Fit to the bulk of the tree so that a few divergent sequences do not leave
+// the useful region off screen.
 const X_ROBUST_QUANTILE = 0.99;
 const X_ROBUST_HEADROOM = 1.3;
-// If the robust range would be narrower than this fraction of the full range
-// there is no bulk worth zooming in on (e.g. nearly every node sits at the
-// same x), so the full range is used instead.
 const X_ROBUST_MIN_FRACTION = 0.15;
 const QUANTILE_BINS = 4096;
 
-// Histogram-based quantile so that we never have to sort (or copy) a list of
-// x positions that can have tens of millions of entries. Assumes max > min
-// and at least one finite value. The value returned is the top of the bin the
-// quantile falls in, so it is a slight over-estimate.
+// Avoid sorting or copying node coordinates, which can number in the millions.
 const approximateQuantile = (nodes, accessor, min, max, quantile) => {
   const counts = new Int32Array(QUANTILE_BINS);
   const scale = QUANTILE_BINS / (max - min);
@@ -162,8 +152,6 @@ const getXAccessors = (nodes) => {
   if (firstNode && firstNode.x_time !== undefined) {
     accessors.push("x_time");
   }
-  // A tree with neither is treated as a time tree, which is what the client
-  // falls back to when there are no distances.
   return accessors.length ? accessors : ["x_time"];
 };
 
@@ -443,10 +431,11 @@ export const generateConfig = (config, processedUploadedData) => {
   config.num_nodes = processedUploadedData.nodes.length;
   Object.assign(
     config,
-    getInitialViewConfig(processedUploadedData.nodes, {
-      minY: processedUploadedData.overallMinY,
-      maxY: processedUploadedData.overallMaxY,
-    })
+    processedUploadedData.initial_view ??
+      getInitialViewConfig(processedUploadedData.nodes, {
+        minY: processedUploadedData.overallMinY,
+        maxY: processedUploadedData.overallMaxY,
+      })
   );
   config.initial_zoom = config.initial_zoom ? config.initial_zoom : -2;
   config.genes = [

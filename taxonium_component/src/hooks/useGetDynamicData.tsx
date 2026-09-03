@@ -128,7 +128,6 @@ function useGetDynamicData(
                     new_result.base_data = addNodeLookup(nodeResult);
                 } else {
                   if (!prevData.base_data || prevData.base_data_is_invalid) {
-                      // Whole-tree overview for the minimap.
                       queryNodes(
                         { xType },
                         (base_result: NodesResponse) => {

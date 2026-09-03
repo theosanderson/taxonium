@@ -27,7 +27,6 @@ interface UseSearchParams {
   deckSize: { width: number; height: number } | null;
   xType: string;
   settings: Settings;
-  /** Zooming to a search waits for the initial fit, which would otherwise overwrite it. */
   initialViewReady: boolean;
 }
 
