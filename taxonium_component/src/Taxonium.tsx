@@ -200,13 +200,14 @@ function TaxoniumInner({
     }
   }, [data.base_data, setxType]);
 
-  // Fit the x axis to the tree once we know both how wide the tree is (from
-  // the config) and how wide the viewport is. Refit when the x axis switches
+  // Fit the view to the tree once we know both how big the tree is (from the
+  // config) and how big the viewport is. Refit when the x axis switches
   // between divergence and time, since the two have unrelated scales, and
   // when the treenome browser opens or closes, which changes how much of the
-  // window the tree gets. A resize refits too, but only while the x axis is
+  // window the tree gets. A resize refits too, but only while the view is
   // still where the last fit left it, so that it never undoes the user's own
   // panning and zooming.
+  const [initialViewReady, setInitialViewReady] = useState(false);
   const lastFitted = useRef<{
     config: unknown;
     xType: string;
@@ -214,8 +215,17 @@ function TaxoniumInner({
     deckSize: DeckSize;
   } | null>(null);
   useEffect(() => {
+    if (config.title === "loading") {
+      return;
+    }
     const xRange = config.x_ranges ? config.x_ranges[xType] : undefined;
-    if (!xRange || !deckSize.width || isNaN(deckSize.width)) {
+    if (!xRange) {
+      // A backend that doesn't report the extent of the tree: nothing to fit
+      // to, so leave the view at its default.
+      setInitialViewReady(true);
+      return;
+    }
+    if (!deckSize.width || isNaN(deckSize.width)) {
       return;
     }
     const treenomeEnabled = Boolean(settings.treenomeEnabled);
@@ -230,6 +240,7 @@ function TaxoniumInner({
     }
     lastFitted.current = { config, xType, treenomeEnabled, deckSize };
     view.fitToRanges(xRange, config.y_range, { onlyIfUnmoved: !isNewFit });
+    setInitialViewReady(true);
   }, [config, xType, deckSize, settings.treenomeEnabled, view]);
 
   const search = useSearch({
@@ -243,6 +254,7 @@ function TaxoniumInner({
     deckSize,
     xType,
     settings,
+    initialViewReady,
   });
 
   const [sidebarOpen, setSidebarOpen] = useState(!sidePanelHiddenByDefault);

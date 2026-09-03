@@ -128,8 +128,10 @@ function useGetDynamicData(
                     new_result.base_data = addNodeLookup(nodeResult);
                 } else {
                   if (!prevData.base_data || prevData.base_data_is_invalid) {
+                      // No bounds means the whole tree: this is the overview
+                      // the minimap draws.
                       queryNodes(
-                        null,
+                        { xType },
                         (base_result: NodesResponse) => {
                           const nodeBase = base_result as NodeLookupData;
                           setDynamicData((prevData) => {

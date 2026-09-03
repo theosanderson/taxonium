@@ -27,6 +27,11 @@ interface UseSearchParams {
   deckSize: { width: number; height: number } | null;
   xType: string;
   settings: Settings;
+  /**
+   * False until the view has been fitted to the tree. Zooming to a search
+   * waits for that, since the fit would otherwise overwrite it.
+   */
+  initialViewReady: boolean;
 }
 
 const useSearch = ({
@@ -40,6 +45,7 @@ const useSearch = ({
   deckSize,
   xType,
   settings,
+  initialViewReady,
 }: UseSearchParams): SearchState => {
   const { singleSearch } = backend;
 
@@ -278,7 +284,7 @@ const useSearch = ({
     lineColors[index % lineColors.length];
 
   useEffect(() => {
-    if (zoomToSearch && deckSize) {
+    if (zoomToSearch && deckSize && initialViewReady) {
       const { index } = zoomToSearch;
       const relevant = searchResults[searchSpec[index].key];
       if (!relevant) {
@@ -329,6 +335,7 @@ const useSearch = ({
     zoomToSearch,
     searchResults,
     deckSize,
+    initialViewReady,
     config.num_nodes,
     settings.treenomeEnabled,
     searchSpec,
