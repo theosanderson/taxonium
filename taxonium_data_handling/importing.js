@@ -1,5 +1,6 @@
 import zlib from "zlib";
 import stream from "stream";
+import { getAccelerator } from "./acceleration.js";
 
 class ChunkCounterStream extends stream.PassThrough {
   constructor(sendStatusMessage, options = {}) {
@@ -156,6 +157,17 @@ const getXAccessors = (nodes) => {
 };
 
 const getXRange = (nodes, accessor) => {
+  const accelerated = getAccelerator()?.coordinateRange(
+    nodes, accessor, X_ROBUST_QUANTILE
+  );
+  if (accelerated !== undefined) {
+    if (accelerated === null) return null;
+    const { min, max, quantile } = accelerated;
+    if (min === max) return { min, max, robust_max: max };
+    const robustMax = min + (quantile - min) * X_ROBUST_HEADROOM;
+    const tooNarrow = robustMax < min + (max - min) * X_ROBUST_MIN_FRACTION;
+    return { min, max, robust_max: tooNarrow || robustMax > max ? max : robustMax };
+  }
   let min = Infinity;
   let max = -Infinity;
   for (const node of nodes) {
