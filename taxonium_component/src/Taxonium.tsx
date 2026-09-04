@@ -7,6 +7,7 @@ import useView from "./hooks/useView";
 import useGetDynamicData from "./hooks/useGetDynamicData";
 import useColor from "./hooks/useColor";
 import useSearch from "./hooks/useSearch";
+import useFilter from "./hooks/useFilter";
 import useColorBy from "./hooks/useColorBy";
 import useNodeDetails from "./hooks/useNodeDetails";
 import useHoverDetails from "./hooks/useHoverDetails";
@@ -292,6 +293,14 @@ function TaxoniumInner({
     initialViewReady,
   });
 
+  const filter = useFilter({
+    config,
+    boundsForQueries,
+    backend,
+    query,
+    updateQuery,
+  });
+
   const [sidebarOpen, setSidebarOpen] = useState(!sidePanelHiddenByDefault);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -356,6 +365,7 @@ function TaxoniumInner({
               statusMessage={backend.statusMessage}
               data={data}
               search={search}
+              filter={filter}
               view={view}
               colorHook={colorHook}
               colorBy={colorBy}
@@ -402,6 +412,7 @@ function TaxoniumInner({
                 className="grow min-h-0 h-full bg-white shadow-xl border-t md:border-0 overflow-y-auto md:overflow-hidden"
                 backend={backend}
                 search={search}
+                filter={filter}
                 colorBy={colorBy}
                 colorHook={colorHook}
                 config={config}
