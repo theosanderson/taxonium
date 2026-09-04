@@ -105,9 +105,11 @@ function search(input, search_spec) {}
 
 const addParents = (data, filtered) => {
   const start_time = Date.now();
-  const selected_node_ids = filtered.map((node) => node.node_id);
-  // creat a set to keep track of selected_node_ids
-  const selected_node_ids_set = new Set(selected_node_ids);
+  const selected_node_ids_set = new Set();
+  for (const node of filtered) {
+    selected_node_ids_set.add(node.node_id);
+  }
+  const selected_node_ids = Array.from(selected_node_ids_set);
   const starting_size = filtered.length;
   for (let i = 0; i < selected_node_ids.length; i++) {
     const node_id = selected_node_ids[i];
@@ -122,9 +124,13 @@ const addParents = (data, filtered) => {
       //console.log("New length is", selected_node_ids.length);
     }
   }
-  const with_parents = data.filter((node) =>
-    selected_node_ids_set.has(node.node_id)
-  );
+  // Node IDs are array indices, so sorting the selected IDs preserves data order
+  // without scanning the whole tree. Keep the linear scan for dense selections,
+  // where sorting would do more work. Both paths reuse the existing IDs and set.
+  const with_parents =
+    selected_node_ids.length * Math.log2(selected_node_ids.length + 1) < data.length
+      ? selected_node_ids.sort((a, b) => a - b).map((id) => data[id])
+      : data.filter((node) => selected_node_ids_set.has(node.node_id));
   const final_size = with_parents.length;
   console.log("Adding parents took " + (Date.now() - start_time) + "ms.");
   console.log("Went from " + starting_size + " to " + final_size + " nodes.");
