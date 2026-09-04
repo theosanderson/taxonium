@@ -13,7 +13,7 @@ import useHoverDetails from "./hooks/useHoverDetails";
 import type { DeckGLRef } from "@deck.gl/react";
 import useBackend from "./hooks/useBackend";
 import usePerNodeFunctions from "./hooks/usePerNodeFunctions";
-import type { DynamicDataWithLookup } from "./types/backend";
+import type { Config, DynamicDataWithLookup } from "./types/backend";
 import useConfig from "./hooks/useConfig";
 import { useSettings } from "./hooks/useSettings";
 import { MdArrowBack, MdArrowUpward } from "react-icons/md";
@@ -72,6 +72,12 @@ const default_query = getDefaultQuery();
 type TaxoniumInnerProps = TaxoniumProps & {
   query: Query;
   updateQuery: (q: Partial<Query>) => void;
+};
+
+type FitContext = {
+  config: Config;
+  xType: string;
+  treenomeEnabled: boolean;
 };
 
 function TaxoniumInner({
@@ -163,7 +169,12 @@ function TaxoniumInner({
   //TODO: this is always true for now
   (config as any).enable_ns_download = true;
 
-  const xType = query.xType ? query.xType : "x_dist";
+  const availableXTypes = config.x_accessors;
+  const xType =
+    availableXTypes?.length &&
+    (!query.xType || !availableXTypes.includes(query.xType))
+      ? availableXTypes[0]
+      : query.xType || "x_dist";
 
   const setxType = useCallback(
     (xType: string) => {
@@ -200,6 +211,73 @@ function TaxoniumInner({
     }
   }, [data.base_data, setxType]);
 
+  const [readyContext, setReadyContext] = useState<FitContext | null>(null);
+  const lastFitted = useRef<{
+    context: FitContext;
+    width: number;
+    height: number;
+  } | null>(null);
+  const treenomeEnabled = Boolean(settings.treenomeEnabled);
+  const initialViewReady =
+    readyContext?.config === config &&
+    readyContext.xType === xType &&
+    readyContext.treenomeEnabled === treenomeEnabled;
+  const fitToRanges = view.fitToRanges;
+
+  // Dataset changes reset both axes; axis and layout changes reset x only.
+  useEffect(() => {
+    if (config.title === "loading") {
+      return;
+    }
+    const xRange = config.x_ranges ? config.x_ranges[xType] : undefined;
+    if (!xRange || !config.y_range) {
+      setReadyContext({ config, xType, treenomeEnabled });
+      return;
+    }
+    const last = lastFitted.current;
+    const datasetChanged = !last || last.context.config !== config;
+    const xTypeChanged = !last || last.context.xType !== xType;
+    const layoutChanged =
+      !last || last.context.treenomeEnabled !== treenomeEnabled;
+    const widthChanged = !last || last.width !== deckSize.width;
+    const heightChanged = !last || last.height !== deckSize.height;
+    const xFit =
+      datasetChanged || xTypeChanged || layoutChanged
+        ? "force"
+        : widthChanged
+        ? "if-unmoved"
+        : "skip";
+    const yFit = datasetChanged
+      ? "force"
+      : heightChanged
+      ? "if-unmoved"
+      : "skip";
+    if (xFit === "skip" && yFit === "skip") {
+      return;
+    }
+
+    const context = { config, xType, treenomeEnabled };
+    const fitted = fitToRanges(xRange, config.y_range, {
+      x: xFit,
+      y: yFit,
+    });
+    if (fitted) {
+      lastFitted.current = {
+        context,
+        width: deckSize.width,
+        height: deckSize.height,
+      };
+      setReadyContext(context);
+    }
+  }, [
+    config,
+    xType,
+    deckSize.width,
+    deckSize.height,
+    treenomeEnabled,
+    fitToRanges,
+  ]);
+
   const search = useSearch({
     data,
     config,
@@ -211,6 +289,7 @@ function TaxoniumInner({
     deckSize,
     xType,
     settings,
+    initialViewReady,
   });
 
   const [sidebarOpen, setSidebarOpen] = useState(!sidePanelHiddenByDefault);

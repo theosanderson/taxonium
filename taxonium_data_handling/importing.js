@@ -111,6 +111,111 @@ function reduceMaxOrMin(array, accessFunction, maxOrMin) {
   }
 }
 
+// Fit to the bulk of the tree so that a few divergent sequences do not leave
+// the useful region off screen.
+const X_ROBUST_QUANTILE = 0.99;
+const X_ROBUST_HEADROOM = 1.3;
+const X_ROBUST_MIN_FRACTION = 0.15;
+const QUANTILE_BINS = 4096;
+
+// Avoid sorting or copying node coordinates, which can number in the millions.
+const approximateQuantile = (nodes, accessor, min, max, quantile) => {
+  const counts = new Int32Array(QUANTILE_BINS);
+  const scale = QUANTILE_BINS / (max - min);
+  let total = 0;
+  for (const node of nodes) {
+    const value = node[accessor];
+    if (!Number.isFinite(value)) {
+      continue;
+    }
+    const bin = Math.min(Math.floor((value - min) * scale), QUANTILE_BINS - 1);
+    counts[bin]++;
+    total++;
+  }
+  const target = quantile * total;
+  let cumulative = 0;
+  for (let bin = 0; bin < QUANTILE_BINS; bin++) {
+    cumulative += counts[bin];
+    if (cumulative >= target) {
+      return min + ((bin + 1) / QUANTILE_BINS) * (max - min);
+    }
+  }
+  return max;
+};
+
+const getXAccessors = (nodes) => {
+  const firstNode = nodes && nodes.length ? nodes[0] : null;
+  const accessors = [];
+  if (firstNode && firstNode.x_dist !== undefined) {
+    accessors.push("x_dist");
+  }
+  if (firstNode && firstNode.x_time !== undefined) {
+    accessors.push("x_time");
+  }
+  return accessors.length ? accessors : ["x_time"];
+};
+
+const getXRange = (nodes, accessor) => {
+  let min = Infinity;
+  let max = -Infinity;
+  for (const node of nodes) {
+    const value = node[accessor];
+    if (!Number.isFinite(value)) {
+      continue;
+    }
+    if (value < min) {
+      min = value;
+    }
+    if (value > max) {
+      max = value;
+    }
+  }
+  if (min === Infinity) {
+    return null;
+  }
+  if (min === max) {
+    return { min, max, robust_max: max };
+  }
+  const quantile = approximateQuantile(
+    nodes,
+    accessor,
+    min,
+    max,
+    X_ROBUST_QUANTILE
+  );
+  const robustMax = min + (quantile - min) * X_ROBUST_HEADROOM;
+  const tooNarrow = robustMax < min + (max - min) * X_ROBUST_MIN_FRACTION;
+  return {
+    min,
+    max,
+    robust_max: tooNarrow || robustMax > max ? max : robustMax,
+  };
+};
+
+// initial_x / initial_y stay for backwards compatibility with clients that
+// only know about a centre point; x_ranges and y_range let a newer client
+// also work out how far to zoom out.
+export const getInitialViewConfig = (nodes, { minY, maxY }) => {
+  const x_accessors = getXAccessors(nodes);
+  const x_ranges = {};
+  for (const accessor of x_accessors) {
+    const range = getXRange(nodes, accessor);
+    if (range) {
+      x_ranges[accessor] = range;
+    }
+  }
+  const primaryRange = x_ranges[x_accessors[0]];
+  const initialView = {
+    x_ranges,
+    y_range: { min: minY, max: maxY },
+    initial_y: (minY + maxY) / 2,
+  };
+  if (primaryRange) {
+    initialView.initial_x = (primaryRange.min + primaryRange.robust_max) / 2;
+  }
+  return initialView;
+};
+
 export const setUpStream = (
   the_stream,
   data,
@@ -324,10 +429,14 @@ export const processJsonl = async (
 
 export const generateConfig = (config, processedUploadedData) => {
   config.num_nodes = processedUploadedData.nodes.length;
-  config.initial_x =
-    (processedUploadedData.overallMaxX + processedUploadedData.overallMinX) / 2;
-  config.initial_y =
-    (processedUploadedData.overallMaxY + processedUploadedData.overallMinY) / 2;
+  Object.assign(
+    config,
+    processedUploadedData.initial_view ??
+      getInitialViewConfig(processedUploadedData.nodes, {
+        minY: processedUploadedData.overallMinY,
+        maxY: processedUploadedData.overallMaxY,
+      })
+  );
   config.initial_zoom = config.initial_zoom ? config.initial_zoom : -2;
   config.genes = [
     ...new Set(processedUploadedData.mutations.map((x) => (x ? x.gene : null))),
@@ -354,14 +463,7 @@ export const generateConfig = (config, processedUploadedData) => {
     "is_tip",
   ];
 
-  const firstNode = processedUploadedData.nodes[0];
-
-  config.x_accessors =
-    firstNode.x_dist !== undefined && firstNode.x_time !== undefined
-      ? ["x_dist", "x_time"]
-      : firstNode.x_dist
-      ? ["x_dist"]
-      : ["x_time"];
+  config.x_accessors = getXAccessors(processedUploadedData.nodes);
 
   config.keys_to_display = Object.keys(processedUploadedData.nodes[0]).filter(
     (x) => !to_remove.includes(x)
@@ -463,4 +565,4 @@ export const generateConfig = (config, processedUploadedData) => {
     : colorByOptions[0];
 };
 
-export default { processJsonl, generateConfig };
+export default { processJsonl, generateConfig, getInitialViewConfig };

@@ -52,6 +52,8 @@ jobs:
         cd ../taxonium_component
         npm ci
         npm run build
+        npm test
+        npm run check-types
       env:
         NODE_OPTIONS: --max-old-space-size=8192
 

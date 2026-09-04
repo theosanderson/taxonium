@@ -58,7 +58,8 @@ const waitForProcessedData = async () => {
   }
 };
 
-export const queryNodes = async (boundsForQueries) => {
+// Partial bounds request the whole tree for the minimap.
+export const queryNodes = async (boundsForQueries = {}) => {
   await waitForProcessedData();
 
   const {
@@ -99,7 +100,7 @@ export const queryNodes = async (boundsForQueries) => {
       max_y,
       min_x,
       max_x,
-      boundsForQueries.xType
+      boundsForQueries.xType ? boundsForQueries.xType : "x_dist"
     ),
   };
 

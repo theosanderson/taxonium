@@ -218,10 +218,7 @@ if (command_options.config_override) {
 
 app.get("/config", function (req, res) {
   config.num_nodes = processedData.nodes.length;
-  config.initial_x =
-    (processedData.overallMinX + processedData.overallMaxX) / 2;
-  config.initial_y =
-    (processedData.overallMinY + processedData.overallMaxY) / 2;
+  Object.assign(config, processedData.initial_view);
   config.initial_zoom = -2;
   config.genes = processedData.genes;
   config = { ...config, ...processedData.overwrite_config };
@@ -464,6 +461,11 @@ const loadData = async () => {
   logStatusMessage({
     status: "finalising",
   });
+
+  processedData.initial_view = importing.getInitialViewConfig(
+    processedData.nodes,
+    { minY: processedData.overallMinY, maxY: processedData.overallMaxY }
+  );
 
   if (config.no_file) {
     importing.generateConfig(config, processedData);
