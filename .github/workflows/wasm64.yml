@@ -1,0 +1,55 @@
+name: Memory64 tree processing
+
+on:
+  pull_request:
+    paths:
+      - "taxonium_data_handling/**"
+      - "taxonium_component/**"
+      - ".github/workflows/wasm64.yml"
+  push:
+    branches: [master]
+    paths:
+      - "taxonium_data_handling/**"
+      - "taxonium_component/**"
+      - ".github/workflows/wasm64.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: taxonium_component/package-lock.json
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+        working-directory: taxonium_component
+      - name: Fetch the pinned compiler
+        shell: bash
+        run: |
+          curl -fL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-34/wasi-sdk-34.0-x86_64-linux.tar.gz -o "$RUNNER_TEMP/wasi-sdk.tar.gz"
+          echo "b761e3a0721dbae9c09a0059e5fdb2bf917d1b4a8a7b430fb3b5aafb0984b2c4  $RUNNER_TEMP/wasi-sdk.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/wasi-sdk.tar.gz" -C "$RUNNER_TEMP" --wildcards 'wasi-sdk-34.0-x86_64-linux/bin/*' 'wasi-sdk-34.0-x86_64-linux/lib/lib*'
+          echo "WASM64_CLANG=$RUNNER_TEMP/wasi-sdk-34.0-x86_64-linux/bin/clang" >> "$GITHUB_ENV"
+      - name: Verify the generated binary
+        run: |
+          npm run build:wasm64
+          git diff --exit-code -- ../taxonium_data_handling/wasm/treeProcessingBytes.js
+        working-directory: taxonium_component
+      - name: Type check and test
+        run: |
+          npm run check-types
+          npm test
+        working-directory: taxonium_component
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+        working-directory: taxonium_component
+      - name: Exercise the production worker and Memory64 addressing
+        run: npm run test:wasm64:browser
+        env:
+          WASM64_LARGE_MEMORY_CHECK: "1"
+        working-directory: taxonium_component
