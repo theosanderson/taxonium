@@ -7,16 +7,17 @@ import { ClipLoader } from "react-spinners";
 import TaxoniumModal from "./TaxoniumModal";
 
 import type { SearchSpec, SearchState } from "../types/search";
-import type { Config } from "../types/backend";
+import type { Config, Backend } from "../types/backend";
 
 interface SearchTopLayerItemProps {
   singleSearchSpec: SearchSpec;
   myKey: string;
   search: SearchState;
   config: Config;
+  backend: Backend;
 }
 
-function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }: SearchTopLayerItemProps) {
+function SearchTopLayerItem({ singleSearchSpec, myKey, search, config, backend }: SearchTopLayerItemProps) {
   const myLoadingStatus = search.searchLoadingStatus[myKey];
 
   const [permaLinkModalOpen, setPermaLinkModalOpen] = useState(false);
@@ -94,6 +95,7 @@ function SearchTopLayerItem({ singleSearchSpec, myKey, search, config }: SearchT
           config={config}
           singleSearchSpec={singleSearchSpec}
           setThisSearchSpec={setThisSearchSpec}
+          backend={backend}
         />
 
         <div className="flex justify-between items-center mt-2">

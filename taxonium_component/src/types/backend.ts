@@ -148,6 +148,7 @@ export interface BaseBackend {
     callback: (err: unknown, data: unknown) => void
   ): void;
   getNextstrainJson(nodeId: string | number, config: Config): void;
+  getOverallSpectrum?(callback: (spectrum: string | null) => void): void;
   type: "local" | "server";
 }
 

@@ -463,6 +463,7 @@ function SearchPanel({
               myKey={item.key}
               search={search}
               config={config}
+              backend={backend}
             />
           ))}
           <Button
