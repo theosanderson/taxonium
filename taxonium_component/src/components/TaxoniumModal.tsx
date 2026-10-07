@@ -20,10 +20,17 @@ export default function TaxoniumModal({
   children,
   parentSelector = () =>
     document.getElementById("taxonium-root") as HTMLElement,
+  style,
   ...props
 }: Props) {
+  // Ensure modals render above the tree, buttons and key unless a caller
+  // explicitly sets its own z-index.
+  const mergedStyle = {
+    content: style?.content,
+    overlay: { zIndex: 1000, ...style?.overlay },
+  };
   return (
-    <Modal parentSelector={parentSelector} {...props}>
+    <Modal parentSelector={parentSelector} style={mergedStyle} {...props}>
       {children}
     </Modal>
   );
