@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { getAccelerator } from "./acceleration.js";
 
 let revertant_mutations_set = null;
 let cachedChildrenArray = null;
@@ -43,6 +44,10 @@ const getRevertantMutationsSet = (all_data, node_to_mut, mutations) => {
 
 const count_per_hash = {};
 const reduceOverPlotting = (input, precisionX, precisionY, xType) => {
+  const accelerated = getAccelerator()?.reduceOverPlotting(
+    input, precisionX, precisionY, xType
+  );
+  if (accelerated !== undefined) return accelerated;
   const included_points = {};
   precisionX = precisionX / 5;
   console.log(
@@ -104,6 +109,8 @@ function filter(input, y_positions, min_y, max_y) {
 function search(input, search_spec) {}
 
 const addParents = (data, filtered) => {
+  const accelerated = getAccelerator()?.addParents(data, filtered);
+  if (accelerated !== undefined) return accelerated;
   const start_time = Date.now();
   const selected_node_ids = filtered.map((node) => node.node_id);
   // creat a set to keep track of selected_node_ids
@@ -390,6 +397,11 @@ function searchFilteringIfUncached({
       spec.number_method,
       number_value
     );
+
+    const accelerated = getAccelerator()?.numericFilter(
+      data, spec.type, spec.number_method, number_value
+    );
+    if (accelerated !== undefined) return accelerated;
 
     filtered = data.filter((node) => filterFunc(node[spec.type]));
     return filtered;

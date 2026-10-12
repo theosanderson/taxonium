@@ -10,6 +10,10 @@ import { ReadableWebToNodeStream } from "readable-web-to-node-stream";
 import { parser } from "stream-json";
 import { streamValues } from "stream-json/streamers/StreamValues";
 import { Buffer } from "buffer";
+import { createTreeAccelerator } from "taxonium_data_handling/wasm/treeProcessing.js";
+import { getAccelerator, setAccelerator } from "taxonium_data_handling/acceleration.js";
+
+const acceleratorReady = createTreeAccelerator();
 
 postMessage({ data: "Worker starting" });
 
@@ -195,6 +199,8 @@ onmessage = async (event) => {
   // the previous tree because its data is returned before the new one loads.
   if (data.type === "upload" && data.data && data.data.filename) {
     processedUploadedData = undefined;
+    getAccelerator()?.dispose();
+    setAccelerator(await acceleratorReady);
   }
   if (
     data.type === "upload" &&

@@ -23,6 +23,8 @@
     "directory": "taxonium-component"
   },
   "scripts": {
+    "build:wasm64": "node ../taxonium_data_handling/wasm/build.mjs",
+    "test:wasm64:browser": "node scripts/check-wasm64-browser.mjs",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
