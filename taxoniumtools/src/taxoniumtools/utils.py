@@ -157,11 +157,46 @@ def normalise_specific_x_coords(root, attr, fixed_val=75):
         setattr(node, attr, fixed_val * (getattr(node, attr) / percentile_95))
 
 
+def deterministic_ladderize(node, ascending=False):
+    """Ladderize with deterministic tiebreaking to match C++ exactly"""
+    if node.is_leaf():
+        return
+
+    # First, recursively ladderize all children
+    for child in node.children:
+        deterministic_ladderize(child, ascending)
+
+    # Sort children with deterministic tiebreaking
+    def sort_key(child):
+        # Match C++ sorting exactly (with REVERSED logic)
+        num_tips = child.num_tips
+        edge_len = child.edge_length if child.edge_length is not None else 0
+        has_name = 1 if child.label else 0
+        name = child.label if child.label else ""
+
+        if ascending:
+            # Reversed for ascending
+            return (-num_tips, -edge_len, -has_name, name[::-1])  # reverse name for reversed comparison
+        else:
+            # Reversed for descending
+            return (num_tips, edge_len, has_name, name)
+
+    node.children = sorted(node.children, key=sort_key)
+
 def set_terminal_y_coords(root):
-    for i, node in alive_it(enumerate(root.traverse_leaves()),
-                            title="Setting terminal y coordinates"):
-        node.y = i
-        node.y = i
+    # Traverse leaves in DFS preorder (matching C++)
+    # We need to visit leaves in the order they appear in preorder traversal
+    leaf_count = [0]  # Use list to allow modification in nested function
+
+    def set_leaf_y_dfs(node):
+        if node.is_leaf():
+            node.y = leaf_count[0]
+            leaf_count[0] += 1
+        else:
+            for child in node.children:
+                set_leaf_y_dfs(child)
+
+    set_leaf_y_dfs(root)
 
 
 def set_internal_y_coords(root):
@@ -179,7 +214,8 @@ def get_all_aa_muts(root):
                          title="Collecting all AA mutations"):
         if hasattr(node, 'aa_muts'):
             all_aa_muts.update(node.aa_muts)
-    return list(all_aa_muts)
+    # Sort for deterministic output: by gene, position, initial AA, final AA
+    return sorted(list(all_aa_muts), key=lambda x: (x.gene, x.one_indexed_codon, x.initial_aa, x.final_aa))
 
 
 def get_all_nuc_muts(root):
@@ -188,7 +224,8 @@ def get_all_nuc_muts(root):
                          title="Collecting all nuc mutations"):
         if node.nuc_mutations:
             all_nuc_muts.update(node.nuc_mutations)
-    return list(all_nuc_muts)
+    # Sort for deterministic output: by chromosome, position, parent nuc, mutated nuc
+    return sorted(list(all_nuc_muts), key=lambda x: (x.chromosome, x.one_indexed_position, x.par_nuc, x.mut_nuc))
 
 
 def make_aa_object(i, aa_mutation):
@@ -235,6 +272,8 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
         object['mutations'] += [
             input_to_index[my_input] for my_input in node.nuc_mutations
         ]
+    # Sort mutations by their index for deterministic output
+    object['mutations'].sort()
     if node.is_leaf():
         object['is_tip'] = True
     else:
@@ -269,10 +308,15 @@ def get_node_object(node, node_to_index, metadata, input_to_index, columns,
 def sort_on_y(tree):
     with alive_bar(title="Sorting on y") as bar:
 
-        def return_y(node):
+        def return_sort_key(node):
             bar()
-            return node.y
+            # Primary sort: y coordinate
+            # Secondary sort: x coordinate (for determinism when y is equal)
+            # Tertiary sort: node label/name (for determinism when both y and x are equal)
+            x_val = getattr(node, 'x_dist', 0)
+            name = getattr(node, 'label', '') or ''
+            return (node.y, x_val, name)
 
         nodes_sorted_by_y = sorted(tree.root.traverse_preorder(),
-                                   key=lambda x: return_y(x))
+                                   key=lambda x: return_sort_key(x))
     return nodes_sorted_by_y

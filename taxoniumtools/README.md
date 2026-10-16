@@ -4,10 +4,12 @@ Taxonium tools is a Python utility that allows you to generate Taxonium format f
 
 ## Installation
 
+### Python Version
 ```
 pip install taxoniumtools
-
 ```
+
+
 
 ## Usage
 
@@ -42,5 +44,6 @@ pip install chronumental
 usher_to_taxonium --input tfci.pb --output tfci-taxonium.jsonl.gz --metadata tfci.meta.tsv.gz --genbank hu1.gb \
 --columns genbank_accession,country,date,pangolin_lineage --chronumental --chronumental_steps 300
 ```
+
 
 ### For more information see the [docs](https://docs.taxonium.org/en/latest/taxoniumtools.html)
