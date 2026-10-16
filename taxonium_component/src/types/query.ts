@@ -3,6 +3,10 @@ export interface Query {
   srch?: string;
   /** JSON string mapping search keys to enabled flag */
   enabled?: string;
+  /** JSON string of filter specifications */
+  fltr?: string;
+  /** JSON string mapping filter keys to enabled flag */
+  filterEnabled?: string;
   /** Backend URL to use */
   backend?: string;
   /** Session identifier */

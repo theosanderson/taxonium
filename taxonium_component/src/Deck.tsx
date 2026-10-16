@@ -23,6 +23,7 @@ import { TreenomeButtons } from "./components/TreenomeButtons";
 import type { Settings } from "./types/settings";
 import type { View as ViewType } from "./hooks/useView";
 import type { SearchState } from "./types/search";
+import type { FilterState } from "./types/filter";
 import type { TreenomeState } from "./types/treenome";
 import type { HoverDetailsState, SelectedDetails, NodeSelectHandler, NodeDetailsLoadedHandler } from "./types/ui";
 import TreenomeModal from "./components/TreenomeModal";
@@ -41,6 +42,7 @@ const MemoizedKey = React.memo(Key);
 export interface DeckProps {
   data: DynamicData;
   search: SearchState;
+  filter: FilterState;
   treenomeState: TreenomeState;
   view: ViewType;
   colorHook: ColorHook;
@@ -68,6 +70,7 @@ export interface DeckProps {
 function Deck({
   data,
   search,
+  filter,
   treenomeState,
   view,
   colorHook,
@@ -233,6 +236,7 @@ function Deck({
   const { layers, layerFilter, keyStuff, triggerSVGdownload } = useLayers({
     data,
     search,
+    filter,
     viewState,
     deckSize,
     colorHook,
