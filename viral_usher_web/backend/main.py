@@ -763,13 +763,6 @@ async def generate_config(
                     config_contents["ref_gbff"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{ref_gbff_s3_key}"
                 else:
                     config_contents["ref_gbff"] = f"https://s3.{S3_REGION}.amazonaws.com/{S3_BUCKET}/{ref_gbff_s3_key}"
-            else:
-                # Supply an empty gbff file so viral_usher has a valid path
-                empty_gbff_s3_key = upload_to_s3(b"", "empty.gbff", "text/plain")
-                if S3_ENDPOINT_URL:
-                    config_contents["ref_gbff"] = f"{S3_ENDPOINT_URL}/{S3_BUCKET}/{empty_gbff_s3_key}"
-                else:
-                    config_contents["ref_gbff"] = f"https://s3.{S3_REGION}.amazonaws.com/{S3_BUCKET}/{empty_gbff_s3_key}"
             config_contents["refseq_acc"] = ""
             config_contents["refseq_assembly"] = ""
         else:
