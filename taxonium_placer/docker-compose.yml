@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  taxonium-placer:
+    build: .
+    ports:
+      - "3000:3000"
+      - "4000-4100:4000-4100"  # Range for dynamic Taxonium servers
+    volumes:
+      - ./temp:/app/temp
+      - ./reference:/app/reference
+      - ./test_data:/app/test_data:ro
+    environment:
+      - NODE_ENV=development
+      - MAX_CONCURRENT_JOBS=3
+      - CLEANUP_INTERVAL_HOURS=1
+      - LOG_LEVEL=debug
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Optional: nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - taxonium-placer
+    profiles:
+      - production
