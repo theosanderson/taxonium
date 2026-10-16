@@ -248,6 +248,25 @@ function useServerBackend(
     [getNextstrainJsonUrl]
   );
 
+  const getOverallSpectrum = useCallback(
+    (callback: (spectrum: string | null) => void) => {
+      let url = backend_url + "/overall_spectrum";
+      if (sid) {
+        url += "?sid=" + sid;
+      }
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          callback(data.spectrum);
+        })
+        .catch((error) => {
+          console.error("Error fetching overall spectrum:", error);
+          callback(null);
+        });
+    },
+    [backend_url, sid]
+  );
+
   return useMemo(() => {
     return {
       queryNodes,
@@ -261,6 +280,7 @@ function useServerBackend(
       backend_url: backend_url,
       getNextstrainJson,
       getNextstrainJsonUrl,
+      getOverallSpectrum,
     };
   }, [
     queryNodes,
@@ -273,6 +293,7 @@ function useServerBackend(
     backend_url,
     getNextstrainJson,
     getNextstrainJsonUrl,
+    getOverallSpectrum,
   ]);
 }
 
