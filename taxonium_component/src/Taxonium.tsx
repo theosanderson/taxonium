@@ -170,11 +170,21 @@ function TaxoniumInner({
   (config as any).enable_ns_download = true;
 
   const availableXTypes = config.x_accessors;
-  const xType =
+  const configXType =
     availableXTypes?.length &&
     (!query.xType || !availableXTypes.includes(query.xType))
       ? availableXTypes[0]
       : query.xType || "x_dist";
+  // Some older backends advertise an x accessor that their nodes do not
+  // actually carry (e.g. reporting only x_time for a distance-only tree).
+  // When the loaded nodes contradict the config, the nodes win. The override
+  // is tied to the config object so it resets when the dataset changes.
+  const [dataXType, setDataXType] = useState<{
+    config: typeof config;
+    xType: string;
+  } | null>(null);
+  const xType =
+    dataXType && dataXType.config === config ? dataXType.xType : configXType;
 
   const setxType = useCallback(
     (xType: string) => {
@@ -203,13 +213,32 @@ function TaxoniumInner({
     // This can happen with e.g. nextstrain json
     if (data.base_data && data.base_data.nodes) {
       const n = data.base_data.nodes[0];
-      if (!n.hasOwnProperty("x_dist")) {
-        setxType("x_time");
-      } else if (!n.hasOwnProperty("x_time")) {
-        setxType("x_dist");
+      if (!n) {
+        return;
+      }
+      const onlyXType = !n.hasOwnProperty("x_dist")
+        ? "x_time"
+        : !n.hasOwnProperty("x_time")
+        ? "x_dist"
+        : null;
+      if (!onlyXType) {
+        return;
+      }
+      setxType(onlyXType);
+      if (availableXTypes?.length && !availableXTypes.includes(onlyXType)) {
+        console.warn(
+          `Backend config lists x_accessors ${JSON.stringify(
+            availableXTypes
+          )} but nodes only have ${onlyXType}; using ${onlyXType}.`
+        );
+        setDataXType((prev) =>
+          prev && prev.config === config && prev.xType === onlyXType
+            ? prev
+            : { config, xType: onlyXType }
+        );
       }
     }
-  }, [data.base_data, setxType]);
+  }, [data.base_data, setxType, availableXTypes, config]);
 
   const [readyContext, setReadyContext] = useState<FitContext | null>(null);
   const lastFitted = useRef<{
